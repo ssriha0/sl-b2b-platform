@@ -1,0 +1,35 @@
+<!DOCTYPE validators PUBLIC
+        "-//Apache Struts//XWork Validator 1.0.2//EN"
+        "http://struts.apache.org/dtds/xwork-validator-1.0.2.dtd">
+        
+<validators>
+  <field name="forgotUsernameDto.email">
+      <field-validator type="requiredstring">
+           <param name="trim">true</param>
+  			<message>e-mail id is required</message>
+      </field-validator>
+  </field>
+  <field name="forgotUsernameDto.email">
+     <!--  field-validator type="email">
+  			<message>"Must be a valid e-mail"</message>
+      </field-validator-->
+  </field>
+  <field name="roleId">
+     <field-validator type="int">
+          <param name="min">1</param>
+  		  <message>"Please Select One of the role"</message>
+      </field-validator>
+  </field>
+  <field name="userPhoneNumber">
+     <field-validator type="regex">
+           <param name="regex">[0-9][0-9][0-9][0-9]</param>
+           <message>"forgetuser.error.phone"</message>
+      </field-validator>
+  </field>
+  <field name="userZipCode">
+     <field-validator type="regex">
+           <param name="regex">[0-9][0-9][0-9][0-9][0-9]</param>
+           <message>"forgetuser.error.zipcode"</message>
+      </field-validator>
+  </field>
+ </validators>

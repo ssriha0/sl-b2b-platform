@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<bean id="backendPlaceholderConfig"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+			<value>classpath:resources/bootstrap.${sl_app_lifecycle}.properties</value>
+		</property>
+		<property name="ignoreUnresolvablePlaceholders" value="true"/>
+	</bean>
+
+	<bean id="sqlMapClient"
+		class="org.springframework.orm.ibatis.SqlMapClientFactoryBean"
+		abstract="false" autowire="byName">
+		<property name="configLocation">
+			<value>classpath:resources/ibatis/SqlMapConfig.xml</value>
+		</property>
+		<property name="useTransactionAwareDataSource">
+			<value>true</value>
+		</property>
+		<property name="dataSource">
+			<ref bean="${datasource.main.bean.id}" />
+		</property>
+	</bean>
+	<bean id="sqlMapArchiveClient"
+		class="org.springframework.orm.ibatis.SqlMapClientFactoryBean"
+		abstract="false" autowire="byName">
+		<property name="configLocation">
+			<value>classpath:resources/ibatis/SqlMapConfig.xml</value>
+		</property>
+		<property name="useTransactionAwareDataSource">
+			<value>true</value>
+		</property>
+		<property name="dataSource">
+			<ref bean="dataSourceArchiveMySQL" />
+		</property>
+	</bean>
+	<bean id="sqlMapSecureClient"
+		class="org.springframework.orm.ibatis.SqlMapClientFactoryBean"
+		abstract="false" autowire="byName">
+		<property name="configLocation">
+			<value>classpath:resources/ibatis/SqlMapConfig.xml</value>
+		</property>
+		<property name="useTransactionAwareDataSource">
+			<value>true</value>
+		</property>
+		<property name="dataSource">
+			<ref bean="${datasource.secure.bean.id}" />
+		</property>
+	</bean>
+
+	<bean id="sqlMapClientFinance"
+		class="org.springframework.orm.ibatis.SqlMapClientFactoryBean"
+		abstract="false" lazy-init="true" autowire="byName">
+		<property name="configLocation">
+			<value>classpath:resources/ibatis/SqlMapConfig.xml</value>
+		</property>
+		<property name="useTransactionAwareDataSource">
+			<value>true</value>
+		</property>
+		<property name="dataSource">
+			<ref bean="${datasource.finance.bean.id}" />
+		</property>
+	</bean>
+	
+	<bean id="sqlMapClientIntegration"
+		class="org.springframework.orm.ibatis.SqlMapClientFactoryBean"
+		abstract="false" lazy-init="true" autowire="byName">
+		<property name="configLocation">
+			<value>classpath:resources/ibatis/SqlMapConfig.xml</value>
+		</property>
+		<property name="useTransactionAwareDataSource">
+			<value>true</value>
+		</property>
+		<property name="dataSource">
+			<ref bean="${datasource.integration.bean.id}" />
+		</property>
+	</bean>
+
+	<bean id="serviceOrderDao"
+		class="com.newco.marketplace.persistence.daoImpl.so.order.ServiceOrderDaoImpl"
+		lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient"/>
+		</property>
+	</bean>
+
+   <bean id="securityDAO"
+		class="com.newco.marketplace.persistence.daoImpl.security.SecurityDAOImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+
+	<bean id="securityBO"
+		class="com.newco.marketplace.business.businessImpl.security.SecurityBusinessBean">
+		<property name="securityAccess">
+			<ref bean="securityDAO" />
+		</property>
+	</bean>
+
+	<bean id="apiSecurityDAO"
+		class="com.newco.marketplace.persistence.daoImpl.admin.APISecurityDAOImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+	
+	<bean id="mobileApiSecurityDAO"
+		class="com.newco.marketplace.persistence.daoImpl.mobile.APISecurityDAOImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>	
+
+	<bean id="apiSecurity"
+		class="com.newco.marketplace.business.businessImpl.api.APISecurityImpl">
+		<constructor-arg ref="apiSecurityDAO"/>		
+	</bean>
+	
+	<bean id="mobileApiSecurity"
+		class="com.newco.marketplace.business.businessImpl.api.mobile.APISecurityImpl">
+		<constructor-arg ref="mobileApiSecurityDAO"/>		
+	</bean>	
+
+	<bean id="applicationPropertiesDao"
+		class="com.newco.marketplace.persistence.daoImpl.applicationproperties.ApplicationPropertiesDaoImpl"
+		lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+
+	<bean id="applicationSecurePropertiesDao"
+		class="com.newco.marketplace.persistence.daoImpl.applicationproperties.ApplicationSecurePropertiesDaoImpl"
+		lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapSecureClient" />
+		</property>
+	</bean>
+
+	<bean id="cryptography"
+		class="com.newco.marketplace.util.Cryptography">
+		<property name="applicationPropertiesDao">
+			<ref bean="applicationPropertiesDao" />
+		</property>
+	</bean>
+
+	<!-- The transactionMap version 0.1 -->
+	<import resource="transactionContext.xml" /> <!--  transactionContext.xml should always be first -->
+	<import resource="stagingBeans.xml" />
+	<import resource="soIncident.xml" />
+	<import resource="survey.xml" />	
+	<import resource="extendedSurvey.xml" />
+	<import resource="manageReasonCode.xml"/>
+	<import resource="serviceOrder.xml" />
+	<import resource="soReschedulingContext.xml" />
+	<!--import resource="batchProcessContext.xml" /-->
+	<import resource="message.xml" />
+	<import resource="contact.xml" />
+	<import resource="buyer.xml" />
+	<import resource="vendorResource.xml" />
+	<import resource="documentExpiry.xml" />
+	<import resource="downloadSignedCopy.xml"/>
+	<import resource="providerBackgroundCheck.xml" />
+	<import resource="buyerOutBoundNotification.xml" />
+	<import resource="vendorResourceLocation.xml" />
+	<import resource="soSearch.xml" />
+	<import resource="creditCardContext.xml" />
+	<import resource="location.xml" />
+	<import resource="providerSearch.xml"/>
+	<import resource="buyerSearchBeans.xml"/>
+	<import resource="autoCloseNotification.xml"/>
+	<import resource="awsStatusRecordNotification.xml"/>
+	<import resource="awsFailureStatusRecordNotification.xml"/>
+	<!--<import resource="cachemanagerContext.xml"/>-->
+	<import resource="pagination.xml"/>
+	<import resource="aopAdviceContext.xml"/>
+	<import resource="dashboardContext.xml"/>
+	<import resource="alert.xml"/>
+	<import resource="tierPerformance.xml"/>
+	<import resource="lookup.xml"/>
+	<import resource="document.xml"/>
+	<import resource="auditBeans.xml" />
+	<import resource="financeManager.xml" />
+	<import resource="resourceBeans.xml" />
+	<import resource="powerBuyerBeans.xml" />
+	<import resource="wsQueue.xml" />
+	<import resource="soEvent.xml" />
+	<import resource="activityRegistryBeans.xml" />
+	<import resource="loginBeans.xml"/>
+	<import resource="forgotPasswordBeans.xml"/>
+	<import resource="businessinfoBeans.xml"/>
+	<import resource="warrantyBeans.xml"/>
+	<import resource="emailBeans.xml"/>
+	<import resource="registrationBeans.xml"/>
+	<import resource="termsAndCondBeans.xml"/>
+	<import resource="licensesAndCertBeans.xml"/>
+	<import resource="licensesBeans.xml"/>
+	<import resource="insuranceBeans.xml"/>
+	<import resource="marketPlaceBeans.xml"/>
+	<import resource="etmProviderSearchBeans.xml"/>
+	<import resource="westSurvey.xml" />
+	<import resource="inhomeAutoClose.xml"/>
+	
+
+	<!-- Beans for Provider Team Member -->
+	<import resource="serviceProAllTabBeans.xml"/>
+	<import resource="resourceSchedule.xml"/>
+	<import resource="generalInofBeans.xml"/>
+	<import resource="manageUserBeans.xml"/>
+	<import resource="teamCredentialBeans.xml"/>
+	<import resource="vendorCredentialBean.xml"/>
+	<import resource="skillAssignBeans.xml"/>
+	<import resource="termsBeans.xml"/>
+	<import resource="forgetUsernameBeans.xml"/>
+	<import resource="addServiceProBeans.xml"/>
+
+	<import resource="publicProfileBeans.xml"/>
+	<import resource="providerInfoPagesBeans.xml"/>
+	<import resource="companyProfileBeans.xml"/>
+	<import resource="onsitevisit.xml"/>
+	<!-- Added for audit -->
+	<import resource="auditBeans.xml"/>
+	<import resource="auditContext.xml"/>
+	<import resource="isoMessageBeans.xml"/>
+	<import resource="fullfillmentContext.xml"/>
+	<!-- JMS is not used in the Market Backend anymore -->
+	<!-- <import resource="spring-jms.xml"/> -->
+	<import resource="buyerSOTemplate.xml"/>
+
+	<import resource="selectProviderNetworkBeans.xml"/>
+	<import resource="jobCodeMappingBeans.xml"/>
+	<import resource="siteStatistics.xml"/>
+	<import resource="soFileUpload.xml" />
+	<import resource="OFACBeans.xml" />
+	<import resource="simpleBuyerLocationBeans.xml" />
+	<!-- <import resource="transFile.xml" />  -->
+	<import resource="cheetahEmailContext.xml" />
+	<import resource="adminEmailContext.xml" />
+
+	<import resource="serviceOrderGroup.xml" />
+	<import resource="adminTripChargeContext.xml" />
+	<import resource="powerAuditorBeans.xml" />
+
+	<import resource="alertDispatcherBeans.xml" />
+	<import resource="promo.xml" />
+	<import resource="clientBeans.xml" />
+	<import resource="w9registrationBeans.xml" />
+	<import resource="manageAutoOrderAcceptanceBeans.xml" />
+	<import resource="manageServiceOfferingsBeans.xml" />
+	<import resource="searchportalBeans.xml" />
+
+	<import resource="timetieredroute-appcontext.xml" />
+	
+	<import resource="integration.xml" />
+	<import resource="autoCloseAppContext.xml" />
+	<import resource="memberOfferAppContext.xml" />
+	<import resource="leadsmanagementBeans.xml" />
+	<!-- Added for provider mobile api  -->
+	<import resource="mobileBeans.xml" />
+	<import resource="feedbackAppContext.xml" />
+	<import resource="buyerPIIBeans.xml"/>
+	<import resource="buyerOutBoundNotification.xml"/>	
+	<import resource="recentCodeAppContext.xml" />
+	<import resource="classpath:/com/servicelive/common/serviceLiveCommonApplicationContext.xml"/>
+	<import resource="classpath:/com/servicelive/lookup/serviceLiveLookupApplicationContext.xml"/>
+
+	<import resource="classpath:/com/servicelive/wallet/service/walletServiceApplicationContext.xml"/>
+	<import resource="classpath:spring/mainDataSource.xml" />
+	<import resource="classpath:spring/financeDSTransactionContext.xml" />
+	<import resource="classpath:spring/mainDataSource.xml" />
+	<import resource="classpath:spring/mainDSTransactionContext.xml" />
+	<import resource="classpath:spring/financeDataSource.xml" />
+	<import resource="classpath:spring/integrationDataSource.xml" />
+	<import resource="hsrPartsAppContext.xml" />
+	<import resource="skuMaintenanceAppContext.xml" />
+	<import resource="lmsCredentialFileUploadContext.xml" />
+	<import resource="ordermanagementAppContext.xml" />
+     <!-- Added for ship -->
+     <import resource="shipServiceBean.xml"/>
+     <!-- Added for IPR SL-16934 -->
+     <import resource="userProfileBeans.xml" />
+     <import resource="leadProfileBeans.xml" />
+     <import resource="leadOutBoundNotification.xml" />
+     <import resource="advancedProviderSoManagement.xml" />
+     <import resource="inhomeOutBoundNotification.xml"/>
+     <import resource="slkSecureContext.xml"/>
+      <!-- Added for purchase amount migration for RI orders -->
+     <import resource="purchaseAmountMigrationBeans.xml"/>
+      
+      <!-- Added for home improvement API's -->
+     <import resource="homeImprovementsBeans.xml"/>
+      <!-- Added for R15_0 B2C API's -->
+     <import resource="b2cServiceBean.xml"/>
+     <!-- SL-18979 -->
+     <import resource="smsDataSynch.xml"/>
+     <import resource="CredentialCacheBean.xml"/>
+     
+     <!-- SL-21464 start -->
+     <import resource="d2cProviderPortal.xml"/>
+     <!-- SL-21464 end -->
+     
+    <!--  <import resource="vendorRankingAppContext.xml"/> -->
+     
+     <import resource="calendarPortalAppContext.xml"/>
+     <import resource="externalCalendarSyncServiceContext.xml" />
+     <import resource="AvailableTimeSlotCalculatorContext.xml" />
+     <import resource="techTalkPortalBeans.xml" />
+     
+       
+     <!-- start: SEARCH_MATCH_RANK -->
+     <import resource="searchMatchRankBackend.xml"/>
+     <!-- start: SEARCH_MATCH_RANK -->
+     
+     <import resource="buyerCallbackEventAppContext.xml"/>
+     
+     <import resource="buyerCallbackNotificationContext.xml"/>
+     
+     <import resource="systemGeneratedEmailContext.xml"/>
+     
+     <import resource="buyerSurveyBeans.xml"/>
+     
+     <import resource="pushNotificationAlertContext.xml"/>
+     <import resource="walletControlContext.xml"/>
+           <!-- SLT-1475-->
+     <import resource="zipcodeCoverage.xml" />          
+     
+</beans>
+

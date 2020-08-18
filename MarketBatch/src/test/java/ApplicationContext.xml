@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+    http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/tx 
+    http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-2.5.xsd
+     http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+	<!-- -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://157.241.198.45:3372/supplier_prod"/>
+		<property name="username" value="supply_usr"/>
+		<property name="password" value="supply"/>
+	</bean>
+	<!-- SqlMap Client Configuration, to read generated SqlMaps, as well as 
+		Custom Sqls in separate xml file -->
+	<bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation">
+			<value>classpath:resources/ibatis/SqlMapConfig.xml</value>
+		</property>
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<bean id="dsTransactionManagerMain" class="org.springframework.jdbc.datasource.DataSourceTransactionManager" autowire="byName" >
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<bean id="auditDaoImpl" class="com.newco.marketplace.persistence.daoImpl.audit.AuditDaoImpl" >
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+	
+	<bean id="workflowDao"
+		class="com.newco.marketplace.persistence.daoImpl.provider.WorkflowDaoImpl" >
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+	
+	<bean id="auditBusinessBean"
+		class="com.newco.marketplace.business.businessImpl.audit.AuditBusinessBeanImpl" >
+		<!-- property name="transactionManager">
+			<ref bean="dsTransactionManagerMain" />
+		</property-->
+		<property name="auditDao">
+			<ref bean="auditDaoImpl" />
+		</property>
+		<property name="workflowDao">
+			<ref bean="workflowDao" />
+		</property>
+	</bean>
+	
+	 <bean id="vendorResourceDao" class="com.newco.marketplace.persistence.daoImpl.vendor.VendorResourceImpl"
+     	lazy-init="true">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	 
+    </bean>	
+</beans>

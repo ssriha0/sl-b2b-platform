@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<bean id="csoAddFundsAction"  class="com.newco.marketplace.web.action.simple.CreateServiceOrderAddFundsAction" scope="prototype">
+		 <constructor-arg ref="createServiceOrderDelegate"/>
+		 <property name="serviceOrderDelegate">
+		 	<ref bean="serviceOrderManager"/>
+		 </property>	
+		 <property name="lookupManager">
+			<ref bean="lookupManager" />
+		</property>			
+ 	</bean>
+ 	
+	<bean id="csoCreateAccountAction"  class="com.newco.marketplace.web.action.simple.CreateServiceOrderCreateAccountAction" scope="prototype">
+		 <constructor-arg ref="createServiceOrderDelegate"/>	
+		 <property name="lookupDelegate">
+			<ref bean="lookupManager" />
+		</property>
+ 	</bean>
+ 	
+	<bean id="csoDescribeAndScheduleAction"  class="com.newco.marketplace.web.action.simple.CreateServiceOrderDescribeAndScheduleAction" scope="prototype">
+		<constructor-arg ref="createServiceOrderDelegate"/>	
+		<property name="lookupDelegate">
+			<ref bean="lookupManager" />
+		</property>
+		<property name="promoBO">
+			<ref bean="promoBO" />
+		</property>
+	</bean>
+
+	<bean id="csoFindProvidersAction"  class="com.newco.marketplace.web.action.simple.CreateServiceOrderFindProvidersAction" scope="prototype">
+		 <constructor-arg ref="createServiceOrderDelegate"/>	
+ 	</bean>
+
+	<bean id="csoReviewAction"  class="com.newco.marketplace.web.action.simple.CreateServiceOrderReviewAction" scope="prototype">
+		 <constructor-arg ref="createServiceOrderDelegate"/>
+		 <property name="isoWizardPersistDelegate">
+			<ref bean="SOWizardPersistBean" />
+		 </property>
+		 <property name="serviceOrderDelegate">
+		 	<ref bean="serviceOrderManager"/>
+		 </property>
+ 	</bean>
+ 	
+	<bean id="csoEmailSentAction"  class="com.newco.marketplace.web.action.simple.CreateServiceOrderEmailSentAction" scope="prototype">
+		 <constructor-arg ref="createServiceOrderDelegate"/>	
+ 	</bean>
+
+	<bean id="csoConfirmationAction"  class="com.newco.marketplace.web.action.simple.CreateServiceOrderConfirmationAction" scope="prototype">
+		<!-- Simple text display. No delegate needed -->
+ 	</bean>
+ 	
+ 	<bean id="csoDocumentsAndPhotosAction"  class="com.newco.marketplace.web.action.simple.CreateServiceOrderDocAndPhotosAction" scope="prototype">
+ 		<constructor-arg ref="createServiceOrderDelegate"/>	
+ 		
+ 		<property name="fetchDelegate">
+			<ref bean="SOWizardFetchBean" />
+		</property>
+		<property name="isoWizardPersistDelegate">
+			<ref bean="SOWizardPersistBean" />
+		</property>
+		<property name="lookupManager">
+			<ref bean="lookupManager" />
+		</property>
+ 	</bean>
+
+	<bean id="csoEditAccountAction"  class="com.newco.marketplace.web.action.simple.CreateServiceOrderEditAccountAction" scope="prototype">
+		<property name="createServiceOrderDelegate">
+			<ref bean="createServiceOrderDelegate" />
+		</property>	
+ 	</bean>
+ 	
+	<bean id="ssoControllerAction"  class="com.newco.marketplace.web.action.simple.SSoWControllerAction" scope="prototype">
+		<constructor-arg ref="SOWizardFetchBean"/>
+		<property name="isoWizardPersistDelegate">
+			<ref bean="SOWizardPersistBean" />
+		</property>
+		<property name="lookupManager">
+			<ref bean="lookupManager" />
+		</property>
+		<property name="createServiceOrderDelegate">
+			<ref bean="createServiceOrderDelegate" />
+		</property> 	
+ 	</bean>
+ 	
+	<bean id="ssoSelectLocationAction"  class="com.newco.marketplace.web.action.simple.SBSelectLocationAction" scope="prototype">
+		<property name="createServiceOrderDelegate">
+			<ref bean="createServiceOrderDelegate" />
+		</property> 	
+	</bean>
+	
+	<bean id="ssoManageLocationsAction"  class="com.newco.marketplace.web.action.simple.SBManageLocationsAction" scope="prototype">
+		<property name="createServiceOrderDelegate">
+			<ref bean="createServiceOrderDelegate" />
+		</property> 	
+	</bean>
+	
+</beans>

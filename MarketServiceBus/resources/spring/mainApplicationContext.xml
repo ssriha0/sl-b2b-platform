@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	<!--  transaction context   -->
+	<import resource="classpath:spring/mainDSTransactionContext.xml" />
+	<import resource="classpath:spring/financeDSTransactionContext.xml" />
+	<import resource="classpath:spring/mainJpaTransactionContext.xml" />
+	<import resource="classpath:spring/quartzSPNTRTransactionContext.xml" />
+	<!-- beans to access the integration database -->
+	<import resource="classpath:spring/integrationDaoContext.xml"/>
+	<!-- beans to access the supplier_prod database -->
+	<import resource="classpath:spring/notificationDaoContext.xml"/>
+	<!-- beans to access the ServiceLiveEvent JMS Topic -->
+	<import resource="classpath:spring/slBusEventsContext.xml"/>
+	<!--  beans in esb   -->
+	<import resource="classpath:spring/marketServiceBusSpringContext.xml" />
+	<!-- new esb beans -->
+	<import resource="classpath:spring/new_marketServiceBusSpringContext.xml"/>
+	<!--  beans from other modules   -->
+	<import resource="classpath:com/servicelive/common/transaction/retryableOperationContext.xml" />
+	<import resource="classpath:resources/spring/backendApplicationContext.xml" />
+	<import resource="classpath:resources/spring/documentAppContext.xml" />
+	<import resource="classpath:spring/routingRulesAppContext.xml" />
+	<import resource="classpath:spring/stagingApplicationContext.xml" />
+	<import resource="classpath:spring/translatorApplicationContext.xml" />
+	<import resource="classpath:spring/fileProcessApplicationContext.xml" />
+	<import resource="classpath:spring/tieredRouteQuartzConfig.xml" />
+	
+</beans>

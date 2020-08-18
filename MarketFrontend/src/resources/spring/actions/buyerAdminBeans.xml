@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+
+	<bean id="BAAddEditAction"  class="com.newco.marketplace.web.action.buyeradmin.BAAddEditAction" scope="prototype">
+		<constructor-arg ref="manageUsersDelegate"/>
+		<property name="lookupManager">
+			<ref bean="lookupManager"/>
+		</property>
+		<property name="auditLogDelegates">
+			<ref bean="auditLogDelegates" />
+		</property>
+		<property name="buyerFeatureSetBO">
+			<ref bean="buyerFeatureSetBO" />
+		</property>
+ 	</bean>
+
+	<bean id="BACreateReportAction"  class="com.newco.marketplace.web.action.buyeradmin.BACreateReportAction" scope="prototype">
+		 <!-- <constructor-arg ref="XXXDelegateImpl"/> -->	
+ 	</bean>
+
+	<bean id="BADocManagerAction"  class="com.newco.marketplace.web.action.buyeradmin.BADocManagerAction" scope="prototype">
+		 <!-- <constructor-arg ref="XXXDelegateImpl"/> -->
+		<property name="documentDelegate">
+			<ref bean="SLDocumentBean"/>
+		</property>
+		<property name="lookupDelegate">
+			<ref bean="lookupManager"/>
+		</property>
+ 	</bean>
+
+	<bean id="BAEditAction"  class="com.newco.marketplace.web.action.buyeradmin.BAEditAction" scope="prototype">
+		 <!-- <constructor-arg ref="XXXDelegateImpl"/> -->	
+ 	</bean>
+
+	<bean id="BAManageUsersAction"  class="com.newco.marketplace.web.action.buyeradmin.BAManageUsersAction" scope="prototype">
+		 <constructor-arg ref="manageUsersDelegate"/>
+ 	</bean>
+
+	<bean id="BAReportsAction"  class="com.newco.marketplace.web.action.buyeradmin.BAReportsAction" scope="prototype">
+		 <!-- <constructor-arg ref="XXXDelegateImpl"/> -->	
+ 	</bean>
+
+	<bean id="BAUserCompleteProfileAction"  class="com.newco.marketplace.web.action.buyeradmin.BAUserCompleteProfileAction" scope="prototype">
+		 <!-- <constructor-arg ref="XXXDelegateImpl"/> -->	
+ 	</bean>
+	
+</beans>

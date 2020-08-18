@@ -1,0 +1,648 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap>
+
+	<typeAlias alias="alertTask" type="com.newco.marketplace.business.businessImpl.alert.AlertTask"/>
+	<typeAlias alias="alertTaskUpdate" type="com.newco.marketplace.business.businessImpl.alert.AlertTaskUpdate"/>
+	<typeAlias alias="alertDisposition" type="com.newco.marketplace.business.businessImpl.alert.AlertDisposition"/>
+	<typeAlias alias="providerDetail" type="com.newco.marketplace.dto.vo.serviceorder.ProviderDetail"/>
+	<typeAlias alias="note" type="com.newco.marketplace.dto.vo.serviceorder.ServiceOrderNote" />	
+	<typeAlias alias="buyerDtl"	type="com.newco.marketplace.dto.vo.serviceorder.BuyerDetail" />
+	<typeAlias alias="contact" type="com.newco.marketplace.dto.vo.serviceorder.Contact" />
+	<typeAlias alias="providerEmail" type="com.newco.marketplace.business.businessImpl.alert.AlertProviderEmail" />
+	<typeAlias alias="buyerEmail" type="com.newco.marketplace.business.businessImpl.alert.AlertBuyerEmail" />
+	<typeAlias alias="alertStatusVO" type="com.newco.marketplace.business.businessImpl.vibePostAPI.VibeAlertStatusVO"/>
+	<typeAlias alias="pushAlertStatusVO" type="com.newco.marketplace.business.businessImpl.vibePostAPI.PushAlertStatusVo"/>
+	<typeAlias alias="buyerCallbackNotificationVO" type="com.newco.marketplace.dto.vo.buyerCallbackEvent.BuyerCallbackNotificationVO"/>
+	<parameterMap id="alertDisposition-param" class="java.util.Map">
+        <parameter property="alertName"/>
+        <parameter property="aopActionId"/>
+    </parameterMap>	
+	
+	
+	<insert id="alert.insert" parameterClass="alertTask">
+		INSERT INTO alert_task (
+		alert_task_id,
+ 		alerted_timestamp,
+ 		target_key,
+ 		payload,
+ 		payload_key,
+ 		transaction_id,
+		completion_indicator,
+ 		created_date,
+ 		modified_date,
+ 		modified_by,
+ 		alert_type_id,
+ 		template_id,
+ 		state_transition_id,
+ 		alert_to,
+ 		alert_from,
+ 		alert_cc,
+ 		alert_bcc,
+ 		priority, 
+ 		template_input_value
+		) 
+		values
+		(
+		#alertTaskId#,
+ 		#alertedTimestamp#,
+ 		#targetKey#,
+ 		#payload#,
+ 		#payloadKey#,
+ 		#transactionId#,
+		#completionIndicator#,
+ 		#createdDate#,
+ 		#modifiedDate#,
+ 		#modifiedBy#,
+ 		#alertTypeId#,
+ 		#templateId#,
+ 		#stateTransitionId#,
+ 		#alertTo#,
+ 		#alertFrom#,
+ 		#alertCc#,
+ 		#alertBcc#,
+ 		#priority#,
+ 		#templateInputValue#
+ 		)
+	</insert>
+	
+	<insert id="alert.insert.selectId" parameterClass="alertTask">
+		INSERT INTO alert_task (
+ 		alerted_timestamp,
+ 		target_key,
+ 		payload,
+ 		payload_key,
+ 		transaction_id,
+		completion_indicator,
+ 		created_date,
+ 		modified_date,
+ 		modified_by,
+ 		alert_type_id,
+ 		template_id,
+ 		state_transition_id,
+ 		alert_to,
+ 		alert_from,
+ 		alert_cc,
+ 		alert_bcc,
+ 		priority, 
+ 		template_input_value
+		) 
+		values
+		(
+ 		#alertedTimestamp#,
+ 		#targetKey#,
+ 		#payload#,
+ 		#payloadKey#,
+ 		#transactionId#,
+		#completionIndicator#,
+ 		#createdDate#,
+ 		#modifiedDate#,
+ 		#modifiedBy#,
+ 		#alertTypeId#,
+ 		#templateId#,
+ 		#stateTransitionId#,
+ 		#alertTo#,
+ 		#alertFrom#,
+ 		#alertCc#,
+ 		#alertBcc#,
+ 		#priority#,
+ 		#templateInputValue#
+ 		)
+ 		<selectKey resultClass="java.lang.Long" > 
+		   select LAST_INSERT_ID() as value
+		 </selectKey>
+	</insert>
+
+	<select id="alert.disposition" parameterMap="alertDisposition-param" resultClass="alertDisposition">
+		SELECT
+    	action_master.action_name as actionName,
+		aop_role_assoc.alert_from as alertFrom, 
+		aop_role_assoc.alert_to as alertTo, 
+		aop_role_assoc.alert_cc  as alertCc, 
+		aop_role_assoc.alert_bcc as alertBcc
+		FROM
+		lu_aop_action_role_assoc aop_role_assoc
+		join lu_aop_action_assoc aop_assoc on (aop_role_assoc.aop_action_id = aop_assoc.aop_action_id)
+		join lu_action_master action_master on (aop_assoc.action_id = action_master.action_id)
+		where 
+   		aop_assoc.aop_id=1 and
+		action_name=? and
+		aop_role_assoc.aop_action_id = ?
+	</select>
+	
+	
+	<select id="notes.provider" parameterClass="java.lang.String" resultClass="providerDetail">
+		SELECT 
+		c.last_name as lastName, 
+		c.first_name as firstName, 
+		c.title as title,
+		c.phone_no as phoneNo,
+		c.fax_no as faxNo, 
+		c.mobile_no as mobileNo, 
+		c.email as email  
+		FROM 
+		so_notes n 
+		join so_hdr s on (n.so_id = s.so_id)
+		join vendor_resource vr on (s.accepted_resource_id=vr.resource_id) 
+		join contact c on (vr.contact_id = c.contact_id)
+		where 
+		n.so_id=#soId# 
+		order by note_id desc 
+		limit 0,1
+	</select>
+	
+	<select id="latest_note" parameterClass="java.lang.String" resultClass="note" >
+		select 
+		so_id as soId, 
+		note_id as noteId, 
+		created_date as createdDate, 
+		note_subject as subject, 
+		role_id as roleId, 
+		note as note,  
+		created_by_name as createdByName, 
+		modified_date as modifiedDate, 
+		modified_by as modifiedBy
+		from 
+		so_notes 
+		where 
+		so_id=#soId# 
+		order by note_id desc 
+		limit 0,1
+	</select>
+
+	<select id="allBuyer.query" parameterClass="buyer" resultClass="buyerDetail">
+		SELECT
+		c.last_name  lastName, 
+		c.first_name firstName, 
+		c.title as title,
+		c.phone_no as phoneNo,
+		c.fax_no as faxNo, 
+		c.mobile_no as mobileNo, 
+		c.email as email,
+		d.email_alert as emailPreference,
+		d.sms_alert as smsPreference
+		FROM 
+		buyer b 
+		join contact c on (b.contact_id = c.contact_id) 
+		join contact_alert_preferences d on (d.contact_id = c.contact_id)
+	</select>
+
+	<select id="allVendors.query"  resultClass="providerDetail">
+		SELECT 
+		c.last_name  lastName, 
+		c.first_name firstName, 
+		c.title as title,
+		c.phone_no as phoneNo,
+		c.fax_no as faxNo, 
+		c.mobile_no as mobileNo,
+		c.email as email,
+		c.contact_id as contactId,
+		d.email_alert as emailPreference,
+		d.sms_alert as smsPreference 
+		FROM 
+		vendor_resource v 
+		join contact c on (v.contact_id = c.contact_id) 
+		join contact_alert_preferences d on (d.contact_id = c.contact_id and v.contact_id = d.contact_id)
+    </select> 
+
+	<select id="allAdmins.query"  resultClass="contact">
+		SELECT 
+		u.user_name,
+		p.contact_id, 
+		c.email, 
+		c.last_name as lastName, 
+		c.first_name as firstName, 
+		c.phone_no as phoneNo,
+		c.fax_no as faxNo, 
+		c.email as email,
+		d.email_alert as emailPreference,
+		d.sms_alert as smsPreference 
+		FROM 
+		user_profile_role u
+		join user_profile p on (u.user_name = p.user_name) 
+		join contact c on (c.contact_id = p.contact_id) 
+		join contact_alert_preferences d on (d.contact_id = c.contact_id)
+		where 
+		u.role_id in (1,2,3)
+    </select> 
+
+	<select id="alert.queue" parameterClass="alertTask" resultClass="alertTask">
+		SELECT 
+		a.alert_task_id as alertTaskId, 
+		a.alerted_timestamp as alertedTimestamp, 
+		a.target_key as targetKey, 
+		a.payload as payload, 
+		a.payload_key as payloadKey, 
+		a.transaction_id as transactionId, 
+		a.completion_indicator as completionIndicator, 
+		a.created_date as createdDate, 
+		a.modified_date as modifiedDate, 
+		a.modified_by as modifiedBy, 
+		a.alert_type_id as alertTypeId, 
+		a.template_id as templateId, 
+		a.state_transition_id as stateTransitionId, 
+		a.alert_to as alertTo, 
+		a.alert_from as alertFrom, 
+		a.alert_cc as alertCc, 
+		a.alert_bcc as alertBcc, 
+		a.priority as priority, 
+		a.template_input_value as templateInputValue, 
+		t.template_source as templateSource, 
+		t.template_subject as templateSubject, 
+		t.eid as eid
+		FROM 
+		alert_task a
+		join template t on (a.template_id = t.template_id)
+		WHERE 
+		a.priority = #priority#
+		and a.alert_type_id = #alertTypeId#
+		and t.email_provider_type = 'VELOCITY'
+		and a.completion_indicator = 1
+		ORDER BY a.created_date asc limit 400
+    </select> 
+
+	<select id="alert.types" parameterClass="alertTask" resultClass="alertTask">
+		SELECT 	
+		alert_type_id as alertTypeId
+	 	FROM 
+		lu_alert_type 
+    </select>
+ 
+	<update id="alertTask.setStatusFlag" parameterClass="alertTaskUpdate">
+		update 
+		alert_task 
+		set 
+		completion_indicator = 2, 
+		alerted_timestamp = NOW() 
+		where
+		alert_task_id IN
+		<iterate property="alertTaskIds" open="(" close=")" conjunction=",">
+				#alertTaskIds[]#
+		</iterate>
+ 	</update>
+ 	
+ 	 <update id="alertTask.setSMSStatusFlag" parameterClass="java.lang.Long">
+		update 
+		alert_task 
+		set 
+		completion_indicator = 2, 
+		alerted_timestamp = NOW() 
+		where
+		alert_task_id = #alertTaskId#
+ 	</update>
+
+	<update id="alertTask.setPushNotificationStatusFlag" parameterClass="java.lang.Long">
+		update 
+		alert_task 
+		set 
+		completion_indicator = 2, 
+		alerted_timestamp = NOW() 
+		where
+		alert_task_id = #alertTaskId#
+ 	</update>
+ 	
+
+ 	<select id="alert.getProviderEmails" parameterClass="providerEmail" resultClass="providerEmail">
+		select
+		c.email as providerAdminEmail, 
+        c.alt_contact_method_id as altContactMethodId, 
+        c.sms_no as smsNo 
+        from  
+        vendor_resource vr 
+        join contact c on (c.contact_id = vr.contact_id) 
+        join so_routed_providers srp on (vr.vendor_id = srp.vendor_id ) 
+        join so_hdr sh on (sh.so_id=srp.so_id)
+		where 
+		sh.accepted_resource_id is null 
+		and vr.primary_ind = 1 
+		and sh.so_id = #soId#  
+		<isGreaterThan prepend="AND" property="tierId" compareValue="1">
+				srp.email_sent = false
+		</isGreaterThan> 
+		union
+        select  
+        c.email as providerAdminEmail, 
+        c.alt_contact_method_id as altContactMethodId, 
+        c.sms_no as smsNo 
+        from  
+        vendor_resource vr 
+        join contact c on (c.contact_id = vr.contact_id)
+        join so_routed_providers srp on (vr.resource_id = srp.resource_id) 
+        join so_hdr sh on (sh.so_id=srp.so_id)
+		where 
+		sh.accepted_resource_id is null 
+		and sh.so_id = #soId# 
+		<isGreaterThan prepend="AND" property="tierId" compareValue="1">
+				srp.email_sent = false
+		</isGreaterThan> 
+	</select>
+	
+		
+	<select id="alert.getProviderAdminEmails" parameterClass="providerEmail" resultClass="providerEmail">
+		select  
+		c.email as providerAdminEmail, 
+        c.alt_contact_method_id as altContactMethodId, 
+        c.sms_no as smsNo 
+        from  
+        vendor_resource vr 
+        join contact c on (c.contact_id = vr.contact_id)
+        join so_routed_providers srp on (vr.vendor_id = srp.vendor_id )
+        join so_hdr sh on (sh.so_id = srp.so_id)
+		where 
+		sh.accepted_resource_id is null 
+		and vr.primary_ind = 1 
+		and sh.so_id = #soId# 
+		group by c.email, c.alt_contact_method_id, c.sms_no 
+	</select> 
+	
+	<select id="alert.getProviderAdminEmail.RejectedSO" parameterClass="providerEmail" resultClass="providerEmail">
+		select 
+		c.email as providerAdminEmail, 
+        c.alt_contact_method_id as altContactMethodId, 
+        c.sms_no as smsNo
+		from 
+		vendor_resource vr 
+		join contact c on (c.contact_id = vr.contact_id)
+		join so_routed_providers srp on (vr.vendor_id = srp.vendor_id) 
+		join so_hdr sh on (sh.so_id = srp.so_id)
+		join lu_so_provider_resp l on (l.provider_resp_id = srp.provider_resp_id)
+		where 
+		sh.accepted_resource_id is null
+		and vr.primary_ind = 1
+		and sh.so_id = #soId#
+		and l.provider_resp_id = 3
+		group by c.email, c.alt_contact_method_id, c.sms_no
+	</select> 
+
+	<select id="alert.getProviderAdminEmailsAccepted" parameterClass="providerEmail" resultClass="providerEmail">
+		select  
+		c.email as providerAdminEmail, 
+        c.alt_contact_method_id as altContactMethodId, 
+        c.sms_no as smsNo 
+        from  
+        vendor_resource vr
+        join contact c on (c.contact_id = vr.contact_id)
+        join so_routed_providers srp on (vr.vendor_id = srp.vendor_id ) 
+        join so_hdr sh on (sh.so_id = srp.so_id and sh.accepted_resource_id = srp.resource_id)
+		where 
+		sh.accepted_resource_id is not null 
+ 		and vr.primary_ind = 1 
+		and sh.so_id = #soId#
+		group by c.email, c.alt_contact_method_id, c.sms_no 
+	</select> 
+
+	<select id="alert.getProviderAdminEmailsForReleasedSO" parameterClass="providerEmail" resultClass="providerEmail">
+		select
+		c.email as providerAdminEmail, 
+        c.alt_contact_method_id as altContactMethodId, 
+        c.sms_no as smsNo 
+        from  
+        vendor_resource vr
+        join contact c on (c.contact_id = vr.contact_id) 
+        join so_routed_providers srp on (vr.vendor_id = srp.vendor_id ) 
+        join so_hdr sh on (sh.so_id = srp.so_id)
+		where 
+		sh.accepted_resource_id is null
+		and vr.primary_ind = 1 
+		and sh.so_id = #soId# 
+		and provider_resp_id = 5
+		group by c.email, c.alt_contact_method_id, c.sms_no
+	</select>
+	
+	<select id="alert.getProviderAdminEmailsForAddNotes" parameterClass="providerEmail" resultClass="providerEmail">
+		select
+		c.email as providerAdminEmail, 
+        c.alt_contact_method_id as altContactMethodId, 
+        c.sms_no as smsNo 
+        from  
+        vendor_resource vr
+        join contact c on (c.contact_id = vr.contact_id) 
+        join so_routed_providers srp on (vr.vendor_id = srp.vendor_id) 
+        join so_hdr sh on (sh.so_id = srp.so_id)
+		where 
+		sh.accepted_resource_id is null 
+		and vr.primary_ind = 1 
+		and sh.so_id = #soId# 
+		and srp.provider_resp_id not in (3,5)
+		group by c.email, c.alt_contact_method_id, c.sms_no
+	</select> 
+	
+	
+	<select id="alert.getBuyerAdminEmailAddr" parameterClass="java.lang.String" resultClass="buyerEmail">
+		select 
+		c.email as buyerAdminEmail, 
+		c.alt_contact_method_id as altContactMethodId, 
+		c.sms_no as smsNo, 
+		c.email_alt as altEmailId
+		from 
+		so_hdr a 
+		join buyer b on (a.buyer_id = b.buyer_id)
+		join contact c on (b.contact_id = c.contact_id)
+		where
+		a.so_id = #soId#
+	</select>
+	
+	<select id="alert.getSOCreatorEmailAddr" parameterClass="java.lang.String" resultClass="buyerEmail">
+		select 
+		c.email as buyerAdminEmail, 
+		c.alt_contact_method_id as altContactMethodId, 
+		c.sms_no as smsNo, 
+		c.email_alt as altEmailId 
+		from 
+		so_hdr a
+		join buyer_resource b on (a.buyer_resource_id = b.resource_id) 
+		join contact c on (b.contact_id = c.contact_id)
+		where 
+		a.so_id = #soId#
+	</select>
+	
+	<select id="alert.getAllRoutedProvidersExceptAccepted" parameterClass="java.lang.String" resultClass="providerEmail">
+		select 
+		c.email as providerAdminEmail, 
+		c.alt_contact_method_id as altContactMethodId, 
+		c.sms_no as smsNo 
+		from 
+		so_routed_providers a
+		join vendor_resource b on (a.resource_id = b.resource_id)
+		join contact c on (b.contact_id = c.contact_id) 
+		where
+		a.so_id = #soId#
+		and (a.provider_resp_id not in (1,3) or a.provider_resp_id is null)
+	</select>
+	
+	<select id="alert.logged_in_provider" parameterClass="java.lang.Integer" resultClass="java.lang.String">
+		select 
+		c.email 
+		from 
+		contact c 
+		join vendor_resource v on (v.contact_id = c.contact_id)
+		where 
+		v.resource_id = #vid#
+	</select>
+	
+	<update id="alert.resend_registration_email" parameterClass="java.util.Map">
+		update 
+		alert_task 
+		set 
+		completion_indicator = 1, 
+		alert_to=#email# 
+		where 
+		template_id = 94 
+		and priority = 1 
+		and template_input_value like "%USERNAME=$userName$%"
+	</update>
+	
+	<select id="alert.getProviderAdminEmailForChangeOfScopeSO" parameterClass="java.lang.String" resultClass="java.lang.String">
+		select  
+		c.email as providerAdminEmail
+        from  
+        vendor_resource vr
+        join contact c on (c.contact_id = vr.contact_id) 
+        join so_routed_providers srp on (vr.vendor_id = srp.vendor_id) 
+        join so_hdr sh on (sh.so_id = srp.so_id)
+		where 
+		vr.primary_ind = 1 
+		and sh.so_id = #soId# 
+		and srp.provider_resp_id = 1
+		group by 
+		c.email
+	</select>
+	
+	<update id="update_contact_sms.update" parameterClass="java.lang.String" >
+		update contact set alt_contact_method_id = 1 where sms_no=#smsNo# and alt_contact_method_id = 3
+	</update>
+			
+	<select id="emailFromSmsNo.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+       SELECT email FROM contact WHERE sms_no=#smsNo#
+    </select>	
+	<select id="alerttasksForVibe.query" parameterClass="java.lang.Integer" resultClass="alertTask">
+		SELECT 
+		a.alert_task_id as alertTaskId, 
+		a.completion_indicator as completionIndicator, 
+		a.alert_bcc as alertBcc, 
+		a.template_input_value as templateInputValue
+		FROM 
+		alert_task a
+		WHERE  a.alert_type_id = 2
+		and a.completion_indicator = 1
+		ORDER BY a.created_date asc limit #noOfRecords#
+    </select>
+    
+    	<select id="alertTasksForPushNotification.query" parameterClass="java.lang.Integer" resultClass="alertTask">
+		SELECT 
+		a.alert_task_id as alertTaskId, 
+		a.completion_indicator as completionIndicator, 
+		a.alert_from as alertFrom, 
+		a.template_input_value as templateInputValue,
+		a.template_id as templateId,
+		a.alert_to as alertTo
+		FROM 
+		alert_task a
+		WHERE  a.alert_type_id = 7
+		and a.completion_indicator = 1
+		ORDER BY a.created_date asc limit #noOfRecords#
+    </select>
+    
+   <!--   <insert id="sms.alert.status.insert" parameterClass="alertStatusVO">
+		INSERT INTO sms_alert_status (
+		mobile_number,
+ 		so_id,
+ 		event_id,
+ 		event_type,
+ 		status,
+ 		created_date,
+ 		modified_date
+		) 
+		values
+		(
+		#phoneNo#,
+ 		#soId#,
+ 		#eventId#,
+ 		#eventType#,
+ 		#status#,
+ 		NOW(),
+ 		NOW()
+ 		)
+	</insert>-->
+	 <insert id="sms.alert.status.insert" parameterClass="alertStatusVO">
+		INSERT INTO sms_alert_status (
+		mobile_number,
+ 		so_id,
+ 		status,
+ 		created_date
+		) 
+		values
+		(
+		#phoneNo#,
+ 		#soId#,
+ 		#status#,
+ 		NOW()
+ 		)
+	</insert>
+	<insert id="push.alert.status.insert" parameterClass="pushAlertStatusVO">
+		INSERT INTO push_alert_status (
+		alert_task_id,
+ 		so_id,
+ 		status,
+ 		created_date
+		) 
+		values
+		(
+		#alertTaskId#,
+ 		#soId#,
+ 		#status#,
+ 		NOW()
+ 		)
+	</insert>
+
+	<!-- SLT-1379 -->
+	<select id="getbuyerCallbackStatus.aws.query" parameterClass="java.util.List"
+		resultClass="buyerCallbackNotificationVO">
+		SELECT
+		bcn.so_id as soId,
+		bcn.status as status,
+		bcn.event_id as eventId
+		FROM buyer_callback_notification bcn
+		WHERE bcn.status IN
+		<iterate open="(" close=")" conjunction=",">
+			#[]#
+		</iterate>
+		AND (TIMESTAMPDIFF (MINUTE,bcn.modified_date,NOW())) > 30
+		AND
+		bcn.alert_id=1
+	</select>
+
+	<!-- SLT-1379 -->
+	<update id="updateAlertStatusFlag.aws.query" parameterClass="java.util.List">
+		UPDATE buyer_callback_notification bcn
+		SET bcn.alert_id=2
+		WHERE bcn.status IN
+		<iterate open="(" close=")" conjunction=",">
+			#[]#
+		</iterate>
+		AND (TIMESTAMPDIFF (MINUTE,bcn.modified_date,NOW())) > 30
+	</update>
+
+	<!-- SLT-1377 -->
+	<select id="buyerCallbackFailureNotification.aws.query"
+		parameterClass="java.lang.String" resultClass="buyerCallbackNotificationVO">
+		SELECT
+		bcn.so_id as soId,
+		bcn.exception as exception
+		FROM buyer_callback_notification bcn
+		WHERE
+		bcn.status = #error#
+		AND bcn.no_of_retries >= 4
+		AND bcn.alert_id=1
+	</select>
+
+	<!-- SLT-1377 -->
+	<update id="updateFailureAlertStatusFlag.aws.query"
+		parameterClass="java.lang.String">
+		UPDATE buyer_callback_notification bcn
+		SET bcn.alert_id=2
+		WHERE bcn.status = #error#
+		AND bcn.no_of_retries >= 4
+	</update>
+	
+</sqlMap>

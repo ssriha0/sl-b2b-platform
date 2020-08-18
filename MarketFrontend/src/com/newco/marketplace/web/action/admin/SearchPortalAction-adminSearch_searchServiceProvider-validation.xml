@@ -1,0 +1,48 @@
+<!DOCTYPE validators PUBLIC
+        "-//Apache Struts//XWork Validator 1.0.2//EN"
+        "http://struts.apache.org/dtds/xwork-validator-1.0.2.dtd">
+        
+<validators>
+
+  <field name="searchPortalServiceProviderVO.user.userId">	
+	<field-validator type="regex" short-circuit="true">
+		<param name="trim">true</param>
+		<param name="regex">^\d+$</param>
+		<message key="buyerRegistrationDTO.businessZip.error.required.number"/>
+	 </field-validator>
+  </field>
+
+   <field name="searchPortalServiceProviderVO.soId">
+     <field-validator type="regex">
+     		<param name="regex">[0-9-]*</param>
+			<message>Service Order ID# can only contain numbers and dashes.</message>
+      </field-validator>
+  </field>
+
+   <field name="searchPortalServiceProviderVO.location.phoneNumber">
+     <field-validator type="regex">
+     		<param name="regex">[0-9-]*</param>
+			<message>Phone Number can only contain numbers and dashes.</message>
+      </field-validator>
+  </field>
+  
+  <field name="searchPortalServiceProviderVO.location.zip">
+     <field-validator type="regex">
+     		<param name="regex">[0-9-]*</param>
+			<message>Zip can only contain numbers and dashes.</message>
+      </field-validator>
+  </field>
+
+   <field name="searchPortalServiceProviderVO.user.fnameOrLname">
+     <field-validator type="regex">
+     		<param name="regex">[a-zA-Z]*</param>
+			<message>Name can only contain letters.</message>
+      </field-validator>
+  </field>
+
+    <validator type="customDateValidator">
+	  	<param name="fromDate">searchPortalServiceProviderVO.user.fromSignUpDate</param>
+	  	<param name="toDate">searchPortalServiceProviderVO.user.toSignUpDate</param>
+  		<message>The date you entered is invalid. End date should be after Start date.</message>
+ 	</validator>
+</validators>

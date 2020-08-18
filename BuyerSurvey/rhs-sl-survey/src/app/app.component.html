@@ -1,0 +1,38 @@
+<script type="javascript">
+    function closeMe()
+    {
+      var win = window.open("","_self");
+      win.close();
+    }
+</script>
+<app-loader></app-loader>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-6 col-md-8 col-12 mx-auto">
+      <div [hidden]="!(errorMessage && showError)"
+          (click)="showError = !showError"
+          class="alert alert-danger sticky-top" role="alert">
+        <p>{{ errorMessage }}</p>
+      </div>
+      <div
+      [ngSwitch]="surveyType"
+      *ngIf="validUrl && !isSubmitted && showSurvey && surveyType">
+        <app-csat-only *ngSwitchCase="surveyTypes.CSAT" [buyerDetails]="buyerDetails" [surveyDetails]="surveyDetails" (doPost)="formSubmit($event)"></app-csat-only>
+        <app-nps-only *ngSwitchCase="surveyTypes.NPS" [buyerDetails]="buyerDetails" [surveyDetails]="surveyDetails" (doPost)="formSubmit($event)"></app-nps-only>
+        <app-csat-prioritized *ngSwitchCase="surveyTypes.CSAT_NPS" [buyerDetails]="buyerDetails" [surveyDetails]="surveyDetails" (doPost)="formSubmit($event)"></app-csat-prioritized>
+        <app-nps-prioritized *ngSwitchCase="surveyTypes.NPS_CSAT" [buyerDetails]="buyerDetails" [surveyDetails]="surveyDetails" (doPost)="formSubmit($event)"></app-nps-prioritized>
+        <div class="container-fluid inner-wrap" *ngSwitchDefault><h3>Invalid URL</h3></div>
+      </div>
+      <div *ngIf="isSubmitted">
+        <div class="container-fluid inner-wrap">
+          <h3>
+            <span *ngIf="isAlreadySubmitted">Our record shows that you have submitted your feedback already.</span>
+            <br />Thank you for your feedback.
+          </h3>
+        </div>
+        <!-- <div class="container-fluid outer-wrap"><p class="close-link"><a href="javascript:window.top.close();">Close</a></p></div> -->
+      </div>
+      <div class="container-fluid inner-wrap" *ngIf="!validUrl"><h3>Invalid URL</h3></div>
+    </div>
+  </div>
+</div>

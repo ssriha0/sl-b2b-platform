@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+    <package name="skillAssign" extends="ServiceLiveBase"> 
+    	<default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+       <action name="skillAssignGeneralAction*" class="skillAssignGeneralAction" method="{1}" >
+			<result name="success">/jsp/providerRegistration/modules/tab_skillAssignGeneral.jsp</result>
+			
+			       	
+			<result name="error">/jsp/providerRegistration/Error.jsp</result>	
+			
+			<result name="input" type="redirectAction">
+	             <param name="actionName">serviceProAllTab?tabView=tab3</param>
+	             <param name="namespace">/jsp/providerRegistration</param>
+	             <param name="nexturl">jsp/providerRegistration/skillAssignGeneralActiondoInput.action</param>
+        	</result>
+				
+			<result name="save" type="redirectAction">
+	            <param name="actionName">serviceProAllTab?tabView=tab3&amp;tabType=level32</param>
+	             <param name="namespace">/jsp/providerRegistration</param>
+        	</result>
+        	
+        	<result name="back" type="redirectAction">
+	             <param name="actionName">serviceProAllTab?tabView=tab2</param>
+	             <param name="namespace">/jsp/providerRegistration</param>
+        	</result>
+        	
+        	<result name="next" type="redirectAction">
+	             <param name="actionName">serviceProAllTab?tabView=tab4</param>
+	             <param name="namespace">/jsp/providerRegistration</param>
+        	</result>
+        	
+        	<result name="generalSkills" type="redirectAction">
+	            <param name="actionName">serviceProAllTab?tabView=tab3</param>
+	             <param name="namespace">/jsp/providerRegistration</param>
+        	</result>
+        	
+        	<result name="cancel" type="redirectAction">
+	             <param name="actionName">manageUserActionloadUsers</param>
+	            <param name="namespace">/jsp/providerRegistration</param>
+        	</result>
+        	
+        	<result name="updateProfile" type="redirectAction">
+	           <param name="actionName">regDashboarddoSubmitRegistration</param>
+	            <param name="namespace">/jsp/providerRegistration</param>
+        	</result>
+		</action>
+		
+		
+		 <action name="resourceSkillAssignAction*" class="resourceSkillAssignAction" method="{1}" >
+			<result name="success">/jsp/providerRegistration/modules/tab_resourceSkillAssign.jsp</result>
+			<result name="error">/jsp/providerRegistration/Error.jsp</result>	
+		
+			
+        	<result name="input" type="redirectAction">
+	             <param name="actionName">serviceProAllTab?tabView=tab3&amp;tabType=level32</param>
+	             <param name="namespace">/jsp/providerRegistration</param>
+	             <param name="nexturl">jsp/providerRegistration/resourceSkillAssignActiondoInput.action</param>
+        	</result>
+        	
+        
+        	<result name="next" type="redirectAction">
+	           <param name="actionName">serviceProAllTab?tabView=tab4</param>
+	            <param name="namespace">/jsp/providerRegistration</param>
+        	</result>
+        	
+        	<result name="prev" type="redirectAction">
+	           <param name="actionName">serviceProAllTab?tabView=tab2</param>
+	            <param name="namespace">/jsp/providerRegistration</param>
+        	</result>
+        	
+        	<result name="nextSkill" type="redirectAction">
+	            <param name="actionName">serviceProAllTab?tabView=tab3&amp;tabType=level32</param>
+	             <param name="namespace">/jsp/providerRegistration</param>
+	       	</result>
+        	
+        	<result name="backToGeneralSkills" type="redirectAction">
+	            <param name="actionName">serviceProAllTab?tabView=tab3</param>
+	             <param name="namespace">/jsp/providerRegistration</param>
+        	</result>
+        	
+        	<result name="cancel" type="redirectAction">
+	             <param name="actionName">manageUserActionloadUsers</param>
+	            <param name="namespace">/jsp/providerRegistration</param>
+        	</result>
+        	
+		</action>
+		
+		 
+     </package>
+</struts>

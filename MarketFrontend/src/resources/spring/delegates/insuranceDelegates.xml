@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<bean id="insuranceTypeMapper" class="com.newco.marketplace.web.utils.InsuranceTypeMapper" scope="prototype"/>
+	<bean id="insuranceListMapper" class="com.newco.marketplace.web.utils.InsuranceListMapper" scope="prototype"/>
+
+	<!-- Start Delegate  Loading -->
+	<bean name="insuranceTypeDelegate" class="com.newco.marketplace.web.delegatesImpl.provider.InsuranceTypeDelegateImpl">
+		<constructor-arg index="0" ref="insuranceTypePolicyBOImpl"/>  
+		<constructor-arg index="1" ref="insuranceTypeMapper"/> 
+	</bean>
+	<bean name="insuranceDelegate" class="com.newco.marketplace.web.delegatesImpl.provider.InsuranceDelegateImpl">
+		<constructor-arg index="0" ref="insurancePolicyBOImpl"/>
+		<constructor-arg index="1" ref="insuranceMapper"/>
+		<constructor-arg index="2" ref="insuranceListMapper"/>
+		    <property name="iInsurancePolicyBO">
+				<ref bean="insuranceBOAOP"/>
+		</property>
+	</bean>
+	
+	<!-- End Delegate  Loading -->	
+	
+	<!-- Start DTO  Loading -->
+	<bean id="insurancePolicyDto" class="com.newco.marketplace.web.dto.provider.InsurancePolicyDto" scope="prototype"/>
+	<bean id="insuranceInfoDto" class="com.newco.marketplace.web.dto.provider.InsuranceInfoDto" scope="prototype"/>
+	<!-- End DTO  Loading -->
+	
+	<bean id="insuranceMapper" class="com.newco.marketplace.web.utils.InsuranceMapper" scope="prototype"/>
+	
+	
+</beans>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<!-- transaction context -->
+	<import resource="classpath:spring/mainDSTransactionContext.xml" />
+	<import resource="classpath:spring/financeDSTransactionContext.xml" />
+	<import resource="classpath:spring/mainJpaTransactionContext.xml" />
+	<import resource="classpath:spring/quartzSPNTRTransactionContext.xml" />
+
+	<!-- beans from other modules -->
+	<import resource="classpath:resources/spring/backendApplicationContext.xml" />
+	<import resource="classpath:resources/spring/documentAppContext.xml" />
+	<import resource="classpath:spring/routingRulesAppContext.xml" />
+	<import resource="classpath:spring/stagingApplicationContext.xml" />
+	<import resource="classpath:spring/tieredRouteQuartzConfig.xml" />
+
+	<!-- beans from backend -->
+	<!-- including backendApplicationContext.xml instead of all these
+	<import resource="classpath:resources/spring/stagingBeans.xml" />
+	<import resource="classpath:resources/spring/soIncident.xml" />
+	<import resource="classpath:resources/spring/survey.xml" />
+	<import resource="classpath:resources/spring/serviceOrder.xml" />
+	<import resource="classpath:resources/spring/soReschedulingContext.xml" />
+	<import resource="classpath:resources/spring/batchProcessContext.xml" />
+	<import resource="classpath:resources/spring/message.xml" />
+	<import resource="classpath:resources/spring/contact.xml" />
+	<import resource="classpath:resources/spring/buyer.xml" />
+	<import resource="classpath:resources/spring/vendorResource.xml" />
+	<import resource="classpath:resources/spring/soSearch.xml" />
+	<import resource="classpath:resources/spring/creditCardContext.xml" />
+	<import resource="classpath:resources/spring/location.xml" />
+	<import resource="classpath:resources/spring/providerSearch.xml" />
+	<import resource="classpath:resources/spring/cachemanagerContext.xml" />
+	<import resource="classpath:resources/spring/pagination.xml" />
+	<import resource="classpath:resources/spring/aopAdviceContext.xml" />
+	<import resource="classpath:resources/spring/dashboardContext.xml" />
+	<import resource="classpath:resources/spring/alert.xml" />
+	<import resource="classpath:resources/spring/lookup.xml" />
+	<import resource="classpath:resources/spring/document.xml" />
+	<import resource="classpath:resources/spring/auditBeans.xml" />
+	<import resource="classpath:resources/spring/financeManager.xml" />
+	<import resource="classpath:resources/spring/resourceBeans.xml" />
+	<import resource="classpath:resources/spring/resourceSchedule.xml" />
+	<import resource="classpath:resources/spring/powerBuyerBeans.xml" />
+	<import resource="classpath:resources/spring/wsQueue.xml" />
+	<import resource="classpath:resources/spring/soEvent.xml" />
+	<import resource="classpath:resources/spring/registrationBeans.xml" />
+	<import resource="classpath:resources/spring/emailBeans.xml" />
+	<import resource="classpath:resources/spring/activityRegistryBeans.xml" />
+	<import resource="classpath:resources/spring/generalInofBeans.xml" />
+	<import resource="classpath:resources/spring/insuranceBeans.xml" />
+	<import resource="classpath:resources/spring/marketPlaceBeans.xml" />
+	<import resource="classpath:resources/spring/onsitevisit.xml" />
+	<import resource="classpath:resources/spring/buyerSOTemplate.xml" />
+	<import resource="classpath:resources/spring/manageUserBeans.xml" />
+	<import resource="classpath:resources/spring/selectProviderNetworkBeans.xml" />
+	<import resource="classpath:resources/spring/fullfillmentContext.xml" />
+	<import resource="classpath:resources/spring/isoMessageBeans.xml" />
+	<import resource="classpath:resources/spring/spring-jms.xml" />
+	<import resource="classpath:resources/spring/providerSkillsTree.xml" />
+	<import resource="classpath:resources/spring/cheetahEmailContext.xml" />
+	<import resource="classpath:resources/spring/serviceOrderGroup.xml" />
+	<import resource="classpath:resources/spring/adminTripChargeContext.xml" />
+	<import resource="classpath:resources/spring/adminEmailContext.xml" />
+	<import resource="classpath:resources/spring/promo.xml" />
+	<import resource="classpath:resources/spring/clientBeans.xml" />
+	<import resource="classpath:resources/spring/forgetUsernameBeans.xml" />
+	 -->
+
+	<!-- beans in ws -->
+	<import resource="classpath:resources/spring/wsApplicationContext.xml" />
+	<import resource="classpath:resources/spring/xfire-servlet.xml" />
+
+</beans>

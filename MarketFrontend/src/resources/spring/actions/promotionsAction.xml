@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<bean id="promoAction"  class="com.newco.marketplace.web.action.simple.PromotionAction" scope="prototype">
+		<property name="serviceOrderBo">
+                <ref bean="soBOAOP"/>
+        </property>	
+        <property name="promoBO">
+			<ref bean="promoBO" />
+		</property>
+		 <property name="delegate">
+			<ref bean="soDetailsManager" />
+		</property>
+	</bean>
+	
+</beans>

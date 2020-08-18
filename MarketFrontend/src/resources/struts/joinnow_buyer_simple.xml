@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+
+    <package name="joinnow_buyer_simple" extends="ServiceLiveBase">
+    	<default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+		<action name="joinNowBuyerSimpleAction" class="joinNowBuyerAction">
+			<result name="success">/jsp/public/registration/join_now_simple.jsp</result>						
+		</action>
+		 </package>
+</struts>
+		

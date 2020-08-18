@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="user_auth_profile">
+	<typeAlias alias="userAuthProfile" type="com.newco.marketplace.vo.apiUserProfile.UserProfileData"/>	
+	<typeAlias alias="locationDetails" type="com.newco.marketplace.vo.apiUserProfile.LocationResponseDate"/>	
+	<typeAlias alias="userProfileFirmDetails" type="com.newco.marketplace.vo.apiUserProfile.FirmDetailsVO"/>	
+	<typeAlias alias="userAuthleadProfileDetails" type="com.newco.marketplace.vo.leadprofile.LeadProfileDetailsVO"/>	
+
+	<resultMap id="locationResultMap" class="locationDetails">
+		<result property="locType" column="locType" />
+		<result property="street1" column="street1" />
+		<result property="street2" column="street2" />
+		<result property="aptNo" column="aptNo" />
+		<result property="city" column="city" />
+		<result property="state" column="state" />
+		<result property="country" column="country" />
+		<result property="zip" column="zip" />
+	</resultMap>
+	<select id="user_auth_profile.query" parameterClass="java.lang.String" resultClass="userAuthProfile">
+			SELECT 
+				userpro.user_name as userName,
+				userpro.password as password,
+				userpro.role_id as roleId,
+				ur.role_name AS userRoleType,
+				userpro.contact_id as contactId,
+				c.first_name as firstName,
+				c.last_name as lastName,
+				c.phone_no as phoneNo,
+				c.mobile_no as mobileNo,
+				c.email as email,
+				c.email_alt as emailAlt
+			FROM user_profile userpro,contact c,user_roles ur
+			WHERE userpro.contact_id = c.contact_id
+			AND ur.role_id = userpro.role_id
+			AND userpro.user_name = #userName#
+			AND userpro.active_ind = 1;
+	</select>
+	<select id="user_location_details.query" parameterClass="java.lang.Integer" resultMap="locationResultMap">
+		SELECT 
+			l.street_1 as street1,
+			l.street_2 as street2,
+			l.apt_no as aptNo,
+			l.city as city,
+			l.state_cd as state,
+			l.country as country,
+			lult.descr AS locType,
+			l.zip as zip
+		FROM vendor_resource vr,vendor_location vl,location l,lu_location_type lult
+		WHERE vr.vendor_id = vl.vendor_id
+		AND l.locn_id = vl.locn_id
+		AND lult.id = l.locn_type_id
+		AND vr.contact_id = #contactId#
+	</select>
+	<select id="firm_details.query" parameterClass="java.lang.Integer" resultClass="userProfileFirmDetails">
+		SELECT 
+			vh.vendor_id AS vendorId,
+			vr.resource_id AS resourceId,
+			vh.business_name AS businessName,
+			vh.primary_industry_id AS primaryIndustryId,
+			lupi.descr AS primaryIndustryDesc
+		FROM vendor_hdr vh, vendor_resource vr,lu_primary_industry lupi
+		WHERE  vh.vendor_id = vr.vendor_id
+		AND lupi.primary_industry_id = vh.primary_industry_id
+		AND vr.contact_id = #contactId#
+	</select>
+	<select id="lead_profile_details.query" parameterClass="java.lang.Integer" resultClass="userAuthleadProfileDetails">
+		SELECT 
+			vlp.lms_partner_id AS leadPartnerId,
+			vlp.wf_state_id    AS leadStatusId,
+			wf.wf_descr	   AS leadStatusDesc	
+		FROM vendor_lead_profile vlp,wf_states wf
+		WHERE wf.wf_state_id = vlp.wf_state_id
+		AND vlp.vendor_id = #vendorId#
+	</select>
+	<select id="launch_market_ind.query" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		select count(1) from lu_lead_launch_market where state_cd= #stateCd#
+	</select>
+</sqlMap>

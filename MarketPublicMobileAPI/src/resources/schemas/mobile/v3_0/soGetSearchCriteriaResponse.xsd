@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified" >
+	<xs:include schemaLocation="../../common.xsd" />
+	<xs:element name="searchCriteriaResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="results"/>
+				<xs:element name="searchCriterias" type="searchCriteriasType" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:decimal"/>
+		</xs:complexType>
+		</xs:element>
+		
+	<xs:complexType name="searchCriteriasType">
+	<xs:sequence>				
+		<xs:element name="markets" type="marketsType" minOccurs="0"/>
+		<xs:element name="serviceProviders" type="serviceProvidersType" minOccurs="0"/>
+		<xs:element name="orderStatuses" type="orderStatusesType" minOccurs="0"/>		
+	</xs:sequence>
+	</xs:complexType>	
+	
+	<xs:complexType name="marketsType">
+	<xs:sequence>				
+		<xs:element name="market" type="marketType" minOccurs="0" maxOccurs="unbounded"/>				
+	</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="marketType">
+	<xs:sequence>				
+		<xs:element name="id" type="xs:integer" minOccurs="0"/>	
+		<xs:element name="descr" type="xs:string" minOccurs="0"/>				
+	</xs:sequence>
+	</xs:complexType>	
+	
+	<xs:complexType name="serviceProvidersType">
+	<xs:sequence>				
+		<xs:element name="serviceProvider" type="serviceProviderType" minOccurs="0"  maxOccurs="unbounded"/>				
+	</xs:sequence>
+	</xs:complexType>	
+	
+	<xs:complexType name="serviceProviderType">
+	<xs:sequence>				
+		<xs:element name="id" type="xs:integer" minOccurs="0"/>	
+		<xs:element name="descr" type="xs:string" minOccurs="0"/>			
+	</xs:sequence>
+	</xs:complexType>	
+	
+	<xs:complexType name="orderStatusesType">
+	<xs:sequence>				
+		<xs:element name="orderStatus" type="orderStatusType" minOccurs="0"  maxOccurs="unbounded"/>				
+	</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="orderStatusType">
+	<xs:sequence>				
+		<xs:element name="id" type="xs:integer" minOccurs="0"/>	
+		<xs:element name="descr" type="xs:string" minOccurs="0"/>	
+		<xs:element name="subStatuses" type="subStatusesType" minOccurs="0"  maxOccurs="unbounded"/>				
+	</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="subStatusesType">
+	<xs:sequence>				
+		<xs:element name="subStatus" type="subStatusType" minOccurs="0" maxOccurs="unbounded"/>				
+	</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="subStatusType">
+	<xs:sequence>				
+		<xs:element name="id" type="xs:integer" minOccurs="0"/>	
+		<xs:element name="descr" type="xs:string" minOccurs="0"/>			
+	</xs:sequence>
+	</xs:complexType>	
+	
+</xs:schema>

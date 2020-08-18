@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="mobileSOManageSchedule">
+
+<typeAlias alias="updateApptTimeVO" 
+		type="com.newco.marketplace.vo.mobile.UpdateApptTimeVO" />
+<typeAlias alias="timeOnSiteSO"
+		type="com.newco.marketplace.vo.mobile.ServiceOrder" />
+<typeAlias alias="timeOnSiteVisitVO" 
+		type="com.newco.marketplace.vo.mobile.MobileSOOnsiteVisitVO" />
+<typeAlias alias="soTripVO" 
+		type="com.newco.marketplace.vo.mobile.v2_0.SOTripVO" />		
+	<resultMap class="timeOnSiteSO" id="timeOnSiteSO.resultsmap">
+		<result property="soId" column="so_id" />
+		<result property="buyerId" column="buyer_id" />
+		<result property="acceptedDate" column="accepted_date" />
+		
+		<result property="creatorUserName" column="creator_user_name" />
+		<result property="createdDate" column="created_date" />
+		<result property="modifiedDate" column="modified_date" />
+		<result property="modifiedBy" column="modified_by" />
+
+		<result property="wfStateId" column="wf_state_id" />
+		<result property="wfSubStatusId" column="so_substatus_id" />
+		
+		<result property="serviceDate1" column="service_date1" />
+		<result property="serviceDate2" column="service_date2" />
+		<result property="serviceTimeStart" column="service_time_start" />
+		<result property="serviceTimeEnd" column="service_time_end" />
+		<result property="serviceLocationTimeZone" column="service_locn_time_zone"/>
+		<result property="rescheduleServiceDate1" column="resched_service_date1" />
+		<result property="rescheduleServiceDate2" column="resched_service_date2" />
+		<result property="rescheduleServiceTimeStart" column="resched_service_time_start" />
+		<result property="rescheduleServiceTimeEnd" column="resched_service_time_end" />
+		
+		<result property="acceptedVendorId" column="accepted_vendor_id" />
+		<result property="acceptedResourceId" column="accepted_resource_id" />
+	</resultMap>
+	<select id="mobileSOManageSchedule.onSiteVisit.so.query" resultMap="timeOnSiteSO.resultsmap">
+		select so_id, buyer_id, accepted_date, creator_user_name, created_date, modified_date, modified_by,
+		wf_state_id,so_substatus_id, service_date1, service_date2, service_time_start, service_time_end,
+		service_locn_time_zone, resched_service_date1, resched_service_date2, resched_service_time_start,
+		resched_service_time_end, accepted_vendor_id, accepted_resource_id from so_hdr where so_id = #soId#
+	</select>
+
+	<select id="mobileSOManageSchedule.onSiteVisit.vendorResource.query" 
+		parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		SELECT vendor_id FROM vendor_resource WHERE (delete_ind IS NULL OR delete_ind != 1) and resource_id = #resourceId#
+	</select>
+	
+	<resultMap class="timeOnSiteVisitVO" id="timeOnSiteVisitVO.resultsmap">
+		<result property="visitId" column="visit_id"/>
+		<result property="soId" column="so_id"/>
+		<result property="resourceId" column="resource_id"/>
+		<result property="arrivalDate" column="arrival_date"/>
+		<result property="departureDate" column="departure_date"/>		
+		<result property="arrivalInputMethod" column="arrival_input_method"/>
+		<result property="departureInputMethod" column="departure_input_method"/>
+		<result property="departureResourceId" column="departure_resource_id"/>
+		<result property="departureCondition" column="departure_condition"/>
+		<result property="createdDate" column="created_date"/>
+		<result property="modifiedDate" column="modified_date"/>
+		<result property="ivrcreatedate" column="ivr_create_date"/>
+		
+		<result property="deleteInd" column="delete_ind"/>
+		<result property="arrivalLatitude" column="arrival_latitude"/>
+		<result property="arrivalLongitude" column="arrival_longitude"/>
+		<result property="departureLatitude" column="departure_latitude"/>
+		<result property="departureLongitude" column="departure_longitude"/>		
+	</resultMap>
+	
+	
+	<resultMap class="soTripVO" id="soTripVO.resultsmap">
+		<result property="tripStartVisitId" column="trip_start_visit_id"/>
+		<result property="soId" column="so_id"/>
+		<result property="tripNo" column="trip_no"/>
+		<result property="tripStatus" column="trip_status"/>
+	</resultMap>
+	
+	
+	
+	<select id="mobileSOManageSchedule.onSiteVisit.latestArrival.query" parameterClass="java.lang.String" resultMap="timeOnSiteVisitVO.resultsmap">
+		SELECT * FROM so_onsite_visit WHERE (delete_ind IS NULL OR delete_ind != 1) AND arrival_date IS NOT NULL AND so_id = #soId#
+		ORDER BY visit_id DESC
+	</select>
+	
+	<insert id="mobileSOManageSchedule.onSiteVisit.insert" parameterClass="timeOnSiteVisitVO">
+		insert into so_onsite_visit 
+		(so_id, resource_id, arrival_date, arrival_input_method, departure_date, departure_resource_id, departure_input_method, departure_condition, created_date, modified_date, ivr_create_date,
+		delete_ind, arrival_latitude, arrival_longitude, departure_latitude, departure_longitude,departure_reason)
+		values
+		(#soId#, #resourceId#, #arrivalDate#, #arrivalInputMethod#, #departureDate#, #departureResourceId#, #departureInputMethod#, #departureCondition#, #createdDate#, #modifiedDate#, #ivrcreatedate#,
+		#deleteInd#, #arrivalLatitude#, #arrivalLongitude#, #departureLatitude#, #departureLongitude#,#departureReason#)		
+		 <selectKey resultClass="long" > 
+		   select LAST_INSERT_ID() as value
+		 </selectKey>
+	</insert>
+	
+	<update id="mobileSOManageSchedule.onSiteVisit.update" parameterClass="timeOnSiteVisitVO">
+		update so_onsite_visit
+		<dynamic prepend="set">
+			<isNotNull prepend="," property="departureDate">departure_date=#departureDate#</isNotNull>
+			<isNotNull prepend="," property="departureInputMethod">departure_input_method=#departureInputMethod#</isNotNull>
+			<isNotNull prepend="," property="departureResourceId">departure_resource_id=#departureResourceId#</isNotNull>
+			<isNotNull prepend="," property="departureCondition">departure_condition=#departureCondition#</isNotNull>
+			<isNotNull prepend="," property="modifiedDate">modified_date=#modifiedDate#</isNotNull>
+			<isNotNull prepend="," property="departureLatitude">departure_latitude=#departureLatitude#</isNotNull>
+			<isNotNull prepend="," property="departureLongitude">departure_longitude=#departureLongitude#</isNotNull>
+			<isNotNull prepend="," property="departureReason">departure_reason=#departureReason#</isNotNull>
+		</dynamic>		
+		<dynamic prepend="where">
+			<isNotNull prepend="and " property="visitId">#visitId#=visit_id</isNotNull>
+			<isNotNull prepend="and " property="soId">#soId#=so_id</isNotNull>
+			<isNotNull prepend="and " property="resourceId">#resourceId#=resource_id</isNotNull>
+			<isNotNull prepend="and " property="arrivalDate">#arrivalDate#=arrival_date</isNotNull>	
+		</dynamic>		
+	</update>
+	
+	<update id="mobileSOManageSchedule.updateAppointmentTime.query" parameterClass="updateApptTimeVO">
+		UPDATE so_hdr SET 
+			service_time_start =#serviceTimeStart#
+		<isNotNull property="serviceTimeEnd" prepend=",">
+			service_time_end =#serviceTimeEnd#
+		</isNotNull>
+		<isNotNull property="startDate" prepend=",">
+			service_date1=#startDate#
+		</isNotNull>
+		<isNotNull property="endDate" prepend=",">
+			service_date2 = #endDate#
+		</isNotNull>
+		where so_id = #soId#
+	</update>
+	
+	<update id="mobileSOManageSchedule.updateSOTrip.query" parameterClass="updateApptTimeVO">
+		UPDATE so_trip SET 
+			current_appt_start_time =#serviceTimeStart#
+		<isNotNull property="serviceTimeEnd" prepend=",">
+			current_appt_end_time =#serviceTimeEnd#
+		</isNotNull>
+		<isNotNull property="startDate" prepend=",">
+			current_appt_start_date=#startDate#
+		</isNotNull>
+		<isNotNull property="endDate" prepend=",">
+			current_appt_end_date = #endDate#
+		</isNotNull>
+		, modified_date = NOW()
+		where so_id = #soId#
+		and trip_no = #tripNo#
+	</update>
+	
+	<insert id="mobileSOManageSchedule.insertSchedule.query" parameterClass="updateApptTimeVO">
+		INSERT into so_schedule(so_id,source,schedule_status_id,resp_reason_id,vendor_id,customer_appt_confirm_ind,expected_time_of_arrival,created_date,modified_date,modified_by) 
+		values(#soId#,#source#,#scheduleStatusId#,#reasonId#,#providerId#,#customerConfirmedInd#,#eta#,#modifiedDate#,#modifiedDate#,#modifiedByName#)
+	</insert> 
+	
+	<update id="mobileSOManageSchedule.updateSchedule.query" parameterClass="updateApptTimeVO">
+		UPDATE so_schedule SET 
+			customer_appt_confirm_ind = #customerConfirmedInd#
+			<isNotNull property="scheduleStatusId" prepend=",">
+				schedule_status_id = #scheduleStatusId#
+			</isNotNull>
+			<isNotNull property="eta" prepend=",">
+				expected_time_of_arrival = #eta#
+			</isNotNull>
+			<isNotNull property="reasonId" prepend=",">
+				resp_reason_id = #reasonId#
+			</isNotNull>
+			<isNotNull property="source" prepend=",">
+				source = #source#
+			</isNotNull>
+			<isNotNull property="modifiedDate" prepend=",">
+				modified_date = #modifiedDate#
+			</isNotNull>
+			<isNotNull property="modifiedByName" prepend=",">
+				modified_by = #modifiedByName#
+			</isNotNull>
+			where so_id = #soId#
+	</update>
+	
+	<select id="mobileSOManageSchedule.scheduleStatusId.query" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT IFNULL(schedule_status_id,0) FROM so_schedule WHERE so_id=#soId#
+	</select>
+
+	<insert id="mobileSOManageSchedule.insertPrecallhistory.query" parameterClass="updateApptTimeVO">
+		INSERT into so_schedule_history(so_id,source,schedule_status_id,resp_reason_id,vendor_id,customer_appt_confirm_ind,expected_time_of_arrival,created_date,modified_date,modified_by) 
+		values(#soId#,#source#,#scheduleStatusId#,#reasonId#,#providerId#,#customerConfirmedInd#,#eta#,#modifiedDate#,#modifiedDate#,#modifiedByName#)
+	</insert> 
+	
+	<select id="mobileSOManageSchedule.fetchServiceDates.query" parameterClass="java.lang.String" resultClass="updateApptTimeVO">
+		SELECT s.service_date1 AS startDate,
+		s.service_date2 AS endDate,
+		s.service_time_start AS serviceTimeStart,
+		s.service_time_end AS serviceTimeEnd,
+		s.service_locn_time_zone AS zone,
+		b.min_time_window AS minTimeWindow,
+		b.max_time_window AS maxTimeWindow,
+		s.service_date_type_id AS serviceDateType,
+		s.wf_state_id AS wfStateId
+		FROM so_hdr s 
+		JOIN buyer b ON s.buyer_id = b.buyer_id 
+		WHERE so_id = #soId#
+	</select>
+	
+	<select id="mobileSOManageSchedule.fetchSOStatus.query" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT wf_state_id FROM so_hdr WHERE so_id = #soId#
+	</select>
+	
+	<select id="mobileSOManageSchedule.fetchSOtrip.query" parameterClass="java.lang.String" resultMap="soTripVO.resultsmap">
+		SELECT * FROM so_trip WHERE so_id = #soId# ORDER BY trip_no DESC LIMIT 1;
+	</select>
+	
+	<select id="mobileSOManageSchedule.onSiteVisit.latestArrivalId.query" parameterClass="java.lang.String" resultClass="java.lang.Long">
+		SELECT MAX(visit_id) FROM so_onsite_visit WHERE (delete_ind IS NULL OR delete_ind != 1) 
+		AND arrival_date IS NOT NULL AND arrival_input_method = 2 AND so_id = #soId#;
+	</select>
+	
+	<select id="mobileSOManageSchedule.validateTrip.query" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT so_trip_id FROM so_trip WHERE so_id = #soId# AND trip_status ='OPEN' AND trip_no = #tripNo#;
+	</select>
+	
+	
+	<insert id="mobileSOManageSchedule.soTrip.insert" parameterClass="soTripVO">
+		INSERT INTO so_trip 
+		(so_id, trip_no,trip_status, trip_start_visit_id,trip_start_source,
+		current_appt_start_date,current_appt_end_date,current_appt_start_time,
+		current_appt_end_time,created_date,created_by,modified_by,revisit_needed_created_by)
+		VALUES
+		(#soId#, #tripNo#,#tripStatus#,#tripStartVisitId#,#tripStartSource#,#currentApptStartDate#,
+		#currentApptEndDate#,#currentApptStartTime#,#currentApptEndTime#,NOW(),#createdBy#,#modifiedBy#,#revisitNeededCreatedBy#)		
+		 <selectKey resultClass="java.lang.Integer" > 
+		   select LAST_INSERT_ID() as value
+		 </selectKey>
+	</insert>
+	
+	<update id="mobileSOManageSchedule.soTrip.update" parameterClass="soTripVO">
+		update so_trip
+		<dynamic prepend="set">
+			<isNotNull prepend="," property="tripStartVisitId">trip_start_visit_id=#tripStartVisitId#</isNotNull>
+			<isNotNull prepend="," property="currentApptStartDate">current_appt_start_date=#currentApptStartDate#</isNotNull>
+			<isNotNull prepend="," property="currentApptEndDate">current_appt_end_date=#currentApptEndDate#</isNotNull>
+			<isNotNull prepend="," property="currentApptStartTime">current_appt_start_time=#currentApptStartTime#</isNotNull>
+			<isNotNull prepend="," property="currentApptEndTime">current_appt_end_time=#currentApptEndTime#</isNotNull>
+			<isNotNull prepend="," property="modifiedBy">modified_by=#modifiedBy#</isNotNull>
+			<isNotNull prepend="," property="tripEndVisitId">trip_end_visit_id=#tripEndVisitId#</isNotNull>
+			<isNotNull prepend="," property="tripEndSource">trip_end_source=#tripEndSource#</isNotNull>
+			<isNotNull prepend="," property="tripStatus">trip_status=#tripStatus#</isNotNull>
+		</dynamic>		
+		<dynamic prepend="where">
+			<isNotNull prepend="and " property="tripNo">#tripNo#=trip_no</isNotNull>
+			<isNotNull prepend="and " property="soId">#soId#=so_id</isNotNull>
+		</dynamic>		
+	</update>
+</sqlMap>

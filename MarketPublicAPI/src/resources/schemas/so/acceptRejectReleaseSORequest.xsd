@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:include schemaLocation="../common.xsd" />
+  <xs:element name="acceptRejectReleaseSORequest">
+      <xs:complexType>
+      <xs:sequence>
+      <xs:element name="identification"	type="IdentificationType" />
+        <xs:element name="type" type="types"/>
+        <xs:element name="description" type="xs:string" minOccurs="0"/>
+        <xs:element name="rejectReasonId" type="rejectReasonIdEnum" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+   <xs:complexType name="IdentificationType">
+		<xs:sequence>
+			<xs:element name="id" type="xs:integer" />
+		</xs:sequence>
+		<xs:attribute name="type" type="identificationTypeEnum"
+			use="required" />
+	</xs:complexType>
+  <xs:simpleType name="types">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value='Accept'/>
+			<xs:enumeration value='Reject'/>
+			<xs:enumeration value='Release'/>
+		</xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="rejectReasonIdEnum">
+		<xs:restriction base="xs:int">
+			<xs:enumeration value='1'/> <!-- Spend limit too low -->
+			<xs:enumeration value='2'/> <!-- Spend limit does not match scope -->
+			<xs:enumeration value='3'/> <!-- Service scope is unclear --> 
+			<xs:enumeration value='4'/> <!-- Service location too far -->
+			<xs:enumeration value='5'/> <!-- Schedule conflict  -->
+			<xs:enumeration value='6'/> <!-- Other -->
+		</xs:restriction>
+  </xs:simpleType>
+ 
+</xs:schema>

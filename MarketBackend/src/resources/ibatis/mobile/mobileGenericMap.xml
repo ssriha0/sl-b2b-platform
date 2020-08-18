@@ -1,0 +1,2564 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="mobileGeneric">
+
+<typeAlias alias="reasoncodeVO" type="com.newco.marketplace.dto.vo.reasonCode.ReasonCodeVO"/>
+<typeAlias alias="mobileSearchCriteriaVO" type="com.newco.marketplace.vo.mobile.v2_0.SOSearchCriteriaVO"/>
+<typeAlias alias="mobileSearchResultVO" type="com.newco.marketplace.vo.mobile.v2_0.SOSearchResultVO"/>
+<typeAlias alias="reportProblemVO" type="com.newco.marketplace.api.beans.so.reportAProblem.ReportProblemVO"/>
+<typeAlias alias="assignVO" type="com.newco.marketplace.api.beans.so.assignSO.AssignVO"/>
+<typeAlias alias="requestBidVO" type="com.newco.marketplace.api.mobile.beans.vo.RequestBidVO"/>
+<typeAlias alias="rescheduleVO" type="com.newco.marketplace.vo.ordermanagement.so.RescheduleVO"/>
+<typeAlias alias="so" type="com.newco.marketplace.dto.vo.serviceorder.ServiceOrder" />
+<typeAlias alias="providerParamVO" type="com.newco.marketplace.api.mobile.beans.vo.ProviderParamVO"/>
+<typeAlias alias="providerSOSearchVO" type="com.newco.marketplace.vo.mobile.ProviderSOSearchVO"/>
+<typeAlias alias="filtersVO" type="com.newco.marketplace.dto.vo.serviceorder.FiltersVO" />
+<typeAlias alias="filterCriteriaVO" type="com.newco.marketplace.dto.vo.serviceorder.FilterCriteriaVO" />
+<typeAlias alias="recievedOrdersVO" type="com.newco.marketplace.api.mobile.beans.vo.RecievedOrdersVO"/>
+<typeAlias alias="getSODetailsVO" type="com.newco.marketplace.api.beans.so.soDetails.vo.ServiceOrderDetailsVO"/>
+<typeAlias alias="providerVO" type="com.newco.marketplace.api.beans.so.soDetails.vo.ProviderVO"/>
+<typeAlias alias="buyerReferenceVO" type="com.newco.marketplace.api.beans.so.soDetails.vo.BuyerRefVO"/>
+<typeAlias alias="soServiceLocationVO" type="com.newco.marketplace.api.beans.so.soDetails.vo.ServiceLocationVO"/>
+<typeAlias alias="soAltServiceLocationVO" type="com.newco.marketplace.api.beans.so.soDetails.vo.AlternateServiceLocationVO"/>
+<typeAlias alias="buyerDataVO" type="com.newco.marketplace.api.beans.so.soDetails.vo.BuyerVO"/>
+<typeAlias alias="tasksVO" type="com.newco.marketplace.api.beans.so.soDetails.vo.TaskDetailVO"/>
+<typeAlias alias="docmntVO" type="com.newco.marketplace.api.beans.so.soDetails.vo.DocumentDetailsVO"/>
+<typeAlias alias="orderNotesVO" type="com.newco.marketplace.api.beans.so.soDetails.vo.NoteVO"/>
+<typeAlias alias="supportNoteVO" type="com.newco.marketplace.api.beans.so.soDetails.vo.SupportNoteVO"/>
+<typeAlias alias="mobilePartsVO" type="com.newco.marketplace.api.beans.so.soDetails.vo.PartVO"/>
+<typeAlias alias="pickUpLocnVO" type="com.newco.marketplace.api.beans.so.soDetails.vo.PickUpLocationVO"/>
+<typeAlias alias="merchandiseDetailsVO" type="com.newco.marketplace.api.beans.so.soDetails.vo.MerchandiseVO"/>
+<typeAlias alias="soAddonsVO" type="com.newco.marketplace.api.beans.so.soDetails.vo.AddOnVO"/>
+<typeAlias alias="soTripsVO" type="com.newco.marketplace.api.beans.so.soDetails.vo.TripVO" />
+<typeAlias alias="tripDetailsVO" type="com.newco.marketplace.api.beans.so.soDetails.vo.SOTripChangeLogVO" />
+<typeAlias alias="invoicePartForGetSOVO" type="com.newco.marketplace.api.beans.so.soDetails.vo.InvoiceVO" />
+<typeAlias alias="invoiceSupplierVO" type="com.newco.marketplace.api.beans.so.soDetails.vo.InvoiceSupplierVO"/>
+<typeAlias alias="latestTripDetailsVO" type="com.newco.marketplace.api.beans.so.soDetails.vo.LatestTripVO"/>
+<typeAlias alias="advanceSearchCriteriaVO" type="com.newco.marketplace.vo.mobile.v2_0.SOAdvanceSearchCriteriaVO"/>
+<typeAlias alias="routedProvider" type="com.newco.marketplace.dto.vo.serviceorder.RoutedProvider"/>
+<typeAlias alias="searchCriteriaVO" type="com.newco.marketplace.api.criteria.vo.SearchCriteriaVO"/>
+<typeAlias alias="soStatusVO" type="com.newco.marketplace.api.criteria.vo.SoStatusVO"/>
+<typeAlias alias="dashBoardVO" type="com.newco.marketplace.api.beans.so.viewDashboard.MobileDashboardVO"/>
+<typeAlias alias="dashboardcountVO" type="com.newco.marketplace.api.beans.so.viewDashboard.DashBoardCountVO"/>
+<typeAlias alias="rescheduleDetailsVO" type="com.newco.marketplace.api.beans.so.soDetails.vo.RescheduleDetailsVO"/>
+<typeAlias alias="providerResultVO" type="com.newco.marketplace.dto.vo.providerSearch.ProviderResultVO"/>
+<typeAlias alias="mobProblemDetailsVO"
+		type="com.newco.marketplace.dto.vo.serviceorder.ProblemResolutionSoVO" />
+<typeAlias alias="estimateVO" type="com.newco.marketplace.dto.vo.EstimateVO"/>
+<typeAlias alias="estimateTaskVO" type="com.newco.marketplace.dto.vo.EstimateTaskVO"/>
+<typeAlias alias="estimateHistoryVO"
+		type="com.newco.marketplace.dto.vo.EstimateHistoryVO" />
+<typeAlias alias="estimateHistoryTaskVO"
+		type="com.newco.marketplace.dto.vo.EstimateHistoryTaskVO" />
+<typeAlias alias="recievedOrdersCriteriasVO" type="com.newco.marketplace.api.mobile.beans.vo.RecievedOrdersCriteriaVO"/>	
+<typeAlias alias="estimateListVO" type="com.newco.marketplace.dto.vo.EstimateVO"/>	
+
+
+	
+<resultMap class="so" id="soMinimalDetails.resultsmap">
+    	<result property="serviceDate1" column="service_date1" />
+		<result property="serviceDate2" column="service_date2" />
+		<result property="serviceTimeStart" column="service_time_start" />
+		<result property="serviceTimeEnd" column="service_time_end" />
+		<result property="serviceLocationTimeZone" column="service_locn_time_zone"/>
+		<result property="actualServiceLocationTimeZone" column="service_locn_time_zone"/>
+		<result property="serviceDateTypeId"
+			column="service_date_type_id" />
+		<result property="acceptedResourceId"
+			column="accepted_resource_id" />
+	</resultMap>
+
+<resultMap class="filtersVO" id="searchFilter">
+		<result property="filterId" column="search_filter_id" />
+	  	<result property="resourceId" column="resource_id" />
+	  	<result property="filterName" column="filter_name"/>
+	  	<result property="criteriaList" column="search_filter_id" select="query.get.search.filter.criteria"/>
+</resultMap>
+
+<resultMap class="filterCriteriaVO" id="searchFilter.criteria">
+	  	<result property="searchCriteria" column="search_criteria" />
+	  	<result property="searchCriteriaValueId" column="search_criteria_value"/>
+	  	<result property="searchCriteriaValueString" 
+	  	   column="{name=search_criteria,id=search_criteria_value}" select="getValueForId.query"/>
+</resultMap>
+<resultMap class="assignVO" id="soProviderList.resultMap">
+		<result property="soId" column="so_id" />
+	  	<result property="wfStateId" column="wf_state_id" />
+	  	<result property="assignmentType" column="assignment_type"/>
+	  	<result property="acceptedVendorId" column="accepted_vendor_id"/>
+	  	<result property="routedResources" column="so_id" select="getRoutedResourcesList.query"/>
+</resultMap>
+
+<resultMap class="recievedOrdersVO" id="recievedOrdersMap">
+		<result property="soId" column="soId" />
+	  	<result property="resourceId" column="resourceId" />
+	  	<result property="orderType" column="orderType" />
+	  	<result property="soTitle" column="soTitle"/>
+	  	<result property="soStatus" column="soStatus"/>
+	  	<result property="serviceStartDate" column="serviceStartDate"/>
+	  	<result property="serviceEndDate" column="serviceEndDate"/>
+	  	<result property="serviceWindowStartTime" column="serviceWindowStartTime"/>
+	  	<result property="serviceWindowEndTime" column="serviceWindowEndTime"/>
+	  	<result property="timeZone" column="timeZone"/>
+	  	<result property="city" column="city"/>
+	  	<result property="state" column="state"/>
+	  	<result property="zip" column="zip"/>
+	  	<result property="buyerId" column="buyerId"/>
+	  	<result property="buyerName" column="buyerName"/>
+	  	<result property="recievedDate" column="recievedDate"/>
+	  	<result property="spendLimit" column="spendLimit"/>
+	  	<result property="spendLimitParts" column="spendLimitParts"/>
+	  	<result property="followUpFlag" column="followUpFlag"/>
+	  	<result property="routedProvider" column="routedProvider"/>
+	  	<result property="productAvailability" column="productAvailability"/>
+	  	<result property="pickupAddress1" column="pickupAddress1"/>
+	  	<result property="pickupAddress2" column="pickupAddress2"/>	  	
+	  	<result property="pickupCity" column="pickupCity"/>
+	  	<result property="pickupState" column="pickupState"/>
+	  	<result property="pickupZip" column="pickupZip"/>
+	  	<result property="pickupDate" column="pickupDate"/>
+	  	<result property="sealedBidInd" column="sealedBidInd"/>
+	  	<result property="bidRangeMax" column="soId" select="somGrid.bidTab.maxBid" />
+		<result property="bidRangeMin" column="soId" select="somGrid.bidTab.minBid" />
+		<result property="bidCount" column="soId" select="somGrid.bidTab.bidCount" />
+		<result property="currentBid" column="{soId=soId, resourceId=resourceId}" select="somGrid.bidTab.currentBid" />
+</resultMap>
+
+<select id="getValueForId.query" resultClass="java.lang.String">
+    SELECT 
+   <isNotNull property="name">
+		<isEqual property="name" compareValue="MARKET">
+		    market_name AS searchCriteriaValueString FROM lu_market WHERE market_id=#id#
+		</isEqual>
+		<isEqual property="name" compareValue="STATUS">
+		    descr AS  searchCriteriaValueString  FROM lu_wf_states_alias
+            WHERE wf_state_id=#id# AND user_type='Provider'
+		</isEqual>
+		<isEqual property="name" compareValue="SUBSTATUS">
+		    descr AS  searchCriteriaValueString FROM lu_so_substatus
+            WHERE so_substatus_id= #id#
+		</isEqual>
+		<isEqual property="name" compareValue="PROVIDER_RESOURCE">
+		    CONCAT(c.first_name,' ',c.last_name) AS searchCriteriaValueString
+            FROM vendor_resource vr ,contact c WHERE vr.contact_id=c.contact_id
+            AND vr.resource_id=#id#
+		</isEqual>
+		<isEqual property="name" compareValue="ORDER_FLAGGED">
+		   1 AS searchCriteriaValueString
+		</isEqual>
+		<isEqual property="name" compareValue="ORDER_UNASSIGNED">
+		   1 AS searchCriteriaValueString
+		</isEqual>
+		<isEqual property="name" compareValue="APPOINTMENT_TYPE">
+		   1 AS searchCriteriaValueString
+		</isEqual>
+		<isEqual property="name" compareValue="APPOINTMENT_START_DATE">
+		   1 AS searchCriteriaValueString
+		</isEqual>
+		<isEqual property="name" compareValue="APPOINTMENT_END_DATE">
+		   1 AS searchCriteriaValueString
+		</isEqual>
+	</isNotNull>
+</select>
+		<!-- Added for getServiceOrderDetails API V3 with SOs in received status also -->
+	<resultMap class="getSODetailsVO"	id="mobileSODetailsWithReceivedStatus.resultmap">
+		<result property="currentTripNo" column="so_id" select="fetchSOtrip.query" nullValue="0"/>	
+		<result property="latestTrip" column="so_id" select="getLatestTripDetailsWithReceived.query" nullValue="0"/>			
+		<result property="orderDetails.soId" column="so_id" />
+		<result property="orderDetails.soStatus" column="wf_state_id"
+				select="sostatusdescription.query" />
+		<result property="orderDetails.soSubStatus" column="so_substatus_id"
+				select="sosubstatusdescription.query"/>	
+		<result property="orderDetails.buyerTerms" column="buyer_terms_cond" />
+		<result property="orderDetails.overView" column="sow_descr" />
+		<result property="orderDetails.specialInstuctions" column="provider_instr" />
+		<result property="orderDetails.soTitle" column="sow_title" />	
+		<result property="orderDetails.spendLimitLabour" column="spend_limit_labor" />
+		<result property="orderDetails.spendLimitParts" column="spend_limit_parts" />
+		<result property="orderDetails.priceModel" column="price_model" />		
+		<result property="appointment.serviceStartDate" column="service_date1" />
+		<result property="appointment.serviceEndDate" column="service_date2" />			
+		<result property="appointment.timeZone" column="service_locn_time_zone"/>
+	 	<result property="appointment.serviceWindowStartTime" column="service_time_start" />
+		<result property="appointment.serviceWindowEndTime" column="service_time_end" /> 
+		<result property="appointment.scheduleStatus" column="so_id"
+				select="scheduleStatus.query"/>				
+		<result property="provider" column="accepted_resource_id"
+				select="soRoutedResourceDataWithReceived.query" />	
+	    <result property="buyerReferences.buyerReference" column="so_id"
+	            select="buyerReferenceWithReceived.query"/>	
+	   <result property="serviceLocation" column="so_id"
+	            select="soServiceLocationDataWithReceived.query"/>	
+	    <result property="alternateServiceLocation" column="so_id"
+	            select="soAltServiceLoctnDataWithReceived.query"/>
+	    <result property="buyer" column="{buyerId=buyer_id,buyerResId=buyer_resource_id}"
+	            select="buyerDataWithReceived.query"/>
+	    <result property="scope.mainServiceCategory" column="primary_skill_category_id"
+	            select="soMainServiceCategory.query"/>
+	    <result property="scope.tasks.task" column="so_id"
+	            select="taskListWithReceived.query"/>
+	    <result property="documents.maxUploadLimitPerSO" column="buyer_id" select ="maxDocUploadLimit.query"/>
+	    <result property="documents.remaininguploadLimitPerSO" column="so_id" select ="remainingDocSize.query"/>
+		<result property="documents.maxuploadlimitPerDoc" column="buyer_id" select ="docUploadLimit.query"/>
+	   	<result property="documents.document" column="so_id" select ="documentsDataWithReceived.query"/> 
+		<result property="notes.note" column="so_id" select ="soNotesWithReceived.query"/>	
+		<result property="supportNotes.supportNote" column="so_id" select ="soSupportNotesWithReceived.query"/>	
+		<result property="parts.part" column="so_id" select ="fetchParts.excludingMerchandiseWithReceived.query"/>
+		<result property="merchandises.merchandise" column="so_id" select ="fetchMerchandisesWithReceived.query"/>
+		<result property="addonList.addon" column="so_id"
+	            select="addonListWithReceived.query"/>
+	    <result property="tripDetails.trip" column="so_id" select ="fetchSOtripsWithReceived.query"/>
+	    <result property="invoicePartsList.noPartsRequiredInd" column="so_id" select ="fetchInvoicePartInd.query"/>
+	    <result property="invoicePartsList.invoicePart" column="so_id" select ="fetchInvoicePartsWithReceived.query"/>
+	    <result property="followupFlag" column="{soId=so_id,resId=resourceId}" select="fetchSOflag.query" nullValue="0"/>	
+	</resultMap>
+	 <resultMap class="mobilePartsVO" id="parts.excludingMerchandise.withreceived.resultMap">
+	    <result property="partId" column="partId" />
+	    <result property="partName" column="partName" />
+	    <result property="oemNumber" column="oemNumber" />
+	    <result property="orderNumber" column="orderNumber" />
+	    <result property="purchaseOrderNumber" column="purchaseOrderNumber" />
+	    <result property="size" column="size" />
+	    <result property="weight" column="weight" />
+	    <result property="vendorPartNumber" column="vendorPartNumber" />
+	    <result property="qty" column="qty" />
+	    <result property="partStatus" column="partStatus" />
+	    <result property="shippingCarrier" column="shippingCarrier" />
+	    <result property="coreReturnCarrier" column="coreReturnCarrier" />
+	    <result property="partDescription" column="partDescription" />
+	    <result property="additionalPartInfo" column="additionalPartInfo" />
+	    <result property="shippingTrackingNumber" column="shippingTrackingNumber" />
+	    <result property="shipDate" column="shipDate" />
+	    <result property="coreReturnTrackingNumber" column="coreReturnTrackingNumber" />
+	    <result property="coreReturnDate" column="coreReturnDate" />
+	   <!--   <result property="partType" column="partType" /> -->
+	    <result property="pickupLocation" column="so_locn_id=so_locn_id,so_id=so_id" select="pickupLocationWithReceived.query"/>
+    </resultMap>
+      <resultMap class="merchandiseDetailsVO" id="merchandises.WithReceived.resultMap">
+    	<result property="partId" column="partId" />
+	    <result property="manufacturer" column="manufacturer" />
+	    <result property="modelNumber" column="modelNumber" />
+	    <result property="serialNumber" column="serialNumber" />
+    </resultMap>
+    <resultMap class="soTripsVO" id="soTrip.WithReceived.resultMap">
+	  	<result property="tripNo" column="tripNo" />
+	  	<result property="currentApptStartDate" column="currentApptStartDate" nullValue=""/>
+	  	<result property="currentApptEndDate" column="currentApptEndDate" nullValue=""/>
+	  	<result property="currentApptStartTime" column="currentApptStartTime" nullValue=""/>
+	  	<result property="currentApptEndTime" column="currentApptEndTime" nullValue=""/>
+	  	<result property="checkInTime" column="trip_start_visit_id" select="fetchSOCheckIn.query" nullValue=""/>
+	  	<result property="checkOutTime" column="trip_end_visit_id" select="fetchSOCheckOut.query" nullValue=""/>
+	  	<result property="tripStatus" column="tripStatus" />
+	  	<result property="providerName" column="providerName" />
+	  	<result property="tripStartSource" column="tripStartSource" />
+	  	<result property="tripEndSource" column="tripEndSource" />
+	  	<result property="nextApptStartDate" column="nextApptStartDate" nullValue=""/>
+	  	<result property="nextApptEndDate" column="nextApptEndDate" nullValue=""/>
+	  	<result property="nextApptStartTime" column="nextApptStartTime" nullValue=""/>
+	  	<result property="nextApptEndTime" column="nextApptEndTime" nullValue=""/>
+	  	<result property="revisitReason" column="revisitReason" nullValue=""/>
+	  	<result property="workStartedIndicator" column="workStartedIndicator" />
+	  	<result property="merchandiseDeliveredIndicator" column="merchandiseDeliveredIndicator" />
+	  	<result property="revisitComments" column="revisitComments" nullValue=""/>
+	  	<result property="changeLogs.changeLog" column="so_trip_id" select="fetchSOTripDetailsWithReceived.query"/>
+	</resultMap>
+	<resultMap class="tripDetailsVO" id="soTripChangeLog.WithReceived.resultMap">
+		<result property="updatedComponent" column="updatedComponent" />
+		<result property="changeComments" column="changeComments" />
+	</resultMap>
+	<resultMap class="invoicePartForGetSOVO" id="invoicePart.WithReceived.resultMap">
+	  	<result property="invoicePartId" column="invoicePartId" />
+	  	<result property="partCoverage" column="partCoverage" nullValue=""/>
+	  	<result property="partSource" column="partSource" nullValue=""/>
+	  	<result property="partNumber" column="partNumber" nullValue=""/>
+	  	<result property="partDescription" column="partDescription" nullValue=""/>
+	  	<result property="invoiceNumber" column="invoiceNumber" />
+	  	<result property="unitCost" column="unitCost" />
+	  	<result property="retailPrice" column="retailPrice" />
+	  	<result property="qty" column="qty" />
+	  	<result property="nonSearsSource" column="nonSearsSource" nullValue=""/>
+	  	<result property="divisionNumber" column="divisionNumber" nullValue=""/>
+	  	<result property="sourceNumber" column="sourceNumber" nullValue=""/>
+	  	<result property="category" column="category" nullValue=""/>
+	  	<result property="partStatus" column="partStatus" nullValue=""/>
+	  	<result property="isManual" column="isManual" nullValue=""/>
+	  	<result property="invoiceSuppliers.invoiceSupplier" column="invoicePartId" select="fetchInvoicePartsSupplierWithReceived.query"/>
+	  	<result property="invoiceDocuments.document" column="invoicePartId" select="fetchInvoiceDocumentsWithReceived.query"/>
+	</resultMap>
+	  <resultMap class="invoiceSupplierVO" id="invoicePartSupplier.WithReceived.resultMap">
+		<result property="supplierName" column="supplierName" />
+		<result property="address1" column="address1" />
+		<result property="address2" column="address2" />
+		<result property="city" column="city" />
+		<result property="state" column="state" />
+		<result property="zip" column="zip" />
+		<result property="phone" column="phone" />
+		<result property="fax" column="fax" />
+		<result property="latitude" column="latitude" />
+		<result property="longitude" column="longitude" />
+		<result property="distance" column="distance" />
+	</resultMap> 
+	
+	<resultMap class="estimateVO"	id="estimateDetails.resultmap">
+		<result property="estimationId" column="estimation_id"/>	
+		<result property="estimationRefNo" column="reference_no" />
+		<result property="soId" column="so_id" />		
+		
+		<result property="createdBy" column="created_by" />
+		<result property="modifiedDate" column="modified_date" />			
+				
+		<result property="estimationDate" column="estimation_date" />
+		<result property="estimationExpiryDate" column="estimation_expiry_date" />		
+		<result property="resourceId" column="resource_id" />
+		<result property="vendorId" column="vendor_id" />
+		<result property="description" column="description" />
+		<result property="acceptSource" column="accept_source" />
+		<result property="tripCharge" column="trip_charge" />
+		<result property="status" column="status" />
+		<result property="responseDate" column="response_date" />
+		<result property="respondedCustomerName" column="responded_customer_name" />
+		<result property="estimateTasks" column="estimation_id"
+				select="getEstimateTasks.query" />
+		<result property="estimateParts" column="estimation_id"
+				select="getEstimateParts.query" />
+		<result property="estimateOtherEstimateServices" column="estimation_id"
+				select="getEstimateOtherServices.query" />
+		<result property="totalLaborPrice" column="total_labor_price"/>	
+		<result property="totalPartsPrice" column="total_parts_price" />
+		<result property="totalOtherServicePrice" column="total_other_service_price" />
+		<result property="discountType" column="discount_type" />
+		<result property="discountedPercentage" column="discounted_percentage" />
+		<result property="discountedAmount" column="discounted_amount" />	
+		<result property="taxRate" column="tax_rate" />
+		<result property="taxType" column="tax_type" />	
+		<result property="taxPrice" column="tax" />
+		<result property="laborDiscountType" column="labor_discount_type" />
+		<result property="laborDiscountedPercentage" column="labor_discounted_percentage" />
+		<result property="laborDiscountedAmount" column="labor_discounted_amount" />
+		<result property="laborTaxRate" column="labor_tax_rate" />
+		<result property="laborTaxPrice" column="labor_tax_price" />
+		<result property="partsDiscountType" column="parts_discount_type" />
+		<result property="partsDiscountedPercentage" column="parts_discounted_percentage" />
+		<result property="partsDiscountedAmount" column="parts_discounted_amount" />
+		<result property="partsTaxRate" column="parts_tax_rate" />
+		<result property="partsTaxPrice" column="parts_tax_price" />
+		<result property="totalPrice" column="total_price" />			
+		<result property="comments" column="comments"/>
+	 	<result property="logoDocumentId" column="logo_doc_id" />
+	 	<result property="estimateHistoryList" column="estimation_id"
+        		select="getEstimatesHistory.query" />
+        <result property="estimateTasksHistory" column="estimation_id"
+				select="getEstimatesTaskHistoryDetails.query" />
+		<result property="estimatePartsHistory" column="estimation_id"
+				select="getEstimatesPartHistoryDetails.query" />
+		<result property="estimateOtherServicesHistory" column="estimation_id"
+				select="getEstimatesOtherServicesHistoryDetails.query" />
+	</resultMap>
+	
+		<resultMap class="estimateVO"	id="estimateDetailsMain.resultmap">
+		<result property="estimationId" column="estimation_id"/>	
+		<result property="estimationRefNo" column="reference_no" />			
+		<result property="estimationDate" column="estimation_date" />
+		<result property="estimationExpiryDate" column="estimation_expiry_date" />				
+		<result property="resourceId" column="resource_id" />
+		<result property="vendorId" column="vendor_id" />
+		<result property="description" column="description" />
+		<result property="acceptSource" column="accept_source" />
+		<result property="tripCharge" column="trip_charge" />
+		<result property="status" column="status" />
+		<result property="responseDate" column="response_date" />
+		<result property="respondedCustomerName" column="responded_customer_name" />
+		<result property="totalLaborPrice" column="total_labor_price"/>	
+		<result property="totalPartsPrice" column="total_parts_price" />
+		<result property="totalOtherServicePrice" column="total_other_service_price" />
+		<result property="discountType" column="discount_type" />
+		<result property="discountedPercentage" column="discounted_percentage" />
+		<result property="discountedAmount" column="discounted_amount" />	
+		<result property="taxRate" column="tax_rate" />
+		<result property="taxType" column="tax_type" />	
+		<result property="taxPrice" column="tax" />
+		<result property="laborDiscountType" column="labor_discount_type" />
+		<result property="laborDiscountedPercentage" column="labor_discounted_percentage" />
+		<result property="laborDiscountedAmount" column="labor_discounted_amount" />
+		<result property="laborTaxRate" column="labor_tax_rate" />
+		<result property="laborTaxPrice" column="labor_tax_price" />
+		<result property="partsDiscountType" column="parts_discount_type" />
+		<result property="partsDiscountedPercentage" column="parts_discounted_percentage" />
+		<result property="partsDiscountedAmount" column="parts_discounted_amount" />
+		<result property="partsTaxRate" column="parts_tax_rate" />
+		<result property="partsTaxPrice" column="parts_tax_price" />
+		<result property="totalPrice" column="total_price" />			
+		<result property="comments" column="comments"/>
+	 	<result property="logoDocumentId" column="logo_doc_id" />
+	    <result property="createdBy" column="created_by" />	 	
+	</resultMap>
+	
+		<resultMap class="estimateVO"	id="fetchEstimateDetails.resultmap">
+		<result property="estimationId" column="estimation_id"/>	
+		<result property="estimationRefNo" column="reference_no" />			
+		<result property="estimationDate" column="estimation_date" />
+		<result property="estimationExpiryDate" column="estimation_expiry_date" />				
+		<result property="resourceId" column="resource_id" />
+		<result property="vendorId" column="vendor_id" />
+		<result property="description" column="description" />
+		<result property="acceptSource" column="accept_source" />
+		<result property="tripCharge" column="trip_charge" />
+		<result property="status" column="status" />
+		<result property="responseDate" column="response_date" />
+		<result property="respondedCustomerName" column="responded_customer_name" />
+		<result property="estimateTasks" column="estimation_id"
+				select="getEstimateTasks.query" />
+		<result property="estimateParts" column="estimation_id"
+				select="getEstimateParts.query" />
+		<result property="estimateOtherEstimateServices" column="estimation_id"
+				select="getEstimateOtherServices.query" />
+		<result property="totalLaborPrice" column="total_labor_price"/>	
+		<result property="totalPartsPrice" column="total_parts_price" />
+		<result property="totalOtherServicePrice" column="total_other_service_price" />
+		<result property="discountType" column="discount_type" />
+		<result property="discountedPercentage" column="discounted_percentage" />
+		<result property="discountedAmount" column="discounted_amount" />	
+		<result property="taxRate" column="tax_rate" />
+		<result property="taxType" column="tax_type" />	
+		<result property="taxPrice" column="tax" />
+		<result property="laborDiscountType" column="labor_discount_type" />
+		<result property="laborDiscountedPercentage" column="labor_discounted_percentage" />
+		<result property="laborDiscountedAmount" column="labor_discounted_amount" />
+		<result property="laborTaxRate" column="labor_tax_rate" />
+		<result property="laborTaxPrice" column="labor_tax_price" />
+		<result property="partsDiscountType" column="parts_discount_type" />
+		<result property="partsDiscountedPercentage" column="parts_discounted_percentage" />
+		<result property="partsDiscountedAmount" column="parts_discounted_amount" />
+		<result property="partsTaxRate" column="parts_tax_rate" />
+		<result property="partsTaxPrice" column="parts_tax_price" />
+		<result property="totalPrice" column="total_price" />			
+		<result property="comments" column="comments"/>
+	 	<result property="logoDocumentId" column="logo_doc_id" />
+	    <result property="createdBy" column="created_by" />
+	    <result property="status" column="status" /> 	
+	</resultMap>
+	
+	<resultMap class="estimateTaskVO" id="estimateTaks.resultmap">
+	    <result property="itemId" column="item_id"/>	
+	    <result property="taskSeqNumber" column="seq_no"/>
+		<result property="taskName" column="name" />
+		<result property="description" column="description" />
+		<result property="unitPrice" column="unit_price" />
+		<result property="quantity" column="quantity" />
+        <result property="totalPrice" column="total_price" />
+		<result property="additionalDetails" column="additional_details" />
+		<result property="taskType" column="type" />	
+	</resultMap>
+	<resultMap class="estimateTaskVO" id="estimateParts.resultmap">
+	    <result property="itemId" column="item_id"/>		
+	    <result property="partSeqNumber" column="seq_no"/>
+		<result property="partName" column="name" />
+		<result property="partNumber" column="item_number" />
+		<result property="description" column="description" />
+		<result property="unitPrice" column="unit_price" />
+		<result property="quantity" column="quantity" />
+        <result property="totalPrice" column="total_price" />
+		<result property="additionalDetails" column="additional_details" />
+		<result property="taskType" column="type" />			
+	</resultMap>
+	<resultMap class="estimateTaskVO" id="estimateOtherEstimateServices.resultmap">
+	    <result property="itemId" column="item_id"/>	
+	    <result property="otherServiceSeqNumber" column="seq_no"/>
+		<result property="otherServiceType" column="type" />
+		<result property="otherServiceName" column="name" />
+		<result property="description" column="description" />
+		<result property="unitPrice" column="unit_price" />
+		<result property="quantity" column="quantity" />
+        <result property="totalPrice" column="total_price" />
+		<result property="additionalDetails" column="additional_details" />
+		<result property="taskType" column="type" />			
+	</resultMap>
+	   <resultMap class="estimateHistoryVO"    id="estimatesHistoryList.resultmap">
+        <result property="estimationId" column="estimation_id"/>   
+        <result property="estimationHistoryId" column="estimation_history_id"/>  
+        <result property="estimationRefNo" column="reference_no" />           
+        <result property="estimationDate" column="estimation_date" />
+		<result property="estimationExpiryDate" column="estimation_expiry_date" />		        
+        <result property="totalLaborPrice" column="total_labor_price"/>   
+        <result property="totalPartsPrice" column="total_parts_price" />
+         <result property="totalOtherServicePrice" column="total_other_service_price" />
+        <result property="discountType" column="discount_type" />
+        <result property="discountedPercentage" column="discounted_percentage" />
+        <result property="discountedAmount" column="discounted_amount" />   
+        <result property="taxRate" column="tax_rate" />
+        <result property="taxType" column="tax_type" />   
+        <result property="taxPrice" column="tax" />
+        <result property="laborDiscountType" column="labor_discount_type" />
+		<result property="laborDiscountedPercentage" column="labor_discounted_percentage" />
+		<result property="laborDiscountedAmount" column="labor_discounted_amount" />
+		<result property="laborTaxRate" column="labor_tax_rate" />
+		<result property="laborTaxPrice" column="labor_tax_price" />
+		<result property="partsDiscountType" column="parts_discount_type" />
+		<result property="partsDiscountedPercentage" column="parts_discounted_percentage" />
+		<result property="partsDiscountedAmount" column="parts_discounted_amount" />
+		<result property="partsTaxRate" column="parts_tax_rate" />
+		<result property="partsTaxPrice" column="parts_tax_price" />
+		<result property="totalPrice" column="total_price" />           
+        <result property="comments" column="comments"/>
+        <result property="logoDocumentId" column="logo_doc_id" />
+        <result property="vendorId" column="vendor_id"/>
+        <result property="resourceId" column="resource_id"/>
+        <result property="description" column="description"/>
+        <result property="acceptSource" column="accept_source"/>
+        <result property="tripCharge" column="trip_charge"/>
+        <result property="status" column="status"/>
+        <result property="respondedCustomerName" column="responded_customer_name"/>
+        <result property="responseDate" column="response_date" />
+        <result property="action" column="action"/>
+    </resultMap>
+    
+       <resultMap class="estimateHistoryTaskVO" id="estimatesLaborHistoryDetails.resultmap">
+        <result property="itemId" column="item_id"/>
+        <result property="taskSeqNumber" column="seq_no"/>
+        <result property="taskName" column="name" />
+        <result property="taskType" column="type" />
+        <result property="description" column="description" />
+        <result property="unitPrice" column="unit_price" />
+        <result property="quantity" column="quantity" />
+        <result property="totalPrice" column="total_price" />
+        <result property="additionalDetails" column="additional_details" />
+        <result property="action" column="action" />
+        <result property="estimationHistoryId" column="estimation_history_id" />    
+    </resultMap>
+    
+    <resultMap class="estimateHistoryTaskVO" id="estimatesPartHistoryDetails.resultmap">
+        <result property="itemId" column="item_id"/>    
+        <result property="partSeqNumber" column="seq_no"/>
+        <result property="partName" column="name" />
+        <result property="partNumber" column="item_number" />
+        <result property="taskType" column="type" />
+        <result property="description" column="description" />
+        <result property="unitPrice" column="unit_price" />
+        <result property="quantity" column="quantity" />
+        <result property="totalPrice" column="total_price" />
+        <result property="additionalDetails" column="additional_details" />
+        <result property="action" column="action" />
+        <result property="estimationHistoryId" column="estimation_history_id" />            
+    </resultMap>
+    
+     <resultMap class="estimateHistoryTaskVO" id="estimateOtherServicesHistory.resultmap">
+        <result property="itemId" column="item_id"/>     
+        <result property="otherServiceSeqNumber" column="seq_no"/>
+        <result property="otherServiceType" column="type" />
+        <result property="otherServiceName" column="name" />
+        <result property="description" column="description" />
+        <result property="unitPrice" column="unit_price" />
+        <result property="quantity" column="quantity" />
+        <result property="totalPrice" column="total_price" />
+        <result property="additionalDetails" column="additional_details" />
+        <result property="action" column="action" />
+        <result property="estimationHistoryId" column="estimation_history_id" />            
+    </resultMap>
+    
+ <select id="mobileGeneric.checkIfSOIsActive.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+        SELECT so_id FROM so_hdr WHERE so_id=#soId# AND wf_state_id IN(155)
+ </select>
+ <select id="mobileGeneric.checkIfSOIsInProblem.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+        SELECT so_id FROM so_hdr WHERE so_id=#soId# AND wf_state_id IN(170)
+ </select>
+  <select id="getVendorIdFromVendorResource.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+        SELECT vendor_id FROM vendor_resource WHERE resource_id = #resourceId#;
+ </select>
+<!-- R16_2_1: SL-21264: Modified query to fetch price model and bid orders -->
+ <select id="getServiceOrderForSearchCriteria.query" parameterClass="mobileSearchCriteriaVO" resultClass="mobileSearchResultVO" >
+SELECT 
+	s.so_id AS soId,
+	wf_alias.descr AS soStatus,
+	lss.descr AS soSubStatus,
+	b.buyer_id AS buyerId,
+	b.business_name AS businessName,
+	s.sow_title AS title,
+	CONCAT (cr1.first_name,' ',cr1.last_name) AS acceptedResource,
+	CONCAT (cr2.first_name,' ',cr2.last_name) AS acceptedVendor,
+	s.accepted_vendor_id AS acceptedVendorId,
+	s.accepted_resource_id AS acceptedResourceId,
+	s.service_date1 AS appointStartDate,
+	s.service_date2 AS appointEndDate,
+	s.service_time_start AS serviceTimeStart,
+	s.service_time_end AS serviceTimeEnd,
+	s.service_locn_time_zone AS serviceLocationTimezone,
+	s.assignment_type AS assignmentType,
+	sloc1.street_1 AS street1,
+ 	sloc1.street_2 AS street2,
+ 	sloc1.city AS city,
+	sloc1.state_cd AS stateCd,
+	sloc1.zip AS zip,
+	scontact1.full_name AS endCustomerName,
+	srp.followup_flag AS firmFollowUpFlag,
+	sorp.followup_flag AS providerFollowUpFlag,
+	srp.created_date as routedDate,
+	s.price_model as priceModel
+	FROM
+	so_hdr s
+	JOIN lu_wf_states_alias wf_alias 
+	ON wf_alias.wf_state_id = s.wf_state_id
+	AND wf_alias.user_type = 'Provider'
+	JOIN buyer b ON s.buyer_id = b.buyer_id
+	JOIN so_contact scontact ON s.so_id =
+		scontact.so_id AND
+		scontact.so_contact_type_id IN (10,20)
+	LEFT OUTER JOIN so_contact scontact1 ON s.so_id =
+		scontact1.so_id AND
+		scontact.so_contact_type_id IN (10,20)
+	JOIN so_contact_locn scl ON s.so_id = scl.so_id 
+		AND scl.so_contact_locn_type_id IN (10,20) 
+		AND scl.so_contact_id = scontact.so_contact_id
+	LEFT OUTER JOIN so_contact_locn scl1 ON s.so_id = scl1.so_id 
+		AND scl1.so_contact_locn_type_id = 10 AND scontact1.so_contact_id = scl1.so_contact_id
+ 	LEFT OUTER JOIN so_location sloc1 ON
+ 		scl1.so_id = sloc1.so_id AND scl1.so_locn_id = sloc1.so_locn_id
+	LEFT OUTER JOIN lu_so_substatus lss
+	ON lss.so_substatus_id = s.so_substatus_id
+	LEFT OUTER JOIN vendor_resource vr1 ON s.accepted_resource_id =
+	vr1.resource_id
+	LEFT OUTER JOIN contact cr1 ON vr1.contact_id = cr1.contact_id
+	LEFT OUTER JOIN vendor_resource vr2 ON s.accepted_vendor_id = vr2.vendor_id
+	AND vr2.primary_ind=1
+	LEFT OUTER JOIN contact cr2 ON vr2.contact_id = cr2.contact_id
+	LEFT OUTER
+		JOIN so_routed_providers srp ON s.so_id = srp.so_id AND
+		(s.assignment_type = 'FIRM' OR s.assignment_type IS NULL) 
+		AND #firmId# = srp.vendor_id
+		AND (srp.provider_resp_id NOT IN (3,5,7) OR srp.provider_resp_id IS NULL) 
+		LEFT OUTER JOIN so_routed_providers sorp ON s.so_id = sorp.so_id AND
+		s.assignment_type = 'PROVIDER' 
+		AND (sorp.provider_resp_id NOT IN (3,5,7) OR sorp.provider_resp_id IS NULL) 
+		AND #firmId# = sorp.vendor_id	
+	<!-- Phone Number -->
+	<isNotNull property="custPhones">
+		JOIN so_contact_phones scp ON
+		scontact.so_id = scp.so_id AND scontact.so_contact_id =
+		scp.so_contact_id
+	</isNotNull>
+	WHERE
+ 	 ((s.wf_state_id=110)	
+ 				OR
+ 				s.wf_state_id IN (150,155,170))
+		AND (s.accepted_vendor_id = #firmId# or s.accepted_vendor_id IS NULL)
+						<!-- Phone Number -->
+		<isNotNull property="custPhones">
+			<isNotEmpty property="custPhones" prepend=" AND">
+				((scp.phone_no IN
+			<iterate property="custPhones" open="(" close=")"
+				conjunction=",">
+				#custPhones[]#
+			</iterate>
+				<isNotNull property="custPhonesFormatted">
+					<isNotEmpty property="custPhonesFormatted" prepend="OR">
+						scp.phone_no IN
+						<iterate property="custPhonesFormatted" open="(" close=")"
+							conjunction=",">
+							#custPhonesFormatted[]#
+						</iterate>
+					</isNotEmpty>
+				</isNotNull>
+					) AND s.wf_state_id!=110)
+			</isNotEmpty>
+		</isNotNull>
+					<!-- End Customer Name -->
+		<isNotNull property="custNames">
+			<isNotEmpty property="custNames" prepend=" AND">
+			((<iterate property="custNames" open="(" close=")" conjunction=" or ">
+			scontact.last_name LIKE CONCAT(#custNames[]#, '%')
+			OR scontact.full_name LIKE
+			CONCAT(#custNames[]#, '%')
+			</iterate>) AND s.wf_state_id!=110)
+			</isNotEmpty>
+		</isNotNull>
+		<!-- Zip code -->
+		<isNotNull property="zipCodes">
+			<isNotEmpty property="zipCodes" prepend=" AND">
+			sloc1.zip IN
+			<iterate property="zipCodes" open="(" close=")" conjunction=",">
+				#zipCodes[]#
+			</iterate>
+			</isNotEmpty>
+		</isNotNull>
+
+		<!--Service ORDER Id -->
+		<isNotNull property="soIds">
+			<isNotEmpty property="soIds" prepend=" AND">
+			<isNotEqual property="checkGroupedOrders" compareValue="true">
+				( s.so_id IN
+				<iterate property="soIds" open="(" close=")" conjunction=",">
+					#soIds[]#
+				</iterate>
+				)
+			</isNotEqual>
+			</isNotEmpty>
+		</isNotNull>
+		<isEqual property="roleId" compareValue="1">
+			AND s.accepted_resource_id = #acceptedResourceId#
+		</isEqual>
+		<isEqual property="roleId" compareValue="2">
+			<isNotNull property="soIds">
+				AND 
+				(s.accepted_resource_id = #acceptedResourceId# OR srp.resource_id = #acceptedResourceId# OR sorp.resource_id = #acceptedResourceId#)
+			</isNotNull>
+			<isNull property="soIds">
+			AND 
+				(s.accepted_resource_id = #acceptedResourceId# OR srp.resource_id = #acceptedResourceId#)
+			</isNull>
+		</isEqual>
+		<isEqual property="roleId" compareValue="3">
+			AND 
+			(srp.vendor_id =  #firmId# OR s.accepted_vendor_id = #firmId#)
+		</isEqual>
+		AND s.so_group_id IS NULL
+		AND (s.so_substatus_id != 64 OR s.so_substatus_id IS NULL)
+	GROUP BY soId
+	ORDER BY CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%l:%i %p') HOUR_SECOND), 'GMT', s.service_locn_time_zone)
+										DESC
+	<isNotNull property='pageLimit'>
+		<isNotNull property='pageSize'>
+			limit #pageLimit#,#pageSize#
+		</isNotNull>
+	</isNotNull> 	
+	</select>
+	<!-- R16_2_0_1: SL-21264: Modified query to consider bid orders -->
+	<select id="getCountForSearchCriteria.query" parameterClass="mobileSearchCriteriaVO" resultClass="java.lang.Integer" >
+	SELECT 
+ 	COUNT(DISTINCT s.so_id)
+ 	FROM
+	so_hdr s
+	JOIN so_contact scontact ON s.so_id =
+		scontact.so_id AND
+		scontact.so_contact_type_id IN (10,20)
+	LEFT OUTER JOIN so_contact scontact1 ON s.so_id =
+		scontact1.so_id AND
+		scontact.so_contact_type_id IN (10,20)
+	JOIN so_contact_locn scl ON s.so_id = scl.so_id 
+		AND scl.so_contact_locn_type_id IN (10,20) 
+		AND scl.so_contact_id = scontact.so_contact_id
+		<!-- Zip code -->
+		<isNotNull property="zipCodes">
+		LEFT OUTER JOIN so_contact_locn scl1 ON s.so_id = scl1.so_id 
+		AND scl1.so_contact_locn_type_id = 10 AND scontact1.so_contact_id = scl1.so_contact_id
+ 		LEFT OUTER JOIN so_location sloc1 ON
+ 		scl1.so_id = sloc1.so_id AND scl1.so_locn_id = sloc1.so_locn_id
+		</isNotNull>
+		LEFT OUTER
+		JOIN so_routed_providers srp ON s.so_id = srp.so_id AND
+		(s.assignment_type = 'FIRM' OR s.assignment_type IS NULL) 
+		AND #firmId# = srp.vendor_id
+		AND (srp.provider_resp_id not in (3,5,7) or srp.provider_resp_id is null) 
+		LEFT OUTER JOIN so_routed_providers sorp ON s.so_id = sorp.so_id AND
+		s.assignment_type = 'PROVIDER' 
+		AND (sorp.provider_resp_id not in (3,5,7) or sorp.provider_resp_id is null) 
+		AND #firmId# = sorp.vendor_id
+	<!-- Phone Number -->
+	<isNotNull property="custPhones">
+		JOIN so_contact_phones scp ON
+		scontact.so_id = scp.so_id AND scontact.so_contact_id =
+		scp.so_contact_id
+	</isNotNull>	
+	
+	WHERE
+ 	 ((s.wf_state_id=110)	
+ 				OR
+ 				s.wf_state_id IN (150,155,170))
+		AND (s.accepted_vendor_id = #firmId# or s.accepted_vendor_id IS NULL)
+		<isNotNull property="custPhones">
+			<isNotEmpty property="custPhones" prepend=" AND">
+				((scp.phone_no IN
+			<iterate property="custPhones" open="(" close=")"
+				conjunction=",">
+				#custPhones[]#
+			</iterate>
+				<isNotNull property="custPhonesFormatted">
+					<isNotEmpty property="custPhonesFormatted" prepend="OR">
+						scp.phone_no IN
+						<iterate property="custPhonesFormatted" open="(" close=")"
+							conjunction=",">
+							#custPhonesFormatted[]#
+						</iterate>
+					</isNotEmpty>
+				</isNotNull>
+					) AND s.wf_state_id!=110)
+			</isNotEmpty>
+		</isNotNull>
+					<!-- End Customer Name -->
+		<isNotNull property="custNames">
+			<isNotEmpty property="custNames" prepend=" AND">
+			((<iterate property="custNames" open="(" close=")" conjunction=" or ">
+			scontact.last_name LIKE CONCAT(#custNames[]#, '%')
+			OR scontact.full_name LIKE
+			CONCAT(#custNames[]#, '%')
+			</iterate>) AND s.wf_state_id!=110)
+			</isNotEmpty>
+		</isNotNull>
+		<!-- Zip code -->
+		<isNotNull property="zipCodes">
+			<isNotEmpty property="zipCodes" prepend=" AND">
+			sloc1.zip IN
+			<iterate property="zipCodes" open="(" close=")" conjunction=",">
+				#zipCodes[]#
+			</iterate>
+			</isNotEmpty>
+		</isNotNull>
+
+		<!--City Names -->
+		<isNotNull property="cityNames">
+			<isNotEmpty property="cityNames" prepend=" AND">
+			sloc1.city IN
+			<iterate property="cityNames" open="(" close=")" conjunction=",">
+				#cityNames[]#
+			</iterate>
+			</isNotEmpty>
+		</isNotNull>
+
+
+		<!--Service ORDER Id -->
+		<isNotNull property="soIds">
+			<isNotEmpty property="soIds" prepend=" AND">
+			<isNotEqual property="checkGroupedOrders" compareValue="true">
+				( s.so_id IN
+				<iterate property="soIds" open="(" close=")" conjunction=",">
+					#soIds[]#
+				</iterate>
+				)
+			</isNotEqual>
+			</isNotEmpty>
+		</isNotNull>
+		<isEqual property="roleId" compareValue="1">
+			AND s.accepted_resource_id = #acceptedResourceId#
+		</isEqual>
+		<isEqual property="roleId" compareValue="2">
+			<isNotNull property="soIds">
+				AND 
+				(s.accepted_resource_id = #acceptedResourceId# OR srp.resource_id = #acceptedResourceId# OR sorp.resource_id = #acceptedResourceId#)
+			</isNotNull>
+			<isNull property="soIds">
+			AND 
+				(s.accepted_resource_id = #acceptedResourceId# OR srp.resource_id = #acceptedResourceId#)
+			</isNull>
+		</isEqual>
+		<isEqual property="roleId" compareValue="3">
+			AND 
+			(srp.vendor_id =  #firmId# OR s.accepted_vendor_id = #firmId#)
+		</isEqual>
+		AND (s.so_substatus_id != 64 OR s.so_substatus_id IS NULL)
+		AND s.so_group_id IS NULL
+	</select>
+	
+	<select id="mobileGeneric.getReaonCodeType"  resultClass="java.lang.String">
+        SELECT reason_code_type FROM  lu_mobile_reason_codes_type
+    </select>
+     <select id="mobileGeneric.typeOfProblem.query"  resultClass="reasoncodeVO">
+        SELECT lo_substatus.so_substatus_id AS reasonCodeId,   lo_substatus.descr AS reasonCode
+        FROM lu_so_substatus lo_substatus, so_wf_substatus
+		wf_substatus WHERE
+		lo_substatus.so_substatus_id=wf_substatus.so_substatus_id AND
+		wf_substatus.wf_state_id = 170 ORDER BY
+		lo_substatus.descr
+    </select>
+ <select id="mobileGeneric.reasonCodeManager" parameterClass="java.lang.String" resultClass="reasoncodeVO">
+        SELECT reason_code_id AS reasonCodeId,   reason_code AS reasonCode
+                FROM    reason_codes
+       	WHERE  reason_code_type= #reasonType#
+       	AND reason_code_status NOT IN('Archived','Deleted')
+ </select>
+ <select id="mobileGeneric.providerResponse" parameterClass="java.lang.String" resultClass="reasoncodeVO">
+        SELECT resp_reason_id AS reasonCodeId,   descr AS reasonCode
+                FROM   lu_so_provider_resp_reason rr,lu_mobile_reason_codes_type rc
+       	WHERE rc.reason_code_type=#reasonType# 
+       	AND rr.provider_resp_id=rc.mapping_resp_id
+ </select>
+ <select id="mobileGeneric.Rechedulereason" parameterClass="java.util.List" resultClass="reasoncodeVO">
+       select so_substatus_id as reasonCodeId,descr as reasonCode from lu_so_substatus where so_substatus_id in 
+	<iterate  open="(" close=")"  conjunction=",">
+				#[]#
+	</iterate>
+ </select>
+ <select id="mobileGeneric.counterOffer" parameterClass="java.lang.String" resultClass="reasoncodeVO">
+        SELECT counter_offer_reason_id AS reasonCodeId,   counter_offer_reason_desc AS reasonCode
+                FROM   lu_so_counter_offer_reasons cor,lu_mobile_reason_codes_type rct
+        WHERE rct.reason_code_type=#reasonType# 
+       	AND  cor.provider_resp_reason_id=rct.mapping_resp_id
+ </select>
+ <select id="mobileGeneric.completionReason" parameterClass="java.lang.String" resultClass="reasoncodeVO">
+        SELECT reason_id AS reasonCodeId,  reason_descr AS reasonCode FROM  lu_completion_reasons 
+       	
+ </select>
+ 
+  <select id="mobileGeneric.warrrantyHomeReason" parameterClass="java.lang.String" resultClass="reasoncodeVO">
+        SELECT reason_id AS reasonCodeId,  reason_descr AS reasonCode FROM  lu_warranty_home_reasons 
+       	
+ </select>
+  <select id="mobileGeneric.reasonOM" parameterClass="java.lang.String" resultClass="reasoncodeVO">
+        SELECT reason_code_id AS reasonCodeId,   reason_code AS reasonCode
+                FROM  lu_precall_reason_codes where reason_code_type = #reasonType#
+ </select>
+
+	<select id="mobileGeneric.getProblemTypeDescription.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+	      SELECT problem_type  FROM so_workflow_controls WHERE so_id=#soId#;
+	</select>
+	
+	<select id="mobileGeneric.fetchServiceOrderDetailsForBid.query" parameterClass="java.lang.String" resultClass="requestBidVO">
+	      SELECT buyer_id AS buyerId,
+	      	     service_date1 AS serviceDateStart,
+	      	     service_date2 AS serviceDateEnd,
+	      	     service_time_end AS serviceTimeEnd 
+	      FROM so_hdr WHERE so_id=#soId#;
+	</select>
+	
+	<select id="getRoutedResourcesUnderFirm.query" parameterClass="assignVO" resultClass="java.lang.Integer" >
+ 	     SELECT resource_id FROM so_routed_providers WHERE vendor_id=#firmId# AND so_id=#soId# AND (provider_resp_id not in (3,5,7) or provider_resp_id is null)
+ 	</select>
+ 	<select id="mobileGeneric.checkIfReasonIsValid.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+        SELECT resp_reason_id FROM lu_so_provider_resp_reason WHERE resp_reason_id=#reasonCode#
+    </select>
+    <select id="mobileGeneric.fetchLatestRescheduleLog.query" parameterClass="java.util.HashMap" resultClass="rescheduleVO">
+       SELECT l.role_id AS roleId,
+              l.entity_id AS entityId,
+              l.chg_comment AS reasonCodeDescription,
+              h.resched_service_date1 AS rescheduleServiceDate1,
+              h.buyer_id AS buyerId 
+       FROM so_logging l,so_hdr h WHERE 
+             l.so_id=#soId# AND l.action_id=#actionId# AND h.so_id=l.so_id 
+       ORDER BY l.created_date DESC LIMIT 1
+    </select>
+     <select id="getRescheduleSoDetails.query" parameterClass="java.util.HashMap" resultClass="rescheduleDetailsVO">
+		SELECT 	      l.role_id AS roleId,
+	      l.created_date AS rescheduleInitiatedDate,
+              l.entity_id AS rescheduleInitiatedBy,
+              l.chg_comment AS reasonCodeDescription,
+              h.resched_service_date1 AS rescheduleServiceDate1,
+              h.resched_service_date2 AS rescheduleServiceDate2,
+              h.resched_service_time_start AS rescheduleServiceTime1,
+              h.resched_service_time_end AS rescheduleServiceTime2,
+              h.service_locn_time_zone AS timeZone
+       FROM so_logging l,so_hdr h WHERE 
+             l.so_id=#soId# AND l.action_id=#actionId# AND h.so_id=l.so_id 
+       ORDER BY l.created_date DESC LIMIT 1
+    </select>
+    <select id="mobileGeneric.checkIfReadyForConfirmAppointment.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+       SELECT s.so_id FROM so_hdr s
+        JOIN so_schedule schd ON s.so_id = schd.so_id WHERE s.wf_state_id IN (150, 155, 170) AND schd.schedule_status_id != 5 
+		AND DATEDIFF(s.service_date1,now()) <![CDATA[<=]]> 3 and DATEDIFF(s.service_date1,now()) <![CDATA[>=]]> 0 AND s.so_id=#soId#
+    </select>
+    <select id="mobileGeneric.checkIfReadyForPreCall.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+        SELECT s.so_id FROM so_hdr s JOIN so_schedule schd ON schd.so_id = s.so_id WHERE s.wf_state_id = 150 AND schd.schedule_status_id IN (1,2)
+		 AND s.so_id=#soId#
+    </select>
+    <select id="mobileGeneric.getServiceOrderAssignmentAndScheduleDetails.query" parameterClass="java.lang.String" resultMap="soMinimalDetails.resultsmap">
+      SELECT h.service_date_type_id,h.service_date1,h.service_date2,h.service_time_start,h.service_time_end,h.service_locn_time_zone,h.accepted_resource_id FROM so_hdr h WHERE h.so_id=#soId#
+    </select>
+    <select id="mobilegeneric.fetchChildOrdersforGroup" parameterClass="java.util.HashMap"
+		resultClass="mobileSearchResultVO">
+		SELECT s.so_id AS soId,
+		sg.so_group_id AS groupId,
+		sg.group_title AS parentGroupTitle,		
+		wfs.wf_state AS soStatus,
+		lss.descr AS soSubStatus,
+		b.buyer_id AS buyerId,
+		b.business_name AS businessName,
+		s.sow_title AS title
+		FROM so_hdr s
+		LEFT OUTER JOIN so_group sg ON s.so_group_id = sg.so_group_id
+		<!-- LEFT OUTER JOIN so_group_price sgp ON s.so_group_id = sgp.so_group_id
+		JOIN so_location loc1 ON loc1.so_id = s.so_id AND loc1.so_locn_type_id = 10
+		JOIN so_location loc ON loc.so_id = s.so_id AND loc.so_locn_type_id = 40
+		JOIN zip_geocode geo ON loc1.zip = geo.zip -->
+			JOIN so_routed_providers srp ON s.so_id = srp.so_id
+		WHERE (srp.provider_resp_id NOT IN(3,5,7) OR srp.provider_resp_id IS NULL)
+		AND (srp.vendor_id = #firmId#) 
+			AND	s.so_group_id IN 
+					<iterate property="groupIdsList" open="(" close=")"
+						conjunction=",">
+						#groupIdsList[]#
+					</iterate>
+			GROUP BY s.so_id
+			ORDER BY sg.so_group_id 
+	</select>
+    <select id="getLockedInEditForGroup.query" parameterClass="java.lang.String" resultClass="java.lang.Integer" >
+       SELECT h.lock_edit_ind FROM so_hdr h WHERE h.so_group_id=#groupId#  LIMIT 1
+    </select>
+     <!--  SL-21265: modified query to fetch price model and bid orders -->
+	<select id="getServiceOrderForAdvanceSearchCriteria.query"
+	parameterClass="advanceSearchCriteriaVO" resultClass="mobileSearchResultVO">
+	SELECT
+	s.so_id AS soId,
+	wf_alias.descr AS soStatus,
+	lu_wf_substatus.descr AS soSubStatus,
+	b.buyer_id AS buyerId,
+	b.business_name AS businessName,
+	s.sow_title AS title,
+	CONCAT (cr1.first_name,' ',cr1.last_name) AS acceptedResource,
+	CONCAT (cr2.first_name,' ',cr2.last_name) AS acceptedVendor,
+	s.accepted_vendor_id AS acceptedVendorId,
+	s.accepted_resource_id AS acceptedResourceId,
+	s.service_date1 as appointStartDate,
+	s.service_date2 as appointEndDate,
+	s.service_time_start as serviceTimeStart,
+	s.service_time_end as serviceTimeEnd,
+	s.service_locn_time_zone as serviceLocationTimezone,
+	s.assignment_type AS assignmentType,
+	sloc1.street_1 as street1,
+	sloc1.street_2 as street2,
+	sloc1.city as city,
+	sloc1.state_cd as stateCd,
+	sloc1.zip as zip,
+	scontact.full_name as endCustomerName,
+	srp.followup_flag AS firmFollowUpFlag,
+	sorp.followup_flag AS providerFollowUpFlag,
+	srp.created_date as routedDate,
+	#firmId# AS vendorId,
+	s.price_model AS priceModel
+	FROM
+	so_hdr s
+	JOIN buyer b on b.buyer_id = s.buyer_id
+	JOIN so_contact_locn scl ON s.so_id = scl.so_id
+	AND scl.so_contact_locn_type_id = 10
+	JOIN so_location sloc1 ON
+	scl.so_id = sloc1.so_id AND scl.so_locn_id = sloc1.so_locn_id
+	JOIN lu_wf_states_alias wf_alias ON wf_alias.wf_state_id =
+	s.wf_state_id
+	AND wf_alias.user_type = 'Provider'
+	JOIN so_contact scontact ON s.so_id =
+		scontact.so_id AND
+		scontact.so_contact_type_id IN (10,20)
+	LEFT OUTER JOIN 
+	lu_so_substatus lu_wf_substatus ON
+	lu_wf_substatus.so_substatus_id =
+	s.so_substatus_id
+	LEFT OUTER JOIN vendor_resource vr1 ON s.accepted_resource_id =
+	vr1.resource_id
+	LEFT OUTER JOIN contact cr1 ON vr1.contact_id = cr1.contact_id
+	LEFT OUTER JOIN vendor_resource vr2 ON s.accepted_vendor_id = vr2.vendor_id
+	AND vr2.primary_ind=1
+	LEFT OUTER JOIN contact cr2 ON vr2.contact_id = cr2.contact_id
+	<isNotNull property="marketIds">
+		LEFT OUTER JOIN lu_zip_market zmar on sloc1.zip = zmar.zip
+		LEFT
+		OUTER JOIN lu_market market on zmar.market_id = market.market_id
+	</isNotNull>
+	LEFT OUTER JOIN so_routed_providers srp ON s.so_id = srp.so_id AND
+	(s.assignment_type = 'FIRM' OR s.assignment_type IS NULL) 
+	AND #firmId# = srp.vendor_id
+	AND (srp.provider_resp_id not in (3,5,7) or srp.provider_resp_id is null) 
+	LEFT OUTER JOIN so_routed_providers sorp ON s.so_id = sorp.so_id AND
+	s.assignment_type = 'PROVIDER' 
+	AND (sorp.provider_resp_id not in (3,5,7) or sorp.provider_resp_id is null) 
+	AND #firmId# = sorp.vendor_id
+		WHERE
+		<isEqual property="roleId" compareValue="1">
+			 s.wf_state_id IN (150,155,170)
+		</isEqual>
+		<isNotEqual property="roleId" compareValue="1">
+			((s.wf_state_id=110)
+			OR
+			s.wf_state_id IN (150,155,170))
+		</isNotEqual>
+		AND s.so_group_id IS NULL
+		AND (s.so_substatus_id != 64 OR s.so_substatus_id IS NULL)
+		AND
+		(s.accepted_vendor_id IS NULL OR s.accepted_vendor_id = #firmId#)
+	
+		<isNotNull property="marketIds">
+			<isNotEmpty property="marketIds" prepend="AND  ">
+				market.market_id IN
+				<iterate property="marketIds" open="(" close=")" conjunction=",">
+					#marketIds[]#
+				</iterate>
+			</isNotEmpty>
+		</isNotNull>
+		<isNotNull property="serviceProIds">
+			<isNotEmpty property="serviceProIds" prepend="AND  ">
+				(
+					srp.resource_id IN
+					<iterate property="serviceProIds" open="(" close=")"
+						conjunction=",">
+						#serviceProIds[]#
+					</iterate>
+					OR
+				(sorp.resource_id IN
+				<iterate property="serviceProIds" open="(" close=")"
+					conjunction=",">
+					#serviceProIds[]#
+				</iterate>
+				AND sorp.provider_resp_id = 1))
+			</isNotEmpty>
+		</isNotNull>
+		<isNotNull property="statusIds">
+			<isNotEmpty property="statusIds" prepend="AND  ">
+				s.wf_state_id IN
+				<iterate property="statusIds" open="(" close=")" conjunction=",">
+					#statusIds[]#
+				</iterate>
+			</isNotEmpty>
+		</isNotNull>
+		<isNotNull property="subStatusIds">
+			<isNotEmpty property="subStatusIds" prepend="AND  ">
+				(
+				<iterate property="subStatusIds" open="(" close=")" conjunction="OR">
+					s.so_substatus_id = #subStatusIds[]#
+				</iterate>
+				<isEqual property="noSubStatusInd" compareValue="true">
+					OR s.so_substatus_id IS NULL
+				</isEqual>
+				)
+			</isNotEmpty>
+		</isNotNull>
+		<isNotNull property="appointmentCriteriaType" prepend="AND  ">
+			<isEqual property="appointmentCriteriaType" compareValue="Today">
+				DATEDIFF(s.service_date1,now()) = 0
+			</isEqual>
+			<isEqual property="appointmentCriteriaType" compareValue="Tomorrow">
+				DATEDIFF(s.service_date1,now()) = 1
+			</isEqual>
+			<isEqual property="appointmentCriteriaType" compareValue="Next 2 days">
+				DATEDIFF(s.service_date1,now()) <![CDATA[ > ]]>
+				0 and DATEDIFF(s.service_date1,now()) <![CDATA[ <= ]]>
+				2
+			</isEqual>
+			<isEqual property="appointmentCriteriaType" compareValue="Next 3 days">
+				DATEDIFF(s.service_date1,now()) <![CDATA[ > ]]>
+				0 and DATEDIFF(s.service_date1,now()) <![CDATA[ <= ]]>
+				3
+			</isEqual>
+			<isEqual property="appointmentCriteriaType" compareValue="Range">
+				DATE(CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL
+				STR_TO_DATE(s.service_time_start,'%h:%i %p')HOUR_SECOND), 'GMT',
+				s.service_locn_time_zone ))
+						 <![CDATA[>=]]>
+				#appointmentStartRange#
+				AND
+				DATE(CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%h:%i %p')HOUR_SECOND),
+				'GMT', s.service_locn_time_zone ))
+						<![CDATA[<=]]>
+				#appointmentEndRange#
+			</isEqual>
+		</isNotNull>
+		<isEqual property="flaggedInd" compareValue="true">
+			AND
+			( 
+				sorp.followup_flag =1
+					OR srp.followup_flag = 1
+			)
+		</isEqual>
+		<isNotNull property="unAssignedInd">
+			<isEqual property="unAssignedInd" compareValue="true">
+				 AND s.assignment_type = 'FIRM'
+			</isEqual>
+			<isEqual property="unAssignedInd" compareValue="false">
+				 AND s.assignment_type = 'PROVIDER'
+			</isEqual>
+		</isNotNull>
+		<isEqual property="roleId" compareValue="1">
+			AND s.accepted_resource_id = #acceptedResourceId#
+		</isEqual>
+		<isEqual property="roleId" compareValue="2">
+			AND 
+				(s.accepted_resource_id = #acceptedResourceId# OR srp.resource_id = #acceptedResourceId#)
+		</isEqual>
+		<isEqual property="roleId" compareValue="3">
+			AND 
+			(srp.vendor_id =  #firmId# OR s.accepted_vendor_id = #firmId#)
+		</isEqual>
+	GROUP BY s.so_id
+	ORDER BY CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%l:%i %p') HOUR_SECOND), 'GMT', s.service_locn_time_zone)
+										DESC
+	<isNotNull property='pageLimit'>
+		<isNotNull property='pageSize'>
+			limit #pageLimit#,#pageSize#
+		</isNotNull>
+	</isNotNull>
+</select>
+<!--  SL-21265: modified query to fetch price model and bid orders -->
+	<select id="getCountForAdvanceSearchCriteria.query" parameterClass="advanceSearchCriteriaVO" resultClass="java.lang.Integer" >
+		SELECT
+		COUNT(DISTINCT s.so_id)
+		FROM
+		so_hdr s
+		<isNotNull property="marketIds">
+			JOIN so_contact_locn scl ON s.so_id = scl.so_id
+			AND scl.so_contact_locn_type_id = 10
+			JOIN so_location sloc1 ON
+			scl.so_id = sloc1.so_id AND scl.so_locn_id = sloc1.so_locn_id
+			LEFT OUTER JOIN lu_zip_market zmar on sloc1.zip = zmar.zip
+			LEFT OUTER JOIN lu_market market on zmar.market_id = market.market_id
+		</isNotNull>
+		LEFT OUTER JOIN so_routed_providers srp ON s.so_id = srp.so_id AND
+		(s.assignment_type = 'FIRM' OR s.assignment_type IS NULL) 
+		AND #firmId# = srp.vendor_id
+		AND (srp.provider_resp_id not in (3,5,7) or srp.provider_resp_id is null) 
+		<isNotNull property="serviceProIds">
+				LEFT OUTER JOIN so_routed_providers sorp ON s.so_id = sorp.so_id AND
+				s.assignment_type = 'PROVIDER' 
+				AND (sorp.provider_resp_id not in (3,5,7) or sorp.provider_resp_id is null) 
+				AND #firmId# = sorp.vendor_id
+		</isNotNull>
+		<isEqual property="flaggedInd" compareValue="true">
+			<isNull property="serviceProIds">		
+				LEFT OUTER JOIN so_routed_providers sorp ON s.so_id = sorp.so_id AND
+				s.assignment_type = 'PROVIDER' 
+				AND (sorp.provider_resp_id not in (3,5,7) or sorp.provider_resp_id is null) 
+				AND #firmId# = sorp.vendor_id
+			</isNull>
+		</isEqual>
+		WHERE
+		<isEqual property="roleId" compareValue="1">
+			 s.wf_state_id IN (150,155,170)
+		</isEqual>
+		<isNotEqual property="roleId" compareValue="1">
+			((s.wf_state_id=110)
+			OR
+			s.wf_state_id IN (150,155,170))
+		</isNotEqual>
+		AND s.so_group_id IS NULL
+		AND (s.so_substatus_id != 64 OR s.so_substatus_id IS NULL)
+		AND
+		(s.accepted_vendor_id IS NULL OR s.accepted_vendor_id = #firmId#)
+	
+		<isNotNull property="marketIds">
+			<isNotEmpty property="marketIds" prepend="AND  ">
+				market.market_id IN
+				<iterate property="marketIds" open="(" close=")" conjunction=",">
+					#marketIds[]#
+				</iterate>
+			</isNotEmpty>
+		</isNotNull>
+		<isNotNull property="serviceProIds">
+			<isNotEmpty property="serviceProIds" prepend="AND  ">
+				(
+					srp.resource_id IN
+					<iterate property="serviceProIds" open="(" close=")"
+						conjunction=",">
+						#serviceProIds[]#
+					</iterate>
+					OR
+				(sorp.resource_id IN
+				<iterate property="serviceProIds" open="(" close=")"
+					conjunction=",">
+					#serviceProIds[]#
+				</iterate>
+				AND sorp.provider_resp_id = 1))
+			</isNotEmpty>
+		</isNotNull>
+		<isNotNull property="statusIds">
+			<isNotEmpty property="statusIds" prepend="AND  ">
+				s.wf_state_id IN
+				<iterate property="statusIds" open="(" close=")" conjunction=",">
+					#statusIds[]#
+				</iterate>
+			</isNotEmpty>
+		</isNotNull>
+		<isNotNull property="subStatusIds">
+			<isNotEmpty property="subStatusIds" prepend="AND  ">
+				(
+				<iterate property="subStatusIds" open="(" close=")" conjunction="OR">
+					s.so_substatus_id = #subStatusIds[]#
+				</iterate>
+				<isEqual property="noSubStatusInd" compareValue="true">
+					OR s.so_substatus_id IS NULL
+				</isEqual>
+				)
+			</isNotEmpty>
+		</isNotNull>
+		<isNotNull property="appointmentCriteriaType" prepend="AND  ">
+			<isEqual property="appointmentCriteriaType" compareValue="Today">
+				DATEDIFF(s.service_date1,now()) = 0
+			</isEqual>
+			<isEqual property="appointmentCriteriaType" compareValue="Tomorrow">
+				DATEDIFF(s.service_date1,now()) = 1
+			</isEqual>
+			<isEqual property="appointmentCriteriaType" compareValue="Next 2 days">
+				DATEDIFF(s.service_date1,now()) <![CDATA[ > ]]>
+				0 and DATEDIFF(s.service_date1,now()) <![CDATA[ <= ]]>
+				2
+			</isEqual>
+			<isEqual property="appointmentCriteriaType" compareValue="Next 3 days">
+				DATEDIFF(s.service_date1,now()) <![CDATA[ > ]]>
+				0 and DATEDIFF(s.service_date1,now()) <![CDATA[ <= ]]>
+				3
+			</isEqual>
+			<isEqual property="appointmentCriteriaType" compareValue="Range">
+				DATE(CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL
+				STR_TO_DATE(s.service_time_start,'%h:%i %p')HOUR_SECOND), 'GMT',
+				s.service_locn_time_zone ))
+						 <![CDATA[>=]]>
+				#appointmentStartRange#
+				AND
+				DATE(CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%h:%i %p')HOUR_SECOND),
+				'GMT', s.service_locn_time_zone ))
+						<![CDATA[<=]]>
+				#appointmentEndRange#
+			</isEqual>
+		</isNotNull>
+		<isEqual property="flaggedInd" compareValue="true">
+			AND
+			( 
+				sorp.followup_flag =1
+					OR srp.followup_flag = 1
+			)
+		</isEqual>
+		<isNotNull property="unAssignedInd">
+			<isEqual property="unAssignedInd" compareValue="true">
+				 AND s.assignment_type = 'FIRM'
+			</isEqual>
+			<isEqual property="unAssignedInd" compareValue="false">
+				 AND s.assignment_type = 'PROVIDER'
+			</isEqual>
+		</isNotNull>
+		<isEqual property="roleId" compareValue="1">
+			AND s.accepted_resource_id = #acceptedResourceId#
+		</isEqual>
+		<isEqual property="roleId" compareValue="2">
+			AND 
+				(s.accepted_resource_id = #acceptedResourceId# OR srp.resource_id = #acceptedResourceId#)
+		</isEqual>
+		<isEqual property="roleId" compareValue="3">
+			AND 
+			(srp.vendor_id =  #firmId# OR s.accepted_vendor_id = #firmId#)
+		</isEqual>
+	</select>
+	<select id="providerSOCountMobile.query"  parameterClass="providerParamVO" resultClass="java.lang.Integer">
+          SELECT COUNT(DISTINCT srp.so_id) FROM so_hdr hdr JOIN so_routed_providers srp ON hdr.so_id=srp.so_id 
+                 AND (srp.provider_resp_id NOT IN(3,5,7) OR srp.provider_resp_id IS NULL)
+                 AND (hdr.so_substatus_id != 64 OR hdr.so_substatus_id IS NULL) 
+                 AND  srp.vendor_id = hdr.accepted_vendor_id WHERE    
+				<isNotNull property ="roleId">
+					   <isEqual property="roleId" compareValue="1">
+					       hdr.accepted_resource_id = #resourceId# AND
+					   </isEqual>
+					   <isEqual property="roleId" compareValue="2">
+					     (hdr.accepted_resource_id =#resourceId# OR (hdr.accepted_resource_id IS NULL AND hdr.assignment_type ='FIRM' AND srp.resource_id=#resourceId#)) AND
+					   </isEqual>
+					   
+				</isNotNull>
+				<!-- For Role Level 3 -->
+                hdr.accepted_vendor_id = #vendorId#
+				<isNotNull property="wfStatusIdList" prepend="AND hdr.wf_state_id in ">
+						<iterate property="wfStatusIdList" open="(" close=")"
+							conjunction=",">
+							#wfStatusIdList[]#
+						</iterate>
+				</isNotNull>
+    </select>
+    <select id="providerSOListMobile.query"  parameterClass="providerParamVO" resultClass="providerSOSearchVO">
+		SELECT s.sow_title AS soTitle,
+		       s.so_id AS soId,
+		       wf_alias.descr AS soStatus,
+		       s.service_date_type_id AS dateType,
+		       s.service_locn_time_zone AS serviceLocationTimeZone,
+		       lu_wf_substatus.descr AS soSubStatus,
+		       s.service_date1 AS serviceDate1,
+		       s.service_date2 AS serviceDate2,
+		       s.service_time_start AS serviceTime1,
+		       s.service_time_end AS serviceTime2,
+		       cont.first_name AS custFirstName,
+		       cont.last_name AS custLastName,
+		       loc.city AS city,
+		       loc.state_cd AS state,
+		       loc.zip AS zip,
+		       loc.street_1 AS address1,
+		       loc.street_2 AS address2,
+		       s.buyer_id AS buyerId,
+		       b.business_name AS buyerName,
+		       loc1.so_locn_type_id AS merchStatus,
+		       sch.schedule_status AS scheduleStatus,
+		       schd.expected_time_of_arrival AS eta,
+		       srp.followup_flag AS followUpFlag,
+		       now() as serverDateTime,
+		       s.accepted_vendor_id AS acceptedVendorId,
+	           s.accepted_resource_id AS acceptedResourceId,
+	           s.assignment_type AS assignmentType,
+	           CONCAT (cr1.first_name,' ',cr1.last_name) AS acceptedResource,
+		       CONCAT (cr2.first_name,' ',cr2.last_name) AS acceptedVendor
+		       FROM so_hdr s
+		       JOIN so_contact_locn cont_loc
+		               ON s.so_id = cont_loc.so_id
+		       LEFT OUTER JOIN buyer b
+		               ON s.buyer_id=b.buyer_id
+		       JOIN lu_so_contact_locn_type lu_cont_loc
+		               ON lu_cont_loc.so_contact_locn_type_id = cont_loc.so_contact_locn_type_id
+		       JOIN so_location loc
+		               ON loc.so_id = s.so_id AND loc.so_locn_type_id = 10
+		       LEFT OUTER JOIN so_location loc1
+		               ON loc1.so_id = s.so_id AND loc1.so_locn_type_id = 40
+		       LEFT OUTER JOIN so_contact cont
+		               ON cont.so_id= cont_loc.so_id 
+		               AND cont.so_contact_id = cont_loc.so_contact_id AND s.so_id = cont.so_id
+		       JOIN lu_wf_states_alias wf_alias
+		               ON wf_alias.wf_state_id = s.wf_state_id AND wf_alias.user_type= 'Provider'
+		       LEFT OUTER JOIN lu_so_substatus lu_wf_substatus
+		               ON lu_wf_substatus.so_substatus_id = s.so_substatus_id
+		       LEFT OUTER JOIN vendor_resource vr1 ON s.accepted_resource_id =	vr1.resource_id
+		       LEFT OUTER JOIN contact cr1 ON vr1.contact_id = cr1.contact_id
+		       LEFT OUTER JOIN vendor_resource vr2 ON s.accepted_vendor_id = vr2.vendor_id AND vr2.primary_ind=1
+	               LEFT OUTER JOIN contact cr2 ON vr2.contact_id = cr2.contact_id
+		       LEFT OUTER JOIN so_routed_providers srp
+		               ON s.so_id = srp.so_id AND s.accepted_vendor_id = srp.vendor_id
+		           AND (srp.provider_resp_id NOT IN(3,5,7) OR srp.provider_resp_id IS NULL)
+                   AND (s.so_substatus_id != 64 OR s.so_substatus_id IS NULL)        
+		       JOIN so_schedule schd
+		               ON schd.so_id = s.so_id
+		       JOIN lu_schedule_status sch
+		               ON sch.schedule_status_id = schd.schedule_status_id
+		WHERE 
+		<isNotNull property ="roleId">
+			   <isEqual property="roleId" compareValue="1">
+			       s.accepted_resource_id = #resourceId# AND
+			   </isEqual>
+			   <isEqual property="roleId" compareValue="2">
+			      (s.accepted_resource_id =#resourceId# OR (s.accepted_resource_id IS NULL AND s.assignment_type ='FIRM' AND srp.resource_id=#resourceId#)) AND
+			   </isEqual>
+		</isNotNull>
+		<!-- For  role level 3 -->
+		s.accepted_vendor_id = #vendorId#
+		<isNotNull property="wfStatusIdList" prepend="AND s.wf_state_id in ">
+			<iterate property="wfStatusIdList" open="(" close=")"
+				conjunction=",">
+				#wfStatusIdList[]#
+			</iterate>
+		</isNotNull>
+		GROUP BY s.so_id
+		<isNotNull property="sortFlag">
+			ORDER BY
+			<isNotNull property="sortBy">
+				<isEqual property="sortBy" compareValue="AppointmentDate">
+					CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL
+					STR_TO_DATE(s.service_time_start,'%l:%i %p') HOUR_SECOND), 'GMT',
+					s.service_locn_time_zone)
+					DESC 
+				</isEqual>
+				<!-- <isEqual property="sortBy" compareValue="AppointmentDate">
+				       s.service_date1 DESC
+				</isEqual> -->
+			</isNotNull>
+		</isNotNull>
+		<isNotNull property="startIndex" prepend="LIMIT">
+			#startIndex#
+		</isNotNull>
+		<isNotNull property="numberOfRecords" prepend=",">
+			#numberOfRecords#
+		</isNotNull>
+	</select>
+	<select id="getDashboardCount.query" resultClass="dashboardcountVO" parameterClass = "dashBoardVO" >
+	      SELECT wf_alias.descr AS tabName ,COUNT(DISTINCT(hdr.so_id)) AS tabCount
+                 FROM so_hdr hdr,so_routed_providers srp,lu_wf_states_alias wf_alias  
+                 WHERE srp.so_id = hdr.so_id 
+                 <isNotNull>
+                     <isEqual property="roleId" compareValue="2">
+                        AND srp.resource_id=#resourceId#
+                    </isEqual>
+                 </isNotNull>   	 
+                 AND hdr.so_group_id IS NULL		         
+		         AND (hdr.so_substatus_id IS NULL OR hdr.so_substatus_id != 64)
+      	         AND (srp.provider_resp_id IS NULL OR srp.provider_resp_id NOT IN (3,5,7))
+                 AND wf_alias.wf_state_id = hdr.wf_state_id AND wf_alias.user_type = 'Provider'
+                 AND (hdr.accepted_vendor_id IS NULL OR hdr.accepted_vendor_id=#firmId#)
+          <isNotNull>
+             <isEqual property="roleId" compareValue="1">
+                AND srp.vendor_id=hdr.accepted_vendor_id AND srp.resource_id= hdr.accepted_resource_id
+                AND hdr.accepted_resource_id=#resourceId# AND hdr.accepted_vendor_id=#firmId#
+                AND  hdr.wf_state_id IN (150,155,170)
+             </isEqual>
+             <isEqual property="roleId" compareValue="2">
+                AND((hdr.accepted_resource_id=#resourceId#)
+                OR((hdr.accepted_resource_id IS NULL OR hdr.assignment_type='FIRM') AND srp.resource_id=#resourceId#))
+                AND ((hdr.wf_state_id=110 AND hdr.price_model != 'ZERO_PRICE_BID')
+				OR hdr.wf_state_id IN (150,155,170))
+            </isEqual>
+             <isEqual property="roleId" compareValue="3">
+                AND (srp.vendor_id =#firmId#)
+                AND ((hdr.wf_state_id=110 AND hdr.price_model != 'ZERO_PRICE_BID')
+				OR hdr.wf_state_id IN (150,155,170))
+             </isEqual>
+          </isNotNull>         
+	    GROUP BY hdr.wf_state_id
+	</select>
+    <delete id="deleteMobileFilter.delete" parameterClass="java.util.HashMap">
+   	   UPDATE mobile_search_filters SET delete_ind=1 WHERE resource_id = #resourceId# AND search_filter_id=#filterId#
+	</delete> 
+	
+		<select id="getRecievedOrdersCount.query"  parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+         SELECT COUNT(DISTINCT srp.so_id) FROM so_hdr hdr
+		  JOIN so_routed_providers srp ON hdr.so_id=srp.so_id AND srp.vendor_id = #firmId# 
+		 	<isNotNull property ="resourceId">
+				and srp.resource_id = #resourceId#
+			</isNotNull>
+		 WHERE hdr.wf_state_id= 110
+		 AND hdr.so_group_id IS NULL
+		 <isNull property ="bidOnlyInd">
+		 AND hdr.price_model != 'ZERO_PRICE_BID'
+		 </isNull>
+		 <isNotNull property ="bidOnlyInd">
+		 	<isEqual property="bidOnlyInd" compareValue="true">
+		 		AND hdr.price_model = 'ZERO_PRICE_BID'
+		 	</isEqual>
+		 </isNotNull>
+		 AND ( hdr.so_substatus_id IS NULL OR hdr.so_substatus_id != 64 )
+      	 AND ( srp.provider_resp_id IS NULL OR srp.provider_resp_id NOT IN ( 3, 5, 7 ) )
+    </select>
+	
+	<select id="getRecievedOrders.query"  parameterClass="java.util.HashMap" resultClass="recievedOrdersVO">
+					SELECT hdr.so_id AS soId, 
+					sow.method_of_routing AS orderType,
+					sow_title AS soTitle,
+					wf_alias.descr AS soStatus,
+					hdr.service_date1 AS serviceStartDate,
+					hdr.service_date2 AS serviceEndDate,
+					hdr.service_time_start AS serviceWindowStartTime,
+					hdr.service_time_end AS serviceWindowEndTime,
+					hdr.service_locn_time_zone AS	timeZone,
+					locn.city AS city,
+					locn.state_cd AS state,
+					locn.zip AS zip,
+					hdr.buyer_id AS buyerId,
+					buyer.business_name AS buyerName,
+					
+					hdr.created_date AS recievedDate,
+					hdr.spend_limit_labor AS spendLimit,
+					hdr.spend_limit_parts AS spendLimitParts,
+					
+					srp.followup_flag AS followUpFlag,
+					
+					<isNotNull property ="resourceId">
+						CONCAT(c.first_name,' ',c.last_name) AS routedProvider, 
+					</isNotNull>
+					<isNull property ="resourceId">
+						COUNT(srp.resource_id) AS routedProvider,
+					</isNull>
+					IF (locn1.so_locn_type_id = 40, 'Applicable', 'Not Applicable') AS productAvailability,
+					locn1.street_1 AS pickupAddress1,
+					locn1.street_2 AS pickupAddress2,
+					locn1.city AS pickupCity,
+					locn1.state_cd AS pickupState,
+					locn1.zip AS pickupZip,
+					cr.buyer_ref_value AS pickupDate
+					
+					FROM so_hdr hdr
+					JOIN so_routed_providers srp ON hdr.so_id = srp.so_id AND srp.vendor_id = #firmId#   
+							<isNotNull property ="resourceId"> AND srp.resource_id = #resourceId# </isNotNull>
+					JOIN lu_wf_states_alias wf_alias  ON wf_alias.wf_state_id = hdr.wf_state_id AND wf_alias.user_type = 'Provider'
+					JOIN so_workflow_controls sow ON sow.so_id=hdr.so_id
+					JOIN so_location locn ON (hdr.so_id = locn.so_id AND so_locn_type_id = 10)
+					LEFT OUTER JOIN so_custom_reference cr ON hdr.so_id = cr.so_id AND cr.buyer_ref_type_id =33 
+					JOIN buyer buyer ON buyer.buyer_id = hdr.buyer_id
+					LEFT OUTER JOIN so_location locn1 ON locn1.so_id = hdr.so_id AND locn1.so_locn_type_id = 40
+					<isNotNull property ="resourceId">
+					JOIN vendor_resource vr on  vr.resource_id= #resourceId#
+					JOIN contact c on c.contact_id=vr.contact_id
+					</isNotNull>
+					WHERE hdr.wf_state_id= 110
+					AND hdr.so_group_id IS NULL
+					AND hdr.price_model != 'ZERO_PRICE_BID'
+					AND (hdr.so_substatus_id IS NULL OR hdr.so_substatus_id != 64)
+					AND (srp.provider_resp_id IS NULL OR srp.provider_resp_id NOT IN (3,5,7))
+					GROUP BY hdr.so_id
+					
+					ORDER BY CONVERT_TZ(DATE_ADD(hdr.service_date1, INTERVAL STR_TO_DATE(hdr.service_time_start,'%l:%i %p') HOUR_SECOND), 'GMT', hdr.service_locn_time_zone) DESC
+					
+					LIMIT #pageLimit#,#pageSize#;
+
+    </select>
+	 
+	
+	<select id="query.get.search.filter" parameterClass="java.lang.Integer" resultMap="searchFilter">
+		SELECT search_filter_id,
+		resource_id,
+		filter_name
+		FROM mobile_search_filters
+		WHERE resource_id = #providerId#
+		AND delete_ind=0
+		ORDER BY LTRIM(filter_name);
+	</select>
+	<select id="query.get.search.filter.criteria" parameterClass="java.lang.Integer" resultMap="searchFilter.criteria">
+		SELECT search_criteria, 
+		search_criteria_value
+		FROM mobile_search_filter_criteria
+		WHERE search_filter_id = #search_filter_id#;
+	</select>
+	
+	
+	 <select id="isAuthToViewPostedSORoleTwo.query" parameterClass="java.util.HashMap" resultClass="java.lang.Integer" >
+     SELECT COUNT(so_id) FROM so_routed_providers WHERE resource_id=#resourceId# AND so_id=#soId# AND ( provider_resp_id NOT IN (3,5,7) OR provider_resp_id IS NULL) AND vendor_id=#firmId#;
+    </select>
+     <select id="isAuthToViewPostedSORoleThree.query" parameterClass="java.util.HashMap" resultClass="java.lang.Integer" >
+     SELECT COUNT(so_id) FROM so_routed_providers WHERE vendor_id=#firmId# AND so_id=#soId# AND ( provider_resp_id NOT IN (3,5,7) OR provider_resp_id IS NULL)
+    </select>
+    <select id="isAuthToViewSORoleTwo.query" parameterClass="java.util.HashMap" resultClass="java.lang.Integer" >
+     SELECT COUNT(so_id) FROM so_hdr WHERE accepted_resource_id=#resourceId# AND so_id=#soId#;
+    </select>
+    <select id="isAuthToViewSORoleThree.query" parameterClass="java.util.HashMap" resultClass="java.lang.Integer" >
+     SELECT COUNT(so_id) FROM so_hdr WHERE accepted_vendor_id=#firmId# AND so_id=#soId#;
+    </select>
+    <select id="getServiceOrderDetailsWithReceived.query" parameterClass= "java.util.HashMap"  resultMap="mobileSODetailsWithReceivedStatus.resultmap">
+		select sh.*,#resourceId# AS resourceId from so_hdr sh where sh.so_id = #soId# and sh.so_group_id  IS NULL;
+	</select>
+	
+	<select id="soRoutedResourceDataWithReceived.query" resultClass="providerVO" parameterClass="java.lang.String">
+	SELECT 
+ 	c.first_name AS providerFirstName ,
+ 	c.last_name AS providerLastName ,
+ 	vr.resource_id AS providerId ,
+	c.phone_no AS providerPrimaryPhone ,
+ 	c.mobile_no AS providerAltPhone,
+    vr.vendor_id  AS firmId,
+	vh.business_name AS firmName,
+	l.street_1 AS streetAddress1,
+ 	l.street_2 AS streetAddress2,
+	l.city AS city,
+	l.state_cd state,
+ 	l.zip  AS zip,
+ 	vh.bus_phone_no AS firmPrimaryPhone,
+ 	c1.phone_no  AS firmAltPhone,
+ 	c.email AS primaryEmail,
+	c.email_alt AS alternateEmail,
+	c.sms_no AS smsNumber 
+	FROM vendor_resource vr 
+	JOIN contact c    ON vr.contact_id = c.contact_id    
+	JOIN vendor_resource vr1  ON vr.vendor_id = vr1.vendor_id  AND vr1.primary_ind = 1 
+	JOIN contact c1   ON vr1.contact_id = c1.contact_id 
+	JOIN location l ON vr.locn_id =l.locn_id 
+	JOIN vendor_hdr vh ON  vh.vendor_id =vr.vendor_id 
+	AND vr.resource_id= #accepted_resource_id#
+	</select>
+	
+    <select id="buyerReferenceWithReceived.query" parameterClass="java.lang.String" resultClass="buyerReferenceVO">
+        SELECT buyerRef.ref_type AS refName,
+		custRef.buyer_ref_value AS refValue FROM 
+			so_custom_reference custRef,
+			buyer_reference_type buyerRef
+		WHERE custRef.so_id=#so_Id#
+		AND  custRef.buyer_ref_type_id = buyerRef.buyer_ref_type_id AND buyerRef.private_ind!=1
+        <!--  SELECT b.ref_type AS refName, b.buyer_ref_type_id AS refValue FROM
+        buyer_reference_type b WHERE buyer_input=1 AND b.buyer_id = #buyer_id# ;-->
+    </select>
+    <select id="soServiceLocationDataWithReceived.query" parameterClass="java.lang.String" resultClass="soServiceLocationVO">
+    SELECT 
+			sc.business_name AS businessName,
+			sc.first_name AS customerFirstName,
+			sc.last_name AS customerLastName,
+			sc.email AS email,			
+			sl.street_1 AS streetAddress1,
+			sl.street_2 AS streetAddress2,
+			sl.city AS city,
+			sl.state_cd AS state,
+			sl.zip AS zip,
+			sl.locn_notes AS serviceLocationNotes,
+			sc.so_contact_id AS soContactId
+	FROM so_contact sc 
+	JOIN so_contact_locn scl ON sc.so_id = scl.so_id AND sc.so_contact_id = scl.so_contact_id 
+	JOIN so_location sl ON sl.so_id = scl.so_id AND sl.so_locn_id = scl.so_locn_id 
+	JOIN so_hdr sh ON sh.so_id=sl.so_id
+	WHERE scl.so_contact_locn_type_id = 10 AND sc.so_contact_type_id=10 AND sc.so_id=#so_Id# LIMIT 1	 
+    </select>
+    <select id="soAltServiceLoctnDataWithReceived.query" parameterClass="java.lang.String" resultClass="soAltServiceLocationVO">
+    SELECT 
+			sc.first_name AS customerFirstName,
+			sc.last_name AS customerLastName,
+			sc.email AS email,				
+			sl.street_1 AS streetAddress1,
+			sl.street_2 AS streetAddress2,
+			sl.city AS city,
+			sl.state_cd AS state,
+			sl.zip AS zip,
+			sc.so_contact_id AS soContactId
+    FROM so_contact sc 
+	JOIN so_contact_locn scl ON sc.so_id = scl.so_id AND sc.so_contact_id = scl.so_contact_id 
+	LEFT OUTER JOIN so_location sl ON sl.so_id = scl.so_id AND sl.so_locn_id = scl.so_locn_id
+	WHERE scl.so_contact_locn_type_id = 20 AND sc.so_contact_type_id=20 AND sc.so_id=#so_Id# LIMIT 1
+	</select>
+	<select id="buyerDataWithReceived.query" resultClass="buyerDataVO">  		
+	SELECT 
+	b.business_name AS businessName,
+	c.first_name AS firstName,
+	c.last_name AS lastName,
+	b.buyer_id AS buyerUserId,
+	br.resource_id AS resourceId,
+	IF(l.street_1 IS NULL ,w.street_1,l.street_1) AS streetAddress1, 
+	IF(l.street_2 IS NULL ,w.street_2,l.street_2) AS streetAddress2, 
+	IF(l.city IS NULL ,w.city,l.city) AS city, 
+	IF(l.state_cd IS NULL ,w.state_cd,l.state_cd) AS state, 
+	IF(l.zip IS NULL ,w.zip,l.zip) AS zip,
+	c.phone_no AS primaryphone,
+	c.mobile_no AS alternatePhone, 
+	c.fax_no AS fax,
+	c.email AS email ,
+	up.role_id AS roleId,
+	b.min_time_window AS minTimeWindow,
+	b.max_time_window AS maxTimeWindow
+	FROM user_profile up 
+	JOIN buyer  b  ON(b.user_name = up.user_name )	
+	JOIN buyer_resource br ON  br.resource_id =#buyerResId# AND br.buyer_id=b.buyer_id	
+	LEFT OUTER JOIN location l ON(br.locn_id=l.locn_id)	
+	LEFT OUTER JOIN location w ON(b.pri_locn_id = w.locn_id)	
+	JOIN contact c ON( br.contact_id=c.contact_id )
+	WHERE b.buyer_id=#buyerId#
+  </select>	
+  <select id="taskListWithReceived.query" parameterClass="java.lang.String" resultClass="tasksVO">
+         SELECT			 
+			st.task_name AS taskName,
+			st.task_status AS taskStatus,
+			st.task_comments AS taskComments,
+			ltt.task_type AS taskType,
+			IF(st.task_type = 1,st.selling_price,NULL) AS custPrePaidAmount,
+			lst.descr AS taskSkill, 
+			CASE skt.level 
+				WHEN 2 THEN skt.node_name 
+				WHEN 3 THEN (SELECT par.node_name FROM skill_tree par WHERE par.node_id = skt.parent_node) 
+			END AS taskCategory,
+			CASE skt.level 
+				WHEN 3 THEN skt.node_name 
+			END AS tasksubCategory
+		FROM 
+			so_tasks st 
+				LEFT JOIN lu_service_type_template lst ON st.service_type_template_id = lst.service_type_template_id
+				LEFT JOIN skill_tree skt ON st.skill_node_id = skt.node_id
+				JOIN lu_task_type ltt ON st.task_type = ltt.task_type_id
+		WHERE st.so_id = #so_id# AND st.task_status != 'DELETED'
+		ORDER BY st.sort_order ,st.sequence_number ,st.final_price DESC;
+   </select>
+   <select id="documentsDataWithReceived.query" parameterClass="java.lang.String" resultClass="docmntVO">
+        SELECT
+         d.document_id AS documentId,
+         d.title AS documentType,
+         d.file_name AS fileName,
+         d.descr AS documentDescription, d.created_date AS uploadDateTime,
+         IF(d.role_id = 1,'Provider','Buyer') AS uploadedBy, 
+         sd.modified_by AS uploadedbyName,
+         d.format AS fileType,
+         d.doc_size AS docSize
+        FROM so_document sd, document d
+        WHERE sd.document_id = d.document_id AND sd.so_id = #so_Id#
+        AND d.delete_ind = 0
+        AND d.file_name NOT LIKE '%_Thumb%'
+        ORDER BY d.created_date DESC
+    </select>
+    <select id="soNotesWithReceived.query" parameterClass="java.lang.String" resultClass="orderNotesVO">
+		SELECT 
+		s.note_id AS noteId, 
+		s.note_subject AS noteSubject,
+		s.note AS noteBody,
+		lu.descr AS noteType,
+		s.created_by_name AS author,
+        s.created_date AS createdDate 
+		FROM so_notes s
+		JOIN lu_so_note_type lu ON lu.note_type_id = s.note_type_id 
+		WHERE s.so_id = #so_id# AND s.note_type_id != 1 AND ((role_id IN (3,2) AND private_ind = 0) OR role_id=1) ORDER BY modified_date DESC;
+	</select>
+	<select id="soSupportNotesWithReceived.query" parameterClass="java.lang.String" resultClass="supportNoteVO">
+		SELECT 
+		s.note_id AS noteId, 
+		s.note_subject AS noteSubject,
+		s.note AS note
+		FROM so_notes s		
+		WHERE s.so_id = #so_id# AND s.note_type_id = 1 AND s.note_subject !='Market Maker Response' ORDER BY modified_date DESC;
+	</select>
+	<select id="fetchParts.excludingMerchandiseWithReceived.query" parameterClass="java.lang.String" resultMap="parts.excludingMerchandise.withreceived.resultMap">
+		SELECT p.part_id AS partId,
+			CONCAT(p.manufacturer," ",p.model_no)AS partName,
+			p.manufacturer_part_number AS oemNumber,
+			p.order_number AS orderNumber,
+			p.purchase_order_number AS purchaseOrderNumber,
+			CONCAT(p.length,'X',p.width,'X',p.height) AS size,
+			p.weight AS weight,
+			p.vendor_part_number AS vendorPartNumber,
+			 p.quantity AS qty,
+			 lup.part_status_name AS partStatus,
+			 lus.descr AS shippingCarrier,
+			 lusc.descr AS coreReturnCarrier, 
+			 p.part_descr AS partDescription,
+			 p.additional_part_info AS additionalPartInfo,
+			 p.ship_track_no AS shippingTrackingNumber,
+			 p.ship_date AS shipDate,
+			 p.return_track_no AS coreReturnTrackingNumber, 
+			 p.return_track_date AS coreReturnDate,
+			 p.so_id AS so_id,
+			 so_locn_id AS so_locn_id   
+			FROM so_parts p
+			JOIN so_hdr h ON p.so_id=h.so_id and h.parts_supplied_by_id =1
+			LEFT OUTER JOIN lu_part_status lup ON p.part_status_id = lup.part_status_id
+			LEFT JOIN lu_shipping_carrier lus ON p.ship_carrier_id = lus.shipping_carrier_id
+			LEFT JOIN lu_shipping_carrier lusc ON p.return_carrier_id = lusc.shipping_carrier_id
+			WHERE p.so_id = #so_id#;
+	</select>
+	 <select id="pickupLocationWithReceived.query" resultClass="pickUpLocnVO">
+		SELECT 
+		sl.street_1 AS pickupLocationStreet1, 
+		sl.street_2 AS pickupLocationStreet2,
+		sl.city AS pickupLocationCity,
+		sl.state_cd AS pickupLocationState,
+		sl.zip AS pickupLocationZip,
+		slc.descr as pickupLocationName 
+		FROM so_location sl
+		JOIN so_contact_locn scl on sl.so_id = scl.so_id and
+		sl.so_locn_id = scl.so_locn_id left outer join
+		lu_so_location_class slc on sl.so_locn_class_id =
+		slc.so_locn_class_id 
+		WHERE scl.so_contact_locn_type_id = 40 AND
+		sl.so_locn_id=#so_locn_id# and sl.so_id =#so_id#
+	</select>
+	<select id="fetchMerchandisesWithReceived.query" parameterClass="java.lang.String" resultMap="merchandises.WithReceived.resultMap">
+		SELECT p.part_id AS partId,
+			p.manufacturer AS manufacturer,
+			p.model_no AS modelNumber,
+			p.serial_number AS serialNumber
+			FROM so_parts p
+			WHERE p.so_id = #so_id#;
+	</select>
+	 <select id="addonListWithReceived.query" parameterClass="java.lang.String" resultClass="soAddonsVO">   
+        SELECT 
+        	so_addon_id AS soAddonId, sku AS addonSKU, description AS description
+        	, retail_price AS customerCharge, IF(misc_ind=1,'Y','N') AS miscInd, tax_percentage AS taxPercentage
+        FROM 
+        	so_addon 
+        WHERE 
+        	so_id = #so_Id# AND auto_gen_ind != 1;
+     </select>
+     <select id="fetchSOtripsWithReceived.query" parameterClass="java.lang.String" resultMap="soTrip.WithReceived.resultMap">
+		SELECT 
+			so_trip_id AS so_trip_id,
+			trip_no AS tripNo,
+			current_appt_start_date AS currentApptStartDate,
+			current_appt_end_date AS currentApptEndDate,
+			current_appt_start_time AS currentApptStartTime,
+			current_appt_end_time AS currentApptEndTime,
+			trip_start_visit_id AS trip_start_visit_id,
+			trip_end_visit_id AS trip_end_visit_id,
+			trip_status AS tripStatus,
+			trip_start_source AS tripStartSource,
+			trip_end_source AS tripEndSource,
+			next_appt_start_date AS nextApptStartDate,
+			next_appt_end_date AS nextApptEndDate,
+			next_appt_start_time AS nextApptStartTime,
+			next_appt_end_time AS nextApptEndTime,
+			revisit_reason AS revisitReason,
+			merch_delivered AS merchandiseDeliveredIndicator,
+			work_started AS workStartedIndicator,
+			trip_comments AS revisitComments,
+			revisit_needed_created_by AS providerName
+		FROM so_trip s 
+ 		WHERE so_id = #so_id#;
+ 	</select>
+ <select id="fetchSOTripDetailsWithReceived.query" parameterClass="java.lang.Integer" resultMap="soTripChangeLog.WithReceived.resultMap">
+		SELECT change_type AS updatedComponent,
+			   GROUP_CONCAT(change_comments) AS changeComments 
+		FROM so_trip_details WHERE so_trip_id = #so_trip_id# 
+		GROUP BY change_type;
+ 	</select>
+ 	<select id="fetchInvoicePartsWithReceived.query" parameterClass="java.lang.String" resultMap="invoicePart.WithReceived.resultMap">
+			SELECT so_provider_invoice_parts_id AS invoicePartId,
+			       part_coverage                AS partCoverage,
+			       source                       AS partSource,
+			       part_no                      AS partNumber,
+			       description                  AS partDescription,
+			       invoice_no                   AS invoiceNumber,
+			       unit_cost                    AS unitCost,
+			       retail_price                 AS retailPrice,
+			       qty                          AS qty,
+			       source_non_sears             AS nonSearsSource,
+			       division_number              AS divisionNumber,
+			       source_number                AS sourceNumber,
+			       category                     AS category,
+			       part_status                  AS partStatus,
+			       IF(part_source = 'MANUAL', 'YES','NO') AS isManual	
+			FROM   so_provider_invoice_parts
+			WHERE  so_id = #so_id#
+			<!--  and delete_ind = 0;-->  		 
+ 	</select>
+ 	 	<select id="fetchInvoicePartsSupplierWithReceived.query" parameterClass="java.lang.String" resultMap="invoicePartSupplier.WithReceived.resultMap">
+			SELECT supplier_name AS supplierName,
+			       street_1      AS address1,
+			       street_2      AS address2,
+			       city          AS city,
+			       state_cd      AS state,
+			       zip           AS zip,
+			       phone         AS phone,
+			       fax           AS fax,
+			       latitude      AS latitude,
+			       longitude     AS longitude,
+			       distance      AS distance
+			FROM   so_provider_invoice_part_location
+			WHERE  invoice_part_id = #so_provider_invoice_parts_id#
+			<!--  and delete_ind = 0;-->  		 
+ 	</select>  
+ 	<select id="fetchInvoiceDocumentsWithReceived.query" parameterClass="java.lang.String" resultClass="docmntVO">
+	 SELECT
+         d.document_id AS documentId,
+         d.title AS documentType,
+         d.file_name AS fileName,
+         d.descr AS documentDescription, d.created_date AS uploadDateTime,
+         IF(d.role_id = 1,'Provider','Buyer') AS uploadedBy, 
+         sd.modified_by AS uploadedbyName,
+         d.format AS fileType,
+         d.doc_size AS docSize
+        FROM so_document sd, document d,so_provider_invoice_doc sipd 
+        WHERE sd.document_id = d.document_id AND sd.document_id = sipd.invoice_document_id
+	AND sipd.invoice_part_id = #invoicePartId#
+        AND d.delete_ind = 0
+        AND d.file_name NOT LIKE '%_Thumb%'
+        AND d.title = 'Parts Invoice'
+        ORDER BY d.created_date DESC
+ 	 </select> 
+ 	 <select id="fetchSOflag.query"  resultClass="java.lang.Boolean">
+			SELECT followup_flag FROM so_routed_providers WHERE so_id=#soId# AND resource_id=#resId#					 
+ 	</select>
+ 	<select id="getLatestTripDetailsWithReceived.query" parameterClass="java.lang.String" resultClass="latestTripDetailsVO">
+		SELECT
+		s.trip_no AS tripNo,
+		s.trip_status AS tripStatus,
+		v1.arrival_date AS checkInTime,
+		v2.departure_date AS checkOutTime
+		FROM so_trip s
+		LEFT OUTER JOIN so_onsite_visit v1 ON s.so_id = v1.so_id AND
+		v1.visit_id=s.trip_start_visit_id
+		LEFT OUTER JOIN so_onsite_visit v2 ON s.so_id=v2.so_id AND
+		v2.visit_id=s.trip_end_visit_id
+		WHERE s.so_id = #soId#
+		ORDER BY s.trip_no DESC
+		LIMIT 1;
+	</select>
+	 <select id="getProviderSODetails.query" parameterClass="java.lang.String" resultMap="soProviderList.resultMap">
+			SELECT sh.so_id,sh.wf_state_id,sh.assignment_type,sh.accepted_vendor_id FROM so_hdr sh WHERE sh.so_id= #soId#;				 
+ 	</select>
+ 	 <select id="getRoutedResourcesList.query" parameterClass="java.lang.String" resultClass="routedProvider">
+			SELECT srp.resource_id AS resourceId,srp.provider_resp_id AS providerRespId FROM so_routed_providers srp WHERE srp.so_id= #soId# AND (srp.provider_resp_id NOT IN (3,5,7) OR srp.provider_resp_id IS NULL);				 
+ 	</select>
+	
+	<insert id="saveFilter.insert" parameterClass="filtersVO"> 
+		INSERT INTO mobile_search_filters(resource_id,filter_name,delete_ind)
+			VALUES (#resourceId#, #filterName#,0)
+		<selectKey resultClass="int" > 
+			select LAST_INSERT_ID() as value
+		</selectKey>	
+	</insert>
+	
+	<insert id="saveFilter.criteria.insert" parameterClass="filterCriteriaVO"> 
+		INSERT INTO mobile_search_filter_criteria(search_filter_id,search_criteria,search_criteria_value)
+										  VALUES (#filterId#, #searchCriteria#, #searchCriteriaValueId# )
+	</insert>
+	
+	<delete id="deleteFilterCriteria.delete" parameterClass="java.lang.Integer">
+	   DELETE FROM mobile_search_filter_criteria WHERE search_filter_id = #filterId#
+	</delete> 
+	<update id="saveFilter.update" parameterClass="filtersVO">
+	   UPDATE mobile_search_filters SET filter_name = #filterName#, delete_ind = 0 WHERE search_filter_id = #filterId#
+	</update> 
+	<select id="getFilterCount.query" parameterClass="java.util.HashMap" resultClass="java.lang.Integer" >
+     	SELECT COUNT(search_filter_id) FROM mobile_search_filters WHERE resource_id = #resourceId# AND filter_name = #filterName# AND delete_ind = 0
+    </select>
+    <select id="getSoSearchCriteria.query" parameterClass="java.util.HashMap" resultClass="searchCriteriaVO" >
+   SELECT DISTINCT srp.resource_id AS resourceId,
+         CONCAT(cont.first_name,' ',cont.last_name) AS routedProvider,           
+        market.market_id AS marketId,
+        market.market_name AS marketName
+        FROM so_hdr s
+        JOIN so_location so_loc
+        ON s.so_id = so_loc.so_id
+        AND so_loc.so_locn_type_id =10
+        JOIN lu_zip_market zmar
+        ON so_loc.zip = zmar.zip
+        JOIN lu_market market
+        ON zmar.market_id = market.market_id
+        JOIN so_routed_providers srp
+        ON s.so_id=srp.so_id 
+	<isEqual property="roleId" compareValue="2">
+		AND srp.resource_id=#resourceId#
+	</isEqual>
+     	JOIN vendor_resource vr
+        ON srp.resource_id = vr.resource_id
+        LEFT OUTER JOIN contact cont
+        ON vr.contact_id = cont.contact_id        
+        WHERE s.so_group_id IS NULL
+        AND (srp.provider_resp_id NOT IN(3,5,7) OR srp.provider_resp_id IS NULL)
+        AND (s.so_substatus_id != 64 OR s.so_substatus_id IS NULL)
+        AND (s.accepted_vendor_id IS NULL OR s.accepted_vendor_id = #vendorId#)
+        <isNotNull property="roleId">
+	<isEqual property="roleId" compareValue="1">
+                AND srp.vendor_id=s.accepted_vendor_id
+                AND srp.resource_id=  s.accepted_resource_id 
+                AND s.accepted_resource_id=#resourceId# AND s.accepted_vendor_id=#vendorId#
+                AND  s.wf_state_id IN (150,155,170)
+         </isEqual>
+         </isNotNull>
+	
+         <isNotNull property="roleId">
+         <isEqual property="roleId" compareValue="2">
+                 AND(s.accepted_resource_id =#resourceId# OR 
+                 ((s.assignment_type = 'FIRM' OR s.assignment_type IS NULL) AND srp.resource_id =#resourceId#)) 
+                 AND ((s.wf_state_id=110 AND s.price_model != 'ZERO_PRICE_BID') OR
+				 s.wf_state_id IN (150,155,170))				
+         </isEqual>
+         </isNotNull>
+         
+         <isNotNull property="roleId">
+         <isEqual property="roleId" compareValue="3">
+		AND (srp.vendor_id =#vendorId#)
+		AND (
+		(srp.resource_id IN 
+			(SELECT sohdr.accepted_resource_id FROM so_hdr sohdr WHERE sohdr.assignment_type='PROVIDER' AND sohdr.accepted_vendor_id=#vendorId#
+			AND sohdr.wf_state_id IN (150,155,170))
+		)
+	      OR(
+			s.assignment_type='FIRM' AND s.accepted_vendor_id=#vendorId#
+		)
+		
+		OR(s.wf_state_id=110)	
+	     )
+		AND ((s.wf_state_id=110 AND s.price_model != 'ZERO_PRICE_BID')
+		OR s.wf_state_id IN (150,155,170))
+          </isEqual>
+          </isNotNull>  
+     GROUP BY s.so_id,resourceId,routedProvider;
+    </select>
+	<select id="getSoSearchCriteriaStatus.query"  resultClass="soStatusVO" >
+     	SELECT wf_alias.wf_state_id AS soStatusId,
+      	  wf_alias.descr AS soStatus,
+    	    lusub.so_substatus_id AS soSubStatusId,   
+ 	       lusub.descr AS soSubStatus FROM lu_wf_states_alias wf_alias 
+ 	       JOIN so_wf_substatus sws ON wf_alias.wf_state_id = sws.wf_state_id
+     		   LEFT OUTER JOIN lu_so_substatus lusub
+     		   ON sws.so_substatus_id = lusub.so_substatus_id 
+       		WHERE  wf_alias.user_type = 'Provider' 
+      		<isNotNull property="wfStatusIdList" prepend="AND wf_alias.wf_state_id in ">
+			<iterate property="wfStatusIdList" open="(" close=")"
+				conjunction=",">
+				#wfStatusIdList[]#
+			</iterate>
+		</isNotNull>
+		GROUP BY wf_alias.wf_state_id,lusub.so_substatus_id
+		ORDER BY lusub.descr;
+    </select>
+    
+    <select id="getCounteredResourceDetailsList.query" parameterClass="java.util.HashMap" resultClass="providerResultVO">
+ 		SELECT srp.resource_id 			AS resourceId,
+		vcontact.first_name			AS providerFirstName,
+		vcontact.last_name			AS providerLastName,
+		TRUNCATE(3956.5450000 * 2 * ATAN2(SQRT(SIN(RADIANS(geo.latitude -  llocation.gis_latitude) /2) * SIN(RADIANS(geo.latitude - llocation.gis_latitude) /2) + COS(RADIANS(geo.latitude)) * COS(RADIANS(llocation.gis_latitude)) * SIN((RADIANS(geo.longitude - llocation.gis_longitude)) /2) * SIN((RADIANS(geo.longitude - llocation.gis_longitude)) /2)), SQRT(1 - SIN(RADIANS(geo.latitude - llocation.gis_latitude) /2) * SIN(RADIANS(geo.latitude - llocation.gis_latitude) /2) + COS(RADIANS(llocation.gis_latitude)) * COS(RADIANS(geo.latitude)) * SIN((RADIANS(geo.longitude - llocation.gis_longitude)) /2) * SIN((RADIANS(geo.longitude - llocation.gis_longitude)) /2))),2) AS distanceFromBuyer
+		FROM so_hdr s   			
+		JOIN so_routed_providers srp ON s.so_id = srp.so_id AND srp.vendor_id=#vendorId#
+ 			AND (srp.provider_resp_id != 3 OR srp.provider_resp_id IS NULL)
+ 			AND (srp.provider_resp_id != 5 OR srp.provider_resp_id IS NULL)
+ 			AND (srp.provider_resp_id != 7 OR srp.provider_resp_id IS NULL)
+			AND (srp.price_model='NAME_PRICE' OR srp.price_model IS NULL)
+ 			AND (s.so_substatus_id != 64 OR s.so_substatus_id IS NULL)
+ 		JOIN so_contact_locn cont_loc ON s.so_id = cont_loc.so_id
+		JOIN lu_so_contact_locn_type lu_cont_loc ON lu_cont_loc.so_contact_locn_type_id = cont_loc.so_contact_locn_type_id
+			AND lu_cont_loc.so_contact_locn_type_id = 10 
+		JOIN so_location loc ON loc.so_id = cont_loc.so_id AND loc.so_locn_id = cont_loc.so_locn_id AND s.so_id = loc.so_id
+		JOIN zip_geocode geo ON loc.zip = geo.zip
+		JOIN vendor_resource vresource ON vresource.resource_id = srp.resource_id	
+		JOIN location llocation ON vresource.locn_id = llocation.locn_id 
+		JOIN lu_zip_market zmar ON llocation.zip = zmar.zip
+		JOIN lu_market market ON zmar.market_id = market.market_id
+		JOIN contact vcontact ON vresource.contact_id = vcontact.contact_id
+		WHERE s.so_id =#soId# AND srp.provider_resp_id=2
+		ORDER BY distanceFromBuyer ASC,
+		vcontact.last_name  ASC,
+ 		vcontact.first_name  ASC;
+	</select>
+    <!-- The action_id = 10 in this query is used to filter the action of type 'ReportProblem' -->
+	<select id="getMobileSOProblemDetails.query" parameterClass="java.lang.String"
+		resultClass="mobProblemDetailsVO">
+	SELECT DISTINCT
+	ss.problem_type AS subStatusDesc,
+	sologging.chg_comment AS pbComment
+	FROM so_hdr sohdr
+	JOIN so_workflow_controls ss ON ss.so_id = sohdr.so_id
+	JOIN so_logging sologging ON sologging.so_id = sohdr.so_id
+	WHERE
+	sohdr.so_id = #soId#
+	AND sologging.action_id = 10
+	ORDER BY sologging.so_logging_id DESC LIMIT 1
+	</select>
+    
+     <select id="getEstimationId.query" parameterClass="java.util.HashMap" resultClass="java.lang.Integer" >
+     SELECT estimation_id FROM so_estimation WHERE so_id=#soId# AND estimation_id=#estimationId#  
+   </select>
+    
+    <insert id="saveEstimation.insert" parameterClass="estimateVO"> 
+	    INSERT INTO so_estimation(
+			    so_id,
+			    reference_no,
+			    accept_source,
+			    description,
+			    comments,
+			    created_date,
+			    modified_date,
+			    created_by,
+			    modified_by,
+			    total_parts_price,
+			    total_labor_price,
+			    total_other_service_price,
+			    discount_type,
+			    discounted_amount,
+			    discounted_percentage,
+			    tax_rate,
+			    tax_type,
+			    tax,
+			    labor_discount_type,
+			    labor_discounted_percentage,
+			    labor_discounted_amount,
+			    labor_tax_rate,
+			    labor_tax_price,
+			    parts_discount_type,
+			    parts_discounted_percentage,
+			    parts_discounted_amount,
+			    parts_tax_rate,
+			    parts_tax_price,
+			    total_price,
+			    logo_doc_id,
+			    vendor_id,
+			    resource_id,
+			    estimation_date,
+			    status,
+			    estimation_expiry_date)
+	    VALUES (
+			    #soId#,
+			    #estimationRefNo#,
+			     #acceptSource#,
+			    #description#,
+			    #comments#,
+			    NOW(),
+			    NOW(),
+			    #createdBy#,
+			    #modifiedBy#,
+			    #totalPartsPrice#,
+			    #totalLaborPrice#,
+			    #totalOtherServicePrice#,
+			    #discountType#,
+			    #discountedAmount#,
+				#discountedPercentage#,
+				#taxRate#,
+				#taxType#,
+				#taxPrice#,
+				#laborDiscountType#,
+				#laborDiscountedPercentage#,
+				#laborDiscountedAmount#,
+				#laborTaxRate#,
+				#laborTaxPrice#,
+				#partsDiscountType#,
+				#partsDiscountedPercentage#,
+				#partsDiscountedAmount#,
+				#partsTaxRate#,
+				#partsTaxPrice#,
+				#totalPrice#,
+				#logoDocumentId#,
+				#vendorId#,
+				#resourceId#,
+				#estimationDate#,
+				#status#,
+				#estimationExpiryDate#)
+		<selectKey resultClass="int" > 
+			select LAST_INSERT_ID() as value
+		</selectKey>
+	</insert>
+	
+	    <insert id="saveEstimationHistory.insert" parameterClass="estimateVO"> 
+	    INSERT INTO so_estimation_history(
+	            estimation_id,
+			    so_id,
+			    reference_no,
+			    accept_source,
+			    description,
+			    comments,
+			    created_date,
+			    modified_date,
+			    created_by,
+			    modified_by,
+			    total_parts_price,
+			    total_labor_price,
+			    total_other_service_price,
+			    discount_type,
+			    discounted_amount,
+			    discounted_percentage,
+			    tax_rate,
+			    tax_type,
+			    tax,
+			    labor_discount_type,
+			    labor_discounted_percentage,
+			    labor_discounted_amount,
+			    labor_tax_rate,
+			    labor_tax_price,
+			    parts_discount_type,
+			    parts_discounted_percentage,
+			    parts_discounted_amount,
+			    parts_tax_rate,
+			    parts_tax_price,
+			    total_price,
+			    logo_doc_id,
+			    vendor_id,
+			    resource_id,
+			    estimation_date,
+			    status,
+			    action,
+			    estimation_expiry_date)
+	    VALUES (
+	    #estimationId#,
+			    #soId#,
+			    #estimationRefNo#,
+			    #acceptSource#,
+			    #description#,
+			    #comments#,
+			    NOW(),
+			    NOW(),
+			    #createdBy#,
+			    #modifiedBy#,
+			    #totalPartsPrice#,
+			    #totalLaborPrice#,
+			    #totalOtherServicePrice#,
+			    #discountType#,
+			    #discountedAmount#,
+				#discountedPercentage#,
+				#taxRate#,
+				#taxType#,
+				#taxPrice#,
+				#laborDiscountType#,
+				#laborDiscountedPercentage#,
+				#laborDiscountedAmount#,
+				#laborTaxRate#,
+				#laborTaxPrice#,
+				#partsDiscountType#,
+				#partsDiscountedPercentage#,
+				#partsDiscountedAmount#,
+				#partsTaxRate#,
+				#partsTaxPrice#,
+				#totalPrice#,
+				#logoDocumentId#,
+				#vendorId#,
+				#resourceId#,
+				#estimationDate#,
+				#status#,
+				#action#,
+				#estimationExpiryDate#)
+		<selectKey resultClass="int" > 
+			select LAST_INSERT_ID() as value
+		</selectKey>
+	</insert>
+    
+    
+    	   
+    
+    <insert id="saveEstimationLaborItems.insert" parameterClass="estimateTaskVO"> 
+		 INSERT INTO so_estimation_items(estimation_id,type,description,created_date,modified_date,additional_details,
+		        name,seq_no,unit_price,quantity,total_price)
+		 VALUES (#estimationId#, #taskType#, #description#,NOW(),NOW(),#additionalDetails#,
+		        #taskName#,#taskSeqNumber#,#unitPrice#,#quantity#,#totalPrice#)
+		<selectKey resultClass="int" > 
+			select LAST_INSERT_ID() as value
+		</selectKey> 
+	</insert>
+	
+	
+	<update id="updateEstimationLaborItems.insert" parameterClass="estimateTaskVO"> 
+		 UPDATE so_estimation_items
+		 SET description=#description#,
+		 modified_date=NOW(),
+		 additional_details=#additionalDetails#,
+		 name=#taskName#,
+		 unit_price=#unitPrice#,
+		 quantity=#quantity#,
+		 total_price=#totalPrice#
+		 WHERE estimation_id=#estimationId#      
+		 AND type='LABOR' AND seq_no=#taskSeqNumber#
+	</update>
+	
+	<insert id="saveEstimationLaborItemsHistory.insert" parameterClass="estimateTaskVO"> 
+		 INSERT INTO so_estimation_items_history(item_id,estimation_id,type,description,created_date,modified_date,additional_details,
+		        name,seq_no,unit_price,quantity,total_price,action,estimation_history_id)
+		 VALUES (#itemId#,#estimationId#, #taskType#, #description#,NOW(),NOW(),#additionalDetails#,
+		        #taskName#,#taskSeqNumber#,#unitPrice#,#quantity#,#totalPrice#,#action#,#estimationHistoryId#)
+	</insert>
+	
+	<insert id="saveEstimationPartItems.insert" parameterClass="estimateTaskVO"> 
+	   INSERT INTO so_estimation_items(estimation_id,type,description,created_date,modified_date,additional_details,
+	           name,seq_no,item_number,unit_price,quantity,total_price)
+	   VALUES (#estimationId#, #taskType#,#description#,NOW(),NOW(),#additionalDetails#,
+	           #partName#,#partSeqNumber#,#partNumber#,#unitPrice#,#quantity#,#totalPrice#) 
+		<selectKey resultClass="int" > 
+			select LAST_INSERT_ID() as value
+		</selectKey> 	
+	</insert>
+	
+	<update id="updateEstimationPartItems.insert" parameterClass="estimateTaskVO"> 
+		 UPDATE so_estimation_items
+		 SET description=#description#,
+		 modified_date=NOW(),
+		 additional_details=#additionalDetails#,
+		 name=#partName#,
+		 item_number=#partNumber#,
+		 unit_price=#unitPrice#,
+		 quantity=#quantity#,
+		 total_price=#totalPrice#
+		  WHERE estimation_id=#estimationId#      
+		  AND type='PART' AND seq_no=#partSeqNumber#
+	</update>
+	
+	<insert id="saveEstimationPartItemsHistory.insert" parameterClass="estimateTaskVO"> 
+	   INSERT INTO so_estimation_items_history(item_id,estimation_id,type,description,created_date,modified_date,additional_details,
+	           name,seq_no,item_number,unit_price,quantity,total_price,action,estimation_history_id)
+	   VALUES (#itemId#,#estimationId#, #taskType#,#description#,NOW(),NOW(),#additionalDetails#,
+	           #partName#,#partSeqNumber#,#partNumber#,#unitPrice#,#quantity#,#totalPrice#,#action#,#estimationHistoryId#) 
+	</insert>
+	
+	<insert id="saveEstimationOtherEstimateServiceItems.insert" parameterClass="estimateTaskVO"> 
+	   INSERT INTO so_estimation_items(estimation_id,type,description,created_date,modified_date,additional_details,
+	           name,seq_no,unit_price,quantity,total_price)
+	   VALUES (#estimationId#, #otherServiceType#,#description#,NOW(),NOW(),#additionalDetails#,
+	           #otherServiceName#,#otherServiceSeqNumber#,#unitPrice#,#quantity#,#totalPrice#) 
+		<selectKey resultClass="int" > 
+			select LAST_INSERT_ID() as value
+		</selectKey> 	
+	</insert>
+	
+	
+	<update id="updateEstimationOtherEstimateServiceItems.insert" parameterClass="estimateTaskVO"> 
+		 UPDATE so_estimation_items
+		 SET description=#description#,
+		 modified_date=NOW(),
+		 additional_details=#additionalDetails#,
+		 name=#otherServiceName#,
+		 unit_price=#unitPrice#,
+		 quantity=#quantity#,
+		 total_price=#totalPrice#
+		  WHERE estimation_id=#estimationId#      
+		  AND type IN ('Other','Cancellation Fee','Service Fee') AND seq_no=#otherServiceSeqNumber#
+	</update>
+
+	<insert id="saveEstimationOtherEstimateServiceItemsHistory.insert" parameterClass="estimateTaskVO"> 
+	   INSERT INTO so_estimation_items_history(item_id,estimation_id,type,description,created_date,modified_date,additional_details,
+	           name,seq_no,unit_price,quantity,total_price,action,estimation_history_id)
+	   VALUES (#itemId#,#estimationId#, #otherServiceType#,#description#,NOW(),NOW(),#additionalDetails#,
+	           #otherServiceName#,#otherServiceSeqNumber#,#unitPrice#,#quantity#,#totalPrice#,#action#,#estimationHistoryId#) 
+	</insert>	
+	
+	<update id="updateEstimateDetails.update" parameterClass="estimateVO">
+	   UPDATE  so_estimation SET 
+	                so_id = #soId#, 
+	                reference_no = #estimationRefNo#,
+	                accept_source = #acceptSource#,
+	                description=#description#,
+	                comments=#comments#,
+	                modified_date =NOW(),
+	                modified_by=#modifiedBy#,
+	                total_parts_price = #totalPartsPrice#,
+	                total_labor_price=#totalLaborPrice#,
+	                total_other_service_price=#totalOtherServicePrice#,
+	                discount_type=#discountType#,
+	                discounted_amount=#discountedAmount#,
+	                discounted_percentage=#discountedPercentage#,
+	                tax_rate=#taxRate#,
+	                tax_type=#taxType#,
+	                tax=#taxPrice#,
+	                labor_discount_type= #laborDiscountType#,
+				    labor_discounted_percentage=#laborDiscountedPercentage#,
+				    labor_discounted_amount=#laborDiscountedAmount#,
+				    labor_tax_rate=#laborTaxRate#,
+				    labor_tax_price=#laborTaxPrice#,
+				    parts_discount_type=#partsDiscountType#,
+				    parts_discounted_percentage=#partsDiscountedPercentage#,
+				    parts_discounted_amount=#partsDiscountedAmount#,
+				    parts_tax_rate=#partsTaxRate#,
+				    parts_tax_price=#partsTaxPrice#,
+		            total_price=#totalPrice#,
+	                logo_doc_id=#logoDocumentId#,
+	                vendor_id=#vendorId#,
+	                resource_id=#resourceId#,
+                 	status = #status#,
+	                estimation_date=#estimationDate#,
+	                estimation_expiry_date=#estimationExpiryDate#
+	   WHERE estimation_id = #estimationId# 
+	</update>
+	
+	 
+	
+	<delete id="deleteEstimationItems.delete" parameterClass="java.lang.Integer">
+	   DELETE FROM so_estimation_items WHERE item_id = #itemId# 
+	</delete>
+	
+	<delete id="deleteEstimationHistory.delete" parameterClass="java.lang.Integer">
+	   DELETE FROM so_estimation_history WHERE estimation_history_id = #historyId# 
+	</delete> 
+	
+	<select id="getEstimate.query" parameterClass= "java.util.HashMap"  resultMap="estimateDetails.resultmap">
+		SELECT * FROM so_estimation estimation WHERE estimation.estimation_id=#estimateId# AND estimation.so_id=#soId#;
+	</select>
+	
+	<select id="getEstimateByVendorAndResource.query" parameterClass= "java.util.HashMap"  resultMap="estimateDetails.resultmap">
+		SELECT * FROM so_estimation estimation WHERE  
+		 estimation.so_id=#soId# and estimation.vendor_id=#vendorId# 
+		 <isNotNull prepend="AND" property="resourceID">
+            estimation.resource_id=#resourceID#                   
+		 </isNotNull>
+                           
+							
+	</select>
+	
+	
+    <select id="getEstimateMain.query" parameterClass= "java.util.HashMap"  resultMap="estimateDetailsMain.resultmap">
+		SELECT * FROM so_estimation estimation WHERE estimation.estimation_id=#estimationId# AND estimation.so_id=#soId#;
+	</select>
+	
+	<select id="fetchEstimate.query" parameterClass= "java.util.HashMap"  resultMap="fetchEstimateDetails.resultmap">
+		SELECT * FROM so_estimation estimation WHERE estimation.estimation_id=#estimateId# AND estimation.so_id=#soId#;
+	</select>
+	    
+	
+	<select id="getEstimateTasks.query" resultMap="estimateTaks.resultmap">
+		SELECT * FROM so_estimation_items item WHERE item.estimation_id=#estimateId# and item.type='LABOR';
+	</select>
+	<select id="getEstimateParts.query" resultMap="estimateParts.resultmap">
+		SELECT * FROM so_estimation_items item WHERE item.estimation_id=#estimateId# and item.type='PART';
+	</select>
+	<select id="getEstimateOtherServices.query" resultMap="estimateOtherEstimateServices.resultmap">
+		SELECT * FROM so_estimation_items item WHERE item.estimation_id=#estimateId# and item.type IN('Service Fee','Cancellation Fee','Other');
+	</select>
+	<!-- Get Estimate History Details -->
+	<select id="getEstimatesHistory.query" resultMap="estimatesHistoryList.resultmap">
+        SELECT * FROM so_estimation_history estimation WHERE estimation.estimation_id=#estimationId#;
+    </select>
+    
+    <!-- Get Estimate price which is recently accepted  -->
+    <select id="getEstimateLatestAccetedPrice.query" parameterClass="java.lang.Integer" resultClass="java.lang.Double">
+       select total_price from so_estimation_history where estimation_id=#estimationId# and status='ACCEPTED' order by estimation_history_id desc  limit 1;
+    </select>
+    
+    <select id="getEstimatesTaskHistoryDetails.query" resultMap="estimatesLaborHistoryDetails.resultmap">
+		SELECT * FROM so_estimation_items_history item WHERE item.estimation_id=#estimateId# and item.type='LABOR';
+	</select>
+	<select id="getEstimatesPartHistoryDetails.query" resultMap="estimatesPartHistoryDetails.resultmap">
+		SELECT * FROM so_estimation_items_history item WHERE item.estimation_id=#estimateId# and item.type='PART';
+	</select>
+	<select id="getEstimatesOtherServicesHistoryDetails.query" resultMap="estimateOtherServicesHistory.resultmap">
+		SELECT * FROM so_estimation_items_history item WHERE item.estimation_id=#estimateId# and item.type IN('Service Fee','Cancellation Fee','Other');
+	</select>
+	<select id="getEstimateStatus.query" parameterClass="java.util.HashMap" resultClass="java.lang.String" >
+		SELECT status FROM so_estimation WHERE so_id=#soId# AND estimation_id=#estimationId#  
+	</select>
+	
+<!-- 	code change for SLT-2112 -->
+	<select id="getServiceLocnTimeZone.query" parameterClass="java.util.HashMap" resultClass="java.lang.String" >
+	     SELECT h.service_locn_time_zone FROM so_hdr h WHERE h.so_id=#soId#
+	</select>
+	    <select id="getBidOrders.query"  parameterClass="java.util.HashMap" resultMap="recievedOrdersMap">
+					SELECT hdr.so_id AS soId, 
+					sow.method_of_routing AS orderType,
+					sow_title AS soTitle,
+					wf_alias.descr AS soStatus,
+					hdr.service_date1 AS serviceStartDate,
+					hdr.service_date2 AS serviceEndDate,
+					hdr.service_time_start AS serviceWindowStartTime,
+					hdr.service_time_end AS serviceWindowEndTime,
+					hdr.service_locn_time_zone AS	timeZone,
+					locn.city AS city,
+					locn.state_cd AS state,
+					locn.zip AS zip,
+					hdr.buyer_id AS buyerId,
+					buyer.business_name AS buyerName,
+					
+					hdr.created_date AS recievedDate,
+					hdr.spend_limit_labor AS spendLimit,
+					hdr.spend_limit_parts AS spendLimitParts,
+					srp.resource_id As resourceId,
+					srp.followup_flag AS followUpFlag,
+					
+					<isNotNull property ="resourceId">
+						CONCAT(c.first_name,' ',c.last_name) AS routedProvider, 
+					</isNotNull>
+					<isNull property ="resourceId">
+						COUNT(srp.resource_id) AS routedProvider,
+					</isNull>
+					IF (locn1.so_locn_type_id = 40, 'Applicable', 'Not Applicable') AS productAvailability,
+					locn1.street_1 AS pickupAddress1,
+					locn1.street_2 AS pickupAddress2,
+					locn1.city AS pickupCity,
+					locn1.state_cd AS pickupState,
+					locn1.zip AS pickupZip,
+					cr.buyer_ref_value AS pickupDate,
+					IF(sow.sealed_bid_ind IS NULL,0,sow.sealed_bid_ind)AS sealedBidInd
+					
+					FROM so_hdr hdr
+					JOIN so_routed_providers srp ON hdr.so_id = srp.so_id AND srp.vendor_id = #firmId#   
+							<isNotNull property ="resourceId"> AND srp.resource_id = #resourceId# </isNotNull>
+					JOIN lu_wf_states_alias wf_alias  ON wf_alias.wf_state_id = hdr.wf_state_id AND wf_alias.user_type = 'Provider'
+					JOIN so_workflow_controls sow ON sow.so_id=hdr.so_id
+					JOIN so_location locn ON (hdr.so_id = locn.so_id AND so_locn_type_id = 10)
+					LEFT OUTER JOIN so_custom_reference cr ON hdr.so_id = cr.so_id AND cr.buyer_ref_type_id =33 
+					JOIN buyer buyer ON buyer.buyer_id = hdr.buyer_id
+					LEFT OUTER JOIN so_location locn1 ON locn1.so_id = hdr.so_id AND locn1.so_locn_type_id = 40
+					<isNotNull property ="resourceId">
+					JOIN vendor_resource vr on  vr.resource_id= #resourceId#
+					JOIN contact c on c.contact_id=vr.contact_id
+					</isNotNull>
+					WHERE hdr.wf_state_id= 110
+					AND hdr.so_group_id IS NULL
+					AND hdr.price_model = 'ZERO_PRICE_BID'
+					AND (hdr.so_substatus_id IS NULL OR hdr.so_substatus_id != 64)
+					AND (srp.provider_resp_id IS NULL OR srp.provider_resp_id NOT IN (3,5,7))
+					GROUP BY hdr.so_id
+					ORDER BY CONVERT_TZ(DATE_ADD(hdr.service_date1, INTERVAL STR_TO_DATE(hdr.service_time_start,'%l:%i %p') HOUR_SECOND), 'GMT', hdr.service_locn_time_zone) DESC
+					LIMIT #pageLimit#,#pageSize#;
+
+    </select>
+    
+    <select id="getServiceDateTimeZoneOffset.query" parameterClass="java.lang.String" resultClass="java.lang.Integer" >
+	     SELECT h.service_date_timezone_offset FROM so_hdr h WHERE h.so_id=#soId#
+	</select>
+	
+	
+	<select id="getBidRequestCount.query" resultClass="java.lang.Integer" parameterClass = "dashBoardVO" >
+	      SELECT COUNT(DISTINCT(hdr.so_id)) AS tabCount
+                 FROM so_hdr hdr,so_routed_providers srp,lu_wf_states_alias wf_alias  
+                 WHERE srp.so_id = hdr.so_id 	 
+                 AND hdr.so_group_id IS NULL		         
+		         AND (hdr.so_substatus_id IS NULL OR hdr.so_substatus_id != 64)
+      	         AND (srp.provider_resp_id IS NULL OR srp.provider_resp_id NOT IN (3,5,7))
+                 AND wf_alias.wf_state_id = hdr.wf_state_id AND wf_alias.user_type = 'Provider'
+                 AND (hdr.accepted_vendor_id IS NULL)
+        <isNotNull>
+        	<isEqual property="roleId" compareValue="2">
+            AND srp.resource_id=#resourceId#
+             AND hdr.wf_state_id=110 AND hdr.price_model = 'ZERO_PRICE_BID'
+         	 </isEqual>
+           <isEqual property="roleId" compareValue="3">
+             AND srp.vendor_id =#firmId#
+              AND hdr.wf_state_id=110 AND hdr.price_model = 'ZERO_PRICE_BID'
+            </isEqual>
+         </isNotNull>         
+	</select>
+	
+	<select id="getOrderTypes.query" parameterClass="java.util.List" resultClass="java.util.HashMap">
+		SELECT so.so_id AS soId,scr.buyer_ref_value AS orderType FROM so_hdr so JOIN buyer_reference_type brf
+ 		ON(so.buyer_id=brf.buyer_id AND brf.active_ind=1 AND brf.buyer_id=3333 )
+		JOIN so_custom_reference scr ON(so.so_id=scr.so_id AND scr.buyer_ref_type_id=brf.buyer_ref_type_id)
+		WHERE brf.ref_type='Order_Type'AND so.so_id IN
+		<iterate open="(" close=")" conjunction=",">	
+		#[]#
+		</iterate>
+	</select>
+	
+		<select id="getEstimationListForVendor.query" parameterClass="recievedOrdersCriteriasVO" resultClass="estimateListVO">
+		SELECT estimation.so_id AS soId,estimation.estimation_id AS estimationId,
+		estimation.reference_no AS  estimationRefNo, estimation.status AS status,
+		 estimation.resource_id AS resourceId
+		FROM so_estimation estimation WHERE  estimation.vendor_id=#firmId# 
+		<isEqual property="roleId" compareValue="1">
+		AND estimation.resource_id=#resourceId#
+		</isEqual>
+		<isEqual property="roleId" compareValue="2">
+		AND estimation.resource_id=#resourceId#
+		</isEqual>
+		AND estimation.so_id IN
+		<iterate property="serviceOrderIds"  open="(" close=")" conjunction=",">	
+		#serviceOrderIds[]#
+		</iterate>
+	   </select>	
+			
+     	<select id="getValidSoCount.query" resultClass="java.lang.Integer" parameterClass = "java.lang.String" >
+         SELECT COUNT(1) FROM so_hdr WHERE so_id=#soId# AND wf_state_id NOT IN(120,125,160,180)
+             	</select>
+	
+	
+</sqlMap>

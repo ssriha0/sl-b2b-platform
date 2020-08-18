@@ -1,0 +1,71 @@
+<main>
+    <wait-loader [showLoader]="showLoader"></wait-loader>
+    <div class="bootstrap-scope page-color">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 remove-padding-left-right">
+                <sl-consumer-header></sl-consumer-header>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 remove-padding-left-right">
+                <img src="../../assets/images/getstarted/getstarted.png" class="img-responsive" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 add-margin-left-right">
+                <div class="subpage-header-text add-margin-top-bottom">New Opportunity</div>
+
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 add-margin-left-right">
+                <div>
+                    Dummy description dummy description dummy description dummy description dummy description dummy description dummy description
+                    dummy description dummy description dummy description dummy description dummy description dummy description
+                    dummy description dummy description dummy description dummy description dummy description dummy description
+                    dummy description dummy description dummy description dummy description dummy description dummy description
+                    dummy description dummy description dummy description dummy description dummy description dummy description
+                    dummy description dummy description dummy description dummy description dummy description dummy description
+                    dummy description dummy description dummy description dummy description dummy description dummy description
+                    dummy description dummy description dummy description dummy description dummy description dummy description
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center add-margin-top-bottom loading-msg" *ngIf="loadingMessage">
+                {{loadingMessage}}
+            </div>
+            <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-xs-offset-1 col-sm-offset-1 col-md-offset-1 col-lg-offset-1 text-center" *ngIf="!loadingMessage">
+                <service-carousel [skuDetails]="skuData"></service-carousel>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center add-margin-top-bottom">
+                <button routerLink="/profile" routerLinkActive="active" class="btn btn-primary corner-border bottom-nav-button" skipLocationChange> Get Started </button>
+            </div>
+        </div>
+        <br />
+    </div>
+
+    <!-- Error Modal -->
+    <div class="modal fade modal-popup-custom" id="errorModal" role="dialog" #errorModal>
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <a href="#" class="close-button" data-dismiss="modal">
+                        <div class="glyphicon glyphicon-remove"></div>
+                    </a>
+                    <div class="modal-title text-center modal-header-text">Sku List</div>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div># Error occured while loading Skus.</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary ok-button-width corner-border" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

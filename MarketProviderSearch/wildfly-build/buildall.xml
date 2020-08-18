@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="../" default="compile-dependencies" name="MarketPublicAPI-BuildAll" >
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+	<target name="compile-dependencies"> 
+		<ant antfile="../MarketCommon/wildfly-build/build.xml"   dir="../MarketCommon"/>
+		<ant antfile="../MarketBusinessInterface/wildfly-build/build.xml" dir="../MarketBusinessInterface"/>
+		<ant antfile="../MarketProviderSearch/wildfly-build/build.xml" dir="../MarketProviderSearch"/>
+	</target>
+</project>

@@ -1,0 +1,134 @@
+<!DOCTYPE validators PUBLIC
+        "-//Apache Struts//XWork Validator 1.0.2//EN"
+        "http://struts.apache.org/dtds/xwork-validator-1.0.2.dtd">
+        
+<validators>
+  
+  <field name="wdto.freeEstimate">
+     <field-validator type="requiredstring" >
+           <param name="trim">true</param>
+           <message key="warranty.freeEstimate.required.error" />
+      </field-validator>
+  </field>  	
+  
+  <field name="wdto.warrPeriodLabor">
+  	<field-validator type="ignoreDisabledField">
+  		<param name="trim">true</param>
+  		<param name="warranty">"on"</param>
+  		<param name="dependentFieldName">wdto.warrOfferedLabor</param>
+  	 	<message key="warranty.warrPeriodLabor.required.error" />
+	</field-validator>  
+     <!-- field-validator type="requiredstring" >
+           <param name="trim">true</param>
+           <message key="warranty.warrPeriodLabor.required.error" />
+      </field-validator-->
+  </field>
+  
+  <field name="wdto.warrPeriodParts">
+  	<field-validator type="ignoreDisabledField">
+  		<param name="trim">true</param>
+  		<param name="warranty">"on"</param>
+  		<param name="dependentFieldName">wdto.warrOfferedParts</param>
+  	 	<message key="warranty.warrPeriodParts.required.error" />
+	</field-validator>   
+     <!-- field-validator type="requiredstring" >
+           <param name="trim">true</param>
+           <message key="warranty.warrPeriodParts.required.error" />
+      </field-validator-->
+  </field>
+
+  <field name="wdto.warrOfferedLabor">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="warranty.warrOfferedLabor.required.error" />
+      </field-validator>
+  </field>
+  
+  <field name="wdto.warrOfferedParts">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="warranty.warrOfferedParts.required.error" />
+      </field-validator>
+  </field>
+    
+  <field name="wdto.conductDrugTest">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="warranty.conductDrugTest.required.error" />
+      </field-validator>
+  </field>
+  
+  <field name="wdto.hasEthicsPolicy">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="warranty.hasEthicsPolicy.required.error" />
+      </field-validator>
+  </field>
+  
+  <field name="wdto.requireUsDoc">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="warranty.requireUsDoc.required.error" />
+      </field-validator>
+  </field>
+  
+  <field name="wdto.requireBadge">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="warranty.requireBadge.required.error" />
+      </field-validator>
+  </field>
+  
+  <field name="wdto.considerDrugTest">
+  	<field-validator type="ignoreDisabledField">
+  		<param name="trim">true</param>
+  		<param name="warranty">"off"</param>
+  		<param name="dependentFieldName">wdto.conductDrugTest</param>
+  	 	<message key="warranty.considerDrugTest.required.error" />
+	</field-validator>   
+     <!-- field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="warranty.considerDrugTest.required.error" />
+      </field-validator-->
+  </field>
+  
+  <field name="wdto.considerEthicPolicy">
+  	<field-validator type="ignoreDisabledField">
+  		<param name="trim">true</param>
+  		<param name="warranty">"off"</param>
+  		<param name="dependentFieldName">wdto.hasEthicsPolicy</param>
+  	 	<message key="warranty.considerEthicPolicy.required.error" />
+	</field-validator>  
+     <!-- field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="warranty.considerEthicPolicy.required.error" />
+      </field-validator-->
+  </field>
+  
+  <field name="wdto.considerImplPolicy">
+  	<field-validator type="ignoreDisabledField">
+  		<param name="trim">true</param>
+  		<param name="warranty">"off"</param>
+  		<param name="dependentFieldName">wdto.requireUsDoc</param>
+  	 	<message key="warranty.considerImplPolicy.required.error" />
+	</field-validator>  
+     <!-- field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="warranty.considerImplPolicy.required.error" />
+      </field-validator-->
+  </field>
+  
+  <field name="wdto.considerBadge">
+  	<field-validator type="ignoreDisabledField">
+  		<param name="trim">true</param>
+  		<param name="warranty">"off"</param>
+  		<param name="dependentFieldName">wdto.requireBadge</param>
+  	 	<message key="warranty.considerBadge.required.error" />
+	</field-validator>   
+     <!-- field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="warranty.considerBadge.required.error" />
+      </field-validator-->
+  </field>
+  
+</validators>

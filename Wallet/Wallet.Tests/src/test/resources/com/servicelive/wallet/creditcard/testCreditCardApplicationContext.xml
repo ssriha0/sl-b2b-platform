@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-2.0.xsd">
+
+	<import resource="classpath:/testApplicationContext.xml" />
+	<import resource="classpath:/com/servicelive/wallet/creditcard/creditCardApplicationContext.xml" />
+
+	<alias name="dataSourceFinance" alias="dataSource"/>
+	<alias name="dsTransactionManagerFinance" alias="transactionManager"/>
+	
+	<bean id="mockCreditCardDao" class="com.servicelive.wallet.creditcard.mocks.MockCreditCardDao">
+		<property name="creditCardDao" ref="walletCreditCardDao"/>
+	</bean>
+	
+</beans>
+

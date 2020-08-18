@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="documentExpiry">
+<typeAlias alias="expiryDetailsVO" type ="com.newco.marketplace.dto.vo.ExpiryDetailsVO"/>
+<typeAlias alias="auditHistoryVO" type ="com.newco.marketplace.dto.vo.audit.AuditHistoryVO"/>
+
+<select id="fetchFirmDetails"  resultClass="expiryDetailsVO" >
+SELECT hdr.vendor_id AS firmId,
+hdr.business_name AS firmName,
+cred.cred_type_id AS credentialTypeId,
+lu_cred_type.cred_type_desc AS credentialType,
+cred.cred_category_id AS credentialCategoryId,
+lu_cred_category.cred_category AS credentialCategory,
+cred.cred_expiration_date AS credentialExpirationDate,
+cred.wf_state_id AS credentialStatus,
+cred.vendor_cred_id AS credentialId,
+cred_doc.document_id AS documentId,
+audit_task.audit_task_id AS auditTaskId,
+con.email AS firmEmail,
+audit.notification_type AS auditInd,
+audit.audit_cred_expiry_notification_id AS notificationId,
+cred.cred_name AS credName,
+cred.cred_no AS credNumber
+FROM vendor_hdr hdr
+JOIN vendor_resource resource ON  resource.vendor_id = hdr.vendor_id AND resource.primary_ind =1
+JOIN contact con ON con.contact_id = resource.contact_id
+JOIN vendor_credentials cred ON hdr.vendor_id=cred.vendor_id AND ((cred.cred_expiration_date <![CDATA[<]]> CURRENT_DATE AND cred.wf_state_id =14) OR (cred.wf_state_id =14 AND cred.cred_expiration_date <![CDATA[>=]]>CURRENT_DATE AND cred.cred_expiration_date <![CDATA[<=]]> (CURRENT_DATE +INTERVAL 30 DAY))) AND cred.cred_expiration_date IS NOT NULL
+LEFT OUTER JOIN vendor_credentials_document cred_doc ON cred_doc.vendor_cred_id = cred.vendor_cred_id AND cred_doc.active_ind =1
+JOIN audit_task audit_task ON audit_task.audit_key_id = cred.vendor_cred_id AND audit_task.audit_link_id = 3
+JOIN lu_vendor_credential_type lu_cred_type ON lu_cred_type.cred_type_id = cred.cred_type_id
+JOIN lu_vendor_credential_category lu_cred_category ON lu_cred_category.cred_category_id = cred.cred_category_id
+LEFT OUTER JOIN audit_cred_expiry_notification audit ON audit.cred_id = cred.vendor_cred_id AND (audit.credential_ind = 1 OR audit.credential_ind =2)
+
+WHERE hdr.wf_state_id = 3 OR hdr.wf_state_id = 34  ORDER BY hdr.vendor_id
+</select>
+
+<update id="makeOutOfCompliant"  parameterClass="java.util.List" >
+UPDATE vendor_credentials SET wf_state_id =25 WHERE vendor_cred_id IN 
+<iterate  open="(" close=")" conjunction=",">
+#credentialIds[]#
+</iterate>
+</update>
+
+<insert id="updateAuditHistory"  parameterClass="auditHistoryVO" >
+INSERT INTO audit_task_history (audit_task_id,
+vendor_id,
+resource_id,
+business_name,
+audit_link_id,
+audit_key_id,
+table_name,
+key_name,
+document_id,
+created_date,
+wf_state_id,
+wf_entity,
+wf_state,
+reviewed_by)VALUES(
+#auditTaskId#,
+#vendorId#,
+#resourceId#,
+#firmName#,
+#auditLinkId#,
+#auditKeyId#,
+#tableName#,
+#keyName#,
+#documentId#,
+now(),
+#statusId#,
+#type#,
+#status#,
+#auditor#
+)
+<selectKey resultClass="java.lang.Integer" > 
+		   select LAST_INSERT_ID() as value
+</selectKey>
+</insert>
+
+<insert id="insertAuditTaskReasonCode" parameterClass="auditHistoryVO">
+	INSERT INTO audit_task_reason_cd (audit_task_id,reason_cd) VALUES(#auditTaskId#,#reasonCodeId#)
+</insert>
+
+<update id="updateAuditTaskReasonCode" parameterClass="auditHistoryVO">
+	UPDATE audit_task_reason_cd SET reason_cd = #reasonCodeId# WHERE audit_task_id = #auditTaskId#
+</update>
+
+<select id="checkForAuditTaskResonCodeEntry"  parameterClass="java.lang.Integer" resultClass="java.lang.Integer" >
+	SELECT COUNT(audit_task_id) FROM audit_task_reason_cd WHERE audit_task_id = #auditTaskId#
+</select>
+
+<select id="checkNotificationSent"  parameterClass="expiryDetailsVO" resultClass="java.lang.Integer" >
+SELECT COUNT(cred_id) FROM audit_cred_expiry_notification WHERE cred_id = #credentialId# and notification_type =#notificationType#
+</select>
+
+<select id="fetchProviderCredentialDetails" resultClass="expiryDetailsVO">
+	SELECT hdr.vendor_id AS firmId,
+	hdr.business_name AS firmName,
+	resource.resource_id AS providerId,
+	con.first_name AS providerFirstName,
+	con.last_name AS providerLastName,
+	lu_cred_type.cred_type_desc AS credentialType,
+	lu_cred_category.cred_category AS credentialCategory,
+	cred.cred_expiration_date AS credentialExpirationDate,
+	cred.wf_state_id AS credentialStatus,
+	cred.resource_cred_id AS credentialId,
+	cred_doc.document_id AS documentId,
+	audit_task.audit_task_id AS auditTaskId,
+	audit.notification_type AS auditInd,
+	audit.audit_cred_expiry_notification_id AS notificationId,
+	cred.cred_name AS credName,
+	cred.cred_no AS credNumber,
+	admin_con.email AS firmEmail
+	FROM vendor_hdr hdr 
+	JOIN vendor_resource resource ON resource.vendor_id = hdr.vendor_id AND resource.wf_state_id=6
+	JOIN contact con ON con.contact_id =  resource.contact_id
+	JOIN vendor_resource admin_resource ON  admin_resource.vendor_id = hdr.vendor_id AND admin_resource.primary_ind =1
+	JOIN contact admin_con ON admin_con.contact_id =  admin_resource.contact_id
+	JOIN resource_credentials cred ON cred.resource_id = resource.resource_id AND ((cred.cred_expiration_date <![CDATA[<]]>CURRENT_DATE AND cred.wf_state_id =12) OR (cred.wf_state_id =12 AND cred.cred_expiration_date <![CDATA[>=]]>CURRENT_DATE AND cred.cred_expiration_date <![CDATA[<=]]>(CURRENT_DATE +INTERVAL 30 DAY))) AND cred.cred_expiration_date IS NOT NULL
+	JOIN audit_task audit_task ON audit_task.audit_key_id = cred.resource_cred_id AND audit_task.audit_link_id = 4
+	LEFT OUTER JOIN resource_credentials_document cred_doc ON cred_doc.resource_cred_id = cred.resource_cred_id
+	JOIN lu_resource_credential_type lu_cred_type ON lu_cred_type.cred_type_id = cred.cred_type_id
+	JOIN lu_resource_credential_category lu_cred_category ON lu_cred_category.cred_category_id = cred.cred_category_id
+	LEFT OUTER JOIN audit_cred_expiry_notification audit ON audit.cred_id = cred.resource_cred_id AND audit.credential_ind = 3
+	
+	WHERE  hdr.wf_state_id = 3 OR hdr.wf_state_id = 34 ORDER BY resource.resource_id
+</select>
+
+<update id="makeProviderCredOutOfCompliant" parameterClass="java.util.List">
+UPDATE resource_credentials SET wf_state_id=24 WHERE resource_cred_id IN
+<iterate  open="(" close=")" conjunction=",">
+#credentialIds[]#
+</iterate>
+</update>
+
+<insert id="updateReasoncodeHistory" parameterClass="auditHistoryVO">
+INSERT INTO audit_task_reason_cd_history (audit_task_history_id,reason_cd) VALUES(#id#,#reasonCodeId#)
+</insert>
+
+<insert id ="addVendorAuditNotes" parameterClass="expiryDetailsVO">
+INSERT INTO vendor_notes (vendor_id,note,created_date,modified_by) VALUES (#firmId#,#auditNotes#,now(),#auditor#)
+</insert>
+
+<insert id="addAuditNotice" parameterClass="expiryDetailsVO" >
+INSERT INTO audit_cred_expiry_notification(vendor_id,
+resource_id,
+notification_type,
+expiration_date,
+notification_date,
+cred_id,
+credential_name,
+credential_ind)	VALUES (
+#firmId#,
+#providerId#,
+#notificationType#,
+#credentialExpirationDate#,
+now(),
+#credentialId#,
+#credentialName#,
+#entityType#
+)
+</insert>
+
+<update id="updateNotificationType" parameterClass="java.util.List">
+UPDATE audit_cred_expiry_notification SET notification_type = 7 ,notification_date =now() WHERE audit_cred_expiry_notification_id IN
+<iterate open="(" close=")" conjunction=",">
+#notificationIds[]#
+</iterate>
+</update>
+
+<delete id="deleteNotification" parameterClass="expiryDetailsVO">
+	delete from audit_cred_expiry_notification where credential_ind!=4 and  DATEDIFF(expiration_date,NOW()) <![CDATA[<]]> 0
+</delete>
+
+<delete id="deleteRecertificationNotification" parameterClass="expiryDetailsVO">
+	delete from audit_cred_expiry_notification where credential_ind = 4 and DATEDIFF(now(),expiration_date) <![CDATA[>=]]> 3
+</delete>
+
+<select id="fetchExpirationChangedDetails" resultClass="java.lang.Integer" >
+	SELECT audit.audit_cred_expiry_notification_id FROM audit_cred_expiry_notification audit
+	JOIN vendor_credentials vendor
+	ON audit.cred_id = vendor.vendor_cred_id
+	WHERE credential_ind IN (1,2) AND DATEDIFF(audit.expiration_date,vendor.cred_expiration_date) != 0
+
+	UNION ALL
+
+	SELECT audit.audit_cred_expiry_notification_id FROM audit_cred_expiry_notification audit
+	JOIN resource_credentials resource
+	ON audit.cred_id = resource.resource_cred_id
+	WHERE credential_ind = 3 AND DATEDIFF(audit.expiration_date,resource.cred_expiration_date) != 0
+	
+	<!-- UNION ALL
+
+	SELECT audit.audit_cred_expiry_notification_id FROM audit_cred_expiry_notification audit
+	JOIN vendor_resource vr
+	ON audit.resource_id = vr.resource_id
+	WHERE audit.credential_ind = 4 AND DATEDIFF(audit.expiration_date,vr.background_reverification_date) != 0 -->
+</select>
+
+<select id="fetchCredRemovedDetails" resultClass="java.lang.Integer" >
+	SELECT audit.audit_cred_expiry_notification_id FROM audit_cred_expiry_notification audit
+	WHERE credential_ind IN (1,2) AND audit.cred_id NOT IN 
+	(SELECT vendor.vendor_cred_id FROM vendor_credentials vendor)
+
+	UNION ALL
+	
+	SELECT audit.audit_cred_expiry_notification_id FROM audit_cred_expiry_notification audit
+	WHERE credential_ind = 3 AND audit.cred_id NOT IN 
+	(SELECT resource.resource_cred_id FROM resource_credentials resource)
+</select>
+
+<delete id="deleteNotificationDetails" parameterClass="java.util.List">
+	delete from audit_cred_expiry_notification where audit_cred_expiry_notification_id IN 
+	<iterate  open="(" close=")" conjunction=",">
+		#notificationIds[]#
+	</iterate>
+</delete>
+
+</sqlMap>

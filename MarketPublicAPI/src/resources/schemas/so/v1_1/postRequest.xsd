@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/postRequest" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" targetNamespace="http://www.servicelive.com/namespaces/postRequest" elementFormDefault="qualified" jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+	<xs:include schemaLocation="wsSecurity.xsd"/>
+	<!-- Root element -->
+	<xs:element name="postRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="providerRouteInfo" type="ProviderRouteInfoType"/>
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:decimal"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- ProviderRouteInfoType  -->
+	<xs:complexType name="ProviderRouteInfoType">
+		<xs:sequence>
+			<xs:element name="maxDistance" nillable="true" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:enumeration value="5"/>
+						<xs:enumeration value="10"/>
+						<xs:enumeration value="15"/>
+						<xs:enumeration value="20"/>
+						<xs:enumeration value="25"/>
+						<xs:enumeration value="30"/>
+						<xs:enumeration value="35"/>
+						<xs:enumeration value="40"/>
+						<xs:enumeration value="50"/>
+						<xs:enumeration value="75"/>
+						<xs:enumeration value="100"/>
+						<xs:enumeration value="125"/>
+						<xs:enumeration value="150"/>
+						<xs:enumeration value="175"/>
+						<xs:enumeration value="200"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="minRating" nillable="true">
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal">
+						<xs:minInclusive value="1.0"/>
+						<xs:maxInclusive value="5.0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="languages" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="language" maxOccurs="50"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="specificProviders" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="resourceID" type="xs:int" maxOccurs="300"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="version" type="xs:decimal" use="required"/>
+		<xs:attribute name="template" type="xs:string" use="optional"/>
+	</xs:complexType>
+	<xs:element name="language" default="English">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="English"/>
+				<xs:enumeration value="French"/>
+				<xs:enumeration value="German"/>
+				<xs:enumeration value="Spanish"/>
+				<xs:enumeration value="Chinese"/>
+				<xs:enumeration value="Tagalog"/>
+				<xs:enumeration value="Vietnamese"/>
+				<xs:enumeration value="Italian"/>
+				<xs:enumeration value="Korean"/>
+				<xs:enumeration value="Russian"/>
+				<xs:enumeration value="Polish"/>
+				<xs:enumeration value="Arabic"/>
+				<xs:enumeration value="Portuguese"/>
+				<xs:enumeration value="Japanese"/>
+				<xs:enumeration value="French Creole"/>
+				<xs:enumeration value="Greek"/>
+				<xs:enumeration value="Hindi"/>
+				<xs:enumeration value="Persian"/>
+				<xs:enumeration value="Urdu"/>
+				<xs:enumeration value="Cantonese"/>
+				<xs:enumeration value="Hebrew"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+</xs:schema>

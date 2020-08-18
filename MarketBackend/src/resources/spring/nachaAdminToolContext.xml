@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+    
+    <!-- Declare all Dao beans -->
+	
+	<bean id="nachaDao"
+		class="com.newco.marketplace.persistence.daoImpl.nacha.NachaDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClientFinance" />
+		</property>
+	</bean>
+	
+	<bean id="transactionDao"
+		class="com.newco.marketplace.persistence.daoImpl.ledger.TransactionDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClientFinance" />
+		</property>
+	</bean>
+
+    <bean id="fiscalCalendarDAO" class="com.newco.marketplace.persistence.daoImpl.ledger.FiscalCalendarDAOImpl">
+	 	<property name="sqlMapClient">
+			<ref bean="sqlMapClientFinance" />
+		</property>   		
+    </bean>
+
+	<bean id="pTemplateDao" class="com.newco.marketplace.persistence.daoImpl.provider.TemplateDaoImpl" >
+        <property name="sqlMapClient">
+            <ref bean="sqlMapClient" />
+        </property>         
+    </bean>
+    
+    <bean id="nachaAdminToolBO" class="com.newco.marketplace.business.businessImpl.nachaadmin.NachaAdminToolBO">
+	 	 <property name="nachaDao">
+    		<ref bean="nachaDao"/>
+  		</property>	 
+    </bean>
+	
+	<bean id="mailSender"
+		class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host">
+			<value>${email.smtp.address}</value>
+		</property>
+	</bean>
+	
+	<bean id="jmsIMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+ 		<property name="host">
+			<value>${email.smtp.address}</value>
+		</property>
+   	</bean>
+   	
+    <bean id="emailTemplateBean"
+		class="com.newco.marketplace.business.businessImpl.provider.EmailTemplateBOImpl"
+		lazy-init="true">
+		<property name="transactionManager">
+			<ref bean="dsTransactionManagerMain" />
+		</property>
+		<property name="velocityEngine">
+			<ref bean="velocityEngine" />
+		</property>
+		<property name="mailSender">
+			<ref bean="jmsIMailSender" />
+		</property>
+		<property name="logoPath">
+			<value>/images/icon_logo.gif</value>
+		</property>
+	</bean>
+   
+        	
+</beans>

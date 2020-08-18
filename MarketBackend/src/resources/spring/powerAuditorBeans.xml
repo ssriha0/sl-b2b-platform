@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+    <!-- Start BO  Loading -->
+	<bean id="powerAuditorWorkflowBOImpl" class="com.newco.marketplace.business.businessImpl.provider.PowerAuditorWorkflowBOImpl">
+        <property name="lookupDao">
+			<ref bean="lookupDAOImpl" />
+		</property>
+		<property name="powerAuditorwrokflowDao">
+			<ref bean="powerAuditorWorkflowDaoImpl" />
+		</property>
+		<property name="auditDao">
+			<ref bean="auditDaoImpl" />
+		</property>
+		<property name="iLoginDao">
+			<ref bean="loginDaoImpl" />
+		</property>
+		
+	</bean>
+
+	<bean id="powerAuditorWorkflowDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.PowerAuditorWorkflowDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+	<!-- End BO  Loading -->
+</beans>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
+	default-lazy-init="true">
+	
+
+	<bean id="clientInvoiceBO" class="com.newco.marketplace.business.businessImpl.client.ClientInvoiceBOImpl">
+		<property name="clientInvoiceDAO" ref="clientInvoiceDAO">
+		</property>	
+		<property name="serviceOrderBO" ref="soBOAOP">
+		</property>	
+	</bean>
+	
+	<bean id="clientInvoiceDAO" class="com.newco.marketplace.persistence.daoImpl.client.ClientInvoiceDAOImpl"
+    	lazy-init="true">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	 
+    </bean>
+    
+    <bean id="clientBO" class="com.newco.marketplace.business.businessImpl.client.ClientBOImpl"
+    	lazy-init="true">
+		<property name="clientInvoiceDAO" ref="clientInvoiceDAO">
+		</property>	
+	</bean>
+    
+</beans>

@@ -1,0 +1,178 @@
+<?xml version="1.0"?>
+
+<smooks-resource-list xmlns="http://www.milyn.org/xsd/smooks-1.0.xsd">
+
+	<resource-config selector="ServiceOrders">
+	        <resource>org.milyn.javabean.BeanPopulator</resource>
+	        <param name="beanId">ServiceOrders</param>
+			<param name="beanClass">com.servicelive.esb.dto.ServiceOrders</param>
+	</resource-config>
+	<resource-config selector="ServiceOrder">
+	        <resource>org.milyn.javabean.BeanPopulator</resource>
+	        <param name="beanId">ServiceOrder</param>
+	        <param name="addToList">true</param>
+	        <param name="setOn">ServiceOrders</param>
+			<param name="beanClass">com.servicelive.esb.dto.ServiceOrder</param>
+	        <param name="bindings">
+	            <binding property="promisedDate" selector="ServiceOrder PromisedDate" type="String" />
+	            <binding property="transactionType" selector="ServiceOrder TransactionType" type="String" />
+	            <binding property="serviceUnitNumber" selector="ServiceOrder ServiceUnitNumber" type="String" />
+	            <binding property="serviceOrderNumber" selector="ServiceOrder ServiceOrderNumber" type="String" />
+	            <binding property="orderTakenTime" selector="ServiceOrder OrderTakenTime" type="String" />
+	            <binding property="orderTakenDate" selector="ServiceOrder OrderTakenDate" type="String" />
+	            <binding property="promisedTimeFrom" selector="ServiceOrder PromisedTimeFrom" type="String" />
+	            <binding property="promisedTimeTo" selector="ServiceOrder PromisedTimeTo" type="String" />
+	            <binding property="techId" selector="ServiceOrder TechID" type="String" />
+	            <binding property="originalScheduledDate" selector="ServiceOrder OriginalScheduledDate" type="String" />
+	            <binding property="originalTimeFrom" selector="ServiceOrder OriginalTimeFrom" type="String" />
+	            <binding property="requestedService" selector="ServiceOrder ServiceRequested" type="String" />
+	            <binding property="serviceOrderStatusCode" selector="ServiceOrder ServiceOrderStatusCode" type="String" />
+	            <binding property="serviceOrderType" selector="ServiceOrder ServiceOrderType" type="String" />
+	            <binding property="specialInstructions1" selector="ServiceOrder SpecialInstructions1" type="String" />
+	            <binding property="specialInstructions2" selector="ServiceOrder SpecialInstructions2" type="String" />
+	            <binding property="permanentInstructions" selector="ServiceOrder PermanentInstructions" type="String" />
+	        </param>
+	</resource-config>
+
+	<resource-config selector="ServiceOrder">
+	        <resource>org.milyn.javabean.BeanPopulator</resource>
+	        <param name="beanId">Customer</param>
+	        <param name="setOn">ServiceOrder</param>
+			<param name="beanClass">com.servicelive.esb.dto.ServiceOrderCustomer</param>
+	        <param name="bindings">
+	            <binding property="number" selector="ServiceOrder Customer Number" type="String" />
+	            <binding property="type" selector="ServiceOrder Customer Type" type="String" />
+	            <binding property="firstName" selector="ServiceOrder Customer FirstName" type="String" />
+	            <binding property="lastName" selector="ServiceOrder Customer LastName" type="String" />
+	            <binding property="phone" selector="ServiceOrder Customer Phone" type="String" />
+	            <binding property="altPhone" selector="ServiceOrder Customer AltPhone" type="String" />
+	            <binding property="preferredLanguage" selector="ServiceOrder Customer PreferredLanguage" type="String" />
+	            <binding property="cellPhoneNumber" selector="ServiceOrder Customer CellPhoneNumber" type="String" />
+	            <binding property="supplementalCustomerInformation" selector="ServiceOrder Customer SupplementalCustomerInformation" type="String" />
+	        </param>
+	</resource-config>
+	<resource-config selector="Customer">
+	        <resource>org.milyn.javabean.BeanPopulator</resource>
+	        <param name="beanId">Address</param>
+	        <param name="setOn">Customer</param>
+			<param name="beanClass">com.servicelive.esb.dto.Address</param>
+	        <param name="bindings">
+	            <binding property="streetAddress1" selector="ServiceOrder Customer Address StreetAddress1" type="String" />
+	            <binding property="streetAddress2" selector="ServiceOrder Customer Address StreetAddress2" type="String" />
+	            <binding property="city" selector="ServiceOrder Customer Address City" type="String" />
+	            <binding property="state" selector="ServiceOrder Customer Address State" type="String" />
+	            <binding property="zipCode" selector="ServiceOrder Customer Address ZipCode" type="String" />
+	        </param>
+	</resource-config>
+
+	<resource-config selector="ServiceOrder">
+	        <resource>org.milyn.javabean.BeanPopulator</resource>
+	        <param name="beanId">RepairLocation</param>
+	        <param name="setOn">ServiceOrder</param>
+			<param name="beanClass">com.servicelive.esb.dto.RepairLocation</param>
+	        <param name="bindings">
+	            <binding property="phone" selector="ServiceOrder RepairAt Phone" type="String" />
+	            <binding property="altPhone" selector="ServiceOrder RepairAt AltPhone" type="String" />
+	        </param>
+	</resource-config>
+	<resource-config selector="RepairAt">
+	        <resource>org.milyn.javabean.BeanPopulator</resource>
+	        <param name="beanId">Address</param>
+	        <param name="setOn">RepairLocation</param>
+			<param name="beanClass">com.servicelive.esb.dto.Address</param>
+	        <param name="bindings">
+	            <binding property="streetAddress1" selector="ServiceOrder RepairAt Address StreetAddress1" type="String" />
+	            <binding property="streetAddress2" selector="ServiceOrder RepairAt Address StreetAddress2" type="String" />
+	            <binding property="city" selector="ServiceOrder RepairAt Address City" type="String" />
+	            <binding property="state" selector="ServiceOrder RepairAt Address State" type="String" />
+	            <binding property="zipCode" selector="ServiceOrder RepairAt Address ZipCode" type="String" />
+	        </param>
+	</resource-config>
+	
+	<resource-config selector="ServiceOrder">
+	        <resource>org.milyn.javabean.BeanPopulator</resource>
+	        <param name="beanId">Merchandise</param>
+	        <param name="setOn">ServiceOrder</param>
+			<param name="beanClass">com.servicelive.esb.dto.Merchandise</param>
+	        <param name="bindings">
+	            <binding property="code" selector="ServiceOrder Merchandise Code" type="String" />
+	            <binding property="description" selector="ServiceOrder Merchandise Description" type="String" />
+	            <binding property="purchaseDate" selector="ServiceOrder Merchandise PurchaseDate" type="String" />
+	            <binding property="specialty" selector="ServiceOrder Merchandise Specialty" type="String" />
+	            <binding property="brand" selector="ServiceOrder Merchandise Brand" type="String" />
+	            <binding property="model" selector="ServiceOrder Merchandise Model" type="String" />
+	            <binding property="serialNumber" selector="ServiceOrder Merchandise SerialNumber" type="String" />
+	            <binding property="division" selector="ServiceOrder Merchandise Division" type="String" />
+	            <binding property="searsSoldCode" selector="ServiceOrder Merchandise SearsSoldCode" type="String" />
+	            <binding property="systemItemSuffix" selector="ServiceOrder Merchandise SystemItemSuffix" type="String" />
+	            <binding property="searsStoreNumber" selector="ServiceOrder Merchandise SearsStoreNumber" type="String" />
+	            <binding property="residentialOrCommercialUsage" selector="ServiceOrder Merchandise ResidentialOrCommercialUsage" type="String" />
+	        </param>
+	</resource-config>
+
+	<resource-config selector="ServiceOrder">
+	        <resource>org.milyn.javabean.BeanPopulator</resource>
+	        <param name="beanId">SalesCheck</param>
+	        <param name="setOn">ServiceOrder</param>
+			<param name="beanClass">com.servicelive.esb.dto.SalesCheck</param>
+	        <param name="bindings">
+	            <binding property="number" selector="ServiceOrder SalesCheck Number" type="String" />
+	            <binding property="date" selector="ServiceOrder SalesCheck Date" type="String" />
+	            <binding property="time" selector="ServiceOrder SalesCheck Time" type="String" />
+	            <binding property="sellingAssociate" selector="ServiceOrder SalesCheck SellingAssociate" type="String" />
+	        </param>
+	</resource-config>
+	<resource-config selector="Item">
+	        <resource>org.milyn.javabean.BeanPopulator</resource>
+	        <param name="beanId">SalesCheckItem</param>
+	        
+	        <!-- ************* Definitely needs to change to populate List<SalesCheckItems> only for the correct child nodes and not ALL these nodes in the document ************* -->
+	        <param name="addToList">true</param>
+	        
+	        <param name="setOn">SalesCheck</param>
+			<param name="beanClass">com.servicelive.esb.dto.SalesCheckItem</param>
+	        <param name="bindings">
+	            <binding property="lineNumber" selector="Item LineNumber" type="String" />
+	            <binding property="division" selector="Item Division" type="String" />
+	            <binding property="itemNumber" selector="Item ItemNumber" type="String" />
+	            <binding property="sku" selector="Item SKU" type="String" />
+	            <binding property="description" selector="Item Description" type="String" />
+	            <binding property="quantity" selector="Item Quantity" type="String" />
+	            <binding property="giftFlag" selector="Item GiftFlag" type="String" />
+	            <binding property="giftDate" selector="Item GiftDate" type="String" />
+	        </param>
+	</resource-config>	
+
+	<resource-config selector="JobCode">
+	        <resource>org.milyn.javabean.BeanPopulator</resource>
+	        <param name="beanId">JobCode</param>
+	        
+	        <!-- ************* Definitely needs to change to populate List<JobCode> only for the correct child nodes and not ALL these nodes in the document ************* -->
+	        <param name="addToList">true</param>
+	        <param name="setOn">ServiceOrder</param>
+			<param name="beanClass">com.servicelive.esb.dto.JobCode</param>
+	        <param name="bindings">
+	            <binding property="sequenceNumber" selector="JobCode SequenceNumber" type="String" />
+	            <binding property="number" selector="JobCode Number" type="String" />
+	            <binding property="chargeCode" selector="JobCode ChargeCode" type="String" />
+	            <binding property="type" selector="JobCode Type" type="String" />
+	            <binding property="coverage" selector="JobCode Coverage" type="String" />
+	            <binding property="description" selector="JobCode Description" type="String" />
+	            <binding property="amount" selector="JobCode Amount" type="String" />
+	        </param>
+	</resource-config>
+	
+	<!-- Below mapping is not required AT ALL !! -->
+	<resource-config selector="Messages">
+	        <resource>org.milyn.javabean.BeanPopulator</resource>
+	        <param name="beanId">Message</param>
+	        <param name="addToList">true</param>
+	        <param name="setOn">ServiceOrder</param>
+			<param name="beanClass">com.servicelive.esb.dto.Message</param>
+	        <param name="bindings">
+	        </param>
+	</resource-config>
+	
+	
+			
+</smooks-resource-list>

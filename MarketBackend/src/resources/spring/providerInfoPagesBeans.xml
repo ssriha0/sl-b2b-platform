@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+    <!-- Start BO  Loading -->
+	<bean id="providerInfoPagesBOImpl" class="com.newco.marketplace.business.businessImpl.provider.ProviderInfoPagesBOImpl">
+        <property name="providerSearchDao">
+			<ref bean="providerSearchDao" />
+		</property>	
+		<property name="publicProfileBO" ref="publicProfileBOImpl" />
+	 	<property name="companyProfileBO" ref="companyProfileBOImpl" />
+	 	<property name="skillAssingBO" ref="skillAssignBOImpl" />
+	 	<property name="teamProfileBO" ref="teamProfileBOImpl" />
+	 	<property name="surveyRatingsDAO" ref="surveyDAO" />
+	 	<property name="profileDocDAO" ref="providerProfileDocDao" />
+	 	<property name="resourceDocumentDao" ref="resourceDocumentDao" />
+	 	<property name="documentBO" ref="documentBO" />
+	 	<property name="survey" ref="surveyBO"/>
+	 </bean>
+	<!-- End BO  Loading -->
+</beans>

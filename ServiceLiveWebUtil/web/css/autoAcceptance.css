@@ -1,0 +1,242 @@
+/*css for auto acceptance CAR notifications */
+
+/*notification popup */
+.carpopUp {
+	display: none;
+	border: 5px solid #9F9F9F;
+	background-color: white;
+	font-size: 12px;
+	font-family: Arial;
+}
+
+.font {
+	font-size: 12px;
+	font-family: Arial;
+	padding-top: 2px;
+}
+
+.onoff {
+	display: block;
+	background: url("../images/buttons/on-off_switch.png") no-repeat;
+	cursor: pointer;
+	height: 21px;
+	margin-left:50px;
+}
+
+.heading {
+	border-bottom: 1px solid #9F9F9F;
+	padding-bottom: 5px;
+	padding-top: 5px;
+	background-color: black;
+}
+
+.headFirstCol {
+	border-left: 1px solid #9F9F9F;
+	border-top: 1px solid #9F9F9F;
+	padding-left: 5px;
+	width:30%;
+}
+
+.headLastCol {
+	border-top: 1px solid #9F9F9F;
+	border-right: 1px solid #9F9F9F;
+	padding-left:25px;
+	text-align:left;
+	width:42%;
+}
+
+.topBorder {
+	border-top: 1px solid #9F9F9F;
+}
+
+.bodyFirstCol {
+	border-left: 1px solid #9F9F9F;
+	padding-left: 5px;
+	word-wrap: break-word;
+	padding-top: 10px;
+			width:18px;
+}
+
+.note {
+	border: 1px solid #9F9F9F;
+	width: 95%;
+	padding-top: 5px;
+}
+
+.cntrAlign {
+	text-align: center;
+			padding-top: 10px;
+	width: 10%;
+}
+
+.scroll {
+	overflow-y: auto;
+	overflow-x: hidden;
+	min-height: 50px;
+	max-height: 250px;
+	width: 95%;
+}
+
+.view {
+	cursor: pointer;
+	padding-top: 5px;
+}
+
+.successDiv {
+	display: none;
+	color: green;
+	background-color: #F8ECE0;
+	border: 1px solid #FE9A2E;
+	width: 70%;
+	margin-left: 100px;
+	text-align: center;
+	padding: 5px;
+	font-size: 12px;
+	font-weight: bold;
+	font-family: Arial;
+}
+
+.reason {
+	display: none;
+}
+
+.ruleView {
+	display: none;
+	z-index: 999999999;
+	width: 600px;
+	height: 160px;
+	overflow: auto;
+	border: solid 1px #9F9F9F;
+	background: #fff;
+	position: absolute;
+	padding: 5px;
+}
+
+.headerSpan {
+	color: white;
+	font-size: 15px;
+	margin-left: 8px;
+}
+
+/*quick view & history */
+.histTable {
+	border: 1px solid #9F9F9F;
+	font-size: 12px;
+	table-layout: fixed;
+}
+
+.histTd {
+	border-right: 1px solid #9F9F9F;
+	word-wrap: break-word;
+	font-size: 12px;
+	padding: 5px;
+}
+
+/*auto acceptance prov dashboard*/
+.buyersDiv {
+	width: 16.9%;
+	float: left;
+	padding-left: 20px;
+}
+
+.buyerDiv {
+	background-color: #DFDFDF;
+	font-weight: bold;
+	/*border: 1px solid #9F9F9F;*/ text-align : center;
+	border-right: none;
+	cursor: pointer;
+	padding: 6px 3px 6px 5px;
+	border-top: 1px solid #FFFFFF;
+	border-bottom: 1px solid #AAAAAA;
+	text-decoration: none;
+	color: #555555;
+	text-shadow: 0 1px #fff;
+	text-align: left;
+	font-size: 12px;
+	width: 95%;
+}
+
+.activeTab {
+	background: none repeat scroll 0 0 #666666;
+	border-bottom: 1px solid #222222;
+	border-top: 1px solid #444444;
+	color: #E8E8E8;
+	text-shadow: 0 -1px rgba(0, 0, 0, 0.7);
+	cursor: default;
+	-webkit-animation: none;
+	-moz-animation: none;
+	animation: none;
+	-webkit-box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.3) inset;
+	-moz-box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.3) inset;
+	box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.3) inset;
+}
+
+div.buyerDiv:hover {
+	background:#ccc;
+	border-top-color:#e0e0e0;
+	color:#008EBA;
+	text-shadow:0 1px #EEEEEE;
+	-webkit-animation: glow 0.3s 1;
+  	-moz-animation:    glow 0.3s 1;
+  	animation:         glow 0.3s 1; 
+}
+
+.rghtDiv {
+	margin-left: 181px;
+	border: 1px solid #9F9F9F;
+	width: 78%;
+}
+
+.carBuyer {
+	background-color: #EEEEEE;
+	border: 1px solid #9F9F9F;
+	font-size: 14px;
+	font-weight: bold;
+	padding: 5px;
+	width: 60%;
+}
+
+.carTable {
+	border: 1px solid #9F9F9F;
+	table-layout: fixed;
+	width: 95%";
+}
+
+.resText {
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+}
+.highlight{
+	background-color :#AFD7FF;
+}
+
+.carTable  th, .carTable  td{
+	 padding: 5px 4px;
+	 border-bottom: 1px solid #CCCCCC;
+}
+.carTable  th{
+	color: #fff;
+}
+.odd-th{
+	background:#00A0D2;
+}
+.even-th{
+	background:#0080A8;
+}
+.carTable  td:nth-child(odd){
+background:#fff;
+}
+.carTable  td:nth-child(even){
+background:#EEEEEE;
+}
+.odd{background:#fff;}
+.even{background:#EEEEEE;}
+
+.resText{
+		font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+		font-size: 12px;
+   		font-weight: normal;
+   		height: 30px; 
+   		width: 250px;
+	}

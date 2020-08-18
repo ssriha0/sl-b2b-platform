@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<!-- beans from other modules -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://157.241.198.45:3372/supplier_prod"/>
+		<property name="username" value="supply_usr"/>
+		<property name="password" value="supply"/>
+	</bean>
+	<!-- SqlMap Client Configuration, to read generated SqlMaps, as well as 
+		Custom Sqls in separate xml file -->
+	<bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation">
+			<value>classpath:resources/ibatis/SqlMapConfig.xml</value>
+		</property>
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<bean id="dsTransactionManagerMain" class="org.springframework.jdbc.datasource.DataSourceTransactionManager" autowire="byName" >
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+    
+    <bean id="marketPlaceDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.MarketPlaceDaoImpl">
+			<property name="sqlMapClient">
+				<ref bean="sqlMapClient" />
+			</property>		
+	</bean>
+	<bean id="smsDataMigrationService" class="com.newco.marketplace.business.businessImpl.smsdatamigration.SMSDataMigrationServiceImpl">
+			<property name="smsDataMigrationDao">
+				<ref bean="smsDataMigrationDao"/>
+			</property>
+			<property name="iMarketPlaceDao">
+	            <ref bean="marketPlaceDaoImpl"/>
+	        </property>
+	</bean>
+	 <bean id="smsDataMigrationDao" class="com.newco.marketplace.persistance.daoImpl.smsdatamigration.SMSDataMigrationDaoImpl"
+     	lazy-init="true">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	 
+    </bean>
+       
+</beans>

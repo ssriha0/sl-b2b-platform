@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<!-- Root element -->
+	<xs:element name="soTimeOnSiteRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="eventType" type="eventTypeInd" />
+				<xs:element name="latitude" type="xs:double" minOccurs="0" />
+				<xs:element name="longitude" type="xs:double" minOccurs="0" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:simpleType name="eventTypeInd">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="1" /><!-- ARRIVAL -->
+			<xs:enumeration value="2" /><!-- DEPARTURE -->
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

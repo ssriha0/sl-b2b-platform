@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd"> 
+
+<sqlMap>
+
+	<typeAlias alias="slAccountVO"
+		type="com.servicelive.common.vo.SLAccountVO" />
+
+	<typeAlias alias="vlAccount"
+		type="com.servicelive.lookup.vo.ValueLinkAccountsVO" />
+
+	<update id="deactivate_account.update" parameterClass="slAccountVO">
+		update account_hdr set enabled_ind = 0
+		where account_id = #accountId#
+	</update>
+	
+	<insert id="save_account.insert" parameterClass="slAccountVO">
+		INSERT INTO account_hdr( account_id, bank_name, card_holder_name, entity_type_id, entity_id,
+		country_id, account_no, account_type_id, account_status_id,
+		routing_no, account_descr, active_ind, enabled_ind) VALUES( #accountId#, #bankName#, #accountHolderName#, #ownerEntityTypeId#,
+		#ownerEntityId#, #countryId#, #accountNumber#,
+		#accountTypeId#, #accountStatusId#, #routingNumber#, #accountDescription#, #activeInd#, #enabledInd#)
+	</insert>
+
+	<select id="getAutoFundingCount.query" parameterClass="slAccountVO" resultClass="java.lang.Integer">
+		SELECT count(*) FROM auto_funding_service afs
+		WHERE 
+		afs.entity_id = #ownerEntityId#
+	</select>
+
+	<insert id="save_autoFunding.insert" parameterClass="slAccountVO">
+		INSERT INTO auto_funding_service(entity_id, entity_type_id,account_id,enabled_ind) 
+		VALUES( #ownerEntityId#, #ownerEntityTypeId#, #accountId#, #autoACHInd#)
+	</insert>
+	
+	<update id="save_autoFunding.update" parameterClass="slAccountVO">
+		update auto_funding_service set entity_type_id =
+		#ownerEntityTypeId#, enabled_ind = #autoACHInd#, account_id = #accountId# 
+		where entity_id = #ownerEntityId#
+	</update>
+	
+	<select id="getAutoFundingIndicator.query" parameterClass="java.lang.Integer" resultClass="slAccountVO">
+		SELECT 
+			enabled_ind AS enabledInd,
+			account_id AS accountId
+		FROM auto_funding_service afs
+		WHERE 
+		afs.entity_id = #vendorId#
+	</select>
+			
+	<select id="v1v2AccountsBalanceEnquiry.query" resultClass="java.lang.Long">
+		select distinct v1_account_no FROM fullfillment_vlaccounts WHERE v1_account_no is not null 
+		UNION
+		select distinct v2_account_no FROM fullfillment_vlaccounts WHERE v2_account_no is not null
+	</select>	
+	
+	<select id="getAccountDetailsAll" resultClass="slAccountVO"
+		parameterClass="java.lang.Integer">
+			SELECT account_id AS accountId
+			       ,bank_name AS bankName
+			       ,card_holder_name AS accountHolderName
+			       ,country_id AS countryId
+			       ,entity_id AS ownerEntityId
+			       ,entity_type_id AS ownerEntityTypeId
+			       ,account_no AS accountNo
+			       ,account_type_id AS accountTypeId
+			       ,account_status_id AS accountStatusId
+			       ,routing_no AS routingNo
+			       ,card_type_id AS cardTypeId
+			       ,account_descr AS accountDescr
+			       ,created_date AS createdDate
+			       ,modified_date AS modifiedDate
+			       ,modified_by AS modifiedBy
+			  FROM account_hdr
+			 WHERE entity_id=#entityId# 
+	</select>
+	
+	<insert id="moveFullfillmentVLAccountToHistory.insert"  parameterClass="vlAccount">
+		INSERT INTO fullfillment_vlaccounts_history
+			SELECT * FROM fullfillment_vlaccounts
+			WHERE ledger_entity_id = #ledgerEntityId#
+				AND entity_type_id = #entityTypeId#
+	</insert>	
+	
+	<delete id="fullfillmentVLAccount.delete"  parameterClass="vlAccount">
+		DELETE FROM fullfillment_vlaccounts
+			WHERE ledger_entity_id = #ledgerEntityId#
+				AND entity_type_id = #entityTypeId#
+	</delete>
+	
+	
+	<select id="SLAccountCount.query" parameterClass="java.lang.Long" resultClass="java.lang.Integer">
+		select count(*) from fullfillment_vlaccounts where ledger_entity_id=#ledgerEntityId#
+	</select>
+	
+	<insert id="createVLAccounts.insert" parameterClass="vlAccount">
+		insert into fullfillment_vlaccounts 
+		(ledger_entity_id, entity_type_id, v1_account_no)
+		values
+		(#ledgerEntityId#, #entityTypeId#, #v1AccountNo#)
+	</insert>
+	
+	
+	<typeAlias alias="account"
+		type="com.servicelive.common.vo.SLAccountVO" />
+		
+	<typeAlias alias="creditCard"
+		type="com.servicelive.common.vo.SLCreditCardVO" />
+		
+	<typeAlias alias="valueLinkAccounts" 
+		type="com.servicelive.lookup.vo.ValueLinkAccountsVO" />
+	
+	<select id="getCreditCardById" parameterClass="java.lang.Long" resultClass="creditCard">
+	 	SELECT 
+	 		cardId,entityTypeId,entityId,countryId,accountTypeId,accountStatusId,encCardNo,
+			cardTypeId,expireDate,cardHolderName,createdDate,modifiedDate,modifiedBy,
+			billingAddress1,billingAddress2,billingCity,billingState,zipcode,locnTypeId,fundingTypeId,
+			token,maskedAccount
+	 	FROM vw_buyer_creditcard_details_all 
+	 	WHERE cardId = #cardId#
+	 </select>
+ 	
+	<select id="fullfillment_SLAccounts.query" resultClass="vlAccount">
+		SELECT 
+			fullfillment_account_id	  as accountId,
+			account_code		  	  as accountCode,
+			account_desc		      as accountDesc,
+			account_no		  		  as v1AccountNo
+		FROM lu_fullfillment_vlaccounts
+	</select>
+
+	<select id="getValueLinkAccounts" parameterClass="vlAccount"
+		resultClass="vlAccount">
+		SELECT 
+			ledger_entity_id	  as ledgerEntityId,
+			entity_type_id		  as entityTypeId,
+			v1_account_no		  as v1AccountNo,
+			v2_account_no		  as v2AccountNo
+		FROM fullfillment_vlaccounts
+		WHERE ledger_entity_id = #ledgerEntityId#
+		  AND entity_type_id = #entityTypeId#;
+	</select>
+	
+	<update id="setv2accountno.update" parameterClass="vlAccount">
+		update fullfillment_vlaccounts set v2_account_no=#v2AccountNo# where ledger_entity_id=#ledgerEntityId#
+	</update>
+
+	<select id="account_hdr_active.query" resultClass="slAccountVO"
+			parameterClass="java.lang.Integer">
+		SELECT account_id AS accountId
+		       ,bank_name AS bankName
+		       ,card_holder_name AS accountHolderName
+		       ,country_id AS countryId
+		       ,entity_id AS ownerEntityId
+		       ,entity_type_id AS ownerEntityTypeId
+		       ,account_no AS accountNumber
+		       ,account_type_id AS accountTypeId
+		       ,account_status_id AS accountStatusId
+		       ,active_ind AS activeInd
+		       ,enabled_ind AS enabledInd
+		       ,routing_no AS routingNumber
+		       ,card_type_id AS cardTypeId
+		       ,account_descr AS accountDescription
+		       ,created_date AS createdDate
+		       ,modified_date AS modifiedDate
+		       ,modified_by AS modifiedBy
+		  FROM account_hdr ah LEFT JOIN lu_account_type at
+		    ON ah.account_type_id = at.id
+		 WHERE entity_id = #entityId#
+		   AND active_ind = 1
+		ORDER BY at.sort_order ASC
+		 LIMIT 1;
+	</select>
+
+	<select id="account_hdr.query" resultClass="slAccountVO"
+			parameterClass="java.lang.Long">
+  				SELECT ah.account_id AS accountId
+				      ,ah.bank_name AS bankName
+				      ,ah.country_id AS countryId
+				      ,ah.entity_id AS ownerEntityId
+				      ,ah.entity_type_id AS ownerEntityTypeId
+				      ,ah.account_no AS accountNumber
+				      ,ah.account_type_id AS accountTypeId
+				      ,ah.account_status_id AS accountStatusId
+				      ,ah.routing_no AS routingNumber
+				      ,ah.card_type_id AS cardTypeId
+				      ,ah.account_descr AS accountDescription
+				      ,ah.created_date AS createdDate
+				      ,ah.modified_date AS modifiedDate
+				      ,ah.modified_by AS modifiedBy
+				      ,IFNULL(afs.enabled_ind,0) AS enabledInd
+				 FROM account_hdr ah LEFT OUTER JOIN auto_funding_service afs
+				         ON afs.account_id = ah.account_id
+				  LEFT JOIN lu_account_type at
+				         ON ah.account_type_id = at.id
+				WHERE ah.entity_id = #accountId#
+				  AND ah.active_ind = 1
+				  AND ah.enabled_ind = 1
+				  AND ah.entity_type_id = 10
+			 ORDER BY at.sort_order ASC
+				LIMIT 1;				  
+	</select>
+	
+	<select id="vendorV1AccountsBalanceEnquiry.query" resultClass="java.lang.String">
+	select distinct v1_account_no FROM fullfillment_vlaccounts WHERE ledger_entity_id = #entityId# 
+	UNION
+	select distinct v2_account_no FROM fullfillment_vlaccounts WHERE ledger_entity_id = #entityId# 
+	</select>	
+	<select id="getCreditCardAccNo.query" parameterClass="java.lang.Long" resultClass="java.lang.Long">
+	     SELECT ah.account_id   AS cardId
+              FROM ((accounts_prod.account_hdr ah
+              JOIN supplier_prod.buyer b)
+              JOIN supplier_prod.location l)
+              WHERE ((ah.entity_id = b.buyer_id)
+              AND (ah.bill_locn_id = l.locn_id)
+              AND (ah.account_type_id = 30)
+              AND (ah.active_ind = 1)) AND b.buyer_id=#entityId#
+              LIMIT 1
+	</select>
+</sqlMap>

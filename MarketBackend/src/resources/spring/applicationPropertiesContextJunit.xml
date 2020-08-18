@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+        "http://www.springframework.org/dtd/spring-beans.dtd">
+        
+        <!-- DO NOT INCLUDE THIS FILE IN THE applicationContext.xml -->
+<beans>
+	<import resource="classpath:spring/mainDataSource.xml" />
+	
+	<bean id="sqlMapClient"
+		class="org.springframework.orm.ibatis.SqlMapClientFactoryBean"
+		abstract="false" lazy-init="true" autowire="byName">
+		<property name="configLocation">
+			<value>classpath:resources/ibatis/SqlMapConfig.xml</value>
+		</property>
+		<property name="useTransactionAwareDataSource">
+			<value>true</value>
+		</property>
+		<property name="dataSource">
+			<ref bean="${datasource.main.bean.id}" />
+		</property>
+	</bean>
+
+	<bean id="applicationPropertiesDao"
+		class="com.newco.marketplace.persistence.daoImpl.applicationproperties.ApplicationPropertiesDaoImpl"
+		lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+
+</beans>

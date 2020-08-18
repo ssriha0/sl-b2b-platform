@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="leadOutBoundNotification">
+<typeAlias alias="leadOutBoundNotificationVo" type="com.newco.marketplace.leadoutboundnotification.vo.LeadOutBoundNotificationVO"/> 
+<typeAlias alias="leadOutboundDetailsVo" type="com.newco.marketplace.leadoutboundnotification.vo.LeadOutboundDetailsVO"/> 
+
+
+<select id="fetchNotificationRecords.query" resultClass="leadOutBoundNotificationVo" parameterClass="java.util.HashMap">
+	select lead_id AS leadId,
+	xml AS xml,
+	retry_count AS retryCount,
+	status AS status
+	FROM lead_outbound_notification
+	WHERE status IN ('WAITING','RETRY') and retry_count <![CDATA[ < ]]> #noOfRetries#
+	ORDER BY created_date
+	LIMIT #recordsProcessingLimit#
+</select>
+
+<select id="fetchFailedRecords.query" resultClass="leadOutBoundNotificationVo">
+	select lead_id AS leadId
+	FROM lead_outbound_notification
+	WHERE status IN ('ERROR','FAILURE') and email_ind = 0
+	ORDER BY created_date
+</select>
+
+<select id="getAppKeyValueLeads.query" resultClass="java.lang.String" parameterClass="java.lang.String">
+	SELECT app_value FROM application_properties WHERE app_key=#appKey#
+</select>
+
+<select id="fetchLeadDetails.query" resultClass="leadOutboundDetailsVo" parameterClass="java.lang.String">
+	SELECT 
+	lci.first_name 			AS custFirstName,
+	lci.mi 					AS custMiddleName,
+	lci.last_name 			AS custLastName,
+	lci.street_1 			AS address1,
+	lci.street_2 			AS address2,
+	lci.apt_no 				AS aptNum,
+	lci.city 				AS city,
+	lci.state_cd 			AS state,
+	lci.zip 				AS zip,
+	lci.zip4 				AS zipExt,
+	lci.phone_no 			AS phoneNum,
+	lh.service_date 		AS serviceScheduleDate,
+	lh.service_start_time 	AS serviceScheduleFromTime,
+	lh.service_end_time 	AS serviceScheduleToTime,
+	lsm.nps_merch_code 		AS merchandiseCode,
+	lh.project_description  AS serviceRequest,
+	lh.secondary_projects   AS secondaryProjects
+	FROM 
+	lead_contact_information lci 
+	LEFT OUTER JOIN 
+	lead_hdr lh ON (lci.sl_lead_id=lh.sl_lead_id)
+	LEFT OUTER JOIN 
+	lead_service_mapping lsm ON (lh.client_project_type_id=lsm.client_project_id)
+	WHERE lci.sl_lead_id = #value#
+</select>
+
+<insert id="insertLeadOutBoundDetails.query" parameterClass="leadOutBoundNotificationVo">
+		INSERT INTO lead_outbound_notification(lead_id,xml,status,retry_count,created_date,modified_date,exception)
+		   VALUES (
+		          #leadId#,
+		          #xml#,
+		          #status#,
+		          #retryCount#,
+		          #createdDate#,
+		          #modifiedDate#,
+				  #exception#
+		       )
+</insert>
+
+<update id="updateLeadNotification.query" parameterClass="leadOutBoundNotificationVo">
+		UPDATE lead_outbound_notification
+		SET
+			retry_count=#retryCount#,
+			modified_date=#modifiedDate#
+		<isNotNull property="response" prepend=",">
+			response=#response#
+		</isNotNull>
+		<isNotNull property="status" prepend=",">
+			status=#status#
+		</isNotNull>
+		<isNotNull property="exception" prepend=",">
+			exception=#exception#
+		</isNotNull>
+		WHERE lead_id=#leadId#
+	</update>
+	
+<update id="updateLeadNotificationStatus.query" parameterClass="java.util.List">
+	UPDATE lead_outbound_notification
+	SET status='STARTED'
+	WHERE lead_id IN
+	<iterate open="(" close=")" conjunction=",">	
+					#[]#
+	</iterate>
+</update>
+
+<update id="updateEmailIndicator.query" parameterClass="java.util.List">
+	UPDATE lead_outbound_notification
+	SET email_ind=1
+	WHERE lead_id IN
+	<iterate open="(" close=")" conjunction=",">	
+					#[]#
+	</iterate>
+</update>
+
+<select id="getLeadOutboundRecordsCount.query" resultClass="java.lang.Integer" parameterClass="java.lang.Integer">
+	SELECT COUNT(*) FROM lead_outbound_notification 
+	WHERE status IN ('WAITING','RETRY') and retry_count <![CDATA[ < ]]> #value#
+</select>
+
+</sqlMap>

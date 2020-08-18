@@ -1,0 +1,28 @@
+<html><head><!--<script type="text/javascript" src="/MarketFrontend/monitor/googleMap.action?http://maps.google.com/maps?file=api&v=2.81&key=ABQIAAAA4VY5N407xmMXsCvKe3u80RTNbbnogSBxh_Nk7_EXsE7U28rZzhScz5Skj3F4aJeXLf9UlB07r0qFtQ"></script>-->
+<!--<script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2.81&key=ABQIAAAA4VY5N407xmMXsCvKe3u80RTNbbnogSBxh_Nk7_EXsE7U28rZzhScz5Skj3F4aJeXLf9UlB07r0qFtQ"></script>-->
+<script>var google_map_api_key = window.location.search.substring(1);
+		var googleAPIScript = '<script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2.81&key=' + google_map_api_key + '"></' + 'script>';
+		document.write(googleAPIScript); //alert(googleAPIScript);
+</script>
+<script>
+function populateDistance(fromLocation, fromLocationZip, toLocation, toLocationZip, pt2ptDistance, theTab) {
+	//alert("fromLocation = "+fromLocation+", fromLocationZip="+fromLocationZip+", toLocation="+toLocation+", toLocationZip="+toLocationZip+".");
+	var gDir = new GDirections(); 
+	GEvent.addListener(gDir,"load", function() {
+		distanceObj = gDir.getDistance();
+		sleep(1000); //alert("Status Code = " + gDir.getStatus().code + " Distance = " + distanceObj.meters + "!");
+		var distanceString = Math.round(distanceObj.meters * 0.0621)/100 + ' Miles';
+		window.parent.dojo.byId('drivingDistanceWidget'+theTab).innerHTML = distanceString;
+	});
+	GEvent.addListener(gDir,"error", function() {
+		//alert('Error in retrieving google distance! Showing point to point distance.');
+		window.parent.dojo.byId('drivingDistanceWidget'+theTab).innerHTML = pt2ptDistance + " Miles (Center zip to center zip)";
+	});
+	var directionString = "from: "+fromLocation+" to: "+toLocation;
+	gDir.load(directionString);
+}
+function sleep(delay) {
+	var start = new Date().getTime();
+	while (new Date().getTime() < start + delay);
+}
+</script></head><body></body></html>

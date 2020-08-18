@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified">
+<xs:include schemaLocation="../../common.xsd" />
+	<xs:element name="loginProviderResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="results" />
+				<xs:element name="userDetails" type="userprovidersDetails" minOccurs="0" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+		<xs:complexType name="userprovidersDetails">
+			<xs:sequence>
+				<xs:element name="firmId" type="xs:integer" minOccurs="0" />
+				<xs:element name="providerId" type="xs:integer" minOccurs="0" />
+				<xs:element name="firstName" type="xs:string" minOccurs="0" />
+				<xs:element name="lastName" type="xs:string" minOccurs="0" />
+				<xs:element name="firmName" type="xs:string" />
+				<xs:element name="phoneNo" type="numberFormatType" minOccurs="0" />
+				<xs:element name="email" type="emailType" minOccurs="0" />
+				<xs:element name="resourceLevel" type="xs:integer" minOccurs="0" />
+				<xs:element name="outhToken" type="xs:string" minOccurs="0" />
+				<xs:element name="temporaryPassword" type="xs:boolean" minOccurs="0" />
+				<xs:element name="locations" type="locationType" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+		
+		<xs:complexType name="locationType">
+			<xs:sequence>
+				<xs:element name="location" type="locationDetailsData" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+
+	<xs:complexType name="locationDetailsData">
+		<xs:sequence>
+ 			 <xs:element name="locnType" type="xs:string" minOccurs="0" />
+			<xs:element name="streetAddress1" type="xs:string" minOccurs="0" />
+			<xs:element name="streetAddress2" type="xs:string" minOccurs="0" />
+			<xs:element name="aptNo" type="xs:string" minOccurs="0" />
+			<xs:element name="city" type="xs:string" minOccurs="0" />
+			<xs:element name="state" type="xs:string" minOccurs="0" />
+			<xs:element name="zip" type="xs:string" minOccurs="0" />
+			<xs:element name="country" type="xs:string" minOccurs="0" />
+			</xs:sequence>
+	</xs:complexType>
+	
+		
+</xs:schema>

@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+<xs:include schemaLocation="../common.xsd" />
+ <xs:element name="providerRegistrationRequest">
+	<xs:complexType>
+	   <xs:sequence>
+           <xs:sequence>
+				<xs:element name="firmId" type="firmsType" />
+				<xs:element name="provider" type="providerType" />
+			</xs:sequence>
+       </xs:sequence>
+	</xs:complexType>
+ </xs:element>
+ <xs:simpleType name="firmsType">
+	<xs:restriction base="xs:string">
+		<xs:maxLength value="10"/>
+		<xs:pattern value="[0-9]+"/>
+	</xs:restriction>
+ </xs:simpleType>
+ <xs:complexType name="providerType">
+		<xs:sequence>
+		    <xs:element name="nameDetails" type="nameType" />
+		    <xs:element name="ssn" type="ssnType" />
+			<xs:element name="marketPlaceInd" type="booleanType"/>
+			<xs:element name="roles" type="rolesType" minOccurs="0" />
+			<xs:element name="jobTitle" type="stringFiftyType" minOccurs="0" />
+			<xs:element name="address" type="addressType"/>
+			<xs:element name="geographicalRange" type="geographicalRangeEnum"/>
+			<xs:element name="preferredBillingRate" type="hourlyRateType"/>
+			<xs:element name="userName" type="userNameType" minOccurs="0"/>
+			<xs:element name="backgroundCheck" type="backgroundCheckType"/>
+			<xs:element name="availability" type="availabilityType"/>
+			<xs:element name="businessPhone" type="PhoneType"/>
+			<xs:element name="mobileNo" type="PhoneType" minOccurs="0" />
+			<xs:element name="businessExtn" type="businessExtnType" minOccurs="0" />
+			<xs:element name="primaryEmail" type="emailTypes"/>
+			<xs:element name="altEmail" type="emailTypes" minOccurs="0" />
+			<xs:element name="smsAddress" type="PhoneType" minOccurs="0" />
+			<xs:element name="secondaryContact" type="secondaryContactEnum" minOccurs="0" />
+			<xs:element name="languages" type="languageType" minOccurs="0"/>
+			<xs:element name="licenseAndCertifications" type="licenseAndCertificationsType" minOccurs="0"/>
+			<xs:element name="subContractorCrewId" type="stringTwentyType" minOccurs="0" />
+		</xs:sequence>
+ </xs:complexType>
+    <xs:complexType name="rolesType">
+		<xs:sequence>
+			<xs:element type="rolesEnumType" name="role" maxOccurs="6" minOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="languageType">
+		<xs:sequence>
+			<xs:element name="language"  type="languageEnum" minOccurs="1" maxOccurs="21" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="addressType">
+		<xs:sequence>
+			<xs:element name="streetName1" type="streetType"/>
+			<xs:element name="streetName2" type="streetType" minOccurs="0" />
+			<xs:element name="aptNo" type="stringTwentyType" minOccurs="0" />
+			<xs:element name="city" type="stringCityType" />
+			<xs:element name="state" type="stringStateType" />
+			<xs:element name="zip" type="stringZipType" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="backgroundCheckType">
+		<xs:sequence>
+			<xs:element name="backgroundCheckStatus" type="backgroundStatusType"/>
+			<xs:element name="verificationDate" type="dateType"/>
+			<xs:element name="reverificationDate" type="dateType"/>
+			<xs:element name="requestDate" type="dateType" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="availabilityType">
+		<xs:sequence>
+			<xs:element name="week" type="weekType" minOccurs="7" maxOccurs="7" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="weekType">
+		<xs:sequence>
+			<xs:element type="weekEnum" name="weekDayName" minOccurs="1" />
+			<xs:element type="wholeDayType" name="wholeDayAvailableInd" />
+			<xs:element type="timeEnum" name="startTime" minOccurs="0" />
+			<xs:element type="timeEnum" name="endTime" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="credentialType">
+		<xs:sequence>
+			<xs:element name="credentialType" type="credentialTypeEnum"/>
+			<xs:element name="credentialCategory" type="stringTwoFiveFiveType"/>
+			<xs:element name="licenseCertName" type="stringHundredType"/>
+			<xs:element name="credentialIssuer" type="stringHundredType" minOccurs="0"/>
+			<xs:element name="credentialNumber" type="credLicenseNoType" minOccurs="0"/>
+			<xs:element name="credentialCity" type="credDetailsType" minOccurs="0"/>
+			<xs:element name="credentialState" type="credDetailsType" minOccurs="0"/>
+			<xs:element name="credentialCounty" type="credLicenseNoType" minOccurs="0"/>
+			<xs:element name="credentialIssueDate" type="dateType"/>
+			<xs:element name="credentialExpirationDate" type="dateType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="licenseAndCertificationsType">
+		<xs:sequence>
+		    <xs:element name="licenseCertificationInd" type="booleanType"/>
+			<xs:element name="credentials" type="credentialsType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+
+    <xs:complexType name="credentialsType">
+ 		<xs:sequence>
+			<xs:element name="credential" type="credentialType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="rolesEnumType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Owner/Principal" />
+			<xs:enumeration value="Dispatcher/Scheduler" />
+			<xs:enumeration value="Manager" />
+			<xs:enumeration value="Administrator" />
+			<xs:enumeration value="Service Provider" />
+			<xs:enumeration value="Other" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="weekEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Sunday" />
+			<xs:enumeration value="Monday" />
+			<xs:enumeration value="Tuesday" />
+			<xs:enumeration value="Wednesday" />
+			<xs:enumeration value="Thursday" />
+			<xs:enumeration value="Friday" />
+			<xs:enumeration value="Saturday" />
+		</xs:restriction>
+	</xs:simpleType>
+
+
+	<xs:simpleType name="geographicalRangeEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="10 miles or less" />
+			<xs:enumeration value="25 miles or less" />
+			<xs:enumeration value="50 miles or less" />
+			<xs:enumeration value="100 miles or less" />
+			<xs:enumeration value="200 miles or less" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="backgroundStatusType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Not Started" />
+			<xs:enumeration value="In Process" />
+			<xs:enumeration value="Clear" />
+			<xs:enumeration value="Not Cleared" />
+			<xs:enumeration value="Pending Submission" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="secondaryContactEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Primary Email Address" />
+			<xs:enumeration value="Alternate Email Address" />
+			<xs:enumeration value="SMS Address" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="timeEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="12:00 AM" />
+			<xs:enumeration value="12:15 AM" />
+			<xs:enumeration value="12:30 AM" />
+			<xs:enumeration value="12:45 AM" />
+			<xs:enumeration value="01:00 AM" />
+			<xs:enumeration value="01:15 AM" />
+			<xs:enumeration value="01:30 AM" />
+			<xs:enumeration value="01:45 AM" />
+			<xs:enumeration value="02:00 AM" />
+			<xs:enumeration value="02:15 AM" />
+			<xs:enumeration value="02:30 AM" />
+			<xs:enumeration value="02:45 AM" />
+			<xs:enumeration value="03:00 AM" />
+			<xs:enumeration value="03:15 AM" />
+			<xs:enumeration value="03:30 AM" />
+			<xs:enumeration value="03:45 AM" />
+			<xs:enumeration value="04:00 AM" />
+			<xs:enumeration value="04:15 AM" />
+			<xs:enumeration value="04:30 AM" />
+			<xs:enumeration value="04:45 AM" />
+			<xs:enumeration value="05:00 AM" />
+			<xs:enumeration value="05:15 AM" />
+			<xs:enumeration value="05:30 AM" />
+			<xs:enumeration value="05:45 AM" />
+			<xs:enumeration value="06:00 AM" />
+			<xs:enumeration value="06:15 AM" />
+			<xs:enumeration value="06:30 AM" />
+			<xs:enumeration value="06:45 AM" />
+			<xs:enumeration value="07:00 AM" />
+			<xs:enumeration value="07:15 AM" />
+			<xs:enumeration value="07:30 AM" />
+			<xs:enumeration value="07:45 AM" />
+			<xs:enumeration value="08:00 AM" />
+			<xs:enumeration value="08:15 AM" />
+			<xs:enumeration value="08:30 AM" />
+			<xs:enumeration value="08:45 AM" />
+			<xs:enumeration value="09:00 AM" />
+			<xs:enumeration value="09:15 AM" />
+			<xs:enumeration value="09:30 AM" />
+			<xs:enumeration value="09:45 AM" />
+			<xs:enumeration value="10:00 AM" />
+			<xs:enumeration value="10:15 AM" />
+			<xs:enumeration value="10:30 AM" />
+			<xs:enumeration value="10:45 AM" />
+			<xs:enumeration value="11:00 AM" />
+			<xs:enumeration value="11:15 AM" />
+			<xs:enumeration value="11:30 AM" />
+			<xs:enumeration value="11:45 AM" />
+			<xs:enumeration value="12:00 PM" />
+			<xs:enumeration value="12:15 PM" />
+			<xs:enumeration value="12:30 PM" />
+			<xs:enumeration value="12:45 PM" />
+			<xs:enumeration value="01:00 PM" />
+			<xs:enumeration value="01:15 PM" />
+			<xs:enumeration value="01:30 PM" />
+			<xs:enumeration value="01:45 PM" />
+			<xs:enumeration value="02:00 PM" />
+			<xs:enumeration value="02:15 PM" />
+			<xs:enumeration value="02:30 PM" />
+			<xs:enumeration value="02:45 PM" />
+			<xs:enumeration value="03:00 PM" />
+			<xs:enumeration value="03:15 PM" />
+			<xs:enumeration value="03:30 PM" />
+			<xs:enumeration value="03:45 PM" />
+			<xs:enumeration value="04:00 PM" />
+			<xs:enumeration value="04:15 PM" />
+			<xs:enumeration value="04:30 PM" />
+			<xs:enumeration value="04:45 PM" />
+			<xs:enumeration value="05:00 PM" />
+			<xs:enumeration value="05:15 PM" />
+			<xs:enumeration value="05:30 PM" />
+			<xs:enumeration value="05:45 PM" />
+			<xs:enumeration value="06:00 PM" />
+			<xs:enumeration value="06:15 PM" />
+			<xs:enumeration value="06:30 PM" />
+			<xs:enumeration value="06:45 PM" />
+			<xs:enumeration value="07:00 PM" />
+			<xs:enumeration value="07:15 PM" />
+			<xs:enumeration value="07:30 PM" />
+			<xs:enumeration value="07:45 PM" />
+			<xs:enumeration value="08:00 PM" />
+			<xs:enumeration value="08:15 PM" />
+			<xs:enumeration value="08:30 PM" />
+			<xs:enumeration value="08:45 PM" />
+			<xs:enumeration value="09:00 PM" />
+			<xs:enumeration value="09:15 PM" />
+			<xs:enumeration value="09:30 PM" />
+			<xs:enumeration value="09:45 PM" />
+			<xs:enumeration value="10:00 PM" />
+			<xs:enumeration value="10:15 PM" />
+			<xs:enumeration value="10:30 PM" />
+			<xs:enumeration value="10:45 PM" />
+			<xs:enumeration value="11:00 PM" />
+			<xs:enumeration value="11:15 PM" />
+			<xs:enumeration value="11:30 PM" />
+			<xs:enumeration value="11:45 PM" />
+		</xs:restriction>
+	</xs:simpleType>
+
+
+	<xs:simpleType name="languageEnum">
+		<xs:restriction base="xs:string">
+		    <xs:enumeration value="English"/>
+			<xs:enumeration value="French"/>
+			<xs:enumeration value="German"/>
+			<xs:enumeration value="Spanish"/>
+			<xs:enumeration value="Chinese"/>
+			<xs:enumeration value="Tagalog"/>
+			<xs:enumeration value="Vietnamese"/>
+			<xs:enumeration value="Italian"/>
+			<xs:enumeration value="Korean"/>
+			<xs:enumeration value="Russian"/>
+			<xs:enumeration value="Polish"/>
+			<xs:enumeration value="Arabic"/>
+			<xs:enumeration value="Portuguese"/>
+			<xs:enumeration value="Japanese"/>
+			<xs:enumeration value="French Creole"/>
+			<xs:enumeration value="Greek"/>
+			<xs:enumeration value="Hindi"/>
+			<xs:enumeration value="Persian"/>
+			<xs:enumeration value="Urdu"/>
+			<xs:enumeration value="Cantonese"/>
+			<xs:enumeration value="Hebrew"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="wholeDayType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="0" />
+			<xs:enumeration value="1" />
+			<xs:enumeration value="2" />
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="credentialTypeEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Contractor" />
+			<xs:enumeration value="Computer" />
+			<xs:enumeration value="Professional" />
+			<xs:enumeration value="Handyman" />
+			<xs:enumeration value="Industrial" />
+			<xs:enumeration value="Select Provider Network" />
+			<xs:enumeration value="Other" />
+			<xs:enumeration value="Home Inspector" />
+			<xs:enumeration value="Drug Screen" />
+			<xs:enumeration value="Home Appliance" />
+			<xs:enumeration value="Client Based" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="stringHundredType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="100"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="stringTwoFiveFiveType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="255"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+
+
+	<xs:simpleType name="streetType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="40"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="stringCityType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="30"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stringStateType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="50"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stringZipType">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="5"/>
+			<xs:maxLength value="5"/>
+			<xs:pattern value="[0-9]{5}"/> 	
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="stringTenType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="10"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="hourlyRateType">
+		<xs:restriction base="xs:decimal">
+		      <xs:maxInclusive value="9999.99"/>
+		      <xs:minInclusive value="0.01"/>
+              <xs:totalDigits value="6" />
+              <xs:fractionDigits value="2" />
+              <xs:pattern value="[0-9][.][0-9]*" />
+              <xs:pattern value="[1-9][0-9]*[.][0-9]*"/>
+              <xs:pattern value="[1-9][0-9]*" />
+        </xs:restriction>
+	</xs:simpleType>
+	
+    <xs:simpleType name="ssnType">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="9"/>
+			<xs:maxLength value="9"/>
+			<xs:pattern value="[0-9]{9}"/> 	
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="credLicenseNoType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="20"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="credDetailsType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="50"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="businessExtnType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="5"/>
+			<xs:pattern value="[0-9]{1,5}"/> 	
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="booleanType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="true" />
+			<xs:enumeration value="false" />
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="emailTypes">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,4}" />
+			<xs:maxLength value="255"></xs:maxLength>
+		</xs:restriction>
+	</xs:simpleType>
+   
+   <xs:complexType name="nameType">
+		<xs:sequence>
+			<xs:element name="firstName" type="stringFiftyType" />
+			<xs:element name="lastName" type="stringFiftyType" />
+			<xs:element name="middleName" type="stringFiftyType" minOccurs="0" />
+			<xs:element name="suffix" type="stringTenType" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:simpleType name="userNameType">
+	  <xs:restriction base="xs:string">
+	     <xs:minLength value="8"/>
+	     <xs:maxLength value="100"/>
+	     <xs:whiteSpace value="collapse"/>
+	  </xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="stringTwentyType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="20"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="stringFiftyType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="50"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- Added to handle restriction in Date  to exactly in  YYYY-MM-DD -->
+	<xs:simpleType name="dateType">
+		<xs:restriction base="xs:date">
+		<xs:pattern value="\d{4}-\d{2}-\d{2}"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

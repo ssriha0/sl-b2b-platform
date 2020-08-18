@@ -1,0 +1,265 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <!-- Smart App Banner 18979-->
+    <meta name="apple-itunes-app" content="app-id=899811332" />
+	<meta name="google-play-app" content="app-id=com.servicelive.android.servicelivepro" />
+	<meta name="msApplication-ID" content="microsoft.build.App"/>
+	<meta name="msApplication-PackageFamilyName"content="microsoft.build_8wekyb3d8bbwe"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<!-- Smart App Banner 18979-->
+    <title>Servicelive for Providers</title>
+
+    <!-- Framework CSS -->
+    <link rel="stylesheet" href="/ServiceLiveWebUtil/provider/styles/screen.css" type="text/css" media="screen, projection">
+    <link rel="stylesheet" href="/ServiceLiveWebUtil/provider/styles/print.css" type="text/css" media="print">
+    <link rel="stylesheet" href="/ServiceLiveWebUtil/provider/styles/banner.css" type="text/css">
+    
+    <!--[if lt IE 8]><link rel="stylesheet" href="/ServiceLiveWebUtil/provider/styles/ie.css" type="text/css" media="screen, projection"><![endif]-->
+	<!-- Smart App Banner 18979-->
+	<link rel="stylesheet" type="text/css" href="/ServiceLiveWebUtil/css/smart-app-banner.css" />
+	<link rel="apple-touch-icon" href="/ServiceLiveWebUtil/images/icons/mobile_icon.png" />
+	<link rel="android-touch-icon" href="/ServiceLiveWebUtil/images/icons/mobile_icon.png" />
+	<script type="text/javascript" src="/ServiceLiveWebUtil/javascript/smart-app-banner.js"></script>
+	<script type="text/javascript" src="/ServiceLiveWebUtil/javascript/smart_banner.js"></script>
+	<!-- Smart App Banner 18979-->
+    <script src="/ServiceLiveWebUtil/provider/scripts/banner.js" type="text/javascript"></script>
+    <script src="/ServiceLiveWebUtil/javascript/jquery/jquery.min.js" type="text/javascript"></script>
+    <script src="/ServiceLiveWebUtil/provider/scripts/config.js" type="text/javascript"></script>
+	<script src="/ServiceLiveWebUtil/javascript/cookie_js/setGetCookie.js" type="text/javascript"></script>
+	
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$(".maddtogl").hide();
+			$("#maddtogl").click(function(){
+				$(".maddtogl").toggle();
+			});
+			checkCookie();
+			
+			var loginUrl = "https://" + window.location.hostname; 
+		       if (window.location.port != null) { 
+		                loginUrl += ":" + port
+		       } 
+		       loginUrl += "/MarketFrontend/doLogin.action"; 
+		      	//alert(loginUrl); 
+		        $("#doLogin").prop("action", loginUrl);
+			
+		
+			$('#password').keypress(function (e) {				
+    			if (e.keyCode === 13) {      		 		
+      		 		if ($("#maddtogl").prop('checked') == true)
+					{	
+					setCookie("remusernamePR","true",30);								
+					var uname= $("#username").val();
+					setCookie("usernamePR",uname,30);
+					}
+					else
+					{
+						setCookie("remusernamePR","false",30);	
+						setCookie("usernamePR","",-1);
+					}
+		        $("#doLogin").submit();
+    			}
+  			});
+			$('.positive').click(function(){
+				if ($("#maddtogl").prop('checked') == true)
+					{	
+					setCookie("remusernamePR","true",30);								
+					var uname= $("#username").val();
+					setCookie("usernamePR",uname,30);
+					}
+					else
+					{
+						setCookie("remusernamePR","false",30);	
+						setCookie("usernamePR","",-1);
+					}
+		        $("#doLogin").submit();
+			});
+		});
+		
+		function checkCookie(){
+			var username = getCookie("usernamePR");
+			var remusername=getCookie("remusernamePR");
+			if (username != null && username != "") {
+				$("#username").val(username);
+			}				
+			if (remusername != null && remusername != "") {
+				if (remusername == "false") 
+				{
+				$("#maddtogl").prop('checked', false);
+				}
+			}
+		}
+		
+	</script>
+	
+  </head>
+  <body onload="displaySmartBanner();">
+  <!--  <body onload="displayBanner();">
+    <div id="bannerDiv" class="bannerDiv" style="display:none;">
+	     <span class="spanText" id="spanText"></span>
+	     <a href="javascript:void(0);" onclick="removeBanner();" style="text-decoration: underline;"> Dismiss </a>
+    </div>-->
+    <div class="container" id="bannerAdjustDiv">
+		<div id="header">
+			<div class="clearfix">
+	      		<h1 id="logo"><a href="index.html" title="ServiceLive Become A Contractor">ServiceLive</a></h1>
+				<div id="utility">
+					<ul>
+						<li class="community"><a title="Provider Forums" href="http://community.servicelive.com">Community</a></li>
+						<!-- <li class="support"><a title="Provider Support" href="http://getsatisfaction.com/servicelive/products/servicelive_servicelive_for_providers">Support</a></li> -->
+						<li class="contact"><a title="Contact ServiceLive" href="contact.html">Contact Us</a></li>
+					</ul>
+				</div>
+			</div>
+			<div id="menu">
+				<ul>
+					<li class="home"><a title="ServiceLive Contractor Home" href="index.html">Home</a></li>
+					<li class="about"><a title="About ServiceLive" href="about.html">About</a></li>
+					<li class="features"><a title="Job Opportunities" href="features.html">Features</a></li>
+					<li class="offers"><a title="Sign up for new Member offers" href="memberOffer.html">Member Offers</a></li>
+					<li class="signup"><a title="Become A Contractor" href="signup.html">Signup Now</a></li>
+				</ul>
+				<a class="loginbutton" title="Login to your Account" href="login.html">Login to Your Account</a>
+			</div>
+		</div>
+	</div>
+	<div id="subpage" class="clearfix container">
+		<div id="general-content" class="span-16">
+			<div class="top"></div>
+			<div class="content shortenform">
+				
+					<h2 class="login">Login to ServiceLive</h2>
+					
+					<p>Please enter your information below to continue.</p>
+					
+		
+					<p class="required_msg">An asterisk (<span class="req">*</span>) indicates a required field.</p>
+					
+				<form id="doLogin" onsubmit="return true;" action="#" method="post" enctype="multipart/form-data">
+					<fieldset id="signin">
+						<legend>Login Information</legend>
+						<div class="clearfix">
+							<label>Username <span class="req">*</span></label>
+							<input id="username" name="username" autocomplete="off" type="text" class="text span-5"> <small><a href="/MarketFrontend/forgetUsernameAction!loadForgetUserPage.action">Forgot My Username</a></small>
+						</div>
+						<div class="clearfix">
+							<label>Password <span class="req">*</span></label> 
+							<input id="password" name="password" type="password" autocomplete="off" class="text span-5"> <small><a href="/MarketFrontend/resetPasswordAction!loadResetPasswordPage.action">Forgot My Password</a></small>
+						</div>
+						<div class="clearfix">
+							<label>&nbsp;</label><small class="moveup">Passwords are cAsE sensitive.</small>
+							
+						</div>
+						<div class="clearfix">
+							<strong class="inlinecheckbox"><input id="maddtogl" name="rememberUserId" value="true" type="checkbox" class="checkbox" checked="checked"></strong>
+							<strong class="inform">  Remember my user name on this computer. </strong>
+						</div>
+						<p></p>
+						<div class="clearfix">
+						<label>&nbsp;</label><a class="button positive" href="#"><img src="/ServiceLiveWebUtil/provider/images/tick.png"> Login To ServiceLive!</a>
+						</div>
+						<div class="clearfix">
+							<p><img src="/ServiceLiveWebUtil/provider/images/help.png"> Need help? Call 1-888-549-0640. If you have an account, please do not re-register.</p>							
+						</div>
+					</fieldset>
+				</form>				
+			</div>
+			<div class="bottom"></div>
+		</div>
+		<div id="promo" class="span-8 last">
+				<div class="span-8 promobox last">
+					<div class="promo1">
+						<h3>Refer a Provider</h3>
+						<p>Know of a great pro that others should work with? We’re looking for pros in various trades and specialties.</p>
+						<a title="Refer A Contractor" target="_new" class="referbutton" href="http://signup.servicelive.com">Refer a Pro</a>
+					</div>
+				</div>
+				<!-- Removing and replaced with Mobile App banner 
+				<div class="span-8 promobox last">
+					<div class="promo2">
+						<h3>Expand your Workforce</h3>
+						<p>Have too much work already or looking to offer new services?  Use ServiceLive to expand your workforce on-demand.  You can hire pros by the job – without the risk and expense of full-time help.</p>
+					</div>
+				</div>
+				-->
+				<!-- Added for Mobile App Banner -->
+				<div class="span-8 promobox last">
+						  <div><a href="http://mobile.servicelive.com/provider" target="_blank">
+			        <img width="310" height="139" alt="Mobile Banner" src="/ServiceLiveWebUtil/images/mobileBanner/banner_login.gif"/>
+			     </a> </div>
+				</div>
+				<div class="span-8 promobox last">
+					<div class="promo3">
+						<h3>Community Driven</h3>
+						<p>Discuss your ideas, suggestions and or concerns with other community members.</p>
+						<ul>
+							<li><a href="http://community.servicelive.com/register.php" title="Join our Forums">Become a Member of our Forums</a></li>
+							<li><a href="https://community.servicelive.com/index.php" title="Already a Member?">Already a Member?</a></li>
+							<li><a href="http://community.servicelive.com/faq.php" title="Community FAQ">Community FAQ</a></li>
+						</ul>
+					</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div id="footer" class="clear">
+		<div class="container clearfix">
+			<div class="span-16">
+				<ul id="footermenu">
+					<li class="first"><a href="terms.html">Terms of Use</a></li>
+					<li><a href="https://transformco.com/privacy" target="_blank">Privacy Policy</a></li>
+					<li><a href="https://transformco.com/privacy#_Toc31123888" target="_blank">California Privacy Policy</a></li>
+					<li><a href="provideragreement.html">Provider Agreement</a></li>
+					<li class="last"><a href="buyeragreement.html">Buyer Agreement</a></li>
+				</ul>
+				<p>ServiceLive is a Transform Holdco Company.  &copy; 2019 Transform ServiceLive LLC.</p>
+			</div>
+
+			<table border="0" style="float: right; width: 350px;">
+				<tr>
+					<td style="text-align: right; padding-top: 5px; padding-right: 10px;">
+						<strong>ServiceLive is optimized<br>for the following<br>browsers:</strong>			
+					</td>
+					<!-- Removing for IE
+					<td>
+						<center>
+							<img title="IE" border="0" src="/ServiceLiveWebUtil/images/common/ie.png" alt="" />
+							<br>
+							<strong>IE 8</strong>
+						</center>
+					</td>-->
+					<td>
+						<center>
+							<img title="Firefox" border="0" src="/ServiceLiveWebUtil/images/common/firefox.png" alt="" />
+							<br>
+							<strong>Firefox</strong>
+						</center>			
+					</td>
+					<td>
+						<center>
+							<img border="0" alt=""
+								src="/ServiceLiveWebUtil/images/common/chrome.png"
+								title="Chrome"> <br> <strong>Chrome</strong>
+						</center>
+					</td>
+				</tr>
+			</table>
+
+		</div>
+	</div>
+ <script type="text/javascript">
+ var _gaq = _gaq || [];
+ _gaq.push(['_setAccount', 'UA-2653154-6']);
+ _gaq.push(['_setDomainName', 'servicelive.com']);
+ _gaq.push(['_trackPageview']);
+ (function() { var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })();
+ </script>
+
+  </body>
+</html>
+

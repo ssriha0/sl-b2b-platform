@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created  by Shekhar (Servicelive) -->
+<xs:schema xmlns:c="http://www.servicelive.com/namespaces/serviceAddressCommon" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" elementFormDefault="qualified" jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+
+<xs:element name="serviceAddress">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="address1" type="xs:string"/>
+				<xs:element name="address2" type="xs:string" minOccurs="0"/>
+				<xs:element name="city" type="xs:string"/>
+				<xs:element name="state" type="xs:string"/>
+				<xs:element name="zip" type="xs:string"/>
+				<xs:element name="isDefault" type="xs:boolean"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

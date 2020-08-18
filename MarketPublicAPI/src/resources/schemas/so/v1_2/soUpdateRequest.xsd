@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/soRequest" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" targetNamespace="http://www.servicelive.com/namespaces/soRequest" elementFormDefault="qualified" jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+	<xs:include schemaLocation="soEditCommon.xsd"/>
+	
+	<!--  This is the new UPDATE API REQUEST-->
+	<!-- Root element -->
+	<xs:element name="soUpdateRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="identification" type="IdentificationType"/>
+				<xs:element name="spendLimitIncrease" type="SpendLimitType" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="spendLimitDecrease" type="SpendLimitType" minOccurs="0" maxOccurs="1"/>				
+				<xs:element name="customReferences" type="CustomReferencesType" minOccurs="0" maxOccurs="1"/>
+				
+				<xs:element name="overView" type="stringOverViewType" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="location" type="LocationTypes" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="contact" type="ContactTypes" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="soSubstatus" type="stringSoSubstatusType" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="schedule" type="SchedulesType" minOccurs="0"/>
+				<xs:element name="scheduleServiceSlot" type="SchedulesSlotType" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:decimal"/>
+		</xs:complexType>
+	</xs:element>
+	
+	
+	<!-- SpendLimit  -->
+	
+	<xs:complexType name="SpendLimitType">
+		<xs:sequence>
+			<xs:element name="laborSpendLimit" type="price-format" minOccurs="1" />
+			<xs:element name="partsSpendLimit" type="price-format" minOccurs="1" />
+			<xs:element name="reason" type="reasonType" minOccurs="1" />	
+			<xs:element name="partsTax" type="percent" minOccurs="0" />	
+			<xs:element name="partsDiscount" type="percent" minOccurs="0" />	
+			<xs:element name="laborTax" type="percent" minOccurs="0" />	
+			<xs:element name="laborDiscount" type="percent" minOccurs="0" />	
+			<xs:element name="notes" type="notesType" minOccurs="0" nillable="true"/>	
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!-- Notes Length  -->
+ 
+  	<xs:simpleType name="notesType">
+    	<xs:restriction base="xs:string">
+    		<xs:maxLength value="255"/>
+    	</xs:restriction>
+  	</xs:simpleType>
+
+	<!-- Reason Length  -->
+ 	<xs:simpleType name="reasonType">
+    	<xs:restriction base="xs:string">
+    		<xs:maxLength value="120"/>
+    	</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="IdentificationType">
+		<xs:sequence>		
+			<xs:element name="id" type="xs:integer" />  
+		</xs:sequence>
+		<xs:attribute name="type" type="identificationEnum" use="required"/>
+	</xs:complexType>	
+	<xs:simpleType name="identificationEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="BuyerResourceId"/>
+		</xs:restriction>
+	</xs:simpleType>	
+	
+		<!-- Address  -->
+	
+	<xs:complexType name="LocationTypes">
+		<xs:sequence>
+			<xs:element name="locationType" type="locationTypes" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="locationName" type="locationNameType" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="address1" type="stringAddressType" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="address2" type="stringAddressType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="city" type="cityType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="note" type="locationNotesType" minOccurs="0" maxOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!-- Contact  -->
+	
+	<xs:complexType name="ContactTypes">
+		<xs:sequence>
+			<xs:element name="contactLocnType" type="contactLocnTypes" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="firstName" type="stringNameType" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="lastName" type="stringNameType" minOccurs="1" maxOccurs="1" />
+			<xs:element name="primaryPhoneNo" type="PhoneNumberType" minOccurs="1" maxOccurs="1" />
+			<xs:element name="altPhoneNo" type="PhoneNumberType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="email" type="emailTypes" minOccurs="0" maxOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="SchedulesType">
+		<xs:sequence>
+			<xs:element name="scheduleType" type="schedulesRangeEnum"/>
+			<xs:element name="serviceDateTime1" type="xs:dateTime" nillable="true" minOccurs="0"/>
+			<xs:element name="serviceDateTime2" type="xs:dateTime" minOccurs="0" nillable="true" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="SchedulesSlotType">
+		<xs:sequence>
+			<xs:element name="scheduleType" type="schedulesRangeEnum"/>
+			<xs:element name="serviceDatetimeSlots" type="ServiceDatetimeSlotsType"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:simpleType name="schedulesRangeEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="range"/>
+			<xs:enumeration value="fixed"/>
+			<xs:enumeration value="preferences"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="PhoneNumberType">
+		<xs:sequence>
+			<xs:element name="phoneType" type="phoneTypeEnum" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="number" minOccurs="1" maxOccurs="1">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+					<xs:pattern value="\d{10}"/>					
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="extension" minOccurs="0" maxOccurs="1">
+			<xs:simpleType>
+					<xs:restriction base="xs:string">
+					<xs:pattern value="\d{5}"/>  				
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:simpleType name="phoneTypesEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Work"/>
+			<xs:enumeration value="Mobile"/>
+			<xs:enumeration value="Home"/>
+			<xs:enumeration value="Pager"/>
+			<xs:enumeration value="Other"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="stringAddressType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="100"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="stringNameType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="50"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="stringOverViewType">
+		<xs:restriction base="xs:string">
+			<xs:pattern value=".*[^\s].*" />  
+		</xs:restriction>
+	</xs:simpleType>
+	
+	
+	<xs:simpleType name="stringSoSubstatusType">
+		<xs:restriction base="xs:string">
+			<xs:pattern value=".*[^\s].*" />  
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="emailTypes">
+		<xs:restriction base="xs:string"> 
+		   <xs:maxLength value="255"></xs:maxLength>
+           <xs:pattern value="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}"/>     
+        </xs:restriction>
+    </xs:simpleType>    
+    
+    <xs:simpleType name="locationTypes">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Commercial"/>
+			<xs:enumeration value="Residential"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="contactLocnTypes">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Service"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="locationNameType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="100"/>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="locationNotesType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="255"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="cityType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="30"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="percent">
+	  <xs:restriction base="xs:decimal">
+	    <xs:minInclusive value="0"/>
+	    <xs:maxInclusive value="100"/>
+	  </xs:restriction>
+	</xs:simpleType>
+	
+</xs:schema>

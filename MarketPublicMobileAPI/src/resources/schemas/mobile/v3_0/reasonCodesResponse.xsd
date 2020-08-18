@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified" >
+	<xs:include schemaLocation="../../common.xsd" />
+	<xs:element name="reasonCodesResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="results"/>
+				<xs:element name="reasonCodesList" type="reasonListType" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:complexType name="reasonListType">
+		<xs:sequence>
+			<xs:element name="reasonCode" type="reasonType" minOccurs="0" maxOccurs="unbounded"/>  			
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="reasonType">
+		<xs:sequence>
+			<xs:element name="reasonCodeType" type="xs:string"/>
+			<xs:element name="codes" type="codesType" minOccurs="0"/>  			
+		</xs:sequence>	
+	</xs:complexType>
+	<xs:complexType name="codesType">
+		<xs:sequence>
+			<xs:element name="code" type="codeType" minOccurs="0" maxOccurs="unbounded"/>  			
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="codeType">
+		<xs:sequence>
+			<xs:element name="reasonCodeId" type="xs:integer"/>
+			<xs:element name="reasonCodeDescription" type="xs:string"/>
+		</xs:sequence>	
+	</xs:complexType>
+</xs:schema>

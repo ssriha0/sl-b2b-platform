@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+        <!-- Root element -->
+		<xs:element name="approveProvidersRequest">
+			<xs:complexType>
+				<xs:sequence>
+					 <xs:element name="adminResourceId" type="firmsType" minOccurs="1"/>
+					 
+					 <xs:element ref="providers"/>
+				</xs:sequence>					
+			</xs:complexType>
+		</xs:element>
+		<xs:element name="providers">
+		   <xs:complexType>
+			   <xs:sequence>
+				  <xs:element ref="provider" maxOccurs="unbounded"/>
+			   </xs:sequence>
+		   </xs:complexType>
+	    </xs:element>
+	    <xs:element name="provider">
+	      <xs:complexType>
+			<xs:sequence>
+			   <xs:element name="providerId" type="firmsType" minOccurs="1"/>
+			    <xs:element name="backgroundCheck" type="backgroundCheckType"  minOccurs="0" />
+			   <xs:element name="providerStatus" type="providerStatusType"  minOccurs="1" />
+			</xs:sequence>
+		  </xs:complexType>
+	    </xs:element>
+	    
+	     <xs:simpleType name="firmsType">
+		 <xs:restriction base="xs:integer">
+     	 <xs:minInclusive value="1"/>
+     	 <xs:maxInclusive value="9999999999"/>
+     	 <xs:pattern value=".*[^\s].*" />
+    	 </xs:restriction>
+		 </xs:simpleType>
+	     <xs:complexType name="backgroundCheckType">
+		   <xs:sequence>
+		      <xs:element name="backgroundCheckStatus" type="backgroundCheckStatusType" minOccurs="1"/>
+			  <xs:element name="verificationDate" type="dateType" minOccurs="1"/>
+			  <xs:element name="reverificationDate" type="dateType" minOccurs="1"/>
+			  <xs:element name="requestDate" type="dateType" minOccurs="0"/>	
+		   </xs:sequence>
+	    </xs:complexType>
+	    
+	    <xs:complexType name="providerStatusType">
+		   <xs:sequence>
+		      <xs:element name="emailIndicator" type="YesNoType" minOccurs="1"/>
+			  <xs:element name="status" type="statusType" minOccurs="1"/>	
+			  <xs:element ref= "reasonCodes" minOccurs="1"/>
+		   </xs:sequence>
+	    </xs:complexType>
+	    <xs:element name="reasonCodes">
+	       <xs:complexType>
+			  <xs:sequence>
+			    <xs:element name="reasonCode" type="reasonCodeType" minOccurs="1" maxOccurs="unbounded"/>
+			  </xs:sequence>
+		   </xs:complexType>
+		</xs:element>
+		<xs:simpleType name="statusType">
+		   <xs:restriction base="xs:string">
+		      <xs:enumeration value="Pending Approval" />
+		      <xs:enumeration value="Declined" />
+			  <xs:enumeration value="Out of Compliance" />
+			  <xs:enumeration value="Temporarily Suspended" />
+			  <xs:enumeration value="Terminated" />
+			  <xs:enumeration value="Approved (market ready)" />
+			  <!-- <xs:enumeration value="Incomplete" /> -->					
+		   </xs:restriction>
+	   </xs:simpleType>
+	   
+	   <xs:simpleType name="backgroundCheckStatusType">
+		   <xs:restriction base="xs:string">
+		      <xs:enumeration value="Not Started" />
+		      <xs:enumeration value="In Process" />
+			  <xs:enumeration value="Clear" />
+			  <xs:enumeration value="Not Cleared" />
+			  <xs:enumeration value="Pending Submission" />
+		   </xs:restriction>
+	   </xs:simpleType>
+	   <!-- ReasonCodes for 'Incomplete','Pending Approval','Out of Compliance','Declined','Suspended','Terminated','ServiceLive Approved' start -->
+		<xs:simpleType name="reasonCodeType">
+		   <xs:restriction base="xs:string">
+		      <!-- ReasonCodes for 'Pending Approval'-->
+			  <xs:enumeration value="Not Applicable"/>
+			  <!-- ReasonCodes for 'Out of Compliance'-->
+			  <xs:enumeration value="Invalid SSN"/>
+			  <xs:enumeration value="No Background Check Submitted"/>
+			  <xs:enumeration value="Other"/>
+			  <!-- ReasonCodes for 'Declined'-->
+			  <xs:enumeration value="Adverse Findings"/>
+			  <xs:enumeration value="Failed Background Check Recertification"/>
+			  <xs:enumeration value="No Longer Employed"/>
+			  <xs:enumeration value="Duplicate Entry"/>
+			  <!-- ReasonCodes for 'Temporarily Suspended'-->
+			  <xs:enumeration value="Failure to Update Marketplace"/>
+			  <xs:enumeration value="Core Parts Not Returned"/>
+			  <xs:enumeration value="Circumventing Process"/>
+			  <xs:enumeration value="State of Service"/>
+			  <xs:enumeration value="Under Investigation"/>
+			  <!-- ReasonCodes for 'Terminated'-->
+			  <xs:enumeration value="Terminate"/>
+			  <xs:enumeration value="Terminate with Prejudice"/>
+			  <xs:enumeration value="Other"/>
+			  <!-- ReasonCodes for 'ServiceLive Approved'-->
+			  <xs:enumeration value="Not Applicable"/>
+		    </xs:restriction>
+	     </xs:simpleType> 
+	     <!-- ReasonCodes for 'Terminated','Declined','Suspended','Out of Compliance' start -->
+	     <xs:simpleType name="reasonCodeTypeOld">
+		   <xs:restriction base="xs:int">
+			 <!--  <xs:enumeration value="5" />
+			  <xs:enumeration value="6" />
+			  <xs:enumeration value="7" />
+			  <xs:enumeration value="8" />
+			  <xs:enumeration value="9" />
+			  <xs:enumeration value="10" />
+			  <xs:enumeration value="11" />
+			  <xs:enumeration value="12" />
+			  <xs:enumeration value="13" />
+			  <xs:enumeration value="16" />
+			  <xs:enumeration value="17" />
+			  <xs:enumeration value="18" />
+			  <xs:enumeration value="19" />
+			  <xs:enumeration value="20" />
+			  <xs:enumeration value="21" />
+			  <xs:enumeration value="22" />
+			  <xs:enumeration value="23" />
+			  <xs:enumeration value="74" />
+			  <xs:enumeration value="75" />
+			  <xs:enumeration value="76" />
+			  <xs:enumeration value="77" />
+			  <xs:enumeration value="78" />
+			  <xs:enumeration value="79" />
+			  <xs:enumeration value="80" />
+			  <xs:enumeration value="81" />
+			  <xs:enumeration value="82" />
+			  <xs:enumeration value="83" />
+			  <xs:enumeration value="84" />
+			  <xs:enumeration value="85" />
+			  <xs:enumeration value="86" /> -->
+			  
+			  <xs:enumeration value="38" />
+			  <xs:enumeration value="54" />
+			  <xs:enumeration value="43" />
+			  <xs:enumeration value="45" />
+			  <xs:enumeration value="72" />
+			  <xs:enumeration value="73" />
+			  <xs:enumeration value="39" />
+			  <xs:enumeration value="40" />
+			  <xs:enumeration value="41" />
+			  <xs:enumeration value="46" />
+			  <xs:enumeration value="47" />
+			  <xs:enumeration value="48" />
+			  <xs:enumeration value="49" />
+			  <xs:enumeration value="50" />
+			  <xs:enumeration value="51" />
+			  <xs:enumeration value="52" />
+			  <xs:enumeration value="53" />
+			  
+		    </xs:restriction>
+	     </xs:simpleType> 
+	     <!-- ReasonCodes for 'Terminated','Declined','Suspended','Out of Compliance' End -->
+	     <xs:simpleType name="YesNoType">
+	       <xs:restriction base="xs:string">
+	          <xs:pattern value="[Yy][Ee][Ss]" />
+			  <xs:pattern value="[Nn][Oo]" />
+	       </xs:restriction>
+	     </xs:simpleType>
+	   <!-- Added to handle restriction in Date  to exactly in  YYYY-MM-DD -->
+	   <xs:simpleType name="dateType">
+		      <xs:restriction base="xs:date">
+		      <xs:pattern value="\d{4}-\d{2}-\d{2}"/>
+		   </xs:restriction>
+	   </xs:simpleType>
+</xs:schema>
+
+

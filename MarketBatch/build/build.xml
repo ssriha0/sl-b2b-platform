@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="../" default="distribute" name="MarketBatch">
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties" />
+
+	<target name="package" depends="distribute" />
+
+	<echo level="info">
+===============================================================================
+                                ${ant.project.name} 
+===============================================================================</echo>
+	<!-- Initialize -->
+	<target name="init">
+		<!-- Create the time stamp -->
+		<tstamp />
+		<!-- Create build number file -->
+		<buildnumber />
+		<property name="dir.base" value="${basedir}" />
+
+		<property name="dir.app" value="${dir.base}/web" />
+		<property name="dir.source" value="${dir.base}/src/main/java" />
+		<property name="dir.resources" value="${dir.base}/src/main/resources" />
+		<property name="dir.dest" value="${dir.base}/bin" />
+		<property name="dir.build" value="${dir.base}/build" />
+		<property name="dir.dist" value="${dir.base}/dist" />
+		<property name="dir.src.test" value="${dir.base}/src/test/java" />
+
+		<property name="dir.market.backend.base" value="../MarketBackend" />
+		<property name="dir.market.bi.base" value="../MarketBusinessInterface" />
+		<property name="dir.market.common.base" value="../MarketCommon" />
+		<property name="dir.market.document.base" value="../MarketDocument" />
+		<property name="dir.service.live.common.domain.base" value="../ServiceLiveCommonDomain" />
+		<property name="dir.service.live.web.util.base" value="../ServiceLiveWebUtil" />
+		<property name="struts2InitialDeployables.lib" value="${dir.service.live.web.util.base}/lib/Struts2InitialDeployables" />
+		<property name="deployables.lib" value="${dir.service.live.web.util.base}/lib/deployables" />
+		<property name="nondeployables.lib" value="${dir.service.live.web.util.base}/lib/nondeployables" />
+		<property name="dir.omsstaging.base" value="../OMSStaging" />
+		<property name="dir.routing.rules.engine.base" value="../RoutingRulesEngine" />
+		<property name="dir.market.alerts.base" value="../MarketAlertsManager" />
+		<property name="dir.wallet.ServiceLive.Common.base" value="../Wallet/ServiceLive.Common" />
+		<property name="dir.wallet.ServiceLive.Lookup.base" value="../Wallet/ServiceLive.Lookup" />
+		<property name="dir.wallet.Wallet.Batch.base" value="../Wallet/Wallet.Batch" />
+		<property name="dir.wallet.Wallet.ACH.base" value="../Wallet/Wallet.ACH" />
+		<property name="dir.wallet.Wallet.Alert.base" value="../Wallet/Wallet.Alert" />
+		<property name="dir.wallet.Wallet.Common.base" value="../Wallet/Wallet.Common" />
+		<property name="dir.wallet.Wallet.Service.base" value="../Wallet/Wallet.Service" />
+		<property name="dir.wallet.Wallet.ServiceInterface.base" value="../Wallet/Wallet.ServiceInterface" />
+		<property name="dir.wallet.Wallet.Ledger.base" value="../Wallet/Wallet.Ledger" />
+		<property name="dir.wallet.Wallet.ValueLink.base" value="../Wallet/Wallet.ValueLink" />
+		<property name="dir.wallet.Wallet.CreditCard.base" value="../Wallet/Wallet.CreditCard" />
+		<property name="dir.orderfulfillment.Client.base" value="../OrderFulfillment/OrderFulfillment.Client" />
+		<property name="dir.orderfulfillment.Domain.base" value="../OrderFulfillment/OrderFulfillment.Domain" />
+		<property name="dir.orderfulfillment.ServiceInterface.base" value="../OrderFulfillment/OrderFulfillment.ServiceInterface" />
+		<property name="dir.market.responsys.base" value="../ResponsysClient" />
+		<property name="dir.market.responsys.dist" value="${dir.market.responsys.base}/target/dist" />
+
+		<property name="dir.market.responsys.interact.base" value="../ResponsysInteractClient" />
+		<property name="dir.market.responsys.interact.dist" value="${dir.market.responsys.interact.base}/target/dist" />
+
+		<property name="sl.deployables.lib" value="../SLCommonBuild/lib/deployables" />
+		<property name="junit-report.dir" value="${dir.base}/${ant.project.name}Reports" />
+		<property name="dir.slCommonBuild.nondeployables" value="../SLCommonBuild/lib/nondeployables" />
+
+		<path id="build.class.path">
+			<fileset dir="${dir.wallet.ServiceLive.Common.base}/target/dist">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${deployables.lib}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${struts2InitialDeployables.lib}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${nondeployables.lib}">
+				<include name="*.jar" />
+			</fileset>
+			<!-- Cronofy dependencies for external calendar sync start
+			<fileset dir="${sl.deployables.lib}">
+				<include name="aopalliance-repackaged-2.5.0-b05.jar" />
+				<include name="commons-lang3-3.1.jar" />
+				<include name="cronofy-0.1.0.jar" />
+				<include name="easymock-3.4.jar" />
+				<include name="hamcrest-core-1.3.jar" />
+				<include name="hk2-api-2.5.0-b05.jar" />
+				<include name="hk2-locator-2.5.0-b05.jar" />
+				<include name="hk2-utils-2.5.0-b05.jar" />
+				<include name="jackson-annotations-2.0.1.jar" />
+				<include name="jackson-core-2.0.1.jar" />
+				<include name="jackson-databind-2.0.1.jar" />
+				<include name="jackson-jaxrs-json-provider-2.0.1.jar" />
+				<include name="jackson-module-jaxb-annotations-2.0.1.jar" />
+				<include name="javassist-3.20.0-GA.jar" />
+				<include name="javax.annotation-api-1.2.jar" />
+				<include name="javax.inject-2.5.0-b05.jar" />
+				<include name="javax.ws.rs-api-2.0.1.jar" />
+				<include name="jersey-client-2.23.2.jar" />
+				<include name="jersey-common-2.23.2.jar" />
+				<include name="jersey-guava-2.23.2.jar" />
+				<include name="joda-time-2.9.4.jar" />
+				<include name="junit-4.12.jar" />
+				<include name="objenesis-2.2.jar" />
+				<include name="osgi-resource-locator-1.0.1.jar" />
+				<include name="slf4j-api-1.7.21.jar" />
+				<include name="sonar-jacoco-listeners-3.2.jar" />
+			</fileset>
+			Cronofy dependencies for external calendar sync start end-->
+			<fileset dir="${dir.market.backend.base}/dist">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.market.bi.base}/target/dist">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.market.common.base}/dist">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.service.live.common.domain.base}/target/dist">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.routing.rules.engine.base}/target/dist">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.market.alerts.base}/dist">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.orderfulfillment.Client.base}/target/dist">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.orderfulfillment.Domain.base}/target/dist">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.orderfulfillment.ServiceInterface.base}/target/dist">
+				<include name="*.jar" />
+			</fileset>
+		</path>
+
+		<path id="test.class.path">
+			<pathelement location="${dir.dest}" />
+			<fileset dir="${deployables.lib}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${struts2InitialDeployables.lib}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${nondeployables.lib}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.wallet.ServiceLive.Common.base}/target/dist">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.slCommonBuild.nondeployables}">
+				<include name="junit.jar" />
+				<include name="hamcrest-core-1.1.jar" />
+				<include name="hamcrest-library-1.1.jar" />
+				<include name="mockito-all-1.8.4.jar" />
+			</fileset>
+			<fileset dir="${dir.market.bi.base}/target/dist">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.market.backend.base}/dist">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.market.common.base}/dist">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.service.live.common.domain.base}/target/dist">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.routing.rules.engine.base}/target/dist">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.market.alerts.base}/dist">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.orderfulfillment.Client.base}/target/dist">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.orderfulfillment.Domain.base}/target/dist">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.orderfulfillment.ServiceInterface.base}/target/dist">
+				<include name="*.jar" />
+			</fileset>
+		</path>
+	</target>
+
+	<!-- Cleanup -->
+	<target name="clean" depends="init">
+		<delete dir="${dir.dest}" failonerror="false" />
+		<mkdir dir="${dir.dest}" />
+		<delete dir="${dir.dist}" failonerror="false" />
+		<mkdir dir="${dir.dist}" />
+		<delete dir="${junit-report.dir}" failonerror="false" />
+		<mkdir dir="${junit-report.dir}" />
+	</target>
+
+	<target name="compile" depends="clean">
+		<javac srcdir="${dir.source}" destdir="${dir.dest}" classpathref="build.class.path" target="1.5" source="1.5" debug="on" deprecation="false" />
+	</target>
+
+	<!-- Create the WAR file -->
+	<target name="war" depends="compile">
+		<war destfile="${dir.dist}/MarketBatch.war" webxml="${dir.app}/WEB-INF/web.xml">
+			<metainf dir="${dir.app}/META-INF" />
+
+			<webinf dir="${dir.app}/WEB-INF">
+				<include name="jboss-web.xml" />
+			</webinf>
+
+			<classes dir="${dir.dest}" />
+			<classes dir="${dir.resources}" />
+
+			<lib dir="${deployables.lib}">
+				<include name="*.jar" />
+				<exclude name="log4j*.jar" />
+				<exclude name="marketwsclient.jar" />
+				<exclude name="xbean-2.2.0.jar" />
+				<exclude name="poi-2.5.1.jar" />
+				<exclude name="bcprov-jdk15-144.jar" />
+				<exclude name="bcprov-jdk15-133.jar" />
+				<exclude name="bcpg-jdk15-144.jar" />
+				<exclude name="commons-collections-3.1.jar" />
+			</lib>
+			<lib dir="${struts2InitialDeployables.lib}">
+				<include name="*.jar" />
+				<exclude name="xwork-2.0.1.jar" />
+			</lib>
+			<lib dir="${dir.market.backend.base}/dist">
+				<include name="*.jar" />
+				<exclude name="MDB.jar" />
+			</lib>
+			<lib dir="${dir.market.bi.base}/target/dist">
+				<include name="*.jar" />
+			</lib>
+			<lib dir="${dir.market.common.base}/dist">
+				<include name="*.jar" />
+			</lib>
+			<lib dir="${dir.market.document.base}/dist">
+				<include name="*.jar" />
+			</lib>
+			<lib dir="${dir.omsstaging.base}/dist">
+				<include name="*.jar" />
+			</lib>
+			<lib dir="${dir.service.live.common.domain.base}/target/dist">
+				<include name="*.jar" />
+			</lib>
+			<lib dir="${dir.routing.rules.engine.base}/target/dist">
+				<include name="*.jar" />
+			</lib>
+			<lib dir="${dir.market.alerts.base}/dist">
+				<include name="*.jar" />
+			</lib>
+			<lib dir="${dir.market.responsys.dist}">
+				<include name="*.jar" />
+			</lib>
+			<lib dir="${dir.market.responsys.interact.dist}">
+				<include name="*.jar" />
+			</lib>
+			<lib dir="${sl.deployables.lib}">
+				<include name="XmlSchema-1.4.3.jar" />
+				<include name="activation-1.1.jar" />
+				<include name="axiom-api-1.2.8.jar" />
+				<include name="axiom-dom-1.2.8.jar" />
+				<include name="axiom-impl-1.2.8.jar" />
+				<include name="axis2-adb-1.5.jar" />
+				<include name="axis2-codegen-1.5.jar" />
+				<include name="axis2-corba-1.5.jar" />
+				<include name="axis2-fastinfoset-1.5.jar" />
+				<include name="axis2-java2wsdl-1.5.jar" />
+				<include name="axis2-jaxbri-1.5.jar" />
+				<include name="axis2-jaxws-1.5.jar" />
+				<include name="axis2-jibx-1.5.jar" />
+				<include name="axis2-json-1.5.jar" />
+				<include name="axis2-kernel-1.5.jar" />
+				<include name="axis2-metadata-1.5.jar" />
+				<include name="axis2-mtompolicy-1.5.jar" />
+				<include name="axis2-saaj-1.5.jar" />
+				<include name="axis2-spring-1.5.jar" />
+				<include name="axis2-transport-http-1.5.jar" />
+				<include name="axis2-transport-local-1.5.jar" />
+				<include name="axis2-xmlbeans-1.5.jar" />
+				<include name="bcel-5.1.jar" />
+				<include name="commons-codec-1.3.jar" />
+				<include name="commons-fileupload-1.2.jar" />
+				<include name="commons-httpclient-3.1.jar" />
+				<include name="commons-io-1.4.jar" />
+				<include name="commons-lang-2.3.jar" />
+				<include name="commons-logging-1.1.1.jar" />
+				<include name="geronimo-annotation_1.0_spec-1.1.jar" />
+				<include name="geronimo-jaxws_2.1_spec-1.0.jar" />
+				<include name="geronimo-saaj_1.3_spec-1.0.1.jar" />
+				<include name="geronimo-stax-api_1.0_spec-1.0.1.jar" />
+				<include name="geronimo-ws-metadata_2.0_spec-1.1.2.jar" />
+				<include name="httpcore-4.0.jar" />
+				<include name="jalopy-1.5rc3.jar" />
+				<include name="jaxb-api-2.1.jar" />
+				<include name="jaxb-impl-2.1.7.jar" />
+				<include name="jaxb-xjc-2.1.7.jar" />
+				<include name="jaxen-1.1.1.jar" />
+				<include name="jettison-1.0-RC2.jar" />
+				<include name="jibx-bind-1.2.1.jar" />
+				<include name="jibx-run-1.2.1.jar" />
+				<include name="log4j-1.2.14.jar" />
+				<include name="mail-1.4.jar" />
+				<include name="mex-1.5.jar" />
+				<include name="neethi-2.0.4.jar" />
+				<include name="ooxml-schemas-1.1.jar" />
+				<include name="poi-3.7-20101029.jar" />
+				<include name="poi-ooxml-3.7-20101029.jar" />
+				<include name="poi-ooxml-schemas-3.7-20101029.jar" />
+				<include name="smack-3.0.4.jar" />
+				<include name="smackx-3.0.4.jar" />
+				<include name="soapmonitor-1.5.jar" />
+				<include name="struts-core-1.3.8.jar" />
+				<include name="woden-api-1.0M8.jar" />
+				<include name="woden-impl-dom-1.0M8.jar" />
+				<include name="wsdl4j-1.6.2.jar" />
+				<include name="wstx-asl-3.2.4.jar" />
+				<include name="xalan-2.7.0.jar" />
+				<include name="xercesImpl-2.6.2.jar" />
+				<include name="xml-apis-1.3.02.jar" />
+				<include name="xml-resolver-1.2.jar" />
+				<include name="xmlbeans-2.3.0.jar" />
+				<include name="stax2-api-3.1.1.jar" />
+				<include name="woodstox-core-asl-4.1.4.jar" />
+				<!--used for vendorslcalendarservice -->
+				<include name="commons-collections-3.2.jar" />
+				<!-- Cronofy dependencies for external calendar sync start
+				<include name="aopalliance-repackaged-2.5.0-b05.jar" />
+				<include name="commons-lang3-3.1.jar" />
+				<include name="cronofy-0.1.0.jar" />
+				<include name="easymock-3.4.jar" />
+				<include name="hamcrest-core-1.3.jar" />
+				<include name="hk2-api-2.5.0-b05.jar" />
+				<include name="hk2-locator-2.5.0-b05.jar" />
+				<include name="hk2-utils-2.5.0-b05.jar" />
+				<include name="jackson-annotations-2.0.1.jar" />
+				<include name="jackson-core-2.0.1.jar" />
+				<include name="jackson-databind-2.0.1.jar" />
+				<include name="jackson-jaxrs-json-provider-2.0.1.jar" />
+				<include name="jackson-module-jaxb-annotations-2.0.1.jar" />
+				<include name="javassist-3.20.0-GA.jar" />
+				<include name="javax.annotation-api-1.2.jar" />
+				<include name="javax.inject-2.5.0-b05.jar" />
+				<include name="javax.ws.rs-api-2.0.1.jar" />
+				<include name="jersey-client-2.23.2.jar" />
+				<include name="jersey-common-2.23.2.jar" />
+				<include name="jersey-guava-2.23.2.jar" />
+				<include name="joda-time-2.9.4.jar" />
+				<include name="junit-4.12.jar" />
+				<include name="objenesis-2.2.jar" />
+				<include name="osgi-resource-locator-1.0.1.jar" />
+				<include name="slf4j-api-1.7.21.jar" />
+				<include name="sonar-jacoco-listeners-3.2.jar" />
+				 Cronofy dependencies for external calendar sync start end-->
+			</lib>
+
+			<lib dir="${dir.wallet.ServiceLive.Common.base}/target/dist">
+				<include name="*.jar" />
+			</lib>
+			<lib dir="${dir.wallet.ServiceLive.Lookup.base}/target/dist">
+				<include name="*.jar" />
+			</lib>
+			<lib dir="${dir.wallet.Wallet.Common.base}/target/dist">
+				<include name="*.jar" />
+			</lib>
+			<lib dir="${dir.wallet.Wallet.Batch.base}/target/dist">
+				<include name="*.jar" />
+			</lib>
+			<lib dir="${dir.wallet.Wallet.ACH.base}/target/dist">
+				<include name="*.jar" />
+			</lib>
+			<lib dir="${dir.wallet.Wallet.Alert.base}/target/dist">
+				<include name="*.jar" />
+			</lib>
+			<lib dir="${dir.wallet.Wallet.Service.base}/target/dist">
+				<include name="*.jar" />
+			</lib>
+			<lib dir="${dir.wallet.Wallet.ServiceInterface.base}/target/dist">
+				<include name="*.jar" />
+			</lib>
+			<lib dir="${dir.wallet.Wallet.Ledger.base}/target/dist">
+				<include name="*.jar" />
+			</lib>
+			<lib dir="${dir.wallet.Wallet.ValueLink.base}/target/dist">
+				<include name="*.jar" />
+			</lib>
+			<lib dir="${dir.wallet.Wallet.CreditCard.base}/target/dist">
+				<include name="*.jar" />
+			</lib>
+			<lib dir="${dir.orderfulfillment.Client.base}/target/dist">
+				<include name="*.jar" />
+			</lib>
+			<lib dir="${dir.orderfulfillment.Domain.base}/target/dist">
+				<include name="*.jar" />
+			</lib>
+			<lib dir="${dir.orderfulfillment.ServiceInterface.base}/target/dist">
+				<include name="*.jar" />
+			</lib>
+		</war>
+	</target>
+
+	<!-- Compile test junit source code -->
+	<target name="compile-test" depends="war" description="compile the junit source ">
+		<javac srcdir="${dir.src.test}" destdir="${dir.dest}" target="1.5" source="1.5" classpathref="test.class.path" debug="on" deprecation="false">
+		</javac>
+	</target>
+
+	<target name="junit-report" depends="compile-test" description="Execute Unit Tests">
+		<junit fork="no" haltonfailure="false" printsummary="withOutAndErr" showoutput="yes">
+			<classpath>
+				<path refid="test.class.path" />
+			</classpath>
+			<formatter type="xml" />
+
+			<batchtest fork="no" todir="${junit-report.dir}">
+				<fileset dir="${dir.src.test}">
+					<include name="**/*Test.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+		<echo message="Format the tests report" />
+		<junitreport todir="${junit-report.dir}">
+			<fileset dir="${junit-report.dir}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report todir="${junit-report.dir}" />
+		</junitreport>
+	</target>
+
+	<!--target name="distribute" depends="build-dependencies,init,clean,compile,war"-->
+	<target name="distribute" depends="junit-report">
+	</target>
+
+	<!-- Sonar Integration -->
+	<property name="dir.sonar.src" value="${basedir}/src/main/java" />
+	<property name="dir.sonar.ant.task" value="../SLCommonBuild/lib/nondeployables" />
+	<import file="../../SLCommonBuild/ant/opt/ant-script-library/asl-java-sonar.xml" />
+	<target name="sonar" depends="sonar-init, sonar-run">
+	</target>
+</project>
+

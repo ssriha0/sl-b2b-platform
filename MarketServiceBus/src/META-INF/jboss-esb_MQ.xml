@@ -1,0 +1,92 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<jbossesb
+	xmlns="http://anonsvn.labs.jboss.com/labs/jbossesb/trunk/product/etc/schemas/xml/jbossesb-1.0.1.xsd"
+	parameterReloadSecs="5">
+	<providers>
+		<jms-provider name="WSMQJMSProvider" 
+ 			connection-factory="jms/qcf/MQQueueConnectionFactory" >
+               <jms-bus busid="startOmsMqGwChannel">
+                   <jms-message-filter
+                       dest-type="QUEUE"
+                       dest-name="wsmq/ServiceOrderQueue"
+                       acknowledge-mode ="AUTO_ACKNOWLEDGE"
+                       selector="JMSCorrelationID='X'" />
+                       
+               </jms-bus>
+         </jms-provider>
+
+         <jms-provider name="JBossMQ" connection-factory="ConnectionFactory">
+              <jms-bus busid="startOmsMqEsbChannel">
+                  <jms-message-filter
+                      dest-type="QUEUE"
+                      dest-name="queue/searsRiServiceOrderEsbX" />
+
+              </jms-bus>
+          </jms-provider>
+	</providers>
+
+	<services>
+		<service category="ServiceLive_OMS_MQ_Service"
+			name="OMS_MQ_Service"
+			description="OMS Staging and Injection via MQ">
+
+			<listeners>
+				<jms-listener name="MQ-Gateway"
+					busidref="startOmsMqGwChannel" is-gateway="true"
+					maxThreads="1" />
+
+    			  <jms-listener name="esbMQListener"
+	                  busidref="startOmsMqEsbChannel" maxThreads="1" />
+
+			</listeners>
+
+			<actions mep="OneWay">
+			<!--
+			   - TEMPORARILY REMOVING. Queue-based injection should not 
+			   - redirect to file-based injection
+			   -=============================================================
+			 	<action name="writeForGateway"
+					class="com.servicelive.esb.actions.ServiceOrderMessageWriteFileForGatewayAction"
+					process="writeFileForGateway">
+               		<property name="gatewayDir" value="/appl/sl/iss/indata" />
+               		<property name="input-suffix" value=".startProcessGW" />
+               	</action>
+			-->
+			 	<action name="serviceOrderMarshaller"
+					class="com.servicelive.esb.actions.ServiceOrderMessageUnMarshallerAction"
+					process="unmarshalPayload" />
+					
+				<action name="serviceOrderBranchAction"
+					class="com.servicelive.esb.actions.RIBranchAction"
+					process="branch" >
+					<property name="inputSuffix" value=".startProcessGW" />
+				</action>
+
+               	<action name="serviceOrderStaging"
+					class="com.servicelive.esb.actions.ServiceOrdersStagingAction"
+					process="stageServiceOrders" />
+               	
+				<action name="marginAndLeadTimeRetriever"
+					class="com.servicelive.esb.actions.MarginAndLeadTimeRetrieverAction"
+					process="retrieveJobCodeInfo" />
+
+				<action name="createDraftRequestMapper"
+					class="com.servicelive.esb.actions.CreateDraftRequestMapperAction"
+					process="mapData" />
+
+				<action name="omsCreateDraftRequestTranslator"
+					class="com.servicelive.esb.actions.OMSCreateDraftRequestTranslatorAction"
+					process="translateData" />
+					
+				<action name="omsRemoveLegacyOrders"
+					class="com.servicelive.esb.actions.RemoveLegacyOrdersAction"
+					process="removeLegacyOrders" />
+
+				<action name="createDraftRequestProcessor"
+					class="com.servicelive.esb.actions.CreateDraftRequestProcessorAction"
+					process="dispatchRequest" />
+
+			</actions>
+		</service>
+	</services>
+</jbossesb>

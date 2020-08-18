@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+
+    <bean id="lookupDao" class="com.newco.marketplace.persistence.daoImpl.lookup.LookupDaoImpl">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>
+  		<property name="queryCacheImpl">
+    		<ref bean="queryCacheImpl"/>
+  		</property>	
+  		
+    </bean>	
+    <bean id="lookupDaoFinance" class="com.newco.marketplace.persistence.daoImpl.lookup.LookupDaoFinanceImpl">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClientFinance"/>
+  		</property>	 
+    </bean>
+	<bean id="lookupBO"
+            class="com.newco.marketplace.business.businessImpl.lookup.LookupBO">
+            <property name="lookupDao">
+                  <ref bean="lookupDao" />
+            </property>   
+            <property name="lookupDaoFinance">
+                  <ref bean="lookupDaoFinance" />
+            </property>  
+            <property name="provLookupDao">
+                  <ref bean="lookupDAOImpl" />
+            </property>    
+                   
+     </bean>
+     
+     <bean id="queryCacheImpl"  class="com.newco.marketplace.persistence.cache.QueryCacheImpl">
+      </bean>
+    
+</beans>

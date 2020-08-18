@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:include schemaLocation="../../common.xsd" />
+	<!-- Root element -->
+	<xs:element name="addInvoiceSOProviderPartResponse">
+		<xs:complexType>
+			<xs:sequence>				
+				<xs:element ref="results" />
+				<xs:element name="soId" type="xs:string" minOccurs="0"/> 
+			<!-- 	<xs:element name="invoicePartsList"  type="invoicePartsListType" minOccurs="0" /> -->
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>	
+	<xs:complexType name="invoicePartsListType">
+		<xs:sequence>		   
+			<xs:element name="invoicePart" type="invoicePartType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>	
+	<xs:complexType name="invoicePartType">
+		<xs:sequence>
+			<xs:element name="invoicePartId" type="xs:string" minOccurs="0" />	
+			<xs:element name="estProviderPayement" type="price-format" minOccurs="0" />
+			<xs:element name="finalPrice" type="price-format" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	
+</xs:schema>

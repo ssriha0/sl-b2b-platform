@@ -1,0 +1,665 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="extendedSurvey">
+
+	<typeAlias alias="surveyQuestionnaireDetail"
+			   type="com.newco.marketplace.dto.vo.survey.SurveyQuestionnaireDetailVO" />
+			   
+	<typeAlias alias="BuyerConfigVO" type="com.newco.marketplace.dto.vo.survey.BuyerConfigVO"/>
+	
+	<typeAlias alias="EntityRating" type="com.newco.marketplace.dto.vo.survey.EntityRating"/>
+	
+	<typeAlias alias="BuyerRating" type="com.newco.marketplace.dto.vo.survey.BuyerRating"/>
+	
+	<typeAlias alias="SODetailVO" type="com.newco.marketplace.dto.vo.survey.SODetailVO"/>
+	
+	<typeAlias alias="surveyOptionVO"
+		type="com.newco.marketplace.dto.vo.survey.SurveyOptionVO" />
+		
+	<typeAlias alias="buyerSurveyConfigVO"
+		type="com.newco.marketplace.dto.vo.survey.BuyerSurveyConfigVO" />
+		
+	<typeAlias alias="surveyRatingVO"
+		type="com.newco.marketplace.dto.vo.survey.SurveyRatingsVO" />
+
+	<typeAlias alias="extendedSurveyResponseVO"
+		type="com.newco.marketplace.dto.vo.survey.ExtendedSurveyResponseVO" />
+		
+	<typeAlias alias="SaveSurveyVO"
+		type="com.newco.marketplace.dto.vo.survey.ExtendedSaveSurveyVO" />
+		
+	<typeAlias alias="surveyQuestionAnswerDetailVO"
+		type="com.newco.marketplace.dto.vo.survey.SurveyQuestionAnswerDetailVO" />
+		
+	<select id="getQuestionnaire.query" parameterClass="java.util.HashMap"
+		resultClass="surveyQuestionnaireDetail">
+		SELECT lsq.question_id as questionId, lsq.question_txt as text, 
+		(SELECT DISTINCT buyer_id FROM so_hdr WHERE so_id = #soId#) as buyerId,
+		sh.sub_survey_type as subSurveyType, sq.instructions as instruction
+		FROM lu_survey_questions lsq
+		INNER JOIN  survey_questions sq
+		ON sq.question_id = lsq.question_id
+		INNER JOIN survey_hdr sh
+		ON sh.survey_id = sq.survey_id		
+		<dynamic prepend="WHERE">
+	    	<isNotNull property="surveyIds">
+	    		sh.survey_id IN
+		    	<iterate property="surveyIds" open="(" close=")" conjunction=",">
+					#surveyIds[]#
+				</iterate>
+			</isNotNull>
+	    	<isNull property="surveyIds">
+	    		1=0
+			</isNull>			
+		</dynamic>		
+	</select>
+
+	<select id="validateSurvey.query" parameterClass="java.lang.String"
+			resultClass="java.lang.String">
+		SELECT param_value
+		FROM survey_response_so_metadata 
+		WHERE so_id =   #soId#
+		AND param_key = 'submitted'
+		GROUP BY so_id
+	</select>
+	
+	<delete id="deletebBuyerSurveyConfig.delete" parameterClass="java.lang.Integer">
+			delete from buyer_survey_config where buyer_id=#id#		
+	</delete>
+	
+	<insert id="saveBuyerSurveyConfig.insert" parameterClass="BuyerConfigVO">
+			insert into buyer_survey_config(buyer_id, survey_id, survey_option_id, prioritised, modified_by) values(#id#, #surveyId#, #surveyOptionID#, #priority#,#modifiedBy#)			
+	</insert>
+	
+	<select id="getSurveyOptions.query" resultClass="surveyOptionVO">
+	  SELECT id AS id,title AS type,descr AS description FROM lu_survey_option;
+	</select> 
+	
+	<select id="getBuyerSurveySelectedDetails.query" parameterClass="java.lang.Integer" resultClass="buyerSurveyConfigVO">
+		SELECT id as id,survey_id as surveyId,prioritised as priority,survey_option_id as surveyOptionId 
+		FROM buyer_survey_config WHERE buyer_id=#buyerId#
+	</select>
+
+	
+
+	
+	<insert id="saveExtendedSurveyDetails.insert" parameterClass="SaveSurveyVO">
+	INSERT INTO survey_response_hdr (
+	response_hdr_id, survey_id,entity_type_id, entity_id, overall_score, created_date,modified_date, modified_by, reviewed_ind,
+	comments) 
+	VALUES (#responseHdrId#, #surveyId#,
+		#entityTypeId#, #entityId#, #rating#, now(),
+		now(), #modifiedBy#, 0, #comments#)
+	</insert>
+	
+	<insert id="insertSurveyAnswers.insert" parameterClass="SaveSurveyVO">
+		INSERT INTO survey_response_anwser_mapping ( answer, response_hdr_id, question_id) 
+		VALUES (#answer#, #responseHdrId#, #questionId#)
+	</insert>
+	
+	<insert id="insertResponseSOMetadata.insert" parameterClass="SaveSurveyVO">
+		INSERT INTO survey_response_so_metadata  ( so_id, param_key, param_value) VALUES (#serviceOrderID#, #key# , #value#)
+	</insert>
+	
+	<insert id="insertSurveyResponseSO.insert" parameterClass="SaveSurveyVO">
+		INSERT INTO survey_response_so (so_id, response_hdr_id, entity_type_id, entity_id, buyer_id,created_date)
+		VALUES (#serviceOrderID#,
+		#responseHdrId#, #entityTypeId#, #entityId#, #buyerId#, now())
+	</insert>
+	
+	<select id="getSurveyOptionID.query" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	  SELECT id FROM lu_survey_option WHERE title=#surveyType#;
+	</select>
+	
+	<select id="getSurveyEventType.query" resultClass="java.lang.String" parameterClass="java.lang.String">
+	  	SELECT ev.sub_event_name FROM so_hdr so
+		JOIN buyer_event_mapping buyer ON so.buyer_id=buyer.buyer_id
+		JOIN lu_event_master ev ON ev.event_id=buyer.event_id
+		WHERE so.so_id=#soId# AND ev.event_type='CONSUMER_SURVEY'
+		GROUP BY ev.event_name ORDER BY ev.created_date desc
+	</select>
+	
+	<select id="getSoDetails.query" resultClass="SODetailVO" parameterClass="java.lang.String">
+		SELECT wf_state_id as soStatus, buyer_id as buyerId,
+		closed_date as closedDate,completed_date as completedDate,
+		so_id as soId
+		FROM so_hdr 
+		WHERE so_id=#soId#
+	</select>
+	
+	<select id="getSurveyForSO.query" resultClass="java.lang.Integer" parameterClass="java.lang.String">
+		SELECT hdr.survey_id FROM survey_response_hdr hdr
+		INNER JOIN survey_response_so so ON so.response_hdr_id = hdr.response_hdr_id
+		AND so_id = #soId# AND hdr.survey_id != 20;
+	</select>  	
+	
+	<select id="getBuyerMyRatings.query"
+		parameterClass="java.util.HashMap" resultClass="surveyRatingVO">
+		SELECT vr.total_so_completed as totalOrdersComplete,
+		ser.rating_count as numberOfRatingsReceived,
+		ser.rating_score as historicalRating,
+		soc.total_so_completed as myOrdersComplete,
+		br.rating_count as numberOfRatingsGiven,
+		br.rating_score as myRating,
+		soc.buyer_id as buyerID,
+		ser.entity_id as vendorResourceID		
+        FROM survey_entity_rating ser 
+		INNER JOIN vendor_resource vr ON vr.resource_id= ser.entity_id	
+		LEFT OUTER JOIN survey_buyer_so_count soc ON soc.vendor_resource_id = ser.entity_id AND soc.buyer_id = #buyerId#
+        LEFT OUTER JOIN survey_buyer_rating br ON soc.id = br.survey_buyer_so_count_id AND br.score_type = 'CSAT'
+    	<dynamic prepend="WHERE">
+	    	<isNotNull property="vendorResourceIds">
+	    		ser.entity_id IN
+		    	<iterate property="vendorResourceIds" open="(" close=")"  conjunction=",">
+						#vendorResourceIds[]#
+				</iterate>
+				AND ser.entity_type_id = 20
+				AND ser.score_timeline_type ='LIFETIME'
+       			AND ser.score_type ='CSAT'
+			</isNotNull>
+	    	<isNull property="vendorResourceIds">
+	    		1=0
+			</isNull>			
+		</dynamic>
+	</select>
+	
+	<select id="getBuyerSurveyOptionDetails.query" parameterClass="java.lang.Integer" resultClass="buyerSurveyConfigVO">
+		SELECT bsc.buyer_id as buyerId,bsc.survey_option_id as surveyOptionId,so.title as surveyTitle,bsc.survey_id as surveyId
+		FROM buyer_survey_config bsc 
+		JOIN lu_survey_option so 
+		ON bsc.survey_option_id=so.id
+		WHERE bsc.buyer_id =#buyerId#
+	</select>
+	
+	<!-- <select id="getSurveyId.query" parameterClass="SaveSurveyVO" resultClass="SaveSurveyVO">
+		SELECT survey_id as surveyId, entity_type_id as entityTypeId FROM survey_hdr WHERE sub_survey_type=#subSurveyType# 
+		AND survey_id IN(SELECT survey_id FROM buyer_survey_config WHERE buyer_id=#buyerId#)
+	</select> -->
+	
+	<select id="getSurveyId.query" parameterClass="SaveSurveyVO" resultClass="SaveSurveyVO">
+		SELECT survey_id as surveyId, entity_type_id as entityTypeId FROM survey_hdr WHERE sub_survey_type=#subSurveyType# 
+		AND survey_id IN
+		<iterate property="listOfSurveyIds" open="(" close=")" conjunction=",">
+					#listOfSurveyIds[]#
+		</iterate>
+	</select>
+	
+	<select id="getBuyerDetails.query" parameterClass="SaveSurveyVO" resultClass="SaveSurveyVO">
+		SELECT survey_id as surveyId, entity_type_id as entityTypeId FROM survey_hdr WHERE sub_survey_type=#subSurveyType# 
+		AND survey_id IN(SELECT survey_id FROM buyer_survey_config WHERE buyer_id=#buyerId#)
+	</select>
+	
+	<select id="getSurveyQuestionsWithAnswers.query" parameterClass="java.lang.String" resultClass="surveyQuestionAnswerDetailVO">
+	SELECT lsq.question_id AS questionId,lsq.question_txt AS text,IF(sram.answer IS NULL, false, true) as selected, srs.buyer_id AS buyerId, lso.title AS surveyType,
+		sh.sub_survey_type AS subSurveyType, sq.instructions AS instruction,Floor(srh.overall_score) as ratingsSelected,srh.comments as comments
+		FROM lu_survey_questions lsq
+		INNER JOIN  survey_questions sq ON lsq.question_id = sq.question_id
+		INNER JOIN survey_hdr sh ON sq.survey_id = sh.survey_id
+		INNER JOIN survey_response_hdr srh ON sh.survey_id = srh.survey_id
+		RIGHT JOIN survey_response_so srs ON srh.response_hdr_id  = srs.response_hdr_id AND srs.response_hdr_id IS NOT NULL
+        LEFT JOIN survey_response_so_metadata srsm ON srs.so_id = srsm.so_id and srsm.param_key = 'survey_option_id'
+        INNER JOIN lu_survey_option lso ON srsm.param_value = lso.id
+		LEFT JOIN survey_response_anwser_mapping sram ON sram.response_hdr_id=srh.response_hdr_id AND sram.question_id=sq.question_id
+		WHERE srs.so_id = #soId# AND sh.sub_survey_type IS NOT NULL GROUP BY questionId ORDER BY sq.sort_order
+	</select>
+	
+	<select id="getBuyerRating.query" parameterClass="BuyerRating" resultClass="java.lang.Integer">
+	select id from survey_buyer_so_count sbr LEFT JOIN survey_buyer_rating sbrext
+		       ON sbrext.survey_buyer_so_count_id = sbr.id
+	<dynamic prepend="where">
+	<isNotNull prepend="AND" property="buyerId">
+                sbr.buyer_id = #buyerId#
+            </isNotNull>
+			 <isNotNull prepend="AND" property="vendorResourceId">
+                sbr.vendor_resource_id = #vendorResourceId#
+            </isNotNull>
+            <isNull prepend="AND" property="vendorResourceId">
+                sbr.vendor_resource_id is null
+            </isNull>
+			<isNotNull prepend="AND" property="scoreType">
+                sbrext.score_type = #scoreType#
+            </isNotNull>	
+	</dynamic>		
+	</select>
+	
+	<select id="getBuyerRatingId.query" parameterClass="BuyerRating" resultClass="java.lang.Integer">
+	select id from survey_buyer_so_count 
+		<dynamic prepend="where">
+			<isNotNull prepend="AND" property="buyerId">
+                buyer_id = #buyerId#
+            </isNotNull>
+			 <isNotNull prepend="AND" property="vendorResourceId">
+                vendor_resource_id = #vendorResourceId#
+            </isNotNull>
+            <isNull prepend="AND" property="vendorResourceId">
+                vendor_resource_id is null
+            </isNull>
+            </dynamic>
+	</select>
+	
+<select id="getEntityRating.query" parameterClass="EntityRating" resultClass="java.lang.Integer">
+ select id from survey_entity_rating where entity_id=#entityId# and entity_type_id=#entityTypeId# and score_type=#scoreType# And score_timeline_type=#scoreTimeLineType#		
+</select>
+	
+<update id="saveBuyerRating.update" parameterClass="BuyerRating">
+	UPDATE survey_buyer_so_count SET
+	total_so_completed=#totalSoCompleted#,rating_count
+	=#ratingCount#,rating_score=#ratingScore#,score_type=#scoreType#, modified_by='updateSurveyRatingBatch'
+	WHERE id=#id#
+</update>
+
+<update id="updatesurveylastupdate.query" parameterClass="java.lang.String">
+update application_parameters set app_value=#date# where app_key='SURVEY_LAST_SUCCESSFUL_UPDATE'
+</update>
+
+<insert id="saveBuyerRating.insert" parameterClass="BuyerRating">
+	INSERT INTO
+	survey_buyer_so_count ( buyer_id,
+	vendor_resource_id,total_so_completed,
+	rating_count,
+	rating_score,
+	score_type,
+	modified_by)
+	VALUES(#buyerId#,#vendorResourceId#,#totalSoCompleted#,#ratingCount#,#ratingScore#,#scoreType#,'updateSurveyRatingBatch')
+</insert>
+
+<insert id="saveSurveyBuyerRatingExt.insert" parameterClass="BuyerRating">
+	INSERT INTO
+	survey_buyer_rating (survey_buyer_so_count_id,
+	rating_count,
+	rating_score,
+	score_type,
+	modified_by)
+	VALUES(#id#,#ratingCount#,#ratingScore#,#scoreType#,'updateSurveyRatingBatch')
+</insert>
+
+<insert id="saveSurveyBuyerRating.insert" parameterClass="BuyerRating">
+	INSERT INTO
+	survey_buyer_so_count ( buyer_id,
+	vendor_resource_id,total_so_completed,
+	modified_by)
+	VALUES(#buyerId#,#vendorResourceId#,#totalSoCompleted#,'updateSurveyRatingBatch')
+</insert>
+	
+<insert id="saveEntityRating.insert" parameterClass="EntityRating">
+	INSERT INTO survey_entity_rating 
+		(entity_id,entity_type_id,rating_count,rating_score,score_type,score_timeline_type, modified_by)
+		 values(#entityId#,#entityTypeId#,#ratingCount#,#ratingScore#,#scoreType#,#scoreTimeLineType#, #modifiedBy#)  
+</insert>
+
+<!-- SLT 1649 CSAT NPS Survey -->
+<update id="updateSurveyResponseHdr.update" parameterClass="SaveSurveyVO">
+	UPDATE survey_response_hdr SET
+	overall_score=#rating#, modified_date=now(), modified_by=#modifiedBy#,
+	comments=#comments#
+	WHERE response_hdr_id=#responseHdrId#  
+</update>
+
+<update id="updateResponseSOMetadata.update" parameterClass="SaveSurveyVO">
+	UPDATE survey_response_so_metadata SET
+	param_value=#value#
+	WHERE so_id=#serviceOrderID# AND param_key=#key#
+</update>
+
+<select id="fetchSurveyId.query" parameterClass="java.lang.Long" resultClass="java.lang.Integer">
+		SELECT survey_id FROM survey_response_hdr WHERE response_hdr_id=#responseHdrId#
+</select>
+
+<select id="getResponseHDRId.query" parameterClass="java.lang.String" resultClass="java.lang.Long">
+ select h.response_hdr_id from survey_response_so s inner join survey_response_hdr h on h.response_hdr_id=s.response_hdr_id  and s.so_id=#soId#
+ and h.survey_id not in(10,20);
+</select>
+
+<select id="fetchSubSurveyType.query" parameterClass="java.lang.Integer" resultClass="java.lang.String">
+		SELECT sub_survey_type FROM survey_hdr WHERE survey_id=#surveyId#
+</select>
+
+<select id="buyerSurveyScore.query" parameterClass="java.util.HashMap" resultClass="surveyRatingVO">
+	SELECT count.total_so_completed AS myOrdersComplete,
+	sbr.rating_count AS numberOfRatingsGiven,
+	sbr.rating_score AS givenRating,
+	count.buyer_id AS buyerID
+	FROM survey_buyer_so_count count join survey_buyer_rating sbr on count.id=sbr.survey_buyer_so_count_id
+	WHERE count.buyer_id = #buyerId#    
+	AND count.vendor_resource_id IS NULL
+	AND sbr.score_type =#surveyType#
+</select>
+
+<select id="buyerCurrentnScore.query" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+	SELECT 
+	ser.rating_score 
+	FROM survey_entity_rating ser
+	WHERE ser.entity_id = #buyerId#
+	AND entity_type_id = #entityTypeId#  
+	AND ser.score_type =#surveyType#
+	AND ser.score_timeline_type = #scoreType#
+</select>
+
+<!-- SLT-1751 -->
+	<select id="surveyScoreResourceRatings.query" parameterClass="java.util.HashMap" resultClass="surveyRatingVO">
+		SELECT vr.total_so_completed AS totalOrdersComplete,
+		ser.rating_count AS numberOfRatingsReceived,
+		ser.rating_score AS historicalRating
+		FROM survey_entity_rating ser
+	    LEFT JOIN vendor_resource vr ON vr.resource_id= ser.entity_id
+		WHERE ser.entity_id = #id#
+		AND entity_type_id = #entityTypeId#
+		AND ser.score_type = #surveyType#
+		AND ser.score_timeline_type = #scoreTimelineType#
+	</select>
+	
+	<!-- <select id="getPrimaryIndForResource.query" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		SELECT primary_ind
+		FROM vendor_resource
+		WHERE resource_id=#resourceId#
+	</select> -->
+	
+	<!-- SLT-2039: Start -->
+	
+	<select id="fetchSODetailBuyerRatings.query" parameterClass="java.lang.String" resultClass="BuyerRating">
+		select count(so_id) as totalSoCompleted, 
+		buyer_id as buyerId, 
+		accepted_resource_id as vendorResourceId from so_hdr where completed_date between
+			(select app_value from application_parameters WHERE `app_key`='SURVEY_LAST_SUCCESSFUL_UPDATE') 
+		and #endDate# and wf_state_id in (180,160) and accepted_vendor_id is not null group by buyer_id, accepted_resource_id
+	</select>
+	
+	<select id="fetchCSATSurveyResponseRatings.query" parameterClass="java.lang.String" resultClass="BuyerRating">
+		select count(sohdr.so_id) as ratingCount, 
+		avg(overall_score) as ratingScore, 
+		sohdr.buyer_id as buyerId, 
+		sohdr.accepted_resource_id as vendorResourceId, 
+		'CSAT' as scoreType from survey_response_so  surso inner join survey_response_hdr surhdr on surso.response_hdr_id = surhdr.response_hdr_id
+ 		inner join so_hdr sohdr on sohdr.so_id= surso.so_id
+ 		where surso.created_date between (select app_value from application_parameters WHERE `app_key`='SURVEY_LAST_SUCCESSFUL_UPDATE') 
+ 		and #endDate# and survey_id in (10,30, 50) and sohdr.accepted_resource_id is not null group by sohdr.buyer_id, sohdr.accepted_resource_id
+	</select>
+	
+	<select id="fetchNPSSurveyResponseRatings.query" parameterClass="java.lang.String" resultClass="BuyerRating">
+		select count(sohdr.so_id) as ratingCount, 
+		avg(overall_score) as ratingScore, 
+		sohdr.buyer_id as buyerId, 
+		sohdr.accepted_resource_id as vendorResourceId, 
+		'NPS' as scoreType from survey_response_so  surso inner join survey_response_hdr surhdr on surso.response_hdr_id = surhdr.response_hdr_id
+ 		inner join so_hdr sohdr on sohdr.so_id= surso.so_id
+ 		where surso.created_date between (select app_value from application_parameters WHERE `app_key`='SURVEY_LAST_SUCCESSFUL_UPDATE') 
+ 		and #endDate# and survey_id in (40,60) and sohdr.accepted_resource_id is not null group by sohdr.buyer_id, sohdr.accepted_resource_id
+	</select>
+	
+	<select id="calulateTotalSOforBuyer.query" resultClass="BuyerRating">
+		select buyer_id as buyerId,
+		sum(total_so_completed) as totalSoCompleted
+		from survey_buyer_so_count where vendor_resource_id is not null group by buyer_id
+	</select>
+	
+	<select id="calulateTotalRatingsforBuyer.query" resultClass="BuyerRating">
+		select buyer_id as buyerId,
+		sum(sbrext.rating_count) as ratingCount , 
+		sum(sbrext.rating_count*sbrext.rating_score)/sum(sbrext.rating_count) as ratingScore,
+		'CSAT' as scoreType
+		from survey_buyer_so_count sbr join survey_buyer_rating sbrext ON sbrext.survey_buyer_so_count_id = sbr.id where sbrext.score_type = 'CSAT' and  vendor_resource_id is not null group by buyer_id
+	</select>
+	
+	<update id="updateBuyerRatingTotalSOCount.update" parameterClass="BuyerRating">
+		UPDATE survey_buyer_so_count SET
+		total_so_completed=total_so_completed + #totalSoCompleted#, modified_by='updateSurveyRatingBatch'
+		WHERE buyer_id=#buyerId# AND 
+			<isNotNull property="vendorResourceId">
+                vendor_resource_id = #vendorResourceId#
+            </isNotNull>
+            <isNull property="vendorResourceId">
+                vendor_resource_id is null
+            </isNull>
+	</update>
+	
+	<update id="updateBuyerRatingSurveyDetails.update" parameterClass="BuyerRating">
+        UPDATE survey_buyer_rating SET
+        rating_count=rating_count + #ratingCount#,
+        <isNotNull property="ratingScore">
+             rating_score=(rating_count* ifnull(rating_score,0) + #ratingCount# * #ratingScore#)/(rating_count+#ratingCount#) 
+        </isNotNull>
+        <isNull property="ratingScore">
+            rating_score=rating_score
+        </isNull>,
+        modified_by='updateSurveyRatingBatch'
+        WHERE survey_buyer_so_count_id=( select id from survey_buyer_so_count where buyer_id=#buyerId# AND 
+        	<isNotNull property="vendorResourceId">
+                vendor_resource_id = #vendorResourceId#
+            </isNotNull>
+            <isNull property="vendorResourceId">
+                vendor_resource_id is null
+            </isNull> ) 
+        AND score_type=#scoreType#
+    </update>
+    
+    <update id="replaceBuyerRatingTotalSOCount.update" parameterClass="BuyerRating">
+		UPDATE survey_buyer_so_count SET
+		total_so_completed= #totalSoCompleted#, modified_by='updateSurveyRatingBatch'
+		WHERE buyer_id=#buyerId# AND 
+			<isNotNull property="vendorResourceId">
+                vendor_resource_id = #vendorResourceId#
+            </isNotNull>
+            <isNull property="vendorResourceId">
+                vendor_resource_id is null
+            </isNull>
+	</update>
+	
+	<update id="replaceBuyerRatingSurveyDetails.update" parameterClass="BuyerRating">
+        UPDATE survey_buyer_rating SET
+        rating_count= #ratingCount#,
+        rating_score=#ratingScore#,
+        modified_by='updateSurveyRatingBatch'
+        WHERE survey_buyer_so_count_id=( select id from survey_buyer_so_count where buyer_id=#buyerId# AND 
+        	<isNotNull property="vendorResourceId">
+                vendor_resource_id = #vendorResourceId#
+            </isNotNull>
+            <isNull property="vendorResourceId">
+                vendor_resource_id is null
+            </isNull> ) 
+        AND score_type=#scoreType#
+    </update>
+	<!-- SLT-2039: End -->
+	
+	<!-- SLT-2040: Start -->		
+	<select id="getEntityRatingByIdAndType.query" parameterClass="java.util.HashMap" resultClass="EntityRating">
+		SELECT id, entity_id entityId,
+		entity_type_id entityTypeId, score_type scoreType,
+		score_timeline_type scoreTimeLineType,rating_count ratingCount,
+		rating_score ratingScore
+		FROM survey_entity_rating 
+		WHERE entity_id=#entityId# 
+		AND entity_type_id=#entityTypeId# 
+	</select>
+	
+	<update id="updateSurveyScoreEntityRating.update" parameterClass="EntityRating">
+		UPDATE survey_entity_rating 
+    	SET rating_count = #ratingCount#,
+    	rating_score = #ratingScore#, 
+    	modified_by = #modifiedBy#  	
+    	WHERE entity_id = #entityId#
+    	AND score_type = #scoreType#
+    	AND score_timeline_type = #scoreTimeLineType#
+    	AND entity_type_id = #entityTypeId#
+	</update>
+	
+	<select id="getDeltaBuyerCSATScore.query" parameterClass="java.lang.String" resultClass="EntityRating">	
+		SELECT count(sso.so_id) ratingCount, avg(srh.overall_score) ratingScore, sh.buyer_id AS entityId, 
+		10 AS entityTypeId, 'CSAT' AS scoreType, 'LIFETIME' AS scoreTimeLineType
+		FROM so_hdr sh 
+		INNER JOIN survey_response_so sso on sso.so_id=sh.so_id 
+		INNER JOIN survey_response_hdr srh on srh.response_hdr_id = sso.response_hdr_id
+		AND srh.survey_id in (20)
+		AND srh.created_date BETWEEN (select app_value from application_parameters WHERE `app_key`='SURVEY_LAST_SUCCESSFUL_UPDATE') AND #endDate#
+		GROUP BY sh.buyer_id 
+	</select>	
+	
+	<select id="getDeltaBuyerCSATCurrentScore.query" parameterClass="java.lang.String" resultClass="EntityRating">	
+		SELECT count(sso.so_id) ratingCount, avg(srh.overall_score) ratingScore, sh.buyer_id AS entityId, 
+		10 AS entityTypeId, 'CSAT' AS scoreType, 'CURRENT' AS scoreTimeLineType
+		FROM so_hdr sh 
+		INNER JOIN survey_response_so sso on sso.so_id=sh.so_id 
+		INNER JOIN survey_response_hdr srh on srh.response_hdr_id = sso.response_hdr_id
+		AND srh.survey_id in (20)
+		AND srh.created_date 
+		BETWEEN DATE_SUB(#endDate#, INTERVAL 90 DAY) AND #endDate#
+		GROUP BY sh.buyer_id
+	</select>	
+	
+	<select id="getEntityRating1.query" parameterClass="java.util.HashMap" resultClass="EntityRating">
+		SELECT id, entity_id entityId,
+		entity_type_id entityTypeId, score_type scoreType,
+		score_timeline_type scoreTimeLineType,rating_count ratingCount,
+		rating_score ratingScore
+		FROM survey_entity_rating 
+		WHERE entity_id=#entityId# 
+		AND entity_type_id=#entityTypeId# 
+		AND score_type=#scoreType# 
+		AND score_timeline_type=#scoreTimeLineType#		
+	</select>
+	
+	<select id="getDeltaProviderCSATScore.query" parameterClass="java.lang.String" resultClass="EntityRating">	
+		SELECT count(sso.so_id) ratingCount, avg(srh.overall_score) ratingScore, sh.accepted_resource_id AS entityId, 
+		20 AS entityTypeId, 'CSAT' AS scoreType, 'LIFETIME' AS scoreTimeLineType
+		FROM so_hdr sh 
+		INNER JOIN survey_response_so sso on sso.so_id=sh.so_id 
+		INNER JOIN survey_response_hdr srh on srh.response_hdr_id = sso.response_hdr_id
+		AND srh.survey_id in (10,30,50)
+		AND srh.created_date BETWEEN (select app_value from application_parameters WHERE `app_key`='SURVEY_LAST_SUCCESSFUL_UPDATE') AND #endDate#
+		AND sh.accepted_resource_id is not null
+		GROUP BY sh.accepted_resource_id 
+	</select>	
+	
+	<select id="getDeltaProviderCSATCurrentScore.query" parameterClass="java.lang.String" resultClass="EntityRating">	
+		SELECT count(sso.so_id) ratingCount, avg(srh.overall_score) ratingScore, sh.accepted_resource_id AS entityId, 
+		20 AS entityTypeId, 'CSAT' AS scoreType, 'CURRENT' AS scoreTimeLineType
+		FROM so_hdr sh 
+		INNER JOIN survey_response_so sso on sso.so_id=sh.so_id 
+		INNER JOIN survey_response_hdr srh on srh.response_hdr_id = sso.response_hdr_id
+		AND srh.survey_id in (10,30,50)
+		AND srh.created_date 
+		BETWEEN DATE_SUB(#endDate#, INTERVAL 90 DAY) AND #endDate#
+		AND sh.accepted_resource_id is not null
+		GROUP BY sh.accepted_resource_id
+	</select>	
+	
+	<select id="getDeltaProviderNPSScore.query" parameterClass="java.lang.String" resultClass="EntityRating">	
+		SELECT count(sso.so_id) ratingCount, avg(srh.overall_score) ratingScore, sh.accepted_resource_id AS entityId, 
+		20 AS entityTypeId, 'NPS' AS scoreType, 'LIFETIME' AS scoreTimeLineType
+		FROM so_hdr sh 
+		INNER JOIN survey_response_so sso on sso.so_id=sh.so_id 
+		INNER JOIN survey_response_hdr srh on srh.response_hdr_id = sso.response_hdr_id
+		AND srh.survey_id in (40,60)
+		AND srh.created_date BETWEEN (select app_value from application_parameters WHERE `app_key`='SURVEY_LAST_SUCCESSFUL_UPDATE') AND #endDate#
+		AND sh.accepted_resource_id is not null
+		GROUP BY sh.accepted_resource_id  
+	</select>	
+	
+	<select id="getDeltaProviderNPSCurrentScore.query" parameterClass="java.lang.String" resultClass="EntityRating">	
+		SELECT count(sso.so_id) ratingCount, avg(srh.overall_score) ratingScore, sh.accepted_resource_id AS entityId, 
+		20 AS entityTypeId, 'NPS' AS scoreType, 'CURRENT' AS scoreTimeLineType
+		FROM so_hdr sh 
+		INNER JOIN survey_response_so sso on sso.so_id=sh.so_id 
+		INNER JOIN survey_response_hdr srh on srh.response_hdr_id = sso.response_hdr_id
+		AND srh.survey_id in (40,60)
+		AND srh.created_date  
+		BETWEEN DATE_SUB(#endDate#, INTERVAL 90 DAY) AND #endDate#
+		AND sh.accepted_resource_id IS NOT NULL
+		GROUP BY sh.accepted_resource_id
+	</select>	
+	
+	<select id="getDeltaFrimCSATScore.query" parameterClass="java.lang.String" resultClass="EntityRating">	
+		SELECT count(sso.so_id) ratingCount, avg(srh.overall_score) ratingScore, sh.accepted_vendor_id AS entityId, 
+		40 AS entityTypeId, 'CSAT' AS scoreType, 'LIFETIME' AS scoreTimeLineType
+		FROM so_hdr sh 
+		INNER JOIN survey_response_so sso on sso.so_id=sh.so_id 
+		INNER JOIN survey_response_hdr srh on srh.response_hdr_id = sso.response_hdr_id
+		AND srh.survey_id in (10,30,50)
+		AND srh.created_date BETWEEN (select app_value from application_parameters WHERE `app_key`='SURVEY_LAST_SUCCESSFUL_UPDATE') AND #endDate#
+		AND sh.accepted_vendor_id is not null
+		GROUP BY sh.accepted_vendor_id 
+	</select>	
+	
+	<select id="getDeltaFrimCSATCurrentScore.query" parameterClass="java.lang.String" resultClass="EntityRating">	
+		SELECT count(sso.so_id) ratingCount, avg(srh.overall_score) ratingScore, sh.accepted_vendor_id AS entityId, 
+		40 AS entityTypeId, 'CSAT' AS scoreType, 'CURRENT' AS scoreTimeLineType
+		FROM so_hdr sh 
+		INNER JOIN survey_response_so sso on sso.so_id=sh.so_id 
+		INNER JOIN survey_response_hdr srh on srh.response_hdr_id = sso.response_hdr_id
+		AND srh.survey_id in (10,30,50)
+		AND srh.created_date BETWEEN DATE_SUB(#endDate#, INTERVAL 90 DAY) AND #endDate#
+		AND sh.accepted_vendor_id is not null
+		GROUP BY sh.accepted_vendor_id
+	</select>	
+	
+	<select id="getDeltaFrimNPSScore.query" parameterClass="java.lang.String" resultClass="EntityRating">	
+		SELECT count(sso.so_id) ratingCount, avg(srh.overall_score) ratingScore, sh.accepted_vendor_id AS entityId, 
+		40 AS entityTypeId, 'NPS' AS scoreType, 'LIFETIME' AS scoreTimeLineType
+		FROM so_hdr sh 
+		INNER JOIN survey_response_so sso on sso.so_id=sh.so_id 
+		INNER JOIN survey_response_hdr srh on srh.response_hdr_id = sso.response_hdr_id
+		AND srh.survey_id in (40,60)
+		AND srh.created_date BETWEEN (select app_value from application_parameters WHERE `app_key`='SURVEY_LAST_SUCCESSFUL_UPDATE') AND #endDate#
+		AND sh.accepted_vendor_id is not null
+		GROUP BY sh.accepted_vendor_id  
+	</select>	
+	
+	<select id="getDeltaFrimNPSCurrentScore.query" parameterClass="java.lang.String" resultClass="EntityRating">	
+		SELECT count(sso.so_id) ratingCount, avg(srh.overall_score) ratingScore, sh.accepted_vendor_id AS entityId, 
+		40 AS entityTypeId, 'NPS' AS scoreType, 'CURRENT' AS scoreTimeLineType
+		FROM so_hdr sh 
+		INNER JOIN survey_response_so sso on sso.so_id=sh.so_id 
+		INNER JOIN survey_response_hdr srh on srh.response_hdr_id = sso.response_hdr_id
+		AND srh.survey_id in (40,60)
+		AND srh.created_date BETWEEN DATE_SUB(#endDate#, INTERVAL 90 DAY) AND #endDate#
+		AND sh.accepted_vendor_id is not null
+		GROUP BY sh.accepted_vendor_id
+	</select>	
+	<!-- SLT-2040: End -->
+	<select id="fetchSurveyRatingPrice.query" parameterClass="java.lang.Long" resultClass="java.lang.Double">
+		select overall_score as surveyRating from survey_response_hdr as srh where srh.response_hdr_id= #responseHdrId#
+ 		and srh.created_date <![CDATA[ < ]]> (select app_value from application_parameters WHERE 
+ 		`app_key`='SURVEY_LAST_SUCCESSFUL_UPDATE')
+	</select>
+	
+	<update id="updatesurveyentityRating.update" parameterClass="java.util.HashMap">
+	 UPDATE survey_entity_rating SET rating_score=#ratingScore# WHERE entity_type_id = #entityTypeId#
+		AND score_type = #surveyType#
+		AND score_timeline_type = #scoreTimelineType#
+		AND entity_id = #entityId#
+	</update>
+	
+	<select id="buyerSurveyRating.query" parameterClass="java.util.HashMap" resultClass="surveyRatingVO">
+	select sbr.rating_score AS historicalRating,sbr.rating_count AS numberOfRatingsReceived 
+ 	FROM survey_buyer_rating sbr INNER JOIN
+ 	survey_buyer_so_count as sbsc 
+ 	ON sbr.survey_buyer_so_count_id=sbsc.id
+ 	where sbsc.buyer_id = #buyerId#  
+ 	AND sbr.score_type = #surveyType#
+ 	AND sbsc.vendor_resource_id = #entityId#
+	</select>
+	
+	<update id="updateSurveyBuyerRating.update" parameterClass="java.util.HashMap">
+	update survey_buyer_rating sbr INNER JOIN
+ 	survey_buyer_so_count as sbsc 
+ 	ON sbr.survey_buyer_so_count_id=sbsc.id 
+ 	set sbr.rating_score= #ratingScore# 
+ 	WHERE sbsc.buyer_id = #buyerId# 
+ 	AND sbr.score_type = #surveyType#
+ 	AND sbsc.vendor_resource_id = #entityId#
+	</update>
+	<select id="surveyAggregateRatings.query" parameterClass="java.util.HashMap" resultClass="surveyRatingVO">
+		select ser.rating_count AS numberOfRatingsReceived,
+		ser.rating_score AS historicalRating
+        FROM survey_entity_rating ser
+		WHERE ser.entity_type_id = #entityTypeId#
+		AND ser.score_type = #surveyType#
+		AND ser.score_timeline_type = #scoreTimelineType#
+        AND ser.entity_id = #entityId#
+	</select>
+	<select id="fetchEntityId.query" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT accepted_resource_id as entityId from so_hdr where so_id= #soId#
+	</select>
+</sqlMap>

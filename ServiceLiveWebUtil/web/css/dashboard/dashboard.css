@@ -1,0 +1,199 @@
+@CHARSET "ISO-8859-1";
+
+.dashboardLeftColumn {
+	float: left;
+	width: 266px;
+	padding: 0px 0px 0px 9px;
+	margin: 0px 0px 0px 0px;
+}
+
+.dashboardRightColumn {
+	float: right;
+	width: 697px;
+	padding: 0px 9px 0px 0px;
+	margin: 0px 0px 0px 0px;
+}
+
+.dashboardVitalStatsHeader {
+	width: 697px;
+	height: 28px;
+	background:url(../../images/dashboard/vital_statistics.gif) no-repeat;
+}
+
+.dashboardVitalStatsBody {
+	height: 125px;
+	width: 695px;
+	line-height: 16px;
+	border-left: 1px solid #adadad;
+	border-right: 1px solid #adadad;
+	border-bottom: 1px solid #adadad;
+	background: url(../../images/dashboard/vital_stats_bg.gif);
+	margin: 0px 0px 17px 0px;
+}
+
+.dashboardCommMonitorHeader {
+	margin-top: 17px;
+	width: 697px;
+	height: 28px;
+	background:url(../../images/dashboard/communications_monitor.gif) no-repeat;
+}
+
+.dashboardVitalStatsSeparator {
+	background:url(../../images/dashboard/dashboard_vital_stats_separator.gif) no-repeat right;
+}
+
+/* Commented out for 12/15/07 release
+COMMENT START- 
+.dashboardVitalStatsCell {
+	float: left;
+	width: 217px;
+	height: 125px;
+	padding-left: 13px;
+}
+COMMENT END-
+*/
+/* Remove below class definition after 12/15/07 as it's temporarily added for 12/15/07 */	
+.dashboardVitalStatsCell {
+	float: left;
+	width: 450px;
+	height: 125px;
+	padding-left: 13px;
+}
+		
+.dashboardCommMonitorBody {
+	height: 300px;
+	width: 695px;
+	border-left: 1px solid #adadad;
+	border-right: 1px solid #adadad;
+	border-bottom: 1px solid #adadad;
+	margin: 0px 0px 17px 0px;
+}
+
+.dashboardGridHdrs {
+	background: #4cbcdf;
+	color: #FFFFFF;
+	font-weight: bolder;
+	width: 695px;
+	height: 34px;
+	border-top: 1px solid #CCCCCC;
+	border-bottom: 1px solid #CCCCCC;
+}
+
+.dashboardPaganationCtrl {
+	padding-top: 5px;
+	width: 695px;
+	text-align: center;
+	border-top: 1px solid #CCCCCC;
+}
+
+
+.dashboardGridFrom {
+	width: 185px;
+	height: 22px;
+}
+
+.dashboardGridSubject {
+	width: 398px;
+	height: 22px;
+}
+
+.dashboardGridDate {
+	width: 95px;
+	height: 22px;
+}
+
+.floatLeft {
+	float: left;
+}
+
+.floatRight {
+	float: right;
+}
+
+.darkRed {
+	color: #FF0000;
+}
+
+.radioOffsets {
+	position: relative;
+	top: 3px;
+}
+
+*HTML> .radioOffsets {
+	position: relative;
+	top: 3px;
+	left: -5px;
+}
+
+*+HTML> .radioOffsets {
+	position: relative;
+	top: 3px;
+	left: -5px;
+}
+
+.antiRadioOffsets {
+	position: relative;
+	
+}
+
+*HTML> .antiRadioOffsets {
+	position: relative;
+	left: -5px;
+}
+
+*+HTML> .antiRadioOffsets {
+	position: relative;
+	left: -5px;
+}
+
+.grey_bottom_line {
+	border-bottom: 1px solid #CCCCCC;
+}
+
+.dashboardGrid td { font-size: 10px; }
+
+/* Left tiles */
+#dbTile_serviceOrders, #dbTile_recvdServiceOrders {
+	font-size: 11px;
+}
+#dbTile_overallStatusMonitor .content { padding-bottom: 5px; }
+
+#dbTile_overallStatusMonitor .content p { padding-bottom: 10px; }
+
+#dbTile_financeMgr {
+}
+#dbTile_adminOfc {
+}
+#dbTile_profilePrefs {
+}
+
+.largeDollarSign { width: 41px; height: 36px; float: left;}
+.largeDollarSign img { margin: 4px 0 0 0; }
+
+#dbTile_recvdServiceOrders p { clear: none; padding-bottom: 3px;}
+#dbTile_recvdServiceOrders p.last { padding-bottom: 11px }
+
+table.balances {
+	list-style: none;
+	width: 180px;
+	margin: 0 0 10px 0;
+}
+.balances td {
+	display: inline;
+	font-weight: bold;
+	float: left;
+	padding: 5px 0;
+}
+.balances td.column1 {
+	width: 120px;
+}
+.balances td.column2 {
+	width: 60px;
+	text-align: right
+}
+.balances td.bottom {
+	padding-bottom: 10px;
+}
+
+.redAlert { color: red; font-weight: bold; }
+

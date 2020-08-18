@@ -1,0 +1,67 @@
+.dijitInline{/* MOW: similar to InlineBox below, but this has fewer side-effects in Moz.  
+		Also, apparently works on a DIV as well as a FIELDSET.
+		Consider abandoning inlineBox in favor of this.  ???
+	*/display:0;/* gecko */display:inline-block;/* webkit */border:0;padding:0;vertical-align:top;}
+.dijitTitlePane{display:block;overflow:hidden;margin-bottom:5px;}
+.tundra .dijitTitleNode{font-family:Arial,Helvetica,sans-serif;color:#fff;vertical-align:top;margin-top:0;font-weight:bolder;font-family:Verdana, Arial, Helvetica, sans-serif;}
+.tundra .dijitTitlePane .dijitTitlePaneTitle,.tundra .dijitTitlePaneContentOuter{border-width:0;}
+.dijitInfoNodeInner{background:url("../images/info_icon.gif") no-repeat top right;width:15px;height:15px;z-index:10;position:absolute;right:3px;top:3px;}
+.subPane .dijitInfoNodeInner{background-image:url("../images/info_icon_light.gif");}
+.tundra .dijitTitlePane{position:relative;z-index:1;}
+.tundra .dijitTitlePane .dijitTitlePaneTitle{position:relative;z-index:1;}
+.tundra .mainPane{width:249px;}
+.tundra .subPane{width:238px;}
+.tundra .dijitTitlePane .dijitTitlePaneTitle{background:#58585a url("../images/widgets/titleBarBg.gif") no-repeat top right;/*padding: 1px 4px 2px 4px;*/padding:5px 4px 0;height:18px;cursor:pointer;font-weight:bolder;}
+.tundra .dijitTitlePane .dijitArrowNodeInner{visibility:hidden;}
+.tundra .dijitTitlePaneContentInner{padding:10px 15px;background:#ededed;font-size:10px;}
+.tundra .subPane .dijitTitlePaneContentInner{background:#fff;}
+/*.tundra .dijitTitlePane .dijitTitlePaneSubTitle,*/.tundra .dijitTitlePaneSubTitle .dijitTitlePaneTitle{background:#9f9f9f url("../images/widgets/subtitleBarBg.gif") no-repeat top right;padding:3px 4px;padding:5px 4px 0;cursor:pointer;font-weight:700;}
+.tundra .dijitTitlePaneSubTitle .dijitTitlePaneContentInner{background:#ededed;}
+.tundra .dijitArrowNode{width:16px;height:16px;}
+.tundra .dijitTitlePane .dijitClosed .dijitArrowNode{background:url('../images/widgets/arrowRight.gif') no-repeat center center;padding-top:0;}
+.dj_ie6 .tundra .dijitTitlePane .dijitClosed .dijitArrowNode{background-image:url('../images/widgets/arrowRight.gif');}
+.tundra .dijitTitlePane .dijitOpen .dijitArrowNode{background:url('../images/widgets/arrowDown.gif') no-repeat center center;padding-top:0;}
+.dj_ie6 .tundra .dijitTitlePane .dijitOpen .dijitArrowNode{background-image:url('../images/widgets/arrowDown.gif');}
+/***** Right Section Widgets *****/.dijitTitlePane h4{font-size:10px;padding:4px 0 6px;}
+.dijitTitlePane p{padding:2px 0 6px;}
+textarea,.inputArea{height:60px;border:1px solid #cecece;border-bottom-color:#e4e4e4;overflow:auto;padding:2px 5px;}
+.dijitContentPane input[type="text"]{border:1px solid #cecece;padding:3px 2px;}
+.dijitContentPane input[type="checkbox"],.checkboxSmall{border:none;width:12px;height:12px;}
+.dijitContentPane input[type="text"],textarea{background:#fff url(../images/common/textboxBg.gif) repeat-x top left;padding-top:3px;}
+.wideTextBox{width:204px;}
+.dijitContentPane input.medTextBox{width:120px;}
+.dijitContentPane .inputArea{width:198px;padding:5px;background:#fff url(../images/common/textboxBg.gif) repeat-x top left;margin:7px 0;}
+.dijitContentPane select{width:208px;background:#f7f7f7;border:1px solid #7b9ebd;padding:1px 0 1px 2px;}
+.titlePaneBtns,.titlePaneBtnsAll,.uploadBtns{list-style:none;padding:5px 0;position:relative;}
+.titlePaneBtns{text-align:left;right:0;width:100%;}
+.titlePaneBtnsAll{text-align:left;left:-2px;width:228px;}
+.titlePaneBtns li,.titlePaneBtnsAll li{display:inline;padding-left:0;margin-right:-5px;}
+.uploadBtns li{display:inline;padding-left:0;margin-right:5px;}
+.uploadBtn{margin-bottom:-8px;}
+.paneHdrText{margin-top:3px;font-weight:bolder;font-family:Verdana, Arial, Helvetica, sans-serif;}
+.grayTable{background:#ededed;width:208px;padding:3px 0;margin:0 0 10px;}
+.grayTable td{padding:3px 0 6px 3px;}
+.grayTable td.col1{width:90px;padding-left:3px;}
+.grayTable td.col2{width:110px;padding-right:3px;}
+.dijitContentPane .grayTable input[type="text"],.dijitContentPane .grayTable select,.dijitContentPane .grayTable input.shortTextBox{width:80px;font-size:10px;font-family:verdana;}
+input[type="radio"]{margin-bottom:-3px;}
+.inlineElement{float:left;padding:5px 0;}
+/***** Content Well Widgets *****/.contentWellPane .dijitTitlePaneContentInner{background:#fff;border:1px solid #9f9f9f;border-top:none;}
+.contentWellPane .dijitTitlePaneSubTitle .dijitTitlePaneContentInner{background:#ededed;border-width:0;}
+.contentWellPane h4{padding:12px 0 8px;margin:0;}
+.contentWellPane p{padding:6px 0;margin:0;line-height:14px;}
+.contentWellPane td{padding:3px 0;vertical-align:top;line-height:16px;}
+.contentWellPane table.noPad td{padding:0;}
+.dijitContentPane .formFieldOffset{margin-left:5px;}
+.contentWellPane .inputArea{background:#fff;}
+/********* Remove widget with 'x' icon ***********/.removeWidget{right:5px;height:15px;width:15px;right:5px;top:4px;position:absolute;}
+/********* FAQ Pane ************/.tundra .faqPane .dijitTitlePaneTitle{background:#fff;padding:3px 4px;cursor:pointer;font-weight:700;}
+.tundra .faqPane .dijitTitleNode{color:#00A0D2;}
+.tundra .faqPane .dijitOpen .dijitTitleNode{color:#666;}
+.tundra .faqPane .dijitTitlePaneContentInner{background:#fff;}
+.tundra .faqPane .dijitTitlePaneContentOuter{border-width:1px;}
+.tundra .faqPane .dijitClosed .dijitArrowNode{background:url('../images/widgets/blueRightArrow.gif') no-repeat 0 center;padding-top:0;}
+.dj_ie6 .tundra .faqPane .dijitClosed .dijitArrowNode{background-image:url('../images/widgets/blueRightArrow.gif');}
+.tundra .faqPane .dijitOpen .dijitArrowNode{background:url('../images/widgets/grayDownArrow.gif') no-repeat 0 center;padding-top:0;}
+.dj_ie6 .tundra .faqPane .dijitOpen .dijitArrowNode{background-image:url('../images/widgets/grayDownArrow.gif');}
+.tundra .faqPane .dijitArrowNode{tundracssline421height:16px;width:12px;}

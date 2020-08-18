@@ -1,0 +1,123 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="serviceLiveSimple" extends="ServiceLiveBase" >
+        <default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+
+		<global-results >
+			<result name="gl_simple_wizard_success" type="redirectAction">${landingAction}_displayPage.action</result>
+		</global-results>
+		
+	    <action name="csoAddFunds_*" class="csoAddFundsAction" method="{1}">
+	        <result name="success">/jsp/public/simple/create_service_order/simple_add_funds.jsp</result>	    	    
+	        <result name="go_to_review_action" type="redirectAction">csoReview_displayPage.action</result>
+	        <result name="to_confirmation_page">/jsp/public/simple/confirm_messaging.jsp</result>	
+	        <result name="go_to_dashboard" type="redirectAction">dashboardAction</result>     	    
+	        
+	    </action>
+	    
+	    <action name="csoCreateAccount_*" class="csoCreateAccountAction" method="{1}">
+	    	<result name="input">/jsp/public/simple/join_form.jsp</result>
+	        <result name="success">/jsp/public/simple/join_form.jsp</result>
+			<result name="error">/jsp/public/error/body/errorBody.jsp</result>
+	        <result name="findProvidersPage" type="redirectAction">csoFindProviders_displayPage</result>
+	        <result name="describeSchedulePage" type="redirectAction">csoDescribeAndSchedule_displayPage</result>
+	        <result name="emailSent">/jsp/public/simple/confirm_messaging.jsp</result>
+	        <result name="autoLoginAndRedirectToReviewPage" type="redirectAction">simpleBuyerAutoLogin</result>
+	        <result name="homepage" type="redirectAction">homepage</result>
+	        <result name="registrationErrorPage">/jsp/public/registration/registration_error.jsp</result>
+	        <result name="go_to_dashboard" type="redirectAction">dashboardAction</result>  
+	    </action>
+	    
+		<action name="simpleBuyerAutoLogin" class="loginBean" method="loginAndForwardToReview">
+			<result name="redirectReview" type="redirectAction">csoReview_displayPage</result>
+			<result name="input">/jsp/public/simple/join_form.jsp</result>
+		</action>
+		
+	    <action name="csoDescribeAndSchedule_*" class="csoDescribeAndScheduleAction" method="{1}">
+	        <result name="success">/jsp/public/simple/create_service_order/simple_describe_and_schedule.jsp</result>	
+	        <result name="csoCreateAccount" type="redirectAction">
+	        	<param name="actionName">csoCreateAccount_displayPage?fromDS=y</param>
+			</result>  
+	        <result name="csoReview" type="redirectAction">
+	        	<param name="actionName">csoReview_displayPage</param>
+	        </result>
+	        <result name="csoDescribeAndSchedule" type="redirectAction">
+	       		<param name="actionName">csoDescribeAndSchedule_displayPage</param>
+	        </result>
+	       <result name="csoFindProviders" type="redirectAction">csoFindProviders_displayPage</result>  
+	       <result name="go_to_dashboard" type="redirectAction">dashboardAction</result>    	    
+	    </action>
+
+	    <action name="csoFindProviders_*" class="csoFindProvidersAction" method="{1}">
+	        <result name="success">/jsp/public/simple/create_service_order/simple_find_providers.jsp</result>	
+	        <result name="to_next_action" type="redirectAction">
+	        	<param name="actionName">csoDescribeAndSchedule_displayPage</param>
+	        </result>   
+	        <result name="csoFindProviders" type="redirectAction">csoFindProviders_displayPage</result>  
+	        <result name="go_to_dashboard" type="redirectAction">dashboardAction</result> 	    	    
+	    </action>
+	    
+	    <action name="csoReview_*" class="csoReviewAction" method="{1}">
+	        <result name="sso_order_review">/jsp/public/simple/create_service_order/simple_review.jsp</result>
+	        <result name="go_to_dashboard" type="redirectAction">dashboardAction</result>
+	        <result name="view_providers_list">/jsp/public/simple/modals/view_providers_list.jsp</result>
+	        <result name="sso_order_confirmation" type="redirectAction">csoReview_displayPage</result>
+	        <result name="sso_find_providers" type="redirectAction">csoFindProviders_displayPage</result>
+	        <result name="sso_describe_and_schedule" type="redirectAction">csoDescribeAndSchedule_displayPage</result>
+	        <result name="sso_homepage_dto" type="redirectAction">csoFindProviders_displayPage</result>
+	        <result name="sso_create_account" type="redirectAction">csoCreateAccount_displayPage</result>
+	        <result name="sso_edit_account" type="redirectAction">csoEditAccount_displayPage</result>
+	        <result name="sso_select_location" type="redirectAction">ssoSelectLocations_displayPage</result>
+	        <result name="sso_add_funds" type="redirectAction">csoAddFunds_displayPage</result>
+	        	        
+	    </action>
+
+	    <action name="csoEmailSent_*" class="csoEmailSentAction" method="{1}">
+	        <result name="success">/jsp/public/simple/create_service_order/simple_email_sent.jsp</result>	    	    
+	    </action>
+	    
+	    <action name="csoConfirmation_*" class="csoConfirmationAction" method="{1}">
+	        <result name="success">/jsp/public/simple/confirm_messaging.jsp</result>   	    
+	    </action>
+	    
+	    <action name="csoDocumentsAndPhotos_*" class="csoDocumentsAndPhotosAction" method="{1}">
+	        <result name="success">/jsp/public/simple/create_service_order/simple_documents_and_photos_iframe.jsp</result>
+	        <result name="viewImage" type = "stream">
+			    <param name="contentType">${viewImageContentType}</param>
+			    <param name="inputName">imageStreamView</param>
+			    <param name="contentDisposition">filename="image.jpg"</param>
+			    <param name="bufferSize">1024</param>
+		  	</result>
+	    </action>
+
+	    <action name="ssoController_*" class="ssoControllerAction" method="{1}">
+	    	<!--  This is just a text.  Remove after we get 'gl_simple_wizard_success' working -->
+	        <result name="review">/jsp/public/simple/create_service_order/simple_review.jsp</result>	   	    	    
+	    </action>
+
+	    <action name="ssoSelectLocation_*" class="ssoSelectLocationAction" method="{1}">
+	        <result name="display_panel">/jsp/public/simple/create_service_order/simple_panel_select_location.jsp</result>	   	    	    
+	        <result name="display_page">/jsp/public/simple/create_service_order/simple_page_select_location.jsp</result>
+	       	<result name="next_success" type="redirectAction">
+				<param name="actionName">csoFindProviders_displayPage.action</param>	      	
+	      	</result>
+	       	<result name="next_fail">/jsp/public/simple/create_service_order/simple_page_select_location.jsp</result>	      		        	   	    	    	        	   	    	    
+	    </action>
+
+	    <action name="ssoManageLocations_*" class="ssoManageLocationsAction" method="{1}">
+	        <result name="display_page">/jsp/public/simple/create_service_order/simple_page_manage_locations.jsp</result>
+	    </action>
+	    
+	    <action name="csoEditAccount_*" class="csoEditAccountAction" method="{1}">
+	        <result name="success">/jsp/public/simple/simple_edit_account.jsp</result>
+	        <result name="dashboard" type="redirectAction">
+				<param name="actionName">dashboardAction</param>
+			</result>
+	   </action>
+	    
+	    
+    </package>
+    
+</struts>

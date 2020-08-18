@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<bean id="loadInsuranceAction" class="com.newco.marketplace.web.action.provider.LoadInsuranceAction" scope="prototype" >
+		<constructor-arg index="0" ref="insuranceTypeDelegate"/>
+		<constructor-arg index="1" ref="insurancePolicyDto"/>
+	   
+	   	<property name="auditorDelegateService">
+			<ref bean="auditorDelegateService"/>
+		</property>
+		
+	</bean>
+	
+	<bean id="addAdditionalInsuranceAction" class="com.newco.marketplace.web.action.provider.AddAdditionalInsuranceAction" scope="prototype" >
+		<constructor-arg index="0" ref="insuranceTypeDelegate"/>
+		<constructor-arg index="1" ref="insurancePolicyDto"/>
+	   
+	   	<property name="auditorDelegateService">
+			<ref bean="auditorDelegateService"/>
+		</property>
+		
+	</bean>
+	
+	<bean id="addInsuranceAction" class="com.newco.marketplace.web.action.provider.AddInsuranceAction" scope="prototype" >
+            <constructor-arg index="0" ref="insuranceInfoDto"/>
+            <constructor-arg index="1" ref="insuranceDelegate"/>
+            <constructor-arg index="2" ref="activityRegistryDelegates"/>
+            <property name="auditLogDelegates">
+				<ref bean="auditLogDelegates" />
+			</property>	
+			<property name="powerAuditorWorkflowDelegate" ref="powerAuditorWorkflowDelegateImpl" />
+           
+    </bean>
+
+	<bean id="saveInsuranceTypeAction" class="com.newco.marketplace.web.action.provider.SaveInsuranceTypeAction" scope="prototype" >
+		<constructor-arg index="0" ref="insuranceTypeDelegate"/>
+		<constructor-arg index="1" ref="insurancePolicyDto"/>
+		
+		<property name="auditorDelegateService">
+			<ref bean="auditorDelegateService"/>
+		</property>
+		<property name="powerAuditorWorkflowDelegate" ref="powerAuditorWorkflowDelegateImpl" />
+		
+	</bean>
+	<bean id="saveInsuranceAction" class="com.newco.marketplace.web.action.provider.SaveInsuranceAction" scope="prototype" >
+		<constructor-arg index="0" ref="insuranceInfoDto"/>
+		<constructor-arg index="1" ref="insuranceDelegate"/>
+		
+		<property name="auditorDelegateService">
+			<ref bean="auditorDelegateService"/>
+		</property>
+		
+		
+	</bean>
+	<bean id="deleteInsuranceAction" class="com.newco.marketplace.web.action.provider.DeleteInsuranceAction" scope="prototype" >
+		<constructor-arg index="0" ref="insuranceTypeDelegate"/>
+		<constructor-arg index="1" ref="insurancePolicyDto"/>
+	</bean>
+	
+	<bean id="listInsuranceAction" class="com.newco.marketplace.web.action.provider.ListInsuranceAction" scope="prototype" >
+		<constructor-arg index="0" ref="insuranceInfoDto"/>
+		<constructor-arg index="1" ref="insuranceDelegate"/>
+		<constructor-arg index="2" ref="activityRegistryDelegates"/>
+		
+	</bean>
+	
+	<bean id="processInsuranceAction" class="com.newco.marketplace.web.action.provider.ProcessInsuranceAction" scope="prototype" >
+		<constructor-arg index="0" ref="insuranceTypeDelegate"/>
+		<constructor-arg index="1" ref="insurancePolicyDto"/>
+	   
+	   	<property name="auditorDelegateService">
+			<ref bean="auditorDelegateService"/>
+		</property>	
+		
+		<property name="powerAuditorWorkflowDelegate" ref="powerAuditorWorkflowDelegateImpl" />	
+	</bean>
+	
+	<bean id="policyDetailsAjaxAction" class="com.newco.marketplace.web.action.provider.PolicyDetailsAjaxAction" scope="prototype" >
+		<constructor-arg index="0" ref="insuranceTypeDelegate"/>
+		<constructor-arg index="1" ref="insurancePolicyDto"/>		
+	</bean> 
+	
+	<bean id="insurancePolicyDetailsAction" class="com.newco.marketplace.web.action.provider.InsurancePolicyDetailsAction" scope="prototype" >
+		<constructor-arg index="0" ref="insuranceTypeDelegate"/>
+		
+		<property name="insuranceDelegate">
+			<ref bean="insuranceDelegate"/>
+		</property>		
+		
+		<property name="powerAuditorWorkflowDelegate" ref="powerAuditorWorkflowDelegateImpl" />
+		
+	</bean>
+</beans>

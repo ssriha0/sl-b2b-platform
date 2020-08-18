@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="lu_activity">
+	<typeAlias alias="luActivity" type="com.newco.marketplace.vo.provider.LuActivity"/>	
+		<select id="lu_activity.query" parameterClass="luActivity" resultClass="luActivity">
+    
+		select activity_id as activityId, 
+				act_link_key_type as actLinkKeyType,
+				act_category as actCategory,
+				act_name as actName
+			from lu_activity
+			<dynamic prepend="where">
+				<isNotNull prepend="AND " property="actLinkKeyType">act_link_key_type = #actLinkKeyType#</isNotNull>
+				<isNotNull prepend="AND " property="actCategory">act_category = #actCategory#</isNotNull>
+				<isNotNull prepend="AND " property="actName">act_name = #actName#</isNotNull>
+			</dynamic>		
+	</select>
+</sqlMap>

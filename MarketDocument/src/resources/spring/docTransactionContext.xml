@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
+	default-lazy-init="true">
+	<!-- 
+	<bean id="matchAllWithPropReq" 
+      class="org.springframework.transaction.interceptor.MatchAlwaysTransactionAttributeSource">
+      <property name="transactionAttribute">
+      		<value>PROPAGATION_REQUIRED,ISOLATION_DEFAULT,-Exception</value>
+      </property>
+    </bean>
+    
+ 	<bean id="matchAllTxInterceptorFinance"
+     class="org.springframework.transaction.interceptor.TransactionInterceptor">
+   		<property name="transactionManager" ref="dsTransactionManagerFinance"/>
+  		<property name="transactionAttributeSource" ref="matchAllWithPropReq"/>
+ 	</bean>
+   -->
+	
+
+	<!-- TRANSACTION SUPPORT -->	
+	
+	<bean id="documentService"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		lazy-init="true">
+		<property name="proxyInterfaces">
+			<list>
+				<value>
+					com.newco.marketplace.persistence.service.document.DocumentService
+				</value>
+			</list>
+		</property>
+		<property name="target">
+			<ref bean="documentServiceTarget" />
+		</property>
+		<property name="transactionManager">
+			<ref bean="dsTransactionManagerMain" />
+		</property>
+		<property name="transactionAttributeSource">
+			<ref bean="attributeSource" />
+		</property>
+	</bean>
+
+	
+	<bean id="attributeSource"
+		class="org.springframework.transaction.interceptor.NameMatchTransactionAttributeSource">
+		<property name="properties">
+			<props>
+				<prop key="*">
+					PROPAGATION_REQUIRED,ISOLATION_DEFAULT,-Exception
+				</prop>
+			</props>
+		</property>
+	</bean>	
+</beans>

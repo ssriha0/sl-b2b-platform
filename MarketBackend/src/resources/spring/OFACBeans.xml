@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<bean id="ofacDao" class="com.newco.marketplace.persistence.daoImpl.OFAC.OFACDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	
+	</bean>
+
+	
+	<bean id="ofacFile" class="com.newco.marketplace.business.businessImpl.FormatFile.OFACFileImpl">
+		<property name="ofacDao">
+			<ref bean="ofacDao" />
+		</property>
+		<property name="cryptography">
+			<ref bean="cryptography" />
+		</property>
+	
+	</bean>
+
+ 	
+	
+		
+</beans>

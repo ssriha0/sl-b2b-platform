@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+
+    <package name="addServicePro" extends="ServiceLiveBase">
+    	<default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+		<action name="addServiceProAction" class="addServiceProAction">
+			<result name="success">/jsp/providerRegistration/add_serviceProvider.jsp</result>						
+		</action>
+		
+		<action name="regDashboardActionsubmitRegistration" class="addServiceProAction" method="regDashboardActionsubmitRegistration">
+			<result name="success">/jsp/providerRegistration/provider_congrats.jsp</result>					
+		</action>		
+			<!-- result name="input" type="redirectAction">
+	             <param name="actionName">regDashboardActionsubmitRegistration.action</param>
+	             <param name="namespace">/jsp/providerRegistration</param>	  
+	             <param name="nexturl">/jsp/providerRegistration/test.jsp</param>           
+        	</result-->
+        			
+		<!--action name="regDashboardActionsubmitRegistration" class="addServiceProAction">
+			<result name="success">/jsp/providerRegistration/test.jsp</result>						
+		</action-->
+				
+		 </package>
+</struts>
+		

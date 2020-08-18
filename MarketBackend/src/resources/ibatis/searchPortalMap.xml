@@ -1,0 +1,683 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="searchportalAdmin">
+
+
+	<typeAlias alias="searchportalSProvider" type="com.newco.marketplace.vo.searchportal.SearchPortalServiceProviderVO"/>
+	<typeAlias alias="searchportalPFirm" type="com.newco.marketplace.vo.searchportal.SearchPortalProviderFirmVO"/>
+	<typeAlias alias="searchportalBuyer"     type="com.newco.marketplace.vo.searchportal.SearchPortalBuyerVO"/>
+	
+	<typeAlias alias="searchProviderRequestCriteria" type="com.newco.marketplace.vo.apiSearch.SearchProviderRequestCriteria"/>
+	<typeAlias alias="firmResponseData" type="com.newco.marketplace.vo.apiSearch.FirmResponseData"/>
+	<typeAlias alias="providerResponseData" type="com.newco.marketplace.vo.apiSearch.ProviderResponseData"/>
+	<typeAlias alias="generalInfoVO" type="com.newco.marketplace.vo.provider.GeneralInfoVO"/>
+
+
+
+	<resultMap id="searchportalBuyerResultMap" class="searchportalBuyer">
+		<result property="user.userId" column="userId" />
+		<result property="user.companyId" column="companyId" />
+		<result property="user.userName" column="userName" />
+		<result property="user.signUpDate" column="signUpDate" />
+		<result property="user.adminName" column="adminName" />
+		<result property="user.businessName" column="businessName" />
+		<result property="user.firstName" column="firstName" />
+		<result property="user.lastName" column="lastName" />
+		<result property="user.adminFName" column="adminFName" />
+		<result property="user.adminLName" column="adminLName" />
+		<result property="user.signUpDate" column="signUpDate" />
+		<result property="user.lastActivityDate" column="lastActivityDate" />
+		<result property="user.roleType" column="roleType" />
+		<result property="user.roleTypeId" column="roleTypeId" />
+
+		<result property="location.phoneNumber" column="phoneNumber" />
+		<result property="location.emailAddress" column="emailAddress" />
+		<result property="location.state" column="state" />
+		<result property="location.city" column="city" />
+		<result property="location.zip" column="zip" />
+		<result property="location.marketName" column="marketName" />
+
+
+	</resultMap>
+
+
+
+
+
+
+	<resultMap id="searchportalServiceProviderResultMap" class="searchportalSProvider">
+		<result property="user.userId" column="userId" />
+		<result property="user.companyId" column="companyId" />
+		<result property="user.userName" column="userName" />
+		<result property="user.signUpDate" column="signUpDate" />
+		<result property="user.businessName" column="businessName" />
+		<result property="user.firstName" column="firstName" />
+	<result property="user.middleName" column="middleName" />	
+		<result property="user.lastName" column="lastName" />
+		<result property="user.lastActivityDate" column="lastActivityDate" />
+		<result property="user.roleType" column="roleType" />
+
+		<result property="location.phoneNumber" column="phoneNumber" />
+		<result property="location.emailAddress" column="emailAddress" />
+		<result property="location.state" column="state" />
+		<result property="location.city" column="city" />
+		<result property="location.zip" column="zip" />
+		<result property="location.marketName" column="marketName" />
+		<result property="serviceProStatus" column="serviceProStatus" />
+		<result property="primaryIndustryId" column="primaryIndustryId" />
+		<result property="primaryIndustry" column="primaryIndustry" />
+<!-- 	sl 1602 code change -->
+		<result property="bgCheckStateId" column="bgCheckStateId"/>
+
+	</resultMap>
+
+
+	<resultMap id="searchportalProviderFirmResultMap" class="searchportalPFirm">
+		<result property="user.userId" column="userId" />
+		<result property="user.companyId" column="companyId" />
+		<result property="user.signUpDate" column="signUpDate" />
+		<result property="user.businessName" column="businessName" />
+		<result property="user.adminFName" column="adminFName" />
+		<result property="user.adminLName" column="adminLName" />
+		<result property="user.lastActivityDate" column="lastActivityDate" />
+
+
+		<result property="location.phoneNumber" column="phoneNumber" />
+		<result property="location.emailAddress" column="emailAddress" />
+		<result property="location.state" column="state" />
+		<result property="location.city" column="city" />
+		<result property="location.zip" column="zip" />
+		<result property="location.marketName" column="marketName" />
+		<result property="workflowState" column="proFirmStatus" />
+		<result property="primaryIndustryId" column="primaryIndustryId" />
+		<result property="primaryIndustry" column="primaryIndustry" />
+
+
+
+	</resultMap>
+
+
+
+
+	<sql id="searchportalBuyer.so_hdr.join">
+		<isPropertyAvailable property="soId">
+		<isNotNull property="soId">
+			join so_hdr so on ( so.buyer_resource_id = vw.buyer_resource_id and so.so_id like  '$soId$%')
+			</isNotNull>
+		</isPropertyAvailable>
+	</sql>
+
+
+	<sql id="searchportalBuyerOnly.so_hdr.join">
+		<isPropertyAvailable property="soId">
+		<isNotNull property="soId">
+					join so_hdr so on ( so.buyer_id = vw.buyer_id and so.so_id like  '$soId$%')
+			</isNotNull>
+		</isPropertyAvailable>
+	</sql>
+
+
+	<sql id="searchportalServiceprovider.so_hdr.join">
+		<isPropertyAvailable property="soId">
+		<isNotNull property="soId">
+			  join so_hdr so on ( so.accepted_resource_id = vw.resource_id and so.so_id like  '$soId$%')
+		</isNotNull>
+		</isPropertyAvailable>
+	</sql>
+
+
+	<sql id="searchportalServiceprovider.spnid.join">
+		<isPropertyAvailable property="spnId">
+			<isNotNull property="spnId">
+				join resource_credentials rc_r on  ( vw.resource_id = rc_r.resource_id and rc_r.cred_category_id  and rc_r.cred_type_id = 6 and rc_r.cred_category_id = #spnId#)
+			</isNotNull>
+		</isPropertyAvailable>
+	</sql>
+	
+	<sql id="searchportalServiceprovider.spnetId.join">
+		<isPropertyAvailable property="spnetId">
+			<isNotNull property="spnetId">
+				join spnet_serviceprovider_state sps on (vw.resource_id = sps.service_provider_id and sps.spn_id = #spnetId#)
+			</isNotNull>
+		</isPropertyAvailable>
+	</sql>
+	
+	<sql id="searchportalproviderFirm.spnetId.join">
+		<isPropertyAvailable property="spnetId">
+			<isNotNull property="spnetId">
+				join spnet_provider_firm_state spfs on (vw.vendor_id = spfs.provider_firm_id and spfs.spn_id = #spnetId#)
+			</isNotNull>
+		</isPropertyAvailable>
+	</sql>
+	
+
+	<sql id="searchportalProviderFirm.resUserId.join">
+		<isPropertyAvailable property="user.userId">
+			<isNotNull property="user.userId" >
+	 			join vendor_resource vru  on ( vw.vendor_id = vru.vendor_id and vru.resource_id =  #user.userId# )
+	 		</isNotNull>
+		</isPropertyAvailable>
+	</sql>
+
+	<sql id="searchportalProviderFirm.resUserName.join">
+		<isPropertyAvailable property="userName">
+			<isNotNull property="userName">
+			 	join  vendor_resource vrun  on ( vw.vendor_id = vrun.vendor_id and upper(vrun.user_name) like upper('$user.userName$%'))
+			</isNotNull>
+		</isPropertyAvailable>
+	</sql>
+
+
+
+	<select id="searchPortalbuyer.query" parameterClass="searchportalBuyer" resultClass="searchportalBuyer" resultMap="searchportalBuyerResultMap">
+		Select
+			vw.buyer_id as companyId,
+			vw.buyer_resource_id as userId,
+			vw.userName as userName,
+			vw.buyer_id as companyId,
+			vw.roleId as roleTypeId,
+			vw.roleType as roleType,
+			vw.adminUserName as adminName,
+			vw.businessName as businessName,
+			vw.firstName as firstName,
+			vw.LastName as lastName,
+			vw.city as city,
+			vw.zip as zip,
+			vw.state as state,
+			vw.marketName as marketName,
+			vw.lastActivityDate as lastActivityDate,
+			vw.signUpdate as signUpDate,
+			vw.email as emailAddress,
+			vw.adminFirstName as adminFName,
+			vw.admintLastName as adminLName,
+			vw.phone as phoneNumber
+			from  vw_searchportal_buyer_search vw
+			<include refid="searchportalBuyer.so_hdr.join"/>
+		<dynamic prepend="WHERE">
+
+		<!-- User based search  -->
+			<isNotNull property="user.userId" prepend="AND">
+	 			vw.buyer_resource_id = #user.userId#
+	 		</isNotNull>
+	 		<isNotNull property="user.companyId" prepend="AND">
+	 			vw.buyer_id = #user.companyId#
+	 		</isNotNull>
+	 		<isNotNull property="user.userName" prepend="AND">
+				vw.userName LIKE concat(#user.userName#, '%')
+			</isNotNull>
+			<isNotNull property="user.businessName" prepend="AND">
+				vw.businessName LIKE concat(#user.businessName#, '%') 
+			</isNotNull>
+			<isNotNull property="user.fnameOrLname" prepend="AND">
+				(vw.firstName LIKE concat(#user.fnameOrLname#, '%') or vw.lastName LIKE concat(#user.fnameOrLname#, '%'))
+			</isNotNull>
+	<!-- Location based search  -->
+			<isNotNull property="location.city" prepend="AND">
+				vw.city LIKE concat(#location.city#, '%')
+			</isNotNull>
+			<isNotNull property="location.state" prepend="AND">
+				vw.state = #location.state#
+			</isNotNull>
+			<isNotNull property="location.zip" prepend="AND">
+				vw.zip LIKE concat(#location.zip#, '%')
+			</isNotNull>
+			<isNotNull property="location.phoneNumber" prepend="AND">
+				vw.phone LIKE concat(#location.phoneNumber#, '%') 
+			</isNotNull>
+			<isNotNull property="location.emailAddress" prepend="AND">
+				(vw.email LIKE concat(#location.emailAddress#, '%')  OR vw.email_alt LIKE concat(#location.emailAddress#, '%')) 
+			</isNotNull>
+
+			<isNotNull property="user.toSignUpDate" >
+				<isNotNull property="user.fromSignUpDate" prepend="AND">
+					vw.signUpDate BETWEEN #user.fromSignUpDate# AND  ADDTIME(#user.toSignUpDate#,'23:59:59.999999')
+				</isNotNull>
+			</isNotNull>
+
+		</dynamic> 
+		<isNotNull property="sortKey" >
+             <isNotNull property="sortOrder" >
+                   order by $sortKey$ $sortOrder$ 
+             </isNotNull>
+        </isNotNull>
+
+
+	</select>
+
+	<select id="searchPortalbuyerOnly.query" parameterClass="searchportalBuyer" resultClass="searchportalBuyer" resultMap="searchportalBuyerResultMap">
+		Select distinct
+				vw.buyer_id as companyId,
+				vw.buyer_resource_id as userId,
+				vw.userName as userName,
+				vw.buyer_id as companyId,
+				vw.roleId as roleTypeId,
+				vw.roleType as roleType,
+				vw.adminUserName as adminName, 
+				vw.businessName as businessName,
+				vw.city as city,
+				vw.zip as zip,
+				vw.state as state,
+				vw.marketName as marketName,
+				vw.lastActivityDate as lastActivityDate,
+				vw.signUpdate as signUpDate,
+				vw.email as emailAddress,
+				vw.adminFirstName as adminFName,
+				vw.admintLastName as adminLName,
+				vw.phone as phoneNumber,
+				'UNKNOWN' as firstName,
+			 	'UNKNOWN'  as lastName
+			from vw_searchportal_buyerOnly_search vw
+			<include refid="searchportalBuyerOnly.so_hdr.join"/>
+		<dynamic prepend="WHERE">
+
+		<!-- User based search  -->
+			<isNotNull property="user.userId" prepend="AND">
+	 			vw.buyer_resource_id = #user.userId#
+	 		</isNotNull>
+			<isNotNull property="user.companyId" prepend="AND">
+	 			vw.buyer_id = #user.companyId#
+	 		</isNotNull>
+	 		<isNotNull property="user.userName" prepend="AND">
+				vw.userName LIKE concat(#user.userName#, '%')
+			</isNotNull> 
+			<isNotNull property="user.businessName" prepend="AND">
+				vw.businessName LIKE concat(#user.businessName#, '%')
+			</isNotNull>
+			<isNotNull property="user.fnameOrLname" prepend="AND">
+				(vw.adminFirstName LIKE concat(#user.fnameOrLname#, '%') or vw.admintLastName LIKE concat(#user.fnameOrLname#, '%')) 
+			</isNotNull>
+	<!-- Location based search  -->
+			<isNotNull property="location.city" prepend="AND">
+				vw.city LIKE concat(#location.city#, '%')
+			</isNotNull>
+			<isNotNull property="location.state" prepend="AND">
+				vw.state = #location.state#
+			</isNotNull>
+			<isNotNull property="location.zip" prepend="AND">
+				vw.zip LIKE concat(#location.zip#, '%')
+			</isNotNull>
+			<isNotNull property="location.phoneNumber" prepend="AND">
+				vw.phone LIKE concat(#location.phoneNumber#, '%') 
+			</isNotNull>
+			<isNotNull property="location.emailAddress" prepend="AND">
+				(vw.email LIKE concat(#location.emailAddress#, '%') OR vw.email_alt LIKE concat(#location.emailAddress#, '%')) 
+			</isNotNull>
+
+			<isNotNull property="user.toSignUpDate" >
+				<isNotNull property="user.fromSignUpDate" prepend="AND">
+					vw.signUpDate BETWEEN #user.fromSignUpDate# AND  ADDTIME(#user.toSignUpDate#,'23:59:59.999999')
+				</isNotNull>
+			</isNotNull>
+
+		</dynamic>
+		<isNotNull property="sortKey" >
+              <isNotNull property="sortOrder" >
+                    order by $sortKey$ $sortOrder$ 
+              </isNotNull>
+       </isNotNull>		
+
+	</select>
+
+<update id="updateServiceProviderName.query" parameterClass="java.util.HashMap" >
+		UPDATE contact SET first_name=#fName# , mi =#mName# , last_name=#lName# WHERE contact_id = (SELECT contact_id FROM vendor_resource WHERE resource_id=#resourceId#);
+</update>
+<update id="insertServiceProviderName_Audit.query" parameterClass="java.util.HashMap" >
+		INSERT INTO audit_provider_record (old_name,new_name,associated_id,associated_entity,modified_by,modified_date)
+		VALUES(#oldName#,#newName#,#resource_Id#,#type#,#modified_by#,now());
+</update>
+
+	<select id="searchPortalServicePro.query" parameterClass="searchportalSProvider" resultClass="searchportalSProvider" resultMap="searchportalServiceProviderResultMap">
+		Select distinct
+			vw.vendor_id as companyId,
+			vw.resource_id as userId,
+			vw.userName as userName,
+			vw.roleId as roleTypeId,
+			vw.roleType as roleType,
+			vw.businessName as businessName,
+			vw.firstName as firstName,
+		vw.middleName as middleName,
+			vw.LastName as lastName,
+			vw.city as city,
+			vw.zip as zip,
+			vw.state as state,
+			vw.marketName as marketName,
+			vw.lastActivityDate as lastActivityDate,
+			vw.signUpdate as signUpDate,
+			vw.email as emailAddress,
+			vw.phone as phoneNumber,
+			
+			vw.backGroundStateId as bgCheckStateId,
+			
+            vw.serviceProStatus as serviceProStatus,
+            vw.primaryIndustryId as primaryIndustryid,
+            vw.primaryIndustry as primaryIndustry
+			from vw_searchportal_serviceprovider_search vw
+			<include refid="searchportalServiceprovider.so_hdr.join"/>
+			<include refid="searchportalServiceprovider.spnid.join"/>
+			<include refid="searchportalServiceprovider.spnetId.join"/>
+			<isNotNull property="primaryVerticleId" >
+				<isNotNull property="secondarySkillId" >
+					<isNotNull property="skillCategoryId" >
+						<!-- assumption we assume the data in the resource-skill table  has already considered the skill tree relationship -->
+						 join resource_skill rsk3 on ( rsk3.resource_id = vw.resource_id and rsk3.node_id  =   #skillCategoryId#  and rsk3.root_node_id =  #primaryVerticleId#   )
+					</isNotNull>
+					<isNull property="skillCategoryId">
+						join resource_skill rsk2 on ( rsk2.resource_id = vw.resource_id and rsk2.node_id = #secondarySkillId#  and rsk2.root_node_id = #primaryVerticleId#)
+					</isNull>
+
+				</isNotNull>
+				<isNull property="secondarySkillId">
+					<!-- this when only primary is filled in  -->
+					join resource_skill rsk on ( rsk.resource_id = vw.resource_id and rsk.root_node_id = 0 and rsk.node_id = #primaryVerticleId# )
+				</isNull>
+
+			</isNotNull>
+
+		WHERE vw.deleteInd is NULL
+
+		<!-- User based search  -->
+			<isNotNull property="user.userId" prepend="AND">
+	 			vw.resource_id = #user.userId#
+	 		</isNotNull>
+			<isNotNull property="user.companyId" prepend="AND">
+	 			vw.vendor_id = #user.companyId# 
+	 		</isNotNull>
+	 		<isNotNull property="user.userName" prepend="AND">
+				vw.userName LIKE concat(#user.userName#, '%')
+			</isNotNull>
+			<isNotNull property="user.businessName" prepend="AND">
+				vw.businessName LIKE concat(#user.businessName#, '%')
+			</isNotNull>
+			<isNotNull property="user.fnameOrLname" prepend="AND">
+				(vw.firstName LIKE concat(#user.fnameOrLname#, '%') or vw.lastName LIKE concat(#user.fnameOrLname#, '%'))
+			</isNotNull>
+	<!-- Location based search  -->
+			<isNotNull property="location.city" prepend="AND">
+				vw.city LIKE concat(#location.city#, '%')
+			</isNotNull>
+			<isNotNull property="location.state" prepend="AND">
+				vw.state = #location.state#
+			</isNotNull>
+			<isNotNull property="location.zip" prepend="AND">
+				vw.zip LIKE concat(#location.zip#, '%')
+			</isNotNull>
+			<isNotNull property="location.phoneNumber" prepend="AND">
+				vw.phone LIKE concat(#location.phoneNumber#, '%')
+			</isNotNull>
+			<isNotNull property="location.emailAddress" prepend="AND">
+				(vw.email LIKE concat(#location.emailAddress#, '%') OR vw.email_alt LIKE concat(#location.emailAddress#, '%'))
+			</isNotNull>
+
+			<isNotNull property="user.toSignUpDate" >
+				<isNotNull property="user.fromSignUpDate" prepend="AND">
+					vw.signUpDate BETWEEN #user.fromSignUpDate# AND  ADDTIME(#user.toSignUpDate#,'23:59:59.999999')
+				</isNotNull>
+			</isNotNull>
+	<!-- Service pro based search  -->
+			<isNotNull property="workflowStateId" prepend="AND">
+				vw.serviceproStateId = #workflowStateId#
+			</isNotNull>
+
+			<isNotNull property="location.marketId" prepend="AND">
+				vw.marketId   =  #location.marketId#
+			</isNotNull>
+
+			<isNotNull property="location.districtId" prepend="AND">
+				vw.destrictId   =  #location.districtId#
+			</isNotNull>
+
+			<isNotNull property="location.regionId" prepend="AND">
+				vw.regionId   =  #location.regionId#
+			</isNotNull>
+
+			<isNotNull property="bgCheckStateId" prepend="AND">
+				vw.backgroundStateId = #bgCheckStateId#
+			</isNotNull>
+
+		
+			<isNotNull property="sortKey" >
+	              <isNotNull property="sortOrder" >
+	                     order by $sortKey$ $sortOrder$ 
+	              </isNotNull>
+	       </isNotNull>
+
+
+	</select>
+
+	<select id="searchPortalProviderFirm.query" parameterClass="searchportalPFirm" resultClass="searchportalPFirm" resultMap="searchportalProviderFirmResultMap">
+                Select distinct
+				vw.vendor_id as companyId,
+				vw.businessName as businessName,
+				vw.adminFirstName as adminFName,
+				vw.admintLastName as adminLName,
+                vw.adminId as userId,
+                vw.adminUserName as userName,
+				vw.city as city,
+				vw.zip as zip,
+				vw.state as state,
+				vw.marketName as marketName,
+				vw.lastActivityDate as lastActivityDate,
+				vw.signUpdate as signUpDate,
+				vw.email as emailAddress,
+				vw.phone as phoneNumber,
+                vw.proFirmStatus as proFirmStatus,
+                vw.primaryIndustryId as primaryIndustryid,
+                vw.primaryIndustry as primaryIndustry
+			from (SELECT  vh.vendor_id AS vendor_id,  vh.wf_state_id AS proFirmStateId,  wf.wf_state AS proFirmStatus, 
+				vh.business_name AS businessName,  COALESCE(lpi.primary_industry_id,_latin1'-1') AS primaryIndustryId, 
+				COALESCE(lpi.descr,_latin1'NA') AS primaryIndustry,  vh.modified_date AS lastActivityDate, 
+				vh.created_date AS signUpdate,  vh.referral_id AS referralId,  COALESCE(locn.city,_latin1'NA') AS city, 
+				COALESCE(lzip.zip,_latin1'NA') AS zip,  COALESCE(locn.state_cd,_latin1'NA') AS state, 
+				COALESCE(mkt.market_id,_latin1'-1') AS marketId,  COALESCE(mkt.market_name,_latin1'NA') AS marketName, 
+				COALESCE(ctres.phone_no,_latin1'NA') AS phone,  COALESCE(ctres.email,_latin1'NA') AS email, 
+				ctres.email_alt AS email_alt,  COALESCE(vrs.resource_id,_latin1'-1') AS adminId, 
+				COALESCE(vrs.user_name,_latin1'NA') AS adminUserName,  COALESCE(ctres.first_name,_latin1'NA') AS adminFirstName, 
+				COALESCE(ctres.last_name,_latin1'NA') AS admintLastName,  COALESCE(dzip.region,_latin1'-1') AS regionId, 
+				COALESCE(dzip.ri_district,_latin1'-1') AS destrictId
+				FROM (((((((((vendor_hdr vh
+				JOIN wf_states wf  ON ((vh.wf_state_id = wf.wf_state_id))) 
+				JOIN vendor_resource vrs  ON (((vh.vendor_id = vrs.vendor_id)  AND (vrs.primary_ind = 1)))) 
+				JOIN vendor_location vloc  ON ((vloc.vendor_id = vh.vendor_id))) 
+				JOIN location locn ON (((locn.locn_id = vloc.locn_id)  AND (locn.locn_type_id = 1)))) 
+				LEFT JOIN lu_primary_industry lpi  ON ((lpi.primary_industry_id = vh.primary_industry_id))) 
+				LEFT JOIN lu_zip_market lzip  ON ((locn.zip = lzip.zip))) 
+				LEFT JOIN lu_market mkt  ON ((lzip.market_id = mkt.market_id))) 
+				LEFT JOIN region_district_zip dzip  ON ((dzip.zip = lzip.zip))) 
+				LEFT JOIN contact ctres  ON ((ctres.contact_id = vrs.contact_id)))) vw
+
+				<include refid="searchportalproviderFirm.spnetId.join"/>
+					
+					<isNotNull property="user.userId" >
+	 					join vendor_resource vru  on ( vw.vendor_id = vru.vendor_id and vru.resource_id =  #user.userId# )
+	 				</isNotNull>
+
+
+					<isNotNull property="user.userName">
+			 			join  vendor_resource vrun  on ( vw.vendor_id = vrun.vendor_id and upper(vrun.user_name) like upper( concat(#user.userName#, '%')))
+					</isNotNull>
+
+
+			<dynamic prepend="WHERE">
+
+		<!-- User based search  -->
+
+			<isNotNull property="user.companyId" prepend="AND">
+	 			vw.vendor_id = #user.companyId#
+	 		</isNotNull>
+
+			<isNotNull property="user.businessName" prepend="AND">
+				vw.businessName LIKE concat(#user.businessName#, '%')
+			</isNotNull>
+			<isNotNull property="user.fnameOrLname" prepend="AND">
+				(vw.adminFirstName LIKE concat(#user.fnameOrLname#, '%') or vw.admintLastName LIKE concat(#user.fnameOrLname#, '%'))
+			</isNotNull>
+	<!-- Location based search  -->
+			<isNotNull property="location.city" prepend="AND">
+				vw.city LIKE concat(#location.city#, '%')
+			</isNotNull>
+			<isNotNull property="location.state" prepend="AND">
+				vw.state = #location.state#
+			</isNotNull>
+			<isNotNull property="location.zip" prepend="AND">
+				vw.zip LIKE concat(#location.zip#, '%')
+			</isNotNull>
+			<isNotNull property="location.phoneNumber" prepend="AND">
+				vw.phone LIKE concat(#location.phoneNumber#, '%')
+			</isNotNull>
+			<isNotNull property="location.emailAddress" prepend="AND">
+				(vw.email LIKE concat(#location.emailAddress#, '%') OR vw.email_alt LIKE concat(#location.emailAddress#, '%'))
+			</isNotNull>
+
+			<isNotNull property="user.toSignUpDate" >
+				<isNotNull property="user.fromSignUpDate" prepend="AND">
+					vw.signUpDate BETWEEN #user.fromSignUpDate# AND  ADDTIME(#user.toSignUpDate#,'23:59:59.999999')
+				</isNotNull>
+			</isNotNull>
+	<!-- Service pro based search  -->
+
+
+
+			<isNotNull property="primaryIndustryId" prepend="AND">
+				vw.primaryIndustryId  =  #primaryIndustryId#
+			</isNotNull>
+
+			<isNotNull property="workflowStateId" prepend="AND">
+				vw.proFirmStateId   =  #workflowStateId#
+			</isNotNull>
+
+			<isNotNull property="location.marketId" prepend="AND">
+				vw.marketId   =  #location.marketId#
+			</isNotNull>
+
+			<isNotNull property="location.districtId" prepend="AND">
+				vw.destrictId   =  #location.districtId#
+			</isNotNull>
+
+			<isNotNull property="location.regionId" prepend="AND">
+				vw.regionId   =  #location.regionId#
+			</isNotNull>
+			<isNotNull property="referralId" prepend="AND">
+				vw.referralId   =  #referralId#
+			</isNotNull>
+
+			<isNotNull property="soId" prepend="AND">
+				vw.vendor_id in ( Select distinct vendor_id from vendor_resource vrx join so_hdr so on ( so.so_id like concat(#soId#, '%') and so.accepted_resource_id = vrx.resource_id) )
+			</isNotNull>
+
+
+		</dynamic>
+		<isNotNull property="sortKey" >
+              <isNotNull property="sortOrder" >
+                   order by $sortKey$ $sortOrder$
+              </isNotNull>   
+        </isNotNull>
+
+	</select>
+	
+	<select id="searchProviderFirmFromAPI.query" parameterClass="searchProviderRequestCriteria" resultClass="firmResponseData">
+		SELECT DISTINCT
+			vw.vendor_id AS id,
+			vw.businessName AS legalBusinessName,
+			vw.city AS city,
+			vw.zip AS zip,
+			vw.state AS state,
+			vw.marketName AS marketName,
+			DATE(vw.lastActivityDate) AS lastActivity,
+		    vw.proFirmStatus AS status,
+		    vw.primaryIndustry AS primaryIndustry
+		FROM (SELECT  vh.vendor_id AS vendor_id, vh.dba_name AS dba_name, vh.wf_state_id AS proFirmStateId,  wf.wf_state AS proFirmStatus, 
+			vh.business_name AS businessName,  COALESCE(lpi.primary_industry_id,_latin1'-1') AS primaryIndustryId, 
+			COALESCE(lpi.descr,_latin1'NA') AS primaryIndustry,  vh.modified_date AS lastActivityDate, 
+			vh.created_date AS signUpdate,  vh.referral_id AS referralId,  COALESCE(locn.city,_latin1'NA') AS city, 
+			COALESCE(lzip.zip,_latin1'NA') AS zip,  COALESCE(locn.state_cd,_latin1'NA') AS state, 
+			COALESCE(mkt.market_id,_latin1'-1') AS marketId,  COALESCE(mkt.market_name,_latin1'NA') AS marketName, 
+			COALESCE(ctres.phone_no,_latin1'NA') AS phone, COALESCE(ctres.mobile_no,_latin1'NA') AS mobile, COALESCE(ctres.email,_latin1'NA') AS email,
+			ctres.email_alt AS email_alt,  COALESCE(vrs.resource_id,_latin1'-1') AS adminId, 
+			COALESCE(vrs.user_name,_latin1'NA') AS adminUserName,  COALESCE(ctres.first_name,_latin1'NA') AS adminFirstName, 
+			COALESCE(ctres.last_name,_latin1'NA') AS admintLastName,  COALESCE(dzip.region,_latin1'-1') AS regionId, 
+			COALESCE(dzip.ri_district,_latin1'-1') AS destrictId
+			FROM (((((((((vendor_hdr vh
+				JOIN wf_states wf  ON ((vh.wf_state_id = wf.wf_state_id))) 
+				JOIN vendor_resource vrs  ON (((vh.vendor_id = vrs.vendor_id)  AND (vrs.primary_ind = 1)))) 
+				JOIN vendor_location vloc  ON ((vloc.vendor_id = vh.vendor_id))) 
+				JOIN location locn ON (((locn.locn_id = vloc.locn_id)  AND (locn.locn_type_id = 1)))) 
+				LEFT JOIN lu_primary_industry lpi  ON ((lpi.primary_industry_id = vh.primary_industry_id))) 
+				LEFT JOIN lu_zip_market lzip  ON ((locn.zip = lzip.zip))) 
+				LEFT JOIN lu_market mkt  ON ((lzip.market_id = mkt.market_id))) 
+				LEFT JOIN region_district_zip dzip  ON ((dzip.zip = lzip.zip))) 
+				LEFT JOIN contact ctres  ON ((ctres.contact_id = vrs.contact_id)))) vw				
+		<dynamic prepend="WHERE">		
+			<isNotNull property="name" prepend="AND">
+				(vw.businessName LIKE CONCAT('%',#name#, '%') OR vw.dba_name LIKE CONCAT('%',#name#, '%'))
+			</isNotNull>
+			<isNotNull property="city" prepend="AND">
+				vw.city = #city#
+			</isNotNull>	
+			<isNotNull property="state" prepend="AND">
+				vw.state = #state#
+			</isNotNull>
+			<isNotNull property="zipCode" prepend="AND">
+				vw.zip = #zipCode#
+			</isNotNull>
+			<isNotNull property="phone" prepend="AND">
+				(vw.phone = #phone# or vw.mobile = #phone#)
+			</isNotNull>
+			<isNotNull property="email" prepend="AND">
+				(vw.email LIKE #email# OR vw.email_alt LIKE #email#)
+			</isNotNull>
+		</dynamic>
+	</select>
+	
+	<select id="searchServiceProvidersFromAPI.query" parameterClass="searchProviderRequestCriteria" resultClass="providerResponseData">
+		Select distinct
+			vw.resource_id as id,
+			vw.vendor_id as companyId,			
+			vw.businessName as firmBusinessName,
+			vw.firstName as firstName,
+			vw.LastName as lastName,
+			vw.city as city,
+			vw.zip as zip,
+			vw.state as state,
+			vw.marketName as market,
+			DATE(vw.lastActivityDate) as lastActivity,
+            vw.serviceProStatus as status,
+            vw.primaryIndustry as primaryIndustry
+			from vw_searchportal_serviceprovider_search vw
+			WHERE vw.deleteInd is NULL
+			<isNotNull property="name" prepend="AND">
+				(vw.firstName LIKE concat('%',#name#, '%') or vw.lastName LIKE concat('%',#name#, '%'))
+			</isNotNull>
+			<isNotNull property="city" prepend="AND">
+				vw.city = #city#
+			</isNotNull>
+			<isNotNull property="state" prepend="AND">
+				vw.state = #state#
+			</isNotNull>
+			<isNotNull property="zipCode" prepend="AND">
+				vw.zip = #zipCode#
+			</isNotNull>
+			<isNotNull property="phone" prepend="AND">
+				(vw.phone = #phone# or vw.mobile=#phone#)
+			</isNotNull>
+			<isNotNull property="email" prepend="AND">
+				(vw.email LIKE #email# OR vw.email_alt LIKE #email#)
+			</isNotNull>
+	</select>
+	
+	<select id="searchServiceProvider.vendorResource.get" parameterClass="generalInfoVO" resultClass="generalInfoVO">
+		select resource_id as resourceId, 
+		vendor_id as vendorId,
+		contact_id as contactId, 
+		ssn as ssn
+		from vendor_resource
+		<dynamic prepend="where">
+			<isNotNull prepend="AND " property="resourceId">
+				resource_id = #resourceId#
+			</isNotNull>
+		</dynamic>
+	</select>
+	
+</sqlMap>    

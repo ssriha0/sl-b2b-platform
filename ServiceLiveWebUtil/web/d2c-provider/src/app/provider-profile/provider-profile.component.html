@@ -1,0 +1,885 @@
+<main>
+    <wait-loader [showProfileLoader]="showProfileLoader"></wait-loader>
+
+    <div class="bootstrap-scope page-color">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 remove-padding-left-right">
+                <sl-consumer-header></sl-consumer-header>
+            </div>
+        </div>
+        <div class="row">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 remove-padding-left-right"><img class="img-responsive center-block" src="../../assets/images/profile/profile-header-img.png" /></div>
+            </div>
+            <div class="row">
+                <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 remove-padding-right">
+                    <div class="row">
+                        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 remove-padding-left-right">
+                            <profile-image (reLoadDetailPage)="reLoadPageData($event)" (errormessage)="displayError($event)" (imageReceived)="providerLogoExist($event)"></profile-image>
+                        </div>
+                        <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9 remove-padding-left-right">
+                            <div class="row profile-header-text">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 remove-padding-right">{{providerDetails.businessName}}
+                                    <!--<a href="#" *ngIf="null !=providerDetails.businessName" data-toggle="modal" data-target="#businessNameModal">
+                                        <div class="glyphicon glyphicon-edit"></div>
+                                    </a>-->
+                                </div>
+                            </div>
+                            <div class="row profile-subheader-text">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 remove-padding-right">
+                                    <div>Primary Industry: {{providerDetails.primaryIndustry}}
+                                        <a href="#" *ngIf="null !=providerDetails.primaryIndustry" data-toggle="modal" data-target="#primaryIndModel">
+                                            <div class="glyphicon glyphicon-edit" (click)="displayDefaultValue()"></div>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 remove-padding-right">
+                                    <div>Years in Business: {{providerDetails.yearsInBusiness}}
+                                        <!--<a href="#" *ngIf="null != providerDetails.yearsInBusiness" data-toggle="modal" data-target="#yearsInBusinessModal">
+                                            <div class="glyphicon glyphicon-edit"></div>
+                                        </a>-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 remove-padding-right">
+                            <div class="tile-header-text"><span class="requiredField">*</span>Overview
+                                <a href="#" *ngIf="null !=providerDetails.overview" data-toggle="modal" data-target="#overviewModal">
+                                    <div class="glyphicon glyphicon-edit"></div>
+                                </a>
+                            </div>
+                            <div class="well tile-color wrap-text">{{providerDetails.overview}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 remove-padding-right">
+                            <div class="tile-header-text">Primary Contact (Admin)</div>
+                            <p class="well tile-color wrap-text">{{providerDetails.businessOwner}}</p>
+                        </div>
+                        <!-- <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 remove-padding-right">
+                            <div class="tile-header-text">Providers</div>
+                            <p class="well tile-color">-- TO DO --</p> 
+                        </div> -->
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 remove-padding-right">
+                            <div class="tile-header-text">Licenses & Certifications on File</div>
+                            <div class="well tile-color remove-padding-bottom" *ngIf="providerDetails.credentials && providerDetails.credentials.credential && providerDetails.credentials.credential.length > 0">
+                                <table class="credential-table table">
+                                    <thead>
+                                        <tr>
+                                            <th>Credential Type</th>
+                                            <th>Name</th>
+                                            <th>Expiration</th>
+                                            <th>Verified by ServiceLive</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let cred of providerDetails.credentials.credential">
+                                            <td>
+                                                <div class="wrap-text">{{cred.type}}</div>
+                                            </td>
+                                            <td>
+                                                <div class="wrap-text">{{cred.name}}</div>
+                                            </td>
+                                            <td>
+                                                <div class="wrap-text">{{cred.expiryDate}}</div>
+                                            </td>
+                                            <td>
+                                                <div class="wrap-text">{{cred.status}}</div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="well tile-color" *ngIf="!providerDetails.credentials || !providerDetails.credentials.credential || providerDetails.credentials.credential.length <= 0">
+                                <div>NA</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 move-left-panel-down">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 profile-strength min-height-profile-strength text-center">
+                            <div class="tile-header-text">Profile Strength</div>
+                            <div class="add-margin-left-right strength-meter">
+                                <!--<div class="fill active-background-color"></div>-->
+                                <!--<img class="mask" src="../../assets/images/profile/profile_strength_mask.png" />
+                                <div class='line'>
+                                    <div>
+                                        {{profileStrength}}% Completed
+                                    </div>
+                                </div>-->
+                                <!--<img class="mask" src="../../assets/images/profile/profile-mask-circle.png" />-->
+                                <div class="circle">
+                                    <div class="meter"> {{profileStrength}}% </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 well tile-color">
+                            <div class="tile-header-text">Message box</div>
+                            <p>-- TO DO --</p>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+        <!-- <div class="row padding-left-right">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 remove-padding-right">
+
+                <div class="row">
+                    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 tile-header-text remove-padding-left"><span class="requiredField">*</span>Dispatch Location</div>
+                    <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+                        <a href="#" data-toggle="modal" data-target="#dispatchLocationModal" *ngIf="providerDetails.dispatchLocations && providerDetails.dispatchLocations.dispatchLocation && providerDetails.dispatchLocations.dispatchLocation.length > 0"
+                            (click)="resetDispatchModalData()">+ Add Dispatch Location</a>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 remove-padding-left remove-padding-right">
+                        This is the location where your providers start their day. You may specify one or multiple dispatch locations.
+                    </div>
+                </div>
+
+                <div class="row dispatch-loc" *ngIf="null != providerDetails.dispatchLocations">
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 remove-padding-left mod-padding-right" *ngFor="let dispatchLoc of providerDetails.dispatchLocations.dispatchLocation; let i = index">
+
+                        <div class="well tile-color dispatchloc-min-height" *ngIf="!showDispatchMessage || i != dispatchLocation.uiIndex">
+                            <div class="row bold-header-text wrap-text">
+                                {{dispatchLoc.locName}}
+                                <a href="#" class="pull-right" (click)="fillUpdateDispatchLocationModal(dispatchLoc, i)" data-toggle="modal" data-target="#updatedispatchLocationModal">
+                                    <div class="glyphicon glyphicon-edit"></div>
+                                </a>
+                            </div>
+                            <div class="row wrap-text">
+                                {{dispatchLoc.street1}}
+                                <span *ngIf="dispatchLoc.street1 && dispatchLoc.street2">,</span> {{dispatchLoc.street2}}
+                            </div>
+
+                            <div class="row wrap-text">
+                                {{dispatchLoc.city}}
+                            </div>
+                            <div class="row wrap-text">
+                                {{dispatchLoc.state}} {{dispatchLoc.zip}}
+                            </div>
+                        </div>
+                        <div class="well tile-color dispatchloc-min-height" *ngIf="showDispatchMessage && i == dispatchLocation.uiIndex"
+                            style="padding-bottom: 64px;">
+                            {{showDispatchMessage}}
+                        </div>
+                    </div>
+
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 remove-padding-left mod-padding-right" *ngIf="showDispatchMessage && !dispatchLocation.uiIndex && 0 != dispatchLocation.uiIndex">
+                        <div class="well tile-color dispatchloc-min-height" style="padding-bottom: 64px;">
+                            {{showDispatchMessage}}
+                        </div>
+                    </div>
+
+                    <!-- Trigger the modal with a button 
+                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 {{ (providerDetails.dispatchLocations.dispatchLocation.length + ((showDispatchMessage && !dispatchLocation.uiIndex && 0 != dispatchLocation.uiIndex) ? 1:0)) % 2 ? 'remove-padding-right mod-padding-left':'remove-padding-left mod-padding-right'}} dispatch-fix-padding">
+                                    <div class="well well-lg tile-color dispatchloc-min-height dispatchloc-top-bottom-padding">
+                                        <a href="#" data-toggle="modal" data-target="#dispatchLocationModal" (click)="resetDispatchModalData()">+Add Dispatch Location</a>
+                                    </div>
+                                </div>-->
+               <!--  </div>
+                <div class="row" *ngIf="(!providerDetails.dispatchLocations || !providerDetails.dispatchLocations.dispatchLocation || providerDetails.dispatchLocations.dispatchLocation.length <=0) && !(showDispatchMessage && !dispatchLocation.uiIndex && 0 != dispatchLocation.uiIndex)">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 remove-padding-left">
+                        <div class="well well-lg tile-color">
+                            <a href="#" data-toggle="modal" data-target="#dispatchLocationModal" (click)="resetDispatchModalData()">+Add Dispatch Location</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+       <!--  <div class="row padding-left-right">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="row">
+                    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 tile-header-text remove-padding-left"><span class="requiredField">*</span>Coverage Area</div>
+                    <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+                        <a href="#" *ngIf="providerDetails.coverageLocations && providerDetails.coverageLocations.coverageLocation.length > 0" data-toggle="modal"
+                            data-target="#coverageModel" (click)="updateCoverageDropdown()">+ Add Coverage Area</a>
+                    </div>
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 text-align-right">
+                        <a target="_blank" [href]="providerDetails.coverageHelpURL">
+                            <div class="glyphicon glyphicon-exclamation-sign"></div> Help</a>
+                    </div>
+                </div>
+
+                <!--messge-->
+
+
+               <!--  <div class="row">
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 remove-padding-left remove-padding-right">
+                        For each of the dispatch locations, create coverage area(s) by center zip code and radius (in miles). Your business will
+                        be listed to customers matching ONLY to the zip codes you have selected.
+                    </div>
+
+                </div>
+
+
+                <!--message end-->
+              <!--   <div class="well tile-color" *ngIf="providerDetails.coverageLocations && providerDetails.coverageLocations.coverageLocation.length > 0">
+                    <div class="row" *ngFor="let coverageLoc of providerDetails.coverageLocations.coverageLocation; let i = index">
+                        <hr class="zero-margin-top-bottom" *ngIf="i > 0" />
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 coverage-loc">
+                            <div class="row">
+
+                                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 coverage-loc-text">
+                                    <a href="#" *ngIf="null !=coverageLoc.coverageRadius" data-toggle="modal" data-target="#dummyCoverageZipModel" (click)="showDeleteCoveragePopUp(coverageLoc.coverageRadius,coverageLoc.locnId)"
+                                        style="margin-right: 20px; text-decoration: none;">
+
+                                        <div class="glyphicon glyphicon-trash"></div>
+                                    </a>
+                                    {{coverageLoc.locName}}
+                                </div>
+                                <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9 border-left">
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                            <div class="row">
+                                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                    {{coverageLoc.city}},{{coverageLoc.state}} - {{coverageLoc.zip}}
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                    <!--<div class="row bold-header-text">-->
+                                                  <!--   within {{coverageLoc.coverageRadius}} miles
+                                                    <!--<a href="#" *ngIf="null !=coverageLoc.coverageRadius" (click)="coverage.editZipCode(coverageLoc.coverageRadius,coverageLoc.zip,coverageLoc.locnId)"
+                                                        data-toggle="modal" data-target="#coverageZipModel" style="margin-left: 10px; text-decoration: none;">
+                                                        <div class="glyphicon glyphicon-edit"></div>
+                                                    </a>-->
+                                                    <!--There is no dummyCoverageZipModel exist. added here to reload the page-->
+                                                    <!--<a href="#" *ngIf="null !=coverageLoc.coverageRadius" data-toggle="modal" data-target="#dummyCoverageZipModel" (click)="showDeleteCoveragePopUp(coverageLoc.coverageRadius,coverageLoc.locnId)"
+                                                        style="margin-left: 20px;">
+
+                                                        <div class="glyphicon glyphicon-trash"></div>
+                                                    </a>-->
+                                               <!--  </div>
+                                                <!--</div>-->
+                                          <!--   </div>
+                                            <div class="row">
+                                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                    {{coverageLoc.count}} zip codes
+                                                    <a href="#" *ngIf="null !=coverageLoc.coverageRadius" (click)="coverage.editZipCode(coverageLoc.coverageRadius,coverageLoc.zip,coverageLoc.locnId)"
+                                                        data-toggle="modal" data-target="#coverageZipModel" style="margin-left: 50px; text-decoration: none;">
+                                                        <div class="glyphicon glyphicon-edit"></div>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--<div class="row">
+                            {{coverageLoc.street1}}, {{coverageLoc.street2}}
+                        </div>
+                        <div class="row">
+                            {{coverageLoc.zip}}
+                        </div>-->
+                                <!--<div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">within {{coverageLoc.coverageRadius}} miles
+
+                                    <a href="#" *ngIf="null !=coverageLoc.coverageRadius" data-toggle="modal" data-target="#coverageModel">
+                                            <div class="glyphicon glyphicon-edit"></div>
+                                        </a>
+                                </div>-->
+                          <!--   </div>
+                        </div>
+                    </div>
+                    <!--for message start-->
+                  <!--   <div class="row add-margin-top" *ngIf="message">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 coverage-loc-text">
+                            {{message}}
+                        </div>
+                    </div>
+                    <!--for message end-->
+               <!--  </div>
+                <div class="row well well-lg tile-color" *ngIf="!providerDetails.coverageLocations || providerDetails.coverageLocations.coverageLocation.length <= 0">
+                    <a href="#" data-toggle="modal" data-target="#coverageModel" (click)="updateCoverageDropdown()">+ Add Coverage Area</a>
+                    <!--for message start-->
+                  <!--   <div class="row add-margin-top" *ngIf="message">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 coverage-loc-text">
+                            {{message}}
+                        </div>
+                    </div>
+                    <!--for message end-->
+          <!--       </div>
+            </div>
+        </div> -->
+        <div class="row padding-left-right">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="row">
+                    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 tile-header-text remove-padding-left"><span class="requiredField">*</span>Service Offerings</div>
+                    <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+                        <a routerLink="/serviceOffered" routerLinkActive="active" *ngIf="providerDetails.serviceOfferedList.length > 0" skipLocationChange>+ Add More Services</a>
+                    </div>
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 text-align-right">
+                        <a target="_blank" [href]="providerDetails.serviceOfferHelpURL">
+                            <div class="glyphicon glyphicon-exclamation-sign"></div> Help</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="well well-lg tile-color remove-padding-left-right remove-padding-top-bottom" *ngIf="providerDetails.serviceOfferedList.length > 0">
+                        <div class="row" *ngFor="let serviceOffered of providerDetails.serviceOfferedList" style="padding-bottom: 22px;">
+                            <div class="row service-offering-heading">
+                                <div class="padding-left-right padding-top-bottom">{{serviceOffered.primaryIndustryName}}</div>
+                            </div>
+                            <div class="row add-margin-left-right">
+
+                                <!--<div class="row padding-top-bottom">
+                                    <div *ngIf="!serviceOffered.rateCardAdded"> + Add rate card </div>
+                                    <div *ngIf="serviceOffered.rateCardAdded">
+                                        <div class="glyphicon glyphicon-ok" style="margin-right: 10px;"></div>Rate card added </div>
+                                </div>-->
+                                <div class="col-xs-6" style="padding-top: 14px;">
+                                    <div class="row padding-top-bottom" *ngIf="!serviceOffered.tempServiceMessage">
+                                        <div class="glyphicon glyphicon-ok"></div> {{serviceOffered.servicesOptedCount}} of {{serviceOffered.servicesOfferedCount}}
+                                        services selected
+                                        <a href="#" (click)="selectService.loadData(serviceOffered.primaryIndustryId,serviceOffered.primaryIndustryName)" data-toggle="modal"
+                                            data-target="#selectService">
+                                            <div class="glyphicon glyphicon-edit"></div>
+                                        </a>
+                                    </div>
+                                    <div class="row padding-top-bottom" *ngIf="serviceOffered.tempServiceMessage">
+                                        {{serviceOffered.tempServiceMessage}}
+                                    </div>
+                                </div>
+                                <div class="col-xs-6" style="padding-top: 25px;">
+                                    <div *ngIf="serviceOffered.displayMessage">
+                                        {{rateCardtext}}</div>
+                                    <div *ngIf="!serviceOffered.rateCardAdded && !serviceOffered.displayMessage">
+                                        <a data-toggle="modal" data-target="#rateCard" class="clickable-hand-cursor" (click)="rateCard.getPriceOfRateCard(serviceOffered)">
+                                             + Add rate card
+                                         </a>
+
+                                    </div>
+                                    <div *ngIf="serviceOffered.rateCardAdded && !serviceOffered.displayMessage">
+                                        <div class="glyphicon glyphicon-ok" style="margin-right: 4px;">
+                                        </div> Rate card added
+                                        <a data-toggle="modal" data-target="#rateCard" (click)="rateCard.getPriceOfRateCard(serviceOffered)">
+                                            <div class="glyphicon glyphicon-edit clickable-hand-cursor"></div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="well well-lg tile-color" *ngIf="providerDetails.serviceOfferedList.length == 0">
+                        <a routerLink="/serviceOffered" routerLinkActive="active" skipLocationChange>+ Add Services Offered</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!--Start business Name Modal-->
+
+    <div class="modal fade  modal-popup-custom" id="businessNameModal" tabindex="" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content row">
+                <div class="modal-header">
+                    <div class="modal-title text-center modal-header-text">Business Name</div>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <!--<label for="comment">Business Name:</label>-->
+                        <input type="text" class="form-control" placeholder="Business Name" [(ngModel)]="providerDetails.businessName" />
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <div class="form-group form-inline">
+                        <button type="button" class="btn btn-primary  footer-button" data-dismiss="modal" (click)="updateProfile('businessName')">Save</button>
+                        <button type="button" class="btn btn-secondary  footer-button" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Start business Name Modal-->
+
+    <!--Primary industry popup start-->
+
+    <div id="primaryIndModel" class="modal fade  modal-popup-custom" role="dialog">
+        <div class="modal-dialog  modal-sm">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="#" class="close-button" data-dismiss="modal">
+                        <div class="glyphicon glyphicon-remove"></div>
+                    </a>
+                    <div class="modal-title text-center modal-header-text">Primary Industry</div>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <select id="zipCode" class="form-control" *ngIf="providerDetails.primaryIndustries" [(ngModel)]="_primaryIndustry" (ngModelChange)="changePrimaryDropDown($event)">
+                        <option *ngFor="let primaryInd of providerDetails.primaryIndustries.primaryIndObj" [ngValue]="primaryInd">{{primaryInd.descr}}</option>
+                            </select>
+
+                        <!--<select class="form-control" style="width:200px;" *ngIf="providerDetails.primaryIndustries" [(ngModel)]="providerDetails.primaryIndustry">
+                        <option>{{providerDetails.primaryIndustry}}</option>
+                        <option *ngFor="let primaryInd of providerDetails.primaryIndustries.primaryIndObj" [ngValue]="primaryInd.id">{{primaryInd.descr}}</option>
+                    
+                            </select>-->
+                        <!--<select class="form-control" style="width:200px;">
+                            <option value="1">Electrician</option>
+                             <option value="2">Plumbing</option>
+                             <option value="3">Carpanter</option>
+                             
+                        </select>-->
+                        <!--<select class="form-control" style="width:200px;" *ngIf="providerDetails.primaryIndustries" [(ngModel)]="selectedCoverageLoc"
+                            (ngModelChange)="changeCoverageDropDown($event)">
+                        <option *ngFor="let primaryInd of providerDetails.primaryIndustries.primaryIndObj" [ngValue]="primaryInd">{{primaryInd.descr}}</option>
+                    
+                            </select>-->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group form-inline">
+                        <button type="button" class="btn btn-secondary footer-button" data-dismiss="modal">Cancel</button>
+                        <button type="button" [disabled]="null == _primaryIndustry || '' == _primaryIndustry.id" class="btn btn-primary footer-button"
+                            data-dismiss="modal" (click)="updateProfile('primaryIndustry')">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Primary industry popup end-->
+
+    <!--Start overview Modal popup-->
+    <div id="overviewModal" class="modal fade modal-popup-custom" data-backdrop="static" data-keyboard="false" role="dialog">
+        <div class="modal-dialog overview-modal-width">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="#" class="close-button" data-dismiss="modal">
+                        <div class="glyphicon glyphicon-remove" (click)="resetOverview()"></div>
+                    </a>
+                    <div class="modal-title text-center modal-header-text">Overview</div>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <textarea #Overview class="form-control overview-max-width-height" row="4" placeholder="Overview" [ngModel]="providerDetails.overview"
+                            (keyup)="countWord($event)" (paste)="countWord($event)"></textarea>
+                    </div>
+                    <div>{{message}}</div>
+
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group form-inline">
+                        <button type="button" class="btn btn-secondary  footer-button" data-dismiss="modal" (click)="resetOverview()">Cancel</button>
+                        <button type="button" [disabled]="message == 'Text exceeds maximum limit of 1000'" class="btn btn-primary  footer-button"
+                            data-dismiss="modal" (click)="updateProfile('overview',Overview.value)">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--End overview Modal popup-->
+
+    <!--Start Years in Business Modal popup-->
+
+    <div id="yearsInBusinessModal" class="modal fade modal-popup-custom" role="dialog">
+        <div class="modal-dialog modal-sm">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title text-center modal-header-text">Years in Business</div>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <!-- <label for="Years in Business">Years in Business</label> -->
+                        <input type="text" class="form-control" placeholder="Years in Business" [(ngModel)]="providerDetails.yearsInBusiness" />
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group form-inline">
+                        <button type="button" class="btn btn-primary footer-button" data-dismiss="modal" (click)="updateProfile('yearsInBusiness')">Save</button>
+                        <button type="button" class="btn btn-secondary footer-button" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--End Years in Business Modal popup-->
+
+    <!--provider-coverage popup start-->
+    <!-- Modal -->
+    <div id="coverageModel" class="modal fade modal-popup-custom" role="dialog">
+        <div class="modal-dialog modal-sm">
+
+            <!-- Modal content-->
+            <div class="modal-content row">
+                <div class="modal-header">
+                    <a href="#" class="close-button" data-dismiss="modal">
+                        <div class="glyphicon glyphicon-remove"></div>
+                    </a>
+                    <div class="modal-title text-center modal-header-text">Add Coverage Area</div>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <!--<p>Dispatch location zipcode</p>-->
+                        <label for="zipCode">Select Dispatch Location</label>
+                        <select id="zipCode" class="form-control" style="width:200px;" *ngIf="dropDownCoverageZipCodes" [(ngModel)]="selectedCoverageLoc"
+                            (ngModelChange)="changeCoverageDropDown($event)">
+                        <option *ngFor="let dispatchLoc of dropDownCoverageZipCodes" [ngValue]="dispatchLoc">{{dispatchLoc.locName}} <span *ngIf="dispatchLoc.zip">,</span> {{dispatchLoc.city}} <span *ngIf="dispatchLoc.zip">,</span>{{dispatchLoc.state}}  <span *ngIf="dispatchLoc.zip">-</span> {{dispatchLoc.zip}}</option>
+                    
+                            </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="coverageRadius">Enter distance to travel (in miles)</label>
+                        <div class="form-inline input-group coverage-fix-control-width">
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-primary btn-number minus-button" (click)="decrementCoverageRadius()"><div class="glyphicon glyphicon-minus"></div></button>
+                            </span>
+                            <input type="number" step="5" min="0" max="100" id="coverageRadius" (change)="validateCoverageRadius()" [(ngModel)]="coverageRadius"
+                                class="form-control">
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-primary btn-number plus-button" (click)="incrementCoverageRadius()"><div class="glyphicon glyphicon-plus"></div></button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <div class="form-group form-inline">
+                        <!-- (click)="coverage.saveZipCoverageRadius()" -->
+                        <button type="button" class="btn btn-default footer-button" data-dismiss="modal" style="border: 1px solid #2A9FD8;color: #2A9FD8;">Cancel</button>
+                        <button [disabled]="!coverageZip || !coverageRadius || coverageRadius==0 || coverageRadius>100" type="button" class="btn btn-primary footer-button"
+                            data-dismiss="modal" data-toggle="modal" data-target="#coverageZipModel" (click)="coverage.createNewCoverage()">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--provider-coverage popup end-->
+
+    <!--showing zipcodes in pop up start-->
+    <div id="coverageZipModel" class="modal fade" role="dialog" aria-labelledby="coverageZipModelLabel">
+        <div class="modal-dialog modal-width-fix" role="document">
+            <!-- Modal content-->
+            <provider-coverage (reLoadDetailPage)="reLoadPageData($event)" (passCoverage)="addCoverageInUI($event)" (showMessage)="displayMessage($event)"
+                (deleteCoverage)="deleteCoverageInUI($event)" (errormessage)="displayError($event)" [coverageRadius]="coverageRadius"
+                [coverageZip]="coverageZip" [locId]="locId" (reload)="reloadByChild($event)" #coverage></provider-coverage>
+        </div>
+    </div>
+    <!--showing zipcodes in pop up  end-->
+
+    <!-- start dispatch loc modal-->
+    <div class="modal fade modal-popup-custom" id="dispatchLocationModal" tabindex="" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content row">
+                <div class="modal-header">
+                    <a href="#" class="close-button" data-dismiss="modal">
+                        <div class="glyphicon glyphicon-remove"></div>
+                    </a>
+                    <div class="modal-title text-center modal-header-text">Add Dispatch Location</div>
+                </div>
+
+                <div class="modal-body">
+                    <table class="table borderless zero-margin-top-bottom">
+                        <tr>
+                            <td>
+                                <span class="requiredField bold">*</span></td>
+
+                            <td colspan="4"> <input class="form-control required" type="text" placeholder="Location Name" [(ngModel)]="dispatchLocation.locName"
+                                /></td>
+                        </tr>
+                        <tr>
+                            <td><span class="requiredField bold">*</span></td>
+                            <td colspan="4">
+                                <!--<textarea class="form-control text-input" type="text" placeholder="Street1" [(ngModel)]="dispatchLocation.street1"></textarea>-->
+                                <input class="form-control required" type="text" placeholder="Street Address" [(ngModel)]="dispatchLocation.street1" />
+                                <span class="help-block" style="margin-bottom: -5px;margin-left: -12px;">Ex: 116 W 23rd Street, Suite 500</span>
+                            </td>
+                        </tr>
+
+                        <!--<tr>
+                            <td><span class="requiredField bold"> </span></td>
+                            <td colspan="4">
+                                <input class="form-control required" type="text" placeholder="Street2" [(ngModel)]="dispatchLocation.street2" />
+                            </td>
+                        </tr>-->
+
+                        <tr>
+                            <td><span class="requiredField bold">*</span></td>
+                            <td colspan="1">
+                                <input class="form-control inline-control-width required" type="text" placeholder="City" [(ngModel)]="dispatchLocation.city"
+                                />
+                            </td>
+
+                            <td><span class="requiredField bold">*</span></td>
+                            <td colspan="1">
+                                <input class="form-control required" type="text" placeholder="Zip" [(ngModel)]="dispatchLocation.zip" maxlength="5" />
+                            </td>
+                        </tr>
+                    </table>
+                    <!-- <div class="form-group">
+                        <input class="form-control" type="text" placeholder="State" [(ngModel)]="dispatchLocation.state" disabled="disabled" />
+                    </div> -->
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group form-inline">
+                        <button class="btn btn-secondary footer-button" data-dismiss="modal">Cancel</button>
+                        <button class="btn btn-primary footer-button" [disabled]="!dispatchLocation.street1
+                         || !dispatchLocation.locName || !dispatchLocation.city || !dispatchLocation.zip" (click)="addressValidation()">Save</button>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <!-- end dispatch loc modal-->
+
+    <!-- start add/update dispatch loc modal-->
+    <div class="modal fade modal-popup-custom" id="updatedispatchLocationModal" tabindex="" role="dialog">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content row">
+                <div class="modal-header">
+                    <a href="#" class="close-button" data-dismiss="modal">
+                        <div class="glyphicon glyphicon-remove"></div>
+                    </a>
+                    <div class="modal-title text-center modal-header-text">Update Dispatch Location</div>
+                </div>
+
+                <div class="modal-body">
+                    <table class="table borderless zero-margin-top-bottom">
+                        <tr>
+                            <td>
+                                <span class="requiredField bold">*</span></td>
+
+                            <td colspan="4"> <input class="form-control required" type="text" placeholder="Location Name" [(ngModel)]="dispatchLocation.locName"
+                                /></td>
+                        </tr>
+                        <tr>
+                            <td><span class="requiredField bold">*</span></td>
+                            <td colspan="4">
+                                <input class="form-control required" type="text" placeholder="Street Address" [(ngModel)]="dispatchLocation.street1" />
+                                <span class="help-block" style="margin-bottom: -5px;margin-left: -12px;">Ex: 116 W 23rd Street, Suite 500</span>
+                            </td>
+                        </tr>
+                        <!--<tr>
+                            <td><span class="requiredField bold"> </span></td>
+                            <td colspan="4">
+                                <input class="form-control required" type="text" placeholder="Street2" [(ngModel)]="dispatchLocation.street2" />
+                            </td>
+                        </tr>-->
+                        <tr>
+                            <td><span class="requiredField bold">*</span></td>
+                            <td colspan="1"><input class="form-control inline-control-width required" type="text" placeholder="City" [(ngModel)]="dispatchLocation.city"
+                                /> </td>
+
+                            <td><span class="requiredField bold">*</span></td>
+                            <td colspan="1">
+                                <input class="form-control required" type="text" placeholder="Zip" [(ngModel)]="dispatchLocation.zip" maxlength="5" />
+                            </td>
+                        </tr>
+                    </table>
+                    <!-- <div class="form-group">
+                        <input class="form-control" type="text" placeholder="State" [(ngModel)]="dispatchLocation.state" disabled="disabled" />
+                    </div> -->
+                </div>
+
+                <div class="modal-footer">
+                    <div class="form-group form-inline">
+                        <button class="btn btn-secondary footer-button" data-dismiss="modal" data-toggle="modal" data-target="#deleteDispatchLocationModal">Delete</button>
+                        <button class="btn btn-primary footer-button" (click)="addressValidation()" [disabled]="!dispatchLocation.street1 || !dispatchLocation.locName  || !dispatchLocation.city || !dispatchLocation.zip">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end add/update dispatch loc modal-->
+
+
+    <!-- Confirm pop up to delete dispatch location -->
+    <div class="modal fade modal-popup-custom" id="deleteDispatchLocationModal" data-backdrop="static" data-keyboard="false"
+        role="dialog">
+        <div class="modal-dialog modal-sm" style="width: 350px;text-align: center;" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <a href="#" class="close-button" data-dismiss="modal">
+                        <div class="glyphicon glyphicon-remove"></div>
+                    </a>
+                    <div class="modal-title text-center modal-header-text">Delete Dispatch Location</div>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Deleting dispatch location will delete any linked coverage area. Are you sure to delete?</label>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <div class="form-group form-inline">
+                        <button class="btn btn-secondary footer-button" data-dismiss="modal">Cancel</button>
+                        <button class="btn btn-primary footer-button" data-dismiss="modal" (click)="addDispatchLocation(false)">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Confirm pop up to delete dispatch location -->
+
+    <!-- Confirm pop up for valid address -->
+    <div class="modal fade modal-popup-custom" id="validAddress" data-backdrop="static" data-keyboard="false" role="dialog">
+        <div class="modal-dialog modal-sm position-address-valid-modal" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <a href="#" class="close-button" data-dismiss="modal">
+                        <div class="glyphicon glyphicon-remove"></div>
+                    </a>
+                    <div class="modal-title text-center modal-header-text">Which address is best?</div>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group text-align-left">
+                        <label>We suggest:</label>
+                        <div *ngIf="null != componentAddress">
+                            <div *ngFor="let addresss of componentAddress">
+                                <div class="well no-cursor-select clickable-hand-cursor padding-top-bottom" (click)="saveSuggestedDispatchLoc(true, addresss)">
+                                    {{addresss.street_name}} {{addresss.street_suffix}} {{addresss.city_name}} {{addresss.state_abbreviation}} {{addresss.zipcode}}-{{addresss.plus4_code}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group text-align-left">
+                        <label>You provided:</label>
+                        <div class="well no-cursor-select clickable-hand-cursor padding-top-bottom" (click)="addDispatchLocation(true)">
+                            {{dispatchLocation.street1}} - {{dispatchLocation.zip}}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!--  Confirm pop up for valid address -->
+
+    <!-- Confirm pop up for in-valid address -->
+    <div class="modal fade modal-popup-custom" id="nosuggession" data-backdrop="static" data-keyboard="false" role="dialog">
+        <div class="modal-dialog modal-sm position-address-valid-modal" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <a href="#" class="close-button" data-dismiss="modal">
+                        <div class="glyphicon glyphicon-remove"></div>
+                    </a>
+                    <div class="modal-title text-center modal-header-text">Unknown Address</div>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group  text-align-left">
+                        <label>We do not recognize this address. Are you sure you want to use it?</label>
+                    </div>
+                    <div class="form-group text-align-left">
+                        <div><label>You provided:</label>
+                            <div class="well no-cursor-select padding-top-bottom">{{dispatchLocation.street1}} - {{dispatchLocation.zip}}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <div class="form-group form-inline">
+                        <button class="btn btn-secondary footer-button" data-dismiss="modal">Cancel</button>
+                        <button class="btn btn-primary footer-button" (click)="addDispatchLocation(true)">Yes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--  Confirm pop up for in-valid address -->
+
+    <!-- start select service modal -->
+    <div class="modal fade" id="selectService" role="dialog">
+        <select-service (errormessage)="displayError($event)" (selectedSkuCount)="getSelectedSkuCount($event)" #selectService></select-service>
+    </div>
+    <!-- end select service modal -->
+
+    <!-- start rate card modal -->
+    <div class="modal fade" id="rateCard" role="dialog" data-backdrop="static" data-keyboard="false">
+        <rate-card #rateCard (rateCardAdded)="setRateCardAdded($event)" (errormessage)="displayError($event)"></rate-card>
+    </div>
+    <!-- end rate card modal -->
+
+    <!-- Error Modal -->
+    <div class="modal fade modal-popup-custom" id="errorModal" role="dialog" #errorModal>
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <a href="#" class="close-button" data-dismiss="modal">
+                        <div class="glyphicon glyphicon-remove"></div>
+                    </a>
+                    <div class="modal-title text-center modal-header-text">{{errorpopUpModal.errorHeadingMessage}}</div>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div *ngFor="let error of errorpopUpModal.errors">{{error}}</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="text-center">
+                        <button type="button" class="btn btn-primary save-button-width corner-border" data-dismiss="modal">Ok</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Confirm pop up to delete coverage area start-->
+    <div class="modal fade modal-popup-custom" id="deleteCoveragePopUp" data-backdrop="static" data-keyboard="false" role="dialog">
+        <div class="modal-dialog modal-sm" style="width: 350px;text-align: center;" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="#" class="close-button" data-dismiss="modal">
+                        <div class="glyphicon glyphicon-remove"></div>
+                    </a>
+                    <div class="modal-title text-center modal-header-text">Delete Coverage Area</div>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Are you sure to delete this coverage area?</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group form-inline">
+                        <button class="btn btn-secondary footer-button" data-dismiss="modal">No</button>
+                        <button class="btn btn-primary footer-button" (click)="deleteCoverageAreaOnConfirm()">Yes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Confirm pop up to delete coverage area end -->
+
+</main>

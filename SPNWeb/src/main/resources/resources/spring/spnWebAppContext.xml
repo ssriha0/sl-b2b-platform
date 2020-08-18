@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
+	default-autowire="byName">
+
+	<!-- ###################### Mapper ############################################ -->
+	<bean id="approvalCriteriaMapper" class="com.servicelive.spn.mapper.ApprovalCriteriaMapper" scope="prototype">
+	</bean>
+	
+	<!-- ###################### ACTION ############################################ -->
+	<bean id="spnMonitorCampaignAction" class="com.servicelive.spn.buyer.campaign.SPNMonitorCampaignAction" scope="prototype">
+	</bean>
+
+	<bean id="spnCreateNetworkAction" class="com.servicelive.spn.buyer.network.SPNCreateNetworkAction" scope="prototype" />
+	
+	<bean id="spnLoginAction" class="com.servicelive.spn.core.SPNLoginAction" scope="prototype" >
+		<property name="cryptography">
+			<ref bean="cryptography" />
+		</property>
+	</bean>
+	
+	<bean id="spnCreateNetworkUploadDocumentAction" class="com.servicelive.spn.buyer.network.SPNCreateNetworkUploadDocumentAction" scope="prototype" />	
+
+	<bean id="spnMonitorNetworkAction" class="com.servicelive.spn.buyer.network.SPNMonitorNetworkAction" scope="prototype" >
+		<property name="cryptography">
+			<ref bean="cryptography" />
+		</property>
+	</bean>
+	
+	<bean id="spnCreateCampaignAction" class="com.servicelive.spn.buyer.campaign.SPNCreateCampaignAction" scope="prototype" />
+		
+	<bean id="spnInviteProviderAction" class="com.servicelive.spn.buyer.campaign.SPNInviteProviderAction" scope="prototype" />	
+
+	<bean id="spnAuditorControllerAction" class="com.servicelive.spn.buyer.auditor.SPNAuditorControllerAction" scope="prototype" />	
+	
+	<bean id="spnAuditorApplicantsTabAction" class="com.servicelive.spn.buyer.auditor.SPNAuditorApplicantsTabAction" scope="prototype" />	
+	
+	<bean id="spnReleaseTiersTabAction" class="com.servicelive.spn.buyer.network.SPNReleaseTiersTabAction" scope="prototype" />
+	
+	<bean id="spnAuditorSearchTabAction" class="com.servicelive.spn.buyer.auditor.SPNAuditorSearchTabAction" scope="prototype" />	
+	
+	
+	
+	<bean id="spnProviderDetailsBaseAction" class="com.servicelive.spn.buyer.membermanagement.SPNProviderDetailsBaseAction" scope="prototype" />
+	<bean id="spnProviderDetailsFirmHistoryAction" class="com.servicelive.spn.buyer.membermanagement.SPNProviderDetailsFirmHistoryAction" scope="prototype" />
+	<bean id="spnProviderDetailsGroupsAction" class="com.servicelive.spn.buyer.membermanagement.SPNProviderDetailsGroupsAction" scope="prototype" />
+	<bean id="spnProviderDetailsNetworksAction" class="com.servicelive.spn.buyer.membermanagement.SPNProviderDetailsNetworksAction" scope="prototype" />
+	<bean id="spnProviderDetailsNotesAction" class="com.servicelive.spn.buyer.membermanagement.SPNProviderDetailsNotesAction" scope="prototype" />
+	<bean id="spnProviderFirmDetailsGroupsAction" class="com.servicelive.spn.buyer.membermanagement.SPNProviderFirmDetailsGroupsAction" scope="prototype" />
+	<bean id="spnProviderFirmDetailsNetworksAction" class="com.servicelive.spn.buyer.membermanagement.SPNProviderFirmDetailsNetworksAction" scope="prototype" />
+	<bean id="spnProviderFirmDetailsNotesAction" class="com.servicelive.spn.buyer.membermanagement.SPNProviderFirmDetailsNotesAction" scope="prototype" />
+	
+	<bean id="spnProviderFirmDetailsAction" class="com.servicelive.spn.buyer.membermanagement.SPNProviderFirmDetailsAction" scope="prototype" />
+	
+	
+	<bean id="spnAuditorDocumentsTabAction"              class="com.servicelive.spn.buyer.auditor.newapplicants.SPNAuditorDocumentsTabAction"              scope="prototype" />	
+	<bean id="spnAuditorMeetAndGreetTabAction"           class="com.servicelive.spn.buyer.auditor.newapplicants.SPNAuditorMeetAndGreetTabAction"           scope="prototype" />	
+	<bean id="spnAuditorCriteriaAndCredentialsTabAction" class="com.servicelive.spn.buyer.auditor.newapplicants.SPNAuditorCriteriaAndCredentialsTabAction" scope="prototype" />
+	
+	<bean id="spnMemberManageSearchTabAction" class="com.servicelive.spn.buyer.membermanagement.SPNMemberManageSearchTabAction" scope="prototype" />	
+	
+</beans>

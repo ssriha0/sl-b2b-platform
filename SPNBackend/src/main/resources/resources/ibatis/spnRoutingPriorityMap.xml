@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="network.routingPriority">
+	
+	<typeAlias alias="spnHeader" type="com.servicelive.domain.spn.network.SPNHeader"/>
+	<typeAlias alias="criteriaDTO" type="com.servicelive.domain.spn.detached.LookupCriteriaDTO"/>
+	<typeAlias alias="coverageDTO" type="com.servicelive.domain.spn.detached.SPNCoverageDTO"/>
+	<typeAlias alias="spnCriteria" type="com.servicelive.domain.spn.detached.SPNPerformanceCriteria"/>
+	<typeAlias alias="tierDTO" type="com.servicelive.domain.spn.detached.SPNTierDTO"/>
+	
+	<resultMap class="spnHeader" id="spnHdr.resultMap">
+		<result property="spnId" column="spn_id" />
+		<result property="spnName" column="spn_name" />
+		<result property="criteriaLevel" column="performance_criteria_level" />
+		<result property="criteriaTimeframe" column="performance_criteria_timeframe" />
+		<result property="routingPriorityStatus" column="routing_priority_status" />
+		<result property="marketPlaceOverFlow" column="mp_overflow" />		
+	</resultMap>
+	
+	<resultMap class="criteriaDTO" id="lookUpCriteria.resultMap">
+		<result property="criteriaId" column="performance_criteria_id" />
+		<result property="criteriaName" column="criteria_name" />
+		<result property="description" column="criteria_description" />			
+	</resultMap>
+	
+	<resultMap class="spnCriteria" id="spnCriteria.resultMap">
+		<result property="criteriaId" column="criteriaId" />
+		<result property="criteriaScope" column="criteriaScope" />
+	</resultMap>
+	
+	<resultMap class="tierDTO" id="spnTiers.resultMap">
+		<result property="tierId" column="tierId" />
+		<result property="minutes" column="minutes" />
+		<result property="hours" column="hours" />
+		<result property="days" column="days" />
+		<result property="noOfMembers" column="noOfMembers" />
+	</resultMap>
+	
+	<resultMap class="criteriaDTO" id="scores.resultMap">
+		<result property="memberId" column="memberId" />
+		<result property="performanceValue" column="performanceValue" />
+	</resultMap>
+	
+	<resultMap class="coverageDTO" id="provCoverage.resultMap">
+		<result property="provFirstName" column="provFirstName" />
+		<result property="provLastName" column="provLastName" />
+		<result property="memberId" column="memberId" />
+		<result property="score" column="score" />
+		<result property="spnId" column="spnId" />
+		<result property="firmName" column="firmName" />
+		<result property="firmId" column="firmId" />
+		<result property="jobTitle" column="jobTitle" />
+		<result property="state" column="state" />
+		<result property="stateName" column="stateName" />
+		<result property="zip" column="zip" />
+		<result property="marketId" column="marketId" />
+		<result property="market" column="market" />
+	</resultMap>
+	
+	<resultMap class="coverageDTO" id="firmCoverage.resultMap">
+		<result property="firmName" column="firmName" />
+		<result property="memberId" column="memberId" />
+		<result property="slStatus" column="slStatus" />
+		<result property="score" column="score" />
+		<result property="spnId" column="spnId" />
+		<result property="state" column="state" />
+		<result property="stateName" column="stateName" />
+		<result property="zip" column="zip" />
+		<result property="marketId" column="marketId" />
+		<result property="market" column="market" />
+	</resultMap>
+	
+	<resultMap class="coverageDTO" id="provCount.resultMap">
+		<result property="firmId" column="firmId" />
+		<result property="noOfEligibleProvs" column="noOfEligibleProvs" />
+	</resultMap>
+	
+	<resultMap class="coverageDTO" id="firm.resultMap">
+		<result property="firmId" column="firmId" />
+		<result property="spnId" column="spnId" />
+	</resultMap>
+	
+	<select id="check_criteria" parameterClass="java.lang.Integer" resultMap="spnHdr.resultMap">
+		select * from spnet_hdr where spn_id = #spnId#
+	</select>
+	
+	<select id="fetch_lookup_criteria" resultMap="lookUpCriteria.resultMap">
+		select * from lu_performance_criteria
+	</select>
+	
+	<select id="fetch_modifiedDate" resultClass="java.util.Date">
+		select modified_date from firm_performance order by modified_date desc limit 1
+	</select>
+
+	<select id="fetch_spn_criteria" resultMap="spnCriteria.resultMap">
+		select performance_criteria_id as criteriaId,
+			performance_criteria_scope as criteriaScope
+		from spnet_performance_criteria 
+		where spn_id = #spnId#
+	</select>
+	
+	<select id="fetch_spn_tiers" resultMap="spnTiers.resultMap">
+		select tier_id as tierId,
+			advanced_minutes as minutes,
+			advanced_hours as hours,
+			advanced_days as days,
+			no_of_members as noOfMembers
+		from spnet_release_tier_minutes 
+		where spn_id = #spnId#
+	</select>
+	
+	<select id="fetch_spn_providers" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		select service_provider_id 
+		from spnet_serviceprovider_state 
+		where (spn_id = #spnId# or spn_id = #aliasSpnId#) 
+		AND provider_wf_state = 'SP SPN APPROVED'
+	</select>
+	
+	<select id="fetch_spn_firms" parameterClass="java.util.HashMap" resultMap="firm.resultMap">
+		select provider_firm_id as firmId,
+		spn_id as spnId
+		from spnet_provider_firm_state  
+		where (spn_id = #spnId# or spn_id = #aliasSpnId#) 
+		AND provider_wf_state = 'PF SPN MEMBER'
+	</select>
+	
+	<select id="fetch_provider_scores" parameterClass="java.util.HashMap" resultMap="scores.resultMap">
+		select resource_id as memberId,
+		<isEqual property="timeframe" compareValue="LIFETIME">
+			if(perf_value_lifetime is null or perf_value_lifetime <![CDATA[ < ]]> 0, 0.0, perf_value_lifetime) as performanceValue 
+		</isEqual>
+		<isEqual property="timeframe" compareValue="90DAYS">
+			if(perf_value_ninety is null or perf_value_lifetime <![CDATA[ < ]]> 0, 0.0, perf_value_ninety) as performanceValue 
+		</isEqual>
+		from provider_performance 
+		where performance_criteria_id = #criteriaId# 
+			<isNotNull property="buyerId">
+				and buyer_id = #buyerId# 
+			</isNotNull>
+			<isNull property="buyerId">
+				and buyer_id =-1 
+			</isNull>
+			and resource_id in
+			<iterate property="providers" open="(" close=")" conjunction=",">
+				#providers[]#
+			</iterate>	
+		order by memberId	
+	</select>
+	
+	<select id="fetch_firm_scores" parameterClass="java.util.HashMap" resultMap="scores.resultMap">
+		select vendor_id as memberId,
+		<isEqual property="timeframe" compareValue="LIFETIME">
+			if(perf_value_lifetime is null or perf_value_lifetime <![CDATA[ < ]]> 0, 0.0, perf_value_lifetime) as performanceValue 
+		</isEqual>
+		<isEqual property="timeframe" compareValue="90DAYS">
+			if(perf_value_ninety is null or perf_value_lifetime <![CDATA[ < ]]> 0, 0.0, perf_value_ninety) as performanceValue 
+		</isEqual>
+		from firm_performance 
+		where performance_criteria_id = #criteriaId# 
+			<isNotNull property="buyerId">
+				and buyer_id = #buyerId# 
+			</isNotNull>
+			<isNull property="buyerId">
+				and buyer_id =-1 
+			</isNull>
+			and vendor_id in
+			<iterate property="firms" open="(" close=")" conjunction=",">
+				#firms[]#
+			</iterate>	
+		order by memberId		
+	</select>
+	
+	<select id="fetch_provider_coverage" parameterClass="java.util.HashMap" resultMap="provCoverage.resultMap">
+		select c.first_name as provFirstName, 
+			c.last_name as provLastName, 
+			res.resource_id as memberId,
+			if(s.performance_score is null or s.performance_score <![CDATA[ < ]]> 0, 0.0, s.performance_score) as score,
+			hdr.business_name as firmName, 
+			hdr.vendor_id as firmId,
+			s.spn_id as spnId, 
+			if(c.title!='',c.title,'N/A') as jobTitle,
+			loc.state_cd as state,
+			state_name as stateName,
+			loc.zip as zip,
+			mar.market_id as marketId,
+			mar.market_name as market
+		from vendor_resource res
+		join vendor_hdr hdr
+			on res.vendor_id = hdr.vendor_id
+		join contact c 
+			on res.contact_id = c.contact_id 
+		join spnet_serviceprovider_state s
+			on res.resource_id = s.service_provider_id
+			and s.provider_wf_state = 'SP SPN APPROVED' 
+			and (s.spn_id = #spnId# or s.spn_id = #aliasSpnId#)		
+		join location loc 
+			on res.locn_id = loc.locn_id	
+		join lu_state_cds st
+			on loc.state_cd = st.state_cd	
+		join lu_zip_market zip 
+			on zip.zip = loc.zip
+		join lu_market mar 
+			on mar.market_id = zip.market_id
+		order by score desc
+	</select>
+	
+	<select id="fetch_firm_coverage" parameterClass="java.util.HashMap" resultMap="firmCoverage.resultMap">
+		select hdr.business_name as firmName, 
+			hdr.vendor_id as memberId,
+			wf.wf_state as slStatus,
+			if(s.performance_score is null or s.performance_score <![CDATA[ < ]]> 0, 0.0, s.performance_score) as score,
+			s.spn_id as spnId,
+			loc.state_cd as state,
+			state_name as stateName,
+			loc.zip as zip,
+			mar.market_id as marketId,
+			mar.market_name as market
+		from vendor_hdr hdr
+		join vendor_resource res
+			on hdr.vendor_id = res.vendor_id and res.primary_ind = 1
+		join spnet_provider_firm_state s
+			on hdr.vendor_id = s.provider_firm_id
+		join wf_states wf
+			on wf.wf_state_id = hdr.wf_state_id
+			and s.provider_wf_state = 'PF SPN MEMBER' 
+			and (s.spn_id = #spnId# or s.spn_id = #aliasSpnId#)		
+		join location loc 
+			on res.locn_id = loc.locn_id	
+		join lu_state_cds st
+			on loc.state_cd = st.state_cd
+		join lu_zip_market zip 
+			on zip.zip = loc.zip
+		join lu_market mar 
+			on mar.market_id = zip.market_id
+		order by score desc
+	</select>
+	
+	<select id="get_eligibleProv_count" parameterClass="java.util.HashMap" resultMap="provCount.resultMap">
+		select count(vdr.resource_id) as noOfEligibleProvs,
+			  vdr.vendor_id as firmId
+		from vendor_resource vdr, spnet_serviceprovider_state s
+		where vdr.resource_id = s.service_provider_id
+			and provider_wf_state = 'SP SPN APPROVED'
+			and s.spn_id= #spnId# 	
+		    and vdr.vendor_id in 
+		    <iterate property="firmIds" open="(" close=")" conjunction=",">
+				#firmIds[]#
+			</iterate>		
+		group by firmId	           
+	</select>
+	
+	<update id="save_hdr_details" parameterClass="spnHeader">
+		update spnet_hdr set
+			mp_overflow = #marketPlaceOverFlow#,
+			performance_criteria_level = #criteriaLevel#,
+			performance_criteria_timeframe = #criteriaTimeframe#,
+			routing_priority_status = #routingPriorityStatus#
+		where spn_id = #spnId#
+	</update>
+	
+	<delete id="delete_criteria" parameterClass="java.lang.Integer">
+		delete from spnet_performance_criteria where spn_id = #spnId#
+	</delete>
+	
+	<insert id="save_criteria" parameterClass="spnCriteria">
+		insert into spnet_performance_criteria values
+		(#spnId#, #criteriaId#, #criteriaScope#, now(), now())
+	</insert>
+	
+	<delete id="delete_tiers" parameterClass="java.lang.Integer">
+		delete from spnet_release_tier_minutes where spn_id = #spnId#
+	</delete>
+	
+	<insert id="save_tiers" parameterClass="tierDTO">
+		insert into spnet_release_tier_minutes values
+		(now(), now(), #modifiedBy#, #spnId#, #tierId#, #minutes#, #hours#, #days#, #noOfMembers#)
+	</insert>
+	
+	<update id="save_prov_score" parameterClass="coverageDTO">
+		update spnet_serviceprovider_state set 
+			performance_score = #score#
+		where service_provider_id = #memberId# and spn_id = #spnId#
+	</update>
+	
+	<update id="save_firm_score" parameterClass="coverageDTO">
+		update spnet_provider_firm_state set 
+			performance_score = #score#
+		where provider_firm_id = #memberId# and spn_id = #spnId#
+	</update>
+	
+	<insert id="save_hdr_history" parameterClass="spnHeader">
+		insert into spnet_hdr_tier_history
+			(spn_id, performance_criteria_level, performance_criteria_timeframe, routing_priority_status, created_date, modified_date) 
+		values
+			(#spnId#, #criteriaLevel#, #criteriaTimeframe#, #routingPriorityStatus#, now(), now())
+	</insert>
+	
+	<insert id="save_network_history" parameterClass="java.util.HashMap">
+		insert into spnet_workflow_status_history
+			(entity_id, created_date, modified_date, modified_by, wf_entity_id, wf_entity_state) 
+		values
+			(#spnId#, now(), now(), #userName#, 'NETWORK', #action#)
+	</insert>
+	
+	<insert id="save_criteria_history" parameterClass="spnCriteria">
+		insert into spnet_performance_criteria_history
+			(spn_id, performance_criteria_id, performance_criteria_scope, created_date, modified_date)
+		values
+			(#spnId#, #criteriaId#, #criteriaScope#, now(), now())
+	</insert>
+	
+	<insert id="save_provScore_history" parameterClass="coverageDTO">
+		insert into spnet_provider_perf_score_history
+			(spn_id, resource_id, vendor_id, performance_score, created_date, modified_date)
+		values
+			(#spnId#, #memberId#, #firmId#, #score#, now(), now())
+	</insert>
+	
+	<insert id="save_firmScore_history" parameterClass="coverageDTO">
+		insert into spnet_firm_perf_score_history
+			(spn_id, vendor_id, performance_score, created_date, modified_date)
+		values
+			(#spnId#, #memberId#, #score#, now(), now())
+	</insert>
+	
+	<select id="fetch_firm_completedDate" parameterClass="java.util.HashMap" resultClass="java.util.Date">
+		select completed_date 
+		from so_hdr 
+		where accepted_vendor_id = #firmId# 
+			and buyer_id = #buyerId# and wf_state_id >= 160
+		order by completed_date desc limit 1
+	</select>
+	
+	<select id="fetch_prov_completedDate" parameterClass="java.util.HashMap" resultClass="java.util.Date">
+		select completed_date 
+		from so_hdr 
+		where accepted_resource_id = #provId# 
+			and buyer_id = #buyerId# and wf_state_id >= 160
+		order by completed_date desc limit 1
+	</select>
+	
+	<select id="getAliasSpn" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		select spn_id 
+		from spnet_hdr 
+		where alias_original_spn_id = #spnId# 			
+		order by effective_date limit 1
+	</select>
+	
+	<update id="save_alias_hdr_details" parameterClass="java.util.HashMap">
+		update spnet_hdr set
+			mp_overflow = #marketPlaceOverFlow#,
+			performance_criteria_level = #criteriaLevel#,
+			performance_criteria_timeframe = #criteriaTimeframe#,
+			routing_priority_status = #routingPriorityStatus#
+		where spn_id = #spnId#
+	</update>
+	
+</sqlMap>

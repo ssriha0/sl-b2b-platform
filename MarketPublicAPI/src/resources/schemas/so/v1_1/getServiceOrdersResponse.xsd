@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:include schemaLocation="../../common.xsd" />
+	<xs:include schemaLocation="../soCommon.xsd" />
+	<xs:element name="getServiceOrdersResponse" type="getServiceOrdersResponse" />
+
+	<xs:complexType name="ServiceOrderType">
+		<xs:sequence>
+			<xs:element name="soId" type="xs:string" minOccurs="0" />
+			<xs:element name="serviceStartTime" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="serviceEndTime" type="xs:string"
+				minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="ServiceOrdersType">
+		<xs:sequence>
+			<xs:element name="serviceOrder" type="ServiceOrderType"
+				minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="getServiceOrdersResponse">
+		<xs:sequence>
+			<xs:element ref="results" />
+			<xs:element name="serviceOrders" type="ServiceOrdersType"
+				nillable="true" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+
+</xs:schema>
+

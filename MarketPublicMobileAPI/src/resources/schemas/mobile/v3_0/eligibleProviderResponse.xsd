@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified">
+	<xs:include schemaLocation="../../common.xsd"/>
+	
+	<!--  This is the new mobile so Eligible Provider Response-->
+	<!-- Root Element -->
+	<xs:element name="eligibleProviderResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="results"/>
+				<xs:element name="eligibleProviders" type="resourcesListType"></xs:element>
+				<xs:element name="assignedResource" type="assignedResourceType" minOccurs="0"></xs:element>
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:decimal"/>
+			
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="resourcesListType">
+		 <xs:sequence>  
+      <xs:element name="eligibleProvider" type="resourcesType" minOccurs="0"   
+                                            maxOccurs="unbounded"/>  
+     </xs:sequence>  
+	</xs:complexType>
+	<xs:complexType name="resourcesType">
+			<xs:sequence>
+				<xs:element name="resourceId" type="xs:integer"/>
+				<!-- <xs:element name="acceptedResourceId" type="xs:integer"></xs:element>  -->
+				<xs:element name="providerFirstName" type="xs:string"></xs:element>
+				<xs:element name="providerLastName" type="xs:string"></xs:element>
+				<xs:element name="distancefromSOLocation" type="xs:double"></xs:element>
+				<xs:element name="providerRespid" type="xs:integer"/>
+			</xs:sequence>			
+	</xs:complexType>
+	<xs:complexType name="assignedResourceType">
+			<xs:sequence>
+				<xs:element name="assignedResourceId" type="xs:integer" minOccurs="1"></xs:element>
+				<xs:element name="assignedResourceName" type="xs:string" minOccurs="1"></xs:element>
+			</xs:sequence>			
+	</xs:complexType>
+	
+</xs:schema>

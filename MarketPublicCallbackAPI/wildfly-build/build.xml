@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Build.xml file for MarketPublicCallbackAPI -->
+
+<project basedir="../" default="distribute" name="MarketPublicCallbackAPI">
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+	<target name="package" depends="distribute"/>
+
+	<!-- Initialize -->
+	<target name="init">
+		<!-- Create the time  stamp -->
+		<tstamp/>
+		<!-- Create build number file -->
+		<buildnumber />
+		
+		<property name="dir.base" value="${basedir}" />
+		<property name="dir.app" value="${dir.base}/web" />
+		<property name="dir.source" value="${dir.base}/src" />
+		<property name="dir.dest" value="${dir.base}/bin" />
+		<property name="dir.build" value="${dir.base}/wildfly-build" />
+		<property name="dir.dist" value="${dir.base}/dist" />
+		<property name="dir.resources" value="${dir.base}/src/main/resources" />
+		<property name="env" value="dev" />
+		<property name="app.lastbuild.tag.auto" value="release_1_${build.number}_${env}_${DSTAMP}${TSTAMP}Ztest" />
+		<property name="deployables.lib" value="${dir.base}/lib"/>
+		<property name="dir.test" value="${dir.base}/test" />
+		<property name="junit-report.dir" value="${basedir}/${ant.project.name}Reports" />
+		
+		<path id="build.class.path">
+			<fileset dir="${deployables.lib}">
+				<include name="*.jar"/>
+			</fileset>
+		</path>
+
+		<path id="test.class.path">
+			<pathelement location="${build.class.path}" />
+			<pathelement location="${dir.dest}" />
+			
+			<fileset dir="${deployables.lib}">
+				<include name="*.jar" />
+			</fileset>
+		</path>
+	</target>
+
+	
+	<!-- Clean the distribution folders -->
+		<target name="clean" depends="init">
+			<echo level="info">
+		===============================================================================
+		                                ${ant.project.name} 
+		===============================================================================</echo>
+			<delete dir="${dir.dest}" failonerror="false"/>
+			<mkdir dir="${dir.dest}"/>
+			<delete dir="${dir.dist}" failonerror="false"/>
+			<mkdir dir="${dir.dist}"/>
+			<delete dir="${dir.app}/WEB-INF/lib" failonerror="false"/>
+			<mkdir dir="${dir.app}/WEB-INF/lib"/>
+			<delete dir="${junit-report.dir}" failonerror="false"/>
+			<mkdir dir="${junit-report.dir}"/>
+		</target>
+
+		<target name="compile" depends="clean">
+			<javac
+					srcdir="${dir.source}"
+					destdir="${dir.dest}"
+					classpathref="build.class.path"
+					target="1.8"
+					source="1.8"
+					debug="on"
+					deprecation="false"
+					/>
+			<copy todir="${dir.dest}">
+				<fileset dir="${dir.source}">
+					<include name="**/*.xml"/>
+				</fileset>
+				<fileset dir="${dir.source}">
+					<include name="**/*.tld"/>
+				</fileset>
+				<fileset dir="${dir.source}">
+					<include name="**/*.xsd"/>
+				</fileset>
+				<fileset dir="${dir.source}">
+					<include name="**/*.properties"/>
+				</fileset>
+			</copy>
+		</target>
+
+		<!-- Create the WAR file -->
+		<target name="war" depends="compile">
+			
+			<war destfile="${dir.dist}/callback.war" webxml="${dir.app}/WEB-INF/web.xml">
+				<metainf dir="${dir.app}/META-INF" />
+
+				<webinf dir="${dir.app}/WEB-INF">
+					<include name="jboss-web.xml" />
+				</webinf>
+			
+				<classes dir="${dir.dest}" />
+				<classes dir="${dir.resources}" />
+				
+				<lib dir="${deployables.lib}">
+					<include name="*.jar" />
+				</lib>
+			
+			</war>
+			
+			<copy todir="${dir.app}/WEB-INF/classes">
+				<fileset dir="${dir.dest}">
+					<include name="**/*.class"/>
+				</fileset>
+				<fileset dir="${dir.dest}">
+					<include name="**/*.xml"/>
+				</fileset>
+				<fileset dir="${dir.dest}">
+					<include name="**/*.xsd"/>
+				</fileset>
+				<fileset dir="${dir.dest}">
+					<include name="**/*.properties"/>
+				</fileset>
+			</copy>
+			
+			<copy todir="${dir.app}/WEB-INF">
+				<fileset dir="${dir.dest}">
+					<include name="**/*.tld"/>
+				</fileset>
+				<fileset dir="${dir.dest}">
+					<include name="**/*.properties"/>
+				</fileset>
+			</copy>
+			
+			<copy todir="${dir.app}/WEB-INF/lib">
+				<fileset dir="${deployables.lib}">
+					<include name="*.jar"/>
+				</fileset>
+			</copy>
+			
+		</target>
+
+		<target name="compile-test" depends="war">
+			<javac
+						srcdir="${dir.test}"
+						destdir="${dir.dest}"
+						classpathref="build.class.path"
+						target="1.8"
+						source="1.8"
+						debug="on"
+						deprecation="false"
+					/>
+		</target>
+
+	<target name="junit-report" description="Runs the JUnit test cases" depends="compile-test">
+		<junit fork="yes" haltonfailure="false" printsummary="withOutAndErr" showoutput="yes">
+			<classpath>
+				<path refid="test.class.path"/>
+			</classpath>
+
+			<formatter type="xml" />
+
+			<batchtest fork="yes" todir="${junit-report.dir}" >
+				<fileset dir="${dir.test}" >
+					<include name="**/*Test.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+		<echo message="build date ">${DSTAMP}${TSTAMP}</echo>
+		<echo message="build.number ">${build.number}</echo>
+		<echo message="full tag ">${app.lastbuild.tag.auto}</echo>
+
+		<echo message="Format the tests report" />
+		<junitreport todir="${junit-report.dir}">
+			<fileset dir="${junit-report.dir}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report todir="${junit-report.dir}" />
+		</junitreport>
+	</target>
+
+	<target name="distribute" depends="junit-report">
+	</target>
+
+</project>
+
+

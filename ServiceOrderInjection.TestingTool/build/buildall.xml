@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="../" default="build-deployable" name="ServiceOrderInjection.TestingTool-Buildall">
+	<target name="build-deployable" depends="clean-dependencies, build-dependencies">
+		<ant antfile="build/build.xml" />
+	</target>
+	
+	<target name="clean-dependencies">
+        <!-- Example of how to clean dependencies
+		<ant antfile="../OrderFulfillment.Integration/build/build.xml" dir="../../OrderFulfillment/OrderFulfillment.Integration" target="clean"/>
+		-->
+	</target>
+	
+    <target name="build-dependencies">
+    	<!-- Example of how to build dependencies
+        <ant antfile="../OrderFulfillment.Integration/build/build.xml" dir="../../OrderFulfillment/OrderFulfillment.Integration"/>
+        -->
+    </target>
+</project>
+	

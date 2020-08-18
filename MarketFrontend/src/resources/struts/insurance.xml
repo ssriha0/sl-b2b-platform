@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+	<package name="insurance" extends="ServiceLiveBase,json-default">
+		<default-interceptor-ref name="ServiceLiveBaseInterceptorStack" />
+		<action name="loadInsuranceAction*" class="loadInsuranceAction"
+			method="{1}">
+			<result name="input">/jsp/providerRegistration/modules/tab_insurance_add_edit.jsp
+			</result>
+			<result name="success">/jsp/providerRegistration/modules/tab_insurance_add_edit.jsp
+			</result>
+			<result name="error">/jsp/public/error/body/errorBody.jsp</result>
+		</action>
+
+		<action name="addAdditionalInsuranceAction*" class="addAdditionalInsuranceAction"
+			method="{1}">
+			<result name="showAdditionalInsuranceForm">/jsp/providerRegistration/modules/tab_additional_insurance_add_edit.jsp
+			</result>
+			<result name="error">/jsp/public/error/body/errorBody.jsp</result>
+		</action>
+
+		<!-- Add actions here -->
+		<action name="saveInsuranceTypeAction*" class="saveInsuranceTypeAction"
+			method="{1}">
+			<result name="error">/jsp/public/error/body/errorBody.jsp</result>
+			<result name="returnToPA" type="redirectAction">
+				<param name="actionName">powerAuditorWorkflowControllerAction_refreshPage?auditTimeLoggingId=${auditTimeLoggingId}</param>
+			</result>
+			<result name="input" type="redirectAction">
+				<param name="actionName">powerAuditorWorkflowControllerAction_refreshPage?auditTimeLoggingId=${auditTimeLoggingId}</param>
+			</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">allTabView?tabView=tab4&amp;tabType=level2</param>
+				<param name="namespace">/jsp/providerRegistration</param>
+			</result>
+			<result name="next" type="redirectAction">
+				<param name="actionName">allTabView?tabView=tab5</param>
+				<param name="namespace">/jsp/providerRegistration</param>
+			</result>
+			<result name="cancel" type="redirectAction">
+				<param name="actionName">allTabView?tabView=tab4&amp;tabType=level2</param>
+				<param name="namespace">/jsp/providerRegistration</param>
+			</result>
+
+			<result name="insurancePage" type="redirectAction">
+				<param name="actionName">allTabView?tabView=tab4&amp;tabType=level4</param>
+				<param name="namespace">/jsp/providerRegistration</param>
+			</result>
+			<result name="docDownload">/jsp/providerRegistration/modules/displayDocument.jsp
+			</result>
+		</action>
+
+		<action name="deleteInsuranceAction*" class="deleteInsuranceAction"
+			method="{1}">
+			<result name="input">/jsp/providerRegistration/modules/tab_insurance_add_edit.jsp
+			</result>
+			<result name="returnToPA" type="redirectAction">
+				<param name="actionName">powerAuditorWorkflowControllerAction_refreshPage</param>
+			</result>
+			<result name="returnToNextCredential" type="redirectAction">
+				<param name="actionName">powerAuditorWorkflowControllerAction_execute</param>
+			</result>
+			<result name="error">/jsp/public/error/body/errorBody.jsp</result>
+			<result name="success" type="redirectAction">
+				<param name="actionName">allTabView?tabView=tab4&amp;tabType=level2</param>
+				<param name="namespace">/jsp/providerRegistration</param>
+			</result>
+		</action>
+
+		<action name="saveInsuranceAction*" class="saveInsuranceAction"
+			method="{1}">
+			<result name="input">/jsp/providerRegistration/modules/tab_insurance_reqs.jsp
+			</result>
+			<result name="success" type="redirectAction">jsp/providerRegistration/addInsuranceAction
+			</result>
+			<result name="loadInsuranceTypePage" type="redirectAction">
+				<param name="actionName">allTabView?tabView=tab4&amp;tabType=level4</param>
+				<param name="namespace">/jsp/providerRegistration</param>
+			</result>
+			<result name="error">/jsp/public/error/body/errorBody.jsp</result>
+		</action>
+
+		<action name="addInsuranceAction*" class="addInsuranceAction"
+			method="{1}">
+			<result name="error">/jsp/public/error/body/errorBody.jsp</result>
+			<result name="input" type="redirectAction">
+				<param name="actionName">allTabView?tabView=tab4</param>
+				<param name="namespace">/jsp/providerRegistration</param>
+			</result>
+
+			<result name="add" type="redirectAction">
+				<param name="actionName">allTabView?tabView=tab4&amp;tabType=level5&amp;auditTimeLoggingId=${auditTimeLoggingId}</param>
+				<param name="namespace">/jsp/providerRegistration</param>
+			</result>
+			<result name="success">/jsp/providerRegistration/modules/tab_insurance_reqs.jsp
+			</result>
+			<result name="saveInsuranceList" type="redirectAction">
+				<param name="actionName">allTabView?tabView=tab4</param>
+				<param name="namespace">/jsp/providerRegistration</param>
+			</result>
+			<result name="loadInsuraceTypeList" type="redirectAction">
+				<param name="actionName">allTabView?tabView=tab5</param>
+				<param name="namespace">/jsp/providerRegistration</param>
+			</result>
+			<result name="loadPrevious" type="redirectAction">
+				<param name="actionName">allTabView?tabView=tab3</param>
+				<param name="namespace">/jsp/providerRegistration</param>
+			</result>
+
+			<result name="updateProfile" type="redirectAction">
+				<param name="actionName">regDashboarddoSubmitRegistration</param>
+				<param name="namespace">/jsp/providerRegistration</param>
+			</result>
+		</action>
+
+
+
+		<action name="listInsuranceAction*" class="listInsuranceAction"
+			method="{1}">
+			<result name="input">/jsp/providerRegistration/modules/tab_insurance_reqs.jsp
+			</result>
+			<result name="success">/jsp/providerRegistration/modules/tab_insurance_none.jsp
+			</result>
+
+			<result name="loadInsurance" type="redirectAction">
+				<param name="actionName">allTabView?tabView=tab4</param>
+				<param name="namespace">/jsp/providerRegistration</param>
+			</result>
+			<result name="loadTerms" type="redirectAction">
+				<param name="actionName">allTabView?tabView=tab5</param>
+				<param name="namespace">/jsp/providerRegistration</param>
+			</result>
+
+			<result name="status" type="redirectAction">
+				<param name="actionName">allTabView?tabView=tab4&amp;tabType=level2</param>
+				<param name="namespace">/jsp/providerRegistration</param>
+			</result>
+			<result name="error">/jsp/public/error/body/errorBody.jsp</result>
+		</action>
+
+		<action name="processInsuranceAction_*" class="processInsuranceAction"
+			method="{1}">
+			<result name="docDownload">/jsp/providerRegistration/modules/displayDocument.jsp
+			</result>
+			<result name="add" type="redirectAction">
+				<param name="actionName">allTabView?tabView=tab4&amp;tabType=level5&amp;auditTimeLoggingId=${auditTimeLoggingId}</param>
+				<param name="namespace">/jsp/providerRegistration</param>
+			</result>
+			<result name="success" type="json"/>
+		</action>
+		<!-- <result name="input">/jsp/providerRegistration/modules/tab_insurance_add_edit_modal.jsp</result> 
+			<result name="success">/jsp/providerRegistration/modules/tab_insurance_add_edit_modal.jsp</result> 
+			<result name="error">/jsp/public/error/body/errorBody.jsp</result> <param 
+			name="namespace">/jsp/providerRegistration</param> </action> -->
+
+		<action name="policyDetailsAjaxAction" class="policyDetailsAjaxAction"
+			method="doSave" />
+
+		<action name="insurancePolicyDetailsAction_*" class="insurancePolicyDetailsAction"
+			method="{1}">
+			<result name="success" type="redirectAction">
+				<param name="actionName">allTabView?tabView=tab4</param>
+				<param name="namespace">/jsp/providerRegistration</param>
+			</result>
+			<result name="attachDoc" type="redirectAction">
+				<param name="actionName">allTabView?tabView=tab4&amp;tabType=level5</param>
+				<param name="namespace">/jsp/providerRegistration</param>
+			</result>
+			<result name="redirectError" type="redirectAction">
+				<param name="actionName">allTabView?tabView=tab4&amp;tabType=level5</param>
+				<param name="namespace">/jsp/providerRegistration</param>
+			</result>
+		</action>
+
+	</package>
+</struts>

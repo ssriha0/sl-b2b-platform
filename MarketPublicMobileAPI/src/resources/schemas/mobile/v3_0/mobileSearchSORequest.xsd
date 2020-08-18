@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:element name="mobileSearchSORequest">
+		<xs:complexType>
+			<xs:sequence>
+				<!-- <xs:element name="sortOrder" type="sortOrderType" minOccurs="0"/>
+				<xs:element name="sortKey" type="sortColumnType" minOccurs="0"/> -->
+				<xs:element name="pageNo" type="xs:integer" minOccurs="0"/>
+				<xs:element name="pageSize" type="xs:integer" minOccurs="0"/>
+				<xs:element ref="searchCriteria" minOccurs="1" maxOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>	
+	<xs:element name="searchCriteria">
+			<xs:complexType>
+			<xs:sequence>
+				<!-- <xs:element name="statuses" type="resourceIdsType" minOccurs="0" maxOccurs="1"/> -->
+				<xs:element name="custPhones" type="customerPhonesType" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="custNames" type="custNamesType" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="soIds" type="soIdsType" minOccurs="0" maxOccurs="1"/>
+				<!-- <xs:element name="endDates" type="datesType" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="startDates" type="datesType" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="serviceProNames" type="serviceProNamesType" minOccurs="0" maxOccurs="1"/> -->
+				<xs:element name="zipCodes" type="zipCodesType" minOccurs="0" maxOccurs="1"/>
+<!-- 				<xs:element name="cityNames" type="serviceProNamesType" minOccurs="0" maxOccurs="1"/>
+ --><!-- 				<xs:element name="resourceIds" type="resourceIdsType" minOccurs="0" maxOccurs="1"/>
+ -->			</xs:sequence>
+			</xs:complexType>
+	</xs:element>
+	<xs:complexType name="customerPhonesType">
+			<xs:sequence>
+				 <xs:element name="value" type="phoneType" minOccurs="1" maxOccurs="unbounded"/>
+			</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="custNamesType">
+			<xs:sequence>
+				 <xs:element name="value" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
+			</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="datesType">
+			<xs:sequence>
+				 <xs:element name="value" type="xs:date" minOccurs="1" maxOccurs="unbounded"/>
+			</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="resourceIdsType">
+			<xs:sequence>
+				 <xs:element name="value" type="xs:integer" minOccurs="1" maxOccurs="unbounded"/>
+			</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="serviceProNamesType">
+			<xs:sequence>
+				 <xs:element name="value" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
+			</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="zipCodesType">
+			<xs:sequence>
+				 <xs:element name="value" type="zipCodeType" minOccurs="1" maxOccurs="unbounded"/>
+			</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="phoneType">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="10"></xs:minLength>
+			<xs:maxLength value="10"></xs:maxLength>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="soIdsType">
+		<xs:sequence>
+				 <xs:element name="value" type="soIdType" minOccurs="1" maxOccurs="unbounded"/>
+			</xs:sequence>
+    </xs:complexType>  
+    <xs:simpleType name="soIdType">
+		<xs:restriction base="xs:string">
+	 		<xs:pattern value="[0-9]{3}-[0-9]{4}-[0-9]{4}-[0-9]{2}"/>
+		</xs:restriction>
+    </xs:simpleType>  
+     <xs:simpleType name="zipCodeType">
+		<xs:restriction base="xs:string">
+	 		<xs:pattern value="\d{5}"/>
+		</xs:restriction>
+    </xs:simpleType>   
+     <xs:simpleType name="sortOrderType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ASC" />
+			<xs:enumeration value="DESC" />
+		</xs:restriction>
+    </xs:simpleType>   
+     <xs:simpleType name="sortColumnType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Status" />
+			<xs:enumeration value="SoId" />
+			<xs:enumeration value="ServiceDate" />
+			<xs:enumeration value="SpendLimit" />
+			<xs:enumeration value="TimeToAppointment" />
+			<xs:enumeration value="AgeOfOrder" />
+			<xs:enumeration value="ProviderLastName" />
+			<xs:enumeration value="City" />
+			<xs:enumeration value="SpendLimitTotal" />
+		</xs:restriction>
+    </xs:simpleType>   
+</xs:schema>

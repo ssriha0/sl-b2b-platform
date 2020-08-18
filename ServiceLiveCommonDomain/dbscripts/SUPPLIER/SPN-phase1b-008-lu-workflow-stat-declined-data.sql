@@ -1,0 +1,1 @@
+update lu_spnet_workflow_state set membership_status='Declined' where id='PF SPN DECLINED'

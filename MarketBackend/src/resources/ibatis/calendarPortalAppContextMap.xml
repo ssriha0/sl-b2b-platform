@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+
+<sqlMap namespace="calendarEventVO">
+	<typeAlias alias="calendarEventVO" type="com.newco.marketplace.vo.calendarPortal.CalendarEventVO" />	
+	<typeAlias alias="calendarProviderVO" type="com.newco.marketplace.vo.calendarPortal.CalendarProviderVO" />	
+	<select id="slCalendar.query"  parameterClass="java.util.Map" resultClass="calendarEventVO">
+    			select firm_id as firmId, 
+    			person_id as personId,
+    			type as type,
+    			source as source,
+    			event_id as eventId,
+    			event_name as eventName,
+    			status as status,
+    			start_date as startDate,
+    			end_date as endDate,
+    			start_time as startTime,
+    			end_time as endTime,
+    			member_firstname as memberFirstName,
+				member_lastname as memberLastName,
+				member_city as memberCity,
+				member_state as memberState,
+				member_zip as memberZip,
+    			created_date as createdDate,
+    			modified_date as modifiedDate,
+    			modified_by as modifiedBy
+    				from slcalendar_vw 
+					where firm_id=#vendorId# and Date(start_date) between Date(#startDate#) and Date(#endDate#)and start_time <![CDATA[ >]]> cast(#startTime# as time) and start_time <![CDATA[ <]]>cast(#endTime# as time)
+    				order by modified_date desc
+		</select>
+	
+	<select id="calendar.providerDetails"  parameterClass="java.util.Map" resultClass="calendarProviderVO">
+	select 
+		vres.resource_id as personId , 
+		vres.primary_ind as personPrimaryInd,
+		vres.admin_ind as personAdminInd, 
+		vres.wf_state_id as personWFStateId,
+		states.wf_state as personWFState, 
+		cont.first_name as personFirstName,
+		cont.last_name as personLastName
+		from vendor_resource vres
+		left join contact cont on vres.contact_id = cont.contact_id
+		left join wf_states states on states.wf_state_id = vres.wf_state_id
+	where 
+		vres.wf_state_id in (3, 6, 34)
+		AND vres.vendor_id = #vendorId#;
+	</select>
+	
+	<select id="calendar.query"  parameterClass="java.util.Map" resultClass="calendarEventVO">
+    			select firm_id as firmId, 
+    			person_id as personId,
+    			type as type,
+    			source as source,
+    			event_id as eventId,
+    			event_name as eventName,
+    			status as status,
+    			start_date as startDate,
+    			end_date as endDate,
+    			start_time as startTime,
+    			end_time as endTime,
+    			member_firstname as memberFirstName,
+				member_lastname as memberLastName,
+				member_city as memberCity,
+				member_state as memberState,
+				member_zip as memberZip,
+    			created_date as createdDate,
+    			modified_date as modifiedDate,
+    			modified_by as modifiedBy
+    			from calendar 
+					where firm_id=#vendorId# and Date(start_date) between Date(#startDate#) and Date(#endDate#) and start_time <![CDATA[ >]]> cast(#startTime# as time) and start_time <![CDATA[ <]]> cast(#endTime# as time)
+    				order by modified_date desc
+		</select>
+		
+		
+		
+		
+	
+	<select id="slCalendar.event.query"  parameterClass="java.util.Map" resultClass="calendarEventVO">
+    			select firm_id as firmId, 
+    			person_id as personId,
+    			type as type,
+    			source as source,
+    			event_id as eventId,
+    			event_name as eventName,
+    			status as status,
+    			start_date as startDate,
+    			end_date as endDate,
+    			start_time as startTime,
+    			end_time as endTime,
+    			member_firstname as memberFirstName,
+				member_lastname as memberLastName,
+				member_city as memberCity,
+				member_state as memberState,
+				member_zip as memberZip,
+    			created_date as createdDate,
+    			modified_date as modifiedDate,
+    			modified_by as modifiedBy
+    				from slcalendar_vw 
+					where person_id=#providerId# and Date(start_date) between Date(#startDate#) and Date(#endDate#) and start_time <![CDATA[ >]]> cast(#startTime# as time) and start_time <![CDATA[ <]]> cast(#endTime# as time)
+    				order by modified_date desc
+								
+		</select>
+	
+	<select id="calendar.event.query"  parameterClass="java.util.Map" resultClass="calendarEventVO">
+    			select firm_id as firmId, 
+    			person_id as personId,
+    			type as type,
+    			source as source,
+    			event_id as eventId,
+    			event_name as eventName,
+    			status as status,
+    			start_date as startDate,
+    			end_date as endDate,
+    			start_time as startTime,
+    			end_time as endTime,
+    			member_firstname as memberFirstName,
+				member_lastname as memberLastName,
+				member_city as memberCity,
+				member_state as memberState,
+				member_zip as memberZip,
+    			created_date as createdDate,
+    			modified_date as modifiedDate,
+    			modified_by as modifiedBy
+    				from calendar 
+					where person_id = #providerId# and Date(start_date) between Date(#startDate#) and Date(#endDate#) and start_time <![CDATA[ >]]> cast(#startTime# as time) and start_time <![CDATA[ <]]> cast(#endTime# as time)
+    				order by modified_date desc
+								
+		</select>
+		
+		
+		<delete id="calendarEventVO.delete"  parameterClass="java.util.HashMap">
+    			delete
+    				from calendar 
+					where person_id=#providerId# and 
+					event_id=#eventId# 
+							
+		</delete>
+		
+	<insert id="calendarEventVO.insertOrUpdate" parameterClass="calendarEventVO">
+		INSERT INTO calendar
+					(person_id , event_id , event_name , status , start_date , start_time , end_date , end_time ,
+				 	type, source , member_firstname , member_lastname , member_city , member_state , member_zip,
+				 	modified_by, created_date , modified_date , firm_id)			
+			values	
+					(#personId# , #eventId# , #eventName# , #status# , #startDate# , #startTime# , #endDate# ,
+				   	#endTime#, #type# , #source# , #memberFirstName# , #memberLastName# , #memberCity# , #memberState# , #memberZip#,
+				   	#modifiedBy# , now() , now(), #firmId#)
+			ON DUPLICATE KEY UPDATE	   
+					person_id = #personId#, event_id = #eventId#, event_name = #eventName#, status =  #status#,	 
+					start_date =  #startDate# , start_time =  #startTime#, end_date = #endDate#, end_time = #endTime#,
+				 	type = #type#, source = #source#, member_firstname = #memberFirstName#, member_lastname = #memberLastName#,
+				 	member_city =  #memberCity# , member_state =  #memberState#, member_zip = #memberZip#,
+				 	modified_by = #modifiedBy# , modified_date = now(), firm_id =  #firmId#;
+		      </insert>   
+	
+	
+	<update id="calendarEventVO.update" parameterClass="calendarEventVO">
+		UPDATE calendar
+		SET
+		event_name = #eventName#,
+		status = #status#,
+		start_date = #startDate#,
+		start_time = #startTime#,
+		end_date = #endDate#,
+		end_time = #endTime#,
+		type = #type#,
+		source = #source#,
+		member_firstname = #memberFirstName#,
+		member_lastname = #memberLastName#,
+		member_city = #memberCity#,
+		member_state = #memberState#,
+		member_zip = #memberZip#,
+		modified_date=now(),
+		modified_by = #modifiedBy#
+		WHERE event_id=#eventId# and person_id = #personId#
+	</update>
+	
+	<select id="slCalendar.free.event.query" parameterClass="java.util.Map" resultClass="calendarEventVO">
+		SELECT 
+			firm_id as firmId,
+			person_id as personId,
+			type as type,
+			source as
+			source,
+			event_id as eventId,
+			event_name as eventName,
+			status as status,
+			start_date as startDate,
+			end_date as endDate,
+			start_time as startTime,
+			end_time as endTime,
+			member_firstname as memberFirstName,
+			member_lastname as memberLastName,
+			member_city as memberCity,
+			member_state as memberState,
+			member_zip as memberZip,
+			created_date as
+			createdDate,
+			modified_date as modifiedDate,
+			modified_by as modifiedBy
+		FROM 
+			slcalendar_vw
+		WHERE 
+			person_id=#providerId# 
+			AND Date(start_date) between Date(#startDate#) and Date(#endDate#)
+			AND (
+				(cast(#startTime# as time) <![CDATA[ > ]]> start_time AND cast(#startTime# as time) <![CDATA[ > ]]> end_time)
+				OR
+				(cast(#endTime# as time) <![CDATA[ < ]]> start_time AND cast(#endTime# as time) <![CDATA[ < ]]> end_time)
+				)
+		ORDER BY
+			modified_date DESC;
+	</select>
+
+	<select id="calendar.free.event.query" parameterClass="java.util.Map" resultClass="calendarEventVO">
+		SELECT 
+			firm_id as firmId,
+			person_id as personId,
+			type as type,
+			source as source,
+			event_id as eventId,
+			event_name as eventName,
+			status as status,
+			start_date as startDate,
+			end_date as endDate,
+			start_time as startTime,
+			end_time as endTime,
+			member_firstname as memberFirstName,
+			member_lastname as memberLastName,
+			member_city as memberCity,
+			member_state as memberState,
+			member_zip as memberZip,
+			created_date as createdDate,
+			modified_date as modifiedDate,
+			modified_by as modifiedBy
+		FROM 
+			calendar
+		WHERE 
+			person_id = #providerId# 
+			AND Date(start_date) between Date(#startDate#) and Date(#endDate#) 
+			AND (
+					(cast(#startTime# as time) <![CDATA[ > ]]> start_time AND cast(#startTime# as time) <![CDATA[ > ]]> end_time)
+					OR
+					(cast(#endTime# as time) <![CDATA[ < ]]> start_time AND cast(#endTime# as time) <![CDATA[ < ]]> end_time)
+				)
+		ORDER BY 
+			modified_date DESC;
+	</select>	
+    
+</sqlMap>
+

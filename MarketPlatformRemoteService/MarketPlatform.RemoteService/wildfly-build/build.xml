@@ -1,0 +1,57 @@
+<project name="MarketPlatform.RemoteService" default="ear" basedir="..">
+		
+    <import file="../../../SLCommonBuild/ant/wildfly-sl-common/sl-common.xml"/>
+
+	<target name="package" depends="ear"/>
+
+    <target name="ear" depends="dist" description="Build an EAR for this project">
+	<echo level="info">
+	===============================================================================
+	                                ${ant.project.name} 
+	===============================================================================</echo>		
+
+        <ear destfile="${java-ear.dist-file}" filesonly="true" appxml="src/main/ear/META-INF/application.xml">
+            <metainf dir="src/main/ear/META-INF" includes="jboss-app.xml" />
+        	<metainf dir="src/main/ear/META-INF" includes="jboss-deployment-structure.xml" />
+
+            <fileset dir="${sl-common.branch-dir}/MarketPlatformRemoteService/MarketPlatform.RemoteService.WebServices/target/dist">
+                <include name="MarketPlatform.RemoteService.WebServices.war"/>
+            </fileset>
+        	
+        	<fileset dir="${generated}">
+        		<include name="MarketPlatform.RemoteService.NotificationMDB.jar"/>
+        	</fileset>
+        	
+        	<fileset dir="${sl-common.branch-dir}/MarketPlatformRemoteService/MarketPlatform.RemoteService.Notification/target/dist">
+				<include name="MarketPlatform.RemoteService.Notification.war"/>
+			</fileset>
+
+            <!-- zipfilesets courtesy initJavaBuildClasspath.groovy -->
+            <zipfileset refid="java-build.ear-lib-fileset.generated" />
+            <zipfileset refid="java-build.ear-lib-fileset.deployables" />
+
+            <zipfileset dir="${common.dist-dir}" prefix="lib">
+                <include name="${java-build.dist-filename}"/>
+                <include name="${java-war.dist-filename}"/>
+            </zipfileset>
+
+            <manifest>
+                <attribute name="Build-Id" value="${java-ear.build-id}"/>
+                <attribute name="Implementation-Vendor"	 value="${java-build.jar-vendor}"/>
+                <attribute name="Implementation-Title"   value="${ant.project.name}"/>
+                <attribute name="Implementation-Version" value="${java-build.jar-version}"/>
+                <attribute name="Build-Date" value="${common.timestamp-long}" />
+                <attribute name="Build-Username" value="${shell.USERNAME}"/>
+                <attribute name="Build-Hostname" value="${hostname}"/>
+                <attribute name="Build-java-version" value="${java.version}" />
+                <attribute name="Build-java-class-version" value="${java.class.version}" />
+                <attribute name="Build-java-home" value="${java.home}" />
+                <attribute name="Build-os-arch" value="${os.arch}" />
+                <attribute name="Build-os-name" value="${os.name}" />
+                <attribute name="Build-os-version" value="${os.version}" />
+				<attribute name="Class-Path" value="${java-build.jar-classpath} lib/${java-build.dist-filename}"/>
+            </manifest>
+        </ear>
+    </target>
+
+</project>

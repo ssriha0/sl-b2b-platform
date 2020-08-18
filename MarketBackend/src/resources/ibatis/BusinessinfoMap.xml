@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Businessinfo">
+	<typeAlias alias="businessinfoVO" type="com.newco.marketplace.vo.provider.BusinessinfoVO"/>
+	 	<select id="selectBusinessinfo.query" parameterClass="businessinfoVO" resultClass="businessinfoVO">
+
+
+
+					select distinct vh.vendor_id as vendorId, ein_no as taxpayerid, duns_no as dunsNo,business_name as businessName,dba_name as dbaName,
+					bus_phone_no as businessPhone,bus_phone_no_ext as busPhoneExtn,bus_fax_no as businessFax,ein_no as einNo,
+					web_address as webAddress,l.street_1 as mailingStreet1,
+					l.street_2 as mailingStreet2,
+					l.city as mailingCity,
+					l.state_cd as mailingState,
+					l.zip as mailingZip,
+					l.apt_no as mailingAprt,
+					l1.street_1 as businessStreet1,
+					l1.street_2 as businessStreet2,
+					l1.city as businessCity,
+					l1.state_cd as businessState,
+					l1.zip as businessZip,
+					l1.apt_no as businessAprt,
+					c.first_name as firstName,
+					c.last_name as lastName,
+					c.mi as middleName,
+					c.suffix as nameSuffix,
+					c.title as jobTitle,
+					c.email as email,
+					c.email_alt as altEmail,
+					c.email as confirmEmail,
+					c.email_alt as confAltEmail,
+					vr.other_ind as otherInd,
+					vr.dispatch_ind as dispatchInd,
+					vr.owner_ind as ownerInd,
+					vr.admin_ind as adminInd,
+					vr.manager_ind as managerInd,
+					vr.service_provider_ind as sproInd,
+					vr.resource_id as resID,
+					l.locn_id as locnId,
+					l1.locn_id as locnIdB,
+			        CASE WHEN business_type_id IS NULL THEN 0 ELSE business_type_id END as busStructure,
+			        business_start_date as busStartDt,
+			        CASE WHEN foreign_owned IS NULL THEN 0 ELSE foreign_owned END as isForeignOwned,
+			        CASE WHEN foreign_owned_pct_id IS NULL THEN 0 ELSE foreign_owned_pct_id END as foreignOwnedPct,
+			        CASE WHEN company_size_id IS NULL THEN 0 ELSE company_size_id END as companySize,
+			        CASE WHEN primary_industry_id IS NULL THEN 0 ELSE primary_industry_id END as primaryIndustry,
+			        CASE WHEN service_provider_est_no IS NULL THEN 0 ELSE service_provider_est_no END as noServicePros,
+			        vh.created_date as joinDate,
+			        business_descr as description
+			        from vendor_hdr vh
+			        join vendor_location vl on vl.vendor_id = vh.vendor_id
+			        join location l on l.locn_id = vl.locn_id and l.locn_type_id =2
+			        join vendor_location v2 on v2.vendor_id =vh.vendor_id
+			        join location l1 on l1.locn_id=v2.locn_id and l1.locn_type_id=1
+			        join vendor_resource vr on vr.vendor_id=vh.vendor_id
+			        join contact c on c.contact_id = vr.contact_id and vr.primary_ind=1
+			        where vh.vendor_id = #vendorId#
+
+	   </select>
+
+	   <select id="selectBusinessinfoVdrFinance.query" parameterClass="string" resultClass="string">
+	      select CASE WHEN sale_volume IS NULL THEN 0 ELSE sale_volume END as annualSalesRevenue
+	      from vendor_finance where vendor_id = #vendor_id#
+	   </select>
+
+	  <insert id="insertBusinessinfoVdrFinance.insert" parameterClass="businessinfoVO">
+	      INSERT INTO vendor_finance ( vendor_id, sale_volume ) VALUES (#vendorId#, #annualSalesRevenue#)
+	  </insert>
+
+	   <insert id="insertBusinessinfo.insert" parameterClass="businessinfoVO">
+	      INSERT INTO vendor_hdr (ein_no, duns_no,business_type_id,
+	      	business_start_date, foreign_owned,
+	      	foreign_owned_pct_id, company_size_id,
+	      	service_provider_est_no, business_descr ) VALUES (#taxpayerid#, #dunsNo#,#busStructure#,
+	      #busStartDt#, #isForeignOwned#,
+	      #foreignOwnedPct#, #companySize#,
+	      #annualSalesRevenue#, #noServicePros#,
+	      #description#)
+	   </insert>
+
+	    <update id="updateBusinessinfo.update" parameterClass="businessinfoVO">
+			update vendor_hdr set
+				business_type_id = #busStructure#
+                <dynamic>			
+						<isNotNull prepend=", " property="dunsNo">duns_no = #dunsNo#</isNotNull>
+                        <isGreaterThan prepend=", " property="companySize" compareValue="-1">company_size_id = #companySize#</isGreaterThan>
+                        <isNotNull prepend=", " property="isForeignOwned">foreign_owned = #isForeignOwned#</isNotNull>
+                        <isGreaterThan prepend=", " property="foreignOwnedPct" compareValue="-1">foreign_owned_pct_id = #foreignOwnedPct#</isGreaterThan>
+                        <isNotNull prepend=", " property="description">business_descr = #description#</isNotNull>
+						<isNotNull prepend=", " property="primaryIndustry">primary_industry_id = #primaryIndustry#</isNotNull>
+						<isNotNull prepend=", " property="businessPhone">bus_phone_no = #businessPhone#</isNotNull>
+						<isNotNull prepend=", " property="busPhoneExtn">bus_phone_no_ext = #busPhoneExtn#</isNotNull>
+						<isNotNull prepend=", " property="businessFax">bus_fax_no = #businessFax#</isNotNull>
+						<isNotNull prepend=", " property="webAddress">web_address = #webAddress#</isNotNull>
+						<isNotNull prepend=", " property="busStartDt">business_start_date = #busStartDt#</isNotNull>
+
+                </dynamic>
+                where vendor_id = #vendorId#
+			</update>
+
+			<update id="updateContactinfo.update" parameterClass="businessinfoVO">
+			UPDATE contact
+			<dynamic prepend="SET">
+   			<isNotNull prepend=", " property="jobTitle">title = #jobTitle#</isNotNull>
+			<isNotNull prepend=", " property="email">email = #email#</isNotNull>
+			<isNotNull prepend=", " property="altEmail">email_alt = #altEmail#</isNotNull>
+		 	</dynamic>
+			WHERE contact_id = (select contact_id from  vendor_resource vr where vr.vendor_id = #vendorId# and vr.primary_ind=1)
+			</update>
+
+		<update id="updateVendorresource.update" parameterClass="businessinfoVO">
+			UPDATE vendor_resource
+			<dynamic prepend="SET">
+   			<isNotNull prepend=", " property="ownerInd">owner_ind = #ownerInd#</isNotNull>
+			<isNotNull prepend=", " property="dispatchInd">dispatch_ind = #dispatchInd#</isNotNull>
+			<isNotNull prepend=", " property="managerInd">manager_ind = #managerInd#</isNotNull>
+			<isNotNull prepend=", " property="adminInd">admin_ind = #adminInd#</isNotNull>
+			<isNotNull prepend=", " property="otherInd">other_ind = #otherInd#</isNotNull>
+			<isNotNull prepend=", " property="sproInd">service_provider_ind = #sproInd#</isNotNull>
+		 	</dynamic>
+		WHERE vendor_id = #vendorId# and primary_ind=1
+		</update>
+		<update id="updateW9TaxStatusId.update" parameterClass="businessinfoVO">
+			UPDATE vendor_w9
+			set tax_status_id = #busStructure#
+			WHERE vendor_id = #vendorId#
+		</update>
+<!-- Changes Starts for Admin Name Change -->
+		<procedure id="updateProviderAdminName.procedure" parameterClass="java.util.Map">
+              { call sp_Provider_Admin_Name_Change(#v_new_resrc_id#,#v_old_resrc_id# )} 
+		</procedure>
+		
+		<insert id="auditAdminNameChange.insert" parameterClass="java.util.Map">
+		        
+		        INSERT INTO audit_provider_record (
+		        old_name,
+		        new_name,
+		        associated_id,
+		        associated_entity,
+		        modified_by,
+		        modified_date
+		        )
+		        
+		        VALUES(
+		        #OldAdminName#,
+		        #NewAdminName#,
+		        #Vendor_Id#,
+		        #associated_entity#,
+		        #modified_by#,
+		        NOW()
+		        )
+		 
+		</insert>
+        <!-- Changes Ends for Admin Name Change -->
+		<update id="updateLocation.update" parameterClass="businessinfoVO">
+			update location l1 
+			<dynamic prepend="set">
+			<isNotNull prepend=", " property="businessStreet1">l1.street_1 = #businessStreet1#</isNotNull>
+			<isNotNull prepend=", " property="businessStreet2">l1.street_2 = #businessStreet2#</isNotNull>
+			<isNotNull prepend=", " property="businessCity">l1.city = #businessCity#</isNotNull>
+			<isNotNull prepend=", " property="businessState">l1.state_cd = #businessState#</isNotNull>
+			<isNotNull prepend=", " property="businessZip">l1.zip = #businessZip#</isNotNull>
+			<isNotNull prepend=", " property="businessAprt">l1.apt_no = #businessAprt#</isNotNull>
+			</dynamic>
+			where l1.locn_id = #locnIdB# 
+			</update>
+			<!--SL-19226 R6_3:Mail Address is not getting updated when saving it from the Front end
+			Query updating mailing address-->
+			<update id="updateLocationMailingAddress.update" parameterClass="businessinfoVO">
+			update location l1 
+			<dynamic prepend="set">
+			<isNotNull prepend=", " property="mailingStreet1">l1.street_1 = #mailingStreet1#</isNotNull>
+			<isNotNull prepend=", " property="mailingStreet2">l1.street_2 = #mailingStreet2#</isNotNull>
+			<isNotNull prepend=", " property="mailingCity">l1.city = #mailingCity#</isNotNull>
+			<isNotNull prepend=", " property="mailingState">l1.state_cd = #mailingState#</isNotNull>
+			<isNotNull prepend=", " property="mailingZip">l1.zip = #mailingZip#</isNotNull>
+			<isNotNull prepend=", " property="mailingAprt">l1.apt_no = #mailingAprt#</isNotNull>
+			</dynamic>
+			where l1.locn_id = #locnId#
+			</update>
+
+
+
+			<update id="updateBusinessinfoVdrFinance.update" parameterClass="businessinfoVO">
+				update vendor_finance
+					set modified_date = NOW()
+					<dynamic >
+						<isGreaterThan prepend=", " property="annualSalesRevenue" compareValue="-1">sale_volume = #annualSalesRevenue#</isGreaterThan>
+					</dynamic>
+			 	where vendor_id = #vendorId#
+			</update>
+
+			<select id="query.selectcompanysize" resultClass="java.lang.String">
+			SELECT  descr FROM lu_company_size where id=#id#
+			</select>
+			
+			 <update id="updateBusinessinfoVhdr.update" parameterClass="businessinfoVO">
+			update vendor_hdr
+				
+                <dynamic prepend="set">
+                		<isNotNull prepend=", " property="busStructure">business_type_id = #busStructure#</isNotNull>			
+						<isNotNull property="dunsNo"><isNotEmpty property="dunsNo"  prepend=", ">duns_no = #dunsNo#</isNotEmpty></isNotNull>
+                        <isGreaterThan prepend=", " property="companySize" compareValue="-1">company_size_id = #companySize#</isGreaterThan>
+                        <isNotNull prepend=", " property="isForeignOwned">foreign_owned = #isForeignOwned#</isNotNull>
+                        <isGreaterThan prepend=", " property="foreignOwnedPct" compareValue="-1">foreign_owned_pct_id = #foreignOwnedPct#</isGreaterThan>
+                        <isNotNull property="description"><isNotEmpty property="description"  prepend=", ">business_descr = #description#</isNotEmpty></isNotNull>
+						<isNotNull prepend=", " property="primaryIndustry">primary_industry_id = #primaryIndustry#</isNotNull>
+						<isNotNull prepend=", " property="businessPhone">bus_phone_no = #businessPhone#</isNotNull>
+						<isNotNull prepend=", " property="busPhoneExtn">bus_phone_no_ext = #busPhoneExtn#</isNotNull>
+						<isNotNull prepend=", " property="businessFax">bus_fax_no = #businessFax#</isNotNull>
+						<isNotNull prepend=", " property="webAddress">web_address = #webAddress#</isNotNull>
+						<isNotNull prepend=", " property="busStartDt">business_start_date = #busStartDt#</isNotNull>
+						<isNotNull prepend=", " property="firmType">vendor_type = #firmType#</isNotNull>
+                </dynamic>
+                where vendor_id = #vendorId#
+			</update>
+			
+			<update id="updateVendorResourceInfo.update" parameterClass="businessinfoVO">
+			UPDATE vendor_resource
+			<dynamic prepend="SET">
+			   <isGreaterThan prepend=", " property="ownerInd" compareValue="-1">owner_ind = #ownerInd#</isGreaterThan>
+			   <isGreaterThan prepend=", " property="dispatchInd" compareValue="-1">dispatch_ind = #dispatchInd#</isGreaterThan>
+			   <isGreaterThan prepend=", " property="managerInd" compareValue="-1">manager_ind = #managerInd#</isGreaterThan>
+			   <isGreaterThan prepend=", " property="adminInd" compareValue="-1">admin_ind = #adminInd#</isGreaterThan>
+			   <isGreaterThan prepend=", " property="otherInd" compareValue="-1">other_ind = #otherInd#</isGreaterThan>
+			   <isGreaterThan prepend=", " property="sproInd" compareValue="-1">service_provider_ind = #sproInd#</isGreaterThan>
+		 	</dynamic>
+		WHERE vendor_id = #vendorId# and primary_ind=1
+		</update>
+</sqlMap>

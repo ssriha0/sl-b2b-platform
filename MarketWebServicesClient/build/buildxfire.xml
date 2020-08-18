@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project basedir="../" default="compile" name="MarketWebServicesClient-xfire">
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties" />
+
+	<target name="splash">
+		<property name="splash.dir" location="." />
+		<splash imageurl="file:${}/images/ant.gif" />
+	</target>
+
+	<target name="init" depends="splash">	
+		
+		<property name="dir.base" value="${basedir}" />
+		<property name="dir.src" value="${dir.base}/src" />
+		<property name="dir.wsdl" value="${dir.base}/wsdl" />
+		<property name="dir.dist" value="${dir.base}/dist" />
+		<property name="dir.dest" value="${dir.base}/bin" />
+		<property name="dir.test" value="${dir.base}/test" />
+		
+		
+	
+    	<!-- Folder under which all the libraries are kept -->
+    	<property name="global.lib" value="${dir.base}/lib/xfirelib"/>
+	
+		<!-- Folder containing uncompressed final release software-->
+		<property name="dir.dist" value="${dir.base}/dist"/>
+		    
+		<path id="build.class.path">
+			<fileset dir="lib/xfirelib">
+				<include name="*.jar"/>
+			</fileset>
+		</path>
+	</target>
+
+	<taskdef name="wsgen" classname="org.codehaus.xfire.gen.WsGenTask" 
+	     classpathref="build.class.path"/>
+	
+	
+	<target name="create-dirs" depends="init">
+		<mkdir dir="${dir.dest}" />
+		<mkdir dir="${dir.dist}"/>
+       	<mkdir dir="${dir.src}"/>
+	</target>
+	<target name="create-source" depends="init,clean,create-dirs">
+		
+		
+
+		<wsgen outputDirectory="${dir.src}"
+		  wsdl="${basedir}/wsdl/ServiceOrderSEI.wsdl" package="com.newco.webservice.client" overwrite="true"/>
+		
+				
+	</target>
+	
+	<target name="compile" depends="create-source">
+		<javac
+			srcdir="${dir.src}"
+			
+			classpathref="build.class.path"
+			debug="on"
+			deprecation="false"
+		/>
+	
+		<copy todir="${dir.dest}">
+			<fileset dir="${dir.src}">
+				<include name="**/*.xml"/>
+			</fileset>
+			
+			<fileset dir="${dir.src}">
+				<include name="**/*.properties"/>
+			</fileset>
+			<fileset dir="${dir.src}">
+				<include name="**/*.class"/>
+			</fileset>
+			
+						
+		</copy>
+				
+				   
+				
+				<jar compress="yes" jarfile="${dir.dist}/slwebserviceclient.jar">
+						
+			            <fileset dir="${dir.dest}">
+			                <include name="**/*.class"/>
+			            	<include name="**/*.xml"/>
+			            	<include name="**/*.properties"/>
+			            </fileset>
+						
+			    </jar>
+
+	</target>
+
+	
+	
+
+	<target name="clean" depends="init">
+		<delete dir="${dir.src}" includeemptydirs="true">
+			
+			
+		</delete>
+		
+		<delete dir="${dir.dist}" includeemptydirs="true">
+			
+		</delete>
+		
+		<delete dir="${dir.dest}" includeemptydirs="true">
+			
+		</delete>
+
+		
+	</target>
+
+	
+	
+	
+	
+	
+	
+	
+  
+</project>

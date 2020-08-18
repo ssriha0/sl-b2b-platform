@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<!-- Start DAO  Loading -->
+	<bean id="activityDAOImpl" class="com.newco.marketplace.persistence.daoImpl.provider.ActivityRegistryDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	<bean id="lookupDAOImpl" class="com.newco.marketplace.persistence.daoImpl.provider.LookupDAOImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	<bean id="userProfileDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.UserProfileDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	<bean id="vendorCredentialsDocumentDAOImpl" class="com.newco.marketplace.persistence.daoImpl.provider.VendorCredentialsDocumentDAOImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	<bean id="vendorHdrDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.VendorHdrDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	<bean id="auditDaoProviderImpl" class="com.newco.marketplace.persistence.daoImpl.provider.AuditDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	<bean id="insuranceTypesDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.InsuranceTypesDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	<bean id="credentialDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.CredentialDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	<bean id="documentDAOImpl" class="com.newco.marketplace.persistence.daoImpl.provider.DocumentDAOImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+		<bean id="resourceCredentialsDocumentDAOImpl" class="com.newco.marketplace.persistence.daoImpl.provider.ResourceCredentialsDocumentDAOImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+		
+	</bean>
+    <!-- End DAO  Loading -->
+    
+    
+    <!-- Start BO  Loading -->
+    <!-- <bean id="documentBOImpl" class="com.newco.marketplace.business.businessImpl.document.DocumentBO" /> -->
+	
+	<bean id="insuranceTypePolicyBOImplTarget" class="com.newco.marketplace.business.businessImpl.provider.InsuranceTypePolicyBOImpl"
+		lazy-init="true">
+		
+		<constructor-arg index="0" ref="vendorHdrDaoImpl"/>
+		<constructor-arg index="1" ref="credentialDaoImpl"/>
+		<constructor-arg index="2" ref="userProfileDaoImpl"/>
+		<constructor-arg index="3" ref="insuranceTypesDaoImpl"/>
+		<constructor-arg index="4" ref="vendorCredentialsDocumentDAOImpl"/>
+		<constructor-arg index="5" ref="documentBO"/>
+		<constructor-arg index="6" ref="lookupDAOImpl"/>
+		<property name="transactionManager">
+            <ref bean="dsTransactionManagerMain"/>
+        </property>
+	</bean>
+	
+	
+	<bean id="insurancePolicyBOImpl" class="com.newco.marketplace.business.businessImpl.provider.InsurancePolicyBOImpl"
+		lazy-init="true">
+		
+		<constructor-arg index="0" ref="vendorHdrDaoImpl"/>
+		<constructor-arg index="1" ref="userProfileDaoImpl"/>
+		<constructor-arg index="2" ref="insuranceTypesDaoImpl"/>
+		<constructor-arg index="3" ref="vendorCredentialsDocumentDAOImpl"/>
+		<constructor-arg index="4" ref="auditDaoProviderImpl"/>
+		
+		<property name="transactionManager">
+            <ref bean="dsTransactionManagerMain"/>
+        </property>
+        <property name="documentDaoFactory">
+        	<ref bean="documentFactory" />
+        </property>
+	</bean>
+	
+	
+	<!-- End DAO  Loading -->
+	
+</beans>

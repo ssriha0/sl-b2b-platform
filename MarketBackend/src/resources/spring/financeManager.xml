@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+
+    <bean id="financeManagerBO" class="com.newco.marketplace.business.businessImpl.financeManager.FinanceManagerBO"
+    	lazy-init="true">
+	 	<property name="financeManagerDAO">
+    		<ref bean="financeManagerDAO"/>
+  		</property>	
+  		<property name="contactDao">
+    		<ref bean="fmcontactDaoImpl"/>
+  		</property>	
+  		<property name="locationDao">
+    		<ref bean="fmlocationDaoImpl"/>
+  		</property>	
+  		<property name="vendorHdrDao">
+    		<ref bean="fmvendorHdrDaoImpl"/>
+  		</property>	
+  		<property name="vendorLocationDao">
+    		<ref bean="fmvendorLocationDaoImpl"/>
+  		</property>	 
+  		<property name="acctransBo">
+			<ref bean="accountingTransactionManagementBO" />
+		</property>
+		<property name="transactionDao">
+    		<ref bean="transactionDao"/>
+  		</property>	
+  		
+<!--   		code change for SLT-2231 -->
+		<property name="simpleDocumentDao">
+    		<ref bean="simpleDocumentDao"/>
+  		</property>	
+  		
+		<property name="cryptography">
+			<ref bean="cryptography" />
+		</property>
+		<property name="transactionManager">
+			<ref bean="dsTransactionManagerMain" />
+		</property>
+		<property name="emailTemplateBean">
+			<ref bean="emailTemplateBean" />
+		</property>
+		<property name="templateDao">
+			<ref bean="pTemplateDao" />
+		</property>	
+		<property name="serviceOrderDao">
+			<ref bean="serviceOrderDao" />
+		</property>		
+		<property name="vendorResourceDao">
+			<ref bean="vendorResourceDaoImpl" />
+		</property>
+		<property name="buyerDao">
+			<ref bean="buyerDaoImpl" />
+		</property>
+		<property name="buyerResourceDao">
+			<ref bean="buyerResourceDaoImpl"/>
+		</property>
+		<property name="walletBO" ref="walletTx" />
+		<property name="lookupBO" ref="lookup" />	
+		<property name="accountDao" ref="accountDao" />	
+		<property name="piiThresholdDao">
+			<ref bean="piiThresholdDao" />
+		</property>	
+		<property name="cryptography128">
+			<ref bean="cryptography128" />
+		</property>	
+		<property name="walletControlAuditNotesBO">
+    		<ref bean="walletControlAuditNotesBO"/>
+  		</property>	
+    </bean>	
+   
+    <bean id="buyerDaoImpl" class="com.newco.marketplace.persistence.daoImpl.so.buyer.BuyerDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	<bean id="piiThresholdDao" 
+      class="com.newco.marketplace.persistence.daoImpl.piiThreshold.PIIThresholdDaoImpl">
+     	<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+	
+    <bean id="financeManagerDAO" 
+	      class="com.newco.marketplace.persistence.daoImpl.financeManager.FinanceManagerDAOImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+	<bean id="fmcontactDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.ContactDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	<bean id="fmlocationDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.LocationDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	<bean id="fmvendorHdrDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.VendorHdrDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	<bean id="fmvendorLocationDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.VendorLocationDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	<bean id="buyerResourceDaoImpl" class="com.newco.marketplace.persistence.daoImpl.buyer.BuyerResourceDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+</beans>

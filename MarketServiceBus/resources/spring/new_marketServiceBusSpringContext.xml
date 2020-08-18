@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<!--
+		<bean id="esbPropertiesPlaceholderConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location"
+		value="classpath:servicelive_esb_${sl_app_lifecycle}.properties" />
+		</bean>
+	-->
+	<bean id="baseEsbIntegrationAction" abstract="true">
+		<!-- common properties for ESB Action beans would go here -->
+	</bean>
+	
+	<bean id="baseIntegrationSpringAction" abstract="true"
+		class="com.servicelive.esb.actions.AbstractIntegrationSpringAction">
+		<property name="integrationServiceCoordinator" ref="integrationServiceCoordinator" />
+		<property name="propertiesResourceBundle" ref="esbPropertiesResourceBundle" />
+		<property name="notificationServiceCoordinator" ref="notificationServiceCoordinator" />
+		
+	</bean>
+	
+	<bean id="baseServiceOrderEventHandler" abstract="true"
+		class="com.servicelive.esb.actions.AbstractServiceOrderEventHandler"
+		parent="baseIntegrationSpringAction" />
+
+	<bean id="assurantServiceOrderEventHandler"
+		class="com.servicelive.esb.actions.AssurantServiceOrderEventHandler"
+		parent="baseServiceOrderEventHandler">
+		<property name="assurantWriteOutgoingFileAction" ref="assurantWriteOutgoingFileAction" />
+	</bean>
+	
+	<bean id="assurantWriteOutgoingFileAction"
+		class="com.servicelive.esb.actions.AssurantWriteOutgoingFileAction"
+		parent="baseIntegrationSpringAction">
+		<property name="updateFileLocation" value="${Assurant_NEW_UPDATE_FILE_PATH}" />
+	</bean>
+	
+	<bean id="searsRiOrderClosedEventHandler"
+		class="com.servicelive.esb.actions.SearsRIOrderClosedEventHandler"
+		parent="baseServiceOrderEventHandler" />
+	
+	<bean id="searsHsrOrderAcceptedEventHandler"
+		class="com.servicelive.esb.actions.SearsHSROrderAcceptedEventHandler"
+		parent="baseServiceOrderEventHandler">
+		<property name="outgoingFileWriter" ref="searsHSROutgoingFileWriterAction" />
+	</bean>
+	
+	<bean id="searsHSROutgoingFileWriterAction"
+		class="com.servicelive.esb.actions.SearsHSROutgoingFileWriterAction"
+		parent="baseIntegrationSpringAction">
+		<property name="updateFileLocation" value="${HSR_NEW_UPDATE_FILE_PATH}" />
+	</bean>	
+	
+	<bean id="abstractMapforceIntegrationAction" abstract="true"
+		class="com.servicelive.esb.actions.AbstractMapforceIntegrationAction"
+		parent="baseIntegrationSpringAction">
+		<property name="errorFileSuffix" value="${ERROR_FILE_SUFFIX}" />
+	</bean>
+
+	<bean id="abstractMapforceInputAction" abstract="true"
+		class="com.servicelive.esb.actions.AbstractMapforceInputAction"
+		parent="abstractMapforceIntegrationAction" />
+
+	<bean id="riMapforceInputAction"
+		class="com.servicelive.esb.actions.RIMapInputAction"
+		parent="abstractMapforceInputAction">
+	</bean>
+
+	<bean id="assurantMapforceInputAction"
+		class="com.servicelive.esb.actions.AssurantMapInputAction"
+		parent="abstractMapforceInputAction">
+	</bean>
+
+	<bean id="hsrMapforceInputAction"
+		class="com.servicelive.esb.actions.HSRMapInputAction"
+		parent="abstractMapforceInputAction">
+		<property name="newRequestFilenameRegex" value="(?i)^.*NEWASASO.*$" />
+		<property name="updateRequestFilenameRegex" value="(?i)^.*ASASOSTSCHG.*$" />
+	</bean>
+
+	<bean id="integrationCustomRefAction"
+		class="com.servicelive.esb.actions.IntegrationCustomRefAction"
+		parent="baseIntegrationSpringAction" />
+
+	<bean id="npsCallCloseIntegrationFileGeneratorAction"
+		class="com.servicelive.esb.actions.NPSCallCloseIntegrationFileGeneratorAction"
+		parent="baseIntegrationSpringAction">
+		<property name="outputFileLocation" value="${NPS_CALL_CLOSE_FILE_PATH}" />
+		<property name="outputFileNamePrefix" value="CLSINSSO" />
+	</bean>
+</beans>

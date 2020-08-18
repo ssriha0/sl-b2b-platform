@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/walletbalance" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.servicelive.com/namespaces/walletbalance" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" elementFormDefault="qualified">
+	<xs:include schemaLocation="../common.xsd" id="xxc"/>
+	<xs:include schemaLocation="walletCommon.xsd" id="cmn"/>
+	<!-- Root element -->
+	<xs:element name="walletBalanceResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="results"/>
+				<xs:element minOccurs="0" name="pendingBalance"   type="moneyType" />
+				<xs:element minOccurs="0" name="projectBalance"   type="moneyType" />
+				<xs:element minOccurs="0" name="availableBalance" type="moneyType" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>	
+</xs:schema>

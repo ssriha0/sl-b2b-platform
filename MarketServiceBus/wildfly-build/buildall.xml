@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project basedir="../" default="build-dependencies" name="MarketServiceBus-BuildAll">
+	
+	<target name="build-dependencies">
+		<ant antfile="../OMSStaging/wildfly-build/build.xml" dir="../OMSStaging" />
+		<ant antfile="../MarketCommon/wildfly-build/build.xml" dir="../MarketCommon" />
+		<ant antfile="../MarketBusinessInterface/wildfly-build/build.xml" dir="../MarketBusinessInterface" />
+		<ant antfile="../OrderFulfillment.Domain/wildfly-build/build.xml" dir="../OrderFulfillment/OrderFulfillment.Domain" />
+		<!--
+	 	################################################################################################################
+		 # Commenting code changes done for injecting ofclient dependency 
+		   <ant antfile="../OrderFulfillment.Client/build/build.xml" dir="../OrderFulfillment/OrderFulfillment.Client" inheritAll="false"/>
+		   <ant antfile="../OrderFulfillment.ServiceInterface/build/build.xml" dir="../OrderFulfillment/OrderFulfillment.ServiceInterface" inheritAll="false"/>
+		################################################################################################################
+		-->
+		<ant antfile="../ServiceLiveCommonDomain/wildfly-build/build.xml"   dir="../ServiceLiveCommonDomain" />
+		<ant antfile="../ServiceLiveBus/wildfly-build/build.xml"   dir="../ServiceLiveBus" />
+		
+		<!--
+		  ###########################################################################
+		  # Eliminating build for the following dependencies since they are currently
+		  # being built by ../MarketServiceBus/build.xml
+		  #
+		  #		<ant antfile="../MarketServiceBus.Mapforce.Code/build/build.xml" dir="../MarketServiceBus.Mapforce.Code" />
+		  #		<ant antfile="../ServiceOrderFileProcess/build/build.xml" dir="../ServiceOrderFileProcess" inheritAll="false" />
+		  #		<ant antfile="../MarketTranslator/build/build.xml" dir="../MarketTranslator" inheritAll="false" />
+		-->
+		<ant antfile="../MarketServiceBus/wildfly-build.xml"   dir="../MarketServiceBus"/>
+	</target>
+
+</project>

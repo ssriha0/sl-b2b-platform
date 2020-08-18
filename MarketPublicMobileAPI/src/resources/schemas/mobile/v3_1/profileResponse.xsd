@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified">
+  <xs:include schemaLocation="../../common.xsd"/>
+  <xs:include schemaLocation="../../soMobileCommon.xsd" />
+  <xs:element name="profileResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="results"/>
+        <xs:element name="completeProfile" type="completeProfileType" minOccurs="0"/>
+        <xs:element name="publicProfile" type="publicProfileType" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  	
+  <xs:complexType name="completeProfileType">
+  	<xs:sequence>
+  		<xs:element name="businessInformation" type="businessInformationType" minOccurs="0"/>
+  		<xs:element name="companyOverview" type="companyOverviewType" minOccurs="0"/>
+  		<xs:element name="businessAddress" type="businessAddressType" minOccurs="0"/>
+  		<xs:element name="primaryContactInformation" type="primaryContactInformationType" minOccurs="0"/>
+  		<xs:element name="warrantyInformation" type="warrantyInformationType" minOccurs="0"/>
+  		<xs:element name="workPolicyInformation" type="workPolicyInformationType" minOccurs="0"/>
+  		<xs:element name="licenseAndCertificationsFile" type="licenseAndCertificationsFileType" minOccurs="0"/>
+  		<xs:element name="insurancePoliciesOnFile" type="insurancePoliciesOnFileType" minOccurs="0"/>
+  	</xs:sequence>
+  </xs:complexType> 
+  
+  <xs:complexType name="publicProfileType">
+  	<xs:sequence>
+  		<xs:element name="businessInformation" type="businessInformationType" minOccurs="0"/>
+  		<xs:element name="companyOverview" type="companyOverviewType" minOccurs="0"/>
+  		<xs:element name="businessAddress" type="businessAddressType" minOccurs="0"/>
+  		<xs:element name="warrantyInformation" type="warrantyInformationType" minOccurs="0"/>
+  		<xs:element name="licenseAndCertificationsFile" type="licenseAndCertificationsFileType" minOccurs="0"/>
+  		<xs:element name="insurancePoliciesOnFile" type="insurancePoliciesOnFileType" minOccurs="0"/>
+  	</xs:sequence>
+  </xs:complexType> 
+  
+  <xs:complexType name="businessInformationType">
+  	<xs:sequence>
+  		<xs:element name="legalBusinessName" type="xs:string" minOccurs="0"/>
+  		<xs:element name="doingBusinessAs" type="xs:string" minOccurs="0"/>
+  		<xs:element name="businessPhone" type="xs:string" minOccurs="0"/>
+  		<xs:element name="businessFax" type="xs:string" minOccurs="0"/>
+  		<xs:element name="taxPayerId" type="xs:string" minOccurs="0"/>
+  		<xs:element name="dunsNo" type="xs:string" minOccurs="0"/>
+  		<xs:element name="businessStructure" type="xs:string" minOccurs="0"/>
+  		<xs:element name="businessStartedDate" type="xs:string" minOccurs="0"/>
+  		<xs:element name="primaryIndustry" type="xs:string" minOccurs="0"/>
+  		<xs:element name="websiteAddress" type="xs:string" minOccurs="0"/>
+  		<xs:element name="companySize" type="xs:string" minOccurs="0"/>
+  		<xs:element name="annualSalesRevenue" type="xs:string" minOccurs="0"/>
+  		<xs:element name="foreignOwnedInd" type="xs:boolean" minOccurs="0"/>
+  		<xs:element name="foreignOwnedPercent" type="xs:string" minOccurs="0"/>
+  		<xs:element name="companyId" type="xs:string" minOccurs="0"/>
+  		<xs:element name="memberSinceDate" type="xs:string" minOccurs="0"/>
+  	</xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="companyOverviewType">
+  	<xs:sequence>
+    	<xs:element name="companyDescription" type="xs:string" minOccurs="0"/>
+ 	 </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="businessAddressType">
+  	<xs:sequence>
+  		<xs:element name="businessStreet1" type="xs:string" minOccurs="0"/>
+  		<xs:element name="businessStreet2" type="xs:string" minOccurs="0"/>
+  		<xs:element name="businessCity" type="xs:string" minOccurs="0"/>
+  		<xs:element name="businessState" type="xs:string" minOccurs="0"/>
+  		<xs:element name="businessZip" type="xs:string" minOccurs="0"/>
+  	</xs:sequence>
+  </xs:complexType>
+ 
+ <xs:complexType name="primaryContactInformationType">
+ 	<xs:sequence>
+ 		<xs:element name="roleWithinCompany" type="xs:string" minOccurs="0"/>
+ 		<xs:element name="jobTitle" type="xs:string" minOccurs="0"/>
+ 		<xs:element name="firstName" type="xs:string" minOccurs="0"/>
+ 		<xs:element name="middleName" type="xs:string" minOccurs="0"/>
+ 		<xs:element name="lastName" type="xs:string" minOccurs="0"/>
+ 		<xs:element name="suffix" type="xs:string" minOccurs="0"/>
+ 		<xs:element name="email" type="xs:string" minOccurs="0"/>
+ 		<xs:element name="alternateEmail" type="xs:string" minOccurs="0"/>
+ 	</xs:sequence>
+ </xs:complexType>  
+ 
+  <xs:complexType name="warrantyInformationType">
+ 	<xs:sequence>
+ 	    <xs:element name="projectEstimatesChargeInd" type="xs:boolean" minOccurs="0"/>
+ 		<xs:element name="warrantyOnLaborInd" type="xs:boolean" minOccurs="0"/>
+ 		<xs:element name="warrantyOnLabor" type="xs:string" minOccurs="0"/>
+ 		<xs:element name="warrantyOnPartsInd" type="xs:boolean" minOccurs="0"/>
+ 		<xs:element name="warrantyOnParts" type="xs:string" minOccurs="0"/>
+ 	</xs:sequence>
+ </xs:complexType>  
+ 
+ <xs:complexType name="workPolicyInformationType">
+ 	<xs:sequence>
+ 		<xs:element name="drugTestingPolicyInd" type="xs:boolean" minOccurs="0"/>
+ 		<xs:element name="considerDrugTestInd" type="xs:boolean" minOccurs="0"/>
+ 		<xs:element name="workEnvironmentPolicyInd" type="xs:boolean" minOccurs="0"/>
+ 		<xs:element name="considerEthicPolicyInd" type="xs:boolean" minOccurs="0"/>
+ 		<xs:element name="employeeCitizenShipProofInd" type="xs:boolean" minOccurs="0"/>
+ 		<xs:element name="considerImplPolicyInd" type="xs:boolean" minOccurs="0"/>
+ 		<xs:element name="requireBadgeInd" type="xs:boolean" minOccurs="0"/>
+ 		<xs:element name="considerBadgeInd" type="xs:boolean" minOccurs="0"/>
+ 	</xs:sequence>
+ </xs:complexType> 
+ 
+ <xs:complexType name="licenseAndCertificationsFileType">
+ 	<xs:sequence>
+ 		<xs:element name="licenseCertificationInd" type="xs:boolean" minOccurs="0"/>
+ 		<xs:element name="credentials" type="credentialsType" minOccurs="0"/>
+ 	</xs:sequence>
+ </xs:complexType>  
+ 
+ <xs:complexType name="insurancePoliciesOnFileType">
+ 	<xs:sequence>
+ 		<xs:element name="insurancePoliciesInd" type="xs:boolean" minOccurs="0"/>
+ 		<xs:element name="policyDetails" type="policyDetailsType" minOccurs="0"/>
+ 	</xs:sequence>
+ </xs:complexType>  
+ 
+ <xs:complexType name="credentialsType">
+ 	<xs:sequence>
+ 		<xs:element name="credential" type="credentialDetailType" minOccurs="0" maxOccurs="unbounded"/>
+ 	</xs:sequence>
+ </xs:complexType> 
+ 
+ <xs:complexType name="credentialDetailType">
+ 	<xs:sequence>
+ 		<xs:element name="credentialType" type="xs:string" minOccurs="0"/>
+ 		<xs:element name="licenseCertName" type="xs:string" minOccurs="0"/>
+ 		<xs:element name="credentialExpirationDate" type="xs:string" minOccurs="0"/>
+ 		<xs:element name="serviceLiveVerificationStatus" type="xs:string" minOccurs="0"/>
+ 	</xs:sequence>
+ </xs:complexType>
+ 
+ <xs:complexType name="policyDetailsType">
+ 	<xs:sequence>
+ 			<xs:element name="policyDetail" type="policyDetailType" minOccurs="0" maxOccurs="unbounded"/>
+ 	</xs:sequence>
+ </xs:complexType> 
+ 
+ <xs:complexType name="policyDetailType">
+ 	<xs:sequence>
+ 		<xs:element name="policyType" type="xs:string" minOccurs="0"/>
+ 		<xs:element name="carrierName" type="xs:string" minOccurs="0"/>
+ 		<xs:element name="expirationDate" type="xs:string" minOccurs="0"/>
+ 		<xs:element name="documentId" type="xs:string" minOccurs="0"/>
+ 		<xs:element name="serviceLiveVerificationStatus" type="xs:string" minOccurs="0"/>
+ 	</xs:sequence>
+ </xs:complexType>
+</xs:schema>

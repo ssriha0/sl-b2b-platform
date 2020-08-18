@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+    <bean id="smsDataSynchProcessDao" class="com.newco.marketplace.persistance.daoImpl.smasdatasynch.SMSDataSynchDaoImpl"
+     	lazy-init="true">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	 
+    </bean>
+    
+    <bean id="smsDataMigrationDao" class="com.newco.marketplace.persistance.daoImpl.smsdatamigration.SMSDataMigrationDaoImpl"
+     	lazy-init="true">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	 
+    </bean>
+    
+    <bean id="smsDataSynchProcessService" class="com.newco.marketplace.business.businessImpl.smasdatasynch.SMSDataSynchServiceImpl">
+		<property name="smsDataSynchProcessDao">
+			<ref bean="smsDataSynchProcessDao"/>
+		</property>
+	</bean>
+    <bean id="smsDataMigrationService" class="com.newco.marketplace.business.businessImpl.smsdatamigration.SMSDataMigrationServiceImpl">
+		<property name="smsDataMigrationDao">
+			<ref bean="smsDataMigrationDao"/>
+		</property>
+		<property name="iMarketPlaceDao">
+            <ref bean="marketPlaceDaoImpl"/>
+        </property>
+	</bean>
+       
+ </beans>

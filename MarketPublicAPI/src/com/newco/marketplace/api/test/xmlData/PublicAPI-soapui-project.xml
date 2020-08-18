@@ -1,0 +1,613 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project name="PublicAPI" resourceRoot="" soapui-version="2.5.1" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="ProjectSettings@projectRoot">C:\Documents and Settings\pangeen\Desktop\ServiceLive\PublicAPI</con:setting></con:settings><con:interface xsi:type="con:RestService" name="SearchSO" type="rest" basePath="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints><con:endpoint>http://localhost</con:endpoint><con:endpoint>http://172.22.16.24:8080</con:endpoint><con:endpoint>http://151.149.159.213:80</con:endpoint></con:endpoints><con:resource name="Test" path="/MarketPublicAPI/training/serviceorder/search"><con:settings/><con:parameters/><con:request name="SearchSO" method="POST" mediaType="text/xml" accept=""><con:settings/><con:endpoint>http://172.22.16.24:8080</con:endpoint><con:request><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<searchRequest version="1.0" xsi:schemaLocation="http://www.servicelive.com/namespaces/searchRequest searchRequest.xsd" xmlns="http://www.servicelive.com/namespaces/searchRequest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<identification>
+		<applicationkey>945609a382413e64d57daef00eb5fab2</applicationkey>
+		<username>officemax</username>
+		<password>Test123!</password>
+	</identification>
+	<soSearch maxResultSet="10" version="0.0">
+		<customerName>Scott</customerName>
+		<serviceLocZipcode>60013</serviceLocZipcode>
+	</soSearch>
+</searchRequest>
+]]></con:request><con:parameters/><con:representation type="REQUEST"><con:mediaType>text/xml</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>*/*</con:mediaType><con:status>200</con:status><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/html</con:mediaType><con:status>404</con:status><con:params/></con:representation></con:request></con:resource><con:resource name="Real" path="/MarketPublicAPI/serviceorder/search"><con:settings/><con:parameters/><con:request name="SearchSO" method="POST" mediaType="text/xml" accept=""><con:settings/><con:endpoint>http://151.149.159.213:8480</con:endpoint><con:request><![CDATA[<searchRequest version="1.0" xsi:schemaLocation="http://www.servicelive.com/namespaces/searchRequest searchRequest.xsd" xmlns="http://www.servicelive.com/namespaces/searchRequest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <identification>
+      <applicationkey>945609a382413e64d57daef00eb5fab3</applicationkey>
+      <username>scarpe5@searshc.com</username>
+      <password>Test123!</password>
+   </identification>
+   <soSearch maxResultSet="10" version="0.0">
+	<serviceLocZipcode>40216</serviceLocZipcode>
+	<customerName>Scott</customerName>
+			
+   </soSearch>
+</searchRequest>]]></con:request><con:parameters/><con:representation type="REQUEST"><con:mediaType>text/xml</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>*/*</con:mediaType><con:status>200</con:status><con:params/></con:representation></con:request></con:resource></con:interface><con:interface xsi:type="con:RestService" name="CreateSO" type="rest" basePath="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache/><con:endpoints><con:endpoint>http://localhost</con:endpoint><con:endpoint>http://172.22.16.24:8080</con:endpoint><con:endpoint>http://151.149.159.213:8280</con:endpoint></con:endpoints><con:resource name="Test" path="/MarketPublicAPI/training/serviceorder/create"><con:settings/><con:parameters/><con:request name="CreateSO" method="POST" mediaType="text/xml" accept=""><con:settings/><con:endpoint>http://172.22.16.24:8080</con:endpoint><con:request><![CDATA[<soRequest version="1.0" xsi:schemaLocation="http://www.servicelive.com/namespaces/soRequest soRequest.xsd" xmlns="http://www.servicelive.com/namespaces/soRequest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <identification>
+      <applicationkey>945609a382413e64d57daef00eb5fab3</applicationkey>
+      <username>scarpe5@searshc.com</username>
+      <password>Test123!</password>
+   </identification>
+   <serviceorder version="1.0">
+      <sectionGeneral>
+         <title>Testing+++++++++++++++++++++++++++++++++++++++++</title>
+         <overview>Install Plasma TV at customer's residence</overview>
+         <buyerTerms>This Service Order is subject to, and incorporates by reference, that certain Authorized
+	Servicer Agreement or other agreement (the 'Agreement'), between Provider Firm and Company X;provided that only the 	charges set forth in this Service Order (and not those in the Agreement) shall apply to this Service Order (and 	Provider Firm agrees that by accepting this Service Order, Provider is agreeing to such change).</buyerTerms>
+         <specialInstructions>State you are arriving on behalf of Company X</specialInstructions>
+      </sectionGeneral>
+      <scopeOfWork>
+         <mainCategoryID>1</mainCategoryID>
+         <tasks>
+            <task>
+               <taskName>Install TV</taskName>
+               <categoryID>3</categoryID>
+               <serviceType>Installation</serviceType>
+               <taskComment>Travel to installation site. Unpack and prepare merchandise for installation. Inspect product
+		for any damage or defects. Inspect Installation site and provide quote for any additional
+		work required. Disconnect old product and place in accessible location per customer's
+		request. Install new unit and hook up AV compnents. Test product for proper performance.
+		Instruct Customer on product operation. Clean up any job related debris and dispose of
+		packaging and other installation material.</taskComment>
+            </task>
+         </tasks>
+      </scopeOfWork>
+      <serviceLocation>
+         <locationType>Residential</locationType>
+         <locationName>ReslyPlace</locationName>
+         <address1>123 Main Street---</address1>
+         <address2/>
+         <city>Caryii</city>
+         <state>IL</state>
+         <zip>60661</zip>
+         <note/>
+      </serviceLocation>
+      <schedule>
+         <scheduleType>range</scheduleType>
+         <serviceDateTime1>2009-07-30T09:30:47Z</serviceDateTime1>
+         <serviceDateTime2>2009-08-30T10:30:47Z</serviceDateTime2>
+         <confirmWithCustomer>false</confirmWithCustomer>
+      </schedule>
+      <pricing>
+         <laborSpendLimit>100</laborSpendLimit>
+         <partsSpendLimit>50</partsSpendLimit>
+      </pricing>
+      <contacts>
+         <buyerSupportResID>12733</buyerSupportResID>
+         <contact>
+            <contactLocnType>Service</contactLocnType>
+            <firstName>Scott</firstName>
+            <lastName>Wilkinson</lastName>
+            <primaryPhone>
+               <phoneType>Work</phoneType>
+               <number>999-999-9999</number>
+               <extension>123</extension>
+            </primaryPhone>
+            <altPhone>
+               <phoneType>Mobile</phoneType>
+               <number>987-654-3211</number>
+               <extension>456</extension>
+            </altPhone>
+            <email>testemail@testsears.com</email>
+         </contact>
+         <contact>
+            <contactLocnType>Buyer Support</contactLocnType>
+            <firstName>buyerfirst</firstName>
+            <lastName>Wbuyersecond</lastName>
+            <primaryPhone>
+               <phoneType>Mobile</phoneType>
+               <number>111-111-1111</number>
+               <extension>321</extension>
+            </primaryPhone>
+            <altPhone>
+               <phoneType>Mobile</phoneType>
+               <number>123-654-3211</number>
+               <extension>256</extension>
+            </altPhone>
+            <email>testemailbsupp@testsears.com</email>
+         </contact>
+         <contact>
+            <contactLocnType>End User</contactLocnType>
+            <firstName>endfirst</firstName>
+            <lastName>dndsecond</lastName>
+            <primaryPhone>
+               <phoneType>Mobile</phoneType>
+               <number>123-111-1111</number>
+               <extension>334</extension>
+            </primaryPhone>
+            <altPhone>
+               <phoneType>Mobile</phoneType>
+               <number>444-654-3211</number>
+               <extension>234</extension>
+            </altPhone>
+            <email>testemailend@testsears.com</email>
+         </contact>
+         <contact>
+            <contactLocnType>Pickup</contactLocnType>
+            <firstName>Resly</firstName>
+            <lastName>Cherian</lastName>
+            <primaryPhone>
+               <phoneType>Work</phoneType>
+               <number>999-999-9999</number>
+               <extension>123</extension>
+            </primaryPhone>
+            <altPhone>
+               <phoneType>Mobile</phoneType>
+               <number>987-654-3211</number>
+               <extension>456</extension>
+            </altPhone>
+            <email>testemail@testsears.com</email>
+         </contact>
+      </contacts>
+      <attachments>
+         <filename>fewfwdefwe</filename>
+         <filename>ewfewfew</filename>
+      </attachments>
+      <parts>
+         <part>
+            <manufacturer>BOSCH</manufacturer>
+            <model>630SHX55M06UC</model>
+            <description>DISHWASHER,1YR,O800/U1300 WAREHOUSE:8755 LAST MAINTENANCE DATE:2008-09-13 DELIVERY</description>
+            <quantity>1</quantity>
+            <dimensions>
+               <measurementType>English</measurementType>
+               <height>12</height>
+               <width>12</width>
+               <length>14</length>
+               <weight>14</weight>
+            </dimensions>
+            <shipCarrier>UPS</shipCarrier>
+            <shipTracking>12345</shipTracking>
+            <returnCarrier>UPS</returnCarrier>
+            <returnTracking>12345678</returnTracking>
+            <requiresPickup>true</requiresPickup>
+            <pickupLocation>
+               <locationType>Commercial</locationType>
+               <locationName>Warehouse</locationName>
+               <address1>FirstAddress</address1>
+               <address2>SecondAddress</address2>
+               <city>String</city>
+               <state>IL</state>
+               <zip>60013</zip>
+               <note>Test Note</note>
+            </pickupLocation>
+         </part>
+      </parts>
+      <customReferences>
+         <customRef>
+            <name>Order Number</name>
+            <value>989898998</value>
+         </customRef>
+      </customReferences>
+   </serviceorder>
+</soRequest>]]></con:request><con:parameters/><con:representation type="REQUEST"><con:mediaType>text/xml</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>*/*</con:mediaType><con:status>200</con:status><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/html</con:mediaType><con:status>404</con:status><con:params/></con:representation></con:request></con:resource><con:resource name="Real" path="/MarketPublicAPI/serviceorder/create"><con:settings/><con:parameters/><con:request name="CreateSO" method="POST" mediaType="text/xml" accept=""><con:settings/><con:endpoint>http://localhost</con:endpoint><con:request><![CDATA[<soRequest version="1.0" xsi:schemaLocation="http://www.servicelive.com/namespaces/soRequest soRequest.xsd" xmlns="http://www.servicelive.com/namespaces/soRequest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <identification>
+      <applicationkey>945609a382413e64d57daef00eb5fab3</applicationkey>
+      <username>scarpe5@searshc.com</username>
+      <password>Test123!</password>
+   </identification>
+   <serviceorder version="1.0">
+      <sectionGeneral>
+         <title>Testing+++++++++++++++++++++++++++++++++++++++++</title>
+         <overview>Install Plasma TV at customer's residence</overview>
+         <buyerTerms>This Service Order is subject to, and incorporates by reference, that certain Authorized
+	Servicer Agreement or other agreement (the 'Agreement'), between Provider Firm and Company X;provided that only the 	charges set forth in this Service Order (and not those in the Agreement) shall apply to this Service Order (and 	Provider Firm agrees that by accepting this Service Order, Provider is agreeing to such change).</buyerTerms>
+         <specialInstructions>State you are arriving on behalf of Company X</specialInstructions>
+      </sectionGeneral>
+      <scopeOfWork>
+         <mainCategoryID>1</mainCategoryID>
+         <tasks>
+            <task>
+               <taskName>Install TV</taskName>
+               <categoryID>3</categoryID>
+               <serviceType>Installation</serviceType>
+               <taskComment>Travel to installation site. Unpack and prepare merchandise for installation. Inspect product
+		for any damage or defects. Inspect Installation site and provide quote for any additional
+		work required. Disconnect old product and place in accessible location per customer's
+		request. Install new unit and hook up AV compnents. Test product for proper performance.
+		Instruct Customer on product operation. Clean up any job related debris and dispose of
+		packaging and other installation material.</taskComment>
+            </task>
+         </tasks>
+      </scopeOfWork>
+      <serviceLocation>
+         <locationType>Residential</locationType>
+         <locationName>ReslyPlace</locationName>
+         <address1>123 Main Street---</address1>
+         <address2/>
+         <city>Caryii</city>
+         <state>IL</state>
+         <zip>60661</zip>
+         <note/>
+      </serviceLocation>
+      <schedule>
+         <scheduleType>range</scheduleType>
+         <serviceDateTime1>2009-07-30T09:30:47Z</serviceDateTime1>
+         <serviceDateTime2>2009-08-30T10:30:47Z</serviceDateTime2>
+         <confirmWithCustomer>false</confirmWithCustomer>
+      </schedule>
+      <pricing>
+         <laborSpendLimit>100</laborSpendLimit>
+         <partsSpendLimit>50</partsSpendLimit>
+      </pricing>
+      <contacts>
+         <buyerSupportResID>12733</buyerSupportResID>
+         <contact>
+            <contactLocnType>Service</contactLocnType>
+            <firstName>Scott</firstName>
+            <lastName>Wilkinson</lastName>
+            <primaryPhone>
+               <phoneType>Work</phoneType>
+               <number>999-999-9999</number>
+               <extension>123</extension>
+            </primaryPhone>
+            <altPhone>
+               <phoneType>Mobile</phoneType>
+               <number>987-654-3211</number>
+               <extension>456</extension>
+            </altPhone>
+            <email>testemail@testsears.com</email>
+         </contact>
+         <contact>
+            <contactLocnType>Buyer Support</contactLocnType>
+            <firstName>buyerfirst</firstName>
+            <lastName>Wbuyersecond</lastName>
+            <primaryPhone>
+               <phoneType>Mobile</phoneType>
+               <number>111-111-1111</number>
+               <extension>321</extension>
+            </primaryPhone>
+            <altPhone>
+               <phoneType>Mobile</phoneType>
+               <number>123-654-3211</number>
+               <extension>256</extension>
+            </altPhone>
+            <email>testemailbsupp@testsears.com</email>
+         </contact>
+         <contact>
+            <contactLocnType>End User</contactLocnType>
+            <firstName>endfirst</firstName>
+            <lastName>dndsecond</lastName>
+            <primaryPhone>
+               <phoneType>Mobile</phoneType>
+               <number>123-111-1111</number>
+               <extension>334</extension>
+            </primaryPhone>
+            <altPhone>
+               <phoneType>Mobile</phoneType>
+               <number>444-654-3211</number>
+               <extension>234</extension>
+            </altPhone>
+            <email>testemailend@testsears.com</email>
+         </contact>
+         <contact>
+            <contactLocnType>Pickup</contactLocnType>
+            <firstName>Resly</firstName>
+            <lastName>Cherian</lastName>
+            <primaryPhone>
+               <phoneType>Work</phoneType>
+               <number>999-999-9999</number>
+               <extension>123</extension>
+            </primaryPhone>
+            <altPhone>
+               <phoneType>Mobile</phoneType>
+               <number>987-654-3211</number>
+               <extension>456</extension>
+            </altPhone>
+            <email>testemail@testsears.com</email>
+         </contact>
+      </contacts>
+      <attachments>
+         <filename>fewfwdefwe</filename>
+         <filename>ewfewfew</filename>
+      </attachments>
+      <parts>
+         <part>
+            <manufacturer>BOSCH</manufacturer>
+            <model>630SHX55M06UC</model>
+            <description>DISHWASHER,1YR,O800/U1300 WAREHOUSE:8755 LAST MAINTENANCE DATE:2008-09-13 DELIVERY</description>
+            <quantity>1</quantity>
+            <dimensions>
+               <measurementType>English</measurementType>
+               <height>12</height>
+               <width>12</width>
+               <length>14</length>
+               <weight>14</weight>
+            </dimensions>
+            <shipCarrier>UPS</shipCarrier>
+            <shipTracking>12345</shipTracking>
+            <returnCarrier>UPS</returnCarrier>
+            <returnTracking>12345678</returnTracking>
+            <requiresPickup>true</requiresPickup>
+            <pickupLocation>
+               <locationType>Commercial</locationType>
+               <locationName>Warehouse</locationName>
+               <address1>FirstAddress</address1>
+               <address2>SecondAddress</address2>
+               <city>String</city>
+               <state>IL</state>
+               <zip>60013</zip>
+               <note>Test Note</note>
+            </pickupLocation>
+         </part>
+      </parts>
+      <customReferences>
+         <customRef>
+            <name>Order Number</name>
+            <value>989898998</value>
+         </customRef>
+      </customReferences>
+   </serviceorder>
+</soRequest>]]></con:request><con:parameters/><con:representation type="REQUEST"><con:mediaType>text/xml</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>*/*</con:mediaType><con:status>200</con:status><con:params/></con:representation></con:request></con:resource><con:resource name="Real_SKU" path="/MarketPublicAPI/serviceorder/create"><con:settings/><con:parameters/><con:request name="CreateSO" method="POST" mediaType="text/xml" accept=""><con:settings/><con:endpoint>http://151.149.159.213:8280</con:endpoint><con:request><![CDATA[<soRequest version="1.0" xsi:schemaLocation="http://www.servicelive.com/namespaces/soRequest soRequest.xsd" xmlns="http://www.servicelive.com/namespaces/soRequest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <identification>
+      <applicationkey>945609a382413e64d57daef00eb5fab3</applicationkey>
+      <username>scarpe5@searshc.com</username>
+      <password>Test123!</password>
+   </identification>
+   <serviceorder version="1.0">
+      <sectionGeneral>
+         <title>Testing++++</title>
+         <overview>Install Plasma TV at customer's residence</overview>
+         <buyerTerms>This Service Order is subject to, and incorporates by reference, that certain Authorized
+	Servicer Agreement or other agreement (the 'Agreement'), between Provider Firm and Company X;provided that only the 	charges set forth in this Service Order (and not those in the Agreement) shall apply to this Service Order (and 	Provider Firm agrees that by accepting this Service Order, Provider is agreeing to such change).</buyerTerms>
+         <specialInstructions>State you are arriving on behalf of Company X</specialInstructions>
+      </sectionGeneral>
+      <scopeOfWork>
+         <mainCategoryID>1</mainCategoryID>
+         <skus>
+            <sku>1000</sku>
+         </skus>
+      </scopeOfWork>
+      <serviceLocation>
+         <locationType>Residential</locationType>
+         <locationName>ReslyPlace</locationName>
+         <address1>123 Main Street---</address1>
+         <address2/>
+         <city>Caryii</city>
+         <state>IL</state>
+         <zip>60661</zip>
+         <note/>
+      </serviceLocation>
+      <schedule>
+         <scheduleType>range</scheduleType>
+         <serviceDateTime1>2009-07-30T09:30:47Z</serviceDateTime1>
+         <serviceDateTime2>2009-08-30T10:30:47Z</serviceDateTime2>
+         <confirmWithCustomer>false</confirmWithCustomer>
+      </schedule>
+      <pricing>
+         <laborSpendLimit>100</laborSpendLimit>
+         <partsSpendLimit>50</partsSpendLimit>
+      </pricing>
+      <contacts>
+         <buyerSupportResID>12733</buyerSupportResID>
+         <contact>
+            <contactLocnType>Service</contactLocnType>
+            <firstName>Scott</firstName>
+            <lastName>Wilkinson</lastName>
+            <primaryPhone>
+               <phoneType>Work</phoneType>
+               <number>999-999-9999</number>
+               <extension>123</extension>
+            </primaryPhone>
+            <altPhone>
+               <phoneType>Mobile</phoneType>
+               <number>987-654-3211</number>
+               <extension>456</extension>
+            </altPhone>
+            <email>testemail@testsears.com</email>
+         </contact>
+         <contact>
+            <contactLocnType>Buyer Support</contactLocnType>
+            <firstName>buyerfirst</firstName>
+            <lastName>Wbuyersecond</lastName>
+            <primaryPhone>
+               <phoneType>Mobile</phoneType>
+               <number>111-111-1111</number>
+               <extension>321</extension>
+            </primaryPhone>
+            <altPhone>
+               <phoneType>Mobile</phoneType>
+               <number>123-654-3211</number>
+               <extension>256</extension>
+            </altPhone>
+            <email>testemailbsupp@testsears.com</email>
+         </contact>
+         <contact>
+            <contactLocnType>End User</contactLocnType>
+            <firstName>endfirst</firstName>
+            <lastName>dndsecond</lastName>
+            <primaryPhone>
+               <phoneType>Mobile</phoneType>
+               <number>123-111-1111</number>
+               <extension>334</extension>
+            </primaryPhone>
+            <altPhone>
+               <phoneType>Mobile</phoneType>
+               <number>444-654-3211</number>
+               <extension>234</extension>
+            </altPhone>
+            <email>testemailend@testsears.com</email>
+         </contact>
+         <contact>
+            <contactLocnType>Pickup</contactLocnType>
+            <firstName>Resly</firstName>
+            <lastName>Cherian</lastName>
+            <primaryPhone>
+               <phoneType>Work</phoneType>
+               <number>999-999-9999</number>
+               <extension>123</extension>
+            </primaryPhone>
+            <altPhone>
+               <phoneType>Mobile</phoneType>
+               <number>987-654-3211</number>
+               <extension>456</extension>
+            </altPhone>
+            <email>testemail@testsears.com</email>
+         </contact>
+      </contacts>
+      <attachments>
+         <filename>fewfwdefwe</filename>
+         <filename>ewfewfew</filename>
+      </attachments>
+      <parts>
+         <part>
+            <manufacturer>BOSCH</manufacturer>
+            <model>630SHX55M06UC</model>
+            <description>DISHWASHER,1YR,O800/U1300 WAREHOUSE:8755 LAST MAINTENANCE DATE:2008-09-13 DELIVERY</description>
+            <quantity>1</quantity>
+            <dimensions>
+               <measurementType>English</measurementType>
+               <height>12</height>
+               <width>12</width>
+               <length>14</length>
+               <weight>14</weight>
+            </dimensions>
+            <shipCarrier>UPS</shipCarrier>
+            <shipTracking>12345</shipTracking>
+            <returnCarrier>UPS</returnCarrier>
+            <returnTracking>12345678</returnTracking>
+            <requiresPickup>true</requiresPickup>
+            <pickupLocation>
+               <locationType>Commercial</locationType>
+               <locationName>Warehouse</locationName>
+               <address1>FirstAddress</address1>
+               <address2>SecondAddress</address2>
+               <city>String</city>
+               <state>IL</state>
+               <zip>60013</zip>
+               <note>Test Note</note>
+            </pickupLocation>
+         </part>
+      </parts>
+      <customReferences>
+         <customRef>
+            <name>Order Number</name>
+            <value>989898998</value>
+         </customRef>
+      </customReferences>
+   </serviceorder>
+</soRequest>]]></con:request><con:parameters/><con:representation type="REQUEST"><con:mediaType>text/xml</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>*/*</con:mediaType><con:status>200</con:status><con:params/></con:representation></con:request></con:resource></con:interface><con:interface xsi:type="con:RestService" name="GetSO" type="rest" basePath="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints><con:endpoint>http://localhost</con:endpoint><con:endpoint>http://172.22.16.24:8080</con:endpoint><con:endpoint>http://151.149.159.213</con:endpoint><con:endpoint>http://151.149.159.213:8280</con:endpoint></con:endpoints><con:resource name="Test" path="/MarketPublicAPI/training/serviceorder/get/141-5481-7618-46"><con:settings/><con:parameters/><con:request name="GetSO" method="POST" mediaType="text/xml" accept="" postQueryString="false"><con:settings/><con:endpoint>http://localhost</con:endpoint><con:request><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<soRequest version="1.0" xsi:schemaLocation="http://www.servicelive.com/namespaces/soRequest soRequest.xsd" xmlns="http://www.servicelive.com/namespaces/soRequest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<identification>
+		<applicationkey>945609a382413e64d57daef00eb5fab3</applicationkey>
+		<username>scarpe5@searshc.com</username>
+		<password>Test123!</password>
+	</identification>
+	<responsefilter>
+		<showSection>General</showSection>	
+		<showSection>Service Location</showSection>
+		<showSection>Schedule</showSection>
+		<showSection>Contacts</showSection>
+	</responsefilter>
+</soRequest>
+]]></con:request><con:parameters/><con:representation type="REQUEST"><con:mediaType>text/xml</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>*/*</con:mediaType><con:status>200</con:status><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/html</con:mediaType><con:status>404</con:status><con:params/></con:representation></con:request></con:resource><con:resource name="Real" path="/MarketPublicAPI/serviceorder/get/152-9995-8890-11"><con:settings/><con:parameters/><con:request name="GetSO" method="POST" mediaType="text/xml" accept=""><con:settings/><con:endpoint>http://151.149.159.213:8480</con:endpoint><con:request><![CDATA[<soRequest version="1.0" xsi:schemaLocation="http://www.servicelive.com/namespaces/soRequest soRequest.xsd" xmlns="http://www.servicelive.com/namespaces/soRequest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <identification>
+      <applicationkey>945609a382413e64d57daef00eb5fab3</applicationkey>
+      <username>scarpe5@searshc.com</username>
+      <password>Test123!</password>
+   </identification>
+   <responsefilter>
+      <showSection>Service Location</showSection>
+      <showSection>Parts</showSection>
+
+
+      <showSection>Schedule</showSection>
+
+   </responsefilter>
+</soRequest>]]></con:request><con:parameters/><con:representation type="REQUEST"><con:mediaType>text/xml</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>*/*</con:mediaType><con:status>200</con:status><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/html</con:mediaType><con:status>404</con:status><con:params/></con:representation></con:request></con:resource></con:interface><con:interface xsi:type="con:RestService" name="CancelSO" type="rest" basePath="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints><con:endpoint>http://localhost</con:endpoint></con:endpoints><con:resource name="Test" path="/MarketPublicAPI/training/serviceorder/cancel/141-5481-7618-46"><con:settings/><con:parameters/><con:request name="CancelSO" method="POST" mediaType="text/xml" accept=""><con:settings/><con:endpoint>http://localhost</con:endpoint><con:request><![CDATA[<cancelRequest version="1.0" xsi:schemaLocation="http://www.servicelive.com/namespaces/cancelRequest cancelRequest .xsd" xmlns="http://www.servicelive.com/namespaces/cancelRequest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <identification>
+      <applicationkey>945609a382413e64d57daef00eb5fab3</applicationkey>
+      <username>scarpe5@searshc.com</username>
+      <password>Test123!</password>
+      <cancelRequestAmount></cancelRequestAmount>
+      <cancelRequestComment></cancelRequestComment>
+   </identification>
+</cancelRequest>]]></con:request><con:parameters/><con:representation type="REQUEST"><con:mediaType>text/xml</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>*/*</con:mediaType><con:status>200</con:status><con:params/></con:representation></con:request></con:resource><con:resource name="Real" path="/MarketPublicAPI/serviceorder/cancel/141-5481-7618-46"><con:settings/><con:parameters/><con:request name="CancelSO" method="POST" mediaType="text/xml"><con:settings/><con:endpoint>http://localhost</con:endpoint><con:request><![CDATA[<cancelRequest version="1.0" xsi:schemaLocation="http://www.servicelive.com/namespaces/cancelRequest cancelRequest .xsd" xmlns="http://www.servicelive.com/namespaces/cancelRequest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <identification>
+      <applicationkey>945609a382413e64d57daef00eb5fab3</applicationkey>
+      <username>scarpe5@searshc.com</username>
+      <password>Test123!</password>
+      <cancelRequestAmount></cancelRequestAmount>
+      <cancelRequestComment></cancelRequestComment>
+   </identification>
+</cancelRequest>]]></con:request><con:parameters/></con:request></con:resource></con:interface><con:interface xsi:type="con:RestService" name="RescheduleSO" type="rest" basePath="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache/><con:endpoints><con:endpoint>http://localhost</con:endpoint></con:endpoints><con:resource name="Test" path="/MarketPublicAPI/training/serviceorder/reschedule/141-5481-7618-46"><con:settings/><con:parameters/><con:request name="RescheduleSO" method="POST" mediaType="text/xml"><con:settings/><con:endpoint>http://localhost</con:endpoint><con:request><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<rescheduleRequest version="1.0" xsi:schemaLocation="http://www.servicelive.com/namespaces/rescheduleRequest rescheduleRequest.xsd" xmlns="http://www.servicelive.com/namespaces/rescheduleRequest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<identification>
+		<applicationkey>945609a382413e64d57daef00eb5fab3</applicationkey>
+		<username>scarpe5@searshc.com</username>
+		<password>Test123!</password>
+	</identification>
+	<soRescheduleInfo>
+		<scheduleType>range</scheduleType>
+		<serviceDateTime1>2001-12-17T09:30:47Z</serviceDateTime1>
+		<serviceDateTime2>2001-12-17T09:30:47Z</serviceDateTime2>
+	</soRescheduleInfo>
+</rescheduleRequest>
+]]></con:request><con:parameters/><con:representation type="REQUEST"><con:mediaType>text/xml</con:mediaType><con:params/></con:representation></con:request></con:resource><con:resource name="Real" path="/MarketPublicAPI/serviceorder/reschedule/141-5481-7618-46"><con:settings/><con:parameters/><con:request name="RescheduleSO" method="POST" mediaType="text/xml"><con:settings/><con:endpoint>http://localhost</con:endpoint><con:request><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<rescheduleRequest version="1.0" xsi:schemaLocation="http://www.servicelive.com/namespaces/rescheduleRequest rescheduleRequest.xsd" xmlns="http://www.servicelive.com/namespaces/rescheduleRequest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<identification>
+		<applicationkey>945609a382413e64d57daef00eb5fab3</applicationkey>
+		<username>scarpe5@searshc.com</username>
+		<password>Test123!</password>
+	</identification>
+	<soRescheduleInfo>
+		<scheduleType>range</scheduleType>
+		<serviceDateTime1>2001-12-17T09:30:47Z</serviceDateTime1>
+		<serviceDateTime2>2001-12-17T09:30:47Z</serviceDateTime2>
+	</soRescheduleInfo>
+</rescheduleRequest>
+]]></con:request><con:parameters/></con:request></con:resource></con:interface><con:interface xsi:type="con:RestService" name="AddNote" type="rest" basePath="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints><con:endpoint>http://localhost</con:endpoint><con:endpoint>http://172.22.16.24:8080</con:endpoint></con:endpoints><con:resource name="Test" path="/MarketPublicAPI/training/serviceorder/addNote/12345"><con:settings/><con:parameters/><con:request name="AddNote" method="POST" mediaType="text/xml"><con:settings/><con:endpoint>http://172.22.16.24:8080</con:endpoint><con:request><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<addNoteRequest version="1.0" xsi:schemaLocation="http://www.servicelive.com/namespaces/addNoteRequest.xsd" xmlns="http://www.servicelive.com/namespaces/addNoteRequest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<identification>
+		<applicationkey>945609a382413e64d57daef00eb5fab3</applicationkey>
+		<username>scarpe5@searshc.com</username>
+		<password>Test123!</password>
+	</identification>
+	<note private="false">
+		<subject>Subject3</subject>
+		<noteBody>NoteBody4</noteBody>
+	</note>
+</addNoteRequest>]]></con:request><con:parameters/><con:representation type="REQUEST"><con:mediaType>text/xml</con:mediaType><con:params/></con:representation></con:request></con:resource><con:resource name="Real" path="/MarketPublicAPI/serviceorder/addNote/12345"><con:settings/><con:parameters/><con:request name="AddNote" method="POST" mediaType="text/xml"><con:settings/><con:endpoint>http://localhost</con:endpoint><con:request><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<addNoteRequest version="1.0" xsi:schemaLocation="http://www.servicelive.com/namespaces/addNoteRequest.xsd" xmlns="http://www.servicelive.com/namespaces/addNoteRequest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<identification>
+		<applicationkey>945609a382413e64d57daef00eb5fab3</applicationkey>
+		<username>scarpe5@searshc.com</username>
+		<password>Test123!</password>
+	</identification>
+	<note private="false">
+		<subject>Subject3</subject>
+		<noteBody>NoteBody4</noteBody>
+	</note>
+</addNoteRequest>]]></con:request><con:parameters/></con:request></con:resource></con:interface><con:interface xsi:type="con:RestService" name="PostSO" type="rest" basePath="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache/><con:endpoints><con:endpoint>http://localhost</con:endpoint></con:endpoints><con:resource name="Test" path="/MarketPublicAPI/training/serviceorder/post/12345"><con:settings/><con:parameters/><con:request name="PostSO" method="POST" mediaType="text/xml"><con:settings/><con:endpoint>http://localhost</con:endpoint><con:request><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<postRequest version="1.0" xsi:schemaLocation="http://www.servicelive.com/namespaces/postRequest postRequest.xsd" xmlns="http://www.servicelive.com/namespaces/postRequest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<identification>
+		<applicationkey>945609a382413e64d57daef00eb5fab3</applicationkey>
+		<username>user1</username>
+		<password>password</password>
+	</identification>
+	<providerRouteInfo template="" version="1.0">
+		<maxDistance>5</maxDistance>
+		<minRating>1.0</minRating>
+		<languages>
+			<language>English</language>
+			<language>Spanish</language>
+		</languages>
+	</providerRouteInfo>
+</postRequest>
+]]></con:request><con:parameters/></con:request></con:resource><con:resource name="Real" path="/MarketPublicAPI/serviceorder/post/12345"><con:settings/><con:parameters/><con:request name="PostSO" method="POST" mediaType="text/xml"><con:settings/><con:endpoint>http://localhost</con:endpoint><con:request><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<postRequest version="1.0" xsi:schemaLocation="http://www.servicelive.com/namespaces/postRequest postRequest.xsd" xmlns="http://www.servicelive.com/namespaces/postRequest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<identification>
+		<applicationkey>945609a382413e64d57daef00eb5fab3</applicationkey>
+		<username>user1</username>
+		<password>password</password>
+	</identification>
+	<providerRouteInfo template="" version="1.0">
+		<maxDistance>5</maxDistance>
+		<minRating>1.0</minRating>
+		<languages>
+			<language>English</language>
+			<language>Spanish</language>
+		</languages>
+	</providerRouteInfo>
+</postRequest>
+]]></con:request><con:parameters/></con:request></con:resource></con:interface><con:properties/><con:wssContainer/></con:soapui-project>

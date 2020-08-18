@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
+	default-lazy-init="true">
+	
+	<bean id="matchAllWithPropReq" 
+      class="org.springframework.transaction.interceptor.MatchAlwaysTransactionAttributeSource">
+      <property name="transactionAttribute">
+      		<value>PROPAGATION_REQUIRED,ISOLATION_DEFAULT,-Exception</value>
+      </property>
+    </bean>
+
+    
+  <bean id="fullfillmentTransBOPropReq" 
+      class="org.springframework.transaction.interceptor.MatchAlwaysTransactionAttributeSource">
+      <property name="transactionAttribute">
+      		<value>PROPAGATION_REQUIRED,ISOLATION_DEFAULT,-Exception</value>
+      </property>
+  </bean>
+    
+    <!-- 
+  <bean id="matchAllTxInterceptorFinance"
+      class="org.springframework.transaction.interceptor.TransactionInterceptor">
+    <property name="transactionManager" ref="dsTransactionManagerFinance"/>
+    <property name="transactionAttributeSource" ref="matchAllWithPropReq"/>
+  </bean>
+     
+  <bean id="autoProxyCreatorFinance" 
+      class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+    <property name="interceptorNames">
+      <list>
+        <idref local="matchAllTxInterceptorFinance"/>
+      </list>
+    </property>
+    <property name="beanNames">
+      <list>
+        <idref bean="nachaUnbalancedFileImpl"/>
+        <idref bean="nachaFileImpl"/>
+        <idref bean="originationFileProcessor"/> 
+        <idref bean="returnsFileProcessor"/>
+        <idref bean="achAckParser"/>
+        <idref bean="ptdFileProcessor"/>
+      </list>
+    </property>
+  </bean>
+     -->
+	
+	<bean id="accountingTransactionManagementImpl"
+		class="com.newco.marketplace.business.businessImpl.ledger.AccountingTransactionMananagementBO">
+		<property name="transactionDao">
+			<ref bean="transactionDao" />
+		</property>
+		
+		<property name="walletBO" ref="walletTx" />
+		<property name="lookupBO" ref="lookup" />
+		<property name="promoBO" ref="promoBO" />
+	</bean>
+	
+	<bean id="ledgerTransactionBO"
+		class="com.newco.marketplace.business.businessImpl.ledger.LedgerTransactionBOImpl">
+		<property name="transactionDao">
+			<ref bean="transactionDao" />
+		</property>
+		
+		<property name="walletBO" ref="walletTx" />
+	</bean>
+		
+	<bean id="financeManagerImpl"
+		class="com.newco.marketplace.business.businessImpl.financeManager.FinanceManagerBO">
+		<property name="acctransBo">
+			<ref bean="accountingTransactionManagementBO" />
+		</property>
+		
+		<property name="walletBO" ref="walletTx" />
+		<property name="lookupBO" ref="lookup" />
+	</bean>
+	<bean id="feeManagementFacility"
+		class="com.newco.marketplace.business.businessImpl.ledger.FeeManagementFacility">
+		<property name="feeDao">
+			<ref bean="feeDao" />
+		</property>
+		<property name="feeManagerDao">
+			<ref bean="feeManagerDao" />
+		</property>
+		<property name="promoBO">
+			<ref bean="promoBO" />
+		</property>
+	</bean>
+
+	<bean id="feeManagerDao"
+		class="com.newco.marketplace.persistence.daoImpl.feemanager.FeeManagerDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClientFinance" />
+		</property>
+	</bean>
+
+	<bean id="feeDao"
+		class="com.newco.marketplace.persistence.daoImpl.feemanager.FeeDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClientFinance" />
+		</property>
+	</bean>
+
+
+
+	<bean id="rulesMatrix"
+		class="com.newco.marketplace.util.acctmgmt.AccountRulesEngineMatrix">
+		<property name="transactionDao">
+			<ref bean="transactionDao" />
+		</property>
+	</bean>
+
+	<bean id="transactionDao"
+		class="com.newco.marketplace.persistence.daoImpl.ledger.TransactionDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClientFinance" />
+		</property>
+	</bean>
+
+	<bean id="soReceiptsVO"
+		class="com.newco.marketplace.vo.receipts.SOReceiptsVO">
+	</bean>
+
+	<bean id="achRequestDao"
+		class="com.newco.marketplace.persistence.daoImpl.ach.AchBatchRequestDaoImpl"
+		lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClientFinance" />
+		</property>
+	</bean>
+	<bean id="nachaDao"
+		class="com.newco.marketplace.persistence.daoImpl.nacha.NachaDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClientFinance" />
+		</property>
+	</bean>
+
+	<!-- TRANSACTION SUPPORT -->
+	<bean id="accountingTransactionManagementBO"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		lazy-init="true">
+		<property name="proxyInterfaces">
+			<list>
+				<value>
+					com.newco.marketplace.business.iBusiness.ledger.ILedgerFacilityBO
+				</value>
+			</list>
+		</property>
+		<property name="target">
+			<ref bean="accountingTransactionManagementImpl" />
+		</property>
+		<property name="transactionManager">
+			<ref bean="dsTransactionManagerFinance" />
+		</property>
+		<property name="transactionAttributeSource">
+			<ref bean="fullfillmentTransBOPropReq" />
+		</property>
+	</bean>
+
+	<bean id="serviceOrderBO"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		lazy-init="true">
+		<property name="proxyInterfaces">
+			<list>
+				<value>
+					com.newco.marketplace.business.iBusiness.serviceorder.IServiceOrderBO
+				</value>
+			</list>
+		</property>
+		<property name="target">
+			<ref bean="serviceOrderBOTarget" />
+		</property>
+		<property name="transactionManager">
+			<ref bean="dsTransactionManagerMain" />
+		</property>
+		<property name="transactionAttributeSource">
+			<ref bean="attributeSource" />
+		</property>
+	</bean>
+    <bean id="soGroupBO"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		lazy-init="true">
+		<property name="proxyInterfaces">
+			<list>
+				<value>
+					com.newco.marketplace.business.iBusiness.orderGroup.IOrderGroupBO
+				</value>
+			</list>
+		</property>
+		<property name="target">
+			<ref bean="OrderGroupBOTarget" />
+		</property>
+		<property name="transactionManager">
+			<ref bean="dsTransactionManagerMain" />
+		</property>
+		<property name="transactionAttributeSource">
+			<ref bean="attributeSource" />
+		</property>
+	</bean>
+	
+	<bean id="soRouteGroupTransacBO"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		lazy-init="true">
+		<property name="proxyInterfaces">
+			<list>
+				<value>
+					com.newco.marketplace.business.iBusiness.orderGroup.IRouteOrderGroupBO
+				</value>
+			</list>
+		</property>
+		<property name="target">
+			<ref bean="routeOrderGroupBO" />
+		</property>
+		<property name="transactionManager">
+			<ref bean="dsTransactionManagerMain" />
+		</property>
+		<property name="transactionAttributeSource">
+			<ref bean="attributeSource" />
+		</property>
+	</bean>
+
+	<bean id="registrationBOImpl"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		lazy-init="true">
+		<property name="proxyInterfaces">
+			<list>
+				<value>
+					com.newco.marketplace.business.iBusiness.provider.IRegistrationBO
+				</value>
+			</list>
+		</property>
+		<property name="target">
+			<ref bean="registrationBOImplTarget" />
+		</property>
+		<property name="transactionManager">
+			<ref bean="dsTransactionManagerMain" />
+		</property>
+		<property name="transactionAttributeSource">
+			<ref bean="attributeSource" />
+		</property>
+	</bean>
+	<!--  BuyerRegistrationBOImpl declaration -->
+	<bean id="buyerRegistrationBOImpl"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		lazy-init="true">
+		<property name="proxyInterfaces">
+			<list>
+				<value>
+					com.newco.marketplace.business.iBusiness.buyer.IBuyerRegistrationBO
+				</value>
+			</list>
+		</property>
+		<property name="target">
+			<ref bean="buyerRegistrationBOImplTarget" />
+		</property>
+		<property name="transactionManager">
+			<ref bean="dsTransactionManagerMain" />
+		</property>
+		<property name="transactionAttributeSource">
+			<ref bean="attributeSource" />
+		</property>
+	</bean>
+	<!--  BuyerRegistrationBOImpl declaration -->
+
+	<bean id="generalInfoBOImpl"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		lazy-init="true">
+		<property name="proxyInterfaces">
+			<list>
+				<value>
+					com.newco.marketplace.business.iBusiness.provider.IGeneralInfoBO
+				</value>
+			</list>
+		</property>
+		<property name="target">
+			<ref bean="generalInfoBOImplTarget" />
+		</property>
+		<property name="transactionManager">
+			<ref bean="dsTransactionManagerMain" />
+		</property>
+		<property name="transactionAttributeSource">
+			<ref bean="attributeSource" />
+		</property>
+	</bean>
+	
+		<bean id="selectProviderNetworkBO"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		lazy-init="true">
+		<property name="proxyInterfaces">
+			<list>
+				<value>
+					com.newco.marketplace.business.iBusiness.spn.ISelectProviderNetworkBO
+				</value>
+			</list>
+		</property>
+		<property name="target">
+			<ref bean="selectProviderNetworkBOTarget" />
+		</property>
+		<property name="transactionManager">
+			<ref bean="dsTransactionManagerMain" />
+		</property>
+		<property name="transactionAttributeSource">
+			<ref bean="attributeSource" />
+		</property>
+	</bean>
+	
+	<bean id="insuranceTypePolicyBOImpl"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		lazy-init="true">
+		<property name="proxyInterfaces">
+			<list>
+				<value>
+					com.newco.marketplace.business.iBusiness.provider.IInsuranceTypePolicyBO
+				</value>
+			</list>
+		</property>
+		<property name="target">
+			<ref bean="insuranceTypePolicyBOImplTarget" />
+		</property>
+		<property name="transactionManager">
+			<ref bean="dsTransactionManagerMain" />
+		</property>
+		<property name="transactionAttributeSource">
+			<ref bean="attributeSource" />
+		</property>
+	</bean>
+
+	<bean id="marketPlaceBOImpl"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		lazy-init="true">
+		<property name="proxyInterfaces">
+			<list>
+				<value>
+					com.newco.marketplace.business.iBusiness.provider.IMarketPlaceBO
+				</value>
+			</list>
+		</property>
+		<property name="target">
+			<ref bean="marketPlaceBOImplTarget" />
+		</property>
+		<property name="transactionManager">
+			<ref bean="dsTransactionManagerMain" />
+		</property>
+		<property name="transactionAttributeSource">
+			<ref bean="attributeSource" />
+		</property>
+	</bean>
+	<bean id="iTeamCredentilaBOImpl"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		lazy-init="true">
+		<property name="proxyInterfaces">
+			<list>
+				<value>
+					com.newco.marketplace.business.iBusiness.provider.ITeamCredentialBO
+				</value>
+			</list>
+		</property>
+		<property name="target">
+			<ref bean="teamCredentialBOImplTarget" />
+		</property>
+		<property name="transactionManager">
+			<ref bean="dsTransactionManagerMain" />
+		</property>
+		<property name="transactionAttributeSource">
+			<ref bean="attributeSource" />
+		</property>
+	</bean>
+	<bean id="iLicensesAndCertBO"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		lazy-init="true">
+		<property name="proxyInterfaces">
+			<list>
+				<value>
+					com.newco.marketplace.business.iBusiness.provider.ILicensesAndCertBO
+				</value>
+			</list>
+		</property>
+		<property name="target">
+			<ref bean="licensesAndCertBOImplTarget" />
+		</property>
+		<property name="transactionManager">
+			<ref bean="dsTransactionManagerMain" />
+		</property>
+		<property name="transactionAttributeSource">
+			<ref bean="attributeSource" />
+		</property>
+	</bean>		
+	<bean id="attributeSource"
+		class="org.springframework.transaction.interceptor.NameMatchTransactionAttributeSource">
+		<property name="properties">
+			<props>
+				<prop key="*">
+					PROPAGATION_REQUIRED,ISOLATION_DEFAULT,-Exception
+				</prop>
+			</props>
+		</property>
+	</bean>
+
+
+	<bean id="serviceOrderDao"
+		class="com.newco.marketplace.persistence.daoImpl.so.order.ServiceOrderDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>    
+
+    <bean id="fiscalCalendarDAO" class="com.newco.marketplace.persistence.daoImpl.ledger.FiscalCalendarDAOImpl">
+	 	<property name="sqlMapClient">
+			<ref bean="sqlMapClientFinance" />
+		</property>   		
+    </bean>
+    
+    <bean id="fmBOTrans"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="proxyInterfaces">
+			<list>
+				<value>
+					com.newco.marketplace.business.iBusiness.financeManager.IFinanceManagerBO
+				</value>
+			</list>
+		</property>
+		<property name="target">
+			<ref bean="financeManagerBO" />
+		</property>
+		<property name="transactionManager">
+			<ref bean="dsTransactionManagerMain" />
+		</property>
+		<property name="transactionAttributeSource">
+			<ref bean="attributeSource" />
+		</property>
+	</bean>
+	
+	
+	    <bean id="iUserManagementBO"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" lazy-init="true">
+		<property name="proxyInterfaces">
+			<list>
+				<value>
+					com.newco.marketplace.business.iBusiness.usermanagement.UserManagementBO
+				</value>
+			</list>
+		</property>
+		<property name="target">
+			<ref bean="iUserManagementBOTarget" />
+		</property>
+		<property name="transactionManager">
+			<ref bean="dsTransactionManagerMain" />
+		</property>
+		<property name="transactionAttributeSource">
+			<ref bean="attributeSource" />
+		</property>
+	</bean>
+	
+	<bean id="creditCardTransactionManagedBO"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		lazy-init="true">
+		<property name="proxyInterfaces">
+			<list>
+				<value>
+					com.newco.marketplace.business.iBusiness.ledger.ICreditCardBO
+				</value>
+			</list>
+		</property>
+		<property name="target">
+			<ref bean="creditCardBO" />
+		</property>
+		<property name="transactionManager">
+			<ref bean="dsTransactionManagerFinance" />
+		</property>
+		<property name="transactionAttributeSource">
+			<ref bean="attributeSource" />
+		</property>
+	</bean>
+	<bean id="forgotUsernameBOImpl"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		lazy-init="true">
+		<property name="proxyInterfaces">
+			<list>
+				<value>
+					com.newco.marketplace.business.iBusiness.provider.IForgotUsernameBO
+				</value>
+			</list>
+		</property>
+		<property name="target">
+			<ref bean="forgotUsernameBOImplTarget" />
+		</property>
+		<property name="transactionManager">
+			<ref bean="dsTransactionManagerMain" />
+		</property>
+		<property name="transactionAttributeSource">
+			<ref bean="attributeSource" />
+		</property>
+	</bean>
+</beans>

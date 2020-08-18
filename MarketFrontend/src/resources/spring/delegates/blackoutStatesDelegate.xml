@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<!-- Start Delegate  Loading -->
+	<bean name="blackoutStatesDelegate" class="com.newco.marketplace.web.delegatesImpl.BlackoutStatesDelegateImpl">
+		<constructor-arg index="0" ref="buyerRegistrationBOImpl"/>
+	</bean>
+	<!-- End Delegate  Loading -->
+	
+</beans>

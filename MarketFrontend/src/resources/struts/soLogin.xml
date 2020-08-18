@@ -1,0 +1,77 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="security" extends="ServiceLiveBase">
+        <default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+
+		<action name="loginPage">
+			<result type="tiles">base.servicelive.index</result>
+		</action>
+
+
+		<action name="login">
+			<result type="dispatcher">
+				/jsp/public/homepage/revised/homepage.jsp
+			</result>
+		</action>
+	
+		
+
+
+		<action name="doLogin" class="loginBean">
+			<result name="input" >
+				/jsp/sl_login/base/login.jsp
+			</result>
+			
+			<result name="error" type="tiles">
+				base.servicelive.index
+			</result>
+			<result name="buyerdashboard" type="redirectAction">
+				<param name="actionName">dashboardAction</param>
+			</result>
+			<result name="providerdashboard" type="redirectAction">
+				<param name="actionName">dashboardAction</param>
+			</result>
+			<result name="toAdmindashboard" type="redirectAction">
+				<param name="actionName">dashboardAction</param>
+			</result>
+
+			<result name="changePassword" type="redirectAction">changePasswordStrutsAction</result>
+			<result name="invalidStateLogin">/jsp/providerRegistration/provider_login_invalid_state.jsp</result>
+			<result name="loginpage">
+				/jsp/public/homepage/revised/homepage.jsp
+			</result>
+			<result name="simpleBuyerServiceOrderReview" type="redirectAction">csoReview_displayPage</result>
+			<result name="simpleBuyerAutoLoginFail" type="redirectAction">csoCreateAccount_displayPage?fromDS=y</result>
+			
+			<result name="accountLockedPage">/jsp/dashboard/accountLocked.jsp</result>
+			<!--  <result name="loginAdditionalInfoPage">/jsp/dashboard/additionalInfo.jsp</result> -->			
+			<result name="loginAdditionalInfoPage" type="redirectAction">
+				<param name="actionName">loginAdditionalInfo_displayPage</param>
+			</result>
+			<result name="b2c">jsp/sl_login/common/redirectToB2C.jsp</result>
+			<result name="redirect">jsp/sl_login/common/redirect.jsp</result>
+			<!-- 
+			<result name="redirect" type="redirect">
+			   <param name="location">${url}</param>			
+			</result>
+			 -->
+		</action>
+		
+		<action name="doLogout" class="loginBean" method="logout">
+			<result name="input" type="redirectAction">
+				homepage
+			</result>
+			<result name="success"  type="redirectAction">
+				homepage
+			</result>			
+			<result name="provider" type="redirectAction">
+				<param name="actionName">joinNowAction</param>
+			</result>	
+			<result name="commercial" type="redirectAction">
+				<param name="actionName">joinNowBuyerAction</param>
+			</result>		  
+		</action>
+	</package>
+</struts>

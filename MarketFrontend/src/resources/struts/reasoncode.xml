@@ -1,0 +1,42 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="reasonCode" extends="ServiceLiveBase" >
+        <default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+        
+    	<global-results >
+			<result name="error" type="redirectAction">
+				<param name="actionName">errorAction</param>
+				<param name="errorMessage">${errorMessage}</param>
+				<param name="returnURL">${returnURL}</param>
+			</result>
+		</global-results>	   	
+        
+		
+	    <action name="reasonCode_displayPage" class="reasonCodeManagerAction" method="displayPage">
+	        <result name="success">/jsp/reasoncode/reasonCodeManager.jsp</result>	    	   
+	        <result name="homepage" type="redirectAction">homepage</result>	         
+	    </action> 
+	    
+	    <action name="reasonCode_add" class="reasonCodeManagerAction" method="addReasonCode">
+	    	<result name="success">/jsp/reasoncode/reasonCodeManager.jsp</result>      	   
+	        <result name="homepage" type="redirectAction">homepage</result>	         
+	    </action>  
+	    
+	    <action name="reasonCode_delete" class="reasonCodeManagerAction" method="deleteReasonCode">  
+	    	<result name="success">/jsp/reasoncode/reasonCodeManager.jsp</result>  	   
+	        <result name="homepage" type="redirectAction">homepage</result>	         
+	    </action>  
+	    
+	    <action name="reasonCode_check" class="reasonCodeManagerAction" method="checkInSO">  
+	    	<result name="success">/jsp/reasoncode/deleteReasonCode.jsp</result>  	   
+	        <result name="homepage" type="redirectAction">homepage</result>	         
+	    </action> 
+	    
+	    
+	    
+
+    </package>
+    
+</struts>

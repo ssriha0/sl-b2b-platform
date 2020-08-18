@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<bean id="generalInfoBOImplTarget" class="com.newco.marketplace.business.businessImpl.provider.GeneralInfoBOImpl"
+		lazy-init="true">
+		<constructor-arg index="0" ref="lookupDAOImpl"/>
+		<constructor-arg index="1" ref="contactDaoImpl"/>
+		<constructor-arg index="2" ref="vendorResourceDaoImpl"/>
+		<constructor-arg index="3" ref="resourceScheduleDao"/>
+		<constructor-arg index="4" ref="locationDaoImpl"/>
+		<constructor-arg index="5" ref="activityDaoImpl"/>
+		<constructor-arg index="6" ref="userProfileDaoImpl"/>
+		<constructor-arg index="7" ref="activityRegistryBOImpl"/>
+		<constructor-arg index="8" ref="zipDaoImpl"/>
+		<constructor-arg index="9" ref="emailTemplateBean"/>		
+		<property name="transactionManager">
+            <ref bean="dsTransactionManagerMain"/>
+        </property>
+        <property name="auditBO">
+            <ref bean="auditBoImpl"/>
+        </property>
+        
+        <property name="searchPortalBO">
+            <ref bean="searchPortalBOImpl"/>
+        </property>
+	</bean>
+	
+</beans>

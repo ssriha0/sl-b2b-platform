@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar version="2.1" xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/ejb-jar_2_1.xsd">
+	<display-name>Wallet.ValueLink.EJB</display-name>
+	<enterprise-beans>
+		<message-driven>
+			<display-name>ValueLinkResponseBean</display-name>
+			<ejb-name>ValueLinkResponseBean</ejb-name>
+			<ejb-class>com.servicelive.wallet.valuelink.ejb.ValueLinkResponseBean</ejb-class>
+			<transaction-type>Container</transaction-type>
+			<message-destination-type>javax.jms.Queue</message-destination-type>
+			<activation-config>
+				<activation-config-property>
+					<activation-config-property-name>channel</activation-config-property-name>
+					<activation-config-property-value>SERVLIVE.SVRCONN</activation-config-property-value>
+				</activation-config-property>
+				<activation-config-property>
+					<activation-config-property-name>queueManager</activation-config-property-name>
+					<activation-config-property-value>SQCT0086</activation-config-property-value>
+				</activation-config-property>
+				<activation-config-property>
+					<activation-config-property-name>transportType</activation-config-property-name>
+					<activation-config-property-value>CLIENT</activation-config-property-value>
+				</activation-config-property>
+				<activation-config-property>
+					<activation-config-property-name>hostName</activation-config-property-name>
+					<activation-config-property-value>hfdvslmq01.vm.itg.corp.us.shldcorp.com</activation-config-property-value>
+				</activation-config-property>
+				<activation-config-property>
+					<activation-config-property-name>port</activation-config-property-name>
+					<activation-config-property-value>1414</activation-config-property-value>
+				</activation-config-property>
+			<!--<activation-config-property>
+					<activation-config-property-name>username</activation-config-property-name>
+					<activation-config-property-value>*****</activation-config-property-value>
+				</activation-config-property>
+				<activation-config-property>
+					<activation-config-property-name>password</activation-config-property-name>
+					<activation-config-property-value>*****</activation-config-property-value>
+				</activation-config-property> -->
+			</activation-config>
+			<resource-ref>
+				<description>MySQL DS</description>
+				<res-ref-name>jdbc/ServiceLiveMySqlDS</res-ref-name>
+				<res-type>javax.sql.DataSource</res-type>
+				<res-auth>Container</res-auth>
+			</resource-ref>
+			<resource-ref>
+				<description>MySQL Finance DS</description>
+				<res-ref-name>jdbc/ServiceLiveMySqlFinanceDS</res-ref-name>
+				<res-type>javax.sql.DataSource</res-type>
+				<res-auth>Container</res-auth>
+			</resource-ref>
+			<security-identity>
+				<description></description>
+				<run-as>
+					<description></description>
+					<role-name></role-name>
+				</run-as>
+			</security-identity>
+		</message-driven>
+	</enterprise-beans>
+</ejb-jar>

@@ -1,0 +1,290 @@
+/*css for spn routing priorities */
+
+/*tab_routing_priority*/
+
+#successDiv{
+	background-color: #CEF6D8; 
+	display: none;color: #009900;
+	padding: 10px; 
+	width:100%;
+	border-left: 1px solid #CCCCCC;
+	border-right: 1px solid #CCCCCC;
+}
+
+.networkDiv{
+	background-color: #F2F2F2;
+	border: 1px solid #CCCCCC;
+	border-top: none;
+	padding: 10px;
+	width:100%;
+}
+
+.criteriaDiv{
+	display: none;
+	position: relative; 
+	margin-left: 500px; 
+	margin-top: -50px;
+	padding-bottom: 10px;
+}
+
+.changeLevel{
+	color: #0099FF;
+	font-size: 11px;
+	cursor: pointer;
+	padding-left:10px;
+}
+
+#editPriority{
+	height: 30px;
+	text-transform: none;
+	font-size: 13px;
+	width: 150px;
+	margin-left: 750px;
+	margin-top:-40px;
+	position:absolute;
+}
+
+.editNtwrkDiv{
+	padding: 10px;
+	width:35%;
+	word-wrap:break-word
+}
+
+.editCriteriaDiv{
+	position: relative; 
+	margin-left: 350px; 
+	margin-top: -50px;
+	padding-bottom: 10px;
+}
+
+#cancelEdit{
+	margin-left: 850px;
+	margin-top:-30px;
+	position:absolute;
+	color: #0099FF;
+	cursor: pointer;
+}
+
+.routingDiv{
+	width: 99.1%;
+	margin-left: 3px;
+	border: 1px solid #CCCCCC;
+	border-top: none;
+	display:none;
+}
+
+/*panel_view_priority*/
+
+.tierTabs{
+	height: 40px;
+	width: 50%;
+	font-size: 15px;
+	text-align: center;
+	padding-top: 10px;
+	cursor: pointer;
+	background-color: #E6E6E6;
+}
+
+.edit{
+	height: 30px;
+	text-transform: none;
+	font-size: 12px;
+	width: 80px;
+	margin-top: 2px;
+	position: absolute;
+	margin-left: 330px;
+}
+
+#dataScope{
+	border-bottom: 1px dashed black;
+	margin-left: 220px;
+}
+
+.calculate{
+	height: 30px;
+	text-transform: none;
+	font-size: 13px;
+	width: 190px;
+	margin-left: 77.5%;
+}
+
+.footerDiv{
+	height: 30px; 
+	background-color: #F2F2F2; 
+	padding: 10px;
+	border-top: 1px solid #CCCCCC;
+}
+
+#savePriorityBtn{
+	height: 30px;
+	text-transform: none;
+	font-size: 12px;
+	width: 80px;
+	margin-top: 2px;
+	position: absolute;
+	margin-left: 75%;
+}
+
+.overflowInfo{
+	border: 2px solid #CCCCCC;
+	background-color: #FFFFFF; 
+	width: 15%;
+	z-index: 99999; 
+	position: absolute;
+	text-align: left; 
+	margin-left: 19%; 
+	margin-top: -70px;
+	display: none;
+}
+
+.overflow{
+	background-color: #F2F2F2;
+	border-bottom: 1px solid #CCCCCC; 
+	padding: 5px;
+}
+
+.save{
+	height: 30px;
+	font-size: 13px;
+	width: 80px;
+	margin-left: 90%;
+	margin-top: -25px;
+}
+
+/*coverage filters*/
+
+.filterDiv{
+	background-color: #F2F2F2;
+	padding: 10px;
+	border: 1px solid #CCCCCC;
+}
+
+.tabPHdr1{
+	border: 1px solid #CCCCCC;
+	width: 27% !important;
+	cursor: pointer !important;
+}
+
+.tabPHdr2{
+	border: 1px solid #CCCCCC;
+	width: 23% !important;
+	cursor: pointer !important;
+}
+
+.tabPCol1{
+	border-right: 1px solid #CCCCCC;
+	border-bottom: 1px solid #CCCCCC;
+	background-color: #ffffff;
+	width: 27% !important;
+}
+
+.tabPCol2{
+	border-right: 1px solid #CCCCCC;
+	border-bottom: 1px solid #CCCCCC;
+	background-color: #ffffff;
+	width: 23%;
+}
+
+.calDis{
+	background: none;
+	background-color: #F5DA81;
+	color: #848484;
+	cursor: auto; 
+	border: none;
+}
+
+.perfChart{
+	position: absolute;
+	width: 0%;
+	margin-left: 30%; 
+	margin-top: -80px;
+	display: none;
+	float: right;
+}
+
+.tiertabClass{
+	margin-left: 50%;
+	margin-top: -50px;
+	border-left: 1px solid #CCCCCC;
+	border-right: 1px solid #CCCCCC
+}
+
+/* .provfirm{
+	color:#FF00FF;
+} */
+
+.tab {
+    display:inline-block;
+	float:left;
+	width:50%;
+	font-size: 15px;
+}
+.tab a {
+    display:block;
+    position:relative;
+    color:#333;
+    text-decoration:none;
+    text-align:center;
+    padding:1em 0;
+    border-top:1px solid #ddd;
+    background: #D6D6D6;
+}
+.tab a:hover {
+    background:#aaa;
+    color:#000;
+}
+
+.active a {
+    color:#000;
+    pointer-events: none;
+    cursor: default;
+    background: #fff;
+}
+
+.disabled a {
+    background:#E3E3E3;
+    color:#888;
+    pointer-events: none;
+    cursor: default;
+}
+
+.tab-wrap .tab a:after, .tab-wrap .tab a:before {
+    border-style: solid;
+    content: "";
+    display: block;
+    position: absolute;
+    z-index:999;
+}
+
+.tab-wrap .tab a:after {
+    border-color: transparent transparent transparent #D6D6D6;
+    border-width: 26px;
+    right: -51px;
+    top: 0px;
+}
+
+.tab-wrap .tab a:before {
+    border-color: transparent transparent transparent #888;
+    border-width: 26px;
+    right: -52px;
+    top: 0px;
+    z-index:998;
+}
+
+.tab-wrap .tab:hover a:after {
+    border-color: transparent transparent transparent #aaa;
+}
+
+.tab-wrap .active a:after, .tab-wrap .active:hover a:after {
+    border-color: transparent transparent transparent #fff;
+}
+
+.tab-wrap .tab:last-child a:after, .tab-wrap .tab:last-child a:before {
+    border:none;
+}
+
+.editedSPN {
+	display:none;
+	width:35%;
+	word-wrap:break-word
+}

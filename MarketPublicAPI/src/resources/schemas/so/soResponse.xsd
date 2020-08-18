@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/soResponse" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" targetNamespace="http://www.servicelive.com/namespaces/soResponse" elementFormDefault="qualified" jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+	<xs:include schemaLocation="soCommon.xsd"/>
+	<xs:element name="soResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="results"/>
+				<xs:element name="orderstatus" type="soStatus" minOccurs="0"/>
+				<xs:element name="sectionGeneral" type="soSectionGeneralType" minOccurs="0"/>
+				<xs:element name="scopeOfWork" type="soSectionSOWType" minOccurs="0"/>
+				<xs:element name="serviceLocation" type="LocationType" minOccurs="0"/>
+				<xs:element name="schedule" type="ScheduleType" minOccurs="0"/>
+				<xs:element name="pricing" type="SOPricingType" minOccurs="0"/>
+				<xs:element name="contacts" type="ContactsType" minOccurs="0"/>
+				<xs:element name="attachments" type="AttachmentsType" minOccurs="0"/>
+				<xs:element name="parts" type="PartsType" minOccurs="0"/>
+				<xs:element name="customReferences" type="CustomReferencesType" minOccurs="0"/>
+				<xs:element name="notes" type="NotesType" minOccurs="0"/>
+				<xs:element name="history" type="SOHistoryType" minOccurs="0"/>
+				<xs:element name="routedProviders" type="RoutedProvidersType" minOccurs="0"/>
+				
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:decimal"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="results">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="result" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="error" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="result">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="code"/>
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="error">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="code"/>
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

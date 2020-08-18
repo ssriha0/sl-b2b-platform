@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap>
+
+	<typeAlias alias="ptdRecordTypeVO" 
+		type="com.newco.marketplace.dto.vo.ptd.PTDRecordTypeVO"/>
+	<typeAlias alias="fullfillmentVLAccounts"
+		type="com.newco.marketplace.dto.vo.fullfillment.FullfillmentVLAccountsVO" />
+	<typeAlias alias="ptdProcessLogVO" 
+		type="com.newco.marketplace.dto.vo.ptd.PTDProcessLogVO"/>
+	<typeAlias alias="fullfillmentEntryVO" 
+		type="com.newco.marketplace.dto.vo.fullfillment.FullfillmentEntryVO"/>
+	<typeAlias alias="fullfillmentEntry"
+		type="com.newco.marketplace.dto.vo.fullfillment.FullfillmentEntryVO" />
+	<typeAlias alias="ptdFullfillmentEntryVO" 
+		type="com.newco.marketplace.dto.vo.ptd.PTDFullfillmentEntryVO"/>			
+	<typeAlias alias="ptdEntryVO" 
+		type="com.newco.marketplace.dto.vo.ptd.PtdEntryVO"/>			
+		
+	<typeAlias alias="ptdFullfillmentEntryVO" 
+		type="com.newco.marketplace.dto.vo.ptd.PTDFullfillmentEntryVO"/>	
+	<select id="ptdRecordTypeQuery.select" parameterClass="java.lang.String" resultClass="ptdRecordTypeVO">
+		Select ptd_detail_id as ptdDetailId, ptd_short_alias as ptdShortAlias, 
+		field_data_type as fieldDataType, field_start_position as fieldStartPosition,
+		field_end_position fieldEndPosition, field_length fieldLength, field_name fieldName  
+		from lu_ptd_detail detail, lu_ptd_template template 
+		where detail.ptd_record_type_id=template.ptd_record_type_id and 
+		ptd_short_alias=#shortAlias#
+	</select>
+	<insert id="ptdprocessLog.insert" parameterClass="ptdProcessLogVO">
+		insert into ptd_process_log (ptd_process_status, ptd_transactions_received, ptd_transactions_updated, process_run_date, 
+		ptd_sequence_number, prev_sequence_number )
+	    values (#ptdProcessStatus#, #ptdTransactionsReceived#,#ptdTransactionsUpdated#,
+	    #processRunDate#,#ptdSequenceNumber#,#prevSequenceNumber#)
+        <selectKey resultClass="int">
+            SELECT last_insert_id() as ptd_log_id
+        </selectKey>   
+	</insert>
+	
+	<update id="ptdprocessLog.update" parameterClass="ptdProcessLogVO">
+		update ptd_process_log set ptd_transactions_updated = #ptdTransactionsUpdated#
+		where ptd_log_id = #ptdLogId#	    
+	</update>
+
+
+	<update id="fullfillmentEntryPtd.update" parameterClass="ptdFullfillmentEntryVO">
+		update fullfillment_entry  set 
+		<dynamic>
+		<isNotNull property="ptdRequestCode">
+			ptd_request_code=#ptdRequestCode#
+		</isNotNull>
+		<isNotNull property="ptdResponseCode" prepend=",">
+			ptd_response_code=#ptdResponseCode#
+		</isNotNull>
+		<isNotNull property="ptdReversalFlag" prepend=",">
+			ptd_reversal_flag=#ptdReversalFlag#
+		</isNotNull>
+		<isNotNull property="ptdAuthCode" prepend=",">
+			ptd_auth_code=#ptdAuthCode#
+		</isNotNull>
+		<isNotNull property="ptdReconsiledInd" prepend=",">
+			ptd_reconsiled_ind=#ptdReconsiledInd#
+		</isNotNull>		
+		, ptd_reconsiled_date=now(), modified_date=now() 
+		
+		</dynamic>  where fullfillment_entry_id=#fullfillmentEntryId#
+	</update>
+	
+	<insert id="ptdErrorTransactions.insert" parameterClass="ptdFullfillmentEntryVO">
+		insert into ptd_transactions (fullfillment_entry_id, v1_account_number, ptd_request_code, 
+		ptd_response_code, ptd_reversal_flag,trans_amount, entry_type_id,created_date,updated_date,ptd_log_id,ptd_error_id, entry_date )
+	    values (#fullfillmentEntryId#, #primaryAccountNumber#,#ptdRequestCode#,
+	    #ptdResponseCode#,#ptdReversalFlag#,#transAmount#, #entryTypeId#,#createdDate#,#modifiedDate#,#ptdLogId#, #ptdErrorCode#, NOW())
+	</insert>
+	
+	<update id="fulllfillmentEntryPtd.update2">
+	update fullfillment_entry set ptd_reconsiled_ind=10, modified_date=now(), ptd_reconsiled_date=now() where reconsiled_ind in (Select action_code_id from lu_fullfillment_action_codes
+	where action_code not in (000, 002, 080,081,082))
+	</update>
+	
+	<update id="fulllfillmentEntryPtd.update1" parameterClass="fullfillmentEntryVO">
+	update fullfillment_entry set ptd_reconsiled_ind=10, modified_date=now(), ptd_reconsiled_date=now(),reconsiled_ind = 2,reconsiled_date=now() where fullfillment_grp_id  = #fullfillmentGroupId#
+	and reconsiled_ind is null
+	</update>
+	
+	<select id="fulllfillmentEntryPtd.select" resultClass="fullfillmentEntryVO">
+	select fullfillment_grp_id as fullfillmentGroupId,fac.action_code as actionCode,fac.action_desc as actionCodeDesc  from fullfillment_entry fe,
+	lu_fullfillment_action_codes fac where fe.reconsiled_ind=fac.action_code_id and	fac.action_code not in (000, 002, 080,081,082)
+	</select>
+		
+	<update id="fulllfillmentEntryPtdMark.update" parameterClass="java.lang.Integer">
+		update fullfillment_entry set ptd_reconsiled_ind=#ind#
+	</update>
+	<update id="fulllfillmentPtdMarkMyTran.update" parameterClass="ptdFullfillmentEntryVO">
+	update fullfillment_entry set ptd_reconsiled_ind=10,ptd_reconsiled_date=now(),modified_date=now()  where fullfillment_entry_id=#fullfillmentEntryId# 
+	</update>
+	
+	<!--  <select id="sltransactions.select"  resultClass="java.lang.Long">
+	Select fullfillment_entry_id as fullfillmentEntryId from fullfillment_entry where created_date <![CDATA[ < ]]> DATE_SUB(sysdate(),INTERVAL 2 DAY) and
+	ptd_reconsiled_ind is null
+	</select> -->
+	<select id="sltransactions.select" resultClass="java.lang.Long">
+	SELECT fullfillment_entry_id
+  	FROM fullfillment_entry,
+       (SELECT min(sort_order)  AS sort_order, fullfillment_grp_id
+          FROM fullfillment_entry
+         WHERE created_date <![CDATA[ < ]]> TIMESTAMP(#time#)
+           AND created_date <![CDATA[ > ]]> DATE_SUB(TIMESTAMP(#time#),INTERVAL 24 HOUR)
+           AND ptd_reconsiled_ind IS NULL
+         GROUP BY fullfillment_grp_id) AS fullfillmentGroups
+ 		WHERE fullfillment_entry.fullfillment_grp_id =
+          fullfillmentGroups.fullfillment_grp_id
+       AND fullfillment_entry.sort_order = fullfillmentGroups.sort_order
+       AND created_date <![CDATA[ < ]]> TIMESTAMP(#time#)
+       AND created_date <![CDATA[ > ]]> DATE_SUB(TIMESTAMP(#time#),INTERVAL 24 HOUR)
+       AND ptd_reconsiled_ind IS NULL
+     </select>
+	
+	<select id="ptdErrorTransactions.select"  resultClass="ptdFullfillmentEntryVO">
+	Select ptd_transaction_id as ptdTransactionId, fullfillment_entry_id as fullfillmentEntryId, v1_account_number as v1AccountNo, ptd_request_code as ptdRequestCode,ptd_response_code as ptdResponseCode, 
+	ptd_reversal_flag as ptdReversalFlag,trans_amount as transAmount, entry_type_id as entryTypeId, created_date as createdDate from ptd_transactions where 
+	email_sent_flag is null
+	</select>
+	<select id="ptdErrorTransaction.select"  resultClass="ptdFullfillmentEntryVO" parameterClass="java.lang.Long">
+	Select ptd_transaction_id as ptdTransactionId, fullfillment_entry_id as fullfillmentEntryId, v1_account_number as v1AccountNo, ptd_request_code as ptdRequestCode,ptd_response_code as ptdResponseCode, 
+	ptd_reversal_flag as ptdReversalFlag,trans_amount as transAmount, entry_type_id as entryTypeId, created_date as createdDate from ptd_transactions where 
+	fullfillment_entry_id=#id#
+	</select>
+	<delete id="ptdTransactions.delete" parameterClass="java.lang.Long">
+		delete from ptd_transactions where fullfillment_entry_id =#id#
+	</delete>
+	<delete id="ptdTransactionsAll.delete" >
+		delete from ptd_transactions
+	</delete>
+	<delete id="ptdTransactionsMultiple.delete" parameterClass="java.util.ArrayList">
+		delete from ptd_transactions where ptd_transaction_id in 
+			<iterate  open="("
+			close=")" conjunction=", ">
+			#ptdTransactionIds[]#
+		</iterate>
+	</delete>
+	<select id="v1Accounts.select"  resultClass="fullfillmentVLAccounts" parameterClass="java.lang.String">
+	SELECT 
+			ledger_entity_id	  as ledgerEntityId,
+			entity_type_id		  as entityTypeId,
+			v1_account_no		  as v1AccountNo,
+			v2_account_no		  as v2AccountNo
+		FROM fullfillment_vlaccounts
+		WHERE v1_account_no=#v1AccountNo#
+	</select>
+	<update id="ptdTransactionEmailSent.update">
+	update ptd_transactions set email_sent_flag='YES' 
+	</update>
+	
+	<update id="fullfillmentGroupReconciliation.update"  parameterClass="java.lang.Long">
+		update fullfillment_entry set ptd_reconsiled_ind=10,ptd_reconsiled_date = now(),reconsiled_ind=2,reconsiled_date=now() where fullfillment_grp_id=#fullfillmentGroupId# and reconsiled_ind is null 
+	</update>
+
+	<update id="fullfillmentEntryReconciliation.update" parameterClass="java.util.HashMap">
+		update fullfillment_entry set ptd_reconsiled_ind=10,ptd_reconsiled_date = now() where fullfillment_entry_id=#fullfillmentEntryId# and reconsiled_ind = #reconciledInd# 
+	</update>
+	
+	<insert id="ptdFileTransactions.insert" parameterClass="ptdEntryVO">
+		insert into ptd_file_transactions (
+			fullfillment_entry_id
+			,v1_account_number
+			,ptd_request_code
+			,ptd_response_code
+			,ptd_reversal_flag
+			,ptd_source_code
+			,ptd_auth_code
+			,trans_amount
+			,entry_type_id
+			,created_date
+			,updated_date
+			,ptd_log_id
+			,entry_date 
+			,record_form_indicator
+			,reserved_1
+			,reserved_2
+			,merchant_id
+			,reserved_3
+			,reserved_4
+			,alternate_merchant_number
+			,terminal_id
+			,terminal_transaction_number
+			,base_amount
+			,reporting_amount
+			,base_currency_code
+			,local_currency_code
+			,reporting_currency_code
+			,exchange_code
+			,clerk_id
+			,balance_sign
+			,base_balance
+			,consortium_code
+			,promotion_code
+			,fdms_local_timestamp
+			,terminal_local_timestamp
+			,replaced_by_account_number
+			,reserved_5
+			,user_id
+			,card_class
+			,expiration_date
+			,card_cost
+			,escheatable_transaction
+			,reference_number
+			,user_2
+			,local_cash_back
+			,base_cash_back
+			,reporting_cash_back
+			,local_lock_amount
+			,base_lock_amount
+			,reversed_timestamp
+			,processed_date
+			,original_request_code
+			,internal_request_code
+			,call_trace_info
+			,uplift_amount
+			,gmt_timestamp
+			,alternate_account_number
+			,email_sent_flag
+			)
+		values (
+			#fullfillmentEntryId#
+			,#primaryAccountNumber#
+			,#ptdRequestCode#
+			,#ptdResponseCode#
+			,#ptdReversalFlag#
+			,#ptdSourceCode#
+			,#ptdAuthCode#
+			,#transAmount#
+			,#entryTypeId#
+			,#createdDate#
+			,#modifiedDate#
+			,#ptdLogId#
+			, NOW()
+			,#recordFormIndicator#
+			,#reserved1#
+			,#reserved2#
+			,#merchantId#
+			,#reserved3#
+			,#reserved4#
+			,#alternateMerchantNumber#
+			,#terminalId#
+			,#terminalTransactionNumber#
+			,#baseAmount#
+			,#reportingAmount#
+			,#baseCurrencyCode#
+			,#localCurrencyCode#
+			,#reportingCurrencyCode#
+			,#exchangeCode#
+			,#clerkId#
+			,#balanceSign#
+			,#baseBalance#
+			,#consortiumCode#
+			,#promotionCode#
+			,#fdmsLocalTimestamp#
+			,#terminalLocalTimestamp#
+			,#replacedByAccountNumber#
+			,#reserved5#
+			,#userId#
+			,#cardClass#
+			,#expirationDate#
+			,#cardCost#
+			,#escheaTableTransaction#
+			,#referenceNumber#
+			,#user2#
+			,#localCashback#
+			,#baseCashback#
+			,#reportingCashback#
+			,#localLockAmount#
+			,#baseLockAmount#
+			,#reversedTimestamp#
+			,#processedDate#
+			,#originalRequestCode#
+			,#internalRequestCode#
+			,#callTraceInfo#
+			,#upliftAmount#
+			,#gmtTimestamp#
+			,#alternateAccountNumber#
+			,#emailSentFlag#	
+			)
+		<selectKey resultClass="int">
+			SELECT last_insert_id() as ptd_transaction_id
+		</selectKey>   
+	</insert>
+	
+	<select id="fullfillmentEntry.select" parameterClass="java.lang.Long" resultClass="fullfillmentEntry">
+		SELECT 
+			fe.fullfillment_entry_id		as	fullfillmentEntryId, 
+			fe.fullfillment_grp_id			as	fullfillmentGroupId, 
+			fe.bus_trans_id					as	busTransId, 
+			fe.fullfillment_entry_rule_id	as	fullfillmentEntryRuleId, 
+			fe.ledger_entity_id				as	ledgerEntityId, 
+			fe.entity_type_id				as	entityTypeId,
+			fe.entry_type_id				as	entryTypeId, 
+			fe.entry_date					as	entryDate, 
+			fe.pan							as	primaryAccountNumber, 
+			fe.so_id						as	soId, 
+			fe.reference_no					as	referenceNo,
+			fe.trans_amt					as	transAmount, 
+			fe.entry_remark					as	entryRemark, 
+			fe.sort_order					as	sortOrder,
+			fe.message_type_id				as	messageTypeId,
+			fe.promo_code_id				as 	promoCodeId,
+			fe.next_fullfillment_entry_id	as	nextFullfillmentEntryId,
+			fe.reconsiled_ind				as	reconsiledInd, 
+			fe.reconsiled_date				as	reconsiledDate, 
+			fe.ptd_reconsiled_ind			as	ptdReconsiledInd,
+			fe.ptd_reconsiled_date			as	ptdReconsiledDate, 
+			fe.ach_reconsiled_ind			as	achReconsiledInd, 
+			fe.ach_reconsiled_date			as	achReconsiledDate, 
+			fe.cc_authorized_ind			as	ccAuthorizedInd, 
+			fe.cc_authorized_date			as	ccAuthorizedDate,
+			fe.cc_authorization_no			as	ccAuthorizationNo,
+			fe.authorization_id				as	authorizationId,
+			fe.stan_id						as	stanId,
+			fe.retrieval_ref_id				as	retrievalRefId,
+			fe.created_date					as	createdDate, 
+			fe.modified_date				as	modifiedDate, 
+			fe.modified_by					as	modifiedBy
+		FROM fullfillment_entry fe
+   	   WHERE fullfillment_entry_id = #fullfillmentEntryId#
+	</select>
+	
+</sqlMap>

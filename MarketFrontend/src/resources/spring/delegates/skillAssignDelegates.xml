@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<!-- Start DTO  Loading -->
+	<bean id="skillAssignDto" class="com.newco.marketplace.web.dto.provider.ResourceSkillAssignDto" scope="prototype"/>
+	
+	<!-- End DTO  Loading -->
+		<!--Start DTO-VOMapper -->
+	<bean id="skillAssignMapper" class="com.newco.marketplace.web.utils.SkillAssignMapper" scope="prototype"/>
+	<!--End DTO-VOMapper  -->
+	
+	<!-- Start Delegate  Loading -->
+	<bean name="skillAssignDelegate" class="com.newco.marketplace.web.delegatesImpl.provider.SkillAssignDelegateImpl">
+		<constructor-arg index="0" ref="skillAssignBOImpl"/>
+		<constructor-arg index="1" ref="skillAssignMapper"/>
+ 	</bean>
+	
+	<!-- End Delegate  Loading -->
+</beans>	

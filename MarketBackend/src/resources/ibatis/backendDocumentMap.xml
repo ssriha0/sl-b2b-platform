@@ -1,0 +1,884 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="document">
+
+	<typeAlias alias="document" type="com.newco.marketplace.dto.vo.DocumentVO"/>
+	<typeAlias alias="buyerDocumentType" type="com.newco.marketplace.dto.vo.BuyerDocumentTypeVO"/>
+	<typeAlias alias="so_document" type="com.newco.marketplace.dto.vo.serviceorder.SoDocumentVO"/>
+	<typeAlias alias="buyer_document" type="com.newco.marketplace.dto.vo.buyer.BuyerDocumentVO"/>
+	<typeAlias alias="spn_network_document" type="com.newco.marketplace.dto.vo.spn.SPNNetworkDocumentVO"/>
+	<typeAlias alias="provider_document" type="com.newco.marketplace.dto.vo.provider.ProviderDocumentVO" />
+	<typeAlias alias="doc_contact" type="com.newco.marketplace.vo.provider.Contact" />
+	<typeAlias alias="vendor_document" type="com.newco.marketplace.dto.vo.provider.VendorDocumentVO" />
+	
+	
+	<resultMap class="document" id="so_document">
+		<result property="docCategoryId" column="doc_category_id" />
+		<result property="documentId" column="document_id" />
+		<result property="vendorId" column="vendor_id" />
+		<result property="description" column="descr" />
+		<result property="title" column="title" />
+		<result property="fileName" column="file_name" />
+		<result property="format" column="format" />
+		<result property="source" column="source" />
+		<result property="keywords" column="keywords" />
+		<result property="expireDate" column="expire_date" />
+		<result property="purgeDate" column="purge_date" />
+		<result property="modifiedDate" column="modified_date" />
+		<result property="roleId" column="role_id" />
+		<result property="delInd" column="delete_ind" />
+		<result property="docPath" column="doc_path" />
+		<result property="docSize" column="doc_size" />
+		<result property="createdDate" column="created_date" />
+		<result property="entityId" column="entity_id" />
+		<result property="soId" column="so_id" />
+		<result property="contact" column="entityId=entity_id, roleId=role_id" select="docuploadedBy.query" />
+	</resultMap>
+	
+
+	<!-- Start of mappings for the document table  -->
+	
+	<select id="document.query_provider_primary_photo" parameterClass="java.lang.Integer" resultClass="provider_document">
+		
+		Select resource_id as resourceId, 
+				document_id as documentId, 
+				reviewed_ind as reviewedInd, 
+				primary_ind as primaryInd, 
+				created_date as createdDate, 
+				modified_date as modifiedDate, 
+				modified_by as modifiedBY
+		from vendor_resource_document vd 
+		where resource_id = #resourceId#
+				and primary_ind = 1
+		order by modified_date desc
+	</select>
+	
+	
+	<select id="document.query_provider_all_photo" parameterClass="java.lang.Integer" resultClass="provider_document">
+		
+		Select resource_id as resourceId, 
+				document_id as documentId, 
+				reviewed_ind as reviewedInd, 
+				primary_ind as primaryInd, 
+				created_date as createdDate, 
+				modified_date as modifiedDate, 
+				modified_by as modifiedBY
+		from vendor_resource_document vd 
+		where resource_id = #resourceId#
+		order by modified_date desc
+	</select>
+	<select id="document.query_firm_logo" parameterClass="java.lang.Integer" resultClass="vendor_document">
+		
+		Select vendor_id as vendorId, 
+				document_id as documentId, 
+				created_date as createdDate, 
+				modified_date as modifiedDate, 
+				modified_by as modifiedBy,
+				created_by as createdBy
+		from vendor_document vd 
+		where vendor_id = #vendorId#
+	</select> 
+		
+	<update id="document.update_prvoider_photo" parameterClass="provider_document">
+		update vendor_resource_document
+				<dynamic prepend="	set">
+				<isNotNull prepend=", " property="reviewedInd">reviewed_ind = #reviewedInd#</isNotNull>
+				<isNotNull prepend=", " property="primaryInd">primary_ind = #primaryInd#</isNotNull>
+				<isNotNull prepend=", " property="createdDate">created_date = #createdDate#</isNotNull>
+				<isNotNull prepend=", " property="modifiedDate">modified_date = #modifiedDate#</isNotNull>
+				<isNotNull prepend=", " property="modifiedBY">modified_by = #modifiedBY#</isNotNull>
+    		</dynamic>		
+		where document_id = #documentId# and resource_id = #resourceId#
+	</update>	
+	
+	<update id="document.update_firm_logo" parameterClass="vendor_document">
+		update vendor_document
+				<dynamic prepend="	set">
+				<isNotNull prepend=", " property="documentId">document_id = #documentId#</isNotNull>
+				<isNotNull prepend=", " property="modifiedDate">modified_date = #modifiedDate#</isNotNull>
+				<isNotNull prepend=", " property="modifiedBy">modified_by = #modifiedBy#</isNotNull>
+    		</dynamic>		
+		where vendor_id = #vendorId#
+	</update>
+		
+	<delete id="document.delete_prvoider_photo" parameterClass="provider_document">
+		DELETE FROM vendor_resource_document 
+			WHERE document_id = #documentId# and resource_id = #resourceId#
+	</delete>
+	
+	<delete id="document.delete_vendor_logo" parameterClass="vendor_document">
+		DELETE FROM vendor_document 
+			WHERE document_id = #documentId# and vendor_id = #vendorId#
+	</delete>
+		
+	<insert id="document.insert_provider_photo" parameterClass="provider_document">
+	
+		insert into vendor_resource_document
+		 (resource_id, 
+		 document_id, 
+		 reviewed_ind, 
+		 created_date, 
+		 modified_date, 
+		 modified_by, 
+		 primary_ind
+		 ) 
+		values(#resourceId#,
+			   #documentId#,
+			   #reviewedInd#,
+			   #createdDate#,
+			   #modifiedDate#,
+			   #modifiedBY#,
+			   #primaryInd#
+			  )
+       <selectKey resultClass="int">
+            SELECT last_insert_id() as documentId
+        </selectKey>    
+	</insert>
+	<insert id="document.insert_firm_logo" parameterClass="vendor_document">
+	
+		insert into vendor_document
+		 (vendor_id, 
+		 document_id, 
+		 doc_category_id, 
+		 created_date, 
+		 modified_date, 
+		 created_by, 
+		 modified_by
+		 ) 
+		values(#vendorId#,
+			   #documentId#,
+			   #categoryId#,
+			   #createdDate#,
+			   #modifiedDate#,
+			   #createdBy#,
+			   #modifiedBy#
+			  )
+       <selectKey resultClass="int">
+            SELECT last_insert_id() as documentId
+        </selectKey>    
+	</insert>
+		
+	<insert id="buyer.document.addDocType" parameterClass="buyerDocumentType">
+	insert into buyer_upload_doc_types
+		 (buyer_id,document_title,mandatory_ind,source,modified_by,modified_date) 
+		values(#buyerId#,#documentTitle#,#mandatoryInd#,#sourceId#,#modifiedBy#,NOW())
+	</insert>
+	
+	<update id="buyer.document.deleteDocType" parameterClass="java.lang.Integer">
+		UPDATE buyer_upload_doc_types SET delete_ind=1
+			WHERE buyer_upload_doc_type_id=#buyerCompDocId#
+	</update>
+	
+	<select id="document.query_metadata_by_document_id" parameterClass="document" resultClass="document">		
+		select doc_category_id as docCategoryId, 
+			   	document_id AS documentId,
+				vendor_id AS vendorId,
+				descr as description, 
+				title as title,
+				file_name as fileName,
+				format as format,
+				source as createdDate, 
+				keywords as keywords, 
+				expire_date as expireDate, 
+				purge_date as purgeDate,
+				modified_date as  modifiedDate,
+				role_id as roleId,
+				delete_ind AS deleteInd,
+				doc_path as docPath,
+				doc_size as docSize,
+				created_date as createdDate,
+				entity_id as entityId
+		from document 
+		where document_id = #documentId#
+	</select>
+	
+	<select id="fetchDocumentList.query" parameterClass="java.util.HashMap" resultClass="document">
+		select b.buyer_id as entityId, 
+		doc.title as title, 
+		doc.descr as description, 
+		doc.file_name as fileName, 
+		doc.doc_path as docPath,
+		doc.document_id as documentId,
+		doc.doc_size as docSize
+		from buyer as b
+		JOIN buyer_document as bdoc ON bdoc.buyer_id = b.buyer_id
+		JOIN document as doc ON bdoc.document_id = doc.document_id
+		where bdoc.doc_category_id = #docCategoryId# and b.buyer_id = #buyerId#
+	</select>
+	
+	<select id="document.query_buyerdocument_by_document_id" parameterClass="java.lang.Integer" resultClass="document">
+		select descr as description, 
+					title as title,
+					file_name as fileName,
+					format as format,
+					doc_path as docPath,
+					document_id as documentId
+		 from document 
+		 where document_id=#documentId#
+	</select>
+	
+	<parameterMap id="findDocumentsByBuyerID-param" class="java.util.Map">
+        <parameter property="doc_category_id"/>
+		<parameter property="buyer_id"/>
+    </parameterMap>
+	<select id="buyer.fetchDocumentList.query" parameterMap="findDocumentsByBuyerID-param" resultClass="document">
+		select 	doc.document_id AS documentId,
+				doc.vendor_id AS vendorId,
+				doc.descr as description, 
+				doc.title as title,
+				doc.file_name as fileName,
+				doc.format as format,
+				doc.source as source, 
+				doc.keywords as keywords, 
+				doc.expire_date as expireDate, 
+				doc.purge_date as purgeDate,
+				doc.modified_date as  modifiedDate,
+				doc.role_id as roleId,
+				doc.delete_ind AS deleteInd,
+				doc.doc_path as docPath,
+				doc.doc_size as docSize,
+				doc.created_date as createdDate,
+				doc.entity_id as entityId,
+				doc.doc_category_id AS docCategoryId
+		 from document doc
+		 inner join buyer_document bd on bd.document_id = doc.document_id
+		 where doc.doc_category_id = ? and bd.buyer_id = ? and delete_ind = 0 
+	</select>
+	
+	<parameterMap id="findBuyerDocumentByTitle-param" class="java.util.Map">
+        <parameter property="title"/>
+		<parameter property="buyer_id"/>
+    </parameterMap>
+	<select id="document.query_buyerdocument_by_title" parameterMap="findBuyerDocumentByTitle-param" resultClass="document">
+		select 	doc.document_id AS documentId,
+				doc.vendor_id AS vendorId,
+				doc.descr as description, 
+				doc.title as title,
+				doc.file_name as fileName,
+				doc.format as format,
+				doc.source as createdDate, 
+				doc.keywords as keywords, 
+				doc.expire_date as expireDate, 
+				doc.purge_date as purgeDate,
+				doc.modified_date as  modifiedDate,
+				doc.role_id as roleId,
+				doc.delete_ind AS deleteInd,
+				doc.doc_path as docPath,
+				doc.doc_size as docSize,
+				doc.created_date as createdDate,
+				doc.entity_id as entityId
+		 from document doc
+		 inner join buyer_document bd on bd.document_id = doc.document_id
+		 where doc.title = ? and bd.buyer_id = ? and doc.delete_ind = 0
+	</select>
+	
+	<select id="document.query_buyerdocument_by_buyerId" parameterClass="java.lang.Integer" resultClass="document">
+		SELECT
+		 		doc.document_id AS documentId,
+				doc.vendor_id AS vendorId,
+				doc.descr as description, 
+				doc.title as title,
+				doc.file_name as fileName,
+				doc.format as format,
+				doc.source as createdDate, 
+				doc.keywords as keywords, 
+				doc.expire_date as expireDate, 
+				doc.purge_date as purgeDate,
+				doc.modified_date as  modifiedDate,
+				doc.role_id as roleId,
+				doc.delete_ind AS deleteInd,
+				doc.doc_path as docPath,
+				doc.doc_size as docSize,
+				doc.created_date as createdDate,
+				doc.entity_id as entityId
+		 FROM 
+		 	document doc
+		 INNER join buyer_document bd ON bd.document_id = doc.document_id
+		 WHERE 
+		 	bd.buyer_id = #buyerId# 
+		 	AND bd.doc_category_id != 1
+		 	AND doc.delete_ind = 0
+	</select>
+	
+	
+	
+	<insert id="document_full.insert" parameterClass="document">
+		insert into document
+			(doc_category_id, 
+			vendor_id,
+			descr,
+			title,
+			file_name,
+			format,
+			source,
+			keywords,
+			expire_date,
+			purge_date,
+			role_id,
+			delete_ind, 
+			doc_path, 
+			doc_size,
+			entity_id,
+			document)			 
+		values(#docCategoryId#,
+			   #vendorId#,
+			   #description#,
+			   #title#,
+			   #fileName#,
+			   #format#,
+			   #source#,
+			   #keywords#,
+			   #expireDate#,
+			   #purgeDate#,
+			   #roleId#,
+			   0, 
+			   #docPath#, 
+			   #docSize#,
+			   #entityId#,
+			   #blobBytes#)
+       <selectKey resultClass="int">
+            SELECT last_insert_id() as documentId
+        </selectKey>    
+	</insert>
+	
+	
+	
+	
+	<update id="document.updateAll" parameterClass="document">
+		update document
+				<dynamic prepend="	set">
+				<isNotNull prepend=", " property="description">descr = #description#</isNotNull>
+				<isNotNull prepend=", " property="docCategoryId">doc_category_id = #docCategoryId#</isNotNull>
+				<isNotNull prepend=", " property="vendorId">vendor_id = #vendorId#</isNotNull>
+				<isNotNull prepend=", " property="description">descr = #description#</isNotNull>
+				<isNotNull prepend=", " property="title">title = #title#</isNotNull>
+				<isNotNull prepend=", " property="fileName">file_name = #fileName#</isNotNull>
+				<isNotNull prepend=", " property="format">format = #format#</isNotNull>
+				<isNotNull prepend=", " property="source">source = #source#</isNotNull>
+				<isNotNull prepend=", " property="keywords">keywords = #keywords#</isNotNull>
+				<isNotNull prepend=", " property="expireDate">expire_date = #expireDate#</isNotNull>
+				<isNotNull prepend=", " property="roleId">role_id = #roleId#</isNotNull>
+				<isNotNull prepend=", " property="entityId">entity_id = #entityId#</isNotNull>
+				<isNotNull prepend=", " property="delInd">del_ind = #delInd#</isNotNull>
+				<isNotNull prepend=", " property="docPath">doc_path = #docPath#</isNotNull>
+				<isNotNull prepend=", " property="docSize">doc_size = #docSize#</isNotNull>
+    		</dynamic>		
+		where document_id = #documentId#
+	</update>
+
+	
+	
+	<select id="document.query_validate_format" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT count(format) from lu_document_formats_allowed where format=#format#
+	</select>
+	<select id="document.query_valid_extensions" resultClass="java.lang.String">
+		select display_extension from lu_document_formats_allowed
+	</select>
+	
+	<!-- 	code cahnges for SLT-2231 -->
+	<select id="document.getAttachementsForEmails" parameterClass="java.lang.Integer" resultClass="document">
+	select doc_category_id as docCategoryId, 
+			   	document_id AS documentId,
+				vendor_id AS vendorId,
+				descr as description, 
+				title as title,
+				file_name as fileName,
+				delete_ind AS deleteInd,
+				doc_path as docPath,
+				doc_size as docSize,
+				created_date as createdDate,
+				entity_id as entityId
+		from document 
+		where document_id = #documentId#
+	</select>
+	
+	<!-- End of mappings for the document table -->
+
+	<!-- Start of mappings for the so_document table  -->
+	<insert id="so.document.insert" parameterClass="so_document">
+		insert into so_document
+			(document_id, so_id,doc_source)			 
+		values(#documentId#,  #soId#,#docSource#)   
+	</insert>
+
+	<select id="so.document.isAlreadyUploaded" parameterClass="document" resultClass="java.lang.Integer">
+         select count(document.document_id) as documentId
+          from so_document inner join document on so_document.document_id = document.document_id 
+         where so_document.so_id = #soId#
+           and document.file_name= #fileName#
+           and document.delete_ind = 0
+	</select>
+	
+	<select id="so.document.query_already_exists" parameterClass="document" resultClass="document">
+	select document.document_id AS documentId,
+			so_document.so_id as soId
+	  from so_document, document
+	 where so_document.document_id = document.document_id
+	   and so_document.so_id = #soId#
+	   and document.file_name= #fileName#
+	   and document.delete_ind = 0
+	</select>	
+	
+	<select id="so.document.query_metadata_by_document_id" parameterClass="java.lang.Integer" resultClass="document">
+		
+		select document.doc_category_id as docCategoryId, 
+			   	document.document_id AS documentId,
+				document.vendor_id AS vendorId,
+				document.descr as description, 
+				document.title as title,
+				document.file_name as fileName,
+				document.format as format,
+				document.source as createdDate, 
+				document.keywords as keywords, 
+				document.expire_date as expireDate, 
+				document.purge_date as purgeDate,
+				document.modified_date as  modifiedDate,
+				document.role_id as roleId,
+				document.delete_ind AS deleteInd,
+				document.doc_path as docPath,
+				document.doc_size as docSize,
+				document.created_date as createdDate,
+				document.entity_id as entityId,
+				so_document.so_id as soId,
+				so.buyer_id as companyId
+		from document, so_document, so_hdr so
+		where document.document_id = #documentId#
+		and document.document_id = so_document.document_id
+		and so_document.so_id = so.so_id
+	</select>
+	
+	<!-- <select id="so.document.query_by_document_id" parameterClass="java.lang.Integer" resultClass="document">
+		
+		select d.doc_category_id as docCategoryId, 
+			   	d.document_id AS documentId,
+				d.vendor_id AS vendorId,
+				d.descr as description, 
+				d.title as title,
+				d.file_name as fileName,
+				d.format as format,
+				d.source as createdDate, 
+				d.keywords as keywords, 
+				d.expire_date as expireDate, 
+				d.purge_date as purgeDate,				
+				d.modified_date as  modifiedDate,
+				d.role_id as roleId,
+				d.delete_ind AS deleteInd,
+				d.doc_path as docPath,
+				d.doc_size as docSize,
+				d.created_date as createdDate,
+				d.entity_id as entityId,
+				sd.so_id as soId,
+				so.buyer_id as companyId
+		from document d, so_document sd, so_hdr so
+		where d.document_id = #documentId#
+		and d.document_id = sd.document_id
+		and sd.so_id = so.so_id
+		and d.delete_ind = 0
+	</select> -->
+
+	<select id="so.document.query_by_so_id" parameterClass="java.util.Map" resultClass="document">
+		
+		select d.doc_category_id as docCategoryId, 
+			   	d.document_id AS documentId,
+				d.vendor_id AS vendorId,
+				d.descr as description, 
+				d.title as title,
+				d.file_name as fileName,
+				d.format as format,
+				d.source as createdDate, 
+				d.keywords as keywords, 
+				d.expire_date as expireDate, 
+				d.purge_date as purgeDate,
+				d.modified_date as  modifiedDate,
+				d.role_id as roleId,
+				d.delete_ind AS deleteInd,
+				d.doc_path as docPath,
+				d.doc_size as docSize,
+				d.created_date as createdDate,
+				d.entity_id as entityId,
+				sd.so_id as soId
+		from document d, so_document sd
+		where sd.so_id = #soId#
+		and d.document_id = sd.document_id
+		and d.delete_ind = 0
+		and d.file_name not like concat('%',#file_name#, '%')
+		and d.title NOT IN ('Customer Signature','Provider Signature')   
+	</select>
+
+	<select id="so.document.query_metadata_by_so_id" parameterClass="document" resultMap="so_document">
+		
+		select d.doc_category_id, 
+			   	d.document_id,
+				d.vendor_id,
+				d.descr, 
+				d.title,
+				d.file_name,
+				d.format,
+				d.source, 
+				d.keywords, 
+				d.expire_date, 
+				d.purge_date,
+				d.modified_date,
+				d.role_id,
+				d.delete_ind,
+				d.doc_path,
+				d.doc_size,
+				sd.created_date,
+				d.entity_id,
+				sd.so_id
+		from document d, so_document sd
+		where sd.so_id = #soId#
+		and d.document_id = sd.document_id
+		and d.delete_ind = 0
+		and d.file_name not like concat('%',#fileName#, '%')   
+		and d.title NOT IN ('Customer Signature','Provider Signature') 
+		<isNotNull property="docSource" >
+			<isEqual property="docSource" compareValue="CompleteForPayment">
+				AND sd.doc_source = 'CompleteForPayment'
+			</isEqual>
+		</isNotNull> 
+		order by d.created_date desc
+	</select>
+
+	
+	<select id="docuploadedBy.query" resultClass="doc_contact">
+		select first_name as firstName ,last_name as lastName from contact c 
+		<dynamic>
+			<isEqual property="roleId" compareValue="1">join vendor_resource r on r.contact_id=c.contact_id</isEqual>
+			<isEqual property="roleId" compareValue="3">join buyer_resource r on r.contact_id=c.contact_id</isEqual>
+			<isEqual property="roleId" compareValue="5">join buyer_resource r on r.contact_id=c.contact_id</isEqual>
+		</dynamic> 
+		where r.resource_id=#entityId#
+	</select>
+		
+	<select id="so.document.query_by_so_id_and_filename" parameterClass="document" resultClass="document">		
+			select document.doc_category_id as docCategoryId, 
+				   	document.document_id AS documentId,
+					document.vendor_id AS vendorId,
+					document.descr as description, 
+					document.title as title,
+					document.file_name as fileName,
+					document.format as format,
+					document.source as createdDate, 
+					document.keywords as keywords, 
+					document.expire_date as expireDate, 
+					document.purge_date as purgeDate,
+					document.modified_date as  modifiedDate,
+					document.role_id as roleId,
+					document.delete_ind AS deleteInd,
+					document.doc_path as docPath,
+					document.doc_size as docSize,
+					document.created_date as createdDate,
+					document.entity_id as entityId,
+					so_document.so_id as soId
+		  	from so_document, document
+		 	where so_document.document_id = document.document_id
+		   	and so_document.so_id = #soId#
+		   	and document.file_name= #fileName#
+		   	and document.delete_ind = 0
+	</select>
+<select id="so.document.query_get_required_documents" parameterClass="document" resultClass="document">		
+	SELECT d.title AS title, d.doc_category_id AS docCategoryId
+	FROM document d,
+  	so_document so_doc
+	WHERE so_doc.document_id = d.document_id
+	AND so_doc.document_id = d.document_id
+    AND d.delete_ind = 0
+    AND d.file_name NOT LIKE '%_Thumb%'
+    AND so_doc.so_id = #soId#
+    and d.title NOT IN ('Customer Signature','Provider Signature')
+</select>
+	
+	<select id="so.document.query_by_so_id_and_category" parameterClass="document" resultClass="document">		
+		select d.doc_category_id as docCategoryId, 
+			   	d.document_id AS documentId,
+				d.vendor_id AS vendorId,
+				d.descr as description, 
+				d.title as title,
+				d.file_name as fileName,
+				d.format as format,
+				d.source as createdDate, 
+				d.keywords as keywords, 
+				d.expire_date as expireDate, 
+				d.purge_date as purgeDate,
+				d.modified_date as  modifiedDate,
+				d.role_id as roleId,
+				d.delete_ind AS deleteInd,
+				d.doc_path as docPath,
+				d.doc_size as docSize,
+				d.created_date as createdDate,
+				d.entity_id as entityId,
+				sd.so_id as soId
+		from document d, so_document sd
+		where sd.so_id = #soId#
+		and d.document_id = sd.document_id
+		and d.delete_ind = 0
+		and d.doc_category_id = #docCategoryId#
+		and d.file_name not like concat('%',#fileName#, '%')   
+		and d.title NOT IN ('Customer Signature','Provider Signature')  
+	</select>
+
+	<select id="document.select.documentId.by.soId" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		select document_id from so_document where so_id=#soId#
+	</select>
+	
+	<delete id="document.delete.by.documentId" parameterClass="java.lang.Integer">
+		DELETE FROM document 
+			WHERE document_id = #documentId#
+	</delete>
+	
+	<delete id="document.delete.by.documentIds" parameterClass="list">
+		delete from document where 1!=1
+		<dynamic prepend="or" open="(" close=")">
+		<isNotEmpty>
+			document_id in 
+	   			 <iterate open="(" close=")" conjunction=",">#[]#</iterate>
+		</isNotEmpty>
+		</dynamic>
+	</delete>
+	<!-- End of mappings for the so_document table -->
+	
+
+
+	<!-- Start mappings for the buyer_document table -->
+	<insert id="buyer.document.insert" parameterClass="buyer_document">
+		insert into buyer_document
+			(document_id, buyer_id, doc_category_id)			 
+		values(#documentId#,  #buyerId#, #categoryId#)   
+	</insert>
+	
+	<select id="buyer.document.query_already_exists" parameterClass="document" resultClass="document">
+	select document.document_id AS documentId,
+			document.title as title
+	  from buyer_document, document
+	 where buyer_document.document_id = document.document_id
+	   and buyer_document.buyer_id = #companyId#
+	   and document.file_name= #fileName#
+	   and document.delete_ind = 0
+	</select>
+	
+	<select id="buyer.document.query_metadata_by_document_id" parameterClass="java.lang.Integer" resultClass="document">
+		
+		select document.doc_category_id as docCategoryId, 
+			   	document.document_id AS documentId,
+				document.vendor_id AS vendorId,
+				document.descr as description, 
+				document.title as title,
+				document.file_name as fileName,
+				document.format as format,
+				document.source as createdDate, 
+				document.keywords as keywords, 
+				document.expire_date as expireDate, 
+				document.purge_date as purgeDate,
+				document.modified_date as  modifiedDate,
+				document.role_id as roleId,
+				document.delete_ind AS deleteInd,
+				document.doc_path as docPath,
+				document.doc_size as docSize,
+				document.created_date as createdDate,
+				document.entity_id as entityId,
+				buyer_document.buyer_id as companyId
+		from document, buyer_document
+		where document.document_id = #documentId#
+		and document.document_id = buyer_document.document_id
+	</select>
+	
+	<!--  <select id="buyer.document.query_by_document_id" parameterClass="java.lang.Integer" resultClass="document">
+		
+		select d.doc_category_id as docCategoryId, 
+			   	d.document_id AS documentId,
+				d.vendor_id AS vendorId,
+				d.descr as description, 
+				d.title as title,
+				d.file_name as fileName,
+				d.format as format,
+				d.source as createdDate, 
+				d.keywords as keywords, 
+				d.expire_date as expireDate, 
+				d.purge_date as purgeDate,
+				d.modified_date as  modifiedDate,
+				d.role_id as roleId,
+				d.delete_ind AS deleteInd,
+				d.doc_path as docPath,
+				d.doc_size as docSize,
+				d.created_date as createdDate,
+				d.entity_id as entityId,
+				bd.buyer_id as companyId
+		from document d, buyer_document bd
+		where d.document_id = #documentId#
+		and bd.document_id = bd.document_id
+		and d.delete_ind = 0
+	</select>-->
+	
+<!-- 	 code change for SLT-2112 -->
+	<delete id="buyer.delete_entity" parameterClass="java.util.HashMap">
+		DELETE FROM buyer_document 
+			WHERE document_id = #documentId#
+	</delete>
+	
+	<select id="snp.network.document.query_already_exists" parameterClass="document" resultClass="document">
+		select document.document_id AS documentId,
+				spn_network_document.spn_network_id as spnNetworkId
+		  from spn_network_document, document
+		 where spn_network_document.document_id = document.document_id
+		   and spn_network_document.spn_network_id = #spnNetworkId#
+		   and document.file_name= #fileName#
+		   and document.delete_ind = 0
+	</select>
+	
+	<select id="snp.network.document.query_metadata_by_document_id" parameterClass="java.lang.Integer" resultClass="document">
+		
+		select document.doc_category_id as docCategoryId, 
+			   	document.document_id AS documentId,
+				document.vendor_id AS vendorId,
+				document.descr as description, 
+				document.title as title,
+				document.file_name as fileName,
+				document.format as format,
+				document.source as createdDate, 
+				document.keywords as keywords, 
+				document.expire_date as expireDate, 
+				document.purge_date as purgeDate,
+				document.modified_date as  modifiedDate,
+				document.role_id as roleId,
+				document.delete_ind AS deleteInd,
+				document.doc_path as docPath,
+				document.doc_size as docSize,
+				document.created_date as createdDate,
+				document.entity_id as entityId,
+				spn_network_document.spn_network_id as spnNetworkId
+		from document, spn_network_document
+		where document.document_id = #documentId#
+		and document.document_id = spn_network_document.document_id
+		
+	</select>
+	
+	<insert id="spn.network.document.insert" parameterClass="spn_network_document">
+		insert into spn_network_document
+			(document_id, spn_network_id)			 
+		values(#documentId#,  #spnNetworkId#)
+	</insert>
+	
+	<parameterMap id="findLogoDocumentByBuyerID-param" class="java.util.Map">
+        <parameter property="doc_category_id"/>
+		<parameter property="buyer_id"/>
+    </parameterMap>
+	<select id="buyer.fetchLogoDocument.query" parameterMap="findLogoDocumentByBuyerID-param" resultClass="java.lang.Integer">
+		select 	doc.document_id		
+		 from document doc
+		 inner join buyer_document bd on bd.document_id = doc.document_id
+		 where doc.doc_category_id = ? and bd.buyer_id = ? and delete_ind = 0
+		 order by doc.created_date limit 1
+	</select>
+	
+	<parameterMap id="findDocumentsBySoId-param" class="java.util.Map">
+   		<parameter property="soId"/>
+        <parameter property="documentId"/>
+    </parameterMap> 
+	
+	<select id="so.document.query_by_document_id_so_id" parameterMap="findDocumentsBySoId-param" resultClass="document">
+ 		 select d.doc_category_id as docCategoryId, d.document_id AS documentId, d.vendor_id AS vendorId, d.descr as description, d.title as title, d.file_name as fileName
+   		, d.format as format, d.source as createdDate, d.keywords as keywords, d.expire_date as expireDate, d.purge_date as purgeDate, d.modified_date as modifiedDate
+   		, d.role_id as roleId, d.delete_ind AS deleteInd, d.doc_path as docPath, d.doc_size as docSize, d.created_date as createdDate, d.entity_id as entityId, sd.so_id as soId
+   		, so.buyer_id as companyId
+  		from so_document sd
+   		join document d on sd.so_id = ? and d.document_id = ? and d.document_id = sd.document_id
+   		join so_hdr so on sd.so_id = so.so_id
+ 	</select> 
+ 	
+ 	<select id="document.query_document_exist_for_buyer" parameterClass="java.util.Map" resultClass="java.lang.Integer" >
+		select document_id from buyer_document where document_id = #docId# and buyer_id = #buyerId#
+	</select>
+	
+	<select id="fetchBuyerDocumentAndLogoList.query" parameterClass="java.lang.Integer" resultClass="document">
+		select 	doc.document_id AS documentId,
+				doc.vendor_id AS vendorId,
+				doc.doc_category_id as docCategoryId,
+				doc.descr as description, 
+				doc.title as title,
+				doc.file_name as fileName,
+				doc.format as format,
+				doc.source as source, 
+				doc.keywords as keywords, 
+				doc.expire_date as expireDate, 
+				doc.purge_date as purgeDate,
+				doc.modified_date as  modifiedDate,
+				doc.role_id as roleId,
+				doc.delete_ind AS deleteInd,
+				doc.doc_path as docPath,
+				doc.doc_size as docSize,
+				doc.created_date as createdDate,
+				doc.entity_id as entityId
+		 from document doc
+		 inner join buyer_document bd on bd.document_id = doc.document_id
+		 where doc.doc_category_id in(1,3) and bd.buyer_id = #buyerId# and delete_ind = 0 
+	</select>
+	
+	<select id="fetchBuyerRefDocumentList.query" parameterClass="java.util.Map" resultClass="document">
+		select 	doc.document_id AS documentId,
+				doc.vendor_id AS vendorId,
+				doc.doc_category_id as docCategoryId,
+				doc.descr as description, 
+				doc.title as title,
+				doc.file_name as fileName,
+				doc.format as format,
+				doc.source as source, 
+				doc.keywords as keywords, 
+				doc.expire_date as expireDate, 
+				doc.purge_date as purgeDate,
+				doc.modified_date as  modifiedDate,
+				doc.role_id as roleId,
+				doc.delete_ind AS deleteInd,
+				doc.doc_path as docPath,
+				doc.doc_size as docSize,
+				doc.created_date as createdDate,
+				doc.entity_id as entityId
+		 from document doc
+		 inner join buyer_document bd on bd.document_id = doc.document_id
+		 where doc.doc_category_id = 3 and bd.buyer_id = #buyerId# and delete_ind = 0 
+		 and doc.file_name not in
+		 (select d.file_name from document d inner join so_document s 
+		 on d.document_id = s.document_id 
+		 where s.so_id= #soId# and doc.file_name = d.file_name and doc.doc_size = d.doc_size)
+	</select>
+	
+	<select id="logo.query_validate_format" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT count(format) from lu_document_formats_allowed 
+		where format LIKE 'image%' and format LIKE concat('%',#format#, '%')         
+	</select>
+	
+	<!-- End of mappings for the buyer_document table -->
+	
+	<!-- Query to retrieve document types to be uploaded-->
+	<select id="document.fetchBuyerDocTypeList" parameterClass="java.util.HashMap" resultClass="buyerDocumentType">
+		SELECT
+  bdoc.document_title    AS documentTitle,
+  bdoc.mandatory_ind     AS mandatoryInd,
+  bdoc.buyer_upload_doc_type_id AS buyerCompDocId,
+  bdoc.buyer_Id          AS buyerId,
+  lu.doc_upload_source  AS source,
+  bdoc.non_deletable AS nonDeletable
+FROM buyer_upload_doc_types  bdoc
+  JOIN lu_doc_upload_source lu
+    ON lu.doc_upload_source_id = bdoc.source
+WHERE buyer_id = #buyerId#
+    AND (delete_ind = 0
+          OR delete_ind IS NULL)
+		 <isNotNull  property="source" >
+		 	AND bdoc.source= #source#
+		 </isNotNull>
+	</select>
+	<select id="document.fetchBuyerDocTypeListCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(*) 
+		FROM buyer_upload_doc_types  bdoc
+  			JOIN lu_doc_upload_source lu ON lu.doc_upload_source_id = bdoc.source
+		WHERE buyer_id = #buyerId#
+   		AND (delete_ind = 0 OR delete_ind IS NULL)
+		<isNotNull  property="source" >
+		 	AND bdoc.source= #source#
+		</isNotNull>
+	</select>
+</sqlMap>

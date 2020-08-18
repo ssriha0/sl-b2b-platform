@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="skillAssign">
+	<typeAlias alias="skillAssign" type="com.newco.marketplace.vo.provider.SkillAssignVO"/>	
+	<typeAlias alias="skillTreeRequest" type="com.newco.marketplace.vo.provider.SkillNodeVO"/>
+	<typeAlias alias="serviceType" type="com.newco.marketplace.vo.provider.ServiceTypesVO"/>
+	<typeAlias alias="checkedSkills" type="com.newco.marketplace.vo.provider.CheckedSkillsVO"/>
+	<typeAlias alias="complete" type="com.newco.marketplace.vo.provider.SkillCompletionVO"/>
+	<typeAlias alias="language" type="com.newco.marketplace.vo.provider.LanguageVO"/>
+	
+	<insert id="skillAssign.insert" parameterClass="skillAssign">
+		INSERT 	INTO resource_skill
+				(resource_id,
+				root_node_ind,
+				node_id, 
+				created_date,
+				modified_date,
+				modified_by,
+				root_node_id)
+		VALUES
+				(#resourceId#,
+				#rootNode#,
+				#nodeId#,
+				#createdDate#,
+				#modifiedDate#,
+				#modifiedBy#,
+				#rootNodeId#)
+		<selectKey resultClass="int">
+            SELECT last_insert_id() as resourceSkillId
+        </selectKey>  
+	</insert>
+	
+	<insert id="language.insert" parameterClass="language">
+		INSERT INTO resource_languages 
+			(	resource_id, 
+				language_id, 
+				created_date,
+				modified_date
+				)
+			VALUES(#resourceId#,
+					#languageId#,
+					#createdDate#,
+					#modifiedDate#)
+		<selectKey resultClass="int">
+            SELECT last_insert_id() as resource_language_id
+        </selectKey>  
+	</insert>
+	
+	<delete id="language.delete" parameterClass="language">
+		DELETE
+		FROM	resource_languages
+		WHERE	resource_id = #resourceId#
+	</delete>
+	
+	
+	<insert id="servTypeAssign.insert" parameterClass="skillAssign">
+		INSERT 	INTO resource_skill_service_type
+				(resource_skill_id,
+				service_type_template_id,
+				created_date,
+				modified_date,
+				modified_by)
+		VALUES
+				(#resourceSkillId#,
+				#skillTypeId#,
+				#createdDate#,
+				#modifiedDate#,
+				#modifiedBy#)
+	</insert>
+	<delete id="removeOldChecksGeneral.delete" parameterClass="skillAssign">
+		DELETE
+		FROM	resource_skill
+		WHERE	resource_id = #resourceId#
+		AND		node_id = #nodeId#
+	
+	</delete>
+	
+	<delete id="removeOldChecks.delete" parameterClass="skillAssign">
+		DELETE
+		FROM	resource_skill_service_type
+		WHERE	resource_skill_id = #resourceSkillId#
+		AND		skill_service_type_id = #skillServiceTypeId# 
+	</delete>
+	
+	<delete id="removeOldChecksNodes.delete" parameterClass="skillAssign">
+		DELETE 
+		FROM	resource_skill
+		WHERE	resource_id = #resourceId#
+		AND		node_id = #nodeId#
+		AND		resource_skill_id = #resourceSkillId#
+	</delete>
+	<select id="getResourceSkillId.query" parameterClass="skillAssign" resultClass="skillAssign">
+		SELECT 	rs.resource_skill_id as resourceSkillId,st.skill_service_type_id as skillServiceTypeId
+		FROM	resource_skill rs,
+				resource_skill_service_type st
+		WHERE	rs.resource_id = #resourceId#
+		AND		rs.node_id = #nodeId#
+		AND 	rs.resource_skill_id = st.resource_skill_id
+		AND		st.service_type_template_id = #skillTypeId#
+	</select>
+	
+	
+	<select id="getResourceSkillIdByNode.query" parameterClass="skillAssign" resultClass="skillAssign">
+		SELECT 	rs.resource_skill_id as resourceSkillId
+		FROM	resource_skill rs
+		WHERE	rs.resource_id = #resourceId#
+		AND		rs.node_id = #nodeId#
+		AND 	rs.root_node_id !=0
+		LIMIT 1
+	</select>
+	
+	
+	
+	<select id="getResourceSkillIdsList.query" parameterClass="skillAssign" resultClass="skillAssign">
+		SELECT 	rs.resource_skill_id as resourceSkillId,st.skill_service_type_id as skillServiceTypeId
+		FROM	resource_skill rs,
+				resource_skill_service_type st
+		WHERE	rs.resource_id = #resourceId#
+		AND		rs.node_id = #nodeId#
+		AND 	rs.resource_skill_id = st.resource_skill_id
+		AND 	st.resource_skill_id = #resourceSkillId#
+	</select>
+	
+	
+	<select id="getChildrenForNode.query" parameterClass="skillTreeRequest" resultClass="skillTreeRequest">
+		SELECT	node_id as nodeId,
+				parent_node as parentNodeId,
+				node_name as nodeName,
+				level as level
+		FROM 	skill_tree
+		WHERE 	parent_node = #nodeId#
+	</select>
+	<select id="getServiceTypes.query" parameterClass="skillTreeRequest" resultClass="serviceType">
+		SELECT 	descr AS description,
+				service_type_template_id AS serviceTypeId
+		FROM 	lu_service_type_template
+		WHERE 	node_id = #nodeId#
+	</select>
+	<select id="getGeneralSkills.query" resultClass="skillTreeRequest">
+		SELECT	node_id as nodeId,
+				parent_node as parentNodeId,
+				node_name as nodeName,
+				level as level, 
+				sort_order as sortOrder
+		FROM 	skill_tree
+		WHERE	root = 1
+		ORDER BY sort_order
+	</select>
+	<select id="getResourceName.query" parameterClass="skillAssign" resultClass="skillAssign">
+		SELECT	first_name AS resourceName 
+		FROM 	contact c, vendor_resource v
+		WHERE 	c.contact_id = v.contact_id
+		AND		v.resource_id = #resourceId# 
+	</select>
+	<select id="getCheckedGeneralSkills.query" parameterClass="checkedSkills" resultClass="checkedSkills">
+		SELECT 	node_id AS nodeId
+		FROM 	resource_skill 
+		WHERE 	resource_id = #resourceId# 
+		AND 	root_node_ind = true
+	</select>
+	<select id="getCheckedSkills.query" parameterClass="checkedSkills" resultClass="checkedSkills">
+		SELECT 	sk.node_id AS nodeId,
+				st.service_type_template_id AS serviceTypeId
+		FROM 	resource_skill_service_type st, 
+				resource_skill sk
+		WHERE 	st.resource_skill_id = sk.resource_skill_id
+		AND 	root_node_ind = false 
+		AND 	resource_id = #resourceId#		
+		AND 	root_node_id = #rootNodeId#
+	</select>
+	
+	<select id="getALLCheckedSkills.query" parameterClass="java.lang.Integer" resultClass="checkedSkills">
+		SELECT 	sk.node_id AS nodeId,
+				st.service_type_template_id AS serviceTypeId, sk.root_node_id as rootNodeId,				
+				s.node_name as nodeName, s.level as level,
+				lustt.descr as serviceType
+		FROM 	resource_skill_service_type st, 
+				resource_skill sk,
+				skill_tree s, 
+				lu_service_type_template lustt
+		WHERE 	st.resource_skill_id = sk.resource_skill_id
+		AND 	sk.root_node_ind = false 
+		AND     sk.node_id = s.node_id
+		AND     lustt.service_type_template_id = st.service_type_template_id
+		AND 	resource_id = #resourceId#		
+	</select>
+	
+	<select id="getCompletion.query" parameterClass="complete" resultClass="complete">
+		SELECT 	node_id as nodeId, 
+				root_node_id as rootNodeId
+		FROM 	resource_skill 
+		WHERE 	resource_id = #resourceId#
+	</select>
+	
+	
+	<select id="checkedLanguage.query" parameterClass="language" resultClass="language">
+		SELECT 	resource_id as resourceId, 
+				language_id as languageId 
+				FROM resource_languages 
+		WHERE 	resource_id = #resourceId#
+	</select>
+	
+	<select id="getSkillResourceFullName.query" parameterClass="skillAssign" resultClass="skillAssign">
+		SELECT	concat(first_name, ' ', last_name) AS resourceName  
+		FROM 	contact c, vendor_resource v
+		WHERE 	c.contact_id = v.contact_id
+		AND		v.resource_id = #resourceId# 
+	</select>
+	<select id="query.getResourceLanguages" resultClass="language">
+	select ll.type as languageType, ll.descr as descr from lu_languages_spoken ll, resource_languages rl where ll.id = rl.language_id and rl.resource_id=#resourceId#
+	</select>
+	
+	<select id="query.getResourceSkillCat" resultClass="skillTreeRequest">
+	select distinct  s.node_id as nodeId,s.node_name as nodeName
+	from resource_skill rs, skill_tree s where rs.node_id = s.node_id and s.root=1 and rs.resource_id=#resourceId# ORDER BY s.sort_order
+	</select>
+	
+	<select id="getSkillNodeNames.query" resultClass= "skillTreeRequest">
+		SELECT 	node_name as nodeName,
+				node_id as nodeId,
+				parent_node as parentNodeId
+		FROM	skill_tree
+		WHERE	node_id = #nodeId#
+	</select>
+	
+	<select id="getSkillsForResource.query" resultClass= "skillTreeRequest" parameterClass="java.lang.Integer">
+		Select resource_id as resourcId,
+				node_id as nodeId,node_name as nodeName,
+				parent_node as parentNodeId, level  
+		from 	vw_resource_skills 
+		where resource_id = #resourceId#
+	</select>
+	<select id="getProviderIds.query"  parameterClass="java.lang.String" resultClass="java.lang.Integer">
+			SELECT resource_id as providerId
+			FROM vendor_resource
+			where resource_id=#providerId#
+	</select>
+	<select id="getResourceSkills.query" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	      SELECT rs.resource_id AS providerId FROM resource_skill rs,resource_skill_service_type rst
+           WHERE rs.resource_skill_id = rst.resource_skill_id AND rs.resource_id =#providerId#
+          
+	</select>
+	<select id="getChildServiceTypeIdList.query" parameterClass="skillAssign" resultClass="java.lang.Integer" >
+	       SELECT st.`skill_service_type_id` AS skillServiceTypeId
+		   FROM resource_skill rs,resource_skill_service_type st
+		   WHERE rs.resource_skill_id = st.resource_skill_id
+		   AND rs.resource_id = #resourceId#
+		   AND st.`service_type_template_id`= #skillTypeId#
+           AND rs.node_id 
+           IN(
+           SELECT	node_id AS nodeId
+           FROM 	skill_tree
+           WHERE 	parent_node = #nodeId#)	 
+	</select>	
+	<select id="getRootServiceTypeIdList.query" parameterClass="skillAssign" resultClass="java.lang.Integer" >
+	       
+		SELECT 	st.`skill_service_type_id` AS skillServiceTypeId
+		FROM	resource_skill rs,resource_skill_service_type st
+		WHERE	rs.resource_skill_id = st.resource_skill_id
+		AND 	rs.resource_id = #resourceId#
+		AND st.`service_type_template_id`= #skillTypeId#
+		AND rs.node_id 	 
+		IN(
+		SELECT	node_id AS nodeId
+		FROM 	skill_tree
+		WHERE 	parent_node IN   
+		(SELECT	node_id AS nodeId
+		FROM 	skill_tree
+		WHERE 	parent_node = #nodeId#
+		)
+		UNION
+		SELECT	node_id AS nodeId
+		FROM 	skill_tree
+		WHERE 	parent_node = #nodeId#
+		)	        
+	</select>
+	<delete id="deleteRootServiceTypeId.delete" parameterClass="java.util.List">
+		delete from resource_skill_service_type where skill_service_type_id IN
+		<iterate open="(" close=")" conjunction=","> #[]#
+		</iterate>
+	</delete> 
+	
+	<select id="fetchResourceSkillId.query" parameterClass="skillAssign" resultClass="skillAssign">
+		SELECT 	rs.resource_skill_id as resourceSkillId,st.skill_service_type_id as skillServiceTypeId
+		FROM	resource_skill rs,
+				resource_skill_service_type st
+		WHERE	rs.resource_id = #resourceId#
+		AND		rs.node_id = #nodeId#
+		AND 	rs.resource_skill_id = st.resource_skill_id
+		AND		st.service_type_template_id = #skillTypeId#
+		LIMIT 1
+	</select>
+	
+	<select id="fetchResourceSkillEntry.query" parameterClass="skillAssign" resultClass="java.lang.Integer" >
+	    SELECT resource_skill_id AS resourceSkillId
+		FROM 	resource_skill 
+		WHERE 	resource_id = #resourceId#
+		AND 	root_node_ind = 0
+		AND 	root_node_id=#rootNodeId#
+	</select>
+	
+	<delete id="deleteRootNodeId.delete" parameterClass="skillAssign">
+		DELETE FROM resource_skill
+		WHERE resource_id = #resourceId#
+		AND root_node_ind = 1
+		AND root_node_id=0
+		AND node_id=#nodeId#
+	</delete>
+	<select id="retrieveResourceSkillEntry.query" parameterClass="skillAssign" resultClass="java.lang.Integer" >
+		SELECT rs.resource_skill_id FROM  resource_skill rs 
+		WHERE rs.resource_id=#resourceId#
+		AND rs.root_node_ind= 0 
+		AND rs.root_node_id =#rootNodeId#
+		AND rs.resource_skill_id 
+		NOT IN(SELECT rst.resource_skill_id
+		FROM resource_skill_service_type rst)
+	</select>
+	<select id="getRootNodeResourceSkillId.query" parameterClass="skillAssign" resultClass="skillAssign">
+		SELECT 	rs.resource_skill_id as resourceSkillId
+		FROM	resource_skill rs
+		WHERE	rs.resource_id = #resourceId#
+		AND		rs.node_id = #nodeId#
+		AND 	rs.root_node_id =0
+		LIMIT 1
+	</select>
+	
+	<delete id="deleteOtherNodes.delete" parameterClass="skillAssign">
+		DELETE FROM resource_skill
+		WHERE resource_id = #resourceId#
+		AND root_node_ind = 0
+		AND resource_skill_id=#resourceSkillId#
+	</delete>
+	
+	<select id="fetchResourceSkillServiceType.query" parameterClass="skillAssign" resultClass="java.lang.Integer" >
+	   SELECT resource_skill_id AS resourceSkillId 
+	   FROM resource_skill_service_type
+       WHERE resource_skill_id = #resourceSkillId#
+	</select>
+	
+</sqlMap>

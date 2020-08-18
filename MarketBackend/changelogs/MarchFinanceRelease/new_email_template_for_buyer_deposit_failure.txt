@@ -1,0 +1,77 @@
+insert into `template`(`template_id`,`template_type_id`,`template_name`,`template_subject`,`template_source`,`sort_order`,`created_date`,`modified_date`,`modified_by`,`template_from`,`priority`,`eid`) values (116,1,'Buyer Ach Deposit Reject','Ach Deposit Failure','<html>
+<body>
+<img src="cid:emailLogo"><br></br>
+<B>$CURRENT_DATE</B><br></br>
+<B>Hello $FNAME $LNAME,</B><br></br>
+<B>Thank you for attempting to purchase ServiceLive Bucks.</B><br></br>
+Transaction ID: <B>$TRANSACTION_ID </B>    Amount: <B>$TRANS_AMOUNT</B><br></br>
+We attempted to process your request to deposit funds from your bank account to your ServiceLive Bucks Balance, but <br/>
+unfortunately your financial institution has informed us that the account information we have on file is not <br/>
+sufficient to complete the transaction. You were not charged a fee in connection with this transaction.<br></br>
+Description of Error:  <B>$RETURN_CODE_DESC</B><br/><br/>
+<B>Please login to ServiceLive.com, navigate to the Manage Accounts tab in the </B><br/>
+<B>Finance Manager, update your financial institutions account information, and attempt to purchase ServiceLive bucks again.</B><br/>
+If you have any questions about this transaction, please contact us at:<br/><br/>
+Email: contact@servicelive.com<br></br>
+ServiceLive, Inc.<br>
+1560 Cable Ranch Rd., Building A<br>
+San Antonio, TX 78245<br></br>
+(888) 549-0640<br><br><br>
+Thank you! We appreciate your business.<br></br>
+This payment service is powered by Integrated Payment Systems, Inc.<br></br>
+<B><a href="${SERVICE_URL}">Payment Terms & Conditions</a></B>
+</body>
+</html>',null,'2009-03-09 17:40:39','2009-03-09 17:40:39','Akhil','support@servicelive.com',1,null);
+
+
+insert into `template`(`template_id`,`template_type_id`,`template_name`,`template_subject`,`template_source`,`sort_order`,`created_date`,`modified_date`,`modified_by`,`template_from`,`priority`,`eid`) values (115,1,'Buyer Ach Deposit Warning','Account Change Requested','<html>
+<body>
+<img src="cid:emailLogo"><br></br>
+<B>$CURRENT_DATE</B><br></br>
+<B>Hello $FNAME $LNAME,</B><br></br>
+<B>Thank you for purchasing ServiceLive Bucks, which will be placed in your ServiceLive Bucks Balance.</B><br></br>
+Transaction ID: <B>$TRANSACTION_ID </B>    Amount: <B>$TRANS_AMOUNT</B><br></br>
+We successfully processed your request to deposit funds from your bank account to your ServiceLive Bucks Balance; however, we were notified by your financial 
+institution the routing number we have on file is incorrect for the account number you specified. You were not charged a fee in connection 
+with this transactional error message.<br></br>
+Description of Error:  <B>$RETURN_CODE_DESC</B><br/><br/>
+Please login to ServiceLive.com, navigate to the Manage Accounts tab under your ServiceLive Wallet and update your financial institutions account 
+information by clicking on the edit entry button at the bottom of the screen (Re-enter the correct routing and account number.  Please ensure the 
+routing number is not from a deposit slip as deposit slips do not have the correct routing number for your account.  If you have any questions regarding 
+the correct routing number please contact your financial institution for assistance).
+<br/><br/>
+If you have any questions about this transaction, please contact us at:<br/><br/>
+Email: contact@servicelive.com<br></br>
+ServiceLive, Inc.<br>
+1560 Cable Ranch Rd., Building A<br>
+San Antonio, TX 78245<br></br>
+(888) 549-0640<br><br><br>
+Thank you! We appreciate your business.<br></br>
+This payment service is powered by Integrated Payment Systems, Inc.<br></br>
+<B><a href="${SERVICE_URL}">Payment Terms & Conditions</a></B>
+</body>
+</html>',null,'2009-03-09 17:38:07','2009-03-09 17:38:07','Akhil','support@servicelive.com',1,null);
+
+
+
+insert into `template`(`template_id`,`template_type_id`,`template_name`,`template_subject`,`template_source`,`sort_order`,`created_date`,`modified_date`,`modified_by`,`template_from`,`priority`,`eid`) values (117,1,'Buyer Ach Deposit Successful','Finance Settlement Success','<html>
+<body>
+<img src="cid:emailLogo"><br></br>
+<B>$CURRENT_DATE</B><br></br>
+<B>Hello $FNAME $LNAME,</B><br></br>
+<B>Thank you for depositing funds into your ServiceLive Bucks Balance. </B><br></br>
+Transaction ID: <B>$LEDGER_ID </B>    Amount: <B>$TRANS_AMOUNT</B><br></br>
+According to our records, your request to deposit funds into your ServiceLive Bucks Balance has been successfully completed.<br/>
+You were not charged a fee in connection with this transaction.<br></br>
+Please check your account and if you have any questions about this transaction, please contact us at:<br></br>
+Email: contact@servicelive.com<br></br><br>
+ServiceLive, Inc.<br>
+1560 Cable Ranch Rd., Building A<br>
+San Antonio, TX 78245<br></br>
+(888) 549-0640<br><br><br>
+Thank you! We appreciate your business.<br></br>
+This payment service is powered by Integrated Payment Systems, Inc.<br></br>
+<B><a href="${SERVICE_URL}">Payment Terms & Conditions</a></B>
+</body>
+</html>',null,'2009-03-13 14:21:48','2009-03-13 14:21:48','Akhil','support@servicelive.com',1,null);
+;

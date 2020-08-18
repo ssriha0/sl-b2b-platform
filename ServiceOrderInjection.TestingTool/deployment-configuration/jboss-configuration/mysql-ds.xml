@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+	<!-- $Id: mysql-ds.xml 41016 2006-02-07 14:23:00Z acoliver $ -->
+	<!--
+		Datasource config for MySQL using 3.0.9 available from:
+		http://www.mysql.com/downloads/api-jdbc-stable.html
+	-->
+
+<datasources>
+	<local-tx-datasource>
+		<jndi-name>jdbc/ServiceLiveMySqlDS</jndi-name>
+		<use-java-context>false</use-java-context>
+		<connection-url>jdbc:mysql://10.72.247.223:3306/supplier_prod?jdbcCompliantTruncation=false
+		</connection-url>
+		<driver-class>com.mysql.jdbc.Driver</driver-class>
+		<user-name>supply_usr</user-name>
+		<password>supply</password>
+		<exception-sorter-class-name>org.jboss.resource.adapter.jdbc.vendor.MySQLExceptionSorter
+		</exception-sorter-class-name>
+		<min-pool-size>0</min-pool-size>
+		<max-pool-size>60</max-pool-size>
+		<valid-connection-checker-class-name>
+			com.mysql.jdbc.integration.jboss.MysqlValidConnectionChecker
+		</valid-connection-checker-class-name>
+		<idle-timeout-minutes>1</idle-timeout-minutes>
+		<metadata>
+			<type-mapping>mySQL</type-mapping>
+		</metadata>
+	</local-tx-datasource>
+	<local-tx-datasource>
+		<jndi-name>jdbc/ServiceLiveMySqlIntegrationDS</jndi-name>
+		<use-java-context>false</use-java-context>
+		<connection-url>jdbc:mysql://10.72.247.223:3306/servicelive_integration?jdbcCompliantTruncation=false
+		</connection-url>
+		<driver-class>com.mysql.jdbc.Driver</driver-class>
+		<user-name>supply_usr</user-name>
+		<password>supply</password>
+		<exception-sorter-class-name>org.jboss.resource.adapter.jdbc.vendor.MySQLExceptionSorter
+		</exception-sorter-class-name>
+		<min-pool-size>0</min-pool-size>
+		<max-pool-size>60</max-pool-size>
+		<valid-connection-checker-class-name>
+			com.mysql.jdbc.integration.jboss.MysqlValidConnectionChecker
+		</valid-connection-checker-class-name>
+		<idle-timeout-minutes>1</idle-timeout-minutes>
+		<metadata>
+			<type-mapping>mySQL</type-mapping>
+		</metadata>
+	</local-tx-datasource>
+</datasources>

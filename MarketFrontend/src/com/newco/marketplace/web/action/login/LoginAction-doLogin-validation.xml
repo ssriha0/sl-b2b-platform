@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE validators PUBLIC
+        "-//Apache Struts//XWork Validator 1.0.2//EN"
+        "http://struts.apache.org/dtds/xwork-validator-1.0.2.dtd">
+
+        
+<validators>
+<!--  Commented this code to fix SL-7854.
+	<field name="username">
+		<field-validator type="requiredstring">
+			<param name="trim">true</param>
+			<message>Login name is required</message>
+		</field-validator>
+	</field>
+
+	<field name="password">
+		<field-validator type="requiredstring">
+			<param name="trim">true</param>
+			<message>Password is required</message>
+		</field-validator>
+	</field>
+ -->
+ 
+ <validator type="expression"> 
+    <param name="expression">1 gt 0 </param> 
+    <message>This is dumy validation with 7854 looks like they comment out every thing under this file.</message> 
+</validator> 
+ 
+ 
+ <validator type="expression"> 
+    <param name="expression">1 gt 0 </param> 
+    <message>This is dumy validation with 7854 looks like they comment out every thing under this file.</message> 
+</validator> 
+ 
+</validators>

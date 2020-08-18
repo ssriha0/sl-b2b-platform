@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
+	default-lazy-init="true">
+	
+	<bean id="FMDelegateBean" 
+				class="com.newco.marketplace.web.delegatesImpl.FinanceManagerDelegateImpl">
+        <property name="financeManagerBO">
+                <ref bean="fmBOAOP"/>
+        </property>
+        <property name="creditCardBO">
+                <ref bean="creditCardTransactionManagedBO"/>
+        </property>
+         <property name="luDelegate">
+                <ref bean="lookupManager"/>
+        </property>
+	</bean>
+	
+	<bean id="adminToolDelegate"
+		class="com.newco.marketplace.web.delegatesImpl.AdminToolDelegateImpl" >
+        <property name="walletBO" ref="walletTx" />
+        <property name="glProcessor" ref="glProcessor" />
+		<property name="balancedFileProcessor" ref="balancedFileProcessor" />
+		<property name="balanceInquiryProcessor" ref="balanceInquiryProcessor" />
+		<property name="ofHelper" ref="ofHelper"/>
+	</bean>
+</beans>

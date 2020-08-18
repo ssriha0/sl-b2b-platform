@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="smsdatasynch">
+
+<typeAlias alias="smsDataSynchVO" type="com.newco.marketplace.smsdatasynch.vo.SMSDataSynchVO" />
+
+<select id="fetchSubscriptionDetails.query" resultClass="smsDataSynchVO" parameterClass="java.util.List">
+	select 
+	vendor_resource_sms_subscription_id as subscriptionId,
+		person_id as personId,
+		status as status
+	from vendor_resource_sms_subscription
+	where person_id	in 
+	<iterate open="(" close=")" conjunction=",">	
+		#[]#
+	</iterate>
+		
+</select>
+
+<select id="getMarketReadyProvidersForSms.query" resultClass="smsDataSynchVO" parameterClass="java.lang.String" >
+	SELECT s.sms_migration_id AS migrationId,
+       s.sms_number AS mdn,
+       s.vendor_id AS vendorId,
+       s.resource_id AS resourceId,
+       s.first_name AS firstName,
+       s.last_name AS lastName
+    FROM vendor_resource_sms_migration s 
+    LEFT OUTER JOIN vendor_resource_sms_subscription ss 
+             ON s.resource_id = ss.resource_id 
+    JOIN vendor_resource v ON v.resource_id = s.resource_id AND s.migration_status = 'PENDING' 
+    JOIN contact c ON c.contact_id= v.contact_id AND c.alt_contact_method_id = 3
+    AND v.wf_state_id = 6 
+    WHERE ( ss.person_id IS NULL ) OR (ss.status IN ('INACTIVE','DELETED'))
+    ORDER  BY s.vendor_id;
+</select>
+
+
+
+<select id="getActiveProvidersForSms.query" resultClass="smsDataSynchVO" parameterClass="java.lang.String" >
+	SELECT s.sms_number AS mdn,
+	s.person_id AS personId,
+	s.participation_date AS participationDateString,
+	s.expire_date AS expireDateString,
+	s.status AS STATUS,
+	s.opt_in_ind AS optInIndicator,
+	s.opt_in_date AS optInDate,
+	s.opt_out_date AS optOutDate,
+	s.resource_id AS resourceId,
+	v.vendor_id AS vendorId,
+	v.wf_state_id AS wfStateId
+	FROM vendor_resource_sms_subscription s
+	JOIN vendor_resource v ON (s.resource_id = v.resource_id AND v.wf_state_id != 32)
+	WHERE s.status NOT IN ('INACTIVE','DELETED')
+	AND s.sms_number=#mdn#;
+</select>
+
+<update id ="updateSubscriptionStatus.query" parameterClass="smsDataSynchVO">
+	UPDATE vendor_resource_sms_subscription
+	SET opt_in_ind = #optInInd#, 
+	modified_date = now(), 
+	modified_by = 'DATASYNCBATCH' 
+	<isNotNull property="optInDate">
+		,opt_in_date= #optInDate# 
+	</isNotNull>
+	<isNotNull property="optOutDate">
+		,opt_out_date= #optOutDate#
+	</isNotNull>
+	<isNotNull property="status">
+		,status = #status#
+	</isNotNull>
+	WHERE person_id = #personId#  AND
+	vendor_resource_sms_subscription_id = #subscriptionId# 
+</update>
+
+<update id ="updateSubscriptionNoStatus.query" parameterClass="smsDataSynchVO">
+	UPDATE vendor_resource_sms_subscription
+	SET opt_in_ind = #optInInd#, 
+	modified_date = now(), 
+	modified_by = 'DATASYNCBATCH' 
+	<isNotNull property="optInDate">
+		,opt_in_date= #optInDate# 
+	</isNotNull>
+	<isNotNull property="optOutDate">
+		,opt_out_date= #optOutDate#
+	</isNotNull>
+	WHERE person_id = #personId# 
+</update>
+
+<update id ="migrationStatus.update" parameterClass="smsDataSynchVO">
+	UPDATE vendor_resource_sms_migration
+	SET migration_status = #status#, 
+	    error_description = #statusText#,
+	    modified_date = now()
+	WHERE sms_migration_id = #migrationId# 
+</update>
+
+<select id="getInactiveSubscriptionDetail.query" resultClass="smsDataSynchVO" parameterClass="java.lang.String" >
+   SELECT s.sms_number AS mdn, 
+   s.person_id AS personId,
+   s.participation_date AS participationDateString,
+   s.expire_date AS expireDateString, 
+   s.status AS status, 
+   s.opt_in_ind AS optInIndicator, 
+   s.opt_in_date AS optInDate, 
+   s.opt_out_date AS optOutDate, 
+   s.resource_id  AS resourceId,
+   v.vendor_id  AS vendorId 
+   FROM  vendor_resource_sms_subscription s JOIN vendor_resource v WHERE  s.resource_id = v.resource_id
+   AND s.sms_number = #smsNo#
+   ORDER BY s.modified_date DESC LIMIT 1
+</select>
+
+<insert id="insertSubscriptionDetails.query" parameterClass="smsDataSynchVO" >
+   insert into vendor_resource_sms_subscription
+	   (resource_id, 
+	   person_id, 
+	   participation_date, 
+	   expire_date, 
+	   sms_number, 
+	   status, 
+	   opt_in_ind, 
+	   opt_in_date, 
+	   opt_out_date,
+	   created_date,
+	   modified_date,
+	   created_by,
+	   modified_by)
+   values
+   		(#resourceId#,
+   		#personId#,
+   		#participationDateString#,
+   		#expireDateString#,
+   		#mdn#,
+   		#status#,
+   		#optInIndicator#,
+   		#optInDate#,
+   		#optOutDate#,
+   		now(),
+   		now(),
+   		#createdBy#,
+   		#modifiedBy#)
+   		ON DUPLICATE KEY UPDATE
+   		  resource_id= #resourceId#,
+	      person_id = #personId#,
+	      participation_date=#participationDateString#,
+	      expire_date=#expireDateString#,
+	      sms_number=#mdn#,
+	      status =#status#,
+	      opt_in_ind=#optInIndicator#,
+	      opt_in_date=#optInDate#,
+	      opt_out_date=#optOutDate#,
+	      modified_date=now(),
+	      modified_by=#modifiedBy#
+   		
+   		 
+</insert>
+
+<select id="subscriptionId.query" resultClass="java.lang.String" parameterClass="java.lang.String">
+    SELECT ac.app_constant_value FROM application_constants ac WHERE ac.app_constant_key=#subscriptionIdConstant#
+</select>
+
+<select id="resourceIdListToUpdAltContact.query" resultClass="java.lang.Integer" parameterClass="java.util.List">
+    SELECT resource_id FROM vendor_resource_sms_subscription WHERE person_id IN
+     <iterate open="(" close=")" conjunction=",">	
+		         #[]#
+	     </iterate>
+</select>
+
+<update id ="resetAltContact.query" parameterClass="java.util.List">
+	UPDATE contact SET alt_contact_method_id = NULL WHERE contact_id IN 
+	(SELECT contact_id FROM vendor_resource WHERE resource_id IN
+	   <iterate open="(" close=")" conjunction=",">	
+		         #[]#
+	     </iterate>
+	)
+</update>
+</sqlMap>

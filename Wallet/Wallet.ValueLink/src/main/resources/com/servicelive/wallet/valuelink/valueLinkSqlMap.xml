@@ -1,0 +1,644 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd"> 
+
+<sqlMap>
+
+	<typeAlias alias="valueLinkRule"
+		type="com.servicelive.wallet.valuelink.vo.ValueLinkRuleVO" />
+	<typeAlias alias="valueLinkEntry"
+		type="com.servicelive.wallet.serviceinterface.vo.ValueLinkEntryVO" />
+	<typeAlias alias="valueLinkQueueEntry"
+		type="com.servicelive.wallet.valuelink.vo.ValueLinkQueueEntryVO" />
+	<typeAlias alias="vlAccount"
+		type="com.servicelive.lookup.vo.ValueLinkAccountsVO" />
+
+	<select id="countOfFullfillmentRecordsForSO.query"
+		parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		select count(1) from
+		fullfillment_entry where so_id = #soId# and ((bus_trans_id in (100,150)
+		and (reconsiled_ind is null or reconsiled_ind not in (0,1,4,5)))
+        or bus_trans_id = 120);
+	</select>
+	
+	<select id="isACHTransPending.query"
+		parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM ach_process_queue ach,ledger_entry  ldg
+WHERE ach.ledger_entry_id = ldg.ledger_entry_id AND ldg.so_id=#soId#
+AND (ach.process_status_id  NOT IN( 80,90) OR  ach.reconciled_ind  NOT IN (40) OR ach.reconciled_ind IS NULL)
+	</select>
+	
+	<select id="hasPreviousAddOn.query"
+		parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM ledger_entry ldg WHERE  ldg.bus_trans_id=155 AND ldg.ledger_entry_rule_id IN('1135','1136') AND ldg.so_id=#serviceOrderId#
+	</select>
+	
+	
+	
+
+	<select id="getPromoCodes.query" resultClass="java.util.HashMap">
+		SELECT
+		promo_code_id, promo_code
+		FROM lu_promo_codes
+	</select>
+	
+	<select id="getCompletedSOLedgerAmount.query"
+		parameterClass="java.lang.Long" resultClass="java.lang.Double">
+		SELECT COALESCE(SUM(fe.trans_amt), 0) AS creditbalance
+		FROM accounts_prod.fullfillment_entry fe
+		WHERE fe.fullfillment_entry_rule_id = 3720
+		AND fe.ledger_entity_id = #vendorId#
+		GROUP BY fe.ledger_entity_id;
+	</select>
+	
+	<select id="getSLACreditAmount.query"
+		parameterClass="java.lang.Long" resultClass="java.lang.Double">
+		SELECT COALESCE(SUM(trans_amount), 0) amount FROM
+		accounts_prod.ledger_transaction_entry lte,
+		accounts_prod.ledger_entry le WHERE lte.ledger_entity_id = #vendorId#
+		AND lte.ledger_entity_type_id = 20 AND lte.ledger_entry_id =
+		le.ledger_entry_id AND le.bus_trans_id IN (220);
+	</select>	
+	
+
+	<select id="getQueueEntriesByAgeAndStatus" resultClass="valueLinkQueueEntry"
+		parameterClass="java.util.HashMap">
+		SELECT
+		fulfillment_entry_id as fulfillmentEntryId,
+		fulfillment_grp_id as fulfillmentGroupId,
+		pan as primaryAccountNumber,
+		queue_status_id as queueStatusId,
+		send_count as sendCount,
+		message as
+		message,
+		message_type_id as messageTypeId
+		FROM valuelink_entry_queue
+		WHERE queue_status_id = #queueStatusId#
+		AND NOW()-INTERVAL #age# HOUR > created_time
+	</select>
+
+	<select id="getQueueEntriesByStatus" resultClass="valueLinkQueueEntry"
+		parameterClass="java.lang.Integer">
+		SELECT
+		fulfillment_entry_id as fulfillmentEntryId,
+		fulfillment_grp_id as fulfillmentGroupId,
+		pan as primaryAccountNumber,
+		queue_status_id as queueStatusId,
+		send_count as sendCount,
+		message as
+		message,
+		message_type_id as messageTypeId
+		FROM valuelink_entry_queue
+		WHERE queue_status_id = #value#
+		LIMIT 10
+	</select>
+
+	<select id="getQueueEntryById" resultClass="valueLinkQueueEntry"
+		parameterClass="java.lang.Long">
+		SELECT
+		fulfillment_entry_id as fulfillmentEntryId,
+		fulfillment_grp_id as fulfillmentGroupId,
+		pan as primaryAccountNumber,
+		queue_status_id as queueStatusId,
+		send_count as sendCount,
+		message as
+		message,
+		message_type_id as messageTypeId
+		FROM valuelink_entry_queue
+		WHERE fulfillment_entry_id = #value#
+	</select>
+
+	<update id="updateQueueEntry" parameterClass="valueLinkQueueEntry">
+		UPDATE
+		valuelink_entry_queue
+		SET queue_status_id = #queueStatusId#,
+		send_count = #sendCount#
+		WHERE
+		fulfillment_entry_id = #fulfillmentEntryId#
+	</update>
+
+	<delete id="deleteQueueEntry" parameterClass="valueLinkQueueEntry">
+		DELETE from
+		valuelink_entry_queue
+		WHERE fulfillment_entry_id = #fulfillmentEntryId#
+	</delete>
+
+	<insert id="valuelink_entry_queue.insert" parameterClass="valueLinkQueueEntry">
+		insert
+		into valuelink_entry_queue
+		(fulfillment_entry_id, fulfillment_grp_id,
+		pan, queue_status_id,
+		send_count, message, message_type_id)
+		values
+		(#fulfillmentEntryId#, #fulfillmentGroupId#,
+		#primaryAccountNumber#,
+		#queueStatusId#, #sendCount#, #message#, #messageTypeId#)
+	</insert>
+
+	<update id="fullfillmentVLAccount.update" parameterClass="valueLinkEntry">
+		UPDATE
+		fullfillment_entry
+		SET pan = #primaryAccountNumber#
+		WHERE
+		ledger_entity_id = #ledgerEntityId#
+		AND entity_type_id = #entityTypeId#
+		AND pan is null
+	</update>
+
+	<select id="getValueLinkEntriesReadyForQueue" resultClass="valueLinkEntry">
+		SELECT fe.fullfillment_entry_id AS fullfillmentEntryId,
+		fe.fullfillment_grp_id AS fullfillmentGroupId,
+		fe.bus_trans_id AS busTransId,
+		fe.fullfillment_entry_rule_id AS fullfillmentEntryRuleId,
+		fe.ledger_entity_id AS ledgerEntityId,
+		fe.entity_type_id AS entityTypeId,
+		fe.entry_type_id AS entryTypeId,
+		fe.entry_date AS entryDate,
+		fe.pan AS primaryAccountNumber,
+		fe.so_id AS soId,
+		fe.reference_no AS referenceNo,
+		fe.trans_amt AS transAmount,
+		fe.entry_remark AS entryRemark,
+		fe.sort_order AS sortOrder,
+		fe.message_type_id AS messageTypeId,
+		fe.promo_code_id AS promoCodeId,
+		pc.promo_code AS promoCode,
+		fe.next_fullfillment_entry_id AS nextFullfillmentEntryId,
+		fe.reconsiled_ind AS reconsiledInd,
+		fe.reconsiled_date AS reconsiledDate,
+		fe.ptd_reconsiled_ind AS ptdReconsiledInd,
+		fe.ptd_reconsiled_date AS ptdReconsiledDate,
+		fe.ach_reconsiled_ind AS achReconsiledInd,
+		fe.ach_reconsiled_date AS achReconsiledDate,
+		fe.cc_authorized_ind AS ccAuthorizedInd,
+		fe.cc_authorized_date AS ccAuthorizedDate,
+		fe.cc_authorization_no AS ccAuthorizationNo,
+		fe.authorization_id AS authorizationId,
+		fe.stan_id AS stanId,
+		fe.retrieval_ref_id AS retrievalRefId,
+		fe.created_date AS createdDate,
+		fe.modified_date AS modifiedDate,
+		fe.modified_by AS modifiedBy,
+		fe.vl_balance AS vlBalance,
+		fe.originating_pan AS originatingPan,
+		fe.destination_pan AS destinationPan,
+		fe.originating_state_code AS origStateCode,
+		fe.destination_state_code AS destStateCode,
+		fe.funding_type_id AS fundingTypeId,
+		fe.originating_entity_id AS originatingEntityId
+		FROM fullfillment_entry fe
+		LEFT OUTER JOIN valuelink_entry_queue this_vq
+		ON fe.fullfillment_entry_id = this_vq.fulfillment_entry_id	
+		AND fe.fullfillment_grp_id = this_vq.fulfillment_grp_id
+		LEFT OUTER JOIN valuelink_entry_queue pan_vq ON fe.pan = pan_vq.pan
+		LEFT OUTER JOIN fullfillment_entry fe_error /* locate entries in the same
+		group with failed reconcile status */
+		ON fe.fullfillment_grp_id = fe_error.fullfillment_grp_id
+		AND fe_error.reconsiled_ind NOT IN (0,1,4,5)
+		AND fe_error.reconsiled_ind IS NOT NULL
+		LEFT OUTER JOIN fullfillment_entry fe_sort /* locate entries in the same
+		group with lesser sort order that has a null reconsiled status */
+		ON fe.fullfillment_grp_id = fe_sort.fullfillment_grp_id
+		AND fe_sort.sort_order  <![CDATA[ < ]]>
+		fe.sort_order
+		AND fe_sort.reconsiled_ind is NULL
+		LEFT OUTER JOIN lu_promo_codes pc
+		ON fe.promo_code_id = pc.promo_code_id
+		WHERE this_vq.fulfillment_entry_id IS NULL /* this entry is not already in
+		the queue */
+		AND pan_vq.fulfillment_entry_id IS NULL /* no entries for same pan in the queue */  
+		AND fe_error.fullfillment_entry_id IS NULL /* no entries for same group
+		with failed reconcile status */
+		AND fe.reconsiled_ind IS NULL /* not already reconciled */
+		AND fe_sort.fullfillment_entry_id IS NULL /* no entries for same group
+		where lower sort_order records are not reconsiled */
+		AND fe.reconsiled_date IS NULL /* not already reconciled */
+		AND (fe.pan IS NOT NULL /* pan is not null on this entry (except for
+		activation) */
+		OR fe.message_type_id = 1)
+		ORDER BY fe.fullfillment_entry_id ASC
+		FOR UPDATE
+	</select>
+
+	<select id="getValueLinkRules" parameterClass="valueLinkRule"
+		resultClass="valueLinkRule">
+			SELECT
+			    fullfillment_transaction_rule_funding.funding_type_id
+			    , fullfillment_transaction_rule_funding.bus_trans_id AS busTransId
+			    , valuelink_entry_rule.valuelink_entry_rule_id AS valueLinkRuleId
+			    , valuelink_entry_rule.descr AS description
+			    , valuelink_entry_rule.sort_order AS sortOrder
+			    , valuelink_entry_rule.entity_type_id AS entityTypeId
+			    , valuelink_entry_rule.entry_type_id AS entryTypeId
+			    , valuelink_entry_rule.promo_code_id AS promoCodeId
+			    , lu_promo_codes.promo_code AS promoCode
+			    , valuelink_entry_rule.origination_acct_type AS origAcctType
+			    , valuelink_entry_rule.destination_acct_type AS destAcctType
+			    , valuelink_entry_rule.origination_entity_type AS origEntityType
+			    , valuelink_entry_rule.destination_entity_type AS destEntityType
+			    , valuelink_entry_rule.message_type_id AS messageTypeId
+			FROM
+			    valuelink_entry_rule
+			    LEFT JOIN lu_promo_codes ON (valuelink_entry_rule.promo_code_id = lu_promo_codes.promo_code_id)
+			    INNER JOIN fullfillment_transaction_rule_funding ON (fullfillment_transaction_rule_funding.fullfillment_entry_rule_id = valuelink_entry_rule.valuelink_entry_rule_id)
+			WHERE fullfillment_transaction_rule_funding.funding_type_id = #fundingTypeId#
+			    AND fullfillment_transaction_rule_funding.bus_trans_id = #busTransId#
+			    ORDER BY sort_order ASC;
+	</select>
+
+	<select id="fullfillmentMessageDetail.query" parameterClass="java.lang.Long"
+		resultClass="valueLinkEntry">
+		SELECT
+		fe.fullfillment_entry_id as fullfillmentEntryId,
+		fe.fullfillment_grp_id as fullfillmentGroupId,
+		fe.bus_trans_id as
+		busTransId,
+		fe.fullfillment_entry_rule_id as fullfillmentEntryRuleId,
+		fe.ledger_entity_id as ledgerEntityId,
+		fe.entity_type_id as
+		entityTypeId,
+		fe.entry_type_id as entryTypeId,
+		fe.entry_date as
+		entryDate,
+		fe.pan as primaryAccountNumber,
+		fe.so_id as soId,
+		fe.reference_no as referenceNo,
+		fe.trans_amt as transAmount,
+		fe.entry_remark as entryRemark,
+		fe.sort_order as sortOrder,
+		fe.message_type_id as messageTypeId,
+		fe.promo_code_id as promoCodeId,
+		pc.promo_code as promoCode,
+		fe.next_fullfillment_entry_id as
+		nextFullfillmentEntryId,
+		fe.reconsiled_ind as reconsiledInd,
+		fe.reconsiled_date as reconsiledDate,
+		fe.ptd_reconsiled_ind as
+		ptdReconsiledInd,
+		fe.ptd_reconsiled_date as ptdReconsiledDate,
+		fe.ach_reconsiled_ind as achReconsiledInd,
+		fe.ach_reconsiled_date as
+		achReconsiledDate,
+		fe.cc_authorized_ind as ccAuthorizedInd,
+		fe.cc_authorized_date as ccAuthorizedDate,
+		fe.cc_authorization_no as
+		ccAuthorizationNo,
+		fe.authorization_id as authorizationId,
+		fe.stan_id as
+		stanId,
+		fe.retrieval_ref_id as retrievalRefId,
+		fe.created_date as
+		createdDate,
+		fe.modified_date as modifiedDate,
+		fe.modified_by as
+		modifiedBy,
+		fe.vl_balance as vlBalance,
+		fe.originating_pan as
+		originatingPan,
+		fe.destination_pan as destinationPan,
+		fe.originating_state_code as origStateCode,
+		fe.destination_state_code
+		as destStateCode
+		FROM fullfillment_entry fe
+		LEFT OUTER JOIN
+		lu_promo_codes pc ON fe.promo_code_id = pc.promo_code_id
+		WHERE
+		fullfillment_entry_id = #fullfillmentEntryId#
+	</select>
+
+	<select id="fullfillmentMessageDetailByGroup.query"
+		parameterClass="java.lang.Long" resultClass="valueLinkEntry">
+		SELECT
+		fe.fullfillment_entry_id as fullfillmentEntryId,
+		fe.fullfillment_grp_id as fullfillmentGroupId,
+		fe.bus_trans_id as
+		busTransId,
+		fe.fullfillment_entry_rule_id as fullfillmentEntryRuleId,
+		fe.ledger_entity_id as ledgerEntityId,
+		fe.entity_type_id as
+		entityTypeId,
+		fe.entry_type_id as entryTypeId,
+		fe.entry_date as
+		entryDate,
+		fe.pan as primaryAccountNumber,
+		fe.so_id as soId,
+		fe.reference_no as referenceNo,
+		fe.trans_amt as transAmount,
+		fe.entry_remark as entryRemark,
+		fe.sort_order as sortOrder,
+		fe.message_type_id as messageTypeId,
+		fe.promo_code_id as promoCodeId,
+		pc.promo_code as promoCode,
+		fe.next_fullfillment_entry_id as
+		nextFullfillmentEntryId,
+		fe.reconsiled_ind as reconsiledInd,
+		fe.reconsiled_date as reconsiledDate,
+		fe.ptd_reconsiled_ind as
+		ptdReconsiledInd,
+		fe.ptd_reconsiled_date as ptdReconsiledDate,
+		fe.ach_reconsiled_ind as achReconsiledInd,
+		fe.ach_reconsiled_date as
+		achReconsiledDate,
+		fe.cc_authorized_ind as ccAuthorizedInd,
+		fe.cc_authorized_date as ccAuthorizedDate,
+		fe.cc_authorization_no as
+		ccAuthorizationNo,
+		fe.authorization_id as authorizationId,
+		fe.stan_id as
+		stanId,
+		fe.retrieval_ref_id as retrievalRefId,
+		fe.created_date as
+		createdDate,
+		fe.modified_date as modifiedDate,
+		fe.modified_by as
+		modifiedBy,
+		fe.vl_balance as vlBalance,
+		fe.originating_pan as
+		originatingPan,
+		fe.destination_pan as destinationPan,
+		fe.originating_state_code as origStateCode,
+		fe.destination_state_code
+		as destStateCode
+		FROM fullfillment_entry fe
+		LEFT OUTER JOIN
+		lu_promo_codes pc ON fe.promo_code_id = pc.promo_code_id
+		WHERE
+		fe.fullfillment_grp_id = #groupId#
+	</select>
+
+	<insert id="insertProcessResponseLogging" parameterClass="java.util.HashMap">
+		INSERT INTO
+		process_response_logging(fullfillment_entry_id,response_string,created_date,modified_date)
+		values (#valueLinkEntryId#,#responseString#,NOW(),NOW());
+		<selectKey resultClass="int">
+			SELECT last_insert_id() as
+			process_response_id
+		</selectKey>
+	</insert>
+
+	<delete id="deleteProcessResponseLogging" parameterClass="java.lang.Long">
+		DELETE
+		FROM process_response_logging WHERE fullfillment_entry_id = #value#
+	</delete>
+
+	<insert id="insertProcessRequestLogging" parameterClass="java.util.HashMap">
+		INSERT INTO
+		process_request_logging(fullfillment_entry_id,request_string) values
+		(#valueLinkEntryId#,#requestString#);
+		<selectKey resultClass="int">
+			SELECT last_insert_id() as
+			process_request_id
+		</selectKey>
+	</insert>
+
+	<select id="getActionCodeIdAndStatus" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		select action_code_id as actionCodeId, status as status
+		from lu_fullfillment_action_codes
+		where action_code=#actionCode#
+	</select>
+
+	<update id="fullfillmentEntry.update" parameterClass="java.util.HashMap">
+		update fullfillment_entry set
+		<dynamic>
+			<isNotNull property="reconciledInd">
+				reconsiled_ind=#reconciledInd#,
+				reconsiled_date=NOW()
+			</isNotNull>
+			<isNotNull property="primaryAccountNo" prepend=",">
+				pan=#primaryAccountNo#
+			</isNotNull>
+			<isNotNull property="vlBalance" prepend=",">
+				vl_balance=#vlBalance#
+			</isNotNull>
+		</dynamic>
+		where fullfillment_entry_id=#fullfillmentEntryId#
+	</update>
+
+	<update id="updateReconcileStatusToNull" parameterClass="java.lang.Long">
+		update
+		fullfillment_entry
+		set reconsiled_ind = null, reconsiled_date = null
+		where
+		fullfillment_entry_id=#value#
+	</update>
+
+	<update id="fullfillmentLogReconciled.update" parameterClass="java.util.HashMap">
+		update fullfillment_entry_log set reconciled_ind=#reconciledInd# where
+		fullfillment_grp_id=#fullfillmentGrpId#
+	</update>
+
+	<update id="v1AccountBalance.update" parameterClass="valueLinkEntry">
+		UPDATE
+		fullfillment_vlaccounts SET v1_account_balance=#vlBalance#,
+		v1_balance_date=NOW() WHERE v1_account_no=#primaryAccountNumber#
+	</update>
+
+	<update id="v2AccountBalance.update" parameterClass="valueLinkEntry">
+		UPDATE
+		fullfillment_vlaccounts SET v2_account_balance=#vlBalance#,
+		v2_balance_date=NOW() WHERE v2_account_no=#primaryAccountNumber#
+	</update>
+
+
+
+	<update id="v1AccountBalanceTransaction.update" parameterClass="valueLinkEntry">
+		UPDATE
+		fullfillment_vlaccounts SET v1_account_balance=#vlBalance#,
+		v1_balance_date=NOW() WHERE v1_account_no=#primaryAccountNumber#
+		AND  v1_balance_date  <![CDATA[< ]]> NOW() - INTERVAL 5 MINUTE
+	</update>
+
+	<update id="v2AccountBalanceTransaction.update" parameterClass="valueLinkEntry">
+		UPDATE
+		fullfillment_vlaccounts SET v2_account_balance=#vlBalance#,
+		v2_balance_date=NOW() WHERE v2_account_no=#primaryAccountNumber#
+		AND v2_balance_date  <![CDATA[< ]]> NOW() - INTERVAL 5 MINUTE
+
+	</update>
+	<select id="fectchActionCodeDesc.query" parameterClass="java.lang.String"
+		resultClass="java.lang.String">
+		SELECT action_desc as actionCodeDesc
+		FROM
+		lu_fullfillment_action_codes
+		WHERE action_code = #actionCode#
+	</select>
+
+	<insert id="fullfillment_entry.insert" parameterClass="valueLinkEntry">
+		INSERT INTO fullfillment_entry (
+		fullfillment_grp_id, bus_trans_id,
+		fullfillment_entry_rule_id, entity_type_id, ledger_entity_id,
+		entry_type_id,message_desc_id,
+		entry_date, pan, so_id, reference_no,
+		trans_amt, entry_remark, sort_order, message_type_id, promo_code_id,
+		next_fullfillment_entry_id,
+		reconsiled_ind, reconsiled_date,
+		ptd_reconsiled_ind, ptd_reconsiled_date,
+		ach_reconsiled_ind,
+		ach_reconsiled_date, cc_authorized_ind,
+		cc_authorized_date,
+		cc_authorization_no,
+		authorization_id, stan_id, retrieval_ref_id,
+		created_date, modified_date,
+		modified_by,originating_pan,destination_pan,originating_state_code,destination_state_code,
+		funding_type_id, originating_entity_id)
+		VALUES (#fullfillmentGroupId#,
+		#busTransId#,
+		#fullfillmentEntryRuleId#, #entityTypeId#,
+		#ledgerEntityId#,
+		#entryTypeId#,
+		#messageDescId#,
+		now(),
+		#primaryAccountNumber#,#soId#, #referenceNo#,
+		#transAmount#,
+		#entryRemark#, #sortOrder#, #messageTypeId#, #promoCodeId#,
+		#nextFullfillmentEntryId#,
+		#reconsiledInd#, #reconsiledDate#,
+		#ptdReconsiledInd#, #ptdReconsiledDate#,
+		#achReconsiledInd#,
+		#achReconsiledDate#, #ccAuthorizedInd#,
+		#ccAuthorizedDate#,
+		#ccAuthorizationNo#,
+		#authorizationId#, #stanId#, #retrievalRefId#,
+		now(), now(),
+		#modifiedBy#,#originatingPan#,#destinationPan#,#origStateCode#,#destStateCode#,
+		#fundingTypeId#, #originatingEntityId#)
+		<selectKey resultClass="int">
+			SELECT last_insert_id() as
+			fullfillment_entry_id
+		</selectKey>
+	</insert>
+
+	<select id="nextFullfillmentEntryDetails.query" parameterClass="valueLinkEntry"
+		resultClass="valueLinkEntry">
+		SELECT fullfillment_entry_id as fullfillmentEntryId,
+		fullfillment_grp_id as fullfillmentGroupId,
+		bus_trans_id as busTransId,
+		trans_amt as transAmount,
+		funding_type_id as fundingTypeId,
+		sort_order
+		as sortOrder
+		FROM fullfillment_entry
+		WHERE fullfillment_grp_id =
+		#fullfillmentGroupId#
+		AND sort_order > (#sortOrder#) and reconsiled_ind
+		is null and
+		((trans_amt > 0) || (bus_trans_id in (180,170))) order by
+		sort_order
+		limit 1
+	</select>
+
+	<select id="valueLinkHeartBeat.query" resultClass="java.lang.String">
+		select
+		valueLink_ind as valuelinkInd from VALUELINK_HEARTBEAT
+	</select>
+
+	<update id="valueLinkSharpInd.update" parameterClass="java.lang.String">
+		update
+		VALUELINK_HEARTBEAT set sharp_ind=#sharp_ind#
+	</update>
+
+	<update id="valueLinkInd.update" parameterClass="java.lang.String">
+		update
+		VALUELINK_HEARTBEAT set valueLink_ind=#valueLink_ind#
+	</update>
+
+	<select id="countPendingActivationRequestsForEntity"
+		parameterClass="java.lang.Long" resultClass="java.lang.Integer">
+		SELECT COUNT(*) FROM
+		fullfillment_entry f
+		WHERE message_type_id = 1
+		AND ledger_entity_id =
+		#value#
+		AND reconsiled_ind IS NULL
+	</select>
+
+	<select id="getFirstUnReconciledTrans.query" parameterClass="java.lang.Long"
+		resultClass="valueLinkEntry">
+		SELECT fullfillment_entry_id as fullfillmentEntryId,
+		fullfillment_grp_id as fullfillmentGroupId,
+		bus_trans_id as busTransId,
+		trans_amt as transAmount,
+		sort_order as sortOrder
+		FROM fullfillment_entry
+		WHERE fullfillment_grp_id = #fullfillmentGroupId#
+		and (reconsiled_ind is null || reconsiled_ind not in (0,1,4,5)) and
+		((trans_amt > 0) || (bus_trans_id in (180,170))) order by sort_order
+		limit 1
+	</select>
+
+	<insert id="insertAdminToolLogging" parameterClass="java.util.HashMap">
+		INSERT INTO
+		fullfillment_admin_tool_log(fullfillment_entry_id,user_name,comments,created_timestamp)
+		values (#valueLinkEntryId#,#userName#,#comments#,NOW());
+		<selectKey resultClass="int">
+			SELECT last_insert_id() as fullfillment_admin_log_id
+		</selectKey>
+	</insert>
+	<insert id="moveFullfillmentVLAccountToHistory.insert"
+		parameterClass="vlAccount">
+		INSERT INTO fullfillment_vlaccounts_history
+		SELECT * FROM fullfillment_vlaccounts
+		WHERE ledger_entity_id = #ledgerEntityId#
+		AND entity_type_id = #entityTypeId#
+	</insert>
+
+	<delete id="fullfillmentVLAccount.delete" parameterClass="vlAccount">
+		DELETE
+		FROM fullfillment_vlaccounts
+		WHERE ledger_entity_id = #ledgerEntityId#
+		AND entity_type_id = #entityTypeId#
+	</delete>
+
+
+	<select id="SLAccountCount.query" parameterClass="java.lang.Long"
+		resultClass="java.lang.Integer">
+		select count(*) from fullfillment_vlaccounts where
+		ledger_entity_id=#ledgerEntityId#
+	</select>
+
+	<insert id="createVLAccounts.insert" parameterClass="vlAccount">
+		INSERT INTO
+		fullfillment_vlaccounts
+		(ledger_entity_id, entity_type_id, v1_account_no)
+		VALUES
+		(#ledgerEntityId#,
+		#entityTypeId#, #v1AccountNo#)
+		ON DUPLICATE KEY UPDATE entity_type_id=#entityTypeId# , v1_account_no=#v1AccountNo#
+	</insert>
+
+	<select id="getValueLinkAccounts" parameterClass="vlAccount"
+		resultClass="vlAccount">
+		SELECT
+		ledger_entity_id as ledgerEntityId,
+		entity_type_id as entityTypeId,
+		v1_account_no as v1AccountNo,
+		v2_account_no as v2AccountNo
+		FROM fullfillment_vlaccounts
+		WHERE ledger_entity_id =
+		#ledgerEntityId#
+		AND entity_type_id = #entityTypeId#;
+	</select>
+
+	<update id="setv2accountno.update" parameterClass="vlAccount">
+		update
+		fullfillment_vlaccounts set v2_account_no=#v2AccountNo# where
+		ledger_entity_id=#ledgerEntityId#
+	</update>
+	
+	<insert id="fullfillment_group.insert">
+		INSERT INTO fullfillment_group VALUES ()
+		<selectKey resultClass="int">
+	      SELECT last_insert_id() as fullfillment_group_id
+		</selectKey>
+	</insert>
+
+	<select id="fullfillment_SLAccounts.query" resultClass="vlAccount">
+		SELECT
+		fullfillment_account_id as accountId,
+		account_code as accountCode,
+		account_desc as accountDesc,
+		account_no as v1AccountNo
+		FROM lu_fullfillment_vlaccounts
+	</select>
+</sqlMap>

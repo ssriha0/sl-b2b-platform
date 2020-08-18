@@ -1,0 +1,505 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project basedir="../../" default="build">
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+
+	<target name="splash">
+		<property name="splash.dir" location="." />
+		<splash imageurl="file:${}/images/ant.gif" />
+	</target>
+
+	<target name="init" depends="splash">	
+		<!-- Create the time stamp -->
+	    	<tstamp/>
+	    <!-- Create build number file -->
+			<buildnumber />
+		<property name="dir.base" value="${basedir}" />
+		<property name="dir.overall.base" value="${dir.base}/overall/base" />
+		<property file="${dir.overall.base}/build.properties" />
+		<property name="dir.product.bin" value="${dir.base}/overall/product/bin" />		
+		<property name="dir.app" value="${dir.base}/WebRoot" />
+		<property name="dir.app.webinf" value="${dir.base}/WebRoot/WEB-INF" />
+		<property name="dir.app.main.resources" value="${dir.base}/WebRoot/WEB-INF/resources" />
+		<property name="dir.source" value="${dir.base}/src" />
+		<property name="dir.dest" value="${dir.base}/bin" />
+		<property name="dir.build" value="${dir.base}/build" />
+		<property name="dir.test" value="${dir.base}/test" />
+		<property name="dir.moving-parts" value="${dir.base}/overall/product/moving-parts" />
+		<property name="dir.archive" value="${dir.base}/archive" />
+		<property name="dir.services" value="${dir.base}/WebServices" />
+		
+		<property name="env" value="dev" />
+		<property name="app.lastbuild.tag.auto" value="release_1_${build.number}_${env}_${DSTAMP}${TSTAMP}" />
+	
+        	<!-- Folder under which all the libraries are kept -->
+        	<property name="global.lib" value="${dir.base}/lib"/>
+	
+		<!-- Folder containing uncompressed final release software-->
+		<property name="dir.dist" value="${dir.base}/dist"/>
+		    
+		<path id="build.class.path">
+			<fileset dir="${global.lib}">
+				<include name="*.jar"/>
+			</fileset>
+		</path>
+	</target>
+
+
+    <target name="common-clean">
+		<antcall target="clean"/>
+    </target>
+	
+    <target name="build">
+		<antcall target="compile"/>
+	</target>
+	
+	<target name="build-and-test">
+		<antcall target="compile-test"/>
+	</target>
+	
+	<target name="stage">
+		<antcall target="war"/>
+	</target>
+	
+	<target name="common-deploy">
+		<antcall target="deploy"/>
+	</target>
+	
+	
+	<target name="compile" depends="init,create-dirs">
+		<javac
+			srcdir="${dir.source}"
+			destdir="${dir.dest}"
+			classpathref="build.class.path"
+			debug="on"
+			deprecation="false"
+		/>
+		<!--<copy todir="${dir.dest}">
+			<fileset dir="${dir.app}">
+				<include name="**/*.xml"/>
+			</fileset>
+			<fileset dir="${dir.app}">
+				<include name="**/*.tld"/>
+			</fileset>
+			<fileset dir="${dir.app}">
+				<include name="**/*.properties"/>
+			</fileset>
+		</copy> -->
+	</target>
+
+	<target name="compile-test">
+		<javac
+			srcdir="${dir.test}"
+			destdir="${dir.dest}"
+			classpathref="build.class.path"
+			debug="on"
+			deprecation="false"
+		/>
+		<copy todir="${dir.dest}">
+			<fileset dir="${dir.test}">
+				<include name="**/*.xml"/>
+			</fileset>
+			<fileset dir="${dir.test}">
+				<include name="**/*.tld"/>
+			</fileset>
+			<fileset dir="${dir.test}">
+				<include name="**/*.properties"/>
+			</fileset>
+		</copy>		
+		
+			<if>
+				 <equals arg1="${env}" arg2="qa" />
+				 <then>
+					<antcall target="junitinternal"/> 
+				 </then>
+			</if>
+	</target>
+	
+	<target name="create-dirs" depends="init">
+		<mkdir dir="${dir.dest}" />
+		<mkdir dir="${dir.app}/WEB-INF/classes" />
+		<mkdir dir="${dir.app}/WEB-INF/classes/resources" />
+	        <mkdir dir="${dir.dist}"/>
+	        <mkdir dir="${dir.dist}/lib"/>
+	</target>
+
+	
+
+	<target name="clean" depends="init">
+		<delete includeEmptyDirs="true">
+			<fileset dir="${dir.base}" includes="**/*.class" />
+			<fileset dir="${dir.base}" includes="**/*.war" />
+			<fileset dir="${dir.base}" includes="**/*.ear">
+				<exclude name="**/${app.product.name}-qa.ear"/>
+				<exclude name="**/${app.product.name}-prod.ear"/>
+			</fileset>
+		</delete>
+
+		<delete dir="${dir.dest}"/>
+		<delete dir="${dir.base}/${app.product.name}.war"/>
+	   	<delete dir="${dir.dist}" quiet="true" failonerror="false"/>
+	</target>
+	
+	<target name="new-war" depends="web-resource-copy">
+		
+		<antcall target="config"/> 
+		
+		<war destfile="${dir.base}/${app.product.name}.war" 
+			 webxml="${dir.app.webinf}/web.xml">
+		    <fileset dir="${dir.app}"/>
+			
+			<webinf dir="${dir.app.main.resources}">
+				 <include name="applicationContext.xml"/>
+				<!-- <include name="bootstrap.properties"/> -->
+			</webinf>
+			
+			<webinf dir="${dir.app.main.resources}"/>
+				
+	        <classes dir="${dir.dest}"/>
+			
+		    <classes dir="${dir.app.main.resources}">
+				
+		    </classes>
+				
+			
+		   <lib dir="${global.lib}">
+			 <include name="*.jar"/>
+			 <exclude name="log4j*.jar"/>
+			</lib>
+		</war>
+    </target>
+	
+	
+		<target name="war" depends="init">
+			
+	    <copy todir="${dir.app}/WEB-INF/classes/resources">
+			<fileset dir="${dir.app.main.resources}">
+				<include name="*.*"/>
+			</fileset>
+		</copy>
+		
+		<copy todir="${dir.app}/WEB-INF/classes">
+			<fileset dir="${dir.dest}">
+				<include name="**/*.class"/>
+			</fileset>
+			<fileset dir="${dir.dest}">
+				<include name="**/*.xml"/>
+			</fileset>
+			<fileset dir="${dir.dest}">
+				<include name="**/*.tld"/>
+			</fileset>
+			<fileset dir="${dir.dest}">
+				<include name="**/*.properties"/>
+			</fileset>		
+			
+			<fileset dir="${dir.app.main.resources}">
+				<include name="applicationContext.xml"/>
+				<include name="SqlMapConfig.xml"/>
+			</fileset>
+		</copy>
+
+		<copy todir="${dir.app}/WEB-INF">
+			<fileset dir="${dir.dest}">
+				<include name="**/*.xml"/>
+			</fileset>
+			<fileset dir="${dir.dest}">
+				<include name="**/*.tld"/>
+			</fileset>
+			<fileset dir="${dir.dest}">
+				<include name="**/*.properties"/>
+			</fileset>
+			<fileset dir="${dir.app.main.resources}">
+				<include name="applicationContext.xml"/>
+			</fileset>
+			 
+		</copy>		
+		<copy todir="${dir.app}/META-INF/xfire">
+			<fileset dir="${dir.services}">
+				<include name="**/*.xml"/>
+			</fileset>
+		</copy>				
+		
+		<!-- BUILD JAR FILE -->
+		<jar compress="yes" jarfile="${dir.dist}/lib/${app.product.module}.jar">
+	            <fileset dir="${dir.app}/WEB-INF/classes">
+	                <include name="**/*.class"/>
+	            </fileset>
+	        </jar>
+		
+		<copy todir="${dir.app}/WEB-INF/lib">
+			<fileset dir="${global.lib}">
+				<include name="*.jar"/>
+				<exclude name="log4j*.jar"/>
+			</fileset>
+			<fileset dir="${dir.dist}/lib">
+				<include name="*.jar"/>
+			</fileset>
+		</copy>
+				
+		<!--<delete dir="${dir.app}/WEB-INF/resources" /> -->
+		
+		<antcall target="config"/>    
+		
+		<!-- Build the WAR file -->
+	        <jar compress="yes" jarfile="${dir.base}/${app.product.module}.war">
+	            <fileset dir="${dir.app}">
+	                <include name="**/*.js"/>
+	                <include name="**/*.css"/>
+	                <include name="**/*.html"/>
+	                <include name="**/*.inc"/>
+	                <include name="**/*.jsp"/>
+	                <include name="**/*.htm"/>
+	                <include name="**/*.jpg"/>
+	                <include name="**/*.gif"/>
+	                <include name="**/*.png"/>
+	                <include name="**/*.xml"/>
+	                <include name="**/*.jrxml"/>
+	                <include name="**/*.xml"/>
+	                <include name="**/*.tld"/>
+	            	<include name="**/*.properties"/>
+	                <include name="**/*.jar"/>
+	                <include name="**/*.so"/>
+	                <include name="**/*.zip"/>
+	                <include name="**/*.swf"/>
+	            </fileset>
+	        </jar>		
+			<if>
+				 <equals arg1="${env}" arg2="qa" />
+				 <then>
+					<antcall target="junitinternal"/> 
+				 </then>
+			</if>
+	</target>
+	
+	<target name="web-resource-copy">
+		<copy todir="${dir.app}/WEB-INF/classes">
+			<fileset dir="${dir.dest}">
+				<include name="**/*.class"/>
+			</fileset>
+			<fileset dir="${dir.dest}">
+				<include name="**/*.xml"/>
+			</fileset>
+			<fileset dir="${dir.dest}">
+				<include name="**/*.tld"/>
+			</fileset>
+			<fileset dir="${dir.dest}">
+				<include name="**/*.properties"/>
+			</fileset>		
+		</copy>	
+	</target>
+	<target name="ear" depends="war">
+		<ear destfile="${dir.base}/${app.product.name}.ear" appxml="${dir.moving-parts}/META-INF/application.xml">
+			<fileset dir="${dir.base}" includes="*.war"/>
+		</ear>
+		<copy todir="${dir.dist}">
+			<fileset dir="${dir.base}">
+				<include name="*${app.product.name}.ear"/>
+			</fileset>
+		</copy>
+		<echo message="*****--- Successfully created ${app.product.name}.ear for Distribution ---*****"/>
+		
+		<if>
+		 <equals arg1="${env}" arg2="prod" />
+		 <then>
+			<copy file="${dir.base}/${app.product.name}.ear" tofile="${dir.archive}/${app.product.name}-${env}-${DSTAMP}${TSTAMP}.ear"/>
+			<echo message="*****--- Successfully archived ${app.product.name}-${env}-${DSTAMP}${TSTAMP}.ear ---*****"/>
+		 </then>	
+		 <else>
+			<if>
+			 <equals arg1="${env}" arg2="qa" />
+			 <then>
+				<copy file="${dir.base}/${app.product.name}.ear" tofile="${dir.archive}/${app.product.name}-${env}-${DSTAMP}${TSTAMP}.ear"/>
+				<echo message="*****--- Successfully archived ${app.product.name}-${env}-${DSTAMP}${TSTAMP}.ear ---*****"/>
+			 </then>
+			</if>	
+		 </else>
+		 </if>
+	</target>
+	
+	<target name="cleanWorkDir">
+		<delete dir="work"/>
+	</target>
+		
+	<target name="initWorkDir">
+		<mkdir dir="work"/>
+	</target>
+	
+
+	
+	<target name="junit" description="Runs the JUnit test cases" depends="compile, compile-test, cleanWorkDir, initWorkDir">
+		<junit fork="yes" haltonfailure="${junit.haltonfailure}" printsummary="withOutAndErr" showoutput="yes">
+			<classpath>
+			<pathelement path="${java.class.path}"/>
+			<pathelement path="${dir.dest}"/>
+			<fileset dir="${global.lib}">
+				<include name="**/*.jar" />
+			</fileset>
+		   </classpath>
+
+		<test name="com.newco.AllTests" todir="work">
+			<formatter type="plain" /> 
+		</test>
+		</junit>
+		<echo message="build date ">${DSTAMP}${TSTAMP}</echo>
+		<echo message="build.number ">${build.number}</echo>
+		<echo message="full tag ">${app.lastbuild.tag.auto}</echo>
+	</target>
+	
+	<target name="junitinternal" depends="compile-test, cleanWorkDir, initWorkDir">
+			<junit fork="yes" haltonfailure="${junit.haltonfailure}" printsummary="withOutAndErr" showoutput="yes">
+			
+			<classpath>
+				<pathelement path="${java.class.path}"/>
+				<pathelement path="${dir.dest}"/>
+				<fileset dir="${global.lib}">
+					<include name="**/*.jar" />
+				</fileset>
+			</classpath>
+
+			<test name="com.newco.AllTests" todir="work">
+				<formatter type="plain" />
+			</test>
+			</junit>
+			<echo message="build date ">${DSTAMP}${TSTAMP}</echo>
+			<echo message="build.number ">${build.number}</echo>
+			<echo message="full tag ">${app.lastbuild.tag.auto}</echo>
+
+	</target>
+	
+	<target name="config">
+		<if>
+		 <equals arg1="${env}" arg2="prod" />
+		 <then>
+			<copy file="${dir.moving-parts}/bootstrap.prod.properties" tofile="${dir.app}/WEB-INF/bootstrap.properties"/>
+			<copy file="${dir.moving-parts}/bootstrap.prod.properties" tofile="${dir.app}/WEB-INF/classes/bootstrap.properties"/>
+			<echo message="*****--- Setting Up Build For Production Environment ---*****"/>
+		 </then>
+		 <else>
+			<if>
+			 <equals arg1="${env}" arg2="qa" />
+			 <then>
+				<copy file="${dir.moving-parts}/bootstrap.qa.properties" tofile="${dir.app}/WEB-INF/bootstrap.properties"/>
+				<copy file="${dir.moving-parts}/bootstrap.qa.properties" tofile="${dir.app}/WEB-INF/classes/bootstrap.properties"/>
+				<echo message="*****--- Setting Up Build For QA Environment ---*****"/>
+			 </then>
+			 <else>
+				<copy file="${dir.moving-parts}/bootstrap.dev.properties" tofile="${dir.app}/WEB-INF/bootstrap.properties"/>
+				<copy file="${dir.moving-parts}/bootstrap.dev.properties" tofile="${dir.app}/WEB-INF/classes/bootstrap.properties"/>
+				<echo message="*****--- Setting Up Build For Dev Environment ---*****"/>
+			 </else>
+			</if>
+		 </else>
+		</if>
+	</target>
+	
+	<!-- Target to refresh all the non-sources to be obtained from the repository -->	
+	<target name="refresh" description="Refresh Market from CVS repository" depends="init">
+		<cvs command="login" cvsroot="${app.CVSROOT}" />
+		<mkdir dir="."/>
+		<cvs command="update -A Market" cvsroot="${app.CVSROOT}" dest="${source.dir.CVS}"/>
+	</target>
+	
+	<!-- Tag the files that are just used in the build with the id of the build-->
+	<target name="tag" depends="clean, init">
+		<cvs command="tag -R -c ${app.lastbuild.tag}" cvsroot="${app.CVSROOT}" package="."/>
+		<echo message="*****--- Tagged ALL modules with TAG ${app.lastbuild.tag} ---*****"/>
+	</target>
+	
+	<!-- Target to refresh all tagged files -->
+	<target name="refreshtag" depends="clean, init">
+		<cvs command="update -A" cvsroot="${app.CVSROOT}" tag="${app.build.tag}" dest="${source.dir.CVS}" />
+		<echo message="*****--- Refreshing ALL modules with TAG ${app.build.tag} ---*****"/>
+	</target>
+	
+	<target name="autotag" depends="clean, init">
+		<cvs command="tag -R -c ${app.lastbuild.tag.auto}" cvsroot="${app.CVSROOT}" package="."/>
+		<echo message="*****--- Tagged ALL modules with TAG ${app.lastbuild.tag} ---*****"/>
+	</target>
+	
+	<target name="mail" depends="init">
+		<taskdef name="mimemail" 
+		classname="org.apache.tools.ant.taskdefs.optional.mail.MimeMail"/>
+		<tstamp/>
+		<mimemail 
+		   messageMimeType="text/html"
+   		   messageFile="${dir.overall.base}/build.txt"
+		   tolist="${product.email.list}"
+		   mailhost="${smtp.server.name}"
+		   subject="${app.build.tag.prefix}_${env}_${DSTAMP}${TSTAMP} - Build Completed Successfully"
+		   from="${product.projectowner.email}">
+		</mimemail>
+	</target>
+	
+    <!-- Publish the deployment units to the website -->
+    <target name="publish" depends="init">    
+    	 <scp file="${deploy.local.filepath}/${deploy.local.filename}"
+    	       todir="${server.username}:${server.password}@${server.name}:${deploy.remote.dir}" 
+    	 	   trust="true"	 
+    	 />
+    </target>
+	
+	<!-- This target creates a milestone build -->	
+	<target name="milestone" description="Perform a milestone build" depends="init">
+		<antcall target="refresh"/>  
+		<antcall target="deploy"/>      
+		<antcall target="mail"/>
+		
+		<if>
+		 <equals arg1="${auto.publish}" arg2="on" />
+		 <then>					
+		  	  <input
+		  	    message="Are you sure you wish to Publish to the ${env} server?"
+		  	    validargs="y,n"
+		  	    addproperty="do.publish"
+		  	  />
+		  	  <condition property="do.abort">
+		  	    <equals arg1="n" arg2="${do.publish}"/>
+		  	  </condition>
+		  	  <fail if="do.abort">Publish aborted by user.</fail>
+
+		 	  <if>
+			  	<equals arg1="${do.publish}" arg2="y"/>
+			  	<then>
+			  		<antcall target="publish"/>  
+				 	<echo message="*****--- Successfully Published Milestone Build of ${app.product.name}  to ${env} server ---*****"/>
+			  	</then>
+			  </if>		 	
+		 </then>		
+		 <else>
+		 	<echo message="*****--- Auto Publish of Milestone Build of ${app.product.name} to ${env} server is currently turned off ---*****"/>
+		 </else>
+		</if>
+			
+		<echo message="*****--- Successfully Completed Milestone Build of ${app.product.name}          ---*****"/>
+		<echo message="*****--- Please Note:                                                           ---*****"/>
+		<echo message="*****---              This build should be tagged after a successful smoke test ---*****"/>
+		<echo message="*****---              Update tag id in build.properties.                        ---*****"/>
+		<echo message="*****---              Run 'ant tag' to tag this build.                          ---*****"/>
+	</target>
+
+	<target name="deploy" description="Copies .ear file into local server deploy dir">
+		<copy todir="${server.deploy.dir}">
+			<fileset dir="${dir.base}" includes="${app.product.name}.war"/>
+		</copy>
+		<echo message="*****--- Successfully deployed ${app.product.name}.ear to Local Server ---*****"/>
+	</target>
+
+	<target name="deploywithcond" description="Copies .ear file into local server deploy dir" depends="new-war">
+		<if>
+		 <equals arg1="${env}" arg2="dev" />
+		 <then>		
+			<copy todir="${server.deploy.dir}">
+				<fileset dir="${dir.base}" includes="${app.product.name}.war"/>
+			</copy>
+			<echo message="*****--- Successfully deployed ${app.product.name}.war to Local Server ---*****"/>
+		 </then>
+		</if> 
+
+		<if>
+		 <equals arg1="${build.email}" arg2="on" />
+		 <then>		
+			<antcall target="mail"/>  
+		 </then>		
+		</if>
+	</target>
+</project>

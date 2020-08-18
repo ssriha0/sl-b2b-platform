@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<!-- Root element -->
+	<xs:element name="soTimeOnSiteRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="eventType" type="eventTypeInd" />
+				<xs:element name="latitude" type="xs:double" minOccurs="0" />
+				<xs:element name="longitude" type="xs:double" minOccurs="0" />
+				<xs:element name="currentTripNo" type="xs:decimal" minOccurs="0" /> <!-- Only required for departure -->
+				<xs:element name="tripStatus" type="xs:string" minOccurs="0" />
+				<xs:element name="reasonCode" type="reasonCodeEnum" minOccurs="0" /> <!-- Only required for departure -->
+				<xs:element name="checkInTime" type="xs:dateTime" minOccurs="0" />
+				<xs:element name="checkOutTime" type="xs:dateTime" minOccurs="0" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:simpleType name="eventTypeInd">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="1" /><!-- ARRIVAL -->
+			<xs:enumeration value="2" /><!-- DEPARTURE -->
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="reasonCodeEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Cancellation Requested" />
+			<xs:enumeration value="Service Completed" />
+			<xs:enumeration value="Revisit Needed" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	
+</xs:schema>

@@ -1,0 +1,42 @@
+.week-view {
+    padding: 15px;
+    
+    .week-view-events{
+        background-color: @light-color;
+        width: 650px;
+        margin: 0 auto;
+    }
+     
+    .week-columns {
+        display:inline-block; 
+        vertical-align: top; 
+        margin:0px @zero-cell-margin 0px @zero-cell-margin;
+        .column-width
+    }
+
+    .column-width {
+        width: 92px;
+    }
+    .column-height {
+        height: @day-view-event-column-height;
+    }
+
+    .column-box {
+        .column-height;
+        .column-width;
+        padding:2px;
+    }
+
+    .column-box-margin {
+        margin: @zero-cell-margin;
+    }
+
+    .default-tile {
+        background-color: @light-color;
+        padding: 5px;
+    }
+
+    .blank-event {
+        background-color: #fbfbfb;
+    }
+}

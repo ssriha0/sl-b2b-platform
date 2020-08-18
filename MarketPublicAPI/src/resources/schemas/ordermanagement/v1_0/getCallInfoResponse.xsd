@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/soResponse" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" targetNamespace="http://www.servicelive.com/namespaces/soResponse" elementFormDefault="qualified" jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+	<xs:include schemaLocation="../../common.xsd"/>
+	<xs:include schemaLocation="../../om_common.xsd"/>
+	
+	<!--  This is the new get Call Info Response-->
+	<!-- Root Element -->
+	<xs:element name="getCallInfoResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="results"/>
+				<xs:element name="callDetails" type="callDetailsType"></xs:element>
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:decimal"/>
+			
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="callDetailsType">
+		<xs:sequence>
+			<xs:element name="customerInfo" type="customerInfoType"></xs:element>
+			<xs:element name="productDetails" type="productDetailsType"></xs:element>
+			<xs:element name="scope" type="ListType"></xs:element>
+			<xs:element name="historyList" type="historyListType"></xs:element>
+			<xs:element name="specialInstructions" type="xs:string"></xs:element>
+			<xs:element name="serviceLocationNotes" type="xs:string"></xs:element>
+			<xs:element name="assignedProvider" type="providerType"></xs:element>
+			<xs:element name="appointmentStartDate" type="xs:string"></xs:element>
+			<xs:element name="appointmentEndDate" type="xs:string"></xs:element>
+			<xs:element name="appointmentStartTime" type="xs:string"></xs:element>
+			<xs:element name="appointmentEndTime" type="xs:string"></xs:element>
+			<xs:element name="timezone" type="xs:string"></xs:element>
+			<xs:element name="reasonCodeList" type="reasonListType"></xs:element>
+			
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="customerInfoType">
+		<xs:sequence>
+			<xs:element name="firstName" type="xs:string"></xs:element>
+			<xs:element name="lastName" type="xs:string"></xs:element>
+			<xs:element name="primaryPhone" type="xs:string"></xs:element>
+			<xs:element name="altPhone" type="xs:string"></xs:element>
+			<xs:element name="location" type="locationType"></xs:element>	
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="locationType">
+		<xs:sequence>
+			<xs:element name="locnName" type="xs:string"></xs:element>
+			<xs:element name="street1" type="xs:string"></xs:element>
+			<xs:element name="street2" type="xs:string"></xs:element>
+			<xs:element name="city" type="xs:string"></xs:element>
+			<xs:element name="city" type="xs:string"></xs:element>	
+			<xs:element name="zip" type="xs:string"></xs:element>	
+			
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="productDetailsType">
+		<xs:sequence>
+			<xs:element name="manufacturer" type="xs:string"></xs:element>
+			<xs:element name="modelNo" type="xs:string"></xs:element>
+			<xs:element name="availabilityDate" type="xs:string"></xs:element>
+			<xs:element name="merchandiseCode" type="xs:string"></xs:element>
+			<xs:element name="brand" type="xs:string"></xs:element>	
+			<xs:element name="productLocation" type="locationType"></xs:element>	
+			
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="historyListType">
+	<xs:sequence>  
+      <xs:element name="data" type="historyType" minOccurs="0"   
+                                            maxOccurs="unbounded">  
+     </xs:element>
+     </xs:sequence>
+     </xs:complexType>
+	<xs:complexType name="historyType">
+		<xs:sequence>
+			<xs:element name="reason" type="xs:string"></xs:element>
+			<xs:element name="day" type="xs:string"></xs:element>
+			<xs:element name="date" type="xs:string"></xs:element>
+			<xs:element name="scheduleStatus" type="xs:string"></xs:element>	
+		</xs:sequence>		
+	</xs:complexType>
+	
+	
+	
+	
+</xs:schema>

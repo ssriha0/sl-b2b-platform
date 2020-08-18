@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/buyerDetailsEventCallbackResponse" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" targetNamespace="http://www.servicelive.com/namespaces/buyerDetailsEventCallbackResponse" elementFormDefault="qualified" jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+	<xs:include schemaLocation="soCommon.xsd"/>
+	<xs:include schemaLocation="../common.xsd"/>
+	<xs:element name="buyerDetailsEventCallbackResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="results"/>
+				<xs:element name="url" type="xs:string" nillable="true" minOccurs="0"/>
+				<xs:element name="method" type="xs:string" nillable="true" minOccurs="0"/>
+				<xs:element name="httpHeaderParameters" type="xs:string" nillable="true" minOccurs="0"/>
+				<xs:element name="authenticationType" type="xs:string" nillable="true" minOccurs="0"/>
+				<xs:element name="apiKey" type="xs:string" nillable="true" minOccurs="0"/>
+				<xs:element name="apiSecret" type="xs:string" nillable="true" minOccurs="0"/>
+				<xs:element name="callbackType" type="xs:string" nillable="true" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:decimal"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

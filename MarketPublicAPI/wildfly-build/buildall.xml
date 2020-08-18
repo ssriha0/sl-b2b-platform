@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="../" default="compile-dependencies" name="MarketPublicAPI-BuildAll" >
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+	<target name="compile-dependencies"> 
+		<ant antfile="../ServiceLive.Common/wildfly-build/build.xml" dir="../Wallet/ServiceLive.Common"/>
+		<ant antfile="../MarketCommon/wildfly-build/build.xml"   dir="../MarketCommon" />
+		<ant antfile="../MarketBusinessInterface/wildfly-build/build.xml" dir="../MarketBusinessInterface"/>
+		<ant antfile="../MarketDocument/wildfly-build/build.xml"   dir="../MarketDocument"/>
+		<ant antfile="../OMSStaging/wildfly-build/build.xml"   dir="../OMSStaging"/>
+		<ant antfile="../ServiceLiveCommonDomain/wildfly-build/build.xml" dir="../ServiceLiveCommonDomain" />
+		<ant antfile="../RoutingRulesEngine/wildfly-build/build.xml" dir="../RoutingRulesEngine"/>
+		<ant antfile="../MarketAlertsManager/wildfly-build/build.xml" dir="../MarketAlertsManager"/>
+		<ant antfile="../Wallet.Common/wildfly-build/build.xml" dir="../Wallet/Wallet.Common"/>
+		<ant antfile="../Wallet.ServiceInterface/wildfly-build/build.xml" dir="../Wallet/Wallet.ServiceInterface"/>
+		<ant antfile="../Wallet.Alert/wildfly-build/build.xml" dir="../Wallet/Wallet.Alert"/>
+		<ant antfile="../Wallet.ACH/wildfly-build/build.xml" dir="../Wallet/Wallet.ACH"/>
+		<ant antfile="../Wallet.CreditCard/wildfly-build/build.xml" dir="../Wallet/Wallet.CreditCard"/>
+		<ant antfile="../Wallet.Ledger/wildfly-build/build.xml" dir="../Wallet/Wallet.Ledger"/>
+		<ant antfile="../Wallet.ValueLink/wildfly-build/build.xml" dir="../Wallet/Wallet.ValueLink"/>
+		<ant antfile="../Wallet.Batch/wildfly-build/build.xml" dir="../Wallet/Wallet.Batch"/>
+		<ant antfile="../Wallet.Service/wildfly-build/build.xml" dir="../Wallet/Wallet.Service"/>
+		<ant antfile="../Wallet.Service/wildfly-build/build.xml" dir="../Wallet/Wallet.Service"/>
+		<ant antfile="../OrderFulfillment.Client/wildfly-build/build.xml" dir="../OrderFulfillment/OrderFulfillment.Client"/>
+		<ant antfile="../MarketBackend/wildfly-build/build.xml" dir="../MarketBackend"/>
+		<ant antfile="../MarketPublicAPI/wildfly-build/build.xml" dir="../MarketPublicAPI"/>
+	</target>
+</project>

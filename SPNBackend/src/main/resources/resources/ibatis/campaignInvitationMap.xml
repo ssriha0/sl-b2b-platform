@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="campaign.invitation">
+
+	<typeAlias alias="campaignInvitationVO" type="com.servicelive.spn.common.detached.CampaignInvitationVO"/>
+
+	<typeAlias alias="campaignInvitationParamVO" type="com.servicelive.spn.common.detached.CampaignInvitationParamVO"/>
+
+	<resultMap id="campaignInvitationVOResultMap" class="campaignInvitationVO">
+		<result property="campaignId" column="campaign_id" />
+		<result property="campaignName" column="campaign_name" />
+		<result property="endDate" column="end_date" />
+		<result property="startDate" column="start_date" />
+		<result property="state" column="wf_entity_state" />
+		<result property="spnId" column="spn_id" />
+		<result property="spnName" column="spn_name" />
+		<result property="buyerId" column="buyer_id" />
+		<result property="spnCompanyName" column="business_name" />
+		<result property="spnContactName" column="contact_name" />
+		<result property="spnContactEmail" column="contact_email" />
+		<result property="spnContactPhone" column="contact_phone" />
+		<result property="isSpecificFirmCampaign" column="isSpecificFirmCampaign" />
+	</resultMap>
+
+
+	<select id="findProviderFirmInvitedDate" parameterClass="java.util.Map" resultClass="java.util.Date" >
+		select 
+		scie.email_sent_time 
+		from 
+		spnet_campaign_invitation sci, 
+		spnet_campaign_invitation_email scie
+		where 
+		sci.invitation_id = scie.invitation_id
+		and sci.spn_id = #spnId#
+		and sci.prov_firm_id = #providerFirmId#
+		order by scie.email_sent_time
+	</select>
+
+	<select id="getcampaigns" parameterClass="java.util.Map" resultClass="campaignInvitationVO" resultMap="campaignInvitationVOResultMap">
+	<![CDATA[
+		select 
+		sch.campaign_id as campaign_id,
+		sch.campaign_name,
+		sch.end_date,
+		sch.start_date,
+		sws.wf_entity_state,
+        scn.spn_id,
+        b.business_name,
+        sh.spn_name,
+        sh.contact_name,
+        sh.contact_phone,
+        sh.contact_email,
+        sb.buyer_id,
+        (SELECT COUNT(*) FROM spnet_campaign_provider_firm  spf  WHERE  spf.campaign_id = sch.campaign_id ) AS isSpecificFirmCampaign
+		from
+		spnet_campaign_hdr sch,
+		spnet_workflow_status sws,
+        spnet_campaign_network scn,
+        spnet_buyer sb,
+        buyer b,
+        spnet_hdr sh
+		where
+		sch.campaign_id = sws.entity_id and
+		sws.wf_entity_id = 'CAMPAIGN' and
+		sws.wf_entity_state = 'CAMPAIGN ACTIVE' and
+		sch.start_date <= #now# and
+		sch.end_date >= #now# and
+        scn.campaign_id = sch.campaign_id and
+        scn.spn_id = sb.spn_id and
+        sb.buyer_id = b.buyer_id and
+        scn.spn_id = sh.spn_id
+		]]>		
+	</select>
+
+	<insert id="insertspnetcampaigninvitationmysql">
+		insert into spnet_campaign_invitation (
+			spn_id, 
+			campaign_id, 
+			prov_firm_id, 
+			prov_firm_admin_id, 
+			email_sent_to
+		) values (
+			#spnId#, 
+			#campaignId#, 
+			#providerFirmId#, 
+			#providerFirmAdminId#, 
+			#emailAddress#
+		)
+		<selectKey resultClass="int">
+            SELECT last_insert_id() as buyer_id
+        </selectKey> 
+	</insert>
+
+	<insert id="insertspnetcampaigninvitationhsql">
+		insert into spnet_campaign_invitation (
+			spn_id, 
+			campaign_id, 
+			prov_firm_id, 
+			prov_firm_admin_id, 
+			email_sent_to
+		) values (
+			#spnId#, 
+			#campaignId#, 
+			#providerFirmId#, 
+			#providerFirmAdminId#, 
+			#emailAddress#
+		)
+		<selectKey resultClass="int">
+			SELECT max(invitation_id) AS value from spnet_campaign_invitation
+		</selectKey>
+	</insert>
+
+	<insert id="insertspnetcampaigninvitationemail">
+		insert into spnet_campaign_invitation_email (
+            invitation_id,
+            email_template_id,                                                                                                   
+            email_sent_time
+		) values (
+			#invitationId#,
+			#emailTemplateId#,
+			#emailSentTime#
+		)
+	</insert>
+	
+	<insert id="insertProviderFirmForInvitedState" >
+		INSERT INTO spnet_provider_firm_state (
+				spn_id,
+				provider_firm_id,
+				modified_date,
+				created_date,
+				modified_by,
+				provider_wf_state,
+				agreement_ind
+			) select 	
+                            #spnId#,
+                            #providerFirmId#,
+                            #now#,	
+                            #now#,
+                            'INVITATIONJOB',
+                            #providerWfState#,
+                            0  
+                            from dual  where not exists  (  Select 1 from spnet_provider_firm_state s   where  s.spn_id = #spnId# and provider_firm_id = #providerFirmId# )
+	</insert>
+	<select id="isSpecificProviderFirm" parameterClass="java.lang.Integer" resultClass="java.lang.Boolean" >
+		SELECT COUNT(*) as result FROM spnet_campaign_provider_firm WHERE campaign_id = #campaignId#
+	</select>
+	
+	<select id="spnetInviatationEligibility" parameterClass="java.util.Map" resultClass="campaignInvitationVO">
+		SELECT  sh.spn_id AS spnId,
+        sh.spn_name AS spnName,
+		sch.start_date AS startDate,
+		sch.end_date AS endDate,
+		scie.email_sent_time AS invModifiedDate,
+		lswfs.id AS pfInvStatus,
+		sch.campaign_id AS campaignId,
+		sch.campaign_name AS campaignName,
+		spwfs.wf_entity_state AS state
+	FROM 	spnet_provider_firm_state spfs
+		JOIN spnet_hdr sh ON (spfs.spn_id = sh.spn_id)
+		JOIN spnet_buyer sb ON (sh.spn_id = sb.spn_id)
+		JOIN buyer b ON (sb.buyer_id = b.buyer_id)
+		JOIN spnet_campaign_invitation sci ON (sci.spn_id = spfs.spn_id AND sci.prov_firm_id = spfs.provider_firm_id)
+		JOIN spnet_campaign_hdr sch ON (sci.campaign_id = sch.campaign_id)
+		JOIN spnet_campaign_invitation_email scie ON (scie.invitation_id = sci.invitation_id)
+		JOIN lu_spnet_workflow_state lswfs ON (spfs.provider_wf_state = lswfs.id)
+		JOIN spnet_workflow_status spwfs ON (spwfs.entity_id = sch.campaign_id AND spwfs.wf_entity_id = 'CAMPAIGN')
+	WHERE	sci.prov_firm_id = #providerFirmId# AND	sh.spn_id = #spnId#
+		
+	</select>
+	
+	<update id="updateProviderFirmForInvitedState" parameterClass="java.util.Map" >
+		UPDATE spnet_provider_firm_state
+		SET modified_date = #now#,
+		provider_wf_state = #providerWfState#,
+		modified_by = 'INVITATIONJOB'
+		WHERE spn_id = #spnId# and provider_firm_id = #providerFirmId#
+	</update>
+</sqlMap>

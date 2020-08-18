@@ -1,0 +1,590 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="MarketServiceBus" basedir="." default="distribute">
+	<property name="dir.base" value="${basedir}" />
+	<property name="dir.source" value="${dir.base}/src" />
+	<property name="dir.resources" value="${dir.base}/resources" />
+	<property name="dir.source.test" value="${dir.base}/test" />
+	<property name="classes.test" value="${dir.base}/classes/test" />
+	<property name="dir.bin" value="${dir.base}/bin" />
+	<property name="dir.dist" value="${dir.base}/dist" />
+	<property name="dir.lib" value="${dir.base}/lib" />
+	<property name="dir.build" value="${dir.base}" />
+	<property name="dir.service.live.web.util.base" value="../ServiceLiveWebUtil" />
+	<property name="dir.translator.libs" value="../MarketTranslator/lib" />
+	<property name="dir.omsstaging.dist" value="../OMSStaging/dist" />
+	<property name="dir.integrationmapping" value="../MarketServiceBus.Mapforce.Code" />
+	<property name="dir.serviceLiveBus" value="../ServiceLiveBus" />
+
+	<property name="dir.serviceOrderFileProcess.dist" value="../ServiceOrderFileProcess/dist" />
+
+	<property name="dir.market.backend.dist" value="../MarketBackend/dist" />
+	<property name="dir.market.bi.dist" value="../MarketBusinessInterface/target/dist" />
+
+	<property name="dir.market.common.dist" value="../MarketCommon/dist" />
+	<property name="dir.market.document.dist" value="../MarketDocument/dist" />
+	<property name="dir.routing.rule.dist" value="../RoutingRulesEngine/target/dist" />
+	<property name="dir.common.domain.dist" value="../ServiceLiveCommonDomain/target/dist" />
+	<property name="generated" value="../SLCommonBuild/lib/generated" />
+	<property name="deployed" value="../SLCommonBuild/lib/deployables" />
+	<property name="dir.slCommonBuild.nondeployables" value="../SLCommonBuild/lib/nondeployables"/>
+	<property name="dir.junit.report" value="${dir.base}/${ant.project.name}Reports" />
+	<property name="libs" value="${dir.service.live.web.util.base}/lib" />
+	<property name="local.libs" value="${dir.base}/lib" />
+	<property name="deployables.lib" value="${dir.service.live.web.util.base}/lib/deployables" />
+	<property name="struts2InitialDeployables.lib" value="${dir.service.live.web.util.base}/lib/Struts2InitialDeployables"/>
+	<property name="nondeployables.lib" value="${dir.service.live.web.util.base}/lib/nondeployables" />
+	<property name="jboss.deploy.dir" value="C:/jbossesb-server-4.2.1GA/server/default/deploy" />
+	<property name="jboss.linux.deploy.dir" value="/workspace/server/jboss-eap-4.3/jboss-as/server/sl_esb/deploy" />
+
+	<property file="build.properties" />
+
+	<path id="classpath.main">
+		<pathelement location="${dir.bin}" />
+		<fileset dir="${libs}">
+			<include name="**/*.jar" />
+			<exclude name="junit*.jar" />
+			<exclude name="omsstagingclient.jar" />
+		</fileset>
+		<fileset dir="${dir.omsstaging.dist}">
+			<include name="OMSStaging.jar" />
+		</fileset>
+		<fileset dir="${dir.market.common.dist}">
+			<include name="MarketCommon.jar" />
+		</fileset>
+		<fileset dir="${dir.market.bi.dist}">
+			<include name="MarketBusinessInterface.jar" />
+		</fileset>
+
+		<fileset dir="${dir.serviceOrderFileProcess.dist}">
+			<include name="ServiceOrderFileProcess.jar" />
+		</fileset>
+		<fileset dir="${generated}">
+			<include name="MarketServiceBus.Mapforce.Code.jar" />
+		</fileset>
+		<fileset dir="${generated}">
+			<include name="OrderFulfillment.Domain.jar" />
+		</fileset>
+	</path>
+
+	<path id="classpath.test">
+		<pathelement location="${classes.test}" />
+		<pathelement location="${dir.bin}" />
+		<pathelement location="${dir.base}" />
+		<fileset dir="${libs}">
+			<include name="**/junit*.jar" />
+			<include name="**/jmock-2.4.0.jar" />
+			<include name="**/hamcrest*.jar" />
+			<include name="**/milyn*.jar" />
+			<include name="**/jboss*.jar" />
+			<include name="**/log*.jar" />
+			<include name="**/commons*.jar" />
+			<include name="**/cobertura.jar" />
+			<include name="**/spring*.jar" />
+			<include name="**/commons-discovery*.jar" />
+			<include name="**/axis*.jar" />
+			<include name="**/jaxrpc*.jar" />
+			<include name="**/wsdl*.jar" />
+			<include name="**/saaj*.jar" />
+			<include name="**/persistence*.jar" />
+		</fileset>
+		<fileset dir="${local.libs}">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="${dir.base}">
+			<include name="**/*.xml" />
+			<include name="**/*.properties" />
+		</fileset>
+		<fileset dir="${classes.test}">
+			<include name="**/*.properties" />
+		</fileset>
+	</path>
+
+	<path id="cobertura.classpath">
+		<fileset dir="../ServiceLiveWebUtil/lib/">
+			<include name="nondeployables/cobertura.jar" />
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+	<taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
+	
+	<target name="package" depends="distribute"/>
+
+	<target name="init">
+		<!-- Create the time stamp -->
+		<tstamp />
+
+		<mkdir dir="${instrumented.dir}" />
+		<mkdir dir="${reports.xml.dir}" />
+		<mkdir dir="${reports.html.dir}" />
+		<mkdir dir="${coverage.xml.dir}" />
+		<mkdir dir="${coverage.html.dir}" />
+
+		<path id="build.class.path">
+			<fileset dir="${deployables.lib}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${struts2InitialDeployables.lib}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${nondeployables.lib}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.market.common.dist}">
+				<include name="*.jar" />
+			</fileset>
+		</path>
+
+		<path id="project.build.class.path">
+			<fileset dir="${dir.base}/lib">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${deployables.lib}">
+				<include name="*.jar" />
+				<exclude name="marketwsclient.jar" />
+			</fileset>
+			<fileset dir="${struts2InitialDeployables.lib}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.market.bi.dist}">
+				<include name="MarketBusinessInterface.jar" />
+			</fileset>
+			<fileset dir="${dir.serviceOrderFileProcess.dist}">
+				<include name="ServiceOrderFileProcess.jar" />
+			</fileset>
+			<fileset dir="${dir.market.backend.dist}">
+				<include name="MarketBackend.jar" />
+			</fileset>
+			<fileset dir="${dir.market.bi.dist}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.market.common.dist}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.market.document.dist}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.routing.rule.dist}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.common.domain.dist}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.omsstaging.dist}">
+				<include name="OMSStaging.jar" />
+			</fileset>
+			<fileset dir="${deployables.lib}">
+				<include name="wsclient.jar" />
+				<include name="OFACWebServiceClient.jar" />
+			</fileset>
+			<fileset dir="../MarketTranslator/dist/">
+				<include name="MarketTranslator.jar" />
+			</fileset>
+			<fileset dir="${generated}">
+				<include name="MarketServiceBus.Mapforce.Code.jar" />
+			</fileset>
+			<fileset dir="${generated}">
+				<include name="OrderFulfillment.Domain.jar" />
+			</fileset>
+			<fileset dir="${generated}">
+				<include name="ServiceLiveBus.jar" />
+			</fileset>
+			<fileset dir="${generated}">
+				<include name="ServiceLive.Common.jar" />
+			</fileset>
+			<fileset dir="${dir.slCommonBuild.nondeployables}">
+	    		<include name="junit.jar" />
+	    		<include name="mockito-all-1.8.4.jar"/>
+    		</fileset>
+		</path>
+		
+		<path id="test.class.path">
+    		<pathelement location="${project.build.class.path}" />
+			<pathelement location="${dir.bin}"/>
+    		<fileset dir="${dir.slCommonBuild.nondeployables}">
+	    			<include name="junit.jar" />
+	    			<include name="hamcrest-core-1.1.jar" />
+	    			<include name="hamcrest-library-1.1.jar" />
+	    			<include name="mockito-all-1.8.4.jar"/>
+    		</fileset>
+		</path>
+	</target>
+
+	<target name="esb_archive">
+		<copy todir="${dir.dist}">
+			<fileset dir="../MarketTranslator/dist/" includes="MarketTranslator.jar" />
+			<fileset dir="${dir.omsstaging.dist}" includes="OMSStaging.jar" />
+			<fileset dir="${dir.market.common.dist}" includes="MarketCommon.jar" />
+			<fileset dir="${dir.serviceOrderFileProcess.dist}" includes="ServiceOrderFileProcess.jar" />
+			<fileset dir="${generated}" includes="ServiceLiveBus.jar" />
+			<fileset dir="${generated}" includes="OrderFulfillment.Domain.jar" />
+			<fileset dir="${generated}" includes="MarketServiceBus.Mapforce.Code.jar" />
+			<fileset dir="${generated}" includes="ServiceLive.Common.jar" />
+	        <fileset dir="${generated}" includes="ServiceLive.Lookup.jar" />
+	        <fileset dir="${generated}" includes="Wallet.ACH.jar" />
+	        <fileset dir="${generated}" includes="Wallet.Alert.jar" />
+			<fileset dir="${generated}" includes="Wallet.Common.jar" />
+	        <fileset dir="${generated}" includes="Wallet.CreditCard.jar" />
+	        <fileset dir="${generated}" includes="Wallet.Ledger.jar" />
+	        <fileset dir="${generated}" includes="Wallet.Service.jar" />        
+	        <fileset dir="${generated}" includes="Wallet.ServiceInterface.jar" />
+	        <fileset dir="${generated}" includes="Wallet.ValueLink.jar" />
+			<fileset dir="${deployed}"  includes="rtcawebservice.jar" />
+		</copy>
+		<jar compress="yes" jarfile="${dir.dist}/marketesb.esb">
+			<fileset dir="${dir.dist}" includes="**" />
+		</jar>
+	</target>
+
+	<target name="copy-metainf">
+		<mkdir dir="${dir.dist}/META-INF" />
+		<copy todir="${dir.dist}/META-INF">
+			<fileset dir="${dir.source}/META-INF" includes="jboss-esb.xml" />
+			<fileset dir="${dir.source}/META-INF" includes="jboss-esb_MQ.xml" />
+			<fileset dir="${dir.source}/META-INF" includes="deployment.xml" />
+			<fileset dir="${dir.source}/META-INF" includes="persistence.xml" />
+		</copy>
+	</target>
+
+	<target name="make_structure" depends="copy-metainf">
+		<!-- <mkdir dir="${dir.dist}/lib"/> -->
+		<!-- <mkdir dir="${dir.dist}/processDefinition"/> -->
+
+
+		<copy todir="${dir.dist}">
+			<fileset dir="${dir.bin}">
+				<include name="**/*.class" />
+				<include name="**/*properties" />
+			</fileset>
+			<fileset dir="${dir.market.backend.dist}">
+				<include name="MarketBackend.jar" />
+			</fileset>
+			<fileset dir="${dir.market.bi.dist}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.market.common.dist}">
+				<include name="*.jar" />
+			</fileset>
+
+			<fileset dir="${dir.market.document.dist}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.routing.rule.dist}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.common.domain.dist}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.omsstaging.dist}">
+				<include name="OMSStaging.jar" />
+			</fileset>
+
+			<fileset dir="${deployables.lib}">
+				<include name="wsclient.jar" />
+				<include name="OFACWebServiceClient.jar" />
+			</fileset>
+			<fileset dir="${struts2InitialDeployables.lib}">
+				<include name="commons-beanutils-1.7.0.jar" />
+				<include name="json-lib-2.0-jdk15.jar" />
+				<include name="gson-2.3.1.jar" />
+			</fileset>
+			
+			<fileset dir="${deployed}">
+				<include name="ooxml-schemas-1.1.jar" />
+				<include name="poi-3.7-20101029.jar" />
+				<include name="poi-ooxml-3.7-20101029.jar" />
+				<include name="poi-ooxml-schemas-3.7-20101029.jar" />
+				<include name="xmlbeans-2.3.0.jar" />
+				<include name="geronimo-stax-api_1.0_spec-1.0.1.jar" />
+			</fileset>
+			
+			<fileset dir="${dir.base}" includes="jbmq-queue-service.xml.xml" />
+			<fileset dir="${dir.base}" includes="jbm-queue-service.xml" />
+			<!--
+				<fileset dir="${dir.base}/src" includes="marketServiceBusSpringContext.xml"/>
+				<fileset dir="${dir.base}/src" includes="incidentContext.xml"/>
+				-->
+			<fileset dir="${dir.resources}" />
+		</copy>
+
+
+
+		<copy todir="${dir.dist}">
+			<fileset dir="${dir.lib}">
+				<include name="*.jar" />
+			</fileset>
+
+
+
+			<fileset dir="${dir.base}" includes="jbmq-queue-service.xml.xml" />
+			<fileset dir="${dir.base}" includes="jbm-queue-service.xml" />
+			<fileset dir="${dir.base}/src" includes="marketServiceBusSpringContext.xml" />
+			<fileset dir="${dir.base}/src" includes="incidentContext.xml" />
+		</copy>
+
+		<!--
+			<copy todir="${dir.dist}/lib">
+				<fileset dir="${dir.base}/lib" includes="*.jar"/>
+			</copy>
+			-->
+
+		<!-- No need to include jBPM process definition
+			<copy todir="${dir.dist}/processDefinition">
+	            <fileset dir="${dir.base}/processDefinition">
+	            	<include name="processdefinition.xml"/>
+	            	<include name="gpd.xml"/>
+	            	<include name="processimage.jpg"/>
+	            </fileset>
+			</copy>
+			-->
+	</target>
+
+	<target name="clean">
+		<delete dir="${dir.bin}" failonerror="false" />
+		<mkdir dir="${dir.bin}" />
+		<delete dir="${dir.dist}" failonerror="false" />
+		<mkdir dir="${dir.dist}" />
+		<delete dir="${classes.test}" failonerror="false" />
+		<mkdir dir="${classes.test}" />
+		<delete dir="${dir.junit.report}" failonerror="false"/>
+		<mkdir dir="${dir.junit.report}"/>	
+		<delete dir="${instrumented.dir}" />
+		<delete dir="${reports.dir}" />
+		<delete file="cobertura.log" />
+		<delete file="cobertura.ser" />
+		<delete>
+			<fileset dir="${dir.lib}">
+				<include name="marketwsclient.jar" />
+				<include name="OMSStaging.jar" />
+				<include name="ServiceOrderFileProcess.jar" />
+			</fileset>
+		</delete>
+		<ant antfile="${dir.serviceLiveBus}/wildfly-build/build.xml" dir="${dir.serviceLiveBus}" inheritAll="false" target="clean" />
+	</target>
+
+	<target name="compile" depends="clean, init, build-serviceOrderFileProcess, build-translator, build-mapforce, build-serviceLiveBus">
+	<echo level="info">
+	===============================================================================
+	                                ${ant.project.name} 
+	===============================================================================</echo>
+		<javac srcdir="${dir.source}" destdir="${dir.bin}" target="1.8" source="1.8" debug="on" deprecation="false">
+			<classpath refid="project.build.class.path" />
+			<classpath refid="cobertura.classpath" />
+		</javac>
+		<copy todir="${dir.bin}">
+			<fileset dir="${dir.base}/src" includes="servicelive_esb_*.properties" />
+
+			<fileset dir="${dir.base}/src" includes="marketServiceBusSpringContext.xml" />
+			<fileset dir="${dir.base}/src" includes="incidentContext.xml" />
+		</copy>
+	</target>
+
+	<target name="build-translator">
+		<ant antfile="../MarketTranslator/wildfly-build/build.xml" dir="../MarketTranslator" inheritAll="false" />
+		<copy todir="${dir.dist}">
+			<fileset dir="../MarketTranslator/dist/" includes="MarketTranslator.jar" />
+		</copy>
+	</target>
+	
+	<target name="build-mapforce">
+		<ant antfile="${dir.integrationmapping}/wildfly-build/build.xml" dir="${dir.integrationmapping}" inheritAll="false" />
+	</target>
+
+	<target name="build-serviceLiveBus">
+		<ant antfile="${dir.serviceLiveBus}/wildfly-build/build.xml" dir="${dir.serviceLiveBus}" inheritAll="false" />
+	</target>
+	
+	<target name="build-serviceOrderFileProcess">
+		<ant antfile="../ServiceOrderFileProcess/wildfly-build/build.xml" dir="../ServiceOrderFileProcess" inheritAll="false" />
+		<copy todir="${dir.dist}">
+			<fileset dir="${dir.serviceOrderFileProcess.dist}" includes="ServiceOrderFileProcess.jar" />
+		</copy>
+	</target>
+	
+	<target name="instrument" depends="init,compile">
+		<!--
+				Remove the coverage data file and any old instrumentation.
+			-->
+		<delete file="cobertura.ser" />
+		<delete dir="${instrumented.dir}" />
+
+		<!--
+				Instrument the application classes, writing the
+				instrumented classes into ${build.instrumented.dir}.
+			-->
+		<cobertura-instrument todir="${instrumented.dir}">
+			<!--
+					The following line causes instrument to ignore any
+					source line containing a reference to log4j, for the
+					purposes of coverage reporting.
+				-->
+			<ignore regex="org.apache.log4j.*" />
+
+			<fileset dir="${dir.bin}">
+				<!--
+						Instrument all the application classes, but
+						don't instrument the test classes.
+					-->
+				<include name="**/*.class" />
+				<exclude name="**/*Test.class" />
+			</fileset>
+		</cobertura-instrument>
+	</target>
+
+	<target name="compile.tests">
+		<mkdir dir="${classes.test}" />
+		<javac debug="on" srcdir="${dir.source.test}" destdir="${classes.test}" deprecation="false">
+			<classpath refid="classpath.test" />
+			<classpath refid="project.build.class.path" />
+			<classpath refid="cobertura.classpath" />
+		</javac>
+		<copy todir="${classes.test}">
+			<fileset dir="${dir.base}" includes="SampleServiceOrders.xml" />
+			<fileset dir="${dir.base}/src" includes="servicelive_esb_dev.properties" />
+			<fileset dir="${dir.base}/src" includes="servicelive_esb_qa.properties" />
+			<fileset dir="${dir.base}/src" includes="servicelive_esb_qa2.properties" />
+			<fileset dir="${dir.base}/src" includes="servicelive_esb_qa3.properties" />
+			<fileset dir="${dir.base}/src" includes="servicelive_esb_caint.properties" />
+			<fileset dir="${dir.base}/src" includes="servicelive_esb_prod.properties" />
+		</copy>
+	</target>
+
+	<target name="test" depends="compile, compile.tests">
+		<junit fork="yes" forkmode="once" haltonfailure="no" failureproperty="tests.failed">
+			<!--
+					Note the classpath order: instrumented classes are before the
+					original (uninstrumented) classes.  This is important.
+				-->
+
+			<formatter type="brief" usefile="false" />
+			<formatter type="xml" />
+			<classpath location="${instrumented.dir}" />
+			<classpath location="${dir.bin}" />
+			<classpath refid="classpath.test" />
+			<!--
+					The instrumented classes reference classes used by the
+					Cobertura runtime, so Cobertura and its dependencies
+					must be on your classpath.
+				-->
+
+			<!--<classpath refid="cobertura.classpath" />-->
+
+			<!--<test name="${testcase}" todir="${reports.xml.dir}" if="testcase" />-->
+
+			<batchtest todir="${reports.xml.dir}" failureproperty="tests.failed">
+				<fileset dir="${dir.source.test}">
+					<include name="**/*Test.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+		<!--
+			<junitreport todir="${reports.xml.dir}">
+				<fileset dir="${reports.xml.dir}">
+					<include name="TEST-*.xml" />
+				</fileset>
+				<report format="frames" todir="${reports.html.dir}" />
+			</junitreport>
+			-->
+	</target>
+
+	<target name="coverage-check">
+		<cobertura-check branchrate="34" totallinerate="100" />
+	</target>
+
+	<target name="coverage-report">
+		<!--
+				Generate an XML file containing the coverage data using
+				the "srcdir" attribute.
+			-->
+		<cobertura-report srcdir="${dir.source}" destdir="${coverage.xml.dir}" format="xml" />
+	</target>
+
+	<target name="alternate-coverage-report">
+		<!--
+				Generate a series of HTML files containing the coverage
+				data in a user-readable form using nested source filesets.
+			-->
+		<cobertura-report destdir="${coverage.html.dir}">
+			<fileset dir="${dir.source}">
+				<include name="**/*.java" />
+			</fileset>
+		</cobertura-report>
+	</target>
+
+	<target name="coverage" depends="compile,instrument,test,coverage-report,alternate-coverage-report" description="Compile, instrument ourself, run the tests and generate JUnit and coverage reports." />
+
+	<target name="build" depends=" compile, make_structure,  esb_archive">
+	</target>
+
+	<target name="publish">
+		<copy todir="${jboss.deploy.dir}">
+			<fileset dir="${dir.base}/dist" includes="marketesb.esb" />
+		</copy>
+	</target>
+
+	<target name="distribute" depends="init, build, junit-report">
+	</target>
+	
+	<!-- Compile test junit source code -->
+	<target name="compile-test" description="compile the junit source" >
+	 	<!-- Compile the java code from dir.src.test into dir.dest -->
+		<javac
+			srcdir="${dir.source.test}"
+			destdir="${dir.bin}"		
+			target="1.8"
+			source="1.8"
+			classpathref="project.build.class.path"
+			debug="on"
+			deprecation="false"	>
+	 	</javac>
+	</target>
+	
+	<!-- Execute JUnit Tests -->
+	<target name="junit-report" depends="compile-test" description="Execute Unit Tests" >
+		<junit fork="no" haltonfailure="false" printsummary="withOutAndErr" showoutput="yes">	
+			<classpath>
+				<path refid="test.class.path"/>						  				
+			</classpath>
+	   		<formatter type="xml" />
+	  			  		
+	  		<batchtest fork="no" todir="${dir.junit.report}" >
+	  				
+	  		 		<fileset dir="${dir.source.test}" >
+	  					<include name="**/*Test.java" />
+	  				</fileset>
+	  		</batchtest>
+	  			  		
+	  	</junit>
+	 	<echo message="Format the tests report" />
+	 			<junitreport todir="${dir.junit.report}">
+	 				<fileset dir="${dir.junit.report}">
+	 					<include name="TEST-*.xml" />
+	 				</fileset>
+	 				<report todir="${dir.junit.report}" />
+	 			</junitreport>
+	</target>
+
+	<target name="build-all">
+		<ant antfile="../MarketTranslator/wildfly-build/build.xml" dir="../MarketTranslator" />
+		<ant antfile="build.xml" dir="." />
+	</target>
+
+	<target name="build-and-publish" depends="distribute">
+		<copy todir="${jboss.deploy.dir}">
+			<fileset dir="${dir.base}/dist" includes="marketesb.esb" />
+		</copy>
+	</target>
+
+	<target name="build-and-publish-linux" depends="distribute">
+		<copy todir="${jboss.linux.deploy.dir}">
+			<fileset dir="${dir.base}/dist" includes="marketesb.esb" />
+		</copy>
+	</target>
+
+	<!-- Sonar Integration -->
+	<property name="dir.sonar.src" value="${basedir}/src" />
+	<property name="dir.sonar.ant.task" value="../SLCommonBuild/lib/nondeployables"/>
+	<import file="../SLCommonBuild/ant/wildfly-opt/ant-script-library/asl-java-sonar.xml"/>
+	<target name="sonar" depends="sonar-init, sonar-run">
+	</target>
+</project>

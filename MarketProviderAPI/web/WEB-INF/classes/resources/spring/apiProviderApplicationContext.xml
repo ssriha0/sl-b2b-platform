@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd
+http://cxf.apache.org/jaxrs
+http://cxf.apache.org/schemas/jaxrs.xsd">
+
+	<import resource="classpath:resources/spring/apiSecurityContext.xml" />
+	<import resource="classpath:resources/spring/apiProviderMapperContext.xml" />
+	<import resource="classpath:resources/spring/apiProviderServiceContext.xml" />
+	<import resource="classpath:resources/spring/apiProviderValidatorContext.xml" />
+	<jaxrs:server id="providerOrderService" address="/">
+	<jaxrs:properties>
+            <entry key="org.apache.cxf.propagate.exception" value="false" />
+        </jaxrs:properties>
+		<jaxrs:serviceBeans>				
+           
+            <bean id="providerGenericRequestProcessor_v3_0"  class="com.newco.marketplace.api.provider.processor.v3_0.ProviderGenericRequestProcessor" parent="baseRequestProcessor" scope="prototype">
+
+				<property name="timeOnSiteV3Service">
+					<ref bean="timeOnSiteService_v3_0" />
+				</property>			
+            </bean>
+	
+		</jaxrs:serviceBeans>
+		<jaxrs:providers>
+        	<bean class="com.newco.marketplace.api.provider.handler.ExceptionHandler"/>
+    	</jaxrs:providers>
+	</jaxrs:server>
+	<!-- Base Request Processor -->   
+	<bean id="baseRequestProcessor" abstract="true" class="com.newco.marketplace.api.server.ProviderBaseRequestProcessor" scope="prototype">
+				<property name="responseValidator">
+					<ref bean="ResponseValidator"/>
+				</property>
+				<property name="commonUtility">
+					<ref bean="commonUtility"/>
+				</property>	
+	</bean>
+    
+	<bean id="ConversionUtility"
+		class="com.newco.marketplace.api.utils.xstream.XStreamUtility">
+	</bean>	
+	
+	
+   
+	<bean id="apiSecurityAndOAuth" class="com.newco.marketplace.api.security.APISecurityAndOAuth"> 	
+		<constructor-arg ref="mobileApiSecurityDAO"/>
+	  	<property name="oAuthFilter" value="${oauth.authentication}" />  	
+	</bean>
+
+	<alias name="apiSecurityAndOAuth" alias="OAuthConsumerImpl"/>
+	
+	<bean id="apiFieldMasker" class="com.newco.marketplace.api.security.APIFieldMasker">
+		<property name="apiSecurity">
+			<ref bean="apiSecurityAndOAuth"/>
+		</property>
+	</bean>
+	
+	<bean id="commonUtility"
+		class="com.newco.marketplace.api.utils.utility.CommonUtility">
+	</bean>
+    
+</beans>
+	 	

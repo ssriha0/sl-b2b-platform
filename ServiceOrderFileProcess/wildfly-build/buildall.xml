@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="../" default="compile-dependencies" name="ServiceOrderFileProcess-BuildAll" >
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+	<target name="compile-dependencies"> 
+    	<ant antfile="../MarketCommon/wildfly-build/build.xml" dir="../MarketCommon"/>
+    	<ant antfile="../RoutingRulesEngine/wildfly-build/build.xml" dir="../RoutingRulesEngine"/>
+		<ant antfile="../MarketDocument/wildfly-build/build.xml" dir="../MarketDocument"/>
+		<ant antfile="../MarketBusinessInterface/wildfly-build/build.xml" dir="../MarketBusinessInterface"/>
+		<ant antfile="../MarketBackend/wildfly-build/build.xml" dir="../MarketBackend"/>
+		<ant antfile="../ServiceOrderFileProcess/wildfly-build/build.xml" dir="../ServiceOrderFileProcess"/>
+	</target>
+</project>

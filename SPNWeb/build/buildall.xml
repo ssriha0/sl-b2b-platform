@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="../" default="compile-dependencies" name="SPNWeb-BuildAll" >
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+	<target name="compile-dependencies"> 
+		<ant antfile="../ServiceLiveCommonDomain/build/build.xml"   dir="../ServiceLiveCommonDomain" />
+		<ant antfile="../MarketCommon/build/build.xml"   dir="../MarketCommon" inheritAll="false" />
+		<ant antfile="../MarketBusinessInterface/build/build.xml" dir="../MarketBusinessInterface"/>
+		<ant antfile="../MarketDocument/build/build.xml" dir="../MarketDocument"/>
+		<ant antfile="../ResponsysClient/build/build.xml"   dir="../ResponsysClient"/>
+		<ant antfile="../ResponsysInteractClient/build/build.xml"   dir="../ResponsysInteractClient"/>
+		<ant antfile="../MarketAlertsManager/build/build.xml"   dir="../MarketAlertsManager"/>
+		<ant antfile="../CSRF/build/build.xml"   dir="../CSRF"/>
+		<ant antfile="../SPNBackend/build/build.xml"   dir="../SPNBackend"/>
+		<ant antfile="../SPNWeb/build/build.xml" dir="../SPNWeb"/>
+	</target>
+</project>

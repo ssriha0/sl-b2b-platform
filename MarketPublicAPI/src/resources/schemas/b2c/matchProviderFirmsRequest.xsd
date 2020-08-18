@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified">
+    <xs:include schemaLocation="leadsCommon.xsd" />
+	<!-- This is the new get Match Provider Request -->
+	<!-- Root Element -->
+	<xs:element name="MatchProviderRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="CustomerZipCode" type="zipType"
+					minOccurs="1" maxOccurs="1"  />
+				<xs:element name="PrimaryProject" type="projectTypeV2"
+					minOccurs="1" maxOccurs="1" />
+				<xs:element name="Skill" type="skillTypeEnumV2"
+					minOccurs="0" maxOccurs="1" default="INSTALL"/>					
+				<xs:element name="UrgencyOfService"
+					type="urgencyTypeEnum" minOccurs="0" maxOccurs="1" default="SAME_DAY"/>
+				<xs:element name="NumberOfMatches" minOccurs="0" maxOccurs="1" type="xs:int" default="12" nillable="true"/>
+				<xs:element name= "ClientId" minOccurs="0" type="xs:string" maxOccurs="1" default="SHS"/>
+				<xs:element name= "LeadSource" minOccurs="0" type="xs:string" maxOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:simpleType name="skillTypeEnumV2">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="INSTALL" />
+			<xs:enumeration value="REPAIR" />
+			<xs:enumeration value="INSTALL|REPAIR" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="projectTypeV2">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="\d{4}" />
+			<xs:maxLength value="4" />
+			<xs:minLength value="4"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

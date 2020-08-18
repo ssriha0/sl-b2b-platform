@@ -1,0 +1,35 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+    <package name="spnInvitation" extends="selectProviderNetworkBase" >
+        <default-interceptor-ref name="SPNInterceptorStack"/>
+	
+		<action name="spnInviteProvider_saveAndDone" class="spnInviteProviderAction"  method="saveAndDone" >
+			<result name="input" type="redirectAction">
+					 <param name="actionName">spnCreateCampaign_display</param>
+					 <param name="vf">true</param>
+			</result>
+		
+			<result name="success" type="redirectAction">
+	            <param name="actionName">spnMonitorCampaign_display</param>
+        	</result>  
+		</action>
+		
+		<action name="spnInviteProvider_loadProviderSearchResultsAjax" class="spnInviteProviderAction"  method="loadProviderSearchResultsAjax">
+			<result name="success">/jsp/spn/buyer/campaign/create/invite_by_specific_provider/invite_specific_provider_results.jsp</result>
+		</action>
+
+		<action name="spnInviteProvider_deleteAllAjax" class="spnInviteProviderAction"  method="deleteAllAjax">
+			<result name="success">/jsp/spn/buyer/campaign/create/invite_by_specific_provider/invite_specific_provider_results.jsp</result>
+		</action>
+		
+		<action name="spnInviteProvider_deleteAllAjax" class="spnInviteProviderAction"  method="deleteAllAjax">
+			<result name="success">/jsp/spn/buyer/campaign/create/invite_by_specific_provider/invite_specific_provider_results.jsp</result>
+		</action>
+		
+
+    </package>
+    
+</struts>

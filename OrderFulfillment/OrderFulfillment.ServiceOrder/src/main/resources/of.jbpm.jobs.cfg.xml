@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<jbpm-configuration>
+<!-- our main jbpm configuration is in of.jbpm.online.cfg.xml -->
+  <import resource="of.jbpm.online.cfg.xml" />
+<!-- this is needed to configure jbpm job executor -->
+<!-- currently this is the only difference in how jbpm is configured for Services and Jobs -->
+  <process-engine-context>
+      <job-executor />
+  </process-engine-context>
+
+</jbpm-configuration>

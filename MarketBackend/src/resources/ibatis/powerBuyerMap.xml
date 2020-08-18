@@ -1,0 +1,466 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="powerbuyer">
+	 <typeAlias alias="filterSummaryVO" type="com.newco.marketplace.dto.vo.powerbuyer.PBBuyerFilterSummaryVO" />
+	 <typeAlias alias="filterVO" type="com.newco.marketplace.dto.vo.powerbuyer.PBFilterVO" />
+	 <typeAlias alias="searchVO" type="com.newco.marketplace.dto.vo.powerbuyer.PBSearchVO" />
+	 <typeAlias alias="claimVO" type="com.newco.marketplace.dto.vo.powerbuyer.ClaimVO" />
+	 <typeAlias alias="requeVO" type="com.newco.marketplace.dto.vo.powerbuyer.RequeVO"/>
+	 <typeAlias alias="requeueSOVO" type="com.newco.marketplace.dto.vo.powerbuyer.RequeueSOVO"/>
+	 <typeAlias alias="claimHistoryVO" type="com.newco.marketplace.dto.vo.powerbuyer.ClaimHistoryVO"/>	
+	 <!-- Start of mappings for the filters  -->
+	 	
+	 <resultMap class="filterSummaryVO" id="powerbuyer.resultsmap">
+		<result property="buyerId" column="buyerId" />
+		<result property="filterId" column="filterId" />
+		<result property="filterName" column="filterName" />
+		<result property="count1" column="count1" />
+		<result property="count2" column="count2" />
+		<result property="count3" column="count3" />
+		<result property="excBuyerList" column="{filterId=filterId}" select="powerbuyer.excludedBuyerList"/>
+	</resultMap>
+	
+	<select id="powerbuyer.excludedBuyerList" resultClass="java.lang.Integer">
+		SELECT wbqe.buyer_id from wfm_queue_buyer_excluded wbqe WHERE wbqe.queue_id = #filterId#
+	</select>
+	
+	 <select id="powerbuyer.query.getFiltersByBuyer" parameterClass="java.lang.Integer" resultClass="filterVO">
+	 	SELECT f.filter_id as "filterId", 
+	 	       f.filter_name as "filterName", 
+	 	       f.filter_desc as "filterDesc", 
+	 	       f.db_query_root as "dbQueryRoot",
+	 	       f.sort_by_column_name as "sortByColumnName",
+	 	       f.sort_order as "sortOrder"
+		  FROM pb_filters f, pb_buyer_filters bf
+		 WHERE bf.buyer_id = #buyerId#
+		   AND bf.filter_id = f.filter_id
+		ORDER BY bf.sort_order
+	 </select>
+
+	 <select id="powerbuyer.query.getDestinationForSO" parameterClass="java.lang.String" resultClass="filterVO">
+		 select wq.queue_id as "filterId", 
+		     wq.destination_tab as "destinationTab", 
+		     wq.destination_subtab as "destinationSubTab"
+           from wfm_queues wq, wfm_so_queues wsq
+                where wq.queue_id = wsq.claimed_from_queue_id                
+                and wsq.so_id = #soId#
+                or (wsq.grouped_ind = 1 and wsq.so_group_id = #soId#) limit 1
+	 </select>
+	 
+	 <select id="powerbuyer.query.getFilterByFilterId" parameterClass="java.lang.Integer" resultClass="filterVO">
+	 	SELECT queue_id as "filterId", 
+	 	       queue_name as "filterName", 
+	 	       queue_desc as "filterDesc", 
+	 	       destination_tab as "destinationTab",
+	 	       destination_subtab as "destinationSubTab",
+	 	       sort_by_column as "sortByColumnName",
+	 	       queue_sort_order as "sortOrder"
+		  FROM wfm_queues
+		 WHERE queue_id = #filterId#
+	 </select>
+
+	<select id="powerbuyer.query.getFilterCountsByBuyer" parameterClass = "filterSummaryVO" resultMap="powerbuyer.resultsmap">
+		select
+			#buyerId# as buyerId,
+			bq.queue_id as filterId,
+			q.queue_name as filterName,
+			<isEmpty property="searchBuyerId">
+			sum(if(sq.completed_ind = 0, 1, 0)) as count1,
+			sum(if(sq.completed_ind = 0 AND sq.queued_date &lt;= now() AND sq.claimed_ind = 0, 1, 0)) as count2,
+			sum(if(sq.completed_ind = 0 AND sq.claimed_ind = 1, 1, 0)) as count3
+			</isEmpty>
+			<isNotEmpty property="searchBuyerId">
+			SUM(IF(s.buyer_id != #searchBuyerId#,0,IF(sq.completed_ind = 0, 1, 0))) AS count1, 
+			SUM(IF(s.buyer_id != #searchBuyerId#,0,IF(sq.completed_ind = 0 AND sq.queued_date &lt;= now() AND sq.claimed_ind = 0, 1, 0))) AS count2,
+			SUM(IF(s.buyer_id != #searchBuyerId#,0,IF(sq.completed_ind = 0 AND sq.claimed_ind = 1, 1, 0))) AS count3
+			</isNotEmpty>
+		FROM 
+			wfm_buyer_queues bq
+		<isEmpty property="buyerRefTypeId">
+			left join wfm_so_queues sq
+		</isEmpty>
+		<isNotEmpty property="buyerRefTypeId">
+			left join (
+				select sq.* from wfm_so_queues sq
+					inner join wfm_buyer_queues bq on bq.buyer_id=sq.company_id and sq.queue_id=bq.queue_id 
+						AND sq.company_id= #buyerId#
+					inner join so_custom_reference cr ON cr.so_id = sq.so_id
+						AND cr.buyer_ref_type_id = #buyerRefTypeId#
+						AND cr.buyer_ref_value = #buyerRefValue#
+			) sq
+		</isNotEmpty>
+				on sq.company_id = bq.buyer_id AND sq.queue_id = bq.queue_id
+			join wfm_queues q
+				on q.queue_id = bq.queue_id
+		<isNotEmpty property="searchBuyerId">
+		LEFT OUTER JOIN so_hdr s ON sq.so_id = s.so_id  
+		</isNotEmpty>
+		where bq.buyer_id = #buyerId# AND bq.active_ind = 1 AND bq.visible_ind = 1
+		<!-- group by bq.queue_id, q.queue_name
+		order by bq.queue_sort_order -->
+		<!-- SL-19050 -->
+		group by bq.queue_sort_order
+	</select>
+	 
+	 <select id="powerbuyer.query.FilterCount" parameterClass="searchVO" resultClass="java.lang.Integer">
+	 	SELECT count(so_id)
+	 	  FROM $viewName$ 
+	 	 WHERE buyer_id = #buyerId#
+	 </select>
+
+	 <select id="powerbuyer.admin.FollowUpFilterCount" parameterClass="searchVO" resultClass="java.lang.Integer">
+	 	SELECT count(so_id)
+	 	  FROM $viewName$ 
+		 WHERE admin_co_id = #buyerId#	 	  
+	 </select>
+
+	 <select id="powerbuyer.admin.FilterCount" parameterClass="searchVO" resultClass="java.lang.Integer">
+	 	SELECT count(so_id)
+	 	  FROM $viewName$ 
+	 </select>
+	 
+	 <select id="powerbuyer.query.countPendingQueues" parameterClass="claimVO" resultClass="java.lang.Integer">
+	 	SELECT count(*) as count FROM wfm_so_queues WHERE so_id = #soId# AND claimed_by_id = #resourceId# AND claimed_ind = 1
+		 and completed_ind = 0 and queued_date &lt;= now() and company_id = #buyerId#
+	 </select>
+	 
+	 <select id="powerbuyer.query.countGroupedSOPendingQueues" parameterClass="claimVO" resultClass="java.lang.Integer">
+	 	SELECT count(*) as count FROM wfm_so_queues WHERE so_group_id = #parentGroupId# AND claimed_by_id = #resourceId# AND claimed_ind = 1
+		 and completed_ind = 0 and queued_date &lt;= now() and company_id = #buyerId#
+	 </select>
+
+	 <select id="powerbuyer.query.SOPrimaryQueueActionTaken" parameterClass="claimVO" resultClass="java.lang.Integer">
+	 	SELECT count(*) as count FROM wfm_so_queues WHERE so_id = #soId# AND claimed_by_id = #resourceId# AND claimed_ind = 1
+		 and queue_id = claimed_from_queue_id and (queued_date &gt;now() or completed_ind = 1)	
+	 </select>
+	 
+	 <select id="powerbuyer.query.groupedSOPrimaryQueueActionTaken" parameterClass="claimVO" resultClass="java.lang.Integer">
+	 	SELECT count(*) as count FROM wfm_so_queues WHERE so_group_id = #parentGroupId# AND claimed_by_id = #resourceId# AND claimed_ind = 1
+		 and queue_id = claimed_from_queue_id and (queued_date &gt;now() or completed_ind = 1)	
+	 </select>
+	 
+	 <select id="powerbuyer.query.getGroupIdForSO" parameterClass="java.lang.String" resultClass="java.lang.String">
+	 	SELECT so_group_id FROM wfm_so_queues WHERE so_id = #soId# AND grouped_ind=1 limit 1	
+	 </select>
+	 
+	  <select id="powerbuyer.query.getGroupId" parameterClass="java.lang.String" resultClass="java.lang.String">
+	 	SELECT so_group_id FROM so_hdr WHERE so_id = #soId#	
+	 </select>
+	 
+	 	 
+	<select id="powerbuyer.query.SerivceOrderIdsByFilter" parameterClass="searchVO" resultClass="com.newco.marketplace.dto.vo.serviceorder.ServiceOrderSearchResultsVO">
+		SELECT
+			so.so_id as soId,
+			so.service_date1 as appointStartDate
+		FROM 
+			wfm_so_queues sq
+			<isNotEmpty property="buyerRefTypeId">
+			join so_custom_reference cr
+				on cr.so_id = sq.so_id AND cr.buyer_ref_type_id = #buyerRefTypeId# AND cr.buyer_ref_value = #buyerRefValue#
+			</isNotEmpty>
+			join so_hdr so 
+				on so.so_id = sq.so_id 
+			<isNotEmpty property="searchBuyerId">
+			AND so.buyer_id = #searchBuyerId#
+			</isNotEmpty>
+		   WHERE sq.queue_id = #filterId# and sq.company_id in (#buyerId#)
+			<isEqual property="filterOpt" compareValue="u">
+			and sq.completed_ind = 0 
+			</isEqual>
+			<isEqual property="filterOpt" compareValue="a">
+			and sq.completed_ind = 0 and sq.queued_date &lt; now() and sq.claimed_ind = 0
+			</isEqual>
+			<isEqual property="filterOpt" compareValue="c">
+			and sq.completed_ind = 0 and sq.claimed_ind = 1
+			</isEqual>
+			<isNotEmpty property="soStatus">
+			and so.wf_state_id = #soStatus#
+			</isNotEmpty>	
+			<isNotEmpty property="soSubStatus">
+			and so.so_substatus_id = #soSubStatus#
+			</isNotEmpty>
+			<isNotEmpty property="sortColumnName">
+			order by $sortColumnName$ $sortOrder$
+			</isNotEmpty>
+	</select>
+	 
+	 <select id="powerbuyer.query.getBuyers" resultClass="java.lang.Integer">
+	 	SELECT DISTINCT buyer_id FROM pb_buyer_filters
+	 </select>
+	 
+	 <delete id="powerbuyer.delete.FilterSummaryByBuyer" parameterClass="java.lang.Integer">
+	 	DELETE 
+	 	  FROM pb_buyer_filter_summary
+	 	 WHERE buyer_id = #buyerId#
+	 </delete>
+	 
+	<select id="powerbuyer.query.nextSOByFilter" parameterClass="filterVO" resultClass="claimVO">
+		SELECT 
+			sq.so_id as soId,
+			sq.company_id as buyerId,
+			sq.so_group_id as parentGroupId
+		FROM 
+			wfm_so_queues sq
+			<isNotEmpty property="searchBuyerId">
+			join so_hdr s on sq.so_id=s.so_id
+			</isNotEmpty>
+			<isNotEmpty property="buyerRefTypeId">
+			join so_custom_reference cr
+				on cr.so_id = sq.so_id AND cr.buyer_ref_type_id = #buyerRefTypeId# AND cr.buyer_ref_value = #buyerRefValue#
+			</isNotEmpty>
+		WHERE sq.company_id = #buyerId#
+		<isNotEmpty property="searchBuyerId">
+			AND s.buyer_id = #searchBuyerId# 
+		</isNotEmpty>
+			AND sq.queue_id = #filterId#
+			AND sq.completed_ind = 0
+			AND sq.queued_date &lt;= now()
+			AND sq.claimed_ind = 0
+		ORDER BY sq.$sortByColumnName$ $sortOrder$
+		LIMIT 1
+	</select>
+	
+	<!-- SL-20142 new query for fixing the sort order for ATT completion queue-->
+	<select id="powerbuyer.query.nextSOByFilter.att.completionqueue" parameterClass="filterVO" resultClass="claimVO">
+		SELECT 
+			sq.so_id as soId,
+			sq.company_id as buyerId,
+			sq.so_group_id as parentGroupId
+		FROM 
+			wfm_so_queues sq
+			join so_hdr s on sq.so_id=s.so_id
+			<isNotEmpty property="buyerRefTypeId">
+			join so_custom_reference cr
+				on cr.so_id = sq.so_id AND cr.buyer_ref_type_id = #buyerRefTypeId# AND cr.buyer_ref_value = #buyerRefValue#
+			</isNotEmpty>
+		WHERE sq.company_id = #buyerId#
+		<isNotEmpty property="searchBuyerId">
+			AND s.buyer_id = #searchBuyerId# 
+		</isNotEmpty>
+			AND sq.queue_id = #filterId#
+			AND sq.completed_ind = 0
+			AND sq.queued_date &lt;= now()
+			AND sq.claimed_ind = 0
+		ORDER BY s.completed_date ASC
+		LIMIT 1
+	</select>
+
+	 <insert id="powerbuyer.insertBuyerFilterSummaryRecord" parameterClass="filterSummaryVO">
+	 	INSERT INTO pb_buyer_filter_summary (buyer_id, filter_id, count) 
+	 	VALUES (#buyerId#,#filterId#,#count1#)
+	 </insert>
+	 
+	 <update id="powerbuyer.updateBuyerFilterSummaryRecord" parameterClass="filterSummaryVO">
+	 	UPDATE pb_buyer_filter_summary 
+	 	   SET count = #count1#
+	 	 WHERE buyer_id = #buyerId#
+	 	   AND filter_id = #filterId#
+	 </update>
+	 
+	 <!-- End of mappings for the filters  -->
+	 
+	 <!-- Start of mappings for the claim queries  -->
+	 
+	 <select id="powerbuyer.query.claim.getClaimedByResource" parameterClass="java.lang.Integer" resultClass="claimVO">
+	 	SELECT s.so_id as soId,
+	 	       w.claimed_by_id as resourceId,
+	 	       s.sow_title as soTitle,
+	 	       w.claimed_date as claimDate,
+	 	       s.wf_state_id as statusId,
+			   s.modified_date as currentSOModifiedDate,
+	 	       w.modified_date as soModifiedDate,
+	 	       w.company_id as buyerId,
+	 	       s.so_group_id as parentGroupId
+	 	  FROM wfm_so_queues w, so_hdr s
+	 	 WHERE w.so_id = s.so_id
+	 	   AND w.claimed_ind = 1
+	 	   AND w.claimed_by_Id = #resourceId#
+	 	ORDER BY s.so_group_id, w.claimed_date
+	 </select>
+	 
+	 <select id="powerbuyer.query.claim.getClaimedBySoId" parameterClass="java.lang.String" resultClass="claimVO">
+	 	SELECT s.so_id as soId,
+	 	       w.claimed_by_id as resourceId,
+	 	       s.sow_title as soTitle,
+	 	       w.claimed_date as claimDate,
+	 	       s.wf_state_id as statusId,
+			   s.modified_date as currentSOModifiedDate,
+	 	       w.modified_date as soModifiedDate,
+	 	       w.company_id as buyerId,
+	 	       w.so_group_id as parentGroupId
+	 	  FROM wfm_so_queues w, so_hdr s
+	 	 WHERE w.so_id = s.so_id
+	 	   AND s.so_id = #soId#
+	 	   AND w.claimed_ind = 1
+	 	 LIMIT 1
+	 </select>
+	 
+	 <select id="powerbuyer.query.claim.getClaimedByParentGroupId" parameterClass="java.lang.String" resultClass="claimVO">
+	 	SELECT s.so_id as soId,
+	 	       w.claimed_by_id as resourceId,
+	 	       s.sow_title as soTitle,
+	 	       w.claimed_date as claimDate,
+	 	       s.wf_state_id as statusId,
+			   s.modified_date as currentSOModifiedDate,
+	 	       w.modified_date as soModifiedDate,
+	 	       w.company_id as buyerId,
+	 	       w.so_group_id as parentGroupId
+	 	  FROM wfm_so_queues w, so_hdr s
+	 	 WHERE w.so_id = s.so_id
+	 	   AND s.so_group_id = #parentGroupId#
+	 	   AND w.claimed_ind = 1
+	 	 LIMIT 1
+	 </select>
+	 
+	 <!--  TODO: should add
+	 	   AND queue_id = #filterId#
+	 -->
+	 <update id="powerbuyer.update.requeSO" parameterClass="requeVO">
+	 	UPDATE wfm_so_queues
+	 	   SET queued_date = #requeDate#
+	 	 WHERE so_id = #soId#
+	 </update>
+	 
+
+	 <update id="powerbuyer.update.claimSO" parameterClass="claimVO">
+	 	UPDATE wfm_so_queues
+	 	   SET claimed_ind = 1, claimed_by_id = #resourceId#, claimed_from_queue_id = #queueId#, claimed_date = now(), unclaimed_date = null
+	 	 WHERE
+	 	 <isEmpty property="parentGroupId">
+	 	 	so_id = #soId#
+		 </isEmpty>
+	 	 <isNotEmpty property="parentGroupId">
+			so_group_id = #parentGroupId#
+		 </isNotEmpty>
+	 </update>
+
+	 <update id="powerbuyer.update.unClaimSO" parameterClass="java.lang.String">
+	 	UPDATE wfm_so_queues
+	 	   SET claimed_ind = 0, claimed_from_queue_id = null, unclaimed_date = now()
+	 	 WHERE so_id = #soId#
+	 </update>
+	 
+	 <update id="powerbuyer.update.unClaimSOGroup" parameterClass="java.lang.String">
+	 	UPDATE wfm_so_queues
+	 	   SET claimed_ind = 0, claimed_from_queue_id = null, unclaimed_date = now()
+	 	 WHERE so_group_id = #parentGroupId#
+	 </update>
+	 
+	 <update id="powerbuyer.update.unClaimByResource" parameterClass="java.lang.Integer">
+	 	UPDATE wfm_so_queues
+	 	   SET claimed_ind = 0, claimed_from_queue_id = null, unclaimed_date = now()
+	 	 WHERE claimed_by_id = #resourceId# and claimed_ind = 1
+	 </update>
+	 
+	
+	 
+	 <select id="powerbuyer.select.exiredclaims" parameterClass="java.lang.Long"  resultClass="claimVO">
+	 	SELECT p.so_id as soId,
+	 	       p.claimed_by_id as resourceId,
+	 	       p.claimed_date as claimDate,
+	 	       p.modified_date as soModifiedDate,
+	 	       p.company_id as buyerId	 
+	 		   from wfm_so_queues p where UNIX_TIMESTAMP(claimed_date) &lt; UNIX_TIMESTAMP(now())-#timeInterval# and claimed_ind=1
+	 </select>
+	 
+	 <select id="powerbuyer.query.getQueuedSOs" parameterClass="claimVO"  resultClass="claimVO">
+	 	SELECT s.so_id as soId,
+	 	       w.company_id as resourceId,
+	 	       s.sow_title as soTitle,
+	 	       w.claimed_date as claimDate,
+	 	       s.wf_state_id as statusId,
+			   s.modified_date as currentSOModifiedDate,
+	 	       w.modified_date as soModifiedDate,
+	 	       w.company_id as buyerId
+	 	  FROM wfm_so_queues w, so_hdr s
+	 	 WHERE w.so_id = s.so_id
+	 	   AND s.so_id = #soId#
+	 	   AND queue_id = #queueId#
+	 </select>
+	 
+	 <insert id="powerbuyer.insert.SOQueue" parameterClass="claimVO">
+		insert into wfm_so_queues 
+		(so_id, queue_id, queue_seq, queued_date, company_id, grouped_ind, so_group_id, sort_order, created_date)
+		select 
+			so.so_id, #queueId#,
+			(select if(count(*) = 0, 0, max(wfm.queue_seq) + 1) from wfm_so_queues wfm where wfm.so_id = so.so_id and wfm.queue_id = #queueId#),
+			now(), #buyerId#,
+			if(so.so_group_id is null, 0, 1), so.so_group_id,
+			0, now()
+		from so_hdr so
+		where 
+	 	 <isEmpty property="parentGroupId">
+	 	 	so.so_id = #soId#
+		 </isEmpty>
+	 	 <isNotEmpty property="parentGroupId">
+			so.so_group_id = #parentGroupId#
+		 </isNotEmpty>
+	 </insert>	
+	 
+<select id="query.SerivceOrderIdsByProvider" parameterClass="searchVO" resultClass="com.newco.marketplace.dto.vo.serviceorder.ServiceOrderSearchResultsVO">
+	SELECT s1.so_id  as soId
+	FROM   so_hdr s1 
+       INNER JOIN so_hdr s2 
+       ON s1.accepted_resource_id = s2.accepted_resource_id
+	   <isEqual property="buyerInd" compareValue="true">
+	   		<isNotNull property="buyerId" prepend="AND"> 	
+	   			s1.buyer_id = s2.buyer_id 
+			</isNotNull>
+	   	</isEqual> 
+	WHERE  CASE 
+         WHEN ( ( s1.service_date2 IS NULL ) OR ( s1.service_date1 = s1.service_date2 ) ) 
+		   	THEN DATE(CONVERT_TZ(UTC_TIMESTAMP(), 'GMT', s1.service_locn_time_zone)) 
+			= DATE(CONVERT_TZ(DATE_ADD(s1.service_date1, INTERVAL STR_TO_DATE(s1.service_time_start,'%l:%i %p') HOUR_SECOND), 'GMT', s1.service_locn_time_zone)) 
+		   	ELSE DATE(CONVERT_TZ(UTC_TIMESTAMP(), 'GMT', s1.service_locn_time_zone)) 
+			BETWEEN DATE (CONVERT_TZ(DATE_ADD(s1.service_date1, INTERVAL STR_TO_DATE(s1.service_time_start,'%l:%i %p') HOUR_SECOND), 'GMT', s1.service_locn_time_zone)) 
+			AND DATE (CONVERT_TZ(DATE_ADD(s1.service_date2, INTERVAL STR_TO_DATE(s1.service_time_end,'%l:%i %p') HOUR_SECOND), 'GMT', s1.service_locn_time_zone)) 
+	END 
+       AND s1.wf_state_id IN ( 150, 155 )
+       AND IFNULL(s1.so_substatus_id,0) != 20
+       AND s2.so_id = #soId#
+	   <isEqual property="buyerInd" compareValue="true">
+	  		<isNotNull property="buyerId" prepend="AND"> 
+				s1.buyer_id = #buyerId#
+			</isNotNull>
+		</isEqual> 
+	   ORDER BY CONVERT_TZ(DATE_ADD(s1.service_date1, INTERVAL STR_TO_DATE(s1.service_time_start,'%l:%i %p') HOUR_SECOND), 'GMT', s1.service_locn_time_zone),s1.so_id ASC
+</select>
+
+<select id="query.SerivceOrderIdsByProviderFirm" parameterClass="searchVO" resultClass="com.newco.marketplace.dto.vo.serviceorder.ServiceOrderSearchResultsVO">
+	 SELECT DISTINCT s1.so_id as soId
+	 FROM   so_hdr s1
+     INNER JOIN so_hdr s2
+        ON s1.accepted_vendor_id = s2.accepted_vendor_id
+		<isEqual property="buyerInd" compareValue="true" >
+			<isNotNull property="buyerId" prepend="AND"> 
+	   			s1.buyer_id = s2.buyer_id
+			</isNotNull> 
+	   	</isEqual> 
+       	INNER JOIN vendor_resource v1
+        ON s1.accepted_vendor_id = v1.vendor_id
+	 WHERE  CASE 
+         WHEN ( ( s1.service_date2 IS NULL ) OR ( s1.service_date1 = s1.service_date2 ) ) 
+			THEN DATE(CONVERT_TZ(UTC_TIMESTAMP(), 'GMT', s1.service_locn_time_zone)) 
+			= DATE(CONVERT_TZ(DATE_ADD(s1.service_date1, INTERVAL STR_TO_DATE(s1.service_time_start,'%l:%i %p') HOUR_SECOND), 'GMT', s1.service_locn_time_zone)) 
+			ELSE DATE(CONVERT_TZ(UTC_TIMESTAMP(), 'GMT', s1.service_locn_time_zone)) 
+			BETWEEN DATE (CONVERT_TZ(DATE_ADD(s1.service_date1, INTERVAL STR_TO_DATE(s1.service_time_start,'%l:%i %p') HOUR_SECOND), 'GMT', s1.service_locn_time_zone)) 
+			AND DATE (CONVERT_TZ(DATE_ADD(s1.service_date2, INTERVAL STR_TO_DATE(s1.service_time_end,'%l:%i %p') HOUR_SECOND), 'GMT', s1.service_locn_time_zone)) 
+	 END 
+       AND s1.wf_state_id IN ( 150, 155 )
+       AND IFNULL(s1.so_substatus_id,0) != 20
+       AND s2.so_id = #soId#
+	   <isEqual property="buyerInd" compareValue="true" >
+	  		<isNotNull property="buyerId" prepend="AND"> 
+				s1.buyer_id = #buyerId#
+			</isNotNull>
+		</isEqual> 
+	   ORDER BY CONVERT_TZ(DATE_ADD(s1.service_date1, INTERVAL STR_TO_DATE(s1.service_time_start,'%l:%i %p') HOUR_SECOND), 'GMT', s1.service_locn_time_zone),s1.so_id ASC
+</select>
+
+	<procedure id="synchronize.wfm.queues">
+	 	 {call sp_wfm_queue_update_all()}
+	 </procedure>
+	 <!-- End of mappings for the claim queries  -->
+</sqlMap>

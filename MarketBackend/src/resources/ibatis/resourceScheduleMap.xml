@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="resourceSchedule">
+	<typeAlias alias="generalResourceSchedule" type="com.newco.marketplace.vo.provider.GeneralInfoVO"/>	
+	
+	<select id="generalInfo.resourceSchedule.get" parameterClass="generalResourceSchedule" resultClass="generalResourceSchedule">
+		SELECT mon_start as monStart,
+				mon_end as monEnd,
+				tue_start as tueStart,
+				tue_end as tueEnd,
+				wed_start as wedStart,
+				wed_end as wedEnd,
+				thu_start as thuStart,
+				thu_end as thuEnd,
+				fri_start as friStart,
+				fri_end as friEnd,
+				sat_start as satStart,
+				sat_end as satEnd,
+				sun_start as sunStart,
+				sun_end as sunEnd,
+				mon_24_ind as mon24Ind,
+				mon_na_ind as monNaInd,
+				tue_24_ind as tue24Ind,
+				tue_na_ind as tueNaInd,
+				wed_24_ind as wed24Ind,
+				wed_na_ind as wedNaInd,
+				thu_24_ind as thu24Ind,
+				thu_na_ind as thuNaInd,
+				fri_24_ind as fri24Ind,
+				fri_na_ind as friNaInd,
+				sat_24_ind as sat24Ind,
+				sat_na_ind as satNaInd,
+				sun_24_ind as sun24Ind,
+				sun_na_ind as sunNaInd
+				FROM resource_schedule 
+			<dynamic prepend="where">
+				<isNotNull prepend="AND " property="resourceId">resource_id = #resourceId#</isNotNull>
+			</dynamic>		
+	</select>
+	
+	<update id="generalInfo.resourceSchedule.update" parameterClass="generalResourceSchedule">
+		UPDATE resource_schedule
+			SET
+			resource_id = #resourceId#,
+			mon_24_ind = #mon24Ind#,
+			mon_na_ind = #monNaInd#,
+			tue_24_ind = #tue24Ind#,
+			tue_na_ind = #tueNaInd#,
+			wed_24_ind = #wed24Ind#,
+			wed_na_ind = #wedNaInd#,
+			thu_24_ind = #thu24Ind#,
+			thu_na_ind = #thuNaInd#,
+			fri_24_ind = #fri24Ind#,
+			fri_na_ind = #friNaInd#,
+			sat_24_ind = #sat24Ind#,
+			sat_na_ind = #satNaInd#,
+			sun_24_ind = #sun24Ind#,
+			sun_na_ind = #sunNaInd#,			
+			mon_start = #monStart#, 
+			mon_end = #monEnd# ,
+			tue_start = #tueStart#, 
+			tue_end = #tueEnd# ,
+			wed_start = #wedStart#, 
+			wed_end = #wedEnd# ,
+			thu_start = #thuStart#, 
+			thu_end = #thuEnd# ,
+			fri_start = #friStart#, 
+			fri_end = #friEnd# ,
+			sat_start = #satStart#, 
+			sat_end = #satEnd# ,
+			sun_start = #sunStart#, 
+			sun_end = #sunEnd#
+		 WHERE resource_id = #resourceId#
+	</update>
+	
+	<insert id="generalInfo.resourceSchedule.insert" parameterClass="generalResourceSchedule">
+		insert into resource_schedule	(resource_id,
+			mon_start,
+			mon_end,
+			tue_start,
+			tue_end,
+			wed_start,
+			wed_end,
+			thu_start,
+			thu_end,
+			fri_start,
+			fri_end,
+			sat_start,
+			sat_end,
+			sun_start,
+			sun_end,
+			mon_24_ind,
+			mon_na_ind,
+			tue_24_ind,
+			tue_na_ind,
+			wed_24_ind,
+			wed_na_ind,
+			thu_24_ind,
+			thu_na_ind,
+			fri_24_ind,
+			fri_na_ind,
+			sat_24_ind,
+			sat_na_ind,
+			sun_24_ind,
+			sun_na_ind
+			)			
+		values(#resourceId#,
+				#monStart#,
+			   #monEnd#,
+			   #tueStart#,
+			   #tueEnd#,
+			   #wedStart#,
+			   #wedEnd#,
+			   #thuStart#,
+			   #thuEnd#,
+			   #friStart#,
+			   #friEnd#,
+			   #satStart#,
+			   #satEnd#,
+			   #sunStart#,
+			   #sunEnd#,
+			   #mon24Ind#,
+			   #monNaInd#,
+				#tue24Ind#,
+				#tueNaInd#,
+				#wed24Ind#,
+				#wedNaInd#,
+				#thu24Ind#,
+				#thuNaInd#,
+				#fri24Ind#,
+				#friNaInd#,
+				#sat24Ind#,
+				#satNaInd#,
+				#sun24Ind#,
+				#sunNaInd#
+			   )
+        <selectKey resultClass="int">
+            SELECT last_insert_id() as resourceScheduleId
+        </selectKey>    
+	</insert>
+	
+		<update id="resourceSchedule.update" parameterClass="generalResourceSchedule">
+		UPDATE resource_schedule
+		 <dynamic prepend="SET">
+	     	<isNotNull prepend=", " property="mon24Ind">mon_24_ind = #mon24Ind#</isNotNull>
+			<isNotNull prepend=", " property="monNaInd">mon_na_ind = #monNaInd#</isNotNull>
+			<isNotNull prepend=", " property="tue24Ind">tue_24_ind = #tue24Ind#</isNotNull>
+			<isNotNull prepend=", " property="tueNaInd">tue_na_ind = #tueNaInd#</isNotNull>
+			<isNotNull prepend=", " property="wed24Ind">wed_24_ind = #wed24Ind#</isNotNull>
+			<isNotNull prepend=", " property="wedNaInd">wed_na_ind = #wedNaInd#</isNotNull>
+			<isNotNull prepend=", " property="thu24Ind">thu_24_ind = #thu24Ind#</isNotNull>
+			<isNotNull prepend=", " property="thuNaInd">thu_na_ind = #thuNaInd#</isNotNull>
+			<isNotNull prepend=", " property="fri24Ind">fri_24_ind = #fri24Ind#</isNotNull>
+			<isNotNull prepend=", " property="friNaInd">fri_na_ind = #friNaInd#</isNotNull>
+			<isNotNull prepend=", " property="sat24Ind">sat_24_ind = #sat24Ind#</isNotNull>
+			<isNotNull prepend=", " property="satNaInd">sat_na_ind = #satNaInd#</isNotNull>
+			<isNotNull prepend=", " property="sun24Ind">sun_24_ind = #sun24Ind#</isNotNull>
+			<isNotNull prepend=", " property="sunNaInd">sun_na_ind = #sunNaInd#</isNotNull>
+			<isNotNull prepend=", " property="monStart">mon_start = #monStart#</isNotNull>
+			<isNotNull prepend=", " property="monEnd">mon_end = #monEnd# </isNotNull>
+			<isNotNull prepend=", " property="tueStart">tue_start = #tueStart#</isNotNull>
+			<isNotNull prepend=", " property="tueEnd">tue_end = #tueEnd# </isNotNull>
+			<isNotNull prepend=", " property="wedStart">wed_start = #wedStart#</isNotNull>
+			<isNotNull prepend=", " property="wedEnd">wed_end = #wedEnd# </isNotNull>
+			<isNotNull prepend=", " property="thuStart">thu_start = #thuStart#</isNotNull>
+			<isNotNull prepend=", " property="thuEnd">thu_end = #thuEnd# </isNotNull>
+			<isNotNull prepend=", " property="friStart">fri_start = #friStart#</isNotNull>
+			<isNotNull prepend=", " property="friEnd">fri_end = #friEnd# </isNotNull>
+			<isNotNull prepend=", " property="satStart">sat_start = #satStart#</isNotNull>
+			<isNotNull prepend=", " property="satEnd">sat_end = #satEnd# </isNotNull>
+			<isNotNull prepend=", " property="sunStart">sun_start = #sunStart#</isNotNull>
+			<isNotNull prepend=", " property="sunEnd">sun_end = #sunEnd#</isNotNull>
+		</dynamic>
+		 WHERE resource_id = #resourceId#
+	</update>
+	
+	<delete id="resourceSchedule.delete" parameterClass="generalResourceSchedule">
+		DELETE
+		FROM	resource_schedule
+		WHERE	resource_id = #resourceId#
+	</delete>
+	
+	<select id="generalInfo.resourceSchedule.get.list" parameterClass="java.util.HashMap" resultClass="generalResourceSchedule">
+		SELECT
+			rs.resource_id as resourceId,
+			rs.mon_start as monStart,
+			rs.mon_end as monEnd,
+			rs.tue_start as tueStart,
+			rs.tue_end as tueEnd,
+			rs.wed_start as wedStart,
+			rs.wed_end as wedEnd,
+			rs.thu_start as thuStart,
+			rs.thu_end as thuEnd,
+			rs.fri_start as friStart,
+			rs.fri_end as friEnd,
+			rs.sat_start as satStart,
+			rs.sat_end as satEnd,
+			rs.sun_start as sunStart,
+			rs.sun_end as sunEnd,
+			rs.mon_24_ind as mon24Ind,
+			rs.mon_na_ind as monNaInd,
+			rs.tue_24_ind as tue24Ind,
+			rs.tue_na_ind as tueNaInd,
+			rs.wed_24_ind as wed24Ind,
+			rs.wed_na_ind as wedNaInd,
+			rs.thu_24_ind as thu24Ind,
+			rs.thu_na_ind as thuNaInd,
+			rs.fri_24_ind as fri24Ind,
+			rs.fri_na_ind as friNaInd,
+			rs.sat_24_ind as sat24Ind,
+			rs.sat_na_ind as satNaInd,
+			rs.sun_24_ind as sun24Ind,
+			rs.sun_na_ind as sunNaInd,
+			ltz.type as timeZoneType
+		FROM 
+			resource_schedule rs left join lu_time_zones ltz on rs.time_zone_id = ltz.id
+		WHERE 
+			resource_id IN
+				<iterate property="providerList" open="(" close=")" conjunction=",">
+					#providerList[]#
+				</iterate>;
+	</select>	
+	
+	
+	
+</sqlMap>

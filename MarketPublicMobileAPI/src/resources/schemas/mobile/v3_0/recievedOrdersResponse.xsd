@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:include schemaLocation="../../common.xsd" />
+	<!-- Root element -->
+	<xs:element name="recievedOrdersResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="results" />
+				<xs:element name= "recievedServiceOrders" type="serviceOrderListType" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:complexType name="serviceOrderListType" >
+		<xs:sequence>
+			<xs:element name="totalSOCount" type="xs:integer" minOccurs="0"/>
+			<xs:element name="recievedOrders" type="recievedOrdersType" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="recievedOrdersType" >
+		<xs:sequence>
+			<xs:element name="recievedOrder" type="recievedOrderType" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="recievedOrderType" >
+		<xs:sequence>
+			<xs:element name="soId" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="soStatus" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="orderType" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="buyerId" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="buyerName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="recievedDate" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="soTitle" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="city" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="state" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="zip" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="routedProvider" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="serviceStartDate" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="serviceEndDate" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="serviceWindowStartTime" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="serviceWindowEndTime" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="timeZone" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="soPrice" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="productAvailability" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="pickUpLocationDetails" type="pickUpLocationDetailsType" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="followupFlag" type="xs:boolean" minOccurs="0" />
+			<xs:element name="bidDetails" type="bidDetailsType" minOccurs="0" />
+			<xs:element name="relayOrderType" type="xs:string" minOccurs="0"/>
+			<xs:element name="estimationFlag" type="xs:boolean" minOccurs="0"/>
+			<xs:element name="estimateDetails" type="orderEstimateDetailsType" minOccurs="0" maxOccurs="1"/>
+			
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="orderEstimateDetailsType" >
+		<xs:sequence>
+			<xs:element name="estimate" type="orderEstimateType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="orderEstimateType" >
+		<xs:sequence>
+			<xs:element name="estimationId" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="estimationNo" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="estimationStatus" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="resourceId" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	
+	<xs:complexType name="pickUpLocationDetailsType" >
+		<xs:sequence>
+			<xs:element name="address1" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="address2" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="city" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="state" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="zip" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="pickUpDate" type="xs:string" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+		<xs:complexType name="bidDetailsType" >
+		<xs:sequence>
+			<xs:element name="sealedBidInd" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="bidRangeMin" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="bidRangeMax" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="bidPrice" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="totalBids" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema  xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"  elementFormDefault="qualified" jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+	<xs:element name="subscription">
+		<xs:complexType>
+			<xs:sequence>
+			    <xs:element name="confirmed-at" type="StringType" minOccurs="0"/>
+				<xs:element name="opt-in-at" type="StringType" minOccurs="0" />
+				<xs:element name="subscription-file-upload-id" type="StringType" minOccurs="0"/>
+				<xs:element name="user" type="UserType" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="UserType">
+		<xs:sequence>
+			<xs:element name="birthday-on"  type="StringType" minOccurs="0"/>
+			<xs:element name="carrier-id" type="StringType" minOccurs="0"/>
+			<xs:element name="carrier-updated-at" type="StringType" minOccurs="0"/>
+			<xs:element name="country-calling-code" type="xs:int" minOccurs="0"/>
+			<xs:element name="email" type="StringType" minOccurs="0"/>
+			<xs:element name="first-name" type="StringType" minOccurs="0"/>
+			<xs:element name="gender" type="StringType" minOccurs="0"/>
+			<xs:element name="last-name" type="StringType" minOccurs="0"/>
+			<xs:element name="mobile-phone" type="xs:string" />
+			<xs:element name="phone" type="StringType" minOccurs="0"/>
+			<xs:element name="postal-code" type="StringType" minOccurs="0"/>
+			<xs:element name="timezone-id" type="StringType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="StringType">
+		<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="type" type="xs:string" use="optional" default="0"/>
+					<xs:attribute name="nil" type="xs:string" use="optional" default="0"/>
+				</xs:extension>
+			</xs:simpleContent>
+	</xs:complexType>
+	
+	</xs:schema>
+	
+	

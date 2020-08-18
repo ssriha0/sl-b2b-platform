@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="resource">
+	<typeAlias alias="resourceVo" type="com.newco.marketplace.vo.provider.ResourceVO"/>	
+	
+	<select id="getResource.FullName.query" parameterClass="resourceVo" resultClass="resourceVo">
+		SELECT	concat(first_name, ' ', last_name) AS resourceName  
+		FROM 	contact c, vendor_resource v
+		WHERE 	c.contact_id = v.contact_id
+		AND		v.resource_id = #resourceId# 
+	</select>
+	<select id="getResource.vendorId.query" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT	v.vendor_id  
+		FROM 	vendor_resource v
+		WHERE 	v.resource_id = #resourceId# 
+	</select>
+</sqlMap>

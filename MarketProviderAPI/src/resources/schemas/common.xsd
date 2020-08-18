@@ -1,0 +1,560 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by Shekhar (Servicelive) -->
+<xs:schema xmlns:c="http://www.servicelive.com/namespaces/common"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" elementFormDefault="qualified"
+	jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+	<xs:simpleType name="money">
+		<xs:restriction base='xs:decimal'>
+			<xs:totalDigits value='11' />
+			<xs:fractionDigits value='2' />
+			<xs:pattern value='[0-9][.][0-9]*' />
+			<xs:pattern value='[1-9][0-9]*[.][0-9]*' />
+			<xs:pattern value='[1-9][0-9]*' />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="moneyCounterOffer">
+		<xs:restriction base='xs:decimal'>
+			<xs:totalDigits value='9' />
+			<xs:fractionDigits value='2' />
+			<xs:pattern value='[0-9][.][0-9]*' />
+			<xs:pattern value='[1-9][0-9]*[.][0-9]*' />
+			<xs:pattern value='[1-9][0-9]*' />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="accountTypeEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CreditCard" />
+			<xs:enumeration value="Bank" />
+			<xs:enumeration value="Both" />
+			<xs:enumeration value="None" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="promotion">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="promocode" type="xs:string" minOccurs="0" />
+				<xs:element name="promotype" type="xs:string" minOccurs="1" />
+				<xs:element name="value" type="xs:decimal" minOccurs="1" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- Used in response -->
+	<xs:element name="apiResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="results" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="results">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="result" minOccurs="0" maxOccurs="unbounded" />
+				<xs:element ref="error" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="result">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="code" type="resultCodeEnum"
+						default="0" />
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="error">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="code" type="resultCodeEnum"
+						default="0" />
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:simpleType name="identificationTypeEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ProviderResourceId" />
+			<xs:enumeration value="BuyerResourceId" />
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- Used in response -->
+	<xs:simpleType name="resultCodeEnum">
+		<xs:restriction base="xs:int">
+			<xs:enumeration value="0000" />  <!-- SUCCESS -->
+			<xs:enumeration value="0001" />  <!-- SUCCESS -->
+			<xs:enumeration value="0200" />  <!-- NO SERVICE ORDERS AVAILABLE FOR PROVIDER -->
+			<xs:enumeration value="0201" />  <!-- INVALID PROVIDER ID -->
+			<xs:enumeration value="0202" />  <!-- INVALID STATUS -->
+			<xs:enumeration value="0203" />  <!-- INVALID PAGE NO -->
+			<xs:enumeration value="0204" />  <!-- INVALID PAGE SIZE -->
+			<xs:enumeration value="0006" />  <!-- FAILURE -->
+			<xs:enumeration value="0007" />  <!-- Service order is not associated with the service provider. -->
+			<xs:enumeration value="0008" />
+			<xs:enumeration value="0009" /> 
+			<xs:enumeration value="1001" />  <!-- ACCESS TOKEN EXPIRED -->
+			<xs:enumeration value="1002" />
+			<xs:enumeration value="1003" />
+			<xs:enumeration value="1004" />
+			<xs:enumeration value="0100" />  <!-- Please provide a Username -->
+			<xs:enumeration value="0101" />  <!-- Please provide a Password -->
+			<xs:enumeration value="0102" />  <!-- Invalid Username or Password -->
+			<xs:enumeration value="0104" />  <!-- Exceeded the maximum number of incorrect login attempts. Your account 
+				is temporarily locked. Please contact ServiceLive to unlock the account -->
+			<xs:enumeration value="0106" />  <!-- Unable to Process Request -->
+			<xs:enumeration value="0107" />  <!-- Invlalid app -->
+            <xs:enumeration value="0108" />  <!-- Not enough permissions to login -->
+			<xs:enumeration value="0300" /> 	<!--Provider Resource not authorized to view the SO Details -->
+			<xs:enumeration value="0301" /> 	<!--Service Order Id does not exist -->
+			<xs:enumeration value="0302" /> 	<!--Invalid provider id/firm id -->
+			<xs:enumeration value="0800" />
+			<xs:enumeration value="0801" />
+			<xs:enumeration value="0802" />
+			<xs:enumeration value="0803" />
+			<xs:enumeration value="0804" />
+			<xs:enumeration value="0805" />
+			<xs:enumeration value="0809" />
+			
+			
+			<xs:enumeration value="0810" />
+			<xs:enumeration value="0811" />
+			<xs:enumeration value="0812" />
+			<xs:enumeration value="0813" />
+			
+			<xs:enumeration value="0700" />
+			<xs:enumeration value="0701" />
+			<xs:enumeration value="0702" />
+			<xs:enumeration value="0703" />
+			<xs:enumeration value="0704" />
+			<xs:enumeration value="0705" />
+
+			<xs:enumeration value="0500" />
+			<xs:enumeration value="0701" />
+			<xs:enumeration value="0702" />
+			<xs:enumeration value="0703" />
+			<xs:enumeration value="0501" />
+			<xs:enumeration value="0502" />
+			<xs:enumeration value="0503" />
+			<xs:enumeration value="0504" />
+			<xs:enumeration value="0505" />
+			<xs:enumeration value="0506" />
+			<xs:enumeration value="0507" />
+			<xs:enumeration value="0508" />
+			<xs:enumeration value="0509" />
+			<xs:enumeration value="0510" />
+			<xs:enumeration value="0511" />
+			<xs:enumeration value="0512" />
+			<xs:enumeration value="0513" />
+			<xs:enumeration value="0514" />
+			<xs:enumeration value="0515" />
+			<xs:enumeration value="0516" />
+			<xs:enumeration value="0517" />
+			<xs:enumeration value="0518" />
+			<xs:enumeration value="0519" />
+			<xs:enumeration value="0520" />
+			<xs:enumeration value="0521" />
+			<xs:enumeration value="0522" />
+			<xs:enumeration value="0523" />
+			<xs:enumeration value="0524" />
+			<xs:enumeration value="0525" />
+			<xs:enumeration value="0526" />
+			<xs:enumeration value="0527" />
+			<xs:enumeration value="0528" />
+			<xs:enumeration value="0529" />
+			<xs:enumeration value="0530" />
+			<xs:enumeration value="0531" />
+			<xs:enumeration value="0532" />
+			<xs:enumeration value="0533" />
+			<xs:enumeration value="0534" />
+			<xs:enumeration value="0535" />
+			<xs:enumeration value="0536" />
+			<xs:enumeration value="0537" />
+			<xs:enumeration value="0538" />
+			<xs:enumeration value="0539" />
+			<xs:enumeration value="0540" />
+			<xs:enumeration value="0541" />
+			<xs:enumeration value="0542" />
+			<xs:enumeration value="0543" />
+			<xs:enumeration value="0544" />
+			<xs:enumeration value="0545" />
+			<xs:enumeration value="0546" />
+			<xs:enumeration value="0547" />
+			<xs:enumeration value="0548" />   
+			<xs:enumeration value="0549" />
+			<xs:enumeration value="0555" />
+			<xs:enumeration value="0556" />
+			<xs:enumeration value="0557" />
+			<xs:enumeration value="0558" />
+			<xs:enumeration value="0559" />   
+			<xs:enumeration value="0560" />
+			<xs:enumeration value="0561" />
+			<xs:enumeration value="0562" />
+			<xs:enumeration value="0563" />
+			<xs:enumeration value="0564" />
+			<xs:enumeration value="0565" />
+			<xs:enumeration value="0566" />
+			<xs:enumeration value="0567" />
+			<xs:enumeration value="0568" />
+			<xs:enumeration value="0569" />
+			<xs:enumeration value="0570" />
+			<xs:enumeration value="0571" />
+			<xs:enumeration value="0572" />
+			<xs:enumeration value="0573" />
+			<xs:enumeration value="0574" />
+			<xs:enumeration value="0575" />
+			<xs:enumeration value="0576" />
+			<xs:enumeration value="0577" />
+			<xs:enumeration value="0578" />
+			<xs:enumeration value="0579" />
+			<xs:enumeration value="0580" />
+			<xs:enumeration value="0581" />
+			<xs:enumeration value="0582" />
+			<xs:enumeration value="0583" />
+			<xs:enumeration value="0584" />
+			<xs:enumeration value="0585" />
+			<xs:enumeration value="0586" />
+			
+			<xs:enumeration value="0100"/>  <!-- Please provide a Username -->
+			<xs:enumeration value="0101"/>  <!-- Please provide a Password -->
+			<xs:enumeration value="0102"/>  <!-- Invalid Username or Password-->
+			<xs:enumeration value="0104"/>  <!-- Exceeded the maximum number of incorrect login attempts. 
+												Your account is temporarily locked. 
+												Please contact ServiceLive to unlock the account-->
+			<xs:enumeration value="0106"/>  <!-- Unable to Process Request -->  
+			
+			<xs:enumeration value="0300"/> 	<!--Provider Resource not authorized to view the SO Details  -->
+			<xs:enumeration value="0301"/> 	<!--Service Order Id does not exist  -->
+			<xs:enumeration value="0302"/> 	<!--Invalid provider id/firm id  -->
+			<xs:enumeration value="0303"/>  <!--Invalid Filter.  -->
+			<xs:enumeration value="0304"/>  <!-- Part not associated with Service Order-->
+			
+			<xs:enumeration value="0401"/> <!--	Invalid service order.-->
+			<xs:enumeration value="0402"/> <!--	Current status of Service order does not allow time on site entry.-->
+			<xs:enumeration value="0403"/> <!--	Invalid provider id.-->
+			<xs:enumeration value="0404"/> <!--	At least one arrival time must be available for adding departure time.-->
+			<xs:enumeration value="0405"/> <!--	Departure Date should be greater than the Arrival time.-->
+			<xs:enumeration value="0406"/> <!--	Arrival Date should be greater than the time of acceptance of Service Order.-->
+			<xs:enumeration value="0407"/> <!--	Invalid event type.-->
+			<xs:enumeration value="0408"/> <!--	Invalid latitude-->
+			<xs:enumeration value="0409"/> <!--	Invalid longitude.-->
+			<xs:enumeration value="0410"/> <!--	Invalid trip-->
+			<xs:enumeration value="0411"/> <!--	Invalid reason code.-->
+			<xs:enumeration value="0412"/> <!--	Arrival Date time should not be greater than current date time.-->
+			<xs:enumeration value="0413"/> <!--	Departure Date time should not be greater than current date time.-->
+			<xs:enumeration value="0004"/> <!--	Internal Server Error-->
+			
+			<xs:enumeration value="0450"/> <!-- Invalid trip number -->
+			<xs:enumeration value="0451"/> <!-- Invalid next Appointment Date Or Time -->
+			<xs:enumeration value="0452"/> <!-- Incorrect next Appointment Date Or Time -->
+			
+			<xs:enumeration value="0800"/> <!-- Current status of service order does not allow attaching a file. -->
+			<xs:enumeration value="0801"/> <!-- Service order is not associated with the service provider. -->
+			<xs:enumeration value="0803"/> <!-- Invalid file format. -->
+			<xs:enumeration value="0804"/> <!-- Exceeded the size allowed for attachments. Please attach files less than 5MB. -->
+			<xs:enumeration value="0805"/> <!-- Invalid firm id/provider id. -->
+			<xs:enumeration value="0806"/> <!-- Invalid service order. -->
+			<xs:enumeration value="0807"/> <!-- Document uploaded successfully. -->	
+			
+			<xs:enumeration value="0700"/>  
+			<xs:enumeration value="0701"/> 
+			<xs:enumeration value="0702"/>
+			<xs:enumeration value="0703"/> 	
+			<!-- Update Appt Window -->
+			<xs:enumeration value="0600"/>  
+			<xs:enumeration value="0601"/> 
+			<xs:enumeration value="0602"/>
+			<xs:enumeration value="0603"/>
+			<xs:enumeration value="0604"/>
+			<xs:enumeration value="0605"/>
+			<xs:enumeration value="0606"/>
+			<xs:enumeration value="0607"/>
+			<xs:enumeration value="0608"/>
+			<xs:enumeration value="0609"/>
+			
+			<!-- Generic validation error codes for mobile -->
+			<xs:enumeration value="0012"/>
+			
+			<xs:enumeration value="0013"/>
+			<xs:enumeration value="0014"/>
+			
+			<!-- Create New Password API -->
+			<xs:enumeration value="0880"/>
+			<xs:enumeration value="0881"/>
+			<xs:enumeration value="0882"/>
+			<xs:enumeration value="0883"/>
+			<xs:enumeration value="0884"/>
+			<xs:enumeration value="0885"/>
+			<xs:enumeration value="0886"/>
+			<xs:enumeration value="0887"/>
+			<xs:enumeration value="0888"/>
+			<xs:enumeration value="0889"/>
+			<xs:enumeration value="0890"/>
+			
+			<!-- Trip validation error codes for mobile -->			
+			<xs:enumeration value="0410"/>		
+			<!-- AddSoProviderPart API -->
+			<xs:enumeration value="0906"/>	
+			<xs:enumeration value="0907"/>
+			<xs:enumeration value="0908"/>
+			<xs:enumeration value="0909"/>
+			<xs:enumeration value="0910"/>
+			<!-- AddInvoiceSOProviderPart API -->
+			<xs:enumeration value="0911"/>	
+			<xs:enumeration value="0912"/>	
+			<xs:enumeration value="0913"/>	
+			<xs:enumeration value="0914"/>	
+			<xs:enumeration value="0915"/>	
+			<xs:enumeration value="0916"/>	
+			<xs:enumeration value="0917"/>
+			<xs:enumeration value="0918"/>	
+			<xs:enumeration value="0919"/>	
+			<xs:enumeration value="0920"/>			
+			<xs:enumeration value="2001"/>
+			<!-- SO Assign API -->	
+			<xs:enumeration value="3001"/>
+			<xs:enumeration value="3002"/>
+			<xs:enumeration value="3003"/>
+			<xs:enumeration value="3004"/>
+			<xs:enumeration value="3005"/>
+			<xs:enumeration value="3007"/>	
+			<!-- SO Accept API -->		
+			<xs:enumeration value="1050"/>	
+			<xs:enumeration value="1051"/>	
+			<xs:enumeration value="1052"/>
+			<xs:enumeration value="1053"/>
+			<xs:enumeration value="1054"/>
+			<!--So Reject API -->		
+			<xs:enumeration value="2002"/>
+			<xs:enumeration value="2401"/>
+			<xs:enumeration value="2403"/>
+			<xs:enumeration value="2404"/>
+			<xs:enumeration value="2402"/>
+			<xs:enumeration value="2405"/>
+			 <!-- SEARCH API -->
+			<xs:enumeration value="3001" />  
+			<xs:enumeration value="0006" />
+			
+			<!-- Get SO Route List API -->
+			<xs:enumeration value="3003" />
+			
+			 <!-- Counter Offer API -->
+			<xs:enumeration value="3006" />  <!-- Invalid Service Start Date format. -->
+			<xs:enumeration value="3007" />  <!-- Invalid Service End Date format. -->
+			<xs:enumeration value="3008" />	 <!-- Invalid Offer Expiration Date format.-->
+			<xs:enumeration value="3009" />  <!-- Invalid Spend Limit Value. -->
+			<xs:enumeration value="3010" />  <!-- Counter Offer Start Date or Maximum Price is required -->
+			<xs:enumeration value="3011" />  <!-- Counter Offer Maximum Price cannot be negative -->
+			<xs:enumeration value="3012" />  <!-- Counter Offer Expiration Date is required -->
+			<xs:enumeration value="3013" />  <!-- Service Order is not in a state to create Counter Offer. -->
+			<xs:enumeration value="3014" />  <!-- Service Order is not Posted to this provider. -->
+			<xs:enumeration value="3015" />  <!-- One or more provider has already placed a counter offer for this Service Order. -->
+			<xs:enumeration value="3016" />  <!-- Service End date should not be provided without Service Start date. -->
+			<xs:enumeration value="3017" />  <!-- Cannot create counter offer for CAR routed SO. -->
+			<xs:enumeration value="3018" />  <!-- Increase Spend Limit is not allowed for Non Funded Buyer. -->
+			<xs:enumeration value="3019" />  <!-- Counter Offer Request Failed --> <!-- OF Failure -->
+			<xs:enumeration value="3040" />  <!-- Counter Offer spend limit lesser than existing price -->
+			<xs:enumeration value="3041" />  <!-- Start date should be future date -->
+			<xs:enumeration value="3042" />  <!-- End date should be future date -->
+			<xs:enumeration value="3043" />  <!-- End date should be greater than end date -->
+			<xs:enumeration value="3044" />  <!-- Invalid role id for the resource id -->
+			
+			<!-- Withdraw Counter Offer API -->
+			<xs:enumeration value="3020" />	 <!-- Service Order is not in a state to withdraw Counter Offer. -->
+			<xs:enumeration value="3021" />  <!-- One or more provider has not placed a counter offer for this Service Order. -->
+			<xs:enumeration value="3022" />  <!-- Service Order is not Posted to one or more of the providers. -->
+			<xs:enumeration value="3023" />  <!-- Withdraw Offer Failed --> <!-- OF Failure -->
+			
+			<!-- Release API -->
+			<xs:enumeration value="2051" />  <!-- Release Request Failed --> <!-- OF Failure -->
+			<xs:enumeration value="2052" />  <!-- Release Offer Request Failed invalid reason code--> <!-- OF Failure -->
+			<!-- Reassign API -->
+			<xs:enumeration value="3050"/>
+			<xs:enumeration value="3051"/>
+			<xs:enumeration value="3052"/>
+			<xs:enumeration value="3054"/>
+			 <!-- PLACE BID/CHANGE BID API -->
+			<xs:enumeration value="1075"/>			
+			<xs:enumeration value="1076"/>	
+			<xs:enumeration value="1077"/>
+			<xs:enumeration value="1078"/>
+			<xs:enumeration value="1079"/>
+			<xs:enumeration value="1080"/>
+			<xs:enumeration value="1081"/>
+			<xs:enumeration value="1082"/>
+			<xs:enumeration value="1083"/>
+			<xs:enumeration value="1084"/>
+			<xs:enumeration value="4015"/>
+			<xs:enumeration value="4016"/>
+			<xs:enumeration value="4017"/>
+			<xs:enumeration value="4018"/>
+			<xs:enumeration value="4019"/>
+			<xs:enumeration value="4020"/>
+			<xs:enumeration value="4021"/>
+			<xs:enumeration value="4022"/>
+			
+			<!-- Submit Reschedule API -->
+			<xs:enumeration value="3055"/>
+			<xs:enumeration value="3056"/>
+			<xs:enumeration value="3057"/>
+			<xs:enumeration value="3058"/>
+			<xs:enumeration value="3059"/>
+			<xs:enumeration value="3060"/>
+			<xs:enumeration value="3061"/>
+			<xs:enumeration value="3062"/>
+			
+			<!-- Pre Call API -->
+
+			<xs:enumeration value="4001"/>
+			<xs:enumeration value="4002"/>
+			<xs:enumeration value="4003"/>
+			<xs:enumeration value="4004"/>
+			<xs:enumeration value="4011"/>
+			<xs:enumeration value="4010"/>
+			
+            <!-- Get ReasonCode API -->
+            <xs:enumeration value="4005"/>
+             <!-- Level validation -->
+            <xs:enumeration value="4010"/>
+            
+             <!-- Delete Filter API -->
+            <xs:enumeration value="3050"/>
+            <xs:enumeration value="3051"/>
+            
+             <!-- Save Filter API -->
+            <xs:enumeration value="3052"/>
+            <xs:enumeration value="3053"/>
+            
+			<!-- OF response  -->
+			<xs:enumeration value="08"/>
+			
+			<!-- SL-20452 Forget Username Password-->
+			<xs:enumeration value="3101"/>
+			<xs:enumeration value="3102"/>
+			<xs:enumeration value="3103"/>
+			<xs:enumeration value="3104"/>
+			<xs:enumeration value="3105"/>
+			<xs:enumeration value="3106"/>
+			<xs:enumeration value="3107"/>
+            <xs:enumeration value="3108"/>
+            <xs:enumeration value="3109"/>
+            <xs:enumeration value="3110"/>
+            <xs:enumeration value="3111"/>
+            <xs:enumeration value="3112"/>
+   			<xs:enumeration value="3113"/>
+   			<xs:enumeration value="3114"/>
+   			<xs:enumeration value="3115"/>
+   			<xs:enumeration value="3116"/>
+			<xs:enumeration value="3117"/>
+			<xs:enumeration value="3118"/>
+			<xs:enumeration value="3119"/>
+			<xs:enumeration value="3120"/>
+			<xs:enumeration value="3121"/>
+			
+			<!-- v3.1 Api's -->
+			<xs:enumeration value="3121"/> <!-- Invalid Service Order Status -->
+			<xs:enumeration value="3122"/> <!--  Resolve Problem Comments is mandatory. -->
+			<!-- Release SO API -->
+            <xs:enumeration value="3123"/>   <!--RELEASE_COMMENT_MANDATORY-->
+            <xs:enumeration value="3124"/>   <!--RELEASE_SO_SUCCESS -->
+            <xs:enumeration value="3133"/>   <!--RELEASE_SO_INVALID REASON -->
+            
+            <!-- Get Team Members -->
+            <xs:enumeration value="3131"/>   <!--NO_MANAGE_TEAM_PROVIDERS -->
+            <xs:enumeration value="3132"/>   <!--NO_REGISTERED_PROVIDERS -->
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- Identification -->
+
+	<xs:simpleType name="emailType">
+		<xs:restriction base="xs:string">
+			<xs:pattern value=".+@.+[.]+.+" />
+			<xs:maxLength value="255"></xs:maxLength>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="soType">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[0-9]{3}-[0-9]{4}-[0-9]{4}-[0-9]{2}" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="buyerType">
+		<xs:restriction base="xs:int">
+			<xs:enumeration value="3" /><!-- Enterprise buyer -->
+			<xs:enumeration value="5" /><!-- Simple buyer -->
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="booleanIndicatorType">
+		<xs:restriction base="xs:int">
+			<xs:enumeration value="1" /><!-- Yes -->
+			<xs:enumeration value="0" /><!-- No, default -->
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="buyerRoleType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Pro" /><!-- Enterprise buyer -->
+			<xs:enumeration value="Simple" /><!-- Simple buyer -->
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="PhoneType">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="\d{3}-\d{3}-\d{4}" />
+		</xs:restriction>
+	</xs:simpleType>
+	<!--price-format -->
+	<xs:simpleType name="price-format">
+		<xs:restriction base="xs:decimal">
+			<xs:minInclusive value="0" />
+			<xs:fractionDigits value="2" />
+		</xs:restriction>
+	</xs:simpleType>
+	<!--for restricting numbers as 20 characters -->
+	<xs:simpleType name="numberFormatType">
+		<xs:restriction base="xs:string">
+		<xs:maxLength value="30"></xs:maxLength>
+		</xs:restriction>		
+	</xs:simpleType>
+		<xs:complexType name="orderDetailsType">
+			<xs:sequence>
+				<xs:element name="orderDetail" type="orderDetailType" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="orderDetailType">
+			<xs:sequence>
+				<xs:element name="soId" type="xs:string" minOccurs="1" maxOccurs="1"/>
+<!-- 				<xs:element name="groupId" type="xs:string" minOccurs="0" maxOccurs="1"/>
+ -->			<xs:element name="soStatus" type="xs:string" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="soSubStatus" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="recievedDate" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="buyerId" type="xs:integer" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="businessName" type="xs:string" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="buyerName" type="xs:string" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="title" type="xs:string" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="acceptedVendor" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="acceptedResource" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="acceptedVendorId" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="acceptedResourceId" type="xs:integer" minOccurs="0" maxOccurs="1"/>			
+				<xs:element name="appointStartDate" type="xs:date" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="assignmentType" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="appointEndDate" type="xs:date" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="serviceTimeStart" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="serviceTimeEnd" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="serviceLocationTimezone" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="custInfo" type="custInfoType" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="followUpFlag" type="xs:boolean" minOccurs="0" maxOccurs="1"/> 
+				<xs:element name="priceModel" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="custInfoType">
+			<xs:sequence>
+				<xs:element name="endCustomerName" type="xs:string" minOccurs="0"/>
+				<xs:element name="street1" type="xs:string" minOccurs="0"/>
+				<xs:element name="street2" type="xs:string" minOccurs="0"/>
+				<xs:element name="city" type="xs:string" minOccurs="0"/>
+				<xs:element name="state" type="xs:string" minOccurs="0"/>
+				<xs:element name="zip" type="xs:string" minOccurs="0"/>
+			</xs:sequence>
+	</xs:complexType>
+
+</xs:schema>

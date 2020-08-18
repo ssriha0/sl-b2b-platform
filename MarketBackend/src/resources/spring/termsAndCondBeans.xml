@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<bean id="termsAndCondDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.TermsAndCondDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+		<property name="activityRegistryDao">
+			<ref bean="activityDaoImpl"/>
+		</property>	
+		
+	</bean>
+	
+	<bean id="termsAndCondBOImpl" class="com.newco.marketplace.business.businessImpl.provider.TermsAndCondBOImpl">
+		<constructor-arg index="0" ref="termsAndCondDaoImpl"/>
+		<constructor-arg index="1" ref="lookupDAOImpl"/>
+		
+	</bean>
+	
+</beans>

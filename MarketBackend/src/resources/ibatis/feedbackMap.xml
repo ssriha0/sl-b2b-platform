@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="feedback">
+
+	<typeAlias alias="feedbackVO"
+		type="com.newco.marketplace.dto.vo.feedback.FeedbackVO" />
+	<typeAlias alias="mobileAppFeedbackVO"
+		type="com.newco.marketplace.dto.vo.feedback.MobileFeedbackVO" />
+	
+	<resultMap class="feedbackVO" id="fetchFeedbackMap">
+		<result property="documentId" column="documentId" />
+		<result property="feedbackComments" column="feedbackComments" />
+		<result property="tabName" column="tabName" />
+		<result property="pageName" column="pageName" />
+		<result property="sourceURL" column="sourceURL" />
+		<result property="resourceId" column="resourceId" />
+		<result property="companyId" column="companyId" />
+		<result property="roleId" column="roleId" />
+		<result property="category" column="category" />
+		<result property="firstName" column="firstName" />
+		<result property="lastName"  column="lastName" />
+		<result property="firmName"  column="firmName" />
+		<result property="fileName" column="fileName" />
+		<result property="screenshotURL" column="docPath" />
+		<result property="createdDate" column="createdDate" />
+	</resultMap>
+	
+	<resultMap class="mobileAppFeedbackVO" id="mobileFetchFeedbackMap">
+		<result property="feedbackId" column="feedbackId" />
+		<result property="comments" column="comments" />
+		<result property="email" column="email" />
+		<result property="appVersion" column="appVersion" />
+		<result property="deviceOS" column="deviceOS" />
+		<result property="userName" column="userName" />
+		<result property="companyId" column="companyId" />
+		<result property="createdBy" column="createdBy" />
+		<result property="createdDate" column="createdDate" />
+		<result property="firstName" column="firstName" />
+		<result property="lastName"  column="lastName" />
+		<result property="firmName"  column="firmName" />
+		<result property="contactNumber"  column="contactNumber" />
+	</resultMap>
+
+	<select id="fetchCategory" resultClass="feedbackVO">
+		SELECT feedback_category_id AS categoryId, feedback_category AS category FROM
+		lu_feedback_category
+	</select>
+
+	<insert id="feedback.query" parameterClass="feedbackVO">
+		INSERT INTO
+		feedback_details(comments,document_id,tab_name,page_name,source_url,resource_id,company_id,role_id,created_date,modified_by,feedback_category_id)
+		VALUES
+		(#feedbackComments#,#documentId#,#tabName#,#pageName#,#sourceURL#,#resourceId#,#companyId#,#roleId#,NOW(),#modifiedBy#,#categoryId#)
+	</insert>
+
+	<select id="fetchfeedback.query" resultMap="fetchFeedbackMap"  parameterClass="java.lang.Integer">
+		
+	SELECT
+		 fd.document_id AS documentId,
+		 fd.comments AS feedbackComments,
+		 fd.tab_name AS tabName,
+		 fd.page_name AS pageName,
+		 fd.source_url AS sourceURL,
+		 fd.resource_id AS resourceId,
+		 fd.company_id AS companyId,
+		 fd.role_id AS roleId,
+		 lufc.feedback_category AS category,
+		 d.file_name AS fileName,
+		 d.doc_path AS docPath,
+		 c.first_name AS firstName,
+		 c.last_name  AS lastName,
+		 vh.business_name AS firmName,
+		 fd.created_date AS createdDate
+		 FROM feedback_details fd
+		 INNER JOIN lu_feedback_category lufc ON lufc.feedback_category_id = fd.feedback_category_id
+		 LEFT OUTER JOIN document d           ON fd.document_id   = d.document_id
+		 INNER JOIN vendor_resource vr        ON vr.resource_id   = fd.resource_id
+		 INNER JOIN vendor_hdr vh             ON vh.vendor_id     = fd.company_id
+		 INNER JOIN contact c                 ON vr.contact_id    = c.contact_id
+		 WHERE
+		 fd.feedback_category_id IS NOT NULL
+		 AND fd.created_date BETWEEN DATE_SUB(NOW(),INTERVAL #noOfDays# DAY) AND NOW() 
+		 ORDER BY fd.feedback_id ASC 
+		
+	</select>
+	
+	
+	<select id="mobileFetchFeedback.query" resultMap="mobileFetchFeedbackMap"  parameterClass="java.lang.Integer">		
+		SELECT
+			 mfd.feedback_id AS feedbackId,
+			 mfd.comments AS comments,
+			 mfd.email AS email,
+			 mfd.source_version AS appVersion,
+			 mfd.device_version AS deviceOS,
+			 mfd.user_name AS userName,
+			 mfd.company_id AS companyId,
+			 mfd.created_by AS createdBy,
+			 mfd.created_date AS createdDate,
+			 c.first_name AS firstName,
+			 c.last_name  AS lastName,
+			 vh.business_name AS firmName,
+			 c.phone_no AS contactNumber
+		 FROM mobile_feedback_details mfd
+		 INNER JOIN vendor_resource vr ON vr.resource_id = mfd.created_by
+		 INNER JOIN vendor_hdr vh ON vh.vendor_id = mfd.company_id
+		 INNER JOIN contact c ON vr.contact_id    = c.contact_id
+		 WHERE
+		 mfd.created_date BETWEEN DATE_SUB(NOW(),INTERVAL #noOfDays# DAY) AND NOW() 
+		 ORDER BY mfd.feedback_id ASC 		
+	</select>
+
+</sqlMap>

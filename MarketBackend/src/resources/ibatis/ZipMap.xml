@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="ups_zip">
+
+	<cacheModel type="LRU" id="zipCache">
+		<flushInterval hours="24" />
+		<property name="size" value="50000" />
+	</cacheModel>
+
+	<cacheModel type="LRU" id="stateCache">
+		<flushInterval hours="24" />
+		<property name="size" value="52" />
+	</cacheModel>
+	
+	<typeAlias alias="plocationvo" type="com.newco.marketplace.vo.provider.LocationVO"/>	
+	<typeAlias alias="latLongVO" type="com.newco.marketplace.dto.vo.LocationVO"/>	
+	<typeAlias alias="stateZipcodeVO" type="com.newco.marketplace.dto.vo.provider.StateZipcodeVO"/>	
+
+	<select id="zip.query" parameterClass="java.lang.String" resultClass="plocationvo" cacheModel="stateCache" >
+		select 
+		zip,
+		city,
+		state_cd as stateCd
+		from 
+		zip_geocode
+		<dynamic prepend="where">
+			state_cd = #id#
+		</dynamic>		
+	</select>
+
+	<!-- Select count from zip_geocode for given zipcode-->
+	<select id="zip_count.query" parameterClass="java.lang.String" resultClass="java.lang.Integer" cacheModel="zipCache">
+		select 
+		count(*) 
+		from 
+		zip_geocode
+		<dynamic prepend="where">
+			zip = #id#
+		</dynamic>		
+	</select>
+
+	<select id="zip.queryLatLong" parameterClass="java.lang.String" resultClass="latLongVO" cacheModel="zipCache">
+		SELECT 
+		city as city,
+		state_cd as state,
+		zip as zip,
+		latitude as latitude,
+		longitude as longitude,
+		time_zone as timeZone
+		FROM 
+		zip_geocode 
+		WHERE 
+		zip = #zip#
+	</select>
+
+	<select id="zip.queryDayLightFlag" parameterClass="java.lang.String" resultClass="java.lang.String" cacheModel="zipCache" >
+		SELECT 
+		daylight_savings_flg
+		FROM 
+		zip_geocode 
+		WHERE 
+		zip = #zip#
+	</select>
+
+	<select id="zip.queryTimezone" parameterClass="java.lang.String" resultClass="java.lang.String" cacheModel="zipCache">
+		SELECT 
+		time_zone
+		FROM 
+		zip_geocode 
+		WHERE 
+		zip = #zip#
+	</select>
+
+	<select id="zip.queryStateForZip" parameterClass="java.lang.String" resultClass="java.lang.String" cacheModel="zipCache">
+		SELECT 
+		state_cd
+		FROM 
+		zip_geocode 
+		WHERE 
+		zip = #zipCode#
+	</select>
+	<update id="updateGroupConcatLength.query" >
+		SET SESSION group_concat_max_len=100000;
+	</update>
+	<select id="state_name.query" parameterClass="java.util.List" resultClass="stateZipcodeVO">
+		SELECT state_cd AS stateCd
+		FROM zip_geocode
+		WHERE zip IN
+		<iterate open="(" close=")" conjunction=",">	
+			#zipList[]#
+		</iterate>
+		GROUP BY state_cd
+	</select>
+</sqlMap>

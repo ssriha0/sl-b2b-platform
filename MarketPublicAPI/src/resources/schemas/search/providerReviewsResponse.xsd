@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by Shekhar (Servicelive) -->
+
+<xs:schema xmlns="http://www.servicelive.com/namespaces/searchprovider" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.servicelive.com/namespaces/searchprovider" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" elementFormDefault="qualified">
+	<xs:include schemaLocation="searchCommon.xsd" id="xcom"/>
+	<xs:include schemaLocation="../common.xsd" id="xxc"/>
+	<!-- Root element -->
+	<xs:element name="providerReviewsResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="results"/>
+				<xs:element ref="reviews" minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>	
+</xs:schema>

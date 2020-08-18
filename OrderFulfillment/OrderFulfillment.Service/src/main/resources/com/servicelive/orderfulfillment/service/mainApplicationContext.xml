@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+    default-autowire="byName">
+ 	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"/>
+	<bean id="dataSourceMySQL" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName" value="jdbc/ServiceLiveMySqlDS" />
+	</bean>	
+	
+	<bean id="jbpm-config-name" class="java.lang.String">
+		<constructor-arg value="of.jbpm.online.cfg.xml" />
+	</bean>
+	    
+    <import resource="classpath:com/servicelive/orderfulfillment/contexts/orderfulfillmentContext.xml"/>
+
+     	
+ 	<bean id="orderFulfillmentService" class="com.servicelive.orderfulfillment.service.OrderFulfillmentService" scope="prototype" >
+    	<property name="processingBO" ref="processingBO" />
+         <property name="qckLkup" ref="quickLookupCollection" />
+         <property name="remoteServiceStartupInitializer" ref="remoteServiceDependentStartupTrigger" />
+         <property name="orderBuyers" ref="orderBuyerCollection" />
+    </bean>
+
+    <bean id="remoteServiceDependentStartupTrigger" class="com.servicelive.orderfulfillment.common.ControllerForRemoteServiceStartupDependentInitializer">
+        <constructor-arg index="0" ref="remoteServicesStartupChecker" />
+        <constructor-arg index="1">
+            <list>
+                <ref bean="remoteServiceDependentOrderBuyerInitializerForConns" />
+                <ref bean="remoteServiceDependentOrderBuyerInitializerForOfficeMax" />
+                <ref bean="remoteServiceDependentOrderBuyerInitializerForHts" />
+                <ref bean="remoteServiceDependentOrderBuyerInitializerForAtt" />
+                <ref bean="remoteServiceDependentOrderBuyerInitializerForHsr" />
+                <ref bean="remoteServiceDependentOrderBuyerInitializerForFacilities" />
+				<ref bean="remoteServiceDependentOrderBuyerInitializerForNonFunded" />
+				<ref bean="remoteServiceDependentOrderBuyerInitializerForSlDirect" />
+				<ref bean="remoteServiceDependentOrderBuyerInitializerForHI" />		
+				<!-- SL-20975 -->
+				<ref bean="remoteServiceDependentOrderBuyerInitializerForEpm" />	
+				<ref bean="remoteServiceDependentOrderBuyerInitializerForAmerican" />
+				 <!-- SL-21272 -->
+				<ref bean="remoteServiceDependentOrderBuyerInitializerForRelay" />
+				<!-- SLT-735 -->
+				<ref bean="remoteServiceDependentOrderBuyerInitializerForTechTalk" />
+				<ref bean="remoteServiceDependentOrderBuyerInitializerForNest" />  
+				<!-- Bipin - flushmate -->
+				<ref bean="remoteServiceDependentOrderBuyerInitializerForFlushMate" /> 
+				<!-- For Oakbrookbuyer -->
+				<ref bean="remoteServiceDependentOrderBuyerInitializerForOakbrook" />
+				<!-- For Canada Sloan -->
+				<ref bean="remoteServiceDependentOrderBuyerInitializerForCanadasloan" />
+				<!--  For Centa/Transform Buyer -->
+				<ref bean="remoteServiceDependentOrderBuyerInitializerForTransform" />
+                <ref bean="quickLookupCollection" />
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="remoteServicesStartupChecker" class="com.servicelive.orderfulfillment.common.RemoteServicesStartupChecker">
+        <property name="remoteServiceCheckers">
+            <list>
+                <ref bean="marketPlatformRemoteServiceChecker" />
+            </list>
+        </property>
+    </bean>
+
+</beans>

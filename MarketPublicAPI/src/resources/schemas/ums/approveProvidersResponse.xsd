@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+        <xs:include schemaLocation="../common.xsd"/>
+        <!-- Root element -->
+		<xs:element name="approveProvidersResponse">
+			<xs:complexType>
+				<xs:sequence>
+					<xs:element ref="results"/>
+					<xs:element ref="approvedProviders"  minOccurs="0" maxOccurs="1"/>
+					<xs:element ref="invalidProviders"  minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>					
+			</xs:complexType>
+		</xs:element>
+		<xs:element name="approvedProviders">
+		   <xs:complexType>
+			   <xs:sequence>
+				  <xs:element ref="approvedProvider" minOccurs="0" maxOccurs="unbounded"/>
+			   </xs:sequence>
+		   </xs:complexType>
+	    </xs:element>
+	    <xs:element name="invalidProviders">
+		   <xs:complexType>
+			   <xs:sequence>
+				  <xs:element ref ="invalidProvider"  maxOccurs="unbounded" minOccurs="0"/>
+			   </xs:sequence>
+		   </xs:complexType>
+	    </xs:element>
+	    <xs:element name="approvedProvider">
+	      <xs:complexType>
+			<xs:sequence>
+			   <xs:element name="providerId" type="xs:integer" minOccurs="0"/>
+			   <xs:element name="message" type="xs:string"  minOccurs="0" />
+			</xs:sequence>
+		  </xs:complexType>
+	    </xs:element>
+	    <xs:element name="invalidProvider">
+	      <xs:complexType>
+			<xs:sequence>
+			   <xs:element name="providerId" type="xs:integer" minOccurs="0"/>
+			   <xs:element name="message" type="xs:string"  minOccurs="0" />
+			</xs:sequence>
+		  </xs:complexType>
+	    </xs:element>
+</xs:schema>
+
+

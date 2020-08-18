@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	<import resource="isoMessageBeans.xml" />
+	<bean id="placeholderConfig"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+			<value>classpath:resources/bootstrap.${sl_app_lifecycle}.properties</value>
+		</property>
+	</bean>	
+	
+	<import resource="datasource.${sl_app_lifecycle}.AppContext.xml"/>
+	
+	<bean id="sqlMapClient"
+		class="org.springframework.orm.ibatis.SqlMapClientFactoryBean"
+		abstract="false" lazy-init="default" autowire="default"
+		dependency-check="default">
+		<property name="configLocation">
+			<value>classpath:resources/ibatis/SqlMapConfig.xml</value>
+		</property>
+		<property name="useTransactionAwareDataSource">
+			<value>true</value>
+		</property>
+		<property name="dataSource">
+			<ref bean="dataSourceMySQL" />
+		</property>
+	</bean>
+
+	<bean id="sqlMapClientFinance"
+		class="org.springframework.orm.ibatis.SqlMapClientFactoryBean"
+		abstract="false" lazy-init="default" autowire="default"
+		dependency-check="default">
+		<property name="configLocation">
+			<value>classpath:resources/ibatis/SqlMapConfig.xml</value>
+		</property>
+		<property name="useTransactionAwareDataSource">
+			<value>true</value>
+		</property>
+		<property name="dataSource">
+			<ref bean="dataSourceFinance" />
+		</property>
+	</bean>
+	
+	<bean id="transactionManagerFinance"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+		autowire="byName">
+		<property name="dataSource">
+			<ref bean="dataSourceFinance" />
+		</property>
+	</bean>	
+		
+	<!-- Transaction Manager Bean -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+		lazy-init="default" autowire="default" dependency-check="default"
+		scope="prototype">
+		<property name="dataSource">
+			<ref bean="dataSourceFinance" />
+		</property>
+	</bean>
+		
+	
+	<bean id="matchAllWithPropReq" 
+      class="org.springframework.transaction.interceptor.MatchAlwaysTransactionAttributeSource">
+      <property name="transactionAttribute">
+      		<value>PROPAGATION_REQUIRED,ISOLATION_DEFAULT,-Exception</value>
+      </property>
+    </bean>
+
+  <bean id="matchAllTxInterceptor"
+      class="org.springframework.transaction.interceptor.TransactionInterceptor">
+    <property name="transactionManager" ref="transactionManager"/>
+    <property name="transactionAttributeSource" ref="matchAllWithPropReq"/>
+  </bean>
+  
+  <bean id="autoProxyCreator" 
+      class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+    <property name="interceptorNames">
+      <list>
+        <idref local="matchAllTxInterceptor"/>
+      </list>
+    </property>
+    <property name="beanNames">
+      <list>
+        <idref bean="nachaAdminToolBO"/>
+        
+      </list>
+    </property>
+  </bean>
+  
+    <bean id="lookupDao" class="com.newco.marketplace.persistence.daoImpl.lookup.LookupDaoImpl">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	 
+    </bean>
+    
+    <bean id="isoMessageTemplateDao" class="com.newco.marketplace.persistence.daoImpl.iso.IsoMessageTemplateDaoImpl">
+		 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClientFinance"/>
+  		</property>	 
+    </bean>
+    
+    <bean id="isoRequestProcessor" class="com.newco.marketplace.iso.processors.IsoRequestProcessor">
+	 	<property name="isoMessageTemplateDao">
+    		<ref bean="isoMessageTemplateDao"/>
+  		</property>	
+  		<property name="sharpDeviceNo">
+			<value>${sharp.device.no}</value>
+		</property>
+  		 
+    </bean>
+    
+    
+    <bean id="fullfillmentTransactionBO"
+		class="com.newco.marketplace.business.businessImpl.ledger.FullfillmentTransactionBO">
+		<property name="fullfillmentDao">
+			<ref bean="fullfillmentDao" />
+		</property>
+		<property name="isoRequestProcessor">
+			<ref bean="isoRequestProcessor"/>
+		</property>
+	</bean>
+
+	<!-- bean id="fullfillmentDao"
+		class="com.newco.marketplace.persistence.daoImpl.ledger.FullfillmentDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClientFinance" />
+		</property>
+	</bean -->	
+	
+	<bean id="messageProducerHelper" 
+			class="com.newco.marketplace.iso.processors.MessageProducerHelper">
+		<property name="jmsFacility">
+			<ref bean="${spring.jms.facility}"/>
+		</property>
+	</bean>
+	
+	<!-- End of Transaction Manager Bean -->
+	
+	<!-- Imports Here -->
+		<import resource="nachaAdminToolContext.xml"/>
+		<import resource="message.xml"/>  
+		<import resource="glProcessorContext.xml"/>
+		<import resource="spring-jms.xml" />
+	<!-- End of Imports -->
+</beans>

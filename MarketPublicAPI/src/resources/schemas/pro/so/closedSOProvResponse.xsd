@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified">
+	<xs:include schemaLocation="../../common.xsd" />
+	<xs:include schemaLocation="../../so/soCommon.xsd" />
+	<xs:element name="getClosedsoResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="results"/>
+				<xs:element name="serviceorders" type="serviceorders" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="serviceorders">
+	<xs:sequence>
+		<xs:element name="serviceorder" type="serviceorder" maxOccurs="unbounded" minOccurs="0"/>
+	</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="serviceorder">
+	<xs:sequence>
+		<xs:element name="soId" type="xs:string"/>
+		<xs:element name="createdDate" type="xs:date" minOccurs="0"/>
+		<xs:element name="closedDate" type="xs:date" nillable="true" minOccurs="0"/>
+		<xs:element name="buyerId" type="xs:integer" minOccurs="0"/>
+		<xs:element name="sectionGeneral" type="closedSOSectionGeneralType" minOccurs="0"/>
+		<xs:element name="serviceLocation" type="closedSOLocationType" minOccurs="0"/>
+		<xs:element name="schedule" type="closedSOScheduleType" minOccurs="0"/>
+		<xs:element name="pricing" type="closedSOPricingType" minOccurs="0"/>
+		<xs:element name="contacts" type="ClosedSOContactsType" minOccurs="0"/>
+		<xs:element name="review" type="reviewType" minOccurs="0"/>
+	</xs:sequence>
+	</xs:complexType>	
+	
+	<xs:complexType name="closedSOSectionGeneralType">
+		<xs:sequence>
+			<xs:element name="title" type="xs:string" minOccurs="0"/>
+			<xs:element name="overview" type="xs:string" minOccurs="0"/>
+			<xs:element name="buyerTerms" type="xs:string" minOccurs="0"/>
+			<xs:element name="specialInstructions" type="xs:string" nillable="true" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="closedSOLocationType">
+		<xs:sequence>
+			<xs:element name="locationType" type="locationClassEnum" nillable="true" minOccurs="0"/>
+			<xs:element name="locationName" minOccurs="0"/>
+			<xs:element name="address1" type="xs:string" minOccurs="0"/>
+			<xs:element name="address2" type="xs:string" nillable="true" minOccurs="0"/>
+			<xs:element name="city" type="xs:string" minOccurs="0"/>
+			<xs:element name="state" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:length value="2"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="zip" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:pattern value="\d{5}"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="zip4" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="closedSOScheduleType">
+		<xs:sequence>
+			<xs:element name="scheduleType" type="scheduleRangeEnum" minOccurs="0"/>
+			<xs:element name="serviceStartDate" type="xs:date" minOccurs="0"/>
+			<xs:element name="serviceEndDate" type="xs:date" minOccurs="0"/>
+			<xs:element name="serviceWindowStartTime" type="xs:string" minOccurs="0"/>
+		    <xs:element name="serviceWindowEndTime" type="xs:string" minOccurs="0"/>
+		    <xs:element name="serviceLocationTimezone" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+		<xs:complexType name="closedSOPricingType">
+		<xs:all>
+			<xs:element name="priceModel" type="priceModelEnum" default="NAME_PRICE" minOccurs="0"/>
+			<xs:element name="laborSpendLimit" type="price-format" default="0"/>
+			<xs:element name="partsSpendLimit" type="price-format" default="0"/>
+		    <xs:element name="finalPriceForLabor" type="price-format" default="0" minOccurs="0"/>
+			<xs:element name="finalPriceForParts" type="price-format" default="0" minOccurs="0"/>
+		</xs:all>
+	</xs:complexType>
+	
+	<xs:complexType name="ClosedSOContactsType">
+		<xs:sequence>
+			<xs:element name="contact" type="ClosedSOContactType" maxOccurs="50"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ClosedSOContactType">
+		<xs:sequence>
+			<xs:element name="contactLocnType" type="closedSOcontactLocTypeEnum" minOccurs="0"/>
+			<xs:element name="firstName" type="xs:string" minOccurs="0"/>
+			<xs:element name="lastName" type="xs:string" minOccurs="0"/>
+			<xs:element name="primaryPhone" type="PhoneTypes" minOccurs="0"/>
+			<xs:element name="altPhone" type="PhoneTypes" nillable="true" minOccurs="0"/>
+			<xs:element name="email" type="emailType" nillable="true" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+		<xs:simpleType name="closedSOcontactLocTypeEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Service"/>
+			<xs:enumeration value="Buyer Support"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+    <xs:complexType name="reviewType">
+		<xs:sequence>
+			<xs:element name="rating" type="xs:decimal" minOccurs="0"/>
+			<xs:element name="date" type="xs:date" minOccurs="0"/>
+			<xs:element name="comment" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

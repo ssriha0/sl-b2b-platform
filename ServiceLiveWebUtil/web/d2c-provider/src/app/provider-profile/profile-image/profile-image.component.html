@@ -1,0 +1,70 @@
+<div class="thumbnail fix-image-container text-center corner-border">
+    <img class="image-responsive image-fix" [src]="sanitize(imageData)" id="firm-logo-img"/>
+    <div *ngIf="!sanitize(imageData)" class="image-text-overlay active-text-color" data-toggle="modal" data-target="#uploadPicModal">
+        <div class="h2"><span class="glyphicon glyphicon-plus"> </span></div>
+        <div class="h4">Add Logo</div>
+    </div>
+    <div *ngIf="sanitize(imageData)" class="image-text-overlay-edit active-text-color" data-toggle="modal" data-target="#uploadPicModal">
+        <div class="glyphicon glyphicon-edit edit-symbol-ui" (click)="resetAllData()"></div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade modal-popup-custom" id="uploadPicModal" data-backdrop="static" data-keyboard="false" role="dialog">
+    <div class="modal-dialog modal-width-fix-medium">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <a href="#" class="close-button" data-dismiss="modal">
+                    <div class="glyphicon glyphicon-remove" (click)="resetAllData()"></div>
+                </a>
+                <div class="modal-title text-center modal-header-text">Add Photo</div>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-group row">
+                    <div class="col-xs-7 padding-upload-box text-center border-style-all">
+                        <div class="upload-header-text">Upload your Photo</div>
+                        <p class="grey-color-text">All logos are audited by ServiceLive.</p>
+                        <div class="row">
+                            <div class="col-xs-12 text-center remove-padding-left-right">
+                                <strong>Accepted File Types:</strong>
+                                <span class="grey-color-text">
+                                jpg, jpeg, gif, png</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12 text-center remove-padding-left-right">
+                                <strong>Maximum File Size:</strong>
+                                <span class="grey-color-text">
+                                5mb</span>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-xs-12 text-center">
+                                <input class="btn btn-primary width-full corner-border" type="file" id="firm_file" name="firm_file" (change)="fileChange(input)"
+                                    #input accept=" .jpg, .jpeg, .gif, .png" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-4 filled-img-container border-style-all text-center" *ngIf="file_srcs && file_srcs.length > 0">
+                        <h5>PREVIEW</h5>
+                        <img [attr.src]="sanitize(file_srcs[0])" style="margin-left: 20px;" id="firmlogo" class="img-responsive image-fix north" alt="" />
+                        <!--<input type="button" value="rotateME" (click)="rotateMe();"/>-->
+                    </div>
+                    <div class="col-xs-4 blank-img-position border-style-all" *ngIf="!file_srcs || file_srcs.length <= 0">
+                        <div>PREVIEW</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" class="btn btn-default save-button-width corner-border" data-dismiss="modal" (click)="resetAllData()">Cancel</button>
+                    <button type="button" [disabled]="!file_srcs || file_srcs.length <= 0" class="btn btn-primary save-button-width corner-border"
+                        data-dismiss="modal" (click)="fileUpload(input)">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>

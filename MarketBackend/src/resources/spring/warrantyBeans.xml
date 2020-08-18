@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- beans for warranty application for dependency injection support -->
+
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	
+	
+	<bean id="warrantyBOImpl" class="com.newco.marketplace.business.businessImpl.provider.WarrantyBOImpl" scope="prototype">
+		<constructor-arg ref="warrantyDaoImpl"/>
+	</bean>
+			
+
+	<bean id="warrantyDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.WarrantyDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>	
+		<property name="activityRegistryDao">
+			<ref bean="activityDaoImpl"/>
+		</property>	
+	</bean>
+	
+</beans>	

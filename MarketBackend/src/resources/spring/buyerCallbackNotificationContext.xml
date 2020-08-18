@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<bean id="buyerCallbackNotificationBOImpl"
+		class="com.newco.marketplace.business.businessImpl.buyerCallbackNotification.BuyerCallbackNotificationBOImpl"
+		lazy-init="true">
+		<property name="buyerCallbackNotificationDao">
+			<ref bean="buyerCallbackNotificationDao" />
+		</property>
+		<property name="buyerCallBackNotificationClient">
+			<ref bean="buyerCallBackNotificationClient" />
+		</property>
+	</bean>
+	
+	<bean id="buyerCallbackNotificationDao"
+		class="com.newco.marketplace.persistence.daoImpl.buyercallbacknotification.BuyerCallbackNotificationDao"
+		lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+	
+	<bean id="buyerCallBackNotificationClient" 
+		class="com.newco.marketplace.buyercallbacknotification.client.BuyerCallBackNotificationClient" >
+			 <property name="apiBaseUrl" 
+				value="${servicelive.api.base.url}" >
+			</property>
+			 <property name="oAuthEnabled"
+			   value="${oauth.authentication}" >
+			  </property>
+			  <!-- <property name="consumerKey"
+			   value="${sl.public.oauth.ckey}" >
+			  </property>
+			  <property name="consumerSecret"
+			   value="${sl.public.oauth.csecret}" >
+			  </property> -->
+			  <property name="buyerCallbackEventsCache">
+			    	<ref bean="buyerCallbackEventsCache"/>
+			  </property>	 
+	</bean>
+
+</beans>

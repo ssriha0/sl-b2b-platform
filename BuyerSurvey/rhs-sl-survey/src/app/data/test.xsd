@@ -1,0 +1,35 @@
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="surveyRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="CSAT">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element type="xs:string" name="comments"/>
+              <xs:element name="optionsSelected">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element type="xs:positiveInteger" name="optionID" maxOccurs="unbounded" minOccurs="0"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element type="xs:positiveInteger" name="rating"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="NPS">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element type="xs:string" name="comments"/>
+              <xs:element type="xs:positiveInteger" name="rating"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element type="xs:boolean" name="agreed"/>
+        <xs:element type="xs:boolean" name="completed"/>
+        <xs:element type="xs:string" name="so_id"/>
+        <xs:element type="xs:string" name="surveyType"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="commonServiceOrderValidator" class="com.servicelive.orderfulfillment.validation.CommonServiceOrderValidator">
+        <property name="validationTasks">
+            <list>
+                <bean id="buyerValidationTask" class="com.servicelive.orderfulfillment.validation.BuyerValidationTask" parent="baseValidationTask" />
+                <bean id="serviceScheduleValidationTask" class="com.servicelive.orderfulfillment.validation.ServiceScheduleValidationTask" parent="baseValidationTask" />
+                <bean id="serviceContactValidationTask" class="com.servicelive.orderfulfillment.validation.ServiceContactValidationTask" parent="baseValidationTask" />
+                <bean id="serviceLocationValidationTask" class="com.servicelive.orderfulfillment.validation.ServiceLocationValidationTask" parent="baseValidationTask" />
+                <bean id="soTasksValidationTask" class="com.servicelive.orderfulfillment.validation.SOTasksValidationTask" parent="baseValidationTask" />
+            </list>
+        </property>
+    </bean>
+
+
+    <bean id="baseValidationTask" abstract="true" class="com.servicelive.orderfulfillment.validation.AbstractValidationTask">
+        <property name="util" ref="defaultValidationUtil" />
+    </bean>
+
+    <bean id="defaultValidationUtil" class="com.servicelive.orderfulfillment.validation.ValidationUtil"></bean>
+
+</beans>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<!-- Start Action  Loading -->
+	<bean id="completeProfileAction" class="com.newco.marketplace.web.action.provider.CompleteProfileAction" scope="prototype" >
+		<constructor-arg index="0" ref="publicProfileDelegateImpl"/>
+		<constructor-arg index="1" ref="publicProfileDto"/>
+		<constructor-arg index="2" ref="skillAssignDelegate"/>
+		<constructor-arg index="3" ref="skillAssignDto"/>
+		<constructor-arg index="4" ref="spnBuyerDelegate"/>
+	</bean>
+	<bean id="publicProfileAction" class="com.newco.marketplace.web.action.provider.PublicProfileAction" scope="prototype" >
+		<constructor-arg index="0" ref="publicProfileDelegateImpl"/>
+		<constructor-arg index="1" ref="publicProfileDto"/>
+		<constructor-arg index="2" ref="skillAssignDelegate"/>
+		<constructor-arg index="3" ref="skillAssignDto"/>
+	</bean>
+	
+</beans>

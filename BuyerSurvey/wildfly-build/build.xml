@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="BuyerSurvey" basedir="../" default="developer-war">
+	<echo level="info">
+		===============================================================================
+		                                ${ant.project.name} 
+		===============================================================================</echo>
+	<target name="developer-war" depends="init, clean, install, build, copy-healthcheck-file, war" />
+	<target name="init">
+		<property name="dir.base" value="${basedir}" />
+		<property name="dir.app" value="${dir.base}/src/main/webapp" />
+		<property name="dir.src" value="${dir.base}/rhs-sl-survey" />
+		<property name="dir.dist" value="dist" />
+		<property name="dir.dist.prod" value="dist_prod" />
+		<property name="dir.dist.preprod" value="dist_preprod" />
+		<property name="dir.dist.uat" value="dist_uat" />
+		<property name="dir.dist.training" value="dist_training" />
+		<property name="dir.dist.qa1" value="dist_qa1" />
+		<property name="dir.dist.qa2" value="dist_qa2" />
+		<property name="dir.dest" value="${dir.base}/target" />
+		<property name="dir.exec" value="/usr/bin" />
+		<property name="file.healthcheck" value="${dir.src}/buyerSurveyStatus.jsp" />
+	</target>
+	<target name="clean" depends="init">
+		<delete dir="${dir.dest}" quiet="true" failonerror="false"/>
+		<delete dir="${dir.src}/node_modules" quiet="true" failonerror="false"/>
+		<delete file="${dir.src}/package-lock.json"/>
+		<echo>@@@ Clean complete</echo>
+	</target>
+	<target name="install" depends="clean">
+		<exec executable="${dir.exec}/npm" dir="${dir.src}" failonerror="true">
+			<env key="PATH" value="${env.PATH}:${dir.exec}" />
+			<arg value="install" />
+			<arg value="-f" />
+		</exec>
+		<echo>@@@ NPM Installation completed</echo>
+	</target>
+
+	<target name ="build" depends="install">
+		<echo>@@@ Build process started</echo>
+		<echo message="*****--- Setting Up Build For Production Environment ---*****" />
+		<exec executable="${dir.exec}/ng" dir="${dir.src}" failonerror="true">
+			<env key="PATH" value="${env.PATH}:${dir.exec}" />
+			<arg value="build"/>
+			<arg value="--prod"/>
+			<arg value="--base-href=/BuyerSurvey/"/>
+			<arg value="--aot=true"/>
+			<arg value="--buildOptimizer=true"/>
+			<arg value="--outputHashing=none"/>
+			<arg value="--configuration=production"/>
+			<arg value="--outputPath=${dir.dist.prod}/"/>
+		</exec>
+		
+		<echo message="*****--- Setting Up Build For Pre-Production Environment ---*****" />
+		<exec executable="${dir.exec}/ng" dir="${dir.src}" failonerror="true">
+			<env key="PATH" value="${env.PATH}:${dir.exec}" />
+			<arg value="build"/>
+			<arg value="--prod"/>
+			<arg value="--base-href=/BuyerSurvey/"/>
+			<arg value="--aot=true"/>
+			<arg value="--buildOptimizer=true"/>
+			<arg value="--outputHashing=none"/>
+			<arg value="--configuration=preprod"/>
+			<arg value="--outputPath=${dir.dist.preprod}/"/>
+		</exec>
+		
+		<echo message="*****--- Setting Up Build For UAT Environment ---*****" />
+		<exec executable="${dir.exec}/ng" dir="${dir.src}" failonerror="true">
+			<env key="PATH" value="${env.PATH}:${dir.exec}" />
+			<arg value="build"/>
+			<arg value="--prod"/>
+			<arg value="--base-href=/BuyerSurvey/"/>
+			<arg value="--aot=true"/>
+			<arg value="--buildOptimizer=true"/>
+			<arg value="--outputHashing=none"/>
+			<arg value="--configuration=uat"/>
+			<arg value="--outputPath=${dir.dist.uat}/"/>
+		</exec>
+		
+		<echo message="*****--- Setting Up Build For Training Environment ---*****" />
+		<exec executable="${dir.exec}/ng" dir="${dir.src}" failonerror="true">
+			<env key="PATH" value="${env.PATH}:${dir.exec}" />
+			<arg value="build"/>
+			<arg value="--prod"/>
+			<arg value="--base-href=/BuyerSurvey/"/>
+			<arg value="--aot=true"/>
+			<arg value="--buildOptimizer=true"/>
+			<arg value="--outputHashing=none"/>
+			<arg value="--configuration=training"/>
+			<arg value="--outputPath=${dir.dist.training}/"/>
+		</exec>
+		
+		<echo message="*****--- Setting Up Build For QA1 Environment ---*****" />
+		<exec executable="${dir.exec}/ng" dir="${dir.src}" failonerror="true">
+			<env key="PATH" value="${env.PATH}:${dir.exec}" />
+			<arg value="build"/>
+			<arg value="--prod"/>
+			<arg value="--base-href=/BuyerSurvey/"/>
+			<arg value="--aot=true"/>
+			<arg value="--buildOptimizer=true"/>
+			<arg value="--outputHashing=none"/>
+			<arg value="--configuration=qa1"/>
+			<arg value="--outputPath=${dir.dist.qa1}/"/>
+		</exec>
+		
+		<echo message="*****--- Setting Up Build For QA2 Environment ---*****" />
+		<exec executable="${dir.exec}/ng" dir="${dir.src}" failonerror="true">
+			<env key="PATH" value="${env.PATH}:${dir.exec}" />
+			<arg value="build"/>
+			<arg value="--prod"/>
+			<arg value="--base-href=/BuyerSurvey/"/>
+			<arg value="--aot=true"/>
+			<arg value="--buildOptimizer=true"/>
+			<arg value="--outputHashing=none"/>
+			<arg value="--configuration=qa2"/>
+			<arg value="--outputPath=${dir.dist.qa2}/"/> 
+		</exec>
+		
+		<echo message="*****--- Setting Up Build For Dev Environment ---*****" />
+		<exec executable="${dir.exec}/ng" dir="${dir.src}" failonerror="true">
+			<env key="PATH" value="${env.PATH}:${dir.exec}" />
+			<arg value="build"/>
+			<arg value="--prod"/>
+			<arg value="--base-href=/BuyerSurvey/"/>
+			<arg value="--aot=true"/>
+			<arg value="--buildOptimizer=true"/>
+			<arg value="--outputHashing=none"/>
+		</exec>
+		
+		<echo>@@@ Build process completed</echo>
+	</target>
+	
+	<!-- Copy HealthCheck file -->
+	<target name="copy-healthcheck-file" depends="build">  
+	    <copy file="${file.healthcheck}" todir="${dir.src}/${dir.dist.prod}"/> 
+		<copy file="${file.healthcheck}" todir="${dir.src}/${dir.dist.preprod}"/> 
+		<copy file="${file.healthcheck}" todir="${dir.src}/${dir.dist.uat}"/> 
+		<copy file="${file.healthcheck}" todir="${dir.src}/${dir.dist.training}"/> 
+		<copy file="${file.healthcheck}" todir="${dir.src}/${dir.dist.qa1}"/> 
+		<copy file="${file.healthcheck}" todir="${dir.src}/${dir.dist.qa2}"/> 
+		<copy file="${file.healthcheck}" todir="${dir.src}/${dir.dist}"/> 
+	</target>
+
+	<!-- Build the WAR file -->
+	<target name="war" depends="copy-healthcheck-file">
+		<echo>@@@ WAR creation started</echo>
+		<echo message="*****--- Building Production artifact ---*****" />
+		<jar compress="yes" jarfile="${dir.dest}/BuyerSurvey_prod.war">
+			<fileset dir="${dir.src}/${dir.dist.prod}">
+				<include name="**/*.ico"/>
+				<include name="**/*.html"/>
+				<include name="**/*.js"/>
+				<include name="**/*.css"/>
+				<include name="**/*.jsp"/>
+			</fileset>
+			<fileset dir="${dir.app}">
+				<include name="**/*.xml"/>
+			</fileset>
+		</jar>
+		
+		<echo message="*****--- Building Pre-Production artifact ---*****" />
+		<jar compress="yes" jarfile="${dir.dest}/BuyerSurvey_preprod.war">
+			<fileset dir="${dir.src}/${dir.dist.preprod}">
+				<include name="**/*.ico"/>
+				<include name="**/*.html"/>
+				<include name="**/*.js"/>
+				<include name="**/*.css"/>
+				<include name="**/*.jsp"/>
+			</fileset>
+			<fileset dir="${dir.app}">
+				<include name="**/*.xml"/>
+			</fileset>
+		</jar>
+		
+		<echo message="*****--- Building UAT artifact ---*****" />
+		<jar compress="yes" jarfile="${dir.dest}/BuyerSurvey_uat.war">
+			<fileset dir="${dir.src}/${dir.dist.uat}">
+				<include name="**/*.ico"/>
+				<include name="**/*.html"/>
+				<include name="**/*.js"/>
+				<include name="**/*.css"/>
+				<include name="**/*.jsp"/>
+			</fileset>
+			<fileset dir="${dir.app}">
+				<include name="**/*.xml"/>
+			</fileset>
+		</jar>
+		
+		<echo message="*****--- Building Training artifact ---*****" />
+		<jar compress="yes" jarfile="${dir.dest}/BuyerSurvey_training.war">
+			<fileset dir="${dir.src}/${dir.dist.training}">
+				<include name="**/*.ico"/>
+				<include name="**/*.html"/>
+				<include name="**/*.js"/>
+				<include name="**/*.css"/>
+				<include name="**/*.jsp"/>
+			</fileset>
+			<fileset dir="${dir.app}">
+				<include name="**/*.xml"/>
+			</fileset>
+		</jar>
+
+		
+		<echo message="*****--- Building QA1 artifact ---*****" />
+		<jar compress="yes" jarfile="${dir.dest}/BuyerSurvey_qa1.war">
+			<fileset dir="${dir.src}/${dir.dist.qa1}">
+				<include name="**/*.ico"/>
+				<include name="**/*.html"/>
+				<include name="**/*.js"/>
+				<include name="**/*.css"/>
+				<include name="**/*.jsp"/>
+			</fileset>
+			<fileset dir="${dir.app}">
+				<include name="**/*.xml"/>
+			</fileset>
+		</jar>
+		
+		<echo message="*****--- Building QA2 artifact ---*****" />
+		<jar compress="yes" jarfile="${dir.dest}/BuyerSurvey_qa2.war">
+			<fileset dir="${dir.src}/${dir.dist.qa2}">
+				<include name="**/*.ico"/>
+				<include name="**/*.html"/>
+				<include name="**/*.js"/>
+				<include name="**/*.css"/>
+				<include name="**/*.jsp"/>
+			</fileset>
+			<fileset dir="${dir.app}">
+				<include name="**/*.xml"/>
+			</fileset>
+		</jar>
+		
+		<echo message="*****--- Building Dev artifact ---*****" />
+		<jar compress="yes" jarfile="${dir.dest}/BuyerSurvey.war">
+			<fileset dir="${dir.src}/${dir.dist}">
+				<include name="**/*.ico"/>
+				<include name="**/*.html"/>
+				<include name="**/*.js"/>
+				<include name="**/*.css"/>
+				<include name="**/*.jsp"/>
+			</fileset>
+			<fileset dir="${dir.app}">
+				<include name="**/*.xml"/>
+			</fileset>
+		</jar>
+		<echo>@@@ WAR creation completed</echo>
+	</target>
+</project>

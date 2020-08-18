@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="buyerFeatuerSet" >
+
+    <cacheModel type="LRU" id="BuyerFeatureSetCache">
+		<flushInterval hours="1" />
+		<property name="size" value="50" />
+	</cacheModel>
+	
+  		<select id="buyerFeatuerSet.getFeatures" parameterClass="java.lang.Integer" resultClass="java.util.List" >
+		select feature from buyer_feature_set where buyer_id = #buyerID# and active_ind = 1
+	</select>
+	
+	<select id="buyerFeatuerSet.getFeature" parameterClass="java.util.HashMap" resultClass="java.lang.String" >
+		select feature from buyer_feature_set where buyer_id = #buyerID# and feature = #feature# and active_ind = 1
+	</select>
+	
+	<select id="buyerFeatuerSet.shc_buyerIds"  parameterClass="java.lang.String" resultClass="java.lang.Integer" >
+		Select buyer_id from buyer_feature_set where feature = #feature# and active_ind = 1
+	</select>
+	
+	<select id="buyerFeatuerSet.getCancelFee"  parameterClass="java.lang.Integer" resultClass="java.lang.Double" >
+		Select cancellation_fee from buyer where buyer_id = #buyerId#
+	</select>
+</sqlMap>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/soRequest" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" targetNamespace="http://www.servicelive.com/namespaces/soRequest" elementFormDefault="qualified" jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+<xs:include schemaLocation="../../om_common.xsd"/>	
+	<!--  This is the new fetch order API REQUEST-->
+	<!-- Root element -->
+	<xs:element name="soFetchRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="identification" type="IdentificationType"/>
+				<xs:element name="tabName" type="xs:string" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="markets" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="providerIds" type="xs:integer" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="routedProviderIds" type="xs:integer" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="status" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="substatus" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="scheduleStatus" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="appointmentType" type="appointmentTypeEnum" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="appointmentStartDate" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="appointmentEndDate" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="endIndex" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="sortOrder" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="sortBy" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="loadFiltersInd" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="viewOrderPricing" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="groupId" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="initialLoadInd" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="includeUnassignedInd" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="jobDoneSubstatus" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="currentOrdersSubStatus" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="cancellationsSubStatus" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="revisitSubStatus" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:decimal"/>
+		</xs:complexType>
+		
+	</xs:element>
+</xs:schema>
+
+

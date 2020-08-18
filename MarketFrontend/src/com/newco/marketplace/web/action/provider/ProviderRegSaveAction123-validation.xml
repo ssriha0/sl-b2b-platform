@@ -1,0 +1,40 @@
+<!DOCTYPE validators PUBLIC
+        "-//Apache Struts//XWork Validator 1.0.2//EN"
+        "http://struts.apache.org/dtds/xwork-validator-1.0.2.dtd">
+        
+<validators>
+  <field name="legalBusinessName">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+  			<message>legalBusinessName is required</message>
+      </field-validator>
+  </field>
+  <field name="DBAName">
+     <field-validator type="requiredstring">
+          <param name="trim">true</param>
+  		  <message>DBAName is required</message>
+      </field-validator>
+  </field>
+  
+ <!--
+    <field name="registrationDto.legalBusinessName">
+     <field-validator type="requiredstring">
+          <message key="errors.required.legalBusinessName"/>
+      </field-validator>
+  </field>
+  <field name="registrationDto.DBAName">
+     <field-validator type="requiredstring">
+          <message key="errors.required.DBAName"/>
+      </field-validator>
+  </field>
+  <field name="registrationDto.legalBusinessName">
+     <field-validator type="required" short-circuit="true">
+          <message key="errors.required.age"/>
+      </field-validator>
+      <field-validator type="int">
+      		<param name="min">18</param>
+      		<param name="max">65</param>
+          	<message key="errors.required.age.limit"/>
+      </field-validator>
+  </field>-->
+</validators>

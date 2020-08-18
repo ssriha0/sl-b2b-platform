@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="1.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">
+	<persistence-unit name="OrderFulfillment.Domain">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <class>com.servicelive.orderfulfillment.domain.ServiceOrder</class>
+        <class>com.servicelive.orderfulfillment.domain.SOTask</class>
+        <class>com.servicelive.orderfulfillment.domain.SODocument</class>
+        <class>com.servicelive.orderfulfillment.domain.SONote</class>
+        <class>com.servicelive.orderfulfillment.domain.RoutedProvider</class>
+        <class>com.servicelive.orderfulfillment.domain.GroupRoutedProvider</class>
+        <class>com.servicelive.orderfulfillment.domain.SOPart</class>
+        <class>com.servicelive.orderfulfillment.domain.SOContact</class>
+        <class>com.servicelive.orderfulfillment.domain.SOContactLocation</class>
+        <class>com.servicelive.orderfulfillment.domain.SOLogging</class>
+        <class>com.servicelive.orderfulfillment.domain.SOLocation</class>
+        <class>com.servicelive.orderfulfillment.domain.SOPhone</class>
+        <class>com.servicelive.orderfulfillment.domain.SOPrice</class>
+        <class>com.servicelive.orderfulfillment.domain.SOServiceDatetimeSlot</class>
+        <class>com.servicelive.orderfulfillment.domain.SOCustomReference</class>
+        <class>com.servicelive.orderfulfillment.domain.SOEvent</class>
+        <class>com.servicelive.orderfulfillment.domain.SOAddon</class>
+        <class>com.servicelive.orderfulfillment.domain.SOCounterOfferReason</class>
+        <class>com.servicelive.orderfulfillment.domain.SOOnSiteVisit</class>
+        <class>com.servicelive.orderfulfillment.domain.Template</class>
+        <class>com.servicelive.orderfulfillment.domain.ServiceOrderProcess</class>
+        <class>com.servicelive.orderfulfillment.domain.SOGroup</class>
+        <class>com.servicelive.orderfulfillment.domain.SOGroupPrice</class>
+        <class>com.servicelive.orderfulfillment.domain.SOAdditionalPayment</class>
+        <class>com.servicelive.domain.so.BuyerOrderTemplateRecord</class>
+        <class>com.servicelive.domain.so.BuyerOrderSkuCategory</class>
+        <class>com.servicelive.domain.so.BuyerOrderSku</class>
+        <class>com.servicelive.domain.so.BuyerOrderSkuAttribute</class>
+        <class>com.servicelive.domain.so.BuyerOrderSkuTask</class>
+        <class>com.servicelive.domain.so.BuyerOrderMarketAdjustment</class>
+        <class>com.servicelive.domain.so.BuyerOrderRetailPrice</class>
+        <class>com.servicelive.domain.so.BuyerOrderTemplateRecord</class>
+        <class>com.servicelive.domain.so.BuyerOrderSpecialtyAddOn</class>
+        <class>com.servicelive.domain.so.BuyerSkuAddon</class>
+        <class>com.servicelive.domain.lookup.LookupServiceType</class>
+        <class>com.servicelive.domain.lookup.LookupSkills</class>
+        <class>com.servicelive.domain.lookup.LookupZipMarketPair</class>
+        <class>com.servicelive.domain.autoclose.AutoCloseRuleProviderAssoc</class>
+        <class>com.servicelive.domain.autoclose.AutoCloseRuleFirmAssoc</class>
+        <class>com.servicelive.domain.autoclose.AutoCloseRuleCriteria</class>
+        <class>com.servicelive.domain.autoclose.SoAutoCloseAction</class>
+        <class>com.servicelive.domain.autoclose.SoAutoCloseRuleStatus</class>
+        <class>com.servicelive.domain.provider.ServiceProvider</class>
+		<class>com.servicelive.domain.provider.ProviderFirm</class>
+		<class>com.servicelive.domain.common.Contact</class>
+		<class>com.servicelive.domain.common.Location</class>
+		<class>com.servicelive.domain.lookup.LookupWfStates</class>
+		<class>com.servicelive.domain.lookup.LookupStates</class>
+		<class>com.servicelive.domain.lookup.LookupLocationTypes</class>
+	</persistence-unit>
+</persistence>

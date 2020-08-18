@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="OrderFulfillment.Remote" parallel="tests" thread-count="7">
+    <test name="MiscTest" >
+        <groups><run><include name="unit" /></run>
+        </groups>
+        <classes>
+            <class name="com.servicelive.orderfulfillment.remote.test.MiscTests">
+                <methods>
+                    <include name="testReceipt"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>
+

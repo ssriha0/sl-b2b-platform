@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:include schemaLocation="../common.xsd" />
+	<!-- Root element -->
+	<xs:element name="response">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="results" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+  <xs:element name="getProviderCalendarEventListResponse" />
+
+  <xs:complexType name="providerCalendarEventList">
+    <xs:sequence>
+      <xs:element name="providerCalendarEventDetails" type="providerCalendarEventDetails" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="providerCalendarEventDetails">
+    <xs:sequence>
+      <xs:element name="personId" type="xs:int" minOccurs="0"/>
+      <xs:element name="type" type="xs:string" minOccurs="0"/>
+      <xs:element name="source" type="xs:string" minOccurs="0"/>
+      <xs:element name="eventId" type="xs:string" minOccurs="0"/>
+      <xs:element name="eventName" type="xs:string" minOccurs="0"/>
+      <xs:element name="status" type="xs:string" minOccurs="0"/>
+      <xs:element name="startDate" type="xs:string" minOccurs="0"/>
+      <xs:element name="endDate" type="xs:string" minOccurs="0"/>
+      <xs:element name="startTime" type="xs:string" minOccurs="0"/>
+      <xs:element name="endTime" type="xs:string" minOccurs="0"/>
+      <xs:element name="memberFirstName" type="xs:string" minOccurs="0"/>
+      <xs:element name="memberLastName" type="xs:string" minOccurs="0"/>
+      <xs:element name="memberCity" type="xs:string" minOccurs="0"/>
+      <xs:element name="memberState" type="xs:string" minOccurs="0"/>
+      <xs:element name="memberZip" type="xs:string" minOccurs="0"/>
+      <xs:element name="createdDate" type="xs:string" minOccurs="0"/>
+      <xs:element name="modifiedDate" type="xs:string" minOccurs="0"/>
+      <xs:element name="modifiedBy" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
+

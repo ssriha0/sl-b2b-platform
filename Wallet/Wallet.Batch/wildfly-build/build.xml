@@ -1,0 +1,10 @@
+<project name="Wallet.Batch" default="war-junit" basedir="..">
+
+	<property name="sl-common.war-include-my-jar" value="true" />
+	
+    <import file="../../../SLCommonBuild/ant/wildfly-sl-common/sl-common.xml"/>
+	
+	<target name="package" depends="war-junit"/>
+	
+</project>
+

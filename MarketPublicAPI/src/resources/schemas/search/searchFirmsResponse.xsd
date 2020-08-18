@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified">
+	<xs:include schemaLocation="../common.xsd" />
+	<xs:include schemaLocation="searchCommon.xsd"/>
+	<xs:element name="searchFirmsResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="results"/>
+				<xs:element name="firms" type="firms" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="firms">
+	<xs:sequence>
+		<xs:element name="firm" type="firm" maxOccurs="unbounded" minOccurs="0"/>
+	</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="firm">
+	<xs:sequence>
+		<xs:element name="firmId" type="xs:integer"/>
+		<xs:element name="firmName" type="xs:string" minOccurs="0"/>
+		<xs:element name="firmRating" type="xs:string" minOccurs="0"/>
+		<xs:element name="serviceOfferingsList" type="serviceOfferingsList" minOccurs="0"/>
+	</xs:sequence>
+	</xs:complexType>	
+	
+	<xs:complexType name="serviceOfferingsList">
+		<xs:sequence>
+			<xs:element name="serviceOffering" type="serviceOffering" maxOccurs="unbounded" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="serviceOffering">
+		<xs:sequence>
+			<xs:element name="sku" type="xs:string" minOccurs="0"/>
+			<xs:element name="priceList" type="priceListType" minOccurs="0"/>
+			<xs:element name="availableTimeSlotsList" type="availableTimeSlotsList" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="availableTimeSlotsList">
+		<xs:sequence>
+			<xs:element name="availableTimeSlot" type="availableTimeSlot" maxOccurs="unbounded" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="priceListType">
+		<xs:sequence>
+			<xs:element name="priceDetails" type="priceDetailsType" maxOccurs="unbounded" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="priceDetailsType">
+		<xs:sequence>
+			<xs:element name="zip" type="xs:string" minOccurs="0"/>
+			<xs:element name="price" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="availableTimeSlot">
+		<xs:sequence>
+			<xs:element name="day" type="xs:string" minOccurs="0"/>
+			<xs:element name="timeWindow" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+</xs:schema>

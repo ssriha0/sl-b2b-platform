@@ -1,0 +1,449 @@
+@import "bootstrap/bootstrap.less";
+
+// Global
+// ====================================================================== 
+body {
+	@media only screen and (min-width : 768px) {
+		background: @bg-gray;
+	}
+	color: #444;
+}
+
+label { 
+	display: block;
+	@media only screen and (min-width : @screen-sm) {
+		margin: 0;
+	} 
+}
+
+select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"] { 
+	.form-control;
+	font-size: 16px;
+	@media only screen and (min-width : @screen-sm) {
+		//width: 58.3333%;
+		resize: none;
+	}
+}
+
+textarea {
+	height: 8em;
+	-webkit-overflow-scrolling: touch;
+}
+
+table {
+	.table;
+}
+
+.container {
+	position: relative;
+	background: #fff;
+// TEMPORARY!
+	max-width: 1005px;
+// TEMPORARY!
+}
+
+.full { 
+	width: 100%; 
+	@media only screen and (min-width : @screen-sm) {
+		width: auto;
+	}
+}
+
+.btn {
+	padding: 12px;
+	@media only screen and (min-width : 768px) {
+		padding: 6px 12px; 
+	}
+}
+
+.btn-default {
+	color: @servicelive-blue;
+	border-color: @servicelive-blue;
+}
+
+.btn-default:hover,
+.btn-default:focus {
+	color: #fff;
+	background: @servicelive-blue;
+	border-color: @link-hover; 
+}
+
+.btn-main {
+	background: #f1b849;
+	background: -moz-linear-gradient(top,  #f3e468 0%, #f1b849 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f3e468), color-stop(100%,#f1b849));
+	background: -webkit-linear-gradient(top,  #f3e468 0%,#f1b849 100%);
+	background: -ms-linear-gradient(top,  #f3e468 0%,#f1b849 100%);
+	background: linear-gradient(to bottom,  #f3e468 0%,#f1b849 100%);
+	border:1px solid #B1770B;
+	cursor: pointer;
+	text-align: center;
+	text-decoration: none;
+	color: #333 !important;
+}
+
+.btn-main:hover,
+.btn-main:focus,
+.btn-main:active {
+	background: #f2ce59;
+	background: -moz-linear-gradient(top,  #f1b849 0%, #f3e468 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f1b849), color-stop(100%,#f3e468));
+	background: -webkit-linear-gradient(top,  #f1b849 0%,#f3e468 100%);
+	background: -ms-linear-gradient(top,  #f1b849 0%,#f3e468 100%);
+	background: linear-gradient(to bottom,  #f1b849 0%,#f3e468 100%);
+	color: #000;
+}
+
+// Font Sizes in ems (relative to 14px)
+// ======================================================================
+@SLfontstack: Verdana, "Helvetica Neue",Helvetica,Arial,sans-serif;
+@basefont: 14; // in pixels
+@baseline: 20; // in pixels
+
+// Font size converter namespace
+// Ex: #pxtoem > .font-size( 12, 14 ); // 12px font with 14px basefont size
+#pxtoem {
+    .font-size( @target: @basefont, @context: @basefont ) {
+        font-size: (@target / @context) + 0em;
+    }
+}
+
+// Colors
+// ======================================================================
+@servicelive-blue: #00A0D2;
+@link-hover: #2A6496;
+@bg-gray: #58585A;
+@light-gray: #DDDDDD;
+
+@leadStatus-1: #2AA754; // new
+@leadStatus-2: #FF8300; // working
+@leadStatus-3: #293EA3; // scheduled
+@leadStatus-4: #2AA754; // completed
+@leadStatus-5: #FF8300; // cancelled
+@leadStatus-6: #293EA3; // stale
+
+
+@urgent: #9B2F1B; // 'Urgent' flag
+
+// Icons
+// ======================================================================
+.icon-all {
+	.glyphicon;
+	.glyphicon-list;
+}
+.icon-leadStatus-1 {	// new
+	.glyphicon;
+	.glyphicon-earphone;
+}
+.icon-leadStatus-2 {	// working
+	.glyphicon;
+	.glyphicon-flag;
+}
+.icon-leadStatus-3 {	// scheduled
+	.glyphicon;
+	.glyphicon-calendar;
+}
+.icon-leadStatus-4 {	// completed
+	.glyphicon;
+	.glyphicon-ok;
+}
+.icon-leadStatus-5 {	// cancelled
+	.glyphicon;
+	.glyphicon-remove;
+}
+.icon-leadStatus-6 {	// stale
+	.glyphicon;
+	.glyphicon-trash;
+}
+
+// Labels
+// ======================================================================
+.label.leadStatus-1 { background-color: @leadStatus-1; }
+.label.leadStatus-2 { background-color: @leadStatus-2; }
+.label.leadStatus-3 { background-color: @leadStatus-3; }
+.label.leadStatus-4 { background-color: @leadStatus-4; }
+.label.leadStatus-5 { background-color: @leadStatus-5; }
+.label.leadStatus-6 { background-color: @leadStatus-6; }
+
+// Navigation
+// ======================================================================
+@grid-float-breakpoint: 56em; // navigation collapses on screens below this width
+@navbar-height :0px;
+@navbar-margin-bottom: 0px;
+
+// Media queries breakpoints
+// ======================================================================
+// Extra small screen / phone
+@screen-xs:                  36em;
+//@screen-xs:                  480px;
+
+// Small screen / tablet
+@screen-sm:                  768px;
+//@screen-sm:                  768px;
+
+// Medium screen / desktop
+@screen-md:                  56em;
+//@screen-md:                  900px;
+
+// Large screen / wide desktop
+@screen-lg:                  1200px;
+
+// Helpful Classes
+// ======================================================================
+
+@margin-amt: 15px;
+@padding-amt: 15px;
+
+.margin-top 	{ margin-top: 	  @margin-amt !important; }
+.margin-right 	{ margin-right:   @margin-amt !important; }
+.margin-bottom 	{ margin-bottom:  @margin-amt !important; }
+.margin-left 	{ margin-left: 	  @margin-amt !important; }
+
+.padding-top 	{ padding-top: 	  @padding-amt !important; }
+.padding-right  { padding-right:  @padding-amt !important; }
+.padding-bottom { padding-bottom: @padding-amt !important; }
+.padding-left 	{ padding-left:   @padding-amt !important; }
+
+.block 			{ display: block !important; }
+.inline-block	{ display: inline-block !important; }
+.half			{ width: 48% !important; .box-sizing(border-box);}
+
+.no-bullets 	{ list-style-type: none; padding: 0; }
+
+.dotted 		{ border-style: dotted; border-width: 1px; }
+
+.lg 			{ color: @light-gray; }
+.lg-border 		{ border-color: @light-gray; }
+
+.center-text 	{ text-align: center; }
+.center 		{ margin-left: auto; margin-right: auto; }
+
+.align-right 	{ text-align: right; }
+.align-left 	{ text-align: left; }
+
+// Header
+// ======================================================================
+.header {
+	border-bottom: 10px solid @servicelive-blue;
+	//overflow: auto;
+	margin: 0 -15px;
+}
+
+.header img {
+	padding:10px 30px 15px;
+
+	@media only screen and (min-width : @screen-md) {
+		padding-top:15px;
+		//width: 
+	}
+}
+
+// Header Secondary Nav
+.header .secondary-nav {
+	float: right;
+	padding: 10px 15px
+}
+
+.header .secondary-nav h6 {
+	margin-bottom: 5px;
+}
+
+.secondary-nav ul {
+	list-style-type: none;
+	padding: 0;
+}
+
+.secondary-nav li {
+	font-size: 10px;
+	@media only screen and (min-width : @screen-xs) {
+		display: inline-block;
+		float: left;
+	}
+}
+
+.secondary-nav li a {
+	padding: 5px 0;
+	display: block;
+	@media only screen and (min-width : @screen-xs) {
+		padding: 0 5px;
+		border-left: 1px solid;
+	}
+}
+
+.secondary-nav li:first-child a {
+	border-left: none;
+	padding-left: 0;
+}
+
+// Main Nav
+
+.navbar-header {
+    position: absolute;
+    right: 0;
+    top: 10px;
+}
+
+.navbar-toggle {
+	margin-top: 0;
+}
+
+.navbar {
+	background: #ffffff; /* Old browsers */
+	border: none;
+	border-radius: 0;
+	margin-bottom: none;
+	position: inherit;
+
+	@media only screen and (min-width : @screen-md) {
+		background: -moz-linear-gradient(top, #ffffff 50%, #EDEDED 50%); /* FF3.6+ */
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(50%,#ffffff), color-stop(50%,#EDEDED)); /* Chrome,Safari4+ */
+		background: -webkit-linear-gradient(top, #ffffff 50%,#EDEDED 50%); /* Chrome10+,Safari5.1+ */
+		background: -o-linear-gradient(top, #ffffff 50%,#EDEDED 50%); /* Opera 11.10+ */
+		background: -ms-linear-gradient(top, #ffffff 50%,#EDEDED 50%); /* IE10+ */
+		background: linear-gradient(to bottom, #ffffff 50%,#EDEDED 50%); /* W3C */
+		border-top: 1px solid #C0C0C0;
+		padding-top: 4px;
+		padding-left: 15px;
+	}
+}
+
+.navbar-nav {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+.navbar-collapse {
+	max-height: none;
+}
+
+.navbar-default .navbar-nav > li > a {
+	padding: 10px;
+	background: #dadada;
+	color: @bg-gray;
+	text-shadow: 0 1px #fff;
+	font-family: "HelveticaNeueBoldCondensed", "HelveticaNeue-Bold-Condensed", "Helvetica Neue Bold Condensed", "Arial Narrow", "HelveticaNeueBold", "HelveticaNeue-Bold", "Helvetica Neue Bold", "Helvetica Neue", Helvetica, Arial, sans-serif; 
+	font-weight:600; font-stretch:condensed;
+	letter-spacing: 0.02em;
+
+
+	@media only screen and (min-width : @screen-md) {
+		padding: 5px 10px;
+		margin-right: 4px;
+		border-radius: 5px 5px 0 0;
+	}
+
+}
+
+.navbar-default .navbar-nav > li > a:hover, 
+.navbar-default .navbar-nav > li > a:focus {
+	background: #ccc;
+	color: #000;
+	text-shadow: none;
+}
+
+nav .nav > li > a.active, 
+nav .nav > li > a.active:hover {
+	background: @servicelive-blue;
+	color:#fff;
+	text-shadow: none;
+}
+
+// Right Dropdown Menu
+.navbar-right .dropdown-menu {
+	border-top: none;
+	border-radius: 0px;
+
+	@media only screen and (min-width : @screen-md) {
+		right: 4px;
+		border-radius: 0 0 4px 4px;
+	}
+
+}
+
+.navbar-default .navbar-right > li > a,
+.navbar-default .navbar-right > .open > a, 
+.navbar-default .navbar-right > .open > a:hover, 
+.navbar-default .navbar-right > .open > a:focus,
+.navbar-default .navbar-right .dropdown-menu,
+.navbar-default .navbar-right .dropdown-menu > li > a,
+.navbar-default .navbar-right .open .dropdown-menu > li > a {
+	background: @bg-gray;
+	color: #fff;
+	text-shadow: 0 1px #222;
+	border-color: @bg-gray;
+}
+
+.navbar-default .navbar-right > li > a:hover, 
+.navbar-default .navbar-right > li > a:focus,
+.navbar-default .navbar-right .dropdown-menu > li > a:hover,
+.navbar-default .navbar-right .dropdown-menu > li > a:focus,
+.navbar-default .navbar-right .open .dropdown-menu > li > a:hover,
+.navbar-default .navbar-right .open .dropdown-menu > li > a:focus {
+	background-color: #222;
+	color:#fff;
+}
+
+.navbar-default .navbar-right > .dropdown > a .caret,
+.navbar-default .navbar-right > .dropdown > a:hover .caret,
+.navbar-default .navbar-right > .dropdown > a:focus .caret {
+	border-bottom-color: #fff;
+	border-top-color: #fff;
+}
+
+// Footer
+// ======================================================================
+
+.footer {
+	margin-top: 30px;
+	border-top: 1px solid #ccc;
+	padding-top: 5px;
+	font-size: 10px;
+	position: relative;
+}
+
+@media only screen and (min-width : @screen-md) {
+	.footericons {
+		position: absolute;
+		top: 5px;
+		right: 0;
+	}
+}
+
+.footer .secondary-nav {
+	margin-bottom: 10px;
+}
+
+.footer .secondary-nav li a {
+	color: #666;
+}
+
+// Login Page
+// ====================================================================== 
+.login-content {
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  .login-content h3 {
+    font-size: 1em;
+    line-height: 300%;
+    text-align: center;
+  }
+  .login-content .glyphicon {
+  	color: @servicelive-blue;
+  }
+
+// Date Picker
+// ====================================================================== 
+@import 'picker/_variables.less';
+@import 'picker/base.less';
+@import 'picker/base.date.less';
+@import 'picker/base.time.less';
+@import 'picker/classic.less';
+@import 'picker/classic.date.less';
+@import 'picker/classic.time.less';
+
+// Custom LESS
+// ====================================================================== 
+@import 'leads-dashboard.less';
+@import 'lead-details.less';
+@import 'overrides.less';

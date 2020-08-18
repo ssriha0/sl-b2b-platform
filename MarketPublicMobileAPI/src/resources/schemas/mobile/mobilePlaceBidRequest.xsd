@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+<xs:include schemaLocation="../common.xsd"/>
+	<!-- Root element -->
+	<xs:element name="soPlaceBidRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="bidResourceId" type="xs:int" minOccurs="1" />
+				<xs:element name="priceType" type="priceTypeValues" minOccurs="1" />
+				<xs:element name="laborPrice" type="moneyCounterOffer" minOccurs="0" />
+				<xs:element name="laborHourlyRate" type="moneyCounterOffer" minOccurs="0" />
+				<xs:element name="laborHours" type="integerNoType" minOccurs="0" />
+				<xs:element name="partsPrice" type="moneyCounterOffer" minOccurs="1" />
+				<xs:element name="bidExpirationDate" type="xs:date" minOccurs="0" />
+				<xs:element name="bidExpirationTime" type="timeTypeValues" minOccurs="0" />
+				<xs:element name="newServiceDateType" type="dateTypeValues" minOccurs="0" />
+				<xs:element name="newServiceStartDate" type="xs:date" minOccurs="0" />
+				<xs:element name="newServiceEndDate" type="xs:date" minOccurs="0" />
+				<xs:element name="newServiceStartTime" type="timeTypeValues" minOccurs="0" />
+				<xs:element name="newServiceEndTime" type="timeTypeValues" minOccurs="0" />
+				<xs:element name="bidComments" type="stringThousandType" minOccurs="1" />					
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:simpleType name="dateTypeValues">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Specific" />
+			<xs:enumeration value="Range" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="priceTypeValues">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Fixed" />
+			<xs:enumeration value="HourlyRate" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="integerNoType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="10"/>
+			<xs:pattern value="[0-9]+"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stringThousandType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="1000"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="timeTypeValues">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="12:00 am" />
+			<xs:enumeration value="1:00 am" />
+			<xs:enumeration value="2:00 am" />
+			<xs:enumeration value="3:00 am" />
+			<xs:enumeration value="4:00 am" />
+			<xs:enumeration value="5:00 am" />
+			<xs:enumeration value="6:00 am" />
+			<xs:enumeration value="7:00 am" />
+			<xs:enumeration value="8:00 am" />
+			<xs:enumeration value="9:00 am" />
+			<xs:enumeration value="10:00 am" />
+			<xs:enumeration value="11:00 am" />
+			<xs:enumeration value="12:00 pm" />
+			<xs:enumeration value="1:00 pm" />
+			<xs:enumeration value="2:00 pm" />
+			<xs:enumeration value="3:00 pm" />
+			<xs:enumeration value="4:00 pm" />
+			<xs:enumeration value="5:00 pm" />
+			<xs:enumeration value="6:00 pm" />
+			<xs:enumeration value="7:00 pm" />
+			<xs:enumeration value="8:00 pm" />
+			<xs:enumeration value="9:00 pm" />
+			<xs:enumeration value="10:00 pm" />
+			<xs:enumeration value="11:00 pm" />
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>
+
+

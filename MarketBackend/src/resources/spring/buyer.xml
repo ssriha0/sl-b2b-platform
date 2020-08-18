@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+
+    <bean id="buyerDao" class="com.newco.marketplace.persistence.daoImpl.so.buyer.BuyerDaoImpl"
+    	lazy-init="true">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	 
+    </bean>
+
+    <bean id="buyerSOCountsDAO" class="com.newco.marketplace.persistence.daoImpl.buyer.BuyerSOCountsDAOImpl"
+    	lazy-init="true">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	 
+    </bean>    
+    
+    <bean id="buyerBo" class="com.newco.marketplace.business.businessImpl.buyer.BuyerBOImpl">
+	    <property name="buyerDao">
+	    	<ref bean="buyerDao"/>
+	    </property>
+	    <property name="contactDao">
+	    	<ref bean="contactDao"/>
+	    </property>
+	    <property name="cryptography">
+	    	<ref bean="cryptography"/>
+	    </property>
+	    <property name="buyerHoldTimeDao">
+	    	<ref bean="buyerHoldTimeDao"/>
+	    </property>
+	    <property name="buyerSOCountsDAO">
+	    	<ref bean="buyerSOCountsDAO"/>
+	    </property>	
+	    <property name="buyerCallbackEventsCache">
+	    	<ref bean="buyerCallbackEventsCache"/>
+	    </property>	    
+    </bean>
+    
+    <bean id="buyerMarketAdjDao" class="com.newco.marketplace.persistence.daoImpl.buyer.BuyerMarketAdjDAOImpl"
+    lazy-init="true">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	 
+    </bean>
+    
+    <bean id="buyerMarketAdjBO" class="com.newco.marketplace.business.businessImpl.buyer.BuyerMarketAdjBOImpl">
+    <property name="buyerMarketAdjDao">
+    	<ref bean="buyerMarketAdjDao"/>
+    </property>
+    </bean>
+    
+    <bean id="buyerFileUploadBOImpl"
+		class="com.newco.marketplace.business.businessImpl.BuyerFileUpload.BuyerFileUploadBOImpl" >
+		<property name="buyerFileUploadDao">
+			<ref bean="buyerFileUploadDaoImpl" />
+		</property>
+		<property name="transactionManager">
+			<ref bean="dsTransactionManagerMain" />
+		</property>
+	</bean>
+	
+	<bean id="buyerFileUploadDaoImpl" class="com.newco.marketplace.persistence.daoImpl.buyerFileUpload.BuyerFileUploadDaoImpl" autowire="byName">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+		<!-- AUTOWIRED documentService
+		<property name="documentService">
+			<ref bean="documentService" />
+		</property>
+		-->
+	</bean>
+	
+	<bean id="buyerHoldTimeDao" class="com.newco.marketplace.persistence.daoImpl.buyer.BuyerHoldTimeDaoImpl"
+   	 lazy-init="true">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	 
+    </bean>
+    
+    <bean id="buyerFeatureSetDAO" class="com.newco.marketplace.persistence.daoImpl.buyer.BuyerFeatureSetDAOImpl"
+    	lazy-init="true">
+    	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>
+    </bean>
+    
+    <bean id="buyerFeatureSetBO" class="com.newco.marketplace.business.businessImpl.buyer.BuyerFeatureSetBOImpl">
+    	<property name="buyerFeatureSetDAO">
+    		<ref bean="buyerFeatureSetDAO"/>
+  		</property>
+    </bean>
+    
+     <bean id="buyerSubstatusAssocDAO" class="com.newco.marketplace.persistence.daoImpl.buyer.BuyerSubstatusAssocDAOImpl"
+    	lazy-init="true">
+    	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>
+    </bean>
+    
+    <bean id="buyerSubstatusAssocBO" class="com.newco.marketplace.business.businessImpl.buyer.BuyerSubstatusAssocBO"
+    	lazy-init="true">
+    	<property name="buyerSubstatusDAO">
+    		<ref bean="buyerSubstatusAssocDAO"/>
+  		</property>
+		<property name="incidentBO">
+			<ref bean="incidentBO" />
+		</property>  		
+  		<property name="serviceOrderBO">
+    		<ref bean="serviceOrderBOTarget"/>
+  		</property>
+  		<property name="buyerBO">
+    		<ref bean="buyerBo"/>
+  		</property>
+    </bean>
+	<bean id="buyerSkuBO"  class="com.newco.marketplace.business.businessImpl.so.order.BuyerSkuBOImpl">
+	     <property name="buyerSkuDao">
+			<ref bean="buyerSKUDao" />
+		</property>
+	</bean>
+	
+	 <bean id="buyerSKUDao" class="com.newco.marketplace.persistence.daoImpl.buyersku.BuyerSkuDaoImpl">
+    	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>
+    </bean>
+</beans>

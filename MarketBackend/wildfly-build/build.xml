@@ -1,0 +1,660 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project basedir="../" default="distribute" name="MarketBackend">
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties" />
+
+	<property name="dir.service.live.web.util.base" value="../ServiceLiveWebUtil" />
+	<property name="dir.base" value="${basedir}" />
+	<property name="dir.app" value="${dir.base}/web" />
+	<property name="deployables.lib" value="${dir.service.live.web.util.base}/lib/deployables" />
+	<property name="nondeployables.lib" value="${dir.service.live.web.util.base}/lib/nondeployables" />
+	<property name="struts2InitialDeployables.lib" value="${dir.service.live.web.util.base}/lib/Struts2InitialDeployables" />
+	<property name="dir.slCommonBuild.generated" value="../SLCommonBuild/lib/generated" />
+	<property name="dir.slCommonBuild.nondeployables" value="../SLCommonBuild/lib/nondeployables" />
+	<property name="dir.slCommonBuild.deployables" value="../SLCommonBuild/lib/deployables" />
+	<property name="endorsed.lib" value="${dir.service.live.web.util.base}/lib/deployables" />
+
+	<path id="cobertura.instrument.classpath">
+		<fileset dir="${nondeployables.lib}">
+			<include name="junit*.jar" />
+			<include name="jmock-2.4.0.jar" />
+			<include name="cobertura.jar" />
+			<include name="asm-tree-2.2.1.jar" />
+		</fileset>
+		<fileset dir="${deployables.lib}">
+			<include name="jakarta-oro-2.0.8.jar" />
+			<include name="log4j-1.2.14.jar" />
+		</fileset>
+		<fileset dir="${struts2InitialDeployables.lib}">
+			<include name="asm-2.2.3.jar" />
+		</fileset>
+	</path>
+
+	<target name="package" depends="distribute" />
+
+	<target name="compile-dependencies">
+		<!-- Why are we just building this because MarketBackend is actually dependent on many projects?
+		<ant antfile="../OMSStaging/build/build.xml"   dir="../OMSStaging" inheritAll="false" /> -->
+		<ant antfile="../OrderFulfillment.Domain/wildfly-build/build.xml" dir="../OrderFulfillment/OrderFulfillment.Domain" inheritAll="false" />
+
+	</target>
+
+
+	<target name="init" depends="compile-dependencies">
+		<echo level="info">
+	===============================================================================
+	                                ${ant.project.name} 
+	===============================================================================</echo>
+		<!-- Create the time stamp -->
+		<tstamp />
+		<!-- Create build number file -->
+		<buildnumber />
+		<property name="dir.base" value="${basedir}" />
+		<property name="dir.overall.base" value="${dir.base}/overall/base" />
+		<property file="${dir.overall.base}/build.properties" />
+		<property name="dir.product.bin" value="${dir.base}/overall/product/bin" />
+		<!-- <property name="dir.app" value="${dir.base}/web" /> -->
+		<property name="dir.instrumented.classes" value="${dir.base}/instrumented" />
+		<property name="dir.reports" value="${dir.base}/reports" />
+		<property name="dir.reports.xml" value="${dir.reports}/junit-xml" />
+		<property name="dir.reports.html" value="${dir.reports}/junit-html" />
+		<property name="dir.coverage.xml" value="${dir.reports}/cobertura-xml" />
+		<property name="dir.coverage.html" value="${dir.reports}/cobertura-html" />
+		<property name="dir.source" value="${dir.base}/src" />
+		<property name="dir.dest" value="${dir.base}/bin" />
+		<property name="dir.work" value="${dir.base}/work" />
+		<property name="dir.build" value="${dir.base}/wildfly-build" />
+		<property name="dir.test" value="${dir.base}/test" />
+		<property name="dir.test.dest" value="${dir.dest}/test" />
+		<property name="dir.manifest" value="${dir.base}/META-INF" />
+		<property name="dir.moving-parts" value="${dir.base}/overall/product/moving-parts" />
+		<property name="dir.archive" value="${dir.base}/archive" />
+		<property name="dir.market.frontend.base" value="../MarketFrontend" />
+		<property name="dir.market.webservices.base" value="../MarketWebServices" />
+		<property name="dir.resources.ejb" value="${dir.source}/resources/ejb" />
+		<property name="dir.wallet.ServiceLive.Common.dist" value="../Wallet/ServiceLive.Common/target/dist" />
+		<property name="dir.wallet.ServiceLive.Lookup.dist" value="../Wallet/ServiceLive.Lookup/target/dist" />
+		<property name="dir.wallet.Wallet.ServiceInterface.dist" value="../Wallet/Wallet.ServiceInterface/target/dist" />
+		<property name="dir.orderfulfillment.Domain.base" value="../OrderFulfillment/OrderFulfillment.Domain" />
+		<property name="env" value="dev" />
+		<property name="app.lastbuild.tag.auto" value="release_1_${build.number}_${env}_${DSTAMP}${TSTAMP}" />
+
+		<!-- Folder under which all the libraries are kept -->
+		<!--property name="dir.service.live.web.util.base" value="../ServiceLiveWebUtil" />
+		<property name="deployables.lib" value="${dir.service.live.web.util.base}/lib/deployables" />
+		<property name="nondeployables.lib" value="${dir.service.live.web.util.base}/lib/nondeployables" /-->
+
+		<property name="dir.market.bi.dist" value="../MarketBusinessInterface/target/dist" />
+		<property name="dir.market.common.dist" value="../MarketCommon/dist" />
+		<property name="dir.market.document.dist" value="../MarketDocument/dist" />
+		<property name="dir.common.domain.dist" value="../ServiceLiveCommonDomain/target/dist" />
+		<property name="dir.routingrules.engine.dist" value="../RoutingRulesEngine/target/dist" />
+		<property name="dir.omsstaging.dist" value="../OMSStaging/dist" />
+
+		<property name="junit-report.dir" value="${dir.base}/${ant.project.name}Reports" />
+
+		<!-- Folder containing uncompressed final release software-->
+		<property name="dir.dist" value="${dir.base}/dist" />
+
+		<path id="build.class.path">
+			<fileset dir="${dir.market.bi.dist}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.market.common.dist}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${deployables.lib}">
+				<exclude name="bcprov-jdk15-144.jar" />
+				<exclude name="bcprov-jdk15-133.jar" />
+				<exclude name="bcpg-jdk15-144.jar" />
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${struts2InitialDeployables.lib}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${nondeployables.lib}">
+				<include name="*.jar" />
+			</fileset>
+			<!-- Cronofy dependencies for external calendar sync
+			<fileset dir="${dir.slCommonBuild.deployables}">
+				<include name="aopalliance-repackaged-2.5.0-b05.jar" />
+				<include name="commons-lang3-3.1.jar" />
+				<include name="cronofy-0.1.0.jar" />
+				<include name="easymock-3.4.jar" />
+				<include name="hamcrest-core-1.3.jar" />
+				<include name="hk2-api-2.5.0-b05.jar" />
+				<include name="hk2-locator-2.5.0-b05.jar" />
+				<include name="hk2-utils-2.5.0-b05.jar" />
+				<include name="jackson-annotations-2.0.1.jar" />
+				<include name="jackson-core-2.0.1.jar" />
+				<include name="jackson-databind-2.0.1.jar" />
+				
+				<include name="jackson-jaxrs-json-provider-2.0.1.jar" />
+				<include name="jackson-module-jaxb-annotations-2.0.1.jar" />
+				<include name="javassist-3.20.0-GA.jar" />
+				<include name="javax.annotation-api-1.2.jar" />
+				<include name="javax.inject-2.5.0-b05.jar" />
+				<include name="javax.ws.rs-api-2.0.1.jar" />
+				<include name="jersey-client-2.23.2.jar" />
+				<include name="jersey-common-2.23.2.jar" />
+				<include name="jersey-guava-2.23.2.jar" />
+				<include name="joda-time-2.9.4.jar" />
+				<include name="junit-4.12.jar" />
+				<include name="objenesis-2.2.jar" />
+				<include name="osgi-resource-locator-1.0.1.jar" />
+				<include name="slf4j-api-1.7.21.jar" />
+				<include name="sonar-jacoco-listeners-3.2.jar" />
+			</fileset>-->
+			<!--<include name="jackson-jaxrs-base-2.0.1.jar" />-->
+			<fileset dir="${dir.market.document.dist}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.common.domain.dist}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.orderfulfillment.Domain.base}/target/dist">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.routingrules.engine.dist}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.omsstaging.dist}">
+				<include name="OMSStaging.jar" />
+			</fileset>
+			<fileset dir="${dir.slCommonBuild.generated}">
+				<include name="EventNotificationMDB.jar" />
+			</fileset>
+			<fileset dir="${dir.wallet.ServiceLive.Common.dist}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.wallet.ServiceLive.Lookup.dist}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.wallet.Wallet.ServiceInterface.dist}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.slCommonBuild.nondeployables}">
+				<include name="*.jar" />
+			</fileset>
+		</path>
+
+		<path id="classpath.junit">
+			<pathelement location="${dir.dest}" />
+			<pathelement location="${dir.test.dest}" />
+			<fileset dir="${nondeployables.lib}">
+				<include name="spring-test.jar" />
+				<include name="MQ.jar" />
+				<include name="junit-addons-1.4.jar" />
+				<include name="junit-4.3.1.jar" />
+				<include name="concurrent.jar" />
+				<include name="jnpserver.jar" />
+			</fileset>
+			<fileset dir="${deployables.lib}">
+				<include name="spring*.jar" />
+				<include name="xer*.jar" />
+				<include name="log*.jar" />
+				<include name="ibat*.jar" />
+				<include name="imap*.jar" />
+				<include name="mail*.jar" />
+				<include name="velocity*.jar" />
+				<include name="itext*.jar" />
+				<include name="quar*.jar" />
+				<include name="commons-*.jar" />
+				<include name="mysql*.jar" />
+				<include name="OFAC*.jar" />
+				<include name="struts*.jar" />
+				<include name="activation*.jar" />
+				<include name="jxl*.jar" />
+				<include name="pojo*.jar" />
+				<include name="oro*.jar" />
+				<include name="velocity-1.5.jar" />
+				<include name="spring.jar" />
+				<include name="log4j-1.2.14.jar" />
+				<include name="jbosscache.jar" />
+				<include name="pojocache.jar" />
+				<include name="xfire-jsr181-api-1.0-M1.jar" />
+				<include name="jaxws-api-2.0.jar" />
+				<include name="xfire-jaxws-1.2.6.jar" />
+				<include name="commons-logging-1.1.jar" />
+				<include name="servlet-api.jar" />
+				<include name="struts-extras-1.3.8.jar" />
+				<include name="mailapi.jar" />
+				<include name="commons-lang-2.3.jar" />
+				<include name="commons-collections-3.1.jar" />
+				<include name="rtcawebservice.jar" />
+				<include name="xstream-1.3.jar" />
+				<include name="axis.jar" />
+				<include name="jaxrpc.jar" />
+				<include name="quartz-1.6.0.jar" />
+				<include name="giswebserviceclient.jar" />
+				<include name="jaxb-api-2.0.jar" />
+				<include name="struts-core-1.3.8.jar" />
+				<include name="ibatis-common-2.jar" />
+				<include name="ibatis-sqlmap-2.jar" />
+				<include name="commons-codec-1.3.jar" />
+				<include name="commons-httpclient-3.0.jar" />
+				<include name="wsdl4j-1.6.1.jar" />
+				<include name="stax-api-1.0.1.jar" />
+				<include name="jdom-1.0.jar" />
+				<include name="wstx-asl-3.2.0.jar" />
+				<include name="jaxb-impl-2.0.1.jar" />
+				<include name="jaxb-xjc-2.0.1.jar" />
+				<include name="mail-1.4.jar" />
+				<include name="jboss-aop-jdk50.jar" />
+				<include name="jbosscache-cacheloader-migration.jar" />
+				<include name="jboss-common-core.jar" />
+				<include name="jboss-j2ee.jar" />
+				<include name="jta.jar" />
+				<include name="xfire-core-1.2.6.jar" />
+				<include name="wsclient.jar" />
+				<include name="jboss-jmx.jar" />
+				<include name="activation-1.1.jar" />
+				<include name="commons-dbcp.jar" />
+				<include name="commons-pool-20070604.jar" />
+				<include name="commons-io-1.4.jar" />
+				<include name="jxl.jar" />
+				<include name="SSTOrderServiceClient.jar" />
+				<include name="commons-beanutils-1.7.0.jar" />
+				<include name="xpp3_min-1.1.3.4.O.jar" />
+				<include name="simpleftp.jar" />
+				<include name="jsch-0.1.39.jar" />
+				<include name="poi-2.5.1.jar" />
+				<include name="bcprov-jdk15on-157.jar" />
+				<!--	<include name="omsstagingclient.jar" /> -->
+
+				<include name="commons-discovery-0.2.jar" />
+				<include name="saaj-api-1.3.jar" />
+				<include name="saaj-impl-1.3.jar" />
+				<include name="itext-2.0.5.jar" />
+				<include name="mysql*.jar" />
+				<include name="servlet-api.jar" />
+				<include name="jboss-j2ee.jar" />
+				<include name="*jmx*.jar" />
+				<include name="jboss-common*.jar" />
+			</fileset>
+			<fileset dir="${dir.dist}">
+				<include name="**/*.jar" />
+			</fileset>
+			<fileset dir="${dir.market.bi.dist}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.market.common.dist}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.market.document.dist}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.common.domain.dist}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.routingrules.engine.dist}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.orderfulfillment.Domain.base}/target/dist">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.omsstaging.dist}">
+				<include name="OMSStaging.jar" />
+			</fileset>
+		</path>
+	</target>
+
+	<target name="clean" depends="init">
+		<delete dir="${dir.dest}" failonerror="false" />
+		<mkdir dir="${dir.dest}" />
+		<delete dir="${dir.dist}" failonerror="false" />
+		<mkdir dir="${dir.dist}" />
+		<delete dir="${junit-report.dir}" failonerror="false" />
+		<mkdir dir="${junit-report.dir}" />
+	</target>
+
+	<target name="compile" depends="clean">
+		<javac srcdir="${dir.source}" destdir="${dir.dest}" classpathref="build.class.path" target="1.8" source="1.8" debug="on" deprecation="false" />
+		<copy todir="${dir.dest}">
+			<fileset dir="${dir.source}">
+				<include name="**/*.xml" />
+				<exclude name="**/ejb-jar.xml" />
+				<include name="**/*.tld" />
+				<include name="**/*.properties" />
+				<include name="**/*.gif" />
+				<include name="resources/pdficons/*.png" />
+			</fileset>
+		</copy>
+		<copy todir="${dir.manifest}/META-INF" flatten="true">
+			<fileset dir="${dir.source}">
+				<include name="**/ejb-jar.xml" />
+				<include name="**/persistence.xml" />
+				<include name="**/manifest.mf" />
+			</fileset>
+		</copy>
+
+		<jar compress="yes" jarfile="${dir.dist}/MarketBackend.jar">
+			<fileset dir="${dir.dest}">
+				<include name="**/*.class" />
+				<include name="**/*.xml" />
+				<include name="**/*.properties" />
+				<include name="**/*.gif" />
+				<include name="resources/pdficons/*.png" />
+
+				<exclude name="resources/ear/*" />
+				<exclude name="resources/ejb/*" />
+				<exclude name="resources/jbossConfiguration/*" />
+				<exclude name="resources/properties-service.xml" />
+				<exclude name="resources/spring/pojocache-aop.xml" />
+				<exclude name="resources/spring/pojocache-config-service.xml" />
+			</fileset>
+		</jar>
+	</target>
+
+	<target name="slcommonbuildcopy" depends="compile">
+		<copy todir="${dir.app}/WEB-INF/lib">
+			<fileset dir="${dir.slCommonBuild.generated}">
+				<include name="EventNotificationMDB.jar" />
+			</fileset>
+
+		</copy>
+		<!-- Build the WAR file -->
+		<jar compress="yes" jarfile="${dir.dist}/MarketBackend.jar">
+			<fileset dir="${dir.app}">
+				<include name="EventNotificationMDB.jar" />
+			</fileset>
+		</jar>
+		<copy file="${dir.dist}/MarketBackend.jar" todir="${dir.slCommonBuild.generated}" />
+	</target>
+
+	<!-- Compile test junit source code -->
+	<target name="compile-test" depends="slcommonbuildcopy" description="compile the junit source ">
+		<javac srcdir="${dir.test}" destdir="${dir.dest}" target="1.8" source="1.8" classpathref="build.class.path" debug="on" deprecation="false">
+		</javac>
+	</target>
+
+	<target name="junit-report" depends="compile-test" description="Execute Unit Tests">
+		<junit fork="no" haltonfailure="false" printsummary="withOutAndErr" showoutput="yes">
+			<classpath>
+				<path refid="build.class.path" />
+				<pathelement location="${dir.dest}" />
+				<pathelement path="${dir.slCommonBuild.nondeployables}/junit.jar" />
+			</classpath>
+			<formatter type="xml" />
+
+			<batchtest fork="no" todir="${junit-report.dir}">
+				<fileset dir="${dir.test}">
+					<include name="**/*Test.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+		<echo message="Format the tests report" />
+		<junitreport todir="${junit-report.dir}">
+			<fileset dir="${junit-report.dir}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report todir="${junit-report.dir}" />
+		</junitreport>
+	</target>
+
+	<target name="update-distribute" depends="update,distribute">
+	</target>
+
+	<!--  ===== JUNIT TASKS ====== -->
+
+	<taskdef classpathref="cobertura.instrument.classpath" resource="tasks.properties" />
+
+	<target name="coverage" depends="instrument,junit,coverage-report,alternate-coverage-report" description="Compile, instrument ourself, run the tests and generate JUnit and coverage reports." />
+
+	<path id="cobertura.test.classpath">
+		<path refid="classpath.junit" />
+		<path refid="cobertura.instrument.classpath" />
+	</path>
+
+	<target name="junit" description="Runs the JUnit test cases" depends="compile, compile-test, cleanWorkDir, initWorkDir">
+		<junit fork="yes" haltonfailure="yes" printsummary="withOutAndErr" showoutput="yes">
+
+			<sysproperty key="net.sourceforge.cobertura.datafile" file="${dir.base}/cobertura.ser" />
+			<formatter type="brief" usefile="false" />
+			<formatter type="xml" />
+			<classpath location="${dir.instrumented.classes}" />
+			<!-- aop that injects into the code -->
+			<classpath location="${dir.test.dest}" />
+			<!-- The tests to run -->
+			<classpath location="${dir.dest}" />
+			<!-- the code to test -->
+			<!-- <classpath location="${dir.src.resources}" />  -->
+
+
+			<!--
+							The instrumented classes reference classes used by the
+							Cobertura runtime, so Cobertura and its dependencies
+							must be on your classpath.
+						-->
+			<classpath refid="cobertura.test.classpath" />
+			<classpath refid="classpath.junit" />
+			<batchtest todir="${dir.work}" failureproperty="tests.failed">
+				<fileset dir="${dir.test}">
+					<include name="**/*Test.java" />
+					<include name="**/Test*.java" />
+					<exclude name="**/RouteOrderGroupBOImplTest.java" />
+					<exclude name="**/OrderGroupRoutingProcessorTest.java" />
+					<exclude name="**/BuyerSubstatusAssocBOTest.java" />
+					<exclude name="**/ClientInvoiceBOTest.java" />
+					<exclude name="**/FinanceManagerBOTest.java" />
+					<exclude name="**/JobCodeMappingBoImplTest.java" />
+					<exclude name="**/LedgerTransactionBOTest.java" />
+					<exclude name="**/OrderGroupBOImplTest.java" />
+					<exclude name="**/SpringCircularDependencyTest.java" />
+					<exclude name="**/OrderGroupProviderEmailTest.java" />
+					<exclude name="**/SearchPortalBOImplTest.java" />
+					<exclude name="**/IncidentBOTest.java" />
+					<exclude name="**/ServiceOrderBOTest.java" />
+					<exclude name="**/ServiceOrderPDFTest.java" />
+					<exclude name="**/ServiceOrderUpdateBOTest.java" />
+					<exclude name="**/ServiceOrderUpsellBOTest.java" />
+					<exclude name="**/StagingBOTest.java" />
+					<exclude name="**/BuyerBOImplTest.java" />
+					<exclude name="**/SelectProviderNetworkBOImplTest.java" />
+					<exclude name="**/AdminTripChargeDAOTest.java" />
+					<exclude name="**/BuyerHoldTimeDaoImplTest.java" />
+					<exclude name="**/BuyerSkuTaskDaoImplTest.java" />
+					<exclude name="**/TransactionDaoImplTest.java" />
+					<exclude name="**/LoginDaoImplTest.java" />
+					<exclude name="**/GISUtilTest.java" />
+					<exclude name="**/UIUtilsTest.java" />
+					<exclude name="**/ProviderSearchTest.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+
+		<echo message="build date ">${DSTAMP}${TSTAMP}</echo>
+		<echo message="build.number ">${build.number}</echo>
+		<echo message="full tag ">${app.lastbuild.tag.auto}</echo>
+
+	</target>
+
+	<target name="instrument" depends="init-test, compile">
+		<!--
+			Instrument the application classes, writing the
+			instrumented classes into ${build.dir.instrumented.classes}.
+		-->
+		<cobertura-instrument todir="${dir.instrumented.classes}">
+			<!--
+				The following line causes instrument to ignore any
+				source line containing a reference to log4j, for the
+				purposes of coverage reporting.
+			-->
+			<!--ignore regex="org.apache.log4j.*" /-->
+
+			<fileset dir="${dir.dest}">
+				<!--
+					Instrument all the application classes, but
+					don't instrument the test classes.
+				-->
+				<include name="**/*.class" />
+			</fileset>
+		</cobertura-instrument>
+	</target>
+
+
+	<target name="init-test">
+		<!-- Create the time stamp -->
+		<tstamp />
+		<!--
+				Remove the coverage data file and any old instrumentation.
+			-->
+		<delete file="cobertura.ser" />
+		<delete dir="${dir.instrumented.classes}" />
+		<delete dir="${dir.reports.xml}" />
+		<delete dir="${dir.reports.xml}" />
+		<delete dir="${dir.coverage.xml}" />
+		<delete dir="${dir.coverage.html}" />
+		<delete dir="${database.dir}" />
+
+		<mkdir dir="${dir.instrumented.classes}" />
+		<mkdir dir="${dir.reports.xml}" />
+		<mkdir dir="${dir.reports.html}" />
+		<mkdir dir="${dir.coverage.xml}" />
+		<mkdir dir="${dir.coverage.html}" />
+
+	</target>
+
+	<target name="coverage-report">
+		<!--
+				Generate a series of HTML files containing the coverage
+				data in a user-readable form using nested source filesets.
+			-->
+		<cobertura-report destdir="${dir.coverage.html}">
+			<fileset dir="${dir.source}">
+				<include name="**/*.java" />
+			</fileset>
+		</cobertura-report>
+	</target>
+
+	<target name="alternate-coverage-report">
+		<!--
+				Generate an XML file containing the coverage data using
+				the "srcdir" attribute.
+			-->
+		<cobertura-report srcdir="${dir.source}" destdir="${dir.coverage.xml}" format="xml" />
+	</target>
+
+
+	<!-- ==== END JUNIT ==== -->
+
+	<target name="config">
+		<if>
+			<equals arg1="${env}" arg2="prod" />
+			<then>
+				<copy file="${dir.moving-parts}/bootstrap.prod.properties" tofile="${dir.app}/WEB-INF/bootstrap.properties" />
+				<copy file="${dir.moving-parts}/bootstrap.prod.properties" tofile="${dir.app}/WEB-INF/classes/bootstrap.properties" />
+				<echo message="*****--- Setting Up Build For Production Environment ---*****" />
+			</then>
+			<else>
+				<if>
+					<equals arg1="${env}" arg2="qa" />
+					<then>
+						<copy file="${dir.moving-parts}/bootstrap.qa.properties" tofile="${dir.app}/WEB-INF/bootstrap.properties" />
+						<copy file="${dir.moving-parts}/bootstrap.qa.properties" tofile="${dir.app}/WEB-INF/classes/bootstrap.properties" />
+						<echo message="*****--- Setting Up Build For QA Environment ---*****" />
+					</then>
+					<else>
+						<copy file="${dir.moving-parts}/bootstrap.dev.properties" tofile="${dir.app}/WEB-INF/bootstrap.properties" />
+						<copy file="${dir.moving-parts}/bootstrap.dev.properties" tofile="${dir.app}/WEB-INF/classes/bootstrap.properties" />
+						<echo message="*****--- Setting Up Build For Dev Environment ---*****" />
+					</else>
+				</if>
+			</else>
+		</if>
+	</target>
+
+	<target name="cleanWorkDir">
+		<delete dir="${dir.work}" />
+	</target>
+
+	<target name="initWorkDir">
+		<mkdir dir="${dir.work}" />
+	</target>
+
+	<!-- Target to refresh all the non-sources to be obtained from the repository -->
+	<target name="refresh" description="Refresh Market from CVS repository" depends="init">
+		<cvs command="login" cvsroot="${app.CVSROOT}" />
+		<mkdir dir="." />
+		<cvs command="update -A Market" cvsroot="${app.CVSROOT}" dest="${source.dir.CVS}" />
+	</target>
+
+	<!-- Target to refresh all the non-sources to be obtained from the repository -->
+	<target name="update" description="Refresh project from CVS repository" depends="init">
+		<cvs command="-q update -C -d -P" cvsroot=":pserver:ajain04:ajain04@chef.sears.com:2402/cvs/source" package="." dest="${basedir}" />
+	</target>
+
+	<!-- Tag the files that are just used in the build with the id of the build-->
+	<target name="tag" depends="clean, init">
+		<cvs command="tag -R -c ${app.lastbuild.tag}" cvsroot="${app.CVSROOT}" package="." />
+		<echo message="*****--- Tagged ALL modules with TAG ${app.lastbuild.tag} ---*****" />
+	</target>
+
+	<!-- Target to refresh all tagged files -->
+	<target name="refreshtag" depends="clean, init">
+		<cvs command="update -A" cvsroot="${app.CVSROOT}" tag="${app.build.tag}" dest="${source.dir.CVS}" />
+		<echo message="*****--- Refreshing ALL modules with TAG ${app.build.tag} ---*****" />
+	</target>
+
+	<target name="autotag" depends="clean, init">
+		<cvs command="tag -R -c ${app.lastbuild.tag.auto}" cvsroot="${app.CVSROOT}" package="." />
+		<echo message="*****--- Tagged ALL modules with TAG ${app.lastbuild.tag} ---*****" />
+	</target>
+
+	<target name="mail" depends="init">
+		<taskdef name="mimemail" classname="org.apache.tools.ant.taskdefs.optional.mail.MimeMail" />
+		<tstamp />
+		<mimemail messageMimeType="text/html" messageFile="${dir.overall.base}/build.txt" tolist="${product.email.list}" mailhost="${smtp.server.name}" subject="${app.build.tag.prefix}_${env}_${DSTAMP}${TSTAMP} - Build Completed Successfully" from="${product.projectowner.email}">
+		</mimemail>
+	</target>
+
+	<!-- Publish the deployment units to the website -->
+	<target name="publish" depends="init">
+		<scp file="${deploy.local.filepath}/${deploy.local.filename}" todir="${server.username}:${server.password}@${server.name}:${deploy.remote.dir}" trust="true" />
+	</target>
+
+	<!-- This target creates a milestone build -->
+	<target name="milestone" description="Perform a milestone build" depends="init">
+		<antcall target="refresh" />
+		<antcall target="deploy" />
+		<antcall target="mail" />
+
+		<if>
+			<equals arg1="${auto.publish}" arg2="on" />
+			<then>
+				<input message="Are you sure you wish to Publish to the ${env} server?" validargs="y,n" addproperty="do.publish" />
+				<condition property="do.abort">
+					<equals arg1="n" arg2="${do.publish}" />
+				</condition>
+				<fail if="do.abort">Publish aborted by user.</fail>
+
+				<if>
+					<equals arg1="${do.publish}" arg2="y" />
+					<then>
+						<antcall target="publish" />
+						<echo message="*****--- Successfully Published Milestone Build of ${app.product.name}  to ${env} server ---*****" />
+					</then>
+				</if>
+			</then>
+			<else>
+				<echo message="*****--- Auto Publish of Milestone Build of ${app.product.name} to ${env} server is currently turned off ---*****" />
+			</else>
+		</if>
+
+		<echo message="*****--- Successfully Completed Milestone Build of ${app.product.name}          ---*****" />
+		<echo message="*****--- Please Note:                                                           ---*****" />
+		<echo message="*****---              This build should be tagged after a successful smoke test ---*****" />
+		<echo message="*****---              Update tag id in build.properties.                        ---*****" />
+		<echo message="*****---              Run 'ant tag' to tag this build.                          ---*****" />
+	</target>
+
+	<target name="distribute" depends="junit-report">
+	</target>
+
+	<!-- Sonar Integration -->
+	<property name="dir.sonar.src" value="${basedir}/src" />
+	<property name="dir.sonar.ant.task" value="../SLCommonBuild/lib/nondeployables" />
+	<import file="../../SLCommonBuild/ant/wildfly-opt/ant-script-library/asl-java-sonar.xml" />
+	<target name="sonar" depends="sonar-init, sonar-run">
+	</target>
+</project>

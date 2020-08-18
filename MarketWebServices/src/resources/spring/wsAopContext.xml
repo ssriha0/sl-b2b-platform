@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<bean id="soOrderDispatch"
+		class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="proxyInterfaces">
+			<value>
+				com.newco.marketplace.webservices.sei.serviceorder.ServiceOrderSEI
+			</value>
+
+		</property>
+	 	<property name="target">
+			<ref bean="OrderDispatchRequestor" />
+		</property> 	
+		<property name="interceptorNames">
+			<list>
+				<value>soSEIAopAdvisor</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="soSEIAopAdvisor"
+		class="org.springframework.aop.support.NameMatchMethodPointcutAdvisor">
+		<property name="mappedName">
+			<value>*</value>
+		</property>
+		<property name="advice">
+			<ref bean="soSEIaopAdvice" />
+		</property>
+	</bean>
+  	
+  	<bean id="soSEIaopAdvice" class="com.newco.marketplace.webservices.aop.WSAOPAdvice">
+		<!-- Requires for Logging -->
+		<property name="wsLoggingAdvice">
+			<ref bean="wsLoggingAdvice" />
+		</property>
+	</bean>
+	
+	<bean id="wsLoggingAdvice"
+		class="com.newco.marketplace.webservices.aop.WSLoggingAdvice">
+		
+	</bean>
+	
+	<bean id="serviceOrderServiceImpl" class="com.newco.marketplace.webservices.seiImpl.so.ServiceOrderImpl">	
+	<property name="theServiceDispatch">
+			<ref bean="soOrderDispatch" />
+		</property>
+    </bean>
+    <bean id="OrderDispatchRequestor" class="com.newco.marketplace.webservices.dispatcher.so.order.OrderDispatchRequestor">	
+    	<property name="accessSecurity">
+    		<ref bean="securityBO" /> 
+    	</property>
+    </bean>
+</beans>

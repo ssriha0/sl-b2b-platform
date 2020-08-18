@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:element name="rejectSORequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="reasonId" type="xs:string" minOccurs="0"/>
+        <xs:element name="reasonDesc" type="xs:string" minOccurs="0"/>
+        <xs:element name="reasonCommentDesc" type="xs:string" minOccurs="0" maxOccurs="225"/>
+        <xs:element name="resourceList" minOccurs="1" type="integerListType"></xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:complexType name="integerListType">
+		 <xs:sequence>  
+      <xs:element name="resource" type="xs:integer" minOccurs="0"   
+                                            maxOccurs="unbounded"/>  
+     </xs:sequence>  
+	</xs:complexType>
+</xs:schema>

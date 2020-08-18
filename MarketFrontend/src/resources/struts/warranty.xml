@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+    
+<struts>
+   <package name="warranty" extends="ServiceLiveBase">
+      <default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+	<!-- Warranty Form Configuration include in struts.xml-->
+ 
+	<action name="doWarranty*" class="warrantyAction" method="{1}">	
+		<result name="load">/jsp/providerRegistration/modules/tab_warranties.jsp</result>		
+		<result name="input" type="redirectAction">
+             <param name="actionName">allTabView?tabView=tab2</param>
+             <param name="namespace">/jsp/providerRegistration</param>
+             <param name="nexturl">doWarrantydoInput.action</param>
+       	</result>
+		<result name="success" type="redirectAction">
+            <param name="actionName">allTabView?tabView=tab2</param>
+            <param name="namespace">/jsp/providerRegistration</param>
+            <param name="namespace">/jsp/providerRegistration</param>
+       	</result>
+      	<result name="next" type="redirectAction">
+           <param name="actionName">allTabView?tabView=tab3</param>
+           <param name="namespace">/jsp/providerRegistration</param>
+      	</result>
+      	<result name="prev" type="redirectAction">
+            <param name="actionName">allTabView?tabView=tab1</param>
+            <param name="namespace">/jsp/providerRegistration</param>
+       	</result>
+       	
+       	<result name="updateProfile" type="redirectAction">
+	           <param name="actionName">regDashboarddoSubmitRegistration</param>
+	            <param name="namespace">/jsp/providerRegistration</param>
+        	</result>
+	</action>
+         <!-- Add actions here -->
+    </package>
+</struts>

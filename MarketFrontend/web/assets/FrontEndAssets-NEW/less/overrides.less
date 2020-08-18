@@ -1,0 +1,156 @@
+body {
+  @media only screen and (min-width : 768px) {
+    background: @bg-gray;
+  }
+  color: #444;
+  font-family: @SLfontstack;
+}
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6, p {
+  font-family: @SLfontstack;
+}
+
+small, .small {
+  font-size: 85%;
+}
+
+a {
+  color: @servicelive-blue;
+}
+
+// DatePicker Plugin -- Temporary fix
+// ====================================================================== 
+
+.picker__list {
+  padding: 0 !important;
+}
+
+
+// Modals
+// ====================================================================== 
+
+.modal-header {
+  background-color: #58585A;
+    border-bottom: 1px solid #444444;
+    border-radius: 6px 6px 0 0;
+    border-top: 1px solid #666666;
+    color: #FFFFFF;
+}
+
+.close {
+  color: #aaa;
+  opacity: 1;
+  text-shadow: none;
+}
+.close:hover, close:focus {
+  color: #eee;
+  opacity: 1;
+}
+
+.modal form .btn-group-justified .btn {
+  background-color: #FFFFFF;
+    border-color: #CCCCCC;
+    color: #333333;
+}
+ 
+.modal form .btn-group-justified .btn:hover,
+.modal form .btn-group-justified .btn:focus {
+  background-color: #EBEBEB;
+    border-color: #ADADAD;
+    color: #333333;
+}
+
+.filter .btn:active, 
+.filter .btn.active,
+.modal form .btn-group-justified .btn:active,
+.modal form .btn-group-justified .btn.active {
+  background-color: #EBEBEB;
+}
+
+.datepicker, .timepicker {
+  // these inputs are marked readonly so the default keyboard doesnt fire on mobile, this resets the style to normal
+  background-color: #FFFFFF !important;
+    cursor: default !important;
+}
+
+.modal-dialog {
+	padding: 0;
+	@media screen and (min-width: @screen-sm) {
+		margin-top: 30px;
+	}	
+}
+
+.modal-content {
+	border-radius: 0;
+	@media screen and (min-width: @screen-sm) {
+		border-radius: @border-radius-large;
+	}
+}
+
+// Container that the modal scrolls within
+.modal {
+  // When fading in the modal, animate it to slide UP
+  &.fade .modal-dialog {
+    .translate(0, 100%);
+  }
+  &.in .modal-dialog { .translate(0, 30px)}
+
+  @media screen and (min-width: @screen-sm) {
+		// When fading in the modal, animate it to slide UP
+		&.fade .modal-dialog {
+		.translate(0, -25%);
+		}
+		&.in .modal-dialog { .translate(0, 0)}
+	}
+
+}
+
+// Modal background
+.modal-backdrop {
+  // Fade for backdrop
+  &.fade { .opacity(0); }
+  &.in   { .opacity(.2); }
+  //&.in { .opacity(.5); }
+}
+
+.content .modal-title {
+    color: #fff;
+    #pxtoem > .font-size( 16, 14 );
+    margin: 0;
+    text-transform: none;
+}
+
+.modal-footer {
+	margin-top: 0;
+  background-color: #EEE;
+  border-top-color: #CCC;
+  border-radius: 0 0 6px 6px
+}
+
+.modal-footer .btn-default {
+  .btn-main;
+  color: #333;
+}
+.modal-footer .btn-default:hover, .modal-footer .btn-default:focus {
+  background: #f2ce59;
+  background: -moz-linear-gradient(top,  #f1b849 0%, #f3e468 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f1b849), color-stop(100%,#f3e468));
+  background: -webkit-linear-gradient(top,  #f1b849 0%,#f3e468 100%);
+  background: -ms-linear-gradient(top,  #f1b849 0%,#f3e468 100%);
+  background: linear-gradient(to bottom,  #f1b849 0%,#f3e468 100%);
+  color: #000;
+}
+
+.required-info {
+  color: #9B2F1B;
+  display: inline-block;
+  margin-left: -15px;
+  margin-right: 5px;
+}
+
+// Tooltips
+// ====================================================================== 
+.tooltip-target {
+    border-bottom: 1px dotted;
+    cursor: help;
+}

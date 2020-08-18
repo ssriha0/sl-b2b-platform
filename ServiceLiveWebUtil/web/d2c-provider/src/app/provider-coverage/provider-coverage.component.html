@@ -1,0 +1,99 @@
+<div class="modal-content modal-popup-custom">
+    <div class="modal-header">
+        <a href="#" class="close-button" data-dismiss="modal" (click)="resetZipCodes()">
+            <div class="glyphicon glyphicon-remove"></div>
+        </a>
+        <div class="modal-title text-center modal-header-text">Coverage</div>
+    </div>
+    <div class="modal-body">
+        <wait-loader [showCoverageLoader]="showCoverageLoader"></wait-loader>
+        <!--<wait-loader [showLoader]="showLoader" [showCoverageLoader]="showCoverageLoader"></wait-loader>-->
+        <!--<wait-loader [showCoverageLoader]="showCoverageLoader"></wait-loader>-->
+
+        <div class="form-group form-inline">
+            <label for="disptach-loc-input">Dispatch Location Zipcode:</label>
+            <input id="disptach-loc-input" disabled="true" class="form-control" type="text" [(value)]="coverageZip" />
+        </div>
+
+        <div class="form-group form-inline">
+            <label for="change-zip-area">Distance to travel (in miles)</label>
+            <button type="button" [disabled]="isEditFlow" class="btn btn-primary btn-number btn-plus-minus move-button-right" (click)="decrement()"><div class="glyphicon glyphicon-minus"></div></button>
+            <input class="form-control" [disabled]="isEditFlow" type="number" step="5" min="0" max="100" id="change-zip-area" (change)="validateCoverageRadius()"
+                [(ngModel)]="coverageRadius">
+            <button type="button" [disabled]="isEditFlow" class="btn btn-primary btn-number btn-plus-minus move-button-left" (click)="increment()"><div class="glyphicon glyphicon-plus"></div></button>
+            <button type="button" [disabled]="isEditFlow ||!coverageRadius || coverageRadius==0 || coverageRadius>100" class="btn btn-primary corner-border"
+                style="width:150px;" (click)="searchZipCodes()">Search</button>
+        </div>
+
+        <!-- <div class="form-group row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-md-offset-2">
+                <button type="button" class="btnSearch btn btn-primary btnbgcolor " style="width:150px;" (click)="searchZipCodes()">Search</button>
+            </div>
+        </div> -->
+
+        <div class="form-group" style="min-height: 20px;" *ngIf="apizipcodes && apizipcodes.length > 0">
+            <div class="row coverage-header">
+                <div class="col-xs-2 text-center">Zip Codes </div>
+                <div class="col-xs-3 text-center ">City</div>
+                <div class="col-xs-2 text-center ">County</div>
+                <div class="col-xs-2 text-center ">State</div>
+                <div class="col-xs-3 text-center ">Distance(Miles)</div>
+            </div>
+        </div>
+        <div class="form-group coverage-zip-table" *ngIf="apizipcodes && apizipcodes.length > 0">
+            <table class="table coverage-zip-table">
+                <!--<thead>
+                    <tr>
+                        <th class="text-center">Zip Codes </th>
+                        <th class="text-center">City</th>
+                        <th class="text-center">County</th>
+                        <th class="text-center">State</th>
+                        <th class="text-center">Distance(Miles)</th>
+                    </tr>
+                </thead>-->
+                <tbody>
+                    <tr *ngFor="let apizipcode of paginatedApiZipCodes">
+                        <td class="text-center right-border" style="width:16.66%"><input type="checkbox" [(ngModel)]="apizipcode.selected" (change)="checkbox(apizipcode)" [disabled]="coverageZip == apizipcode.Code">                            {{apizipcode.Code}}
+                        </td>
+                        <td class="text-center right-border" style="width:24.99%">{{apizipcode.City}}</td>
+                        <td class="text-center right-border" style="width:16.66%">{{apizipcode.County}}</td>
+                        <td class="text-center right-border" style="width:16.66%">{{apizipcode.State}}</td>
+                        <td class="text-center right-border" style="width:24.99%">{{apizipcode.Distance}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="form-group" *ngIf="!apizipcodes || apizipcodes.length <= 0">
+            {{zipCodesMessage}}
+            <!--No zip codes to display.-->
+        </div>
+        <div class="btn-toolbar" *ngIf="apizipcodes && apizipcodes.length > 0" role="toolbar" style="margin: 0;">
+            <div class="btn-group">
+                <label style="margin-top:20px">Page {{currentIndex}}/{{pageNumber}}</label>
+                <label style="margin-top:20px;margin-left: 30px;">View {{curPageStartIndex}} - {{curPageEndIndex}} of {{totalRecords}}</label>
+
+            </div>
+            <div class="btn-group pull-right">
+                <ul class="pagination">
+                    <li [ngClass]="{'disabled': (currentIndex == 1 || pageNumber == 0)}">
+                        <a class="glyphicon glyphicon-chevron-left" (click)="prevPage()" style="top:0px;" href="#" data-toggle="modal" data-target="#dummyCoverageZipModel"></a>
+                    </li>
+                    <li *ngFor="let page of pagesIndex" [ngClass]="{'active': (currentIndex == page)}">
+                        <a (click)="setPage(page)" href="#" data-toggle="modal" data-target="#dummyCoverageZipModel">{{page}} </a>
+                    </li>
+                    <li [ngClass]="{'disabled': (currentIndex == pageNumber || pageNumber == 0) || !apizipcodes || apizipcodes.length <= 0}">
+                        <a class="glyphicon glyphicon-chevron-right" (click)="nextPage()" style="top:0px;" href="#" data-toggle="modal" data-target="#dummyCoverageZipModel"></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal-footer">
+        <div class="text-center">
+            <button type="button" [disabled]="!apizipcodes || apizipcodes.length <=0" class="btn btn-primary save-button-width corner-border"
+                style="margin-top:20px" data-dismiss="modal" (click)="saveRadiusAndSeletedZIPCodes()">Save</button>
+        </div>
+    </div>
+</div>

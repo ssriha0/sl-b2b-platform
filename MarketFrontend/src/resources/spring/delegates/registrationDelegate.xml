@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
+	default-lazy-init="true">
+	
+	<bean id="providerRegistrationMapper" class="com.newco.marketplace.web.utils.ProviderRegistrationMapper" scope="prototype"/>
+	<bean id="buyerRegistrationMapper" class="com.newco.marketplace.web.utils.BuyerRegistrationMapper" scope="prototype"/>	
+	<!-- Start Delegate  Loading -->
+	<bean name="registrationDelegate" class="com.newco.marketplace.web.delegatesImpl.provider.RegistrationDelegateImpl">
+		<constructor-arg index="0" ref="registrationBOImpl"/>
+		<constructor-arg index="1" ref="providerRegistrationMapper"/>
+		<property name="iRegistrationBO">
+				<ref bean="provRegBOAOP"/>
+		</property>
+	</bean>
+	<!-- End Delegate  Loading -->	
+	
+	<!-- Start Delegate  Loading -->
+	<bean name="buyerRegistrationDelegate" class="com.newco.marketplace.web.delegatesImpl.buyer.BuyerRegistrationDelegateImpl">
+		<constructor-arg index="0" ref="buyerRegistrationBOImpl"/>
+		<constructor-arg index="1" ref="buyerRegistrationMapper"/>
+		<property name="iBuyerRegistrationBO">
+				<ref bean="buyerRegBOAOP"/>
+		</property>
+	</bean>
+	<!-- End Delegate  Loading -->	
+</beans>

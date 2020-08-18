@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="buyerSOCounts">
+	<typeAlias alias="buyerTabSummaryVO" type="com.newco.marketplace.dto.vo.buyer.BuyerTabSummaryVO" />
+	<typeAlias alias="buyerPaginationSummaryVO" type="com.newco.marketplace.dto.vo.buyer.BuyerPaginationSummaryVO" />
+	<typeAlias alias="buyerSOCountValueVO" type="com.newco.marketplace.dto.vo.buyer.BuyerSOCountValueVO" />
+
+
+	<resultMap id="buyerTabSummaryVOMap" class="buyerTabSummaryVO">
+		<result property="buyerId" column="buyer_id" />
+		<result property="wfStateId" column="wf_state_id" />
+		<result property="soCount" column="so_count" />
+	</resultMap>
+
+	<resultMap id="buyerPaginationSummaryVOMap" class="buyerPaginationSummaryVO">
+		<result property="buyerId" column="buyer_id" />
+		<result property="wfStateId" column="wf_state_id" />
+		<result property="soSubstatusId" column="so_substatus_id" />
+		<result property="count" column="count" />
+	</resultMap>
+
+	<resultMap id="buyerSOCountValueVOMap" class="buyerSOCountValueVO">
+		<result property="buyerId" column="buyer_id" />
+		<result property="wfStateId" column="wf_state_id" />
+		<result property="soSubstatusId" column="so_substatus_id" />
+		<result property="soCount" column="soCount" />
+	</resultMap>
+ 
+	<select id="getBuyersForCounts" resultClass="java.lang.Integer">
+		select 
+			buyer_id
+		from 
+			so_hdr 
+		group by 
+			buyer_id
+	</select>
+
+	<select id="buyerTabSummary.selectByBuyerId" resultClass="buyerTabSummaryVO" resultMap="buyerTabSummaryVOMap" parameterClass="java.lang.Integer">
+		select 
+			buyer_id,
+			wf_state_id, 
+			so_count
+		from 
+			buyer_tab_summary
+		where 
+			buyer_id = #buyerId#
+	</select>
+
+	<select id="buyerPaginationSummary.selectByBuyerId"  resultClass="buyerPaginationSummaryVO" resultMap="buyerPaginationSummaryVOMap" parameterClass="java.lang.Integer">
+		select 
+			buyer_id, 
+			wf_state_id, 
+			so_substatus_id, 
+			count 
+		from
+			buyer_pagination_summary 
+		where 
+			buyer_id = #buyerId#
+	</select>
+	<!-- R15_5 SL-21130 query optimized -->
+	<select id="getBuyerSOCountValues" resultMap="buyerSOCountValueVOMap" resultClass="buyerSOCountValueVO" parameterClass="java.lang.Integer">
+		SELECT 
+			s.buyer_id, 
+			s.wf_state_id, 
+			s.so_substatus_id, 
+			COUNT(s.so_id) AS soCount 
+		FROM 
+			so_hdr s FORCE INDEX (IDX_state_combo)
+		WHERE 
+			s.wf_state_id IN(100,105,110,120,125,130,150,155,160,165,170,180)
+		GROUP BY s.buyer_id, s.wf_state_id, s.so_substatus_id
+	</select>
+
+	<insert id="buyerTabSummary.insert" parameterClass="buyerTabSummaryVO">
+		insert into buyer_tab_summary (
+			buyer_id, 
+			wf_state_id, 
+			so_count
+		) values(
+			#buyerId#, 
+			#wfStateId#,
+			#soCount#
+		)
+	</insert>
+
+	<update id="buyerTabSummary.update" parameterClass="buyerTabSummaryVO">
+		update 
+			buyer_tab_summary 
+		set 
+			so_count = #soCount# 
+		where 
+			buyer_id = #buyerId#
+			and wf_state_id = #wfStateId#
+	</update>
+
+	<delete id="buyerTabSummary.delete" parameterClass="buyerTabSummaryVO">
+		delete from 
+			buyer_tab_summary 
+		where 
+			buyer_id = #buyerId# 
+			and	wf_state_id = #wfStateId#
+	</delete>
+
+	<delete id="buyerTabSummary.deleteAll" parameterClass="buyerTabSummaryVO">
+		delete from buyer_tab_summary 
+	</delete>
+
+	<insert id="buyerPaginationSummary.insert" parameterClass="buyerPaginationSummaryVO">
+		insert into 
+			buyer_pagination_summary 
+			(
+				buyer_id, 
+				wf_state_id, 
+				so_substatus_id, 
+				count
+			) values (
+				#buyerId#,
+				#wfStateId#,
+				#soSubstatusId#,
+				#count#
+			)
+	</insert>
+
+	<update id="buyerPaginationSummary.update" parameterClass="buyerPaginationSummaryVO">
+		update 
+			buyer_pagination_summary 
+		set 
+			count = #count# 
+		where 
+			buyer_id = #buyerId# 
+			and wf_state_id = #wfStateId# 
+			and so_substatus_id = #soSubstatusId#
+	</update>
+
+	<delete id="buyerPaginationSummary.delete" parameterClass="buyerPaginationSummaryVO">
+		delete from 
+			buyer_pagination_summary 
+		where 
+			buyer_id = #buyerId# 
+			and	wf_state_id = #wfStateId#  
+			and so_substatus_id = #soSubstatusId#
+	</delete>
+	
+	<delete id="buyerPaginationSummary.deleteAll" parameterClass="buyerPaginationSummaryVO">
+		delete from buyer_pagination_summary 	
+	</delete>
+</sqlMap>

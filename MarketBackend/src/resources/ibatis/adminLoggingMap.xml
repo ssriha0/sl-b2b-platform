@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="adminLogging">
+
+	<typeAlias alias="adminLoggingvo" type="com.newco.marketplace.vo.adminLogging.AdminLoggingVO"/>
+	<insert id="adminLogging.insert" parameterClass="adminLoggingvo" >
+		INSERT INTO	admin_logging (user_id, 
+									 company_id,
+									 role_id,
+									 activity_id,
+									 start_time
+									 )
+		VALUES	(#userId#, 
+		         #companyId#, 
+                 #roleId#,
+                 #activityId#,
+                 CURRENT_TIMESTAMP
+                )
+        <selectKey resultClass="int">
+            SELECT last_insert_id() as loggId
+        </selectKey>    
+	</insert>
+	
+	<update id="adminLogging.update" parameterClass="adminLoggingvo">
+		UPDATE admin_logging SET end_time=CURRENT_TIMESTAMP WHERE log_id=#loggId# 
+	</update>
+	
+	
+	
+	
+	
+</sqlMap>

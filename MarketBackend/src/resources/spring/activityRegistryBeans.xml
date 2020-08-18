@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
+	default-lazy-init="true">
+	
+	<bean id="activityDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.ActivityRegistryDaoImpl"
+		lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	<bean id="vendorHdrDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.VendorHdrDaoImpl"
+		lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	<bean id="resourceStatusDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.ResourceStatusDaoImpl"
+		lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	<bean id="activityRegistryBOImplTarget" class="com.newco.marketplace.business.businessImpl.provider.ActivityRegistryBOImpl">
+		<constructor-arg index="0" ref="activityDaoImpl"/>
+		<constructor-arg index="1" ref="providerEmailBOImpl"/>
+		<constructor-arg index="2" ref="vendorHdrDaoImpl"/>
+		<constructor-arg index="3" ref="resourceStatusDaoImpl"/>
+		<constructor-arg index="4" ref="userProfileDaoImpl"/>
+		<constructor-arg index="5" ref="vendorResourceDaoImpl"/>
+		<constructor-arg index="6" ref="contactDaoImpl"/>
+		<constructor-arg index="7" ref="auditBoImpl"/>
+		
+	</bean>
+	
+	<bean id="activityRegistryBOImpl"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		lazy-init="true">
+		<property name="proxyInterfaces">
+			<list>
+				<value>
+					com.newco.marketplace.business.iBusiness.provider.IActivityRegistryBO
+				</value>
+			</list>
+		</property>
+		<property name="target">
+			<ref bean="activityRegistryBOImplTarget" />
+		</property>
+		<property name="transactionManager">
+			<ref bean="dsTransactionManagerMain" />
+		</property>
+		<property name="transactionAttributeSource">
+			<ref bean="attributeSource" />
+		</property>
+	</bean>	
+	
+</beans>

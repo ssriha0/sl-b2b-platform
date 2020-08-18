@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="mobileAuthenticateUser">
+<typeAlias alias="authUserActivity" type="com.newco.marketplace.mobile.authenticate.vo.AuthenticateUserVO"/>
+	<typeAlias alias="mobileToken"
+		type="com.newco.marketplace.mobile.authenticate.vo.MobileTokenVO" />
+		
+	<typeAlias alias="authProfile" type="com.newco.marketplace.vo.mobile.UserProfileData"/>	
+	<typeAlias alias="providerLocationDetails" type="com.newco.marketplace.vo.mobile.LocationResponseData"/>	
+	<typeAlias alias="firmDetailsMobile" type="com.newco.marketplace.vo.mobile.FirmDetailsVO"/>
+	<typeAlias alias="appVersionData" type="com.newco.marketplace.vo.mobile.AppVersionData"/>
+	<typeAlias alias="updateMobileAppVerReq" type="com.newco.marketplace.api.mobile.beans.updateMobileAppVersion.UpdateMobileAppVerReq"/>	
+	<typeAlias alias="usrRoleDetails" type="com.newco.marketplace.vo.mobile.UserDetailsVO"/>
+	<typeAlias alias="mobileDevice" type="com.newco.marketplace.vo.mobile.v2_0.MobileDeviceData" />
+	
+	<resultMap id="appVersionResultMap" class="appVersionData">
+		<result property="deviceOS" column="device_os" />
+		<result property="baseAppVersion" column="base_app_version" />
+		<result property="latestAppVersion" column="latest_app_version" />
+	</resultMap>
+	<resultMap id="locationResultMap" class="providerLocationDetails">
+		<result property="locType" column="locType" />
+		<result property="street1" column="street1" />
+		<result property="street2" column="street2" />
+		<result property="aptNo" column="aptNo" />
+		<result property="city" column="city" />
+		<result property="state" column="state" />
+		<result property="country" column="country" />
+		<result property="zip" column="zip" />
+	</resultMap>
+	<resultMap id="mobileDeviceResultMap" class="mobileDevice">
+		<result property="id" column="id" />
+		<result property="deviceOS" column="device_os" />
+		<result property="deviceId" column="device_id" />
+		<result property="currentAppVersion" column="app_version" />
+	</resultMap>	
+	
+	     <select id="activity_authenticate.query"  resultClass="authUserActivity">
+        SELECT up.user_name as userName , lup.activity_name AS activityName, lup.activity_id AS activityId,vr.dispatch_ind AS dispatchInd,
+		 case when upp.role_activity_id is null then 0 else 1
+      		 end as checked
+			FROM lu_permissions AS lup
+			JOIN lu_permission_role AS lur ON (lur.activity_id = lup.activity_id)
+			Join user_profile as up on up.role_id = lur.role_id
+	        JOIN user_profile_permissions AS upp
+      			ON  lur.role_activity_id = upp.role_activity_id
+      			and up.user_name = upp.user_name
+      				JOIN vendor_resource AS vr
+      		        ON up.user_name = vr.user_name
+			where up.user_name = #userName#
+    </select>
+    
+    <insert id="token_authenticate.insert" parameterClass="mobileToken">
+		insert into mobile_authorization_token (device_id, resource_id, outh_token, 
+			created_date, expiry_date,token_status,device_os,app_version) values 
+			(#deviceId#, #resourceId#, #outhToken#, #createdDate#,#expiryDate#,#tokenStatus#,#deviceOS#,#currentAppVersion#)
+	</insert>
+	
+	<update id="token_authenticate.update" parameterClass="mobileToken" >
+		update mobile_authorization_token set token_status =  'EXPIRED' where device_id = #deviceId# and resource_id=#resourceId# and token_status=#tokenStatus#
+	</update>
+	
+<!-- 	code change for SLT-2112 -->
+	<select id="login_auth_provider.query" parameterClass="java.util.HashMap" resultClass="authProfile">
+			SELECT 
+				userpro.user_name as userName,
+				userpro.password as password,
+				userpro.role_id as roleId,
+				userpro.generated_password_ind AS generatedPwdInd,
+				ur.role_name AS userRoleType,
+				userpro.contact_id as contactId,
+				c.first_name as firstName,
+				c.last_name as lastName,
+				c.phone_no as phoneNo,
+				c.mobile_no as mobileNo,
+				c.email as email,
+				c.email_alt as emailAlt
+			FROM user_profile userpro,contact c,user_roles ur
+			WHERE userpro.contact_id = c.contact_id
+			AND ur.role_id = userpro.role_id
+			AND userpro.user_name = #userName#
+			AND userpro.active_ind = 1;
+	</select>
+	<select id="provider_location_details.query" parameterClass="java.lang.Integer" resultMap="locationResultMap">
+		SELECT 
+			l.street_1 as street1,
+			l.street_2 as street2,
+			l.apt_no as aptNo,
+			l.city as city,
+			l.state_cd as state,
+			l.country as country,
+			lult.descr AS locType,
+			l.zip as zip
+		FROM vendor_resource vr,vendor_location vl,location l,lu_location_type lult
+		WHERE vr.vendor_id = vl.vendor_id
+		AND l.locn_id = vl.locn_id
+		AND lult.id = l.locn_type_id
+		AND vr.contact_id = #contactId#
+	</select>
+	<select id="firm_details_auth.query" parameterClass="java.lang.Integer" resultClass="firmDetailsMobile">
+		SELECT 
+			vh.vendor_id AS vendorId,
+			vr.resource_id AS resourceId,
+			vh.business_name AS businessName,
+			vh.primary_industry_id AS primaryIndustryId,
+			lupi.descr AS primaryIndustryDesc
+		FROM vendor_hdr vh, vendor_resource vr,lu_primary_industry lupi
+		WHERE  vh.vendor_id = vr.vendor_id
+		AND lupi.primary_industry_id = vh.primary_industry_id
+		AND vr.contact_id = #contactId#
+	</select>
+	
+	<select id="api.mobile.user.security" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		SELECT COUNT(*) 
+		FROM vendor_resource 
+		WHERE resource_id=#resourceId#
+	</select>
+	
+	<select id="api.mobile.user.token.security" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		SELECT COUNT(*) 
+		FROM mobile_authorization_token 
+		WHERE outh_token=#outhToken# 
+		AND resource_id=#resourceId# 
+		AND expiry_date <![CDATA[>]]> #serverDateNow# AND token_status='ACTIVE'
+
+	</select>	
+    
+    <update id="token_authenticate_frontend.update" parameterClass="mobileToken" >
+		update mobile_authorization_token set token_status =  'EXPIRED' where resource_id=#resourceId# and token_status=#tokenStatus#
+	</update>
+	
+	<select id="validate_appversion.query" parameterClass="java.util.HashMap" resultMap="appVersionResultMap">
+		SELECT device_os, base_app_version, latest_app_version
+		FROM mobile_app_valid_versions WHERE device_os = #deviceOS#;
+	</select>
+	
+	<select id="getAppPropValue.query" resultClass="java.lang.String" parameterClass="java.util.HashMap">
+		SELECT app_value FROM application_properties WHERE app_key=#appKey#
+	</select>
+
+    <select id="userRoleDetails.query"  resultClass="usrRoleDetails">
+		SELECT lup.activity_name AS activityName,
+		       lup.activity_id   AS activityId,
+		       vr.primary_ind AS primaryInd,
+		       vr.admin_ind AS adminInd,
+		       vr.dispatch_ind AS dispatcherInd
+		FROM   lu_permissions AS lup
+		       JOIN lu_permission_role AS lur
+		         ON ( lur.activity_id = lup.activity_id )
+		       JOIN user_profile AS up
+		         ON up.role_id = lur.role_id
+		       JOIN user_profile_permissions AS upp
+		         ON lur.role_activity_id = upp.role_activity_id
+		            AND up.user_name = upp.user_name
+		       JOIN vendor_resource AS vr
+		         ON vr.user_name = up.user_name
+		         <isNotNull property="userName">
+		            AND vr.user_name = #userName#;  
+		         </isNotNull>
+		         <isNotNull property="resourceId">
+		            AND vr.resource_id = #resourceId#;  
+		         </isNotNull>
+		         
+    </select>
+	
+	<select id="getMobileAppVersions.query" resultClass="appVersionData">
+		SELECT id AS id, device_os AS deviceOS FROM mobile_app_valid_versions
+	</select>	
+	
+	<update id="mobileAppVersions.update" parameterClass="updateMobileAppVerReq">
+		UPDATE mobile_app_valid_versions SET base_app_version=#baseAppVersion#, latest_app_version=#latestAppVersion#, modified_date=NOW(), modified_by= #modifiedBy#
+		WHERE id=#id#
+	</update>
+	<!-- SL-20898 start -->
+<!-- 		code change for SLT-2112 -->
+	<select id="fetchResourceId.select" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT resource_id
+		FROM vendor_resource
+		WHERE user_name=#userName#
+	</select>
+	
+<!-- 	code change for SLT-2112 -->
+	<select id="isResourceIdExistsInBetaTable.select" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT resource_id
+		FROM `beta_role_three_providers`
+		WHERE resource_id=#resourceId#
+	</select>
+	<!-- SL-20898 end -->
+	
+	<select id="getMobileDevice.query"  parameterClass="java.util.HashMap"  resultClass="mobileDevice">
+		SELECT id AS id, device_id AS deviceId, app_version AS currentAppVersion, device_OS AS deviceOS FROM mobile_authorization_token where device_id=#deviceName# AND token_status='ACTIVE'
+	</select>
+	
+	<select id="getMobileAuthToken.query"  parameterClass="java.util.HashMap"  resultClass="java.lang.String">
+		SELECT outh_token FROM mobile_authorization_token where device_id = #deviceName# AND resource_id = #resourceId# AND token_status='ACTIVE'
+	</select>
+	
+	<update id="updateMobileDeviceAppVersion.update" parameterClass="mobileDevice">
+		UPDATE mobile_authorization_token SET app_version=#currentAppVersion#,  device_os=#deviceOS#
+		WHERE id=#id#
+	</update>
+	
+</sqlMap>

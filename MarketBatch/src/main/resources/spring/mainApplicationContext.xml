@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<!-- transaction context -->
+	<import resource="classpath:spring/mainDSTransactionContext.xml" />
+	<import resource="classpath:spring/financeDSTransactionContext.xml" />
+	<import resource="classpath:spring/quartzMainDSTransactionContext.xml" />
+	<import resource="classpath:spring/mainJpaTransactionContext.xml" />
+	<import resource="classpath:spring/quartzSPNTRTransactionContext.xml" />
+
+	<!-- beans from other modules -->
+	<import resource="classpath:resources/spring/backendApplicationContext.xml" />
+	<import resource="classpath:resources/spring/serviceOrderConditionalAutoRouting.xml" />
+	<import resource="classpath:resources/spring/documentAppContext.xml" />
+	<import resource="classpath:spring/stagingApplicationContext.xml" />
+	<import resource="classpath:spring/routingRulesAppContext.xml" />
+	<import resource="classpath:resources/spring/alertAppContext.xml" />
+    <import resource="classpath:com/servicelive/orderfulfillment/client/OrderFulfillmentClientAppContext.xml" />
+    
+	<!-- beans in batch -->
+	<import resource="classpath:spring/batchApplicationContext.xml" />
+	<import resource="classpath:spring/tieredRouteQuartzConfig.xml" />
+	<bean id="trSchedulerAutoStart" class="java.lang.Boolean">
+		<constructor-arg value="true" />
+	</bean>
+</beans>

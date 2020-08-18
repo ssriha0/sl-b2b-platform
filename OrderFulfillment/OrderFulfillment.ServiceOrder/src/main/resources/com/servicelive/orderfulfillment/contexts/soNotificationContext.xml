@@ -1,0 +1,717 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.springframework.org/schema/tx
+                        http://www.springframework.org/schema/tx/spring-tx.xsd"
+    >
+
+    <bean id="notificationTaskProcessor" class="com.servicelive.orderfulfillment.notification.NotificationTaskProcessor">
+        <property name="notificationTaskBuilder" ref="defaultTaskBuilder" />
+        <property name="taskBuilderContextResolver" ref="taskBuilderContextResolver" />
+        <property name="notificationBO" ref="marketPlatformRemoteService" />
+          <property name="serviceOrderDao" ref="serviceOrderDao" />
+    </bean>
+
+    <bean id="notificationTaskProcessorForGroup" class="com.servicelive.orderfulfillment.notification.NotificationTaskProcessor">
+        <property name="notificationTaskBuilder" ref="soGroupTaskBuilder" />
+        <property name="taskBuilderContextResolver" ref="taskBuilderContextResolver" />
+        <property name="notificationBO" ref="marketPlatformRemoteService" />
+          <property name="serviceOrderDao" ref="serviceOrderDao" />
+    </bean>
+
+    <!--  Shared properties for notification beans -->
+    <bean id="SLAddressCodeSet"  class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" abstract="true">
+        <property name="alertFromCode" value="SL" />
+    </bean>
+    
+    <!-- Individual notification bean definitions -->
+    <bean id="providerEmailBase" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext" abstract="true">
+        <property name="dataMapValues">
+            <map>
+                <entry key="CONSUMER" value="N"/>
+                <entry key="ROLE_ID" value="P"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="emailForRoutedSO" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext">
+        <property name="templateId" value="58"/>
+        <property name="estimationTemplateId" value="331"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertBccCode" value="ALL_RVR" />
+            </bean>
+        </property>
+    </bean>
+    
+     <bean id="emailForUpdatedSO" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext">
+        <property name="templateId" value="325"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="AVR" />
+                <property name="alertCcCode" value="PA" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="smsForRoutedSO" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext">
+        <property name="templateId" value="119"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertBccCode" value="ALL_RVR" />
+            </bean>
+        </property>
+    </bean>
+    
+    <bean id="pushAlertForAssignedSO" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext">
+        <property name="templateId" value="333"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="AVR" />
+            </bean>
+        </property>
+        <property name="dataMapValues">
+            <map>
+                <entry key="EVENT_TYPE" value="ORDER_ASSIGNED_TO_PROVIDER"/>
+               
+            </map>            
+        </property>
+    </bean>
+    
+    <bean id="pushAlertForAcceptedCancelledSO" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext">
+        <property name="templateId" value="334"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="AVR" />
+            </bean>
+        </property>
+        <property name="dataMapValues">
+            <map>
+                <entry key="EVENT_TYPE" value="ORDER_CANCELLED"/>
+               
+            </map>            
+        </property>
+    </bean>
+    
+    <bean id="emailForAllRejectSO" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext">
+        <property name="templateId" value="24" />
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="B" />
+                <property name="alertCcCode" value="BA" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="emailForBuyerPostReceipt" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext">
+        <property name="templateId" value="213"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="BA" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="emailForBuyerCondOffrAccept" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext">
+        <property name="templateId" value="41"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="AV" />
+                <property name="alertBccCode" value="AVR" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="emailForProviderCondAccept" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext">
+        <property name="templateId" value="226"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="B" />
+                <property name="alertCcCode" value="BA" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="emailForAcceptSO" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext">
+        <property name="templateId" value="25"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="BP" />
+                <property name="alertCcCode" value="BA" />
+                <property name="alertBccCode" value="PA" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="emailForExpireSO" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext">
+        <property name="templateId" value="73"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="B" />
+                <property name="alertCcCode" value="BA" />
+            </bean>
+        </property>
+    </bean>
+    
+    <bean id="emailBuyerForCreditCardDeposit" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext">
+        <property name="templateId" value="114"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="B" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="emailForAcceptSOForNonAP" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext">
+        <property name="templateId" value="110"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertBccCode" value="ARP" />
+            </bean>
+        </property>
+		<property name="dataMapValues">
+            <map>
+                <entry key="EMAIL_IND" value="N"/>
+               
+            </map>            
+        </property>
+    </bean>
+
+    <bean id="emailForAssurantCancel" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext">
+        <property name="templateId" value="235"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="C_ASSURANT_INCIDENT_CANCEL_REQUEST" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="emailForCompletedSO" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext">
+        <property name="templateId" value="34"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="B" />
+                <property name="alertBccCode" value="BA" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="emailBuyerForCloseSO" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext">
+        <property name="templateId" value="214"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="B" />
+                <property name="alertBccCode" value="BA" />
+            </bean>
+        </property>
+    </bean>
+    <bean id="emailProviderForCloseSO" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext">
+        <property name="templateId" value="56"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="AV" />
+                <property name="alertBccCode" value="PA" />
+            </bean>
+        </property>
+        <property name="dataMapValues">
+            <map>
+                <entry key="CONSUMER" value="N"/>
+                <entry key="ROLE_ID" value="P"/>
+            </map>            
+        </property>
+    </bean>
+
+    <bean id="emailForCancelAcceptedSO" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext">
+        <property name="templateId" value="51"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertFromCode" value="SL" />
+                <property name="alertToCode" value="AVR" />
+                <property name="alertCcCode" value="AV" />
+                <property name="alertBccCode" value="PA" />
+            </bean>
+        </property>
+    </bean>
+
+	<bean id="emailForPendingCancelSO" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext">
+        <property name="templateId" value="294"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertFromCode" value="SL" />
+                <property name="alertToCode" value="AVR" />
+                <property name="alertCcCode" value="AV" />
+                <property name="alertBccCode" value="PA" />
+            </bean>
+        </property>
+    </bean>
+    <bean id="emailForPendingCancelWithdraw" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext">
+        <property name="templateId" value="295"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertFromCode" value="SL" />
+                <property name="alertToCode" value="AVR" />
+                <property name="alertCcCode" value="AV" />
+                <property name="alertBccCode" value="PA" />
+            </bean>
+        </property>
+    </bean>
+    <bean id="emailForBuyerCancelWithPenalty" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext">
+        <property name="templateId" value="215"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertFromCode" value="SL" />
+                <property name="alertToCode" value="BA" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="emailForProviderCancelWithPenalty" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext">
+        <property name="templateId" value="220"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertFromCode" value="SL" />
+                <property name="alertToCode" value="AVR" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="emailForCancelActiveSO" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext">
+        <property name="templateId" value="52"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertFromCode" value="SL" />
+                <property name="alertToCode" value="AVR" />
+                <property name="alertCcCode" value="AV" />
+                <property name="alertBccCode" value="PA" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="emailBuyerForAddNote" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext">
+        <property name="templateId" value="13"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="B" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="emailForSupportNote" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext">
+        <property name="templateId" value="75"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="SL_SUPPORT" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="emailRoutedProvidersForAddNote" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext" parent="providerEmailBase">
+        <property name="templateId" value="13"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="ARP" />
+            </bean>
+        </property>
+    </bean>
+    
+    <bean id="emailAcceptedProvidersForAddNote" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext" parent="providerEmailBase">
+        <property name="templateId" value="13"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="AV" />
+            </bean>
+        </property>
+    </bean>
+    
+    <bean id="emailProviderForRescheduleRequest" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext" parent="providerEmailBase">
+        <property name="templateId" value="35"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="AV" />
+            </bean>
+        </property>
+        <property name="dataMapValues">
+            <map>
+                <entry key="CONSUMER" value="N"/>
+                <entry key="ROLE_ID" value="P"/>
+            </map>
+        </property>
+    </bean>
+    
+      <bean id="emailAutoAcceptBuyerRescheduleRequest" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext" parent="providerEmailBase">
+        <property name="templateId" value="329"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="AV" />
+            </bean>
+        </property>
+        <property name="dataMapValues">
+            <map>
+                <entry key="CONSUMER" value="N"/>
+                <entry key="ROLE_ID" value="P"/>
+            </map>
+        </property>
+    </bean>
+    
+    <bean id="emailBuyerForRescheduleRequest" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext" parent="providerEmailBase">
+        <property name="templateId" value="35"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="BA" />
+            </bean>
+        </property>
+    </bean>
+    
+    <bean id="emailBuyerForCancelRescheduleRequest" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext" parent="providerEmailBase">
+        <property name="templateId" value="47"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="B" />
+            </bean>
+        </property>
+    </bean>
+    
+    <bean id="emailProviderForCancelRescheduleRequest" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext" parent="providerEmailBase">
+        <property name="templateId" value="47"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="AVR" />
+            </bean>
+        </property>
+        <property name="dataMapValues">
+            <map>
+                <entry key="CONSUMER" value="N"/>
+                <entry key="ROLE_ID" value="P"/>
+            </map>
+        </property>
+    </bean>
+    
+    <bean id="emailForAddFunds" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext">
+        <property name="templateId" value="60"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="X" />
+                <property name="alertCcCode" value="BA" />
+                <property name="alertBccCode" value="PA" />            
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="emailForBuyerProblemReport" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext">
+        <property name="templateId" value="26"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="BA" />
+                <property name="alertCcCode" value="BP" />
+                <property name="alertBccCode" value="PA" />            
+            </bean>
+        </property>
+    </bean>
+    
+    <bean id="emailForProviderProblemReport" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext">
+        <property name="templateId" value="26"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="BA" />
+                <property name="alertCcCode" value="BP" />
+                <property name="alertBccCode" value="PA" />            
+            </bean>
+        </property>
+    </bean>
+    
+    <bean id="emailForBuyerProblemResolution" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext">
+        <property name="templateId" value="32"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="BA" />
+                <property name="alertCcCode" value="BP" />
+                <property name="alertBccCode" value="PA" />            
+            </bean>
+        </property>
+    </bean>
+    
+    <bean id="emailForProviderProblemResolution" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext">
+        <property name="templateId" value="32"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="BA" />
+                <property name="alertCcCode" value="BP" />
+                <property name="alertBccCode" value="PA" />            
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="emailForProviderReleaseOrderInAccepted" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext">
+        <property name="templateId" value="64"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="BP" />
+                <property name="alertCcCode" value="BA" />
+                <property name="alertBccCode" value="PA" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="emailForRePostReleasedOrder" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext">
+        <property name="templateId" value="69"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertBccCode" value="PA" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="emailForProviderReleaseOrderInActive" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext">
+        <property name="templateId" value="66"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="B" />
+                <property name="alertCcCode" value="BA" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="emailForRePostReleasedOrderInActive" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext" parent="providerEmailBase">
+        <property name="templateId" value="251"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="AV" />
+                <property name="alertCcCode" value="PA" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="emailForProviderReleaseOrderInProblem" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext">
+        <property name="templateId" value="91"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="BP" />
+                <property name="alertCcCode" value="BA" />
+                <property name="alertBccCode" value="PA" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="emailBuyerForRescheduleResponse" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext" abstract="true">
+        <property name="templateId" value="45" />
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="B" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="emailProviderForRescheduleResponse" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext" abstract="true">
+        <property name="templateId" value="45" />
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="AVR" />
+            </bean>
+        </property>
+        <property name="dataMapValues">
+            <map>
+                <entry key="CONSUMER" value="N"/>
+                <entry key="ROLE_ID" value="P"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="partPickupLocationChanged" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext" abstract="true">
+        <property name="templateId" value="208" />
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="AV" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="changeOfScope" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext" parent="providerEmailBase">
+        <property name="templateId" value="210" />
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="AV" />
+                <property name="alertCcCode" value="PA" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="changeOfLocation" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext" parent="providerEmailBase">
+        <property name="templateId" value="200" />
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="AV" />
+                <property name="alertCcCode" value="PA" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="emailForWalletRequestTimeout" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext">
+        <property name="templateId" value="283"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="A" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="emailBuyerForAcceptReschedule" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext" parent="emailBuyerForRescheduleResponse">
+        <property name="dataMapValues">
+            <map>
+                <entry key="RESPONSE_TO_RESCHEDULE" value="ACCEPTED"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="emailProviderForAcceptReschedule" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext" parent="emailProviderForRescheduleResponse">
+        <property name="dataMapValues">
+            <map>
+                <entry key="RESPONSE_TO_RESCHEDULE" value="ACCEPTED"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="emailBuyerForRejectReschedule" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext" parent="emailBuyerForRescheduleResponse">
+        <property name="dataMapValues">
+            <map>
+                <entry key="RESPONSE_TO_RESCHEDULE" value="DECLINED"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="emailProviderForRejectReschedule" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext" parent="emailProviderForRescheduleResponse">
+        <property name="dataMapValues">
+            <map>
+                <entry key="RESPONSE_TO_RESCHEDULE" value="DECLINED"/>
+            </map>
+        </property>
+    </bean>
+    
+     <bean id="emailProviderForUpdateInstructions" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext" parent="providerEmailBase">
+        <property name="templateId" value="204"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="AV" />
+            </bean>
+        </property>
+    </bean>
+    
+     <bean id="emailProviderForUpdateSODescription" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext" parent="providerEmailBase">
+        <property name="templateId" value="236"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="AV" />
+            </bean>
+        </property>
+    </bean>
+    
+     <bean id="emailProviderForUpdateSOCustomRef" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext" parent="providerEmailBase">
+        <property name="templateId" value="206"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet" parent="SLAddressCodeSet">
+                <property name="alertToCode" value="AV" />
+            </bean>
+        </property>
+    </bean>
+    <!-- End of individual notification beans definition -->
+    <!-- =============================================== -->    
+    
+
+    <!-- Objects implementing notification system functionality -->
+    <bean id="basicSOInfoCollector" class="com.servicelive.orderfulfillment.notification.MainServiceOrderNotificationInfoCollector">
+        <property name="serviceOrderDao" ref="serviceOrderDao"/>
+        <property name="notificationBO" ref="marketPlatformRemoteService"/>
+        <property name="mktPlatformBuyerBO" ref="marketPlatformRemoteService"/>
+        <property name="mktPlatformProviderBO" ref="marketPlatformRemoteService" />
+        <property name="quickLookupCollection" ref="quickLookupCollection" />
+    </bean>
+
+    <bean id="basicSOGroupInfoCollector" class="com.servicelive.orderfulfillment.notification.GroupNotificationInfoCollector">
+        <property name="serviceOrderDao" ref="serviceOrderDao"/>
+        <property name="notificationBO" ref="marketPlatformRemoteService"/>
+        <property name="mktPlatformBuyerBO" ref="marketPlatformRemoteService"/>
+        <property name="mktPlatformProviderBO" ref="marketPlatformRemoteService" />
+        <property name="quickLookupCollection" ref="quickLookupCollection" />
+    </bean>
+
+    <bean id="notificationRecipientsResolver" class="com.servicelive.orderfulfillment.notification.NotificationAddressResolver">
+        <property name="addrFetcherForBuyer" ref="addrFetcherForBuyer" />
+        <property name="addrFetcherForSOCreator" ref="addrFetcherForSOCreator" />
+        <property name="addrFetcherForRoutedProviders" ref="addrFetcherForRoutedProviders" />
+        <property name="addrFetcherForAcceptedVendor" ref="addrFetcherForAcceptedVendor" />
+        <property name="addrFetcherForBuyerAdmin" ref="addrFetcherForBuyerAdmin" />
+        <property name="addrFetcherForProviderAdmin" ref="addrFetcherForProviderAdmin" />
+        <property name="addrFetcherForAssurantFtp" ref="addrFetcherForAssurantFtp" />
+        <property name="addrFetcherForAssurant" ref="addrFetcherForAssurant" />
+        <property name="addrFetcherForServiceLive" ref="addrFetcherForServiceLive" />
+        <property name="addrFetcherForNonAcceptedProviders" ref="addrFetcherForNonAcceptedProviders" />
+        <property name="addrFetcherForServiceLiveSupport" ref="addrFetcherForServiceLiveSupport"/>
+        <property name="addressDelimiter" value=";" />
+    </bean>
+
+    <bean id="defaultValuesMapBuilder" class="com.servicelive.orderfulfillment.notification.NotificationValuesMapBuilder">
+        <property name="mappingId" value="mainMap" />
+        <property name="beanMapper" ref="dozerMapper"/>
+        <property name="checkMapKeyset" value="false" />
+    </bean>
+
+    <bean id="dozerMapper" class="org.dozer.DozerBeanMapper">
+        <property name="mappingFiles">
+            <list><value>com/servicelive/orderfulfillment/mapping/dozerMapping.xml</value></list>
+        </property>
+    </bean>
+
+    <bean id="defaultTaskBuilder" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilder">
+        <property name="notificationInfoCollector" ref="basicSOInfoCollector"/>
+        <property name="recipientsResolver" ref="notificationRecipientsResolver"/>
+        <property name="notificationValuesMapper" ref="defaultValuesMapBuilder"/>
+    </bean>
+
+    <bean id="soGroupTaskBuilder" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilder">
+        <property name="notificationInfoCollector" ref="basicSOGroupInfoCollector"/>
+        <property name="recipientsResolver" ref="notificationRecipientsResolver"/>
+        <property name="notificationValuesMapper" ref="defaultValuesMapBuilder"/>
+    </bean>
+
+    <bean id="taskBuilderContextResolver" class="com.servicelive.orderfulfillment.notification.TaskBuilderContextResolver" />
+
+    <bean id="addrFetcherForBuyer" class="com.servicelive.orderfulfillment.notification.address.AddrFetcherForBuyer">
+        <property name="mktPlatformBuyerBO" ref="marketPlatformRemoteService" />
+    </bean>
+    <bean id="addrFetcherForSOCreator" class="com.servicelive.orderfulfillment.notification.address.AddrFetcherForSOCreator">
+        <property name="mktPlatformBuyerBO" ref="marketPlatformRemoteService" />
+    </bean>
+    <bean id="addrFetcherForRoutedProviders" class="com.servicelive.orderfulfillment.notification.address.AddrFetcherForRoutedProviders">
+        <property name="mktPlatformProviderBO" ref="marketPlatformRemoteService" />
+         <property name="serviceOrderDao" ref="serviceOrderDao"/>
+    </bean>
+    <bean id="addrFetcherForNewRoutedProviders" class="com.servicelive.orderfulfillment.notification.address.AddrFetcherForNewRoutedProviders">
+        <property name="mktPlatformProviderBO" ref="marketPlatformRemoteService" />
+    </bean>
+    <bean id="addrFetcherForNonAcceptedProviders" class="com.servicelive.orderfulfillment.notification.address.AddrFetcherForNonAcceptedProviders">
+        <property name="mktPlatformProviderBO" ref="marketPlatformRemoteService" />
+    </bean>
+    <bean id="addrFetcherForAcceptedVendor" class="com.servicelive.orderfulfillment.notification.address.AddrFetcherForAcceptedVendor">
+        <property name="mktPlatformProviderBO" ref="marketPlatformRemoteService" />
+    </bean>
+    <bean id="addrFetcherForBuyerAdmin" class="com.servicelive.orderfulfillment.notification.address.AddrFetcherForBuyerAdmin">
+        <property name="mktPlatformBuyerBO" ref="marketPlatformRemoteService" />
+    </bean>
+    <bean id="addrFetcherForProviderAdmin" class="com.servicelive.orderfulfillment.notification.address.AddrFetcherForProviderAdmin">
+        <property name="mktPlatformProviderBO" ref="marketPlatformRemoteService" />
+    </bean>
+    <bean id="addrFetcherForAssurantFtp" class="com.servicelive.orderfulfillment.notification.address.AddrFetcherForAssurantFtp" />
+    <bean id="addrFetcherForAssurant" class="com.servicelive.orderfulfillment.notification.address.AddrFetcherForAssurant" >
+        <property name="quickLookupCollection" ref="quickLookupCollection"/>
+    </bean>
+    <bean id="addrFetcherForServiceLive" class="com.servicelive.orderfulfillment.notification.address.AddrFetcherForServiceLive">
+        <property name="serviceLiveEmailAddress" value="noreply@servicelive.com" />
+    </bean>
+    <bean id="addrFetcherForServiceLiveSupport" class="com.servicelive.orderfulfillment.notification.address.AddrFetcherForServiceLive">
+        <property name="serviceLiveEmailAddress" value="serviceordersupport@servicelive.com" />
+    </bean>
+
+    <import resource="classpath:com/servicelive/marketplatform/notification/client/marketPlatformClientApplicationContext.xml" />
+
+</beans>

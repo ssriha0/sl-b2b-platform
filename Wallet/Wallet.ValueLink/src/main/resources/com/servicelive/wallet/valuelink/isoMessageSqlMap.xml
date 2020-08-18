@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="isoMessage">
+
+	<typeAlias alias="iso.messageGenericRecord"	type="com.servicelive.wallet.valuelink.sharp.iso.vo.IsoMessageGenericRecordVO" />
+	
+	<select id="messageTemplate.query" parameterClass="java.lang.String" resultClass="iso.messageGenericRecord">
+		Select template.message_short_alias as messageShortAlias,
+		elements.iso_data_element as isoDataElement,
+		ftype.iso_format_type_descr as isoFormatTypeDescr,
+		assoc.iso_message_default_value as isoMessageValue, 
+		assoc.iso_message_sort_order  as isoMessageSortOrder,
+		ifnull(elements.iso_data_length,0) as  dataLength,
+		dtype.iso_message_data_type as messageDataType
+		from lu_iso_sl_message_template template, 
+		lu_iso_data_elements elements, 
+		lu_iso_format_type ftype, 
+		lu_iso_message_data_element_assoc assoc, lu_iso_message_data_type dtype
+		where template.iso_sl_message_template_id=assoc.iso_message_template_id and 
+		template.message_short_alias = #templateShortAlias# and 
+		elements.iso_data_elements_id=assoc.iso_message_data_element_id and
+		dtype.iso_message_data_type_id=elements.iso_data_type and 
+		ftype.iso_format_type_id=elements.iso_format_type 
+		order by assoc.iso_message_sort_order
+	</select>
+
+</sqlMap>

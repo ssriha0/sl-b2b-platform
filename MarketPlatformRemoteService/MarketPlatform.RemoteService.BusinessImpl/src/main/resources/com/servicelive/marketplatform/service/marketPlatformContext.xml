@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+		                   http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		                   http://www.springframework.org/schema/tx
+		                   http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+		                   http://www.springframework.org/schema/context
+		                   http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+    <context:annotation-config />
+
+    <import resource="classpath:spring/routingRulesAppContext.xml" />
+    <import resource="classpath:com/servicelive/marketplatform/service/marketBackendContext.xml" />
+    <import resource="classpath:com/servicelive/marketplatform/service/serviceOrderContext.xml"/>
+    <import resource="classpath:com/servicelive/marketplatform/service/notificationServiceContext.xml"/>
+    <import resource="classpath:com/servicelive/marketplatform/service/document.xml"/>
+
+    <bean id="mktPlatformProviderBO" class="com.servicelive.marketplatform.service.MarketPlatformProviderBO">
+        <property name="providerDao" ref="mktProviderDao" />
+        <property name="skillTreeDao" ref="skillTreeDao" />
+        <property name="autoRoutingProviderSearchBO" ref="autoRoutingProviderSearchBO" />
+    </bean>
+
+    <bean id="mktPlatformBuyerBO" class="com.servicelive.marketplatform.service.MarketPlatformBuyerBO">
+        <property name="buyerDao" ref="mktBuyerDao" />
+        <property name="buyerResourceDao" ref="buyerResourceDao" />
+        <property name="marketPlatformDocumentBO" ref="mktPlatformDocumentBO" />
+        <property name="buyerCallbackEventsCache" ref="buyerCallbackEventsCache"/>
+    </bean>
+    
+    <bean id="mktPlatformServiceOrderBO" class="com.servicelive.marketplatform.service.MarketPlatformServiceOrderBO">
+        <property name="serviceOrderDao" ref="serviceOrderDao" />
+    </bean>
+
+    <bean id="mktPlatformRoutingRulesBO" class="com.servicelive.marketplatform.service.MarketPlatformRoutingRulesBO">
+        <property name="orderProcessingService" ref="orderProcessingService" />
+        <property name="spnDao" ref="mktSpnDao" />
+    </bean>
+
+    <bean id="mktPlatformCommonLookupBO" class="com.servicelive.marketplatform.service.MarketPlatformCommonLookupBO">
+        <property name="contactDao" ref="mktContactDao" />
+        <property name="geoCodeDao" ref="geoCodeDao" />
+        <property name="appPropDao" ref="appPropDao" />
+    </bean>
+
+    <bean id="mktPlatformDocumentBO" class="com.servicelive.marketplatform.service.MarketPlatformDocumentBO">
+        <property name="documentBO" ref="documentBO" />
+    </bean>
+    
+     <bean id="buyerCallbackEventsCache" class="com.newco.marketplace.business.buyerCallBackEvent.BuyerCallbackEventsCache">
+        <property name="buyerCallbackEventBO" ref="buyerCallbackEventBO" />
+    </bean>
+
+    <bean id="marketPlatformPromoBO" class="com.servicelive.marketplatform.service.MarketPlatformPromoBO">
+        <property name="promoBO" ref="promoBO" />
+    </bean>
+    
+
+    <bean id="mktProviderDao" class="com.servicelive.marketplatform.dao.ProviderDao" />
+    <bean id="mktBuyerDao" class="com.servicelive.marketplatform.dao.BuyerDao" />
+    <bean id="skillTreeDao" class="com.servicelive.marketplatform.dao.SkillTreeDao" />
+    <bean id="buyerResourceDao" class="com.servicelive.marketplatform.dao.BuyerResourceDao" />
+    <bean id="serviceOrderDao" class="com.servicelive.marketplatform.dao.ServiceOrderDao" />
+    <bean id="mktContactDao" class="com.servicelive.marketplatform.dao.ContactDao" />
+    <bean id="geoCodeDao" class="com.servicelive.marketplatform.dao.GeoCodeDao" />
+    <bean id="mktSpnDao" class="com.servicelive.marketplatform.dao.SPNDao" />
+    <bean id="appPropDao" class="com.servicelive.marketplatform.dao.ApplicationPropertyDao" />
+
+</beans>

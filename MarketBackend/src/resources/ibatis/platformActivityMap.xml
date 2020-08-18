@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap>
+
+	<typeAlias alias="balance"
+		type="com.newco.marketplace.vo.activity.SpBalanceReportVO" />
+	<typeAlias alias="fulfillmentReportVO"
+		type="com.newco.marketplace.vo.activity.DailyFulfillmentReportVO" />
+	<typeAlias alias="walletVO"
+		type="com.newco.marketplace.vo.activity.WalletBalanceVO" />
+		
+
+    <resultMap id="spBalanceReportResult" class="balance">
+        <result property="entityTypeId" column="entity_type_id"/>
+        <result property="entityId" column="entity_id"/>
+        <result property="accountType" column="account_type"/>
+        <result property="promoCode" column="promo_code"/>
+        <result property="account" column="v_account"/>
+        <result property="slBalance" column="sl_balance"/>
+        <result property="slBalanceDate" column="sl_balance_date"/>
+        <result property="vlBalance" column="vl_balance"/>
+        <result property="vlBalanceDate" column="vl_balance_date"/>
+    </resultMap>
+
+    <resultMap id="spWalletResult" class="walletVO">
+        <result property="ledgerEntryId" column="ledger_entry_id"/>
+        <result property="transAmount" column="trans_amount"/>
+        <result property="validatedAmount" column="validated_amount"/>
+    </resultMap>
+
+    <parameterMap id="spFulfillmentRptMap" class="java.util.Map">
+        <parameter property="rptDate" mode="IN"/>
+    </parameterMap>
+
+    <parameterMap id="spAvailableBalanceMap" class="java.util.Map">
+        <parameter property="startDate" mode="IN"/>
+        <parameter property="endDate" mode="IN"/>
+        <parameter property="entityType" mode="IN"/>
+        <parameter property="entityId" mode="IN"/>
+    </parameterMap>
+
+    <parameterMap id="spProjectBalanceMap" class="java.util.Map">
+        <parameter property="startDate" mode="IN"/>
+        <parameter property="endDate" mode="IN"/>
+        <parameter property="entityId" mode="IN"/>
+    </parameterMap>
+
+	<procedure id="spBalanceReport" parameterMap="spFulfillmentRptMap" resultMap="spBalanceReportResult">
+       { call sp_balance_report(?) } 
+	</procedure>
+
+	<procedure id="spFulfillmentHealthReport"  parameterMap="spFulfillmentRptMap">
+       { call sp_fulfillment_daily_report(?) } 
+	</procedure>
+
+	<procedure id="spAvailableBalanceVerification" parameterMap="spAvailableBalanceMap" resultMap="spWalletResult">
+       { call sp_availableBalance_verification(?, ?, ?, ?) } 
+	</procedure>
+
+	<procedure id="spProjectBalanceVerification"  parameterMap="spProjectBalanceMap" resultMap="spWalletResult">
+       { call sp_projectBalance_verification(?, ?, ?) } 
+	</procedure>
+	
+	<select id="rpt_fulfillment_daily.select" resultClass="fulfillmentReportVO">
+		SELECT report_day AS reportDay
+		       ,total_entries AS totalEntries
+		       ,unreconciled_entries AS unreconciledEntries
+		       ,total_requests AS total_requests
+		       ,unmatched_responses AS unmatchedResponses
+		  FROM rpt_fulfillment_daily
+		 WHERE report_day <![CDATA[ >= ]]> DATE_FORMAT(DATE_SUB(now(), interval 7 day), '%Y-%m-%d')
+     </select>
+     
+     <select id="uniqueEntity.select" resultClass="java.lang.Integer">
+	   SELECT DISTINCT lte.ledger_entity_id
+				  FROM ledger_transaction_entry lte
+				 WHERE lte.created_date <![CDATA[ > ]]> #startDate#
+				   AND lte.created_date <![CDATA[ < ]]> #endDate#     
+	 </select>
+     
+     <select id="entityType.select" resultClass="java.lang.Integer">
+		SELECT lte.ledger_entity_type_id
+		  FROM ledger_transaction_entry lte
+		 WHERE lte.ledger_entity_id = #entityId#
+		 LIMIT 1
+      </select>
+     
+</sqlMap>

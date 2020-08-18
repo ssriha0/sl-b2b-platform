@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util
+		http://www.springframework.org/schema/util/spring-util.xsd
+	">
+
+	<import resource="classpath:serviceLiveBusLocalJmsContext.xml" />
+	
+	<alias name="localWsmqEventConnectionFactory" alias="eventConnectionFactory"/>
+	<alias name="localWsmqEventTopic" alias="eventTopic"/>
+	
+	<bean id="abstractEventAdapter" class="com.servicelive.bus.EventAdapterFactory"
+		abstract="true">
+		<property name="serviceLiveBusEventLogBO" ref="serviceLiveBusEventLogBO" />
+		<property name="jmsConnectionFactory" ref="eventConnectionFactory" />
+		<property name="jmsTopic" ref="eventTopic" />
+		<property name="durable" value="${slBus.subscribers.durable}" />
+		<property name="subscribersEnabled" value="${slBus.subscribers.enabled}" />
+		<property name="publisherSessionTransacted" value="true" />
+		<property name="subscriberSessionTransacted" value="true" />
+		<property name="classes">
+			<list>
+				<value>com.servicelive.bus.event.ServiceLiveEvent</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="abstractServiceOrderEventAdapter" class="com.servicelive.bus.EventAdapterFactory"
+		abstract="true" parent="abstractEventAdapter">
+		<property name="customEventHeaders">
+			<list>
+				<util:constant static-field="com.servicelive.bus.event.order.ServiceOrderEvent.ORDER_EVENT"/>
+			</list>
+		</property>
+		<property name="classes">
+			<list>
+				<value>com.servicelive.bus.event.order.ServiceOrderEvent</value>
+				<value>com.servicelive.bus.event.ServiceLiveEvent</value>
+				<value>com.servicelive.orderfulfillment.domain.ServiceOrder</value>
+			</list>
+		</property>
+	</bean>
+	
+	<alias name="localHSRWsmqEventConnectionFactory" alias="hsrEventConnectionFactory"/>
+	<alias name="localHSRWsmqEventTopic" alias="hsrEventTopic"/>
+	
+	<bean id="abstractHSREventAdapter" class="com.servicelive.bus.EventAdapterFactory"
+		abstract="true">
+		<property name="serviceLiveBusEventLogBO" ref="serviceLiveBusEventLogBO" />
+		<property name="jmsConnectionFactory" ref="hsrEventConnectionFactory" />
+		<property name="jmsTopic" ref="hsrEventTopic" />
+		<property name="durable" value="${slBus.subscribers.durable}" />
+		<property name="subscribersEnabled" value="${slBus.subscribers.enabled}" />
+		<property name="publisherSessionTransacted" value="true" />
+		<property name="subscriberSessionTransacted" value="true" />
+		<property name="classes">
+			<list>
+				<value>com.servicelive.bus.event.ServiceLiveEvent</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="abstractHSRServiceOrderEventAdapter" class="com.servicelive.bus.EventAdapterFactory"
+		abstract="true" parent="abstractHSREventAdapter">
+		<property name="customEventHeaders">
+			<list>
+				<util:constant static-field="com.servicelive.bus.event.order.ServiceOrderEvent.ORDER_EVENT"/>
+			</list>
+		</property>
+		<property name="classes">
+			<list>
+				<value>com.servicelive.bus.event.order.ServiceOrderEvent</value>
+				<value>com.servicelive.bus.event.ServiceLiveEvent</value>
+				<value>com.servicelive.orderfulfillment.domain.ServiceOrder</value>
+			</list>
+		</property>
+	</bean>
+	
+	<alias name="localAssurantWsmqEventConnectionFactory" alias="assurantEventConnectionFactory"/>
+	<alias name="localAssurantWsmqEventTopic" alias="assurantEventTopic"/>
+	
+	<bean id="abstractAssurantEventAdapter" class="com.servicelive.bus.EventAdapterFactory"
+		abstract="true">
+		<property name="serviceLiveBusEventLogBO" ref="serviceLiveBusEventLogBO" />
+		<property name="jmsConnectionFactory" ref="localAssurantWsmqEventConnectionFactory" />
+		<property name="jmsTopic" ref="assurantEventTopic" />
+		<property name="durable" value="${slBus.subscribers.durable}" />
+		<property name="subscribersEnabled" value="${slBus.subscribers.enabled}" />
+		<property name="publisherSessionTransacted" value="true" />
+		<property name="subscriberSessionTransacted" value="true" />
+		<property name="classes">
+			<list>
+				<value>com.servicelive.bus.event.ServiceLiveEvent</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="abstractAssurantServiceOrderEventAdapter" class="com.servicelive.bus.EventAdapterFactory"
+		abstract="true" parent="abstractAssurantEventAdapter">
+		<property name="customEventHeaders">
+			<list>
+				<util:constant static-field="com.servicelive.bus.event.order.ServiceOrderEvent.ORDER_EVENT"/>
+			</list>
+		</property>
+		<property name="classes">
+			<list>
+				<value>com.servicelive.bus.event.order.ServiceOrderEvent</value>
+				<value>com.servicelive.bus.event.ServiceLiveEvent</value>
+				<value>com.servicelive.orderfulfillment.domain.ServiceOrder</value>
+			</list>
+		</property>
+	</bean>
+	
+	<import resource="classpath:serviceLiveBusPersistenceContextWithDataSource.xml" />
+</beans>

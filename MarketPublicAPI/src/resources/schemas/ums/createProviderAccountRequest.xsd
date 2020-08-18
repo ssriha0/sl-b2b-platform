@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/createProviderAccountRequest" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" targetNamespace="http://www.servicelive.com/namespaces/createProviderAccountRequest" elementFormDefault="qualified" jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+ <xs:include schemaLocation="../common.xsd"/>
+  <xs:element name="createProviderAccountRequest">
+    <xs:complexType>
+      <xs:sequence>
+      <!-- Business Information -->      
+        <xs:element name="legalBusinessName" type="xs:string" minOccurs="0"/>
+        <xs:element name="DBAName" type="xs:string" minOccurs="0"/>
+        <xs:element name="primaryIndustry" type="xs:string" minOccurs="0"/>
+        <xs:element name="websiteAddress" type="xs:string" minOccurs="0"/>
+        <xs:element name="mainBusiPhoneNo1" type="PhoneType" nillable="true" minOccurs="0"/>
+        <xs:element name="mainBusinessExtn" type="xs:string" minOccurs="0"/>        
+        <xs:element name="businessFax1" type="xs:string" minOccurs="0"/>        
+      <!-- Business Address --> 		
+        <xs:element name="businessStreet1" type="xs:string" minOccurs="0"/>
+        <xs:element name="businessStreet2" type="xs:string" minOccurs="0"/>
+        <xs:element name="businessCity" type="xs:string" minOccurs="0"/>
+        <xs:element name="businessState" type="xs:string" minOccurs="0"/>
+        <xs:element name="businessZip" type="xs:string" minOccurs="0"/>
+        <xs:element name="businessAprt" type="xs:string" minOccurs="0"/>        
+      <!-- Mailing Address --> 
+        <xs:element name="mailingStreet1" type="xs:string" minOccurs="0"/>
+        <xs:element name="mailingStreet2" type="xs:string" minOccurs="0"/>
+        <xs:element name="mailingCity" type="xs:string" minOccurs="0"/>
+        <xs:element name="mailingState" type="xs:string" minOccurs="0"/>
+        <xs:element name="mailingZip" type="xs:string" minOccurs="0"/>
+        <xs:element name="mailingAprt" type="xs:string" minOccurs="0"/>        
+      <!-- Primary Contact Information - Administrator -->        
+        <xs:element name="howDidYouHear" type="xs:string" minOccurs="0"/>
+        <xs:element name="promotionCode" type="xs:string" minOccurs="0"/>
+        <xs:element name="roleWithinCom" type="xs:string" minOccurs="0"/>
+        <xs:element name="jobTitle" type="xs:string" minOccurs="0"/>        
+        <xs:element name="serviceCall" type="xs:string" minOccurs="0"/>
+        <xs:element name="firstName" type="xs:string" minOccurs="0"/>
+        <xs:element name="middleName" type="xs:string" minOccurs="0"/>
+        <xs:element name="lastName" type="xs:string" minOccurs="0"/>
+        <xs:element name="nameSuffix" type="xs:string" minOccurs="0"/>
+        <xs:element name="email" type="emailType" />
+        <xs:element name="confirmEmail" type="emailType" />
+        <xs:element name="altEmail" type="emailType"/>
+        <xs:element name="confAltEmail" type="emailType"/>
+        <xs:element name="userName" type="xs:string" minOccurs="0"/>  
+       <!--SL 16934 Adding referralCode to the request object -->
+        <xs:element name="referralCode" type="xs:string" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
+
+
+
+

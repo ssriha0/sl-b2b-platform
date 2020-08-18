@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<!--
+    This file contains declaration of BeanFactories for the BeanFactoryLocator to load
+-->
+<beans>
+    <bean id="Wallet.RemoteService.EJB"
+        class="org.springframework.context.support.ClassPathXmlApplicationContext">
+        <constructor-arg>
+        	<value>classpath:/com/servicelive/wallet/remoteservice/mainApplicationContext.xml</value>
+        </constructor-arg>
+    </bean>
+</beans>
+
+

@@ -1,0 +1,736 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project default="package" name="Builder" >
+
+    <property file="${user.home}/.servicelive/common.properties"/>    
+    <property file="${user.home}/.servicelive/build.properties"/>    
+    <property file="common.properties"/>    
+    <property file="build.properties"/>    
+
+    <target name="package" 
+        depends="init-package-property,-all-projects"/>
+
+    <target name="clean" 
+        depends="init-clean-property,-all-projects,-clean-slcommon-generated"/>
+
+    <target name="-all-projects"
+        depends="MarketFrontend,
+            MarketPublicAPI,
+            ServiceLiveWebUtil,
+            MarketWebService,
+            SPNWeb,
+            MarketBatch,
+            ServiceLive.b2c.web,
+            ActivityLog.Service,
+            OrderFulfillment.Service,
+            MarketServiceBus,
+            MarketPlatformRemoteService.Remote,
+            OrderFulfillment,
+            Wallet.ValueLink.EJB,
+            Wallet.RemoteService,
+            MarketBackend,
+            MarketDocument,
+            OMSStaging,
+            iBatisSqlChecker,
+            MarketTranslator,
+            SpellService,
+            SCMAudit,
+            RoutingRulesWeb,
+            ServiceLive1099,
+            ActivityLog.Test,
+            ServiceLive.b2c.test,
+            OrderFulfillment.Integration,
+            OrderFulfillment.Test,
+            OrderFulfillment.Remote.Test,
+            Wallet.Tests"/>
+
+    <target name="init-package-property">
+        <property name="builder.target" value="package"/>
+    </target>
+
+    <target name="init-clean-property">
+        <property name="builder.target" value="clean"/>
+    </target>
+
+    <!-- 
+    Not all jars are deleted from slcommon/lib/generated upon clean.
+    Fix to ensure this happens. 
+    -->
+    <target name="-clean-slcommon-generated">
+        <delete>
+            <fileset dir="../lib/generated">
+                <include name="*"/>
+            </fileset>
+        </delete>
+    </target>
+
+
+    <target name="MarketFrontend" 
+        depends="ServiceLive.Common,
+            ServiceLive.Lookup,
+            Wallet.ServiceInterface,
+            MarketBusinessInterface,
+            MarketBackend,
+            ResponsysClient,
+            ResponsysInteractClient,
+            OrderFulfillment.Client,
+            OrderFulfillment.Domain,
+            MarketGWTProviderSearch,
+            RoutingRulesWeb,
+            Wallet.Batch,
+            MarketAlertsManager">
+        <ant antfile="build/build.xml" dir="${sl.src}/MarketFrontend" 
+            target="${builder.target}"/>
+    </target>
+
+    <target name="MarketPublicAPI"
+        depends="ServiceLive.Lookup,
+            ServiceLive.Common,
+            MarketAlertsManager,
+            OrderFulfillment.Domain,
+            OrderFulfillment.Client,
+            OrderFulfillment.ServiceInterface">
+        <ant antfile="build/build.xml" dir="${sl.src}/MarketPublicAPI"
+            target="${builder.target}"/>
+    </target>
+
+    <target name="ServiceLiveWebUtil">
+        <ant antfile="build/build.xml" dir="${sl.src}/ServiceLiveWebUtil"
+            target="${builder.target}"/>
+    </target>
+
+    <target name="ResponsysClient">
+        <ant antfile="build/build.xml" dir="${sl.src}/ResponsysClient"
+            target="${builder.target}"/>
+    </target>
+    <target name="ResponsysInteractClient">
+         <ant antfile="build/build.xml" dir="${sl.src}/ResponsysInteractClient"
+            target="${builder.target}"/>
+    </target>
+    <target name="MarketAlertsManager"
+        depends="MarketCommon,
+            ServiceLive.Common">
+        <ant antfile="build/build.xml" dir="${sl.src}/MarketAlertsManager"
+            target="${builder.target}"/>
+    </target>
+
+    <target name="iBatisSqlChecker">
+        <ant antfile="build/build.xml" dir="${sl.src}/iBatisSqlChecker"
+            target="${builder.target}"/>
+    </target>
+
+    <target name="SCMAudit">
+        <ant antfile="build/build.xml" dir="${sl.src}/SCMAudit"
+            target="${builder.target}"/>
+    </target>
+
+    <target name="SPNBackend"
+        depends="ServiceLiveCommonDomain,
+            MarketBusinessInterface,
+            MarketCommon,
+            ResponsysClient,
+            ResponsysInteractClient,
+            MarketAlertsManager,
+            MarketDocument">
+        <ant antfile="build/build.xml" dir="${sl.src}/SPNBackend"
+            target="${builder.target}"/>
+    </target>
+
+    <target name="MarketWebService"
+        depends="MarketBackend,
+            MarketBusinessInterface,
+            MarketCommon,
+            MarketDocument,
+            OMSStaging,
+            RoutingRulesEngine,
+            ServiceLive.Common,
+            ServiceLiveCommonDomain,
+            Wallet.Batch">
+        <ant antfile="build/build.xml" dir="${sl.src}/MarketWebServices"
+             target="${builder.target}" />
+    </target>
+
+    <target name="MarketWebServicesClient">
+        <ant antfile="build/build.xml" dir="${sl.src}/MarketWebServicesClient"
+             target="${builder.target}" />
+    </target>
+
+    <target name="MarketGWTProviderSearch">
+        <ant antfile="build.xml" dir="${sl.src}/MarketGWTProviderSearch"
+             target="${builder.target}" />
+    </target>
+
+    <target name="SPNWeb"
+        depends="ServiceLiveCommonDomain,
+            MarketBusinessInterface,
+            MarketCommon,
+            ResponsysClient,
+            ResponsysInteractClient,
+            MarketAlertsManager,
+            MarketDocument,
+            SPNBackend">
+        <ant antfile="build/build.xml" dir="${sl.src}/SPNWeb"
+             target="${builder.target}"/>
+    </target>
+
+    <target name="MarketBatch"
+        depends="MarketBackend,
+            MarketBusinessInterface,
+            MarketCommon,
+            ServiceLiveCommonDomain,
+            MarketAlertsManager,
+            RoutingRulesEngine,
+            OrderFulfillment.ServiceInterface,
+            OrderFulfillment.Client,
+            OrderFulfillment.Domain">
+        <ant antfile="build/build.xml"   dir="${sl.src}/MarketBatch"
+            target="${builder.target}"/>
+    </target>
+
+    <target name="OrderFulfillment.Service"
+        depends="OrderFulfillment.Domain,
+            OrderFulfillment.ServiceInterface,
+            ServiceLive.Common,
+            Wallet.ServiceInterface,
+            Wallet.RemoteClient,
+            OrderFulfillment.ServiceOrder,
+            MarketPlatform.RemoteService.Common,
+            MarketPlatform.RemoteService.Client,
+            MarketPlatform.RemoteService.BusinessInterface,
+            MarketPlatform.RemoteService.Domain,
+            ServiceLiveCommonDomain,
+            ServiceLiveBus">
+        <ant antfile="build/build.xml" 
+            dir="${sl.src}/OrderFulfillment/OrderFulfillment.Service" 
+            target="${builder.target}"/>
+    </target>
+
+    <target name="OrderFulfillment.ServiceInterface" 
+        depends="OrderFulfillment.Domain">
+        <ant antfile="build/build.xml" 
+            dir="${sl.src}/OrderFulfillment/OrderFulfillment.ServiceInterface" 
+            target="${builder.target}"/>
+    </target>
+
+    <target name="OrderFulfillment.Client"
+        depends="OrderFulfillment.Domain, 
+            OrderFulfillment.ServiceInterface">
+        <ant antfile="build/build.xml" 
+            dir="${sl.src}/OrderFulfillment/OrderFulfillment.Client" 
+            target="${builder.target}"/>
+    </target>
+
+    <target name="OrderFulfillment.ServiceOrder"
+        depends="OrderFulfillment.Domain,
+            OrderFulfillment.ServiceInterface,
+            ServiceLive.Common,
+            Wallet.ServiceInterface,
+            Wallet.RemoteClient,
+            MarketPlatform.RemoteService.Common,
+            MarketPlatform.RemoteService.Client,
+            MarketPlatform.RemoteService.BusinessInterface,
+            MarketPlatform.RemoteService.Domain,
+            ServiceLiveCommonDomain,
+            ServiceLiveBus">
+        <ant antfile="build/build.xml" 
+            dir="${sl.src}/OrderFulfillment/OrderFulfillment.ServiceOrder" 
+            target="${builder.target}"/>
+    </target>
+
+    <target name="MarketServiceBus"
+        depends="OMSStaging,
+            MarketCommon,
+            MarketBusinessInterface,
+            ServiceOrderFileProcess,
+            MarketServiceBus.Mapforce.Code,
+            OrderFulfillment.Domain">
+        <ant antfile="build.xml" 
+            dir="${sl.src}/MarketServiceBus" 
+            target="${builder.target}"/>
+    </target>
+
+    <target name="MarketServiceBus.Mapforce.Code">
+        <ant antfile="build/build.xml" 
+            dir="${sl.src}/MarketServiceBus.Mapforce.Code" 
+            target="${builder.target}"/>
+    </target>
+
+    <target name="SpellService">
+        <ant antfile="build/build.xml" 
+            dir="${sl.src}/SpellService" 
+            target="${builder.target}"/>
+    </target>
+
+    <target name="Wallet.ValueLink.EJB"
+        depends="ServiceLive.Common,
+            Wallet.Common,
+            Wallet.ServiceInterface,
+            ServiceLive.Lookup,
+            Wallet.Alert,
+            Wallet.ValueLink">
+        <ant antfile="build/build.xml" 
+             dir="${sl.src}/Wallet/Wallet.ValueLink.EJB"
+             target="${builder.target}"/>
+    </target>
+
+    <target name="Wallet.ValueLink"
+        depends="Wallet.Common, 
+            ServiceLive.Common, 
+            ServiceLive.Lookup, 
+            Wallet.Alert, 
+            Wallet.ServiceInterface">
+        <ant antfile="build/build.xml" 
+             dir="${sl.src}/Wallet/Wallet.ValueLink"
+             target="${builder.target}"/>
+    </target>
+
+    <target name="MarketPlatform.RemoteService.BusinessInterface"
+        depends="MarketPlatform.RemoteService.Common, 
+            MarketPlatform.RemoteService.Domain, 
+            ServiceLiveCommonDomain, 
+            MarketBusinessInterface, 
+            MarketCommon">
+        <ant antfile="build/build.xml" 
+                dir="${sl.src}/MarketPlatformRemoteService/MarketPlatform.RemoteService.BusinessInterface" 
+                target="${builder.target}"/>
+    </target>
+
+    <target name="MarketPlatform.RemoteService.BusinessImpl"
+        depends="MarketPlatform.RemoteService.Common,
+            MarketPlatform.RemoteService.BusinessInterface,
+            MarketPlatform.RemoteService.Domain,
+            ServiceLiveCommonDomain,ServiceLive.Common,
+            ServiceLive.Lookup,Wallet.ServiceInterface,
+            MarketBusinessInterface,MarketCommon,
+            MarketBackend,
+            RoutingRulesEngine">
+        <ant antfile="build/build.xml" 
+                dir="${sl.src}/MarketPlatformRemoteService/MarketPlatform.RemoteService.BusinessImpl" 
+                target="${builder.target}"/>
+    </target>
+
+    <target name="MarketPlatform.RemoteService.Client"
+        depends="MarketPlatform.RemoteService.Common,
+            MarketPlatform.RemoteService.Domain,
+            MarketPlatform.RemoteService.BusinessInterface,
+            MarketPlatform.RemoteService.BusinessInterface,
+            ServiceLive.Common,
+            ServiceLiveCommonDomain">
+        <ant antfile="build/build.xml" 
+                dir="${sl.src}/MarketPlatformRemoteService/MarketPlatform.RemoteService.Client" 
+                target="${builder.target}"/>
+    </target>
+
+    <target name="OfacWebServiceClient">
+        <ant antfile="build.xml" 
+                dir="${sl.src}/OFACSDN" 
+                target="${builder.target}"/>
+    </target>
+
+    <target name="MarketPlatform.RemoteService.WebServices"
+        depends="MarketPlatform.RemoteService.Common, 
+            MarketPlatform.RemoteService.BusinessInterface, 
+            MarketPlatform.RemoteService.BusinessImpl, 
+            MarketPlatform.RemoteService.Domain, 
+            ServiceLive.Common, 
+            ServiceLive.Lookup, 
+            Wallet.ServiceInterface, 
+            ServiceLiveCommonDomain, 
+            MarketBusinessInterface, 
+            MarketCommon, 
+            MarketBackend, 
+            RoutingRulesEngine, 
+            MarketDocument, 
+            OfacWebServiceClient">
+        <ant antfile="build/build.xml" 
+                dir="${sl.src}/MarketPlatformRemoteService/MarketPlatform.RemoteService.WebServices" 
+                target="${builder.target}"/>
+    </target>
+
+    <target name="MarketPlatform.RemoteService.Notification"
+        depends="MarketPlatform.RemoteService.Common,
+            MarketPlatform.RemoteService.BusinessInterface,
+            MarketPlatform.RemoteService.BusinessImpl,
+            MarketPlatform.RemoteService.Domain,
+            ServiceLiveCommonDomain">
+        <ant antfile="build/build.xml" 
+                dir="${sl.src}/MarketPlatformRemoteService/MarketPlatform.RemoteService.Notification" 
+                target="${builder.target}"/>
+    </target>
+
+    <target name="MarketPlatform.RemoteService.NotificationMDB"
+        depends="MarketPlatform.RemoteService.Common,
+            MarketPlatform.RemoteService.Domain,
+            MarketPlatform.RemoteService.BusinessInterface,
+            MarketPlatform.RemoteService.BusinessImpl,
+            ServiceLiveCommonDomain">
+        <ant antfile="build/build.xml" 
+                dir="${sl.src}/MarketPlatformRemoteService/MarketPlatform.RemoteService.NotificationMDB" 
+                target="${builder.target}"/>
+    </target>
+
+    <target name="MarketPlatform.RemoteService.Domain">
+        <ant antfile="build/build.xml" 
+                dir="${sl.src}/MarketPlatformRemoteService/MarketPlatform.RemoteService.Domain" 
+                target="${builder.target}"/>
+    </target>
+
+    <target name="MarketPlatform.RemoteService.Common"
+        depends="MarketPlatform.RemoteService.Domain,
+            ServiceLiveCommonDomain">
+        <ant antfile="build/build.xml" 
+                dir="${sl.src}/MarketPlatformRemoteService/MarketPlatform.RemoteService.Common" 
+                target="${builder.target}"/>
+    </target>
+
+    <target name="MarketPlatformRemoteService.Remote"
+        depends ="MarketPlatform.RemoteService.Common,
+            MarketPlatform.RemoteService.Domain,
+              MarketPlatform.RemoteService.NotificationMDB,
+              MarketPlatform.RemoteService.Notification,
+              MarketPlatform.RemoteService.WebServices,
+              MarketPlatform.RemoteService.BusinessImpl,
+              MarketPlatform.RemoteService.BusinessInterface,
+              ServiceLiveCommonDomain">
+        <ant antfile="build/build.xml" 
+            dir="${sl.src}/MarketPlatformRemoteService/MarketPlatform.RemoteService" 
+            target="${builder.target}"/>
+    </target>
+
+    <target name="OrderFulfillment"
+        depends="OrderFulfillment.Domain">
+        <ant antfile="build/build.xml" 
+            dir="${sl.src}/OrderFulfillment/OrderFulfillment.Jobs"
+            target="${builder.target}"/> 
+    </target>
+
+    <target name="MarketTranslator"
+        depends="MarketCommon,
+            MarketBusinessInterface,
+            OMSStaging,
+            ServiceOrderFileProcess,
+            MarketWebServicesClient">
+        <ant antfile="build/build.xml" 
+            dir="${sl.src}/MarketTranslator"
+            target="${builder.target}"/> 
+    </target>
+
+    <target name="Wallet.RemoteService"
+        depends="ServiceLive.Common,
+            ServiceLive.Lookup,
+            Wallet.Common,
+            Wallet.ServiceInterface,
+            Wallet.ACH,
+            Wallet.Alert,
+            Wallet.CreditCard,
+            Wallet.Ledger,
+            Wallet.ValueLink,
+            Wallet.Service">
+        <ant antfile="build/build.xml" 
+            dir="${sl.src}/Wallet/Wallet.RemoteService"
+            target="${builder.target}"/>
+    </target>
+
+    <target name="Wallet.Service"
+        depends="ServiceLive.Common,
+            ServiceLive.Lookup,
+            Wallet.Common,
+            Wallet.ACH,
+            Wallet.Ledger,
+            Wallet.ValueLink,
+            Wallet.CreditCard,
+            Wallet.ServiceInterface,
+            Wallet.Alert">
+        <ant antfile="build/build.xml" 
+            dir="${sl.src}/Wallet/Wallet.Service"
+            target="${builder.target}"/>
+    </target>
+
+    <target name="ServiceLiveBus">
+        <ant antfile="build/build.xml" 
+            dir="${sl.src}/ServiceLiveBus"
+            target="${builder.target}"/>
+    </target>
+
+    <target name="ServiceOrderFileProcess"
+        depends="MarketBackend,
+            MarketBusinessInterface,
+            MarketCommon,
+            MarketDocument,
+            RoutingRulesEngine,
+            ServiceLiveCommonDomain,
+            OMSStaging">
+        <ant antfile="build/build.xml" 
+            dir="${sl.src}/ServiceOrderFileProcess"
+            target="${builder.target}"/>
+    </target>
+
+    <target name="Wallet.RemoteClient"
+        depends="ServiceLive.Common,
+            Wallet.ServiceInterface">
+        <ant antfile="build/build.xml" 
+            dir="${sl.src}/Wallet/Wallet.RemoteClient"
+            target="${builder.target}"/>
+    </target>
+
+    <target name="Wallet.Common"
+        depends="ServiceLive.Common">
+        <ant antfile="build/build.xml" 
+            dir="${sl.src}/Wallet/Wallet.Common"
+            target="${builder.target}"/>
+    </target>
+
+    <target name="Wallet.Ledger" 
+        depends="Wallet.Common, 
+            ServiceLive.Common, 
+            ServiceLive.Lookup, 
+            Wallet.ServiceInterface">
+        <ant antfile="build/build.xml" 
+            dir="${sl.src}/Wallet/Wallet.Ledger"
+            target="${builder.target}"/>
+    </target>
+
+    <target name="Wallet.CreditCard"
+        depends="Wallet.ServiceInterface, 
+            Wallet.Common, 
+            ServiceLive.Common">
+        <ant antfile="build/build.xml" 
+            dir="${sl.src}/Wallet/Wallet.CreditCard"
+            target="${builder.target}"/>
+    </target>
+
+    <target name="Wallet.ACH"
+        depends="Wallet.Common,
+            ServiceLive.Common,
+            Wallet.ServiceInterface">
+        <ant antfile="build/build.xml" 
+            dir="${sl.src}/Wallet/Wallet.ACH"
+            target="${builder.target}"/>
+    </target>
+
+    <target name="Wallet.Alert" 
+        depends="ServiceLive.Common">
+        <ant antfile="build/build.xml" 
+            dir="${sl.src}/Wallet/Wallet.Alert"
+            target="${builder.target}"/>
+    </target>
+
+    <target name="Wallet.ServiceInterface" 
+        depends="ServiceLive.Common">
+        <ant antfile="build/build.xml" 
+            dir="${sl.src}/Wallet/Wallet.ServiceInterface"
+            target="${builder.target}"/>
+    </target>
+
+
+    <target name="Wallet.Batch" 
+        depends="ServiceLive.Common">
+        <ant antfile="build/build.xml" 
+            dir="${sl.src}/Wallet/Wallet.Batch"
+             target="${builder.target}"/> 
+    </target>
+
+    <target name="ServiceLive.Common">
+        <ant antfile="build/build.xml" 
+            dir="${sl.src}/Wallet/ServiceLive.Common"
+             target="${builder.target}"/>
+    </target>
+
+    <target name="ServiceLiveCommonDomain">
+        <ant antfile="build/build.xml" 
+            dir="${sl.src}/ServiceLiveCommonDomain"
+             target="${builder.target}"/>
+    </target>
+
+    <target name="RoutingRulesWeb"
+        depends="ServiceLiveCommonDomain,
+            MarketBusinessInterface,
+            MarketCommon,
+            RoutingRulesEngine">
+        <ant antfile="build/build.xml" 
+            dir="${sl.src}/RoutingRulesWeb"
+             target="${builder.target}"/>
+    </target>
+
+    <target name="RoutingRulesEngine">
+        <ant antfile="build/build.xml" 
+            dir="${sl.src}/RoutingRulesEngine"
+             target="${builder.target}"/>
+    </target>
+
+    <target name="ServiceLive.Lookup" 
+        depends="ServiceLive.Common">
+        <ant antfile="build/build.xml" 
+            dir="${sl.src}/Wallet/ServiceLive.Lookup"
+             target="${builder.target}"/>
+    </target>
+
+    <target name="OrderFulfillment.Domain">
+        <ant antfile="build/build.xml" 
+            dir="${sl.src}/OrderFulfillment/OrderFulfillment.Domain"
+             target="${builder.target}"/>
+    </target>
+
+    <target name="MarketBackend"
+        depends="ServiceLiveCommonDomain,
+            RoutingRulesEngine,
+            MarketDocument,
+            OMSStaging">
+        <ant antfile="build/build.xml" 
+            dir="${sl.src}/MarketBackend"
+             target="${builder.target}"/>
+    </target>
+
+    <target name="MarketBusinessInterface">
+        <ant antfile="build/build.xml" 
+            dir="${sl.src}/MarketBusinessInterface"
+             target="${builder.target}"/>
+    </target>
+
+    <target name="MarketCommon"
+        depends="ServiceLive.Common">
+        <ant antfile="build/build.xml" 
+            dir="${sl.src}/MarketCommon"
+             target="${builder.target}"/>
+    </target>
+
+    <target name="ServiceLive1099">
+        <ant antfile="build.xml" 
+            dir="${sl.src}/ServiceLive1099/build"
+             target="${builder.target}"/>
+    </target>
+
+    <target name="MarketDocument"
+        depends="MarketCommon, 
+            MarketBusinessInterface">
+        <ant antfile="build/build.xml" 
+            dir="${sl.src}/MarketDocument"
+             target="${builder.target}"/>
+    </target>
+
+    <target name="OMSStaging">
+        <ant antfile="build/build.xml" 
+            dir="${sl.src}/OMSStaging"
+             target="${builder.target}"/>
+    </target>
+
+    <target name="ActivityLog.Domain">
+        <ant antfile="build/build.xml" 
+            dir="${b2c.src}/ActivityLog.Domain"/>
+    </target>
+
+    <target name="ActivityLog.Client"
+        depends="ActivityLog.Domain">
+        <ant antfile="build/build.xml" 
+            dir="${b2c.src}/ActivityLog.Client"/>
+    </target>
+
+    <target name="ActivityLog.OAuth"
+        depends="ServiceLive.CommonDataAccess">
+        <ant antfile="build/build.xml" 
+            dir="${b2c.src}/ActivityLog.OAuth"/>
+    </target>
+
+    <target name="ActivityLog.Publisher"
+        depends="ActivityLog.Domain">
+        <ant antfile="build/build.xml" 
+            dir="${b2c.src}/ActivityLog.Publisher"/>
+    </target>
+
+    <target name="ActivityLog.Service"
+        depends="ActivityLog.Domain,
+            ActivityLog.OAuth,
+            ServiceLive.CommonDataAccess,
+            ActivityLog.Publisher">
+        <ant antfile="build/build.xml" 
+            dir="${b2c.src}/ActivityLog.Service"/>
+    </target>
+
+    <target name="ServiceLive.CommonDataAccess">
+        <ant antfile="build/build.xml" 
+            dir="${b2c.src}/ServiceLive.CommonDataAccess"/>
+    </target>
+
+    <target name="ServiceLive.b2c.batch"
+        depends="ActivityLog.Client,
+            ActivityLog.Domain,
+            ServiceLive.b2c,
+            ServiceLive.CommonDataAccess">
+        <ant antfile="build/build.xml" 
+            dir="${b2c.src}/ServiceLive.b2c.batch"/>
+    </target>
+
+    <target name="ServiceLive.b2c" 
+        depends="ActivityLog.Domain,
+            ServiceLive.CommonDataAccess">
+        <ant antfile="build/build.xml" 
+            dir="${b2c.src}/ServiceLive.b2c"
+             target="${builder.target}"/> 
+    </target>
+
+    <target name="ServiceLive.b2c.web"
+        depends="ActivityLog.Client,
+            ActivityLog.Domain,
+            ServiceLive.b2c,
+            ServiceLive.CommonDataAccess">
+        <ant antfile="build/build.xml" 
+            dir="${b2c.src}/ServiceLive.b2c.web"
+             target="${builder.target}"/>
+    </target>
+
+    <target name="ActivityLog.Test"
+        depends="ActivityLog.Client,
+            ActivityLog.Domain,
+            ActivityLog.Service,
+            ActivityLog.OAuth,
+            ServiceLive.CommonDataAccess">
+        <ant antfile="build/build.xml" 
+            dir="${b2c.src}/ActivityLog.Test"
+             target="${builder.target}"/>
+    </target>
+
+    <target name="ServiceLive.b2c.test"
+        depends="ServiceLive.b2c,
+            ServiceLive.b2c.batch,
+            ServiceLive.CommonDataAccess">
+        <ant antfile="build/build.xml" 
+            dir="${b2c.src}/ServiceLive.b2c.test"
+             target="${builder.target}"/>
+    </target>
+
+
+    <target name="OrderFulfillment.Integration"
+        depends="OrderFulfillment.Domain,
+            OrderFulfillment.ServiceOrder,
+            OrderFulfillment.ServiceInterface">
+        <ant antfile="build/build.xml" 
+            dir="${sl.src}/OrderFulfillment/OrderFulfillment.Integration"
+             target="${builder.target}"/>
+    </target>
+
+    <target name="OrderFulfillment.Test"
+        depends="">
+        <echo level="warning">No build file currently defined for OrderFulfillment.Test</echo>
+    </target>
+
+    <target name="OrderFulfillment.Remote.Test"
+        depends="">
+        <echo level="warning">No build file currently defined for OrderFulfillment.Remote.Test</echo>
+    </target>
+
+    <target name="Wallet.Tests"
+        depends="ServiceLive.Common,
+            ServiceLive.Lookup,
+            Wallet.Common,
+            Wallet.ACH,
+            Wallet.Ledger,
+            Wallet.ValueLink,
+            Wallet.CreditCard,
+            Wallet.ServiceInterface,
+            Wallet.Alert">
+        <ant antfile="build/build.xml" 
+            dir="${sl.src}/Wallet/Wallet.Tests"
+             target="${builder.target}"/>
+    </target>
+
+</project>

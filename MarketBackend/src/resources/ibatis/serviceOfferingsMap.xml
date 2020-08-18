@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="serviceOfferings">
+ 	<typeAlias alias="serviceOfferingsDTO" type="com.newco.marketplace.dto.vo.serviceOfferings.ManageServiceOfferingsDTO" />
+    <typeAlias alias="serviceOfferingsVO" type="com.newco.marketplace.dto.vo.serviceOfferings.ServiceOfferingsVO" />
+    <typeAlias alias="serviceOfferingPricingVO" type="com.newco.marketplace.dto.vo.serviceOfferings.PricingVO" />
+    <typeAlias alias="serviceOfferingAvailabilityVO" type="com.newco.marketplace.dto.vo.serviceOfferings.AvailabilityVO" />
+    
+	<resultMap id="fetchServiceOfferings.resultMap" class="serviceOfferingsVO">
+		<result property="skuId" column="skuId" />
+		<result property="createdBy" column="createdBy" />
+		<result property="modifiedBy" column="modifiedBy" />
+		<result property="dailyLimit" column="dailyLimit" />
+	    <result property="offeringStatus" column="offeringStatus" />
+	    <result property="offeringId" column="offeringId" />
+	    <result property="serviceRadius" column="serviceRadius" />
+		<result property="availabilityList" column="offeringId"
+				select="fetchServiceOfferingAvailabilityList.query"/>
+		<result property="priceList" column="offeringId"
+				select="fetchServiceOfferingPriceList.query"/>
+	</resultMap>
+	
+	<select id="fetchServiceOfferingAvailabilityList.query"  parameterClass="java.lang.Integer" resultClass="serviceOfferingAvailabilityVO">
+	  SELECT day_of_the_week AS dayOfTheWeek,time_window AS timeWindow
+      FROM service_offerings_availability WHERE service_offering_id=#offeringId# AND delete_ind=0
+	</select>
+	
+	<select id="fetchServiceOfferingPriceList.query"  parameterClass="java.lang.Integer" resultClass="serviceOfferingPricingVO">
+	   SELECT list_price AS price,zipcode AS zipcode,is_center AS isCenter FROM service_offerings_price WHERE service_offering_id=#offeringId# AND delete_ind=0
+	</select>
+	
+ 	<select id="fetchServiceOfferingDetails"  parameterClass="java.util.HashMap" resultMap="fetchServiceOfferings.resultMap">
+  SELECT sku.sku_id AS skuId,
+               offering.created_by AS createdBy,offering.modified_by AS modifiedBy,offering.service_offering_daily_limit AS dailyLimit,offering.offering_status
+                AS offeringStatus,offering.service_offerings_id AS offeringId,offering.service_radius  AS serviceRadius
+                FROM buyer_sku sku
+		JOIN buyer_sku_task skutasks
+		ON (sku.sku_id = skutasks.sku_id
+		AND sku.buyer_id = 3333)
+		JOIN service_offerings offering
+		ON(offering.sku_id=sku.sku_id)
+		WHERE offering.sku_id=#skuId#
+		AND offering.vendor_id=#vendorId#
+ 	</select> 
+ 	
+ 	<select id="fetchServiceOfferingSkuDetails"  parameterClass="java.lang.Integer" resultClass="serviceOfferingsVO">
+    SELECT NULL AS title,NULL AS image,skutasks.task_name AS serviceDescription,sku.sku_id AS skuId
+                FROM buyer_sku sku
+		JOIN buyer_sku_task skutasks
+		ON (sku.sku_id = skutasks.sku_id
+		AND sku.buyer_id = 3333)
+		WHERE sku.sku_id=#skuId#
+ 	</select> 
+ 	
+ 	
+ 	<select id="fetchServiceOfferingAvailabilityForSku"  parameterClass="java.lang.Integer" resultClass="serviceOfferingAvailabilityVO">
+     SELECT availability.service_offering_id AS offeringId,availability.day_of_the_week
+     AS dayOfTheWeek,timewindow.desc AS timeWindowDesc,offerings.vendor_id AS vendorId,
+     availability.time_window AS timeWindow
+     FROM service_offerings offerings JOIN
+     service_offerings_availability availability ON(availability.service_offering_id=offerings.service_offerings_id
+    AND offerings.vendor_id=#vendorId#
+     )
+     JOIN lu_time_window timewindow ON(availability.time_window=timewindow.id)
+     WHERE  delete_ind=0
+ 	</select> 
+ 	 	
+ 	<select id="zipcodeList"  parameterClass="java.util.HashMap" resultClass="java.lang.String">
+SELECT z.zip FROM supplier_prod.zip_geocode z, supplier_prod.zip_geocode z2  WHERE  
+
+                z2.zip = #zipCode# AND  
+
+  TRUNCATE(3956.5450000 * 2 * ATAN2(
+
+             SQRT(SIN(RADIANS(z.latitude - z2.latitude) /2)
+
+                * SIN(RADIANS(z.latitude - z2.latitude) /2) + COS(RADIANS(z2.latitude)) * COS(RADIANS(z.latitude))
+
+                * SIN((RADIANS(z.longitude - z2.longitude)) /2)
+
+                * SIN((RADIANS(z.longitude  - z2.longitude)) /2)),
+
+             SQRT(1 - SIN(RADIANS(z.latitude - z2.latitude) /2)
+
+                * SIN(RADIANS(z.latitude - z2.latitude) /2) + COS(RADIANS(z2.latitude)) * COS(RADIANS(z.latitude))
+
+                * SIN((RADIANS(z.longitude - z2.longitude)) /2)
+
+                * SIN((RADIANS(z.longitude - z2.longitude)) /2))),2) <![CDATA[ <= ]]> #radius# ORDER BY zip ASC
+ 	</select> 	
+ 		
+ <select id="fetchServiceOfferingList"  parameterClass="java.lang.Integer" resultClass="serviceOfferingsDTO">
+ SELECT
+  sku.sku_description AS service,
+  sku.sku             AS sku,
+  lutemplate.descr    AS serviceType,
+   price.list_price AS price,
+   sku.sku_id AS skuId,
+   offerings.offering_status AS STATUS
+	FROM buyer_sku sku
+  JOIN buyer_sku_task skutasks
+    ON (sku.sku_id = skutasks.sku_id
+        AND sku.buyer_id = 3333)
+  	JOIN lu_service_type_template lutemplate
+    ON (lutemplate.service_type_template_id = skutasks.service_type_template_id)
+    LEFT OUTER JOIN service_offerings offerings ON(offerings.sku_id=  sku.sku_id AND 
+    offerings.vendor_id=#vendorId#)
+    LEFT OUTER JOIN service_offerings_price price
+     ON(offerings.service_offerings_id=  price.service_offering_id AND price.is_center=1 
+     AND price.delete_ind=0) 
+ </select> 
+    <select id="fetchServiceOfferingHistory" parameterClass="java.lang.Integer" resultClass="serviceOfferingsVO" >
+      SELECT service_offerings_id AS offeringId,
+             sku_id AS skuId,
+             vendor_id AS vendorId,
+             offering_status AS offeringStatus,
+             action AS action,
+             created_date AS createdDate,
+             modified_date AS modifiedDate,
+             created_by AS createdBy,
+             modified_by AS modifiedBy,
+             service_radius AS serviceRadius,
+             service_offering_daily_limit AS dailyLimit
+      FROM service_offerings_history WHERE service_offerings_id =#offeringId#     
+    </select>
+    
+    <select id="fetchServiceOfferingPriceHistory" parameterClass="java.lang.Integer" resultClass="serviceOfferingPricingVO" >
+      SELECT  service_offering_id AS offeringId,
+              zipcode AS zipcode,
+		      list_price AS price,
+		      created_date AS createdDate,
+		      modified_date AS modifiedDate,
+		      created_by AS createdBy,
+		      modified_by AS modifiedBy, 
+		      is_center AS isCenter,
+		      delete_ind AS deleteInd,
+		      action AS action
+       FROM service_offerings_price_history WHERE service_offering_id=#offeringId#        
+    </select>
+    
+    <select id="fetchServiceOfferingAvailabilityHistory" parameterClass="java.lang.Integer" resultClass="serviceOfferingAvailabilityVO" >
+       SELECT service_offering_id AS offeringId,
+			  day_of_the_week AS dayOfTheWeek,
+			  time_window AS timeWindow,
+			  created_date AS createdDate,
+			  modified_date AS modifiedDate,
+			  created_by AS createdBy,
+			  modified_by AS modifiedBy, 
+			  delete_ind AS deleteInd,
+			  action AS action
+        FROM service_offerings_availability_history WHERE service_offering_id=#offeringId#
+    </select>
+    
+ 	<insert id="insertServiceOffering" parameterClass="serviceOfferingsVO">	
+INSERT INTO service_offerings(sku_id,vendor_id,offering_status,created_date,modified_date,modified_by,service_offering_daily_limit,service_radius)
+               VALUES (#skuId#,#vendorId#,#offeringStatus#,NOW(),NOW(),#modifiedBy#,#dailyLimit#,#serviceRadius#)
+         <selectKey resultClass="int" > 
+			select LAST_INSERT_ID() as value
+		</selectKey>
+	</insert>
+	
+	<insert id="insertServiceOfferingPricing" parameterClass="serviceOfferingPricingVO">	
+INSERT INTO service_offerings_price(service_offering_id,list_price,zipcode,created_date,modified_date,created_by,modified_by)
+               VALUES (#offeringId#,#price#,#zipcode#,NOW(),NOW(),#createdBy#,#modifiedBy#)
+	</insert>
+	
+	<insert id="insertServiceOfferingPricingList" parameterClass="java.util.List">	
+INSERT INTO service_offerings_price(service_offering_id,list_price,zipcode,created_date,modified_date,created_by,modified_by,is_center,delete_ind)
+               VALUES <iterate  conjunction=", ">
+               (#pricing[].offeringId#,#pricing[].price#,#pricing[].zipcode#,NOW(),NOW(),#pricing[].createdBy#,#pricing[].modifiedBy#,#pricing[].isCenter#,0)
+	</iterate>
+	</insert>
+	
+
+	
+	<insert id="insertServiceOfferingAvailability" parameterClass="java.util.List">	
+INSERT INTO service_offerings_availability(service_offering_id,day_of_the_week,time_window,created_date,modified_date,created_by,modified_by,delete_ind)
+VALUES<iterate  conjunction=", ">
+(#availability[].offeringId#,#availability[].dayOfTheWeek#,#availability[].timeWindow#,NOW(),NOW(),#availability[].createdBy#,#availability[].modifiedBy#,0)
+</iterate>
+	</insert>
+ 
+ 
+ <update id="updateOfferingDetails" parameterClass="serviceOfferingsVO">
+		 UPDATE service_offerings SET
+		 modified_date=NOW()
+		 		<isNotNull property="dailyLimit">
+	,service_offering_daily_limit=#dailyLimit#
+		</isNotNull>
+		<isNotNull property="serviceRadius">
+			,service_radius =#serviceRadius#
+		</isNotNull>
+		<isNotNull property="modifiedBy">
+			,modified_by =#modifiedBy#
+		</isNotNull>
+		<isNotNull property="offeringStatus">
+			,offering_status =#offeringStatus#
+		</isNotNull>
+		WHERE service_offerings_id=#offeringId#
+	</update>
+	
+	
+	 <update id="updateOfferingPriceDetails" parameterClass="serviceOfferingPricingVO">
+		  UPDATE service_offerings_price SET
+			modified_date=NOW()
+		 		<isNotNull property="price">
+	,list_price=#price#
+		</isNotNull>
+		<isNotNull property="modifiedBy">
+			,modified_by =#modifiedBy#
+		</isNotNull>
+		WHERE service_offering_id=#offeringId# AND delete_ind=0
+	</update>
+	
+ 	<update id="deleteServiceOfferingPrice" parameterClass="java.lang.Integer">
+		  UPDATE service_offerings_price SET
+			modified_date=NOW(),
+			delete_ind=1
+		WHERE service_offering_id=#offeringId#
+	</update>
+	
+	<update id="deleteServiceOfferingAvailability" parameterClass="java.lang.Integer">
+		  UPDATE service_offerings_availability SET
+			modified_date=NOW(),
+			delete_ind=1
+		WHERE service_offering_id=#offeringId#
+	</update>
+	
+	
+	<select id="getZipCodeAPIDetails" parameterClass="java.util.List" resultClass="java.util.HashMap">
+		SELECT app_constant_key,app_constant_value FROM application_constants WHERE app_constant_key IN
+		<iterate open="(" close=")" conjunction=",">	
+		#[]#
+	</iterate>
+	</select>
+	
+	
+ 
+</sqlMap>

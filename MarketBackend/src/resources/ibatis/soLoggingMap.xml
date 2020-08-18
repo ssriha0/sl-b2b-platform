@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="soLoggingMap">
+	<typeAlias alias="soLoggingVO" type="com.newco.marketplace.dto.vo.logging.SoLoggingVo"/>
+	<typeAlias alias="soLoggingVO2" type="com.newco.marketplace.dto.vo.logging.SoLoggingVo2"/>	
+	
+	<insert id= "soLogging.insert">
+	    INSERT INTO so_logging(
+    		so_id,
+    		action_id,
+	        chg_comment,
+	        role_id,
+	        created_by_name,
+	        modified_by,
+	        entity_id,
+	        new_value)
+	    values 
+	        (#serviceOrderNo#,
+	        #actionId#,
+	        #comment#,
+	        #roleId#,
+	        #createdByName#,
+	        #modifiedBy#,
+	        #entityId#,
+	        #newValue#)
+		 <selectKey resultClass="int" > 
+		   select LAST_INSERT_ID() as value
+		 </selectKey>
+	</insert>
+	
+	<select id= "soLogging.getSOChangeTypes" resultClass="soLoggingVO">
+		SELECT
+	        id,
+	        type,
+	        descr
+	    FROM
+	        lu_so_chg_type
+	</select>
+	<select id="so.getSOChangeDetails" parameterClass="java.lang.String" resultClass="com.newco.marketplace.dto.vo.logging.SoChangeDetailVo">
+		SELECT
+		sl.so_logging_id as soLoggingId,
+		sl.so_id as soId,
+		sl.action_id as actionId,
+		am.action_descr as actionDescription,
+		sl.chg_comment as chgComment,
+		sl.created_date as createdDate,
+		sl.modified_date as modifiedDate,
+		sl.modified_by as modifiedBy,
+		sl.created_by_name as createdByName,
+		sl.entity_id as entityId,     
+		ur.role_name as roleName
+		FROM so_logging sl left outer join user_roles ur on sl.role_id = ur.role_id
+		join lu_action_master am on sl.action_id = am.action_id
+		WHERE
+		so_id=#soId# 
+		AND sl.action_id NOT IN (7,16,17)
+		ORDER BY sl.so_logging_id desc
+	</select>
+
+
+	<select id="so.getSOAutoCloseInformation" parameterClass="java.lang.String" resultClass="com.newco.marketplace.dto.vo.logging.SoAutoCloseDetailVo">
+		SELECT b.rule_status AS ruleStatus,d.rule_name AS ruleName,d.rule_description AS ruleDescription,b.rule_value AS criteriaValue
+		FROM so_auto_close_action a,so_auto_close_rule_status b,auto_close_rule_hdr c,
+		auto_close_rules d,auto_close_rule_criteria e 
+		WHERE a.autoclose_id=b.autoclose_id AND c.auto_close_rule_id=d.auto_close_rule_id 
+		AND b.rule_hdr_id=c.auto_close_rule_hdr_id  AND a.so_id=#soId# AND b.autoclose_id
+		IN(SELECT MAX(autoclose_id) FROM so_auto_close_action WHERE so_id=#soId#)
+	</select>
+
+	<select id="so.getLoggingDetails" parameterClass="java.lang.String"
+		resultClass="soLoggingVO">
+		SELECT sl.role_id as roleId,sl.entity_id as entityId,
+		sl.created_date as createdDate,sl.created_by_name as
+		createdByName, sl.chg_comment as comment,sl.new_value as
+		newValue,am.action_name as actionName FROM so_logging sl join
+		lu_action_master am on sl.action_id = am.action_id WHERE
+		so_id=#soId#
+	</select>
+
+	<select id="so.getRescheduleLoggingDetails" parameterClass="java.lang.String"
+		resultClass="soLoggingVO">
+		SELECT sl.role_id as roleId,sl.entity_id as entityId,
+		sl.created_date as createdDate,sl.created_by_name as
+		createdByName, sl.chg_comment as comment,sl.new_value as
+		newValue,am.action_name as actionName FROM so_logging sl join
+		lu_action_master am on sl.action_id = am.action_id WHERE
+		so_id=#soId# AND sl.action_id=36 AND role_id = 1 
+		order by sl.created_date desc LIMIT 1
+	</select>
+	
+	<select id="so.getProviderUserName" parameterClass="java.lang.Integer"
+		resultClass="java.lang.String">
+	SELECT CONCAT(first_name,' ',last_name) FROM contact c,vendor_resource v WHERE 
+	c.contact_id=v.contact_id AND v.resource_id= #resourceId#
+	</select>
+	
+	<select id="so.getBuyerUserName" parameterClass="java.lang.Integer"
+		resultClass="java.lang.String">
+		SELECT CONCAT(first_name,' ',last_name) FROM contact c,buyer_resource b WHERE 
+	c.contact_id=b.contact_id AND b.resource_id= #resourceId#
+	</select>
+	
+	<select id="so.getRescheduleLoggingDetailsAnyRoles" parameterClass="java.lang.String"
+		resultClass="soLoggingVO2">
+		SELECT sl.role_id as roleId,sl.entity_id as entityId,
+		sl.created_date as createdDate,sl.created_by_name as
+		createdByName, sl.chg_comment as comment,sl.new_value as
+		newValue,am.action_name as actionName FROM so_logging sl join
+		lu_action_master am on sl.action_id = am.action_id WHERE
+		so_id=#soId# AND sl.action_id=36  
+		order by sl.created_date desc LIMIT 1
+	</select>
+	
+</sqlMap>

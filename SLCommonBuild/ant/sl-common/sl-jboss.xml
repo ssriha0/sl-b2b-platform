@@ -1,0 +1,74 @@
+<project name="sl-jboss">
+    <description>
+        JBoss Server configuration figurin's.
+    </description>
+
+
+    <!-- GUESS the location of JBoss servers, nodes, and things to deploy.
+         This makes sense for most developer machines at press time.
+         Feel free to add your path to an <available> entry IF someone else also uses it, 
+           or else override these in your host.properties or ~/asl.properties file.
+
+         You *WILL* want to update the sl-jboss.server.ALIAS.NODE.deployables values as new
+           WAR and EAR projects are introduced.
+
+         See SLCommonBuild/doc for details.
+    -->
+    <property name="sl-jboss.server.aliases" value="main, esb" />
+
+    <available property="sl-jboss.server.main.server-dir" value="/usr/local/jboss/server" file="/usr/local/jboss/server" type="dir" />
+    <available property="sl-jboss.server.main.server-dir" value="/usr/local/jboss-4.0.5.GA/server" file="/usr/local/jboss-4.0.5.GA/server" type="dir" />
+    <property name="sl-jboss.server.main.nodes" value="default" />
+    <property name="sl-jboss.server.main.default.deployables" value="MarketFrontend.war, ServiceLiveWebUtil.war" />
+
+    <available property="sl-jboss.server.esb.server-dir" value="/shc/jbossesb/server" file="/shc/jbossesb/server" type="dir" />
+    <available property="sl-jboss.server.esb.server-dir" value="/shc/jbossesb-server-4.2.1GA/server" file="/shc/jbossesb-server-4.2.1GA/server" type="dir" />
+    <property name="sl-jboss.server.esb.nodes" value="default" />
+    <property name="sl-jboss.server.esb.default.deployables" value="Wallet.ValueLink.EJB.ear, MDB.war" />
+
+    <!-- If true, war/ear files will be exploded rather than copied; only updated files will get unpacked -->
+    <property name="sl-jboss.explode-deployed" value="true" />
+
+
+    <target name="jboss-jar-deploy" depends="dist"
+            description="Copy project and generated jars to jboss exploded war">
+
+        <groovy src="${sl-common.ant-dir}/sl-common/groovy/jboss.groovy" />
+
+        <fail message="Nyet!!!" />
+
+        <fail unless="sl-common.jar-deploy-dir" message="Set sl-common.jar-deploy-dir property in your build.xml, e.g. MarketFrontend.war/WEB-INF/lib" /> 
+        <fail unless="java-war.deploy-dir" message="java-war.deploy-dir must be set from your HOSTNAME.properties file, e.g. /workspace/jboss/server/default/deploy." />
+        <fail unless="java-build.dist-file"  />
+
+        <copy todir="${java-war.deploy-dir}/${sl-common.jar-deploy-dir}" overwrite="true"
+              flatten="true" failonerror="true" verbose="true">
+            <fileset refid="java-build.generated-classpath.fileset" />
+            <fileset file="${java-build.dist-file}" />
+        </copy>
+    </target>
+
+
+    <target name="jboss-war-deploy" depends="war" description="Explode or copy war to appserver deploy area">
+        <groovy src="${sl-common.ant-dir}/sl-common/groovy/jboss.groovy" />
+    </target>
+
+
+    <target name="jboss-war-undeploy" depends="-init"
+            description="Remove WAR from appserver deploy area">
+        <groovy src="${sl-common.ant-dir}/sl-common/groovy/jboss.groovy" />
+    </target>
+
+
+    <target name="jboss-ear-deploy" depends="ear"
+            description="Copy EAR to appserver deploy area">
+        <groovy src="${sl-common.ant-dir}/sl-common/groovy/jboss.groovy" />
+    </target>
+
+
+    <target name="jboss-ear-undeploy"
+            description="Remove EAR from appserver deploy area">
+        <groovy src="${sl-common.ant-dir}/sl-common/groovy/jboss.groovy" />
+    </target>
+
+</project>

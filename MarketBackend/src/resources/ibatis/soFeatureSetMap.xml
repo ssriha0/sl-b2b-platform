@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="serviceOrderFeatuerSet" >
+
+    <cacheModel type="LRU" id="ServiceOrderFeatureSetCache">
+		<flushInterval minutes="1" />
+		<property name="size" value="50" />
+	</cacheModel>
+	
+	<typeAlias alias="soFeatureSet"
+		type="com.newco.marketplace.dto.vo.serviceorder.ServiceOrderFeatureVO" />
+	
+	<select id="serviceOrderFeatureSet.getFeature" parameterClass="java.util.HashMap" resultClass="java.lang.String" >
+		select feature from so_feature_set where so_id = #soID# and feature = #feature# and active_ind = 1
+	</select>
+	
+	<insert id="serviceOrderFeatureSet.insertFeature" parameterClass="soFeatureSet">
+		insert into so_feature_set (so_id, feature, created_date)
+		values (#soId#, #feature#, now())
+	</insert>
+	
+</sqlMap>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="vendorFinance">
+	<typeAlias alias="FinanceProfile" type="com.newco.marketplace.vo.provider.FinanceProfile"/>	
+	
+		<select id="FinanceProfile.query" parameterClass="FinanceProfile" resultClass="FinanceProfile">
+    			select vendor_id as vendorId, 
+				bankruptcy as haveBeenBankrupt,
+				bankruptcy_date as bankruptcyDate,
+				sale_volume as annualSalesVolume, 
+				budgeting as haveAnnualBudget,
+				audit as haveAuditedBooks
+				from vendor_finance
+				where vendor_id =#vendorId#
+				
+		</select>
+	
+	<update id="FinanceProfile.update" parameterClass="FinanceProfile">
+		update vendor_finance
+		set
+			vendor_id = #vendorId#,
+			audit = #haveAuditedBooks#,
+			bankruptcy = #haveBeenBankrupt#,
+			bankruptcy_date = #bankruptcyDate#,
+			sale_volume = #annualSalesVolume#,
+			budgeting = #haveAnnualBudget#
+		where vendor_id = #vendorId#
+	</update>
+	
+		<insert id="FinanceProfile.insert" parameterClass="FinanceProfile">
+		insert into vendor_finance
+			(vendor_id, 
+			audit,
+			bankruptcy,
+			bankruptcy_date,
+			sale_volume,
+			budgeting)
+		values(#vendorId#,
+			   #haveAuditedBooks#,
+			   #haveBeenBankrupt#,
+			   #bankruptcyDate#,
+			   #annualSalesVolume#,
+			   #haveAnnualBudget#)
+		</insert>
+</sqlMap>

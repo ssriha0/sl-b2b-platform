@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	
+	<!-- ######################DAO ############################################ -->
+
+	<bean id="buyerCallbackEventDaoImpl"
+		class="com.newco.marketplace.persistence.daoImpl.buyerCallbackEvent.BuyerCallbackEventDaoImpl"
+		lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+
+	<bean id="buyerCallbackEventBOImpl"
+		class="com.newco.marketplace.business.buyerCallBackEvent.BuyerCallbackEventBOImpl"
+		lazy-init="true">
+		<property name="buyerCallbackEventDao">
+			<ref bean="buyerCallbackEventDaoImpl" />
+		</property>
+	</bean>
+	
+	 <bean id="buyerCallbackEventsCache" class="com.newco.marketplace.business.buyerCallBackEvent.BuyerCallbackEventsCache">
+        <property name="buyerCallbackEventBO" ref="buyerCallbackEventBOImpl" />
+    </bean>
+	
+	<!-- DAO for filter service implementation-->
+	
+	<bean id="BuyerEventCallbackBO"  class="com.newco.marketplace.business.businessImpl.buyerEventCallback.BuyerEventCallbackBOImpl">
+	     <property name="buyerEventCallbackDao">
+			<ref bean="buyerEventCallbackDao" />
+		</property>
+	</bean>
+	
+	<bean id="buyerEventCallbackDao"
+		class="com.newco.marketplace.persistence.daoImpl.buyerEventCallback.BuyerEventCallbackDaoImpl"
+		lazy-init="true">
+	 	<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+</beans>

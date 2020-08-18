@@ -1,0 +1,11 @@
+<project name="SPNWeb" default="war-junit" basedir="..">
+	<property name="java-war.dist-filename"     value="spn.war"/>
+	<property name="java-war.web-content-dir"   location="WebRoot"/>
+	<property name="java-war.web-xml"           location="WebRoot/WEB-INF"/>
+	<property name="java-war.webapp-name"       location="spn"/>
+    <import file="../../SLCommonBuild/ant/sl-common/sl-common.xml"/>
+	 
+	<target name="package" depends="war-junit"/>
+
+</project>
+

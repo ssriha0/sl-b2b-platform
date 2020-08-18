@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<bean id="licensesAndCertDto" class="com.newco.marketplace.web.dto.provider.LicensesAndCertDto" scope="prototype"/>
+	
+	<bean id="licensesAndCertMapper" class="com.newco.marketplace.web.utils.LicensesAndCertMapper" scope="prototype"/>
+ 	
+	<bean name="licensesAndCertDelegates" class="com.newco.marketplace.web.delegatesImpl.provider.LicensesAndCertDelegateImpl">
+		<constructor-arg index="0" ref="iLicensesAndCertBO"/>  
+		<constructor-arg index="1" ref="licensesAndCertMapper"/>
+	</bean>
+	
+	<bean id="licensesDto" class="com.newco.marketplace.web.dto.provider.LicensesDto" scope="prototype"/>
+	
+	<bean id="licensesMapper" class="com.newco.marketplace.web.utils.LicensesMapper" scope="prototype"/>
+	
+	<bean id="licensesDelegateImpl" class="com.newco.marketplace.web.delegatesImpl.provider.LicensesDelegateImpl" scope="prototype">
+			<constructor-arg index="0" ref="licensesMapper"/>
+			<constructor-arg index="1" ref="licensesBOImpl"/>			
+	</bean>
+	
+</beans>

@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+    <typeAlias alias="shopifyDetailVO"
+        type="com.servicelive.wallet.batch.gl.vo.ShopifyDetailsVO" />
+        
+    <procedure id="insertSHCGLHistory.storeproc" parameterClass="java.lang.Integer">
+        {CALL sp_SHCGeneralLedgerHistory(#glProcessLogId#)}
+    </procedure>
+        
+    <update id="so_price.gl_process_id.update" parameterClass="java.util.HashMap">
+        UPDATE so_price 
+        SET gl_process_id = #glProcessId#
+        WHERE
+            so_id IN
+           <iterate property="soIdList" open="(" close=")"
+                conjunction=",">
+                #soIdList[]#
+           </iterate>
+    </update>
+    
+    <select id="getRelayOrderDetailsLedger.select" parameterClass="java.util.HashMap" 
+        resultClass="shopifyDetailVO">
+        SELECT l.so_id as soId, #status# as status, t.transaction_id AS ledgerTransId, g.transaction_id AS shopifyTransId,
+        price.tax_percent_parts_spend_limit as taxPercentParts, price.tax_percent_labor_spend_limit as taxPercentLabor,
+       t.trans_amount as relayTotalPrice, price.discounted_spend_limit_labor as finalLaborPrice, 
+       price.discounted_spend_limit_parts as finalPartsPrice , price.total_addon_price_gl as finalAddonPrice
+			FROM   supplier_prod.so_hdr h  
+			JOIN supplier_prod.so_price price ON h.so_id = price.so_id
+			JOIN accounts_prod.ledger_entry l ON h.so_id = l.so_id
+			JOIN accounts_prod.ledger_transaction_entry t  ON l.ledger_entry_id = t.ledger_entry_id
+			LEFT OUTER JOIN accounts_prod.shopify_gl_detail g ON g.transaction_id = t.transaction_id
+			WHERE t.entry_type_id = 1 
+       AND l.ledger_entry_rule_id IN
+       <iterate property="ruleList" open="(" close=")"
+                conjunction=",">
+                #ruleList[]#
+           </iterate>
+        <isEqual property="status" compareValue="Created">
+            and ((price.shopify_gl_state is null    
+                    and h.routed_date <![CDATA[ >= ]]> #startDate#
+                    and h.routed_date <![CDATA[ < ]]> #endDate#)
+                or 
+                    (price.shopify_gl_state = 'ECREATED'))
+        </isEqual> 
+        <isEqual property="status" compareValue="Increase">
+            and ((price.shopify_gl_state IN ('CREATED','INCREASE','DECREASE'))
+                or 
+                    (price.shopify_gl_state = 'EINCREASE'))
+        </isEqual> 
+        <isEqual property="status" compareValue="Decrease">
+            and ((price.shopify_gl_state IN ('CREATED','INCREASE','DECREASE'))
+                or 
+                    (price.shopify_gl_state = 'EDECREASE'))
+        </isEqual> 
+        <isEqual property="status" compareValue="Cancelled">
+            and ((price.shopify_gl_state IN ('CREATED','INCREASE','DECREASE'))
+                or 
+                    (price.shopify_gl_state = 'ECANCELLED'))
+        </isEqual>
+        <isEqual property="status" compareValue="Closed">
+            and ((price.shopify_gl_state IN ('CREATED','INCREASE','DECREASE','CANCELLED'))
+                or 
+                    (price.shopify_gl_state = 'ECLOSED'))
+        </isEqual>                                
+       AND h.buyer_id = #buyerId#
+       AND l.entry_date <![CDATA[ >= ]]> #startDate#
+       AND l.entry_date <![CDATA[ < ]]> #endDate#
+       AND g.transaction_id IS NULL
+     </select>    
+    
+    <select id="getRelayOrderDetails.select" parameterClass="java.util.HashMap" 
+        resultClass="shopifyDetailVO">
+        
+        select 
+            hdr.so_id as soId,hdr.spend_limit_labor as spendLimitLabor,hdr.spend_limit_parts as spendLimitParts,
+            hdr.final_price_labor as finalLaborPrice,hdr.final_price_parts as finalPartsPrice, price.tax_percent_parts_spend_limit
+            as taxPercentParts, price.tax_percent_labor_spend_limit as taxPercentLabor,
+            <isEqual property="status" compareValue="Created">
+                hdr.created_date as createdDate,
+                'CREATED' as status,
+            </isEqual>
+            <isEqual property="status" compareValue="Deleted">
+                hdr.deleted_date as createdDate,
+                'CANCELLED' as status,
+            </isEqual>
+            <isEqual property="status" compareValue="Voided">
+                hdr.voided_date as createdDate,
+                'CANCELLED' as status,
+            </isEqual>
+            <isEqual property="status" compareValue="Cancelled">
+                hdr.cancelled_date as createdDate,
+                'CANCELLED' as status,
+            </isEqual>
+            <isEqual property="status" compareValue="Closed">
+                hdr.closed_date as createdDate,
+                'CLOSED' as status,
+            </isEqual>
+            (
+                select ref.buyer_ref_value
+                from so_custom_reference ref
+                join buyer_reference_type type
+                    on ref.buyer_ref_type_id = type.buyer_ref_type_id
+                where hdr.so_id = ref.so_id
+                and type.ref_type = 'D2C Order Number'
+            ) as relayOrderNumber,
+            
+            (
+                select ref.buyer_ref_value
+                from so_custom_reference ref
+                join buyer_reference_type type
+                    on ref.buyer_ref_type_id = type.buyer_ref_type_id
+                where hdr.so_id = ref.so_id
+                and type.ref_type = 'D2C Order Total Price'
+            ) as relayTotalPrice,
+            
+            (
+                select ref.buyer_ref_value
+                from so_custom_reference ref
+                join buyer_reference_type type
+                    on ref.buyer_ref_type_id = type.buyer_ref_type_id
+                where hdr.so_id = ref.so_id
+                and type.ref_type = 'D2C Order Total Tax'
+            ) as relayTotalTax
+            
+        from so_hdr hdr 
+        join so_price price
+            on hdr.so_id = price.so_id        
+        where hdr.buyer_id = 3333
+        <isEqual property="status" compareValue="Created">
+            and ((price.shopify_gl_state is null    
+                    and hdr.created_date <![CDATA[ >= ]]> #startDate#
+                    and hdr.created_date <![CDATA[ < ]]> #endDate#)
+                or 
+                    (price.shopify_gl_state = 'ECREATED'))
+        </isEqual>
+        <isEqual property="status" compareValue="Deleted">
+            and hdr.wf_state_id = 105
+            and ((price.shopify_gl_state = 'CREATED'
+                    and hdr.deleted_date <![CDATA[ < ]]> #endDate#)
+                or
+                    (price.shopify_gl_state = 'ECANCELLED'))
+        </isEqual>
+        <isEqual property="status" compareValue="Voided">
+            and hdr.wf_state_id = 125
+            and ((price.shopify_gl_state = 'CREATED'
+                    and hdr.voided_date <![CDATA[ < ]]> #endDate#)
+                or
+                    (price.shopify_gl_state = 'ECANCELLED'))
+        </isEqual>
+        <isEqual property="status" compareValue="Cancelled">
+            and hdr.wf_state_id = 120
+            and ((price.shopify_gl_state = 'CREATED'
+                    and hdr.cancelled_date <![CDATA[ < ]]> #endDate#)
+                or
+                    (price.shopify_gl_state = 'ECANCELLED'))
+        </isEqual>
+        <isEqual property="status" compareValue="Closed">
+            and hdr.wf_state_id = 180
+            and ((price.shopify_gl_state = 'CREATED'
+                    and hdr.closed_date <![CDATA[ < ]]> #endDate#)
+                or
+                    (price.shopify_gl_state = 'ECLOSED'))
+        </isEqual>
+    </select>    
+    
+    <select id="getShopifyOrderDetails.select" parameterClass="java.util.HashMap" 
+        resultClass="shopifyDetailVO">
+        
+        select 
+            hdr.primary_skill_category_id as category,
+            hdr.so_id as soId,
+            <isEqual property="status" compareValue="Created">
+                hdr.created_date as createdDate,
+                'CREATED' as status,
+            </isEqual>
+            <isEqual property="status" compareValue="Deleted">
+                hdr.deleted_date as createdDate,
+                'CANCELLED' as status,
+            </isEqual>
+            <isEqual property="status" compareValue="Voided">
+                hdr.voided_date as createdDate,
+                'CANCELLED' as status,
+            </isEqual>
+            <isEqual property="status" compareValue="Cancelled">
+                hdr.cancelled_date as createdDate,
+                'CANCELLED' as status,
+            </isEqual>
+            <isEqual property="status" compareValue="Closed">
+                hdr.closed_date as createdDate,
+                'CLOSED' as status,
+            </isEqual>
+            (
+                select ref.buyer_ref_value
+                from so_custom_reference ref
+                join buyer_reference_type type
+                    on ref.buyer_ref_type_id = type.buyer_ref_type_id
+                where hdr.so_id = ref.so_id
+                and type.ref_type = 'Shopify Order Number'
+            ) as shopifyOrderNumber,
+            
+            (
+                select ref.buyer_ref_value
+                from so_custom_reference ref
+                join buyer_reference_type type
+                    on ref.buyer_ref_type_id = type.buyer_ref_type_id
+                where hdr.so_id = ref.so_id
+                and type.ref_type = 'Shopify Order SKU Price1'
+            ) as price1,
+            
+            (
+                select ref.buyer_ref_value
+                from so_custom_reference ref
+                join buyer_reference_type type
+                    on ref.buyer_ref_type_id = type.buyer_ref_type_id
+                where hdr.so_id = ref.so_id
+                and type.ref_type = 'Shopify Order SKU Price2'
+            ) as price2,
+            
+            (
+                select ref.buyer_ref_value
+                from so_custom_reference ref
+                join buyer_reference_type type
+                    on ref.buyer_ref_type_id = type.buyer_ref_type_id
+                where hdr.so_id = ref.so_id
+                and type.ref_type = 'Shopify Order SKU Price3'
+            ) as price3,
+            
+            (
+                select ref.buyer_ref_value
+                from so_custom_reference ref
+                join buyer_reference_type type
+                    on ref.buyer_ref_type_id = type.buyer_ref_type_id
+                where hdr.so_id = ref.so_id
+                and type.ref_type = 'Shopify Order SKU Price4'
+            ) as price4
+            
+        from so_hdr hdr 
+        join so_price price
+            on hdr.so_id = price.so_id        
+        where hdr.buyer_id = 9000
+        <isEqual property="status" compareValue="Created">
+            and hdr.wf_state_id is not null 
+            and ((price.shopify_gl_state is null    
+                    and hdr.created_date <![CDATA[ >= ]]> #startDate#
+                    and hdr.created_date <![CDATA[ < ]]> #endDate#)
+                or 
+                    (price.shopify_gl_state = 'ECREATED'))
+        </isEqual>
+        <isEqual property="status" compareValue="Deleted">
+            and hdr.wf_state_id = 105
+            and ((price.shopify_gl_state = 'CREATED'
+                    and hdr.deleted_date <![CDATA[ < ]]> #endDate#)
+                or
+                    (price.shopify_gl_state = 'ECANCELLED'))
+        </isEqual>
+        <isEqual property="status" compareValue="Voided">
+            and hdr.wf_state_id = 125
+            and ((price.shopify_gl_state = 'CREATED'
+                    and hdr.voided_date <![CDATA[ < ]]> #endDate#)
+                or
+                    (price.shopify_gl_state = 'ECANCELLED'))
+        </isEqual>
+        <isEqual property="status" compareValue="Cancelled">
+            and hdr.wf_state_id = 120
+            and ((price.shopify_gl_state = 'CREATED'
+                    and hdr.cancelled_date <![CDATA[ < ]]> #endDate#)
+                or
+                    (price.shopify_gl_state = 'ECANCELLED'))
+        </isEqual>
+        <isEqual property="status" compareValue="Closed">
+            and hdr.wf_state_id = 180
+            and ((price.shopify_gl_state = 'CREATED'
+                    and hdr.closed_date <![CDATA[ < ]]> #endDate#)
+                or
+                    (price.shopify_gl_state = 'ECLOSED'))
+        </isEqual>
+    </select>
+    
+    <update id="status.update" parameterClass="shopifyDetailVO">
+               UPDATE so_price
+               SET shopify_gl_state=#status#
+               WHERE so_id=#soId#    
+    </update>
+    
+</sqlMap>

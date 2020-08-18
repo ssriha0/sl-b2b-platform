@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="../" default="compile-dependencies" name="Wallet.RemoteService-Buildall" >
+	<target name="compile-dependencies" >
+		<ant antfile="../../Wallet/ServiceLive.Common/wildfly-build/build.xml" dir="../../Wallet/ServiceLive.Common" target="clean"/>
+		<ant antfile="../../Wallet/ServiceLive.Lookup/wildfly-build/build.xml" dir="../../Wallet/ServiceLive.Lookup" target="clean"/>
+		<ant antfile="../../Wallet/Wallet.ServiceInterface/wildfly-build/build.xml" dir="../../Wallet/Wallet.ServiceInterface" target="clean"/>
+		<ant antfile="../../Wallet/Wallet.Common/wildfly-build/build.xml" dir="../../Wallet/Wallet.Common" target="clean"/>
+		<ant antfile="../../Wallet/Wallet.ACH/wildfly-build/build.xml" dir="../../Wallet/Wallet.ACH" target="clean"/>
+		<ant antfile="../../Wallet/Wallet.Alert/wildfly-build/build.xml" dir="../../Wallet/Wallet.Alert" target="clean"/>
+		<ant antfile="../../Wallet/Wallet.CreditCard/wildfly-build/build.xml" dir="../../Wallet/Wallet.CreditCard" target="clean"/>
+		<ant antfile="../../Wallet/Wallet.Ledger/wildfly-build/build.xml" dir="../../Wallet/Wallet.Ledger" target="clean"/>
+		<ant antfile="../../Wallet/Wallet.ValueLink/wildfly-build/build.xml" dir="../../Wallet/Wallet.ValueLink" target="clean"/>
+		<ant antfile="../../Wallet/Wallet.Service/wildfly-build/build.xml" dir="../../Wallet/Wallet.Service" target="clean"/>
+		<ant antfile="../../Wallet/Wallet.RemoteService/wildfly-build/build.xml" dir="../../Wallet/Wallet.RemoteService" target="clean"/>
+
+		<ant antfile="../../Wallet/ServiceLive.Common/wildfly-build/build.xml" dir="../../Wallet/ServiceLive.Common"/>
+		<ant antfile="../../Wallet/ServiceLive.Lookup/wildfly-build/build.xml" dir="../../Wallet/ServiceLive.Lookup"/>
+		<ant antfile="../../Wallet/Wallet.ServiceInterface/wildfly-build/build.xml" dir="../../Wallet/Wallet.ServiceInterface"/>
+		<ant antfile="../../Wallet/Wallet.Common/wildfly-build/build.xml" dir="../../Wallet/Wallet.Common"/>
+		<ant antfile="../../Wallet/Wallet.ACH/wildfly-build/build.xml" dir="../../Wallet/Wallet.ACH"/>
+		<ant antfile="../../Wallet/Wallet.Alert/wildfly-build/build.xml" dir="../../Wallet/Wallet.Alert"/>
+		<ant antfile="../../Wallet/Wallet.CreditCard/wildfly-build/build.xml" dir="../../Wallet/Wallet.CreditCard"/>
+		<ant antfile="../../Wallet/Wallet.Ledger/wildfly-build/build.xml" dir="../../Wallet/Wallet.Ledger"/>
+		<ant antfile="../../Wallet/Wallet.ValueLink/wildfly-build/build.xml" dir="../../Wallet/Wallet.ValueLink"/>
+		<ant antfile="../../Wallet/Wallet.Service/wildfly-build/build.xml" dir="../../Wallet/Wallet.Service"/>
+		<ant antfile="../../Wallet/Wallet.RemoteService/wildfly-build/build.xml" dir="../../Wallet/Wallet.RemoteService"/>
+	</target>
+</project>
+	

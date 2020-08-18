@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="network.spnProviderFirmState">
+		<typeAlias alias="sPNProviderFirmStateVO" type="com.servicelive.spn.auditor.vo.SPNProviderFirmStateVO"/>
+		<typeAlias alias="sPNServiceProviderStateVO" type="com.servicelive.spn.auditor.vo.SPNServiceProviderStateVO"/>
+		<typeAlias alias="spnMeetAndGreetStateVO" type="com.servicelive.spn.auditor.vo.SPNMeetAndGreetStateVO"/>
+		<typeAlias alias="sPNProviderFirmStateOverrideVO" type="com.servicelive.spn.auditor.vo.SPNProviderFirmStateOverride"/>
+		<typeAlias alias="sPNServiceProviderStateOverrideVO" type="com.servicelive.spn.auditor.vo.SPNServiceProviderStateOverride"/>
+		
+		<resultMap class="sPNProviderFirmStateVO" id="spnProviderFirmStateVO.resultsmap">
+			<result property="spnId" column="spn_id" />
+			<result property="firmId" column="provider_firm_id" />
+			<result property="modifiedDate" column="modified_date" />
+			<result property="createdDate" column="created_date" />
+			<result property="modifiedBy" column="modified_by" />
+			<result property="wfState" column="provider_wf_state" />
+			<result property="applicationSubmissionDate" column="app_submission_date" />
+			<result property="agreementInd" column="agreement_ind" />
+			<result property="optOutReason" column="opt_out_reason_code" />
+			<result property="optOutComment" column="opt_out_comment" />
+			<result property="reviewedDate" column="reviewed_date" />
+			<result property="reviewedBy" column="reviewed_by" />
+			<result property="comment" column="comments" />
+			<result property="statusOverrideReasonId" column="status_override_reason_id" />
+			<result property="statusOverrideComments" column="status_override_comments" />
+			<result property="statusActionId" column="status_update_action_id" />
+			<result property="statusOverrideState" column="status_override_state" />
+			<result property="auditRequired" column="audit_required" />
+			<result property="performanceScore" column="performance_score" />
+			<result property="overrideInd" column="status_override_ind" />
+		</resultMap>
+		
+		<resultMap class="sPNServiceProviderStateVO" id="sPNServiceProviderStateVO.resultsmap">
+			<result property="spnId" column="spn_id" />
+			<result property="serviceProviderId" column="service_provider_id" />
+			<result property="modifiedDate" column="modified_date" />
+			<result property="createdDate" column="created_date" />
+			<result property="modifiedBy" column="modified_by" />
+			<result property="providerWfState" column="provider_wf_state" />
+			<result property="performanceLevel" column="perf_level" />
+			<result property="statusOverrideReasonId" column="status_override_reason_id" />
+			<result property="statusOverrideComments" column="status_override_comments" />
+			<result property="statusUpdateActionId" column="status_update_action_id" />
+			<result property="performanceLevelChangeComments" column="pf_level_change_comments" />
+			<result property="performanceScore" column="performance_score" />
+			<result property="overrideInd" column="status_override_ind" />
+		</resultMap>
+		
+		<resultMap class="spnMeetAndGreetStateVO" id="spnMeetAndGreetStateVO.resultsmap">
+			<result property="spnId" column="spn_id" />
+			<result property="providerFirmId" column="prov_firm_id" />
+			<result property="modifiedDate" column="modified_date" />
+			<result property="createdDate" column="created_date" />
+			<result property="modifiedBy" column="modified_by" />
+			<result property="meetAndGreetStateId" column="meetngreet_state_id" />
+			<result property="meetAndGreetDate" column="meetngreet_date" />
+			<result property="comments" column="comments" />
+			<result property="meetAndGreetPerson" column="meetngreet_person" />
+		</resultMap>
+		
+		<update id="spnProviderFirmStateUpdate.update"
+		parameterClass="sPNProviderFirmStateVO">
+		update spnet_provider_firm_state set provider_wf_state =#wfState#,audit_required=#auditRequired#, status_override_ind = 0, status_update_action_id = NULL, 
+		status_override_state = NULL, status_override_reason_id = NULL, status_override_comments = NULL where spn_id=#spnId# and provider_wf_state IN
+		<iterate property="states" open="(" close=")" conjunction=",">
+				#states[]#
+		</iterate>
+	</update>
+	
+	
+	
+	<update id="spnUpdateAuditRequiredInd.update"
+		parameterClass="java.util.HashMap">
+		update spnet_provider_firm_state set audit_required =#auditRequired# where
+	spn_id=#currentSpnId# and provider_wf_state=#oldMarketState#
+	</update>
+	
+	<update id="spnUpdateSPNId.update"
+		parameterClass="java.util.HashMap">
+		update spnet_serviceprovider_state set spn_id =#aliasSpnId# where
+	spn_id=#currentSpnId# and provider_wf_state IN
+		<iterate property="memberStates" open="(" close=")" conjunction=",">
+				#memberStates[]#
+		</iterate>
+	</update>
+	
+	<update id="spnUpdateWfStateOnly.update"
+		parameterClass="java.util.HashMap">
+		update spnet_serviceprovider_state set provider_wf_state=#newWfState#, status_override_ind = 0, status_override_reason_id = NULL, status_override_comments = NULL where
+	spn_id=#currentSpnId# and provider_wf_state IN
+		<iterate property="states" open="(" close=")" conjunction=",">
+					#states[]#
+		</iterate>
+	</update>
+	
+	<insert id ="providerFirmsforAliasSPN.insert" parameterClass="java.util.List">
+	INSERT INTO spnet_provider_firm_state (spn_id,provider_firm_id,modified_date,created_date,modified_by,provider_wf_state,app_submission_date,agreement_ind,opt_out_reason_code,opt_out_comment,reviewed_date,reviewed_by,comments,status_override_reason_id,status_override_comments,status_update_action_id,status_override_state,performance_score,status_override_ind)
+	VALUES 
+	     <iterate  conjunction=", ">
+            (#firms[].spnId#,#firms[].firmId#,#firms[].modifiedDate#,#firms[].createdDate#,
+            #firms[].modifiedBy#,#firms[].wfState#,#firms[].applicationSubmissionDate#,#firms[].agreementInd#,
+            #firms[].optOutReason#,#firms[].optOutComment#,#firms[].reviewedDate#,#firms[].username#,#firms[].comment#,
+            #firms[].statusOverrideReasonId#,#firms[].statusOverrideComments#,#firms[].statusActionId#,#firms[].statusOverrideState#,
+            #firms[].performanceScore#,#firms[].overrideInd#)
+        </iterate>
+    </insert>
+	
+	<insert id ="serviceProviderforAliasSPN.insert" parameterClass="java.util.List">
+	INSERT INTO spnet_serviceprovider_state (spn_id,service_provider_id,modified_date,created_date,modified_by,provider_wf_state,perf_level,status_override_reason_id,status_override_comments,status_update_action_id,pf_level_change_comments,performance_score,status_override_ind)
+	VALUES 
+	<iterate  conjunction=", ">
+            (#serviceProvider[].spnId#,#serviceProvider[].serviceProviderId#,#serviceProvider[].modifiedDate#,#serviceProvider[].createdDate#,
+            #serviceProvider[].modifiedBy#,#serviceProvider[].providerWfState#,#serviceProvider[].performanceLevel#,#serviceProvider[].statusOverrideReasonId#,
+            #serviceProvider[].statusOverrideComments#,#serviceProvider[].statusUpdateActionId#,#serviceProvider[].performanceLevelChangeComments#,
+            #serviceProvider[].performanceScore#,#serviceProvider[].overrideInd#)
+     </iterate>
+	</insert>
+	
+	<select id="spnFetchProivderFirmState.query" parameterClass="java.util.HashMap" resultMap="spnProviderFirmStateVO.resultsmap">
+		select * from spnet_provider_firm_state where spn_id=#currentSpnId# and provider_wf_state IN
+		<iterate property="memberStates" open="(" close=")" conjunction=",">
+				#memberStates[]#
+		</iterate>
+	</select>
+	
+	<select id="spnFetchSericeProviderState.query" parameterClass="java.util.HashMap" resultMap="sPNServiceProviderStateVO.resultsmap">
+		select * from spnet_serviceprovider_state where spn_id=#currentSpnId# and provider_wf_state IN
+		<iterate property="memberStates" open="(" close=")" conjunction=",">
+				#memberStates[]#
+		</iterate>
+	</select>
+	
+	<select id="spnFetchMeetAndGreetBySpnId.query" parameterClass="java.util.HashMap" resultMap="spnMeetAndGreetStateVO.resultsmap">
+	  select * from spnet_meetngreet_state where spn_id=#currentSpnId# 
+	</select>
+	
+	<insert id ="insertMeetAndGreetforAliasSPN.insert" parameterClass="java.util.List">
+	INSERT INTO spnet_meetngreet_state (spn_id,prov_firm_id,meetngreet_state_id,meetngreet_date,comments,meetngreet_person,created_date,modified_date,modified_by)
+	VALUES 
+	<iterate  conjunction=", ">
+            (#meetNGreetCopies[].spnId#,#meetNGreetCopies[].providerFirmId#,#meetNGreetCopies[].meetAndGreetStateId#,#meetNGreetCopies[].meetAndGreetDate#,
+            #meetNGreetCopies[].comments#,#meetNGreetCopies[].meetAndGreetPerson#,#meetNGreetCopies[].createdDate#,#meetNGreetCopies[].modifiedDate#,#meetNGreetCopies[].modifiedBy#)
+     </iterate>
+	</insert>
+	
+	
+	<delete id="deleteMeetAndGreetBySpnId.delete" parameterClass="java.util.HashMap" >
+		DELETE from spnet_meetngreet_state where spn_id=#currentSpnId# 		
+	</delete>
+	
+	<select id="getSPNEditAppKeyValue.query" resultClass="java.lang.String" parameterClass="java.lang.String">
+		SELECT app_value FROM application_properties WHERE app_key=#appKey#
+	</select>
+	
+	<select id="spnFetchServiceProviderStateOverride.query" parameterClass="java.lang.Integer" resultClass="sPNServiceProviderStateOverrideVO">
+		select spn_id AS spnId,
+		service_provider_id AS serviceProviderId,
+		created_date AS createdDate,
+		modified_date AS modifiedDate,
+		active_ind AS activeInd,
+		previous_network_status AS previousNetworkStatus,
+		overrided_network_status AS overridedNetworkStatus,
+		created_by AS createdBy,
+		validity_date AS validity_date,
+		status_override_comments AS statusOverrideComments,
+		status_override_reason_id AS statusOverrideReasonId,
+		no_expiration_date_ind AS noExpirationDateInd		
+		from spnet_provider_network_override where spn_id=#currentSpnId# and active_ind = 1;
+	</select>
+	
+	<select id="spnFetchProviderFirmStateOverride.query" parameterClass="java.lang.Integer" resultClass="sPNProviderFirmStateOverrideVO">
+		select spn_id AS spnId,
+		provider_firm_id AS ProviderFirmId,
+		created_date AS createdDate,
+		modified_date AS modifiedDate,
+		active_ind AS activeInd,
+		previous_network_status AS previousNetworkStatus,
+		overrided_network_status AS overridedNetworkStatus,
+		created_by AS createdBy,
+		validity_date AS validity_date,
+		status_override_comments AS statusOverrideComments,
+		status_override_reason_id AS statusOverrideReasonId,
+		no_expiration_date_ind AS noExpirationDateInd		
+		from spnet_provider_firm_network_override where spn_id=#currentSpnId# and active_ind = 1;
+	</select>
+	
+	<insert id ="insertServiceProviderStateOverride.insert" parameterClass="java.util.List">
+	insert into spnet_provider_network_override (spn_id, service_provider_id, created_date, modified_date, active_ind, previous_network_status, overrided_network_status, created_by, validity_date, status_override_comments, status_override_reason_id, no_expiration_date_ind)
+	VALUES 
+	<iterate  conjunction=", ">
+            (#spnServiceProviderStateOverride[].spnId#,#spnServiceProviderStateOverride[].serviceProviderId#,#spnServiceProviderStateOverride[].createdDate#,#spnServiceProviderStateOverride[].modifiedDate#,
+            #spnServiceProviderStateOverride[].activeInd#,#spnServiceProviderStateOverride[].previousNetworkStatus#,#spnServiceProviderStateOverride[].overridedNetworkStatus#,#spnServiceProviderStateOverride[].createdBy#,
+            #spnServiceProviderStateOverride[].validity_date#,#spnServiceProviderStateOverride[].statusOverrideComments#,#spnServiceProviderStateOverride[].statusOverrideReasonId#,
+            #spnServiceProviderStateOverride[].noExpirationDateInd#)
+     </iterate>
+	</insert>
+	
+	<insert id ="insertProviderFirmStateOverride.insert" parameterClass="java.util.List">
+	insert into spnet_provider_firm_network_override (spn_id, provider_firm_id, created_date, modified_date, active_ind, previous_network_status, overrided_network_status, created_by, validity_date, status_override_comments, status_override_reason_id, no_expiration_date_ind)
+	VALUES 
+	<iterate  conjunction=", ">
+            (#spnProviderFirmStateOverride[].spnId#,#spnProviderFirmStateOverride[].providerFirmId#,#spnProviderFirmStateOverride[].createdDate#,#spnProviderFirmStateOverride[].modifiedDate#,
+            #spnProviderFirmStateOverride[].activeInd#,#spnProviderFirmStateOverride[].previousNetworkStatus#,#spnProviderFirmStateOverride[].overridedNetworkStatus#,#spnProviderFirmStateOverride[].createdBy#,
+            #spnProviderFirmStateOverride[].validity_date#,#spnProviderFirmStateOverride[].statusOverrideComments#,#spnProviderFirmStateOverride[].statusOverrideReasonId#,
+            #spnProviderFirmStateOverride[].noExpirationDateInd#)
+     </iterate>
+	</insert>
+	
+	<update id="updateProviderStateOverride.update" parameterClass="java.lang.Integer">
+		update spnet_provider_network_override set active_ind = 0 where spn_id=#currentSpnId# and overrided_network_status in ('SP SPN APPROVED','SP SPN OUT OF COMPLIANCE')
+	</update>
+	
+	<update id="updateProviderFirmStateOverride.update" parameterClass="java.lang.Integer">
+		update spnet_provider_firm_network_override set active_ind = 0 where spn_id=#currentSpnId# and overrided_network_status in ('PF SPN MEMBER','PF FIRM OUT OF COMPLIANCE')
+	</update>
+	
+</sqlMap>

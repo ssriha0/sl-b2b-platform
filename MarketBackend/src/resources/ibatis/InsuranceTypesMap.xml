@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="insuranceTypes">
+	<typeAlias alias="insuranceTypesVO" type="com.newco.marketplace.vo.provider.InsuranceTypesVO"/>	
+
+			<select id="credentialProfile.queryListForInsuranceTypes" parameterClass="insuranceTypesVO" resultClass="insuranceTypesVO">
+ 		(select  vc.vendor_cred_id as vendorCredentialId,
+ 				cc.cred_category as categoryName, 
+				vc.cred_source as source,
+				vc.cred_name as name, 
+				vc.cred_expiration_date as expirationDate,
+				vc.wf_state_id as wfStateId
+				from lu_vendor_credential_category as cc,
+					 lu_vendor_credential_type as ct, 
+					 vendor_credentials as vc 	
+				where vc.vendor_id=#vendorId# and
+					  ct.cred_type_desc='Insurance' and
+					  vc.cred_type_id=ct.cred_type_id and
+					  vc.cred_category_id=cc.cred_category_id and
+					  ct.cred_type_id=cc.cred_type_id
+					and vc.cred_type_id=6 
+					and vc.cred_category_id=41 order by vc.created_date desc limit 1 )
+					union
+				(select  vc.vendor_cred_id as vendorCredentialId,
+ 				cc.cred_category as categoryName, 
+				vc.cred_source as source,
+				vc.cred_name as name, 
+				vc.cred_expiration_date as expirationDate,
+				vc.wf_state_id as wfStateId
+				from lu_vendor_credential_category as cc,
+					 lu_vendor_credential_type as ct, 
+					 vendor_credentials as vc 	
+				where vc.vendor_id=#vendorId# and
+					  ct.cred_type_desc='Insurance' and
+					  vc.cred_type_id=ct.cred_type_id and
+					  vc.cred_category_id=cc.cred_category_id and
+					  ct.cred_type_id=cc.cred_type_id
+					and vc.cred_type_id=6 
+					and vc.cred_category_id=42 order by vc.created_date desc limit 1)
+				union
+	(select  vc.vendor_cred_id as vendorCredentialId,
+ 				cc.cred_category as categoryName, 
+				vc.cred_source as source,
+				vc.cred_name as name, 
+				vc.cred_expiration_date as expirationDate,
+				vc.wf_state_id as wfStateId
+				from lu_vendor_credential_category as cc,
+					 lu_vendor_credential_type as ct, 
+					 vendor_credentials as vc 	
+				where vc.vendor_id=#vendorId# and
+					  ct.cred_type_desc='Insurance' and
+					  vc.cred_type_id=ct.cred_type_id and
+					  vc.cred_category_id=cc.cred_category_id and
+					  ct.cred_type_id=cc.cred_type_id
+					and vc.cred_type_id=6 
+					and vc.cred_category_id=43 order by vc.created_date desc limit 1)
+	        </select>			
+	        
+	       <select id="credentialProfile.queryGetInsuranceMapCategory" parameterClass="java.lang.Integer" resultClass="java.util.HashMap">
+	        select cred_category_id as id, LTRIM(cred_category) as description 
+	        FROM lu_vendor_credential_category
+   			WHERE cred_type_id=#credentialTypeId#
+   			AND cred_category_id NOT IN(41,42,43)
+   			order by LTRIM(cred_category) asc
+		</select>		
+</sqlMap>

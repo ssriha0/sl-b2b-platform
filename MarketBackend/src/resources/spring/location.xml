@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+   <bean id="locationDao" class="com.newco.marketplace.persistence.daoImpl.location.LocationDAOImpl"
+   	lazy-init="true">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	 
+    </bean>	
+            
+    <bean id="locationBOTarget" class="com.newco.marketplace.business.businessImpl.location.LocationBOImpl"
+    	lazy-init="true">
+    	<property name="transactionManager">
+            <ref bean="dsTransactionManagerMain"/>
+        </property>
+		<property name="vendorResourceDao">
+			<ref bean="vendorResourceDao" />
+		</property>
+		<property name="locationDAO">
+			<ref bean="locationDao" />
+		</property>
+	</bean>
+	
+	  	<!-- TRANSACTION SUPPORT -->
+   	<bean id="locationBO"
+   		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+   		lazy-init="true">
+   		<property name="proxyInterfaces">
+   			<list>
+   			<value>
+   				com.newco.marketplace.business.iBusiness.location.ILocationBO
+   			</value>
+   			</list>
+   		</property>
+   		<property name="target">
+   			<ref bean="locationBOTarget" />
+   		</property>
+   		<property name="transactionManager">
+   			<ref bean="dsTransactionManagerMain" />
+   		</property>
+   		<property name="transactionAttributeSource">
+   			<ref bean = "attributeSource" />
+   		</property>
+   	</bean>
+   	
+    
+</beans>

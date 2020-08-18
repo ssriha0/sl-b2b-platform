@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<select id="security.oauth.queryConsumerSecret"  parameterClass="java.lang.String" resultClass="java.lang.String">
+		select consumer_secret as consumerSecret from oauth_consumer oa where oa.consumer_key = #consumerKey#
+	</select>
+
+	<select id="api.security.applications" parameterClass="java.lang.String" resultClass="com.newco.marketplace.vo.api.APISecurityVO">
+		select  oc.consumer_key as consumerKey,
+				oc.consumer_secret as consumerPassword,
+				oc.internal_customer as internalConsumer,
+				oc.consumer_name as consumerName
+				from oauth_consumer oc
+	</select>
+
+	<select id="api.security" parameterClass="java.lang.String" resultClass="com.newco.marketplace.vo.api.APISecurityVO">
+		SELECT oc.consumer_key AS consumerKey,
+			oc.consumer_secret AS consumerPassword,
+			oc.internal_customer AS internalConsumer,
+			a.url AS url,
+			IFNULL(apm.api_id, 0) AS apiId,
+			a.http_method AS httpMethod,
+			a.group_name AS groupName
+		FROM oauth_consumer oc LEFT OUTER JOIN (api_permission_map apm JOIN api a ON (apm.api_id = a.id))
+		ON apm.consumer_key = oc.consumer_key		
+		WHERE oc.consumer_key = #consumerKey#
+	</select>
+
+	<select id="api.get.list" parameterClass="java.lang.String" resultClass="com.newco.marketplace.vo.api.APIVO">
+		select 	a.name as name,
+				a.group_name as groupName,
+				a.id as id,
+				a.url as url,
+				a.http_method as httpMethod
+		from api a
+
+	</select>
+
+	<select id="api.user.security" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(*) as count
+		from api_user_permission
+		where user_id = #userId#
+		and consumer_key = #consumerKey#
+	</select>
+
+	<select id="api.user.security.buyer" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		select count(*) as count from buyer where buyer_id = #userId#
+	</select>
+
+	<select id="api.user.security.provider" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		select count(*) as count from vendor_hdr where vendor_id = #userId#
+	</select>
+
+	<select id="api.user.security.mask.field" parameterClass="java.lang.String" resultClass="java.lang.String">
+		select rule as rule from api_field_mask where consumer_key = #consumerKey#
+	</select>
+
+	<update id="api.app.update.password" parameterClass="java.util.HashMap" >
+		update oauth_consumer set consumer_secret = #consumerSecret# where consumer_key = #consumerKey#
+	</update>
+
+	<insert id="api.app.add" parameterClass="java.util.HashMap" >
+		INSERT INTO oauth_consumer (consumer_key, consumer_secret, consumer_name, created_date, modified_by)
+			values(#consumerKey#, #consumerSecret#, #consumerName#, now(), 'system')
+	</insert>
+	
+	<insert id="api.add.permission" parameterClass="java.util.HashMap" >
+		INSERT INTO api_permission_map (consumer_key, api_id, created_date, modified_by)
+			values(#consumerKey#, #apiId#, now(), 'UI')
+	</insert>
+	
+	<delete id="api.revoke.permission" parameterClass="java.util.HashMap" >
+		DELETE from api_permission_map where consumer_key = #consumerKey# and api_id=#apiId#			
+	</delete>
+	
+	<delete id="api.revoke.permission.all" parameterClass="java.lang.String" >
+		DELETE from api_permission_map where consumer_key = #consumerKey#
+	</delete>
+	
+	<delete id="api.app.remove" parameterClass="java.lang.String" >
+		DELETE from oauth_consumer where consumer_key = #consumerKey#
+	</delete>
+	
+	<insert id="api.permission.logging" parameterClass="java.util.HashMap" >
+		INSERT INTO api_permission_activity_logging (consumer_key, activity_id, description, created_date, modified_by)
+			values(#consumerKey#, #activityId#, #description#, now(), #userId#)
+	</insert>
+
+	<select id="api.get.app.user" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		select user_id as userId from  api_user_permission where consumer_key = #consumerKey#
+	</select>
+	
+	<insert id="api.add.app.user" parameterClass="java.util.HashMap">
+		INSERT INTO api_user_permission (consumer_key, user_id, created_date, modified_by)
+			values(#consumerKey#, #userId#, now(), 'UI')
+	</insert>
+	
+	<delete id="api.del.app.user" parameterClass="java.util.HashMap" >
+		DELETE from api_user_permission where consumer_key = #consumerKey# and user_id=#userId#	
+	</delete>
+
+
+</sqlMap>

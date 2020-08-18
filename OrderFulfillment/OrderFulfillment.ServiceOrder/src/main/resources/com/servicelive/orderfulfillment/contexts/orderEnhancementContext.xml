@@ -1,0 +1,914 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="orderEnhancementServiceResolver" class="com.servicelive.orderfulfillment.orderprep.OrderEnhancementServiceResolver">
+        <constructor-arg index="0">
+            <list>
+                <ref bean="searsRIOrderEnhancement" />
+                <ref bean="assurantOrderEnhancement" />
+                <ref bean="hsrOrderEnhancement" />
+                <ref bean="attOrderEnhancement"/>
+                <ref bean="fileUploadOrderEnhancement"/>
+                <ref bean="officeMaxOrderEnhancement"/>
+                <ref bean="htsOrderEnhancement"/>
+                <ref bean="connsOrderEnhancement"/>   
+                <ref bean="facilitiesOrderEnhancement"/>
+                <ref bean="nonFundedOrderEnhancement"/>  
+                <!-- SL-20664 --> 
+                <ref bean="slDirectOrderEnhancement"/>   
+                <ref bean="homeImprovementOrderEnhancement"/> 
+                <!-- SL-20975 -->     
+                <ref bean="epmOrderEnhancement"/>
+                <!-- SL-21238 -->
+                <ref bean="americanHomeOrderEnhancement"/>
+                <!-- SL-21272 -->
+                <ref bean="relayOrderEnhancement"/>
+                <!--  SLT-735 -->
+                <ref bean="techTalkOrderEnhancement"/>
+                <!-- SLT-143 -->
+                <ref bean="nestOrderEnhancement"/>
+				<!--  This is for flushMate SLT-486 -->
+                <ref bean="fulshmateOrderEnhancement"/>
+                <!-- This is for Oakbrook Buyer -->
+                <ref bean="oakbrookOrderEnhancement"/>
+				<!--  This is for Canada Sloan SLT-1131 -->
+                <ref bean="canadaSloanOrderEnhancement"/>
+                <!-- For Centah/Transform Buyer SLT-3234 -->
+				<ref bean="transformOrderEnhancement"/>
+				
+            </list>
+        </constructor-arg>
+    </bean>
+	
+	<bean id="facilitiesOrderEnhancement" class="com.servicelive.orderfulfillment.orderprep.OrderEnhancementService">
+        <property name="orderBuyer" ref="facilitiesOrderBuyer" />
+        <property name="orderEnhancementProcessors">
+            <list>
+                <ref bean="defaultOrderHdrEnhancer" />
+                <ref bean="topLevelSkuTaskEnhancer" />
+            </list>
+        </property>
+        <property name="commonServiceOrderValidator" ref="commonServiceOrderValidator" />
+        <property name="orderEnhancementValidator" ref="defaultOrderEnhancementValidator" />
+	</bean>
+    
+	<bean id="connsOrderEnhancement" class="com.servicelive.orderfulfillment.orderprep.OrderEnhancementService">
+        <property name="orderBuyer" ref="connsOrderBuyer" />
+        <property name="orderEnhancementProcessors">
+            <list>
+                <ref bean="defaultOrderContactAndLocationEnhancer" />
+                <ref bean="topLevelSkuTaskEnhancer" />
+                <ref bean="commonOrderCustomRefEnhancer" />
+                <ref bean="defaultOrderHdrEnhancer" />
+                <ref bean="defaultOrderScheduleEnhancer" />
+                <ref bean="fixedPriceEnhancer" />
+            </list>
+        </property>
+        <property name="commonServiceOrderValidator" ref="commonServiceOrderValidator" />
+        <property name="orderEnhancementValidator" ref="defaultOrderEnhancementValidator" />
+	</bean>
+	 
+	 <!--  SL-19728, creating enhancer for Non funded buyer -->
+	<bean id="nonFundedOrderEnhancement" class="com.servicelive.orderfulfillment.orderprep.OrderEnhancementService">
+        <property name="orderBuyer" ref="nonFundedOrderBuyer" />
+        <property name="orderEnhancementProcessors">
+            <list>
+                <ref bean="defaultOrderContactAndLocationEnhancer" />
+                <ref bean="topLevelSkuTaskEnhancer" />
+                <ref bean="commonOrderCustomRefEnhancer" />
+                <ref bean="defaultOrderHdrEnhancer" />
+                <ref bean="defaultOrderScheduleEnhancer" />
+                <ref bean="nonFundedfixedPriceEnhancer" />
+            </list>
+        </property>
+        <property name="commonServiceOrderValidator" ref="commonServiceOrderValidator" />
+	<property name="orderEnhancementValidator" ref="defaultOrderEnhancementValidator" />
+	</bean>
+	
+	<bean id="homeImprovementOrderEnhancement" class="com.servicelive.orderfulfillment.orderprep.OrderEnhancementService">
+        <property name="orderBuyer" ref="homeImprovementOrderBuyer" />
+        <property name="orderEnhancementProcessors">
+            <list>
+                <ref bean="defaultOrderContactAndLocationEnhancer" />
+                <ref bean="topLevelSkuTaskEnhancer" />
+                <ref bean="commonOrderCustomRefEnhancer" />
+                <ref bean="defaultOrderHdrEnhancer" />
+                <ref bean="defaultOrderScheduleEnhancer" />
+                <ref bean="nonFundedfixedPriceEnhancer" />
+            </list>
+        </property>
+        <property name="commonServiceOrderValidator" ref="commonServiceOrderValidator" />
+	<property name="orderEnhancementValidator" ref="defaultOrderEnhancementValidator" />
+	</bean>
+	
+	
+	<bean id="attOrderEnhancement" class="com.servicelive.orderfulfillment.orderprep.OrderEnhancementService">
+        <property name="orderBuyer" ref="attOrderBuyer" />
+        <property name="orderEnhancementProcessors">
+            <list>
+                <ref bean="defaultOrderContactAndLocationEnhancer" />
+                <ref bean="attSkuTaskEnhancer" />
+                <ref bean="commonOrderCustomRefEnhancer" />
+                <ref bean="defaultOrderHdrEnhancer" />
+                <ref bean="defaultOrderScheduleEnhancer" />
+                <ref bean="attfixedPriceEnhancer" />
+            </list>
+        </property>
+        <property name="commonServiceOrderValidator" ref="commonServiceOrderValidator" />
+        <property name="orderEnhancementValidator" ref="defaultOrderEnhancementValidator" />
+	</bean>
+	
+	<bean id="officeMaxOrderEnhancement" class="com.servicelive.orderfulfillment.orderprep.OrderEnhancementService">
+        <property name="orderBuyer" ref="officeMaxOrderBuyer" />
+        <property name="orderEnhancementProcessors">
+            <list>
+                <ref bean="defaultOrderContactAndLocationEnhancer" />
+                <ref bean="topLevelSkuTaskEnhancer" />
+                <ref bean="commonOrderCustomRefEnhancer" />
+                <ref bean="defaultOrderHdrEnhancerForOfficeMax"/>
+                <ref bean="defaultOrderScheduleEnhancer" />
+                <ref bean="fixedPriceEnhancer" />
+            </list>
+        </property>
+        <property name="commonServiceOrderValidator" ref="commonServiceOrderValidator" />
+        <property name="orderEnhancementValidator" ref="defaultOrderEnhancementValidator" />
+	</bean>
+	
+	<bean id="htsOrderEnhancement" class="com.servicelive.orderfulfillment.orderprep.OrderEnhancementService">
+        <property name="orderBuyer" ref="htsOrderBuyer" />
+        <property name="orderEnhancementProcessors">
+            <list>
+                <ref bean="defaultOrderContactAndLocationEnhancer" />
+                <ref bean="topLevelSkuTaskEnhancer" />
+                <ref bean="commonOrderCustomRefEnhancer" />
+                <ref bean="defaultOrderHdrEnhancer" />
+                <ref bean="defaultOrderScheduleEnhancer" />
+                <ref bean="fixedPriceEnhancer" />
+            </list>
+        </property>
+        <property name="commonServiceOrderValidator" ref="commonServiceOrderValidator" />
+        <property name="orderEnhancementValidator" ref="defaultOrderEnhancementValidator" />
+	</bean>
+	
+    <bean id="searsRIOrderEnhancement" class="com.servicelive.orderfulfillment.orderprep.OrderEnhancementService">
+        <property name="orderBuyer" ref="searsRiOrderBuyer" />
+        <property name="orderEnhancementProcessors">
+            <list>
+                <ref bean="defaultOrderContactAndLocationEnhancer" />
+                <ref bean="searsAssurantTaskEnhancer" />
+                <ref bean="defaultOrderCustomRefEnhancer" />
+                <ref bean="defaultOrderAddOnsEnhancer" />
+                <ref bean="defaultOrderHdrEnhancer" />
+<!--                  <ref bean="defaultOrderScheduleEnhancer" /> -->
+				<ref bean="timeZoneEnhancer"/>
+                <ref bean="defaultOrderPriceEnhancer" />
+                 <ref bean="condAutoRouteBasedEnhancer" />  
+            </list>
+        </property>
+        <property name="commonServiceOrderValidator" ref="commonServiceOrderValidator" />
+        <property name="orderEnhancementValidator" ref="riOrderEnhancementValidator" />
+    </bean>
+
+    <bean id="assurantOrderEnhancement" class="com.servicelive.orderfulfillment.orderprep.OrderEnhancementService">
+        <property name="orderBuyer" ref="assurantOrderBuyer" />
+        <property name="orderEnhancementProcessors">
+            <list>
+                <ref bean="defaultPartsEnhancer" />
+                <ref bean="commonOrderContactAndLocationEnhancer" />
+                <ref bean="searsAssurantTaskEnhancer" />
+                <ref bean="commonOrderCustomRefEnhancer" />
+                <ref bean="assurantOrderHdrEnhancer" />
+                <ref bean="assurantOrderScheduleEnhancer" />
+                <ref bean="commonOrderPriceEnhancer" />
+            </list>
+        </property>
+        <property name="commonServiceOrderValidator" ref="commonServiceOrderValidator" />
+        <property name="orderEnhancementValidator" ref="defaultOrderEnhancementValidator" />
+    </bean>
+
+    <bean id="hsrOrderEnhancement" class="com.servicelive.orderfulfillment.orderprep.OrderEnhancementService">
+        <property name="orderBuyer" ref="hsrOrderBuyer" />
+        <property name="orderEnhancementProcessors">
+            <list>
+                <ref bean="commonOrderContactAndLocationEnhancer" />
+                <ref bean="hsrOrderTaskEnhancer" />
+                <ref bean="hsrCustomRefEnhancer" />
+                <ref bean="hsrAddOnsEnhancer" />
+                <ref bean="hsrOrderHdrEnhancer" />
+                <ref bean="hsrOrderScheduleEnhancer" />
+                <ref bean="hsrOrderPriceEnhancer" />
+               <!-- <ref bean="condAutoRouteBasedEnhancer" /> --> 
+            </list>
+        </property>
+        <property name="commonServiceOrderValidator" ref="commonServiceOrderValidator" />
+        <property name="orderEnhancementValidator" ref="defaultOrderEnhancementValidator" />
+    </bean>
+
+    <bean id="fileUploadOrderEnhancement" class="com.servicelive.orderfulfillment.orderprep.OrderEnhancementService">
+        <property name="orderBuyer" ref="fileUploadOrderBuyer" />
+        <property name="orderEnhancementProcessors">
+            <list>
+                <ref bean="fileUploadOrderHdrEnhancer" />
+                <ref bean="fileUploadOrderTaskEnhancer" />
+                <ref bean="fileUploadCustomRefEnhancer" />
+                <ref bean="commonOrderPriceEnhancer" />
+                <ref bean="fileUploadOrderScheduleEnhancer" />
+            </list>
+        </property>
+        <property name="commonServiceOrderValidator" ref="commonServiceOrderValidator" />
+        <property name="orderEnhancementValidator" ref="defaultOrderEnhancementValidator" />
+    </bean>
+    
+    <!-- SL-20664 -->
+    <bean id="slDirectOrderEnhancement" class="com.servicelive.orderfulfillment.orderprep.OrderEnhancementService">
+        <property name="orderBuyer" ref="slDirectOrderBuyer" />
+        <property name="orderEnhancementProcessors">
+            <list>
+                <ref bean="defaultOrderContactAndLocationEnhancer" />
+                <ref bean="slDirectSkuTaskEnhancer" />
+                <ref bean="commonOrderCustomRefEnhancer" />
+                <ref bean="defaultOrderHdrEnhancer" />
+                <ref bean="slDirectFixedPriceEnhancer" />
+                <ref bean="defaultOrderScheduleEnhancer" />
+            </list>
+        </property>
+        <property name="commonServiceOrderValidator" ref="commonServiceOrderValidator" />
+        <property name="orderEnhancementValidator" ref="defaultOrderEnhancementValidator" />
+	</bean>
+	
+	<!-- SL-20975 -->   
+	<bean id="epmOrderEnhancement" class="com.servicelive.orderfulfillment.orderprep.OrderEnhancementService">
+        <property name="orderBuyer" ref="epmOrderBuyer" />
+        <property name="orderEnhancementProcessors">
+            <list>
+                <ref bean="defaultOrderContactAndLocationEnhancer" />
+                <ref bean="topLevelSkuTaskEnhancer" />
+                <ref bean="commonOrderCustomRefEnhancer" />
+                <ref bean="defaultOrderHdrEnhancer" />
+                <ref bean="fixedPriceEnhancer" />
+                <ref bean="defaultOrderScheduleEnhancer" />
+            </list>
+        </property>
+        <property name="commonServiceOrderValidator" ref="commonServiceOrderValidator" />
+        <property name="orderEnhancementValidator" ref="defaultOrderEnhancementValidator" />
+	</bean>
+	
+	
+	<!-- SL-20975 -->  
+	<bean id="americanHomeOrderEnhancement" class="com.servicelive.orderfulfillment.orderprep.OrderEnhancementService">
+        <property name="orderBuyer" ref="americanhomeOrderBuyer" />
+        <property name="orderEnhancementProcessors">
+            <list>
+                <ref bean="defaultOrderContactAndLocationEnhancer" />
+                <ref bean="topLevelSkuTaskEnhancer" />
+                <ref bean="commonOrderCustomRefEnhancer" />
+                <ref bean="defaultOrderHdrEnhancer" />
+                <ref bean="fixedPriceEnhancer" />
+                <ref bean="defaultOrderScheduleEnhancer" />
+            </list>
+        </property>
+        <property name="commonServiceOrderValidator" ref="commonServiceOrderValidator" />
+        <property name="orderEnhancementValidator" ref="defaultOrderEnhancementValidator" />
+	</bean>
+	
+	 <!-- SL-21272 -->
+    <bean id="relayOrderEnhancement" class="com.servicelive.orderfulfillment.orderprep.OrderEnhancementService">
+        <property name="orderBuyer" ref="relayOrderBuyer" />
+        <property name="orderEnhancementProcessors">
+            <list>
+                <ref bean="defaultOrderContactAndLocationEnhancer" />
+                <ref bean="topLevelSkuTaskEnhancer" />
+                <ref bean="commonOrderCustomRefEnhancer" />
+                <ref bean="hsrAddOnsEnhancer"/>
+                <ref bean="defaultOrderHdrEnhancer" />
+                <ref bean="relayfixedPriceEnhancer" />
+                <ref bean="defaultOrderScheduleEnhancer" />
+                
+               <!--   <ref bean="relayAddOnsEnhancer" /> -->
+            </list>
+        </property>
+        <property name="commonServiceOrderValidator" ref="commonServiceOrderValidator" />
+        <property name="orderEnhancementValidator" ref="defaultOrderEnhancementValidator" />
+    </bean>
+    
+    <!-- SLT-735 -->
+    <bean id="techTalkOrderEnhancement" class="com.servicelive.orderfulfillment.orderprep.OrderEnhancementService">
+        <property name="orderBuyer" ref="techTalkOrderBuyer" />
+        <property name="orderEnhancementProcessors">
+            <list>
+                <ref bean="defaultOrderContactAndLocationEnhancer" />
+                <ref bean="topLevelSkuTaskEnhancer" />
+                <ref bean="commonOrderCustomRefEnhancer" />
+                <ref bean="defaultOrderHdrEnhancer" />
+                <ref bean="relayfixedPriceEnhancer" />
+                <ref bean="defaultOrderScheduleEnhancer" />
+                
+               <!--   <ref bean="relayAddOnsEnhancer" /> -->
+            </list>
+        </property>
+        <property name="commonServiceOrderValidator" ref="commonServiceOrderValidator" />
+        <property name="orderEnhancementValidator" ref="defaultOrderEnhancementValidator" />
+    </bean>
+    
+    <!-- SLT-143 -->
+    <bean id="nestOrderEnhancement" class="com.servicelive.orderfulfillment.orderprep.OrderEnhancementService">
+        <property name="orderBuyer" ref="nestOrderBuyer" />
+        <property name="orderEnhancementProcessors">
+            <list>
+            	<ref bean="defaultOrderContactAndLocationEnhancer" />
+                <ref bean="topLevelSkuTaskEnhancer" />
+                <ref bean="commonOrderCustomRefEnhancer" />
+                <ref bean="defaultOrderHdrEnhancer" />
+                <ref bean="nestOrderPriceEnhancer" />
+            </list>
+        </property>
+        <property name="commonServiceOrderValidator" ref="commonServiceOrderValidator" />
+        <property name="orderEnhancementValidator" ref="defaultOrderEnhancementValidator" />
+    </bean>
+    	<!--  This is for flushMate SLT-486 -->
+    
+      <bean id="fulshmateOrderEnhancement" class="com.servicelive.orderfulfillment.orderprep.OrderEnhancementService">
+        <property name="orderBuyer" ref="flushMateOrderBuyer" />
+        <property name="orderEnhancementProcessors">
+            <list>
+            	<ref bean="defaultOrderContactAndLocationEnhancer" />
+                <ref bean="topLevelSkuTaskEnhancer" />
+                <ref bean="commonOrderCustomRefEnhancer" />
+                <ref bean="defaultOrderHdrEnhancer" />
+                <ref bean="nestOrderPriceEnhancer" />
+            </list>
+        </property>
+        <property name="commonServiceOrderValidator" ref="commonServiceOrderValidator" />
+        <property name="orderEnhancementValidator" ref="defaultOrderEnhancementValidator" />
+    </bean>
+   <!--  This is for flushMate SLT-486 -->
+    
+    <bean id="oakbrookOrderEnhancement" class="com.servicelive.orderfulfillment.orderprep.OrderEnhancementService">
+        <property name="orderBuyer" ref="oakbrookOrderBuyer" />
+        <property name="orderEnhancementProcessors">
+            <list>
+                <ref bean="defaultOrderContactAndLocationEnhancer" />
+                <ref bean="topLevelSkuTaskEnhancer" />
+                <ref bean="commonOrderCustomRefEnhancer" />
+                <ref bean="hsrAddOnsEnhancer"/>
+                <ref bean="defaultOrderHdrEnhancer" />
+                <ref bean="relayfixedPriceEnhancer" />
+                <ref bean="defaultOrderScheduleEnhancer" />
+                
+               <!--   <ref bean="relayAddOnsEnhancer" /> -->
+            </list>
+        </property>
+        <property name="commonServiceOrderValidator" ref="commonServiceOrderValidator" />
+        <property name="orderEnhancementValidator" ref="defaultOrderEnhancementValidator" />
+    </bean>
+    
+		<!--  This is for Canada sloan SLT-1131 -->
+    
+     <bean id="canadaSloanOrderEnhancement" class="com.servicelive.orderfulfillment.orderprep.OrderEnhancementService">
+        <property name="orderBuyer" ref="canadasloanOrderBuyer" />
+        <property name="orderEnhancementProcessors">
+            <list>
+            	<ref bean="defaultOrderContactAndLocationEnhancer" />
+                <ref bean="topLevelSkuTaskEnhancer" />
+                <ref bean="commonOrderCustomRefEnhancer" />
+                <ref bean="defaultOrderHdrEnhancer" />
+                <ref bean="nestOrderPriceEnhancer" />
+            </list>
+        </property>
+        <property name="commonServiceOrderValidator" ref="commonServiceOrderValidator" />
+        <property name="orderEnhancementValidator" ref="defaultOrderEnhancementValidator" />
+    </bean>
+    
+    <!-- Centah/Transform buyer -->
+    <bean id="transformOrderEnhancement" class="com.servicelive.orderfulfillment.orderprep.OrderEnhancementService">
+        <property name="orderBuyer" ref="transformOrderBuyer" />
+        <property name="orderEnhancementProcessors">
+            <list>
+            	<ref bean="defaultOrderContactAndLocationEnhancer" />
+                <ref bean="topLevelSkuTaskEnhancer" />
+                <ref bean="commonOrderCustomRefEnhancer" />
+                <ref bean="defaultOrderHdrEnhancer" />
+            </list>
+        </property>
+        <property name="commonServiceOrderValidator" ref="commonServiceOrderValidator" />
+        <property name="orderEnhancementValidator" ref="defaultOrderEnhancementValidator" />
+    </bean>
+    
+    <bean id="orderBuyerCollection" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyerCollection">
+        <constructor-arg>
+            <list>
+                <ref bean="searsRiOrderBuyer" />
+                <ref bean="assurantOrderBuyer" />
+                <ref bean="hsrOrderBuyer" />
+                <ref bean="attOrderBuyer" />
+                <ref bean="officeMaxOrderBuyer" />
+                <ref bean="fileUploadOrderBuyer" />
+                <ref bean="htsOrderBuyer" />
+                <ref bean="connsOrderBuyer" />
+                <ref bean="facilitiesOrderBuyer" />
+				<ref bean="nonFundedOrderBuyer" />
+				<!-- SL-20664 -->
+				<ref bean="slDirectOrderBuyer" />
+				<!-- SL-20975 -->  
+				<ref bean="epmOrderBuyer" />
+				<!-- SL-21238 -->
+				<ref bean="americanhomeOrderBuyer" />
+				<!-- SL-21272 -->
+				<ref bean="relayOrderBuyer" />
+				<!-- SLT-735 -->
+				<ref bean="techTalkOrderBuyer" />
+				<ref bean="nestOrderBuyer" />
+				<!--  This is for flushMate SLT-486 -->
+				<ref bean="flushMateOrderBuyer" />
+				<!-- Oakbrook Buyer -->
+				<ref bean="oakbrookOrderBuyer" />
+				<!-- CanadaSloan Buyer -->
+				<ref bean="canadasloanOrderBuyer" />
+				<!-- Centa/Transform Buyer -->
+				<ref bean="transformOrderBuyer" />
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="partValidationTask" class="com.servicelive.orderfulfillment.orderprep.validator.BasePartValidationTask" parent="baseValidationTask" />
+    <bean id="partWithRefIdValidationTask" class="com.servicelive.orderfulfillment.orderprep.validator.PartWithReferenceIdValidationTask" parent="baseValidationTask" />
+    <bean id="orderHdrValidationTask" class="com.servicelive.orderfulfillment.orderprep.validator.OrderHdrValidationTask" parent="baseValidationTask" />
+    <bean id="priceValidationTask" class="com.servicelive.orderfulfillment.orderprep.validator.PriceValidationTask" parent="baseValidationTask" /> 
+
+    <bean id="riOrderEnhancementValidator" class="com.servicelive.orderfulfillment.orderprep.validator.OrderEnhancementValidator">
+        <property name="validationTasks">
+            <list>
+                <ref bean="partWithRefIdValidationTask" />
+                <ref bean="orderHdrValidationTask" />
+                <ref bean="priceValidationTask" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="defaultOrderEnhancementValidator" class="com.servicelive.orderfulfillment.orderprep.validator.OrderEnhancementValidator">
+        <property name="validationTasks">
+            <list>
+                <ref bean="partValidationTask" />
+                <ref bean="orderHdrValidationTask" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="baseOrderBuyerInitializer" abstract="true" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyerInitializer">
+        <property name="marketPlatformBuyerBO" ref="marketPlatformRemoteService" />
+        <property name="buyerOrderTemplateLoader" ref="buyerOrderTemplateLoader" />
+        <property name="buyerSkuLoader" ref="buyerSkuLoader" />
+        <property name="buyerReferenceTypeLoader" ref="buyerReferenceTypeLoader" />
+    </bean>
+
+    <bean id="connsOrderBuyer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyer">
+        <property name="buyerId" value="507128" />
+        <property name="orderBuyerInitializer">
+            <bean id="connsOrderBuyerInitializer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyerInitializer" parent="baseOrderBuyerInitializer">
+                <property name="buyerPricingSchemeCreator" ref="fixedBuyerPricingSchemeCreator" />
+                <property name="remoteServiceDependentOrderBuyerInitializer" ref="remoteServiceDependentOrderBuyerInitializerForConns" />
+            </bean>
+        </property>
+    </bean>
+    <!--  SL-19728, initializing Non funded buyer -->
+    <bean id="nonFundedOrderBuyer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyer">
+        <property name="buyerId" value="513455" />
+        <property name="orderBuyerInitializer">
+            <bean id="nonFundedOrderBuyerInitializer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyerInitializer" parent="baseOrderBuyerInitializer">
+                <property name="buyerPricingSchemeCreator" ref="fixedBuyerPricingSchemeCreator" />
+                <property name="remoteServiceDependentOrderBuyerInitializer" ref="remoteServiceDependentOrderBuyerInitializerForNonFunded" />
+            </bean>
+        </property>
+    </bean>
+    
+        <bean id="homeImprovementOrderBuyer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyer">
+        <property name="buyerId" value="6000" />
+        <property name="orderBuyerInitializer">
+            <bean id="homeImprovementOrderBuyerInitializer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyerInitializer" parent="baseOrderBuyerInitializer">
+                <property name="buyerPricingSchemeCreator" ref="fixedBuyerPricingSchemeCreator" />
+                <property name="remoteServiceDependentOrderBuyerInitializer" ref="remoteServiceDependentOrderBuyerInitializerForHI" />
+            </bean>
+        </property>
+    </bean>
+    
+    <bean id="attOrderBuyer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyer">
+        <property name="buyerId" value="512353" />
+        <property name="orderBuyerInitializer">
+            <bean id="attOrderBuyerInitializer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyerInitializer" parent="baseOrderBuyerInitializer">
+                <property name="buyerPricingSchemeCreator" ref="fixedBuyerPricingSchemeCreator" />
+                <property name="remoteServiceDependentOrderBuyerInitializer" ref="remoteServiceDependentOrderBuyerInitializerForAtt" />
+            </bean>
+        </property>
+    </bean> 
+
+    <bean id="officeMaxOrderBuyer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyer">
+        <property name="buyerId" value="1953" />
+        <property name="orderBuyerInitializer">
+            <bean id="officeMaxOrderBuyerInitializer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyerInitializer" parent="baseOrderBuyerInitializer">
+                <property name="buyerPricingSchemeCreator" ref="fixedBuyerPricingSchemeCreator" />
+                <property name="remoteServiceDependentOrderBuyerInitializer" ref="remoteServiceDependentOrderBuyerInitializerForOfficeMax" />
+            </bean>
+        </property>
+    </bean>
+    
+    <bean id="htsOrderBuyer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyer">
+        <property name="buyerId" value="5000" />
+        <property name="orderBuyerInitializer">
+            <bean id="htsOrderBuyerInitializer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyerInitializer" parent="baseOrderBuyerInitializer">
+                <property name="buyerPricingSchemeCreator" ref="fixedBuyerPricingSchemeCreator" />
+                <property name="remoteServiceDependentOrderBuyerInitializer" ref="remoteServiceDependentOrderBuyerInitializerForHts" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="searsRiOrderBuyer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyer">
+        <property name="buyerId" value="1000" />
+        <property name="orderBuyerInitializer">
+            <bean id="searsRIOrderBuyerInitializer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyerInitializer" parent="baseOrderBuyerInitializer">
+                <property name="buyerPricingSchemeCreator" ref="marketAdjustedPricingSchemeCreator" />
+                <property name="remoteServiceDependentOrderBuyerInitializer" ref="remoteServiceDependentOrderBuyerInitializerForSears" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="assurantOrderBuyer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyer">
+        <property name="buyerId" value="1085" />
+        <property name="orderBuyerInitializer">
+            <bean id="assurantOrderBuyerInitializer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyerInitializer" parent="baseOrderBuyerInitializer">
+                <property name="remoteServiceDependentOrderBuyerInitializer" ref="remoteServiceDependentOrderBuyerInitializerForAssurant" />
+            </bean>
+        </property>
+    </bean>
+    
+     <bean id="facilitiesOrderBuyer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyer">
+        <property name="buyerId" value="4000" />
+        <property name="orderBuyerInitializer">
+            <bean id="facilitiesOrderBuyerInitializer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyerInitializer" parent="baseOrderBuyerInitializer">
+                <property name="remoteServiceDependentOrderBuyerInitializer" ref="remoteServiceDependentOrderBuyerInitializerForFacilities" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="hsrOrderBuyer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyer">
+        <property name="buyerId" value="3000" />
+        <property name="orderBuyerInitializer">
+            <bean id="hsrOrderBuyerInitializer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyerInitializer" parent="baseOrderBuyerInitializer">
+                <property name="buyerPricingSchemeCreator" ref="hsrMarketAdjustedBuyerPricingSchemeCreator" />
+                <property name="remoteServiceDependentOrderBuyerInitializer" ref="remoteServiceDependentOrderBuyerInitializerForHsr" />
+            </bean>
+        </property>
+    </bean>
+    
+    <!--  SL-20664, initializing Roadrunner -->
+    <bean id="slDirectOrderBuyer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyer">
+        <property name="buyerId" value="9000" />
+        <property name="orderBuyerInitializer">
+            <bean id="slDirectOrderBuyerInitializer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyerInitializer" parent="baseOrderBuyerInitializer">
+                <property name="buyerPricingSchemeCreator" ref="fixedBuyerPricingSchemeCreator" />
+                <property name="remoteServiceDependentOrderBuyerInitializer" ref="remoteServiceDependentOrderBuyerInitializerForSlDirect" />
+            </bean>
+        </property>
+    </bean>
+    
+      <!--  SL-20975, initializing epm buyer -->
+    <bean id="epmOrderBuyer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyer">
+        <property name="buyerId" value="513561" />
+        <property name="orderBuyerInitializer">
+            <bean id="epmOrderBuyerInitializer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyerInitializer" parent="baseOrderBuyerInitializer">
+            	<property name="buyerPricingSchemeCreator" ref="fixedBuyerPricingSchemeCreator" />
+                <property name="remoteServiceDependentOrderBuyerInitializer" ref="remoteServiceDependentOrderBuyerInitializerForEpm" />
+            </bean>
+        </property>
+    </bean>
+    
+    
+    <bean id="americanhomeOrderBuyer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyer">
+        <property name="buyerId" value="513590" />
+        <property name="orderBuyerInitializer">
+            <bean id="americanHomeOrderBuyerInitializer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyerInitializer" parent="baseOrderBuyerInitializer">
+            	<property name="buyerPricingSchemeCreator" ref="fixedBuyerPricingSchemeCreator" />
+                <property name="remoteServiceDependentOrderBuyerInitializer" ref="remoteServiceDependentOrderBuyerInitializerForAmerican" />
+            </bean>
+        </property>
+    </bean>
+    
+    <!-- SL-21272 --> 
+    <bean id="relayOrderBuyer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyer">
+        <property name="buyerId" value="3333" />
+        <property name="orderBuyerInitializer">
+            <bean id="relayOrderBuyerInitializer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyerInitializer" parent="baseOrderBuyerInitializer">
+                <property name="buyerPricingSchemeCreator" ref="fixedBuyerPricingSchemeCreator" />
+                <property name="remoteServiceDependentOrderBuyerInitializer" ref="remoteServiceDependentOrderBuyerInitializerForRelay" />
+            </bean>
+        </property>
+    </bean>
+    
+    <!-- SL-735 --> 
+    <bean id="techTalkOrderBuyer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyer">
+        <property name="buyerId" value="7777" />
+        <property name="orderBuyerInitializer">
+            <bean id="techTalkOrderBuyerInitializer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyerInitializer" parent="baseOrderBuyerInitializer">
+                <property name="buyerPricingSchemeCreator" ref="fixedBuyerPricingSchemeCreator" />
+                <property name="remoteServiceDependentOrderBuyerInitializer" ref="remoteServiceDependentOrderBuyerInitializerForTechTalk" />
+            </bean>
+        </property>
+    </bean>
+    
+    <bean id="nestOrderBuyer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyer">
+        <property name="buyerId" value="5555" />
+        <property name="orderBuyerInitializer">
+            <bean id="nestOrderBuyerInitializer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyerInitializer" parent="baseOrderBuyerInitializer">
+                <property name="buyerPricingSchemeCreator" ref="fixedBuyerPricingSchemeCreator" />
+                <property name="remoteServiceDependentOrderBuyerInitializer" ref="remoteServiceDependentOrderBuyerInitializerForNest" />
+            </bean>
+        </property>
+    </bean>
+     
+     <!--  This is for flushMate SLT-486 -->
+    <bean id="flushMateOrderBuyer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyer">
+        <property name="buyerId" value="5566" />
+        <property name="orderBuyerInitializer">
+            <bean id="flushMateOrderBuyerInitializer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyerInitializer" parent="baseOrderBuyerInitializer">
+                <property name="buyerPricingSchemeCreator" ref="fixedBuyerPricingSchemeCreator" />
+                <property name="remoteServiceDependentOrderBuyerInitializer" ref="remoteServiceDependentOrderBuyerInitializerForFlushMate" />
+            </bean>
+        </property>
+    </bean>
+      	<!--  This is for flushMate SLT-486 -->
+    
+    <!--  OakBrookbuyer -->
+      <bean id="oakbrookOrderBuyer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyer">
+        <property name="buyerId" value="513654" />
+        <property name="orderBuyerInitializer">
+            <bean id="oakbrookbuyerInitializer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyerInitializer" parent="baseOrderBuyerInitializer">
+                <property name="buyerPricingSchemeCreator" ref="fixedBuyerPricingSchemeCreator" />
+                <property name="remoteServiceDependentOrderBuyerInitializer" ref="remoteServiceDependentOrderBuyerInitializerForOakbrook" />
+            </bean>
+        </property>
+    </bean>
+    <!-- Oakbrookbuyer -->
+	
+	 <!--  Canada Sloan -->
+      <bean id="canadasloanOrderBuyer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyer">
+        <property name="buyerId" value="513655" />
+        <property name="orderBuyerInitializer">
+            <bean id="canadasloanbuyerInitializer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyerInitializer" parent="baseOrderBuyerInitializer">
+                <property name="buyerPricingSchemeCreator" ref="fixedBuyerPricingSchemeCreator" />
+                <property name="remoteServiceDependentOrderBuyerInitializer" ref="remoteServiceDependentOrderBuyerInitializerForCanadasloan" />
+            </bean>
+        </property>
+    </bean>
+    <!-- Canada Sloan -->
+    
+    <!-- Centah/Transform Buyer -->
+    <bean id="transformOrderBuyer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyer">
+        <property name="buyerId" value="513691" />
+        <property name="orderBuyerInitializer">
+            <bean id="transformOrderBuyerInitializer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyerInitializer" parent="baseOrderBuyerInitializer">
+                <property name="buyerPricingSchemeCreator" ref="fixedBuyerPricingSchemeCreator" />
+                <property name="remoteServiceDependentOrderBuyerInitializer" ref="remoteServiceDependentOrderBuyerInitializerForTransform" />
+            </bean>
+        </property>
+    </bean>
+     	
+     <bean id="fileUploadOrderBuyer" class="com.servicelive.orderfulfillment.orderprep.buyer.OrderBuyer">
+        <property name="buyerId" value="-2010" />
+    </bean>
+
+    <bean id="remoteServiceDependentOrderBuyerInitializerForAssurant" class="com.servicelive.orderfulfillment.orderprep.buyer.RemoteServiceDependentOrderBuyerInitializer" />
+    <bean id="remoteServiceDependentOrderBuyerInitializerForSears" class="com.servicelive.orderfulfillment.orderprep.buyer.RemoteServiceDependentOrderBuyerInitializer" />
+    <bean id="remoteServiceDependentOrderBuyerInitializerForHsr" class="com.servicelive.orderfulfillment.orderprep.buyer.RemoteServiceDependentOrderBuyerInitializer" />
+    <bean id="remoteServiceDependentOrderBuyerInitializerForConns" class="com.servicelive.orderfulfillment.orderprep.buyer.RemoteServiceDependentOrderBuyerInitializer" />
+    <bean id="remoteServiceDependentOrderBuyerInitializerForAtt" class="com.servicelive.orderfulfillment.orderprep.buyer.RemoteServiceDependentOrderBuyerInitializer" />
+    <bean id="remoteServiceDependentOrderBuyerInitializerForOfficeMax" class="com.servicelive.orderfulfillment.orderprep.buyer.RemoteServiceDependentOrderBuyerInitializer" />
+    <bean id="remoteServiceDependentOrderBuyerInitializerForHts" class="com.servicelive.orderfulfillment.orderprep.buyer.RemoteServiceDependentOrderBuyerInitializer" />
+    <bean id="remoteServiceDependentOrderBuyerInitializerForFacilities" class="com.servicelive.orderfulfillment.orderprep.buyer.RemoteServiceDependentOrderBuyerInitializer" />
+    <bean id="remoteServiceDependentOrderBuyerInitializerForNonFunded" class="com.servicelive.orderfulfillment.orderprep.buyer.RemoteServiceDependentOrderBuyerInitializer" />
+    <bean id="remoteServiceDependentOrderBuyerInitializerForHI" class="com.servicelive.orderfulfillment.orderprep.buyer.RemoteServiceDependentOrderBuyerInitializer" />
+    
+    
+    <!-- SL-20664 -->
+    <bean id="remoteServiceDependentOrderBuyerInitializerForSlDirect" class="com.servicelive.orderfulfillment.orderprep.buyer.RemoteServiceDependentOrderBuyerInitializer" />
+    
+    <bean id="baseOrderEnhancer" abstract="true" class="com.servicelive.orderfulfillment.orderprep.processor.common.AbstractOrderEnhancer">
+        <property name="validationUtil" ref="defaultValidationUtil" />
+    </bean>
+    
+    <!-- SL-20975 -->
+    <bean id="remoteServiceDependentOrderBuyerInitializerForEpm" class="com.servicelive.orderfulfillment.orderprep.buyer.RemoteServiceDependentOrderBuyerInitializer" />
+    
+    <!-- SL-21238 -->
+    <bean id="remoteServiceDependentOrderBuyerInitializerForAmerican" class="com.servicelive.orderfulfillment.orderprep.buyer.RemoteServiceDependentOrderBuyerInitializer" />
+    
+    <!-- SL-21272 --> 
+    <bean id="remoteServiceDependentOrderBuyerInitializerForRelay" class="com.servicelive.orderfulfillment.orderprep.buyer.RemoteServiceDependentOrderBuyerInitializer" />
+    
+    <!-- SLT-735 --> 
+    <bean id="remoteServiceDependentOrderBuyerInitializerForTechTalk" class="com.servicelive.orderfulfillment.orderprep.buyer.RemoteServiceDependentOrderBuyerInitializer" />
+    
+    <bean id="remoteServiceDependentOrderBuyerInitializerForNest" class="com.servicelive.orderfulfillment.orderprep.buyer.RemoteServiceDependentOrderBuyerInitializer" />
+     
+     <!--  This is for flushMate SLT-486 --> 
+     <bean id="remoteServiceDependentOrderBuyerInitializerForFlushMate" class="com.servicelive.orderfulfillment.orderprep.buyer.RemoteServiceDependentOrderBuyerInitializer" />
+     <!-- For Oakbrook buyer -->
+     <bean id="remoteServiceDependentOrderBuyerInitializerForOakbrook" class="com.servicelive.orderfulfillment.orderprep.buyer.RemoteServiceDependentOrderBuyerInitializer" />
+     <!-- For Canada Sloan buyer -->
+	<bean id="remoteServiceDependentOrderBuyerInitializerForCanadasloan" class="com.servicelive.orderfulfillment.orderprep.buyer.RemoteServiceDependentOrderBuyerInitializer" />
+	<!-- For centa/transform buyer -->
+	<bean id="remoteServiceDependentOrderBuyerInitializerForTransform" class="com.servicelive.orderfulfillment.orderprep.buyer.RemoteServiceDependentOrderBuyerInitializer" />
+	
+    
+	<bean id="baseCustomRefEnhancer" abstract="true" class="com.servicelive.orderfulfillment.orderprep.processor.common.AbstractOrderCustomRefEnhancer" parent="baseOrderEnhancer" />
+         
+    <bean id="defaultOrderCustomRefEnhancer" class="com.servicelive.orderfulfillment.orderprep.processor.common.CommonOrderCustomRefSkillNodeEnhancer" parent="baseCustomRefEnhancer">
+        <property name="quickLookupCollection" ref="quickLookupCollection" />
+        <property name="serviceOrderDao" ref="serviceOrderDao" />
+    </bean>
+
+    <bean id="hsrCustomRefEnhancer" class="com.servicelive.orderfulfillment.orderprep.processor.hsr.HsrCustomRefEnhancer" parent="defaultOrderCustomRefEnhancer">
+        <property name="quickLookupCollection" ref="quickLookupCollection" />
+        <property name="serviceOrderDao" ref="serviceOrderDao" />
+    </bean>
+
+    <bean id="commonOrderCustomRefEnhancer" class="com.servicelive.orderfulfillment.orderprep.processor.common.CommonOrderCustomRefEnhancer" parent="baseCustomRefEnhancer">
+        <property name="quickLookupCollection" ref="quickLookupCollection" />
+        <property name="serviceOrderDao" ref="serviceOrderDao" />
+    </bean>
+
+    <bean id="commonOrderTaskEnhancer" class="com.servicelive.orderfulfillment.orderprep.processor.common.CommonOrderTaskEnhancer" parent="baseOrderEnhancer">
+        <property name="quickLookupCollection" ref="quickLookupCollection" />
+        <property name="serviceOrderDao" ref="serviceOrderDao" />
+    </bean>
+    <bean id="commonTaskEnhancer" abstract="true" class="com.servicelive.orderfulfillment.orderprep.processor.common.CommonTaskEnhancer" parent="baseOrderEnhancer">
+        <property name="quickLookupCollection" ref="quickLookupCollection" />
+        <property name="serviceOrderDao" ref="serviceOrderDao" />
+    </bean>
+    <bean id="searsAssurantTaskEnhancer" class="com.servicelive.orderfulfillment.orderprep.processor.common.SearsAssurantTaskEnhancer" parent="commonTaskEnhancer">
+    	<property name="noteUtil" ref="soNoteUtil"/>
+    </bean>
+
+	<bean id="topLevelSkuTaskEnhancer" class="com.servicelive.orderfulfillment.orderprep.processor.common.TopLevelSKUTaskEnhancer" parent="commonOrderTaskEnhancer"/>
+	
+	<bean id="attSkuTaskEnhancer" class="com.servicelive.orderfulfillment.orderprep.processor.att.AttOrderTaskEnhancer" parent="commonOrderTaskEnhancer"/>
+	
+    <bean id="hsrOrderTaskEnhancer" class="com.servicelive.orderfulfillment.orderprep.processor.hsr.HsrOrderTaskEnhancer" parent="commonOrderTaskEnhancer" />
+
+    <bean id="defaultOrderAddOnsEnhancer" class="com.servicelive.orderfulfillment.orderprep.processor.ri.OrderAddOnsEnhancer" parent="baseOrderEnhancer">
+        <property name="serviceOrderDao" ref="serviceOrderDao" />
+        <property name="orderBuyerDao" ref="orderBuyerDao" />
+        <property name="permitSkuChecker" ref="permitSkuChecker" />
+    </bean>
+
+    <bean id="hsrAddOnsEnhancer" class="com.servicelive.orderfulfillment.orderprep.processor.hsr.HsrAddOnsEnhancer" parent="baseOrderEnhancer">
+	<property name="quickLookupCollection" ref="quickLookupCollection" />
+	 <property name="serviceOrderDao" ref="serviceOrderDao" />
+    </bean>
+    <bean id="relayAddOnsEnhancer" class="com.servicelive.orderfulfillment.orderprep.processor.relay.RelayAddOnsEnhancer" parent="baseOrderEnhancer">
+        <property name="serviceOrderDao" ref="serviceOrderDao" />
+        <property name="orderBuyerDao" ref="orderBuyerDao" />
+        
+    </bean>
+    
+
+    <bean id="defaultOrderPriceEnhancer" class="com.servicelive.orderfulfillment.orderprep.processor.ri.OrderPriceEnhancer" parent="baseOrderEnhancer">
+        <property name="serviceOrderDao" ref="serviceOrderDao" />
+        <property name="permitSkuChecker" ref="permitSkuChecker" />
+    </bean>
+
+    <bean id="fixedPriceEnhancer" class="com.servicelive.orderfulfillment.orderprep.processor.common.FixedOrderPriceEnhancer" parent="baseOrderEnhancer" />
+    
+    <bean id="attfixedPriceEnhancer" class="com.servicelive.orderfulfillment.orderprep.processor.att.AttFixedOrderPriceEnhancer" parent="baseOrderEnhancer" />
+    
+    <bean id="nonFundedfixedPriceEnhancer" class="com.servicelive.orderfulfillment.orderprep.processor.nonfunded.NonFundedFixedOrderPriceEnhancer" parent="baseOrderEnhancer" />
+    
+    
+    <bean id="relayfixedPriceEnhancer" class="com.servicelive.orderfulfillment.orderprep.processor.relay.RelayFixedOrderPriceEnhancer" parent="baseOrderEnhancer" /> 
+    
+    <bean id="nestOrderPriceEnhancer" class="com.servicelive.orderfulfillment.orderprep.processor.nest.NestOrderPriceEnhancer" parent="baseOrderEnhancer" /> 
+
+    <bean id="hsrOrderPriceEnhancer" class="com.servicelive.orderfulfillment.orderprep.processor.hsr.HsrOrderPriceEnhancer" parent="baseOrderEnhancer" >
+       <property name="serviceOrderDao" ref="serviceOrderDao"/>
+    </bean>
+
+    <bean id="commonOrderPriceEnhancer" class="com.servicelive.orderfulfillment.orderprep.processor.common.CommonOrderPriceEnhancer" parent="baseOrderEnhancer" />
+
+    <bean id="baseOrderScheduleEnhancer" abstract="true" class="com.servicelive.orderfulfillment.orderprep.processor.common.AbstractOrderScheduleEnhancer" parent="baseOrderEnhancer">
+        <property name="businessCalendar" ref="defaultBusinessCalendar" />
+        <property name="quickLookupCollection" ref="quickLookupCollection" />
+        <property name="businessDayPad" value="3" />
+    </bean>
+
+    <bean id="defaultOrderScheduleEnhancer" class="com.servicelive.orderfulfillment.orderprep.processor.ri.OrderScheduleEnhancer" parent="baseOrderScheduleEnhancer" />
+    
+   
+    <bean id="fileUploadOrderScheduleEnhancer" class="com.servicelive.orderfulfillment.orderprep.processor.fileupload.FileUploadOrderScheduleEnhancer" parent="baseOrderScheduleEnhancer" />
+
+    <bean id="assurantOrderScheduleEnhancer" class="com.servicelive.orderfulfillment.orderprep.processor.assurant.AssurantOrderScheduleEnhancer" parent="baseOrderScheduleEnhancer"/>
+
+    <bean id="hsrOrderScheduleEnhancer" class="com.servicelive.orderfulfillment.orderprep.processor.hsr.HsrOrderScheduleEnhancer" parent="baseOrderScheduleEnhancer"/>
+
+    <bean id="baseOrderHdrEnhancer" abstract="true" class="com.servicelive.orderfulfillment.orderprep.processor.common.AbstractOrderHdrEnhancer" parent="baseOrderEnhancer">
+        <property name="quickLookupCollection" ref="quickLookupCollection" />
+        <property name="serviceOrderDao" ref="serviceOrderDao" />
+    </bean>
+
+	 <bean id="timeZoneEnhancer" class="com.servicelive.orderfulfillment.orderprep.processor.common.TimezoneEnhancer" parent="baseOrderEnhancer">
+	 	<property name="quickLookupCollection" ref="quickLookupCollection" />
+	 </bean>
+
+
+    <bean id="defaultOrderHdrEnhancer" class="com.servicelive.orderfulfillment.orderprep.processor.ri.OrderHdrEnhancer" parent="baseOrderHdrEnhancer" />
+
+    <bean id="defaultOrderHdrEnhancerForOfficeMax" class="com.servicelive.orderfulfillment.orderprep.processor.ri.OrderHdrEnhancerForOfficeMax" parent="baseOrderHdrEnhancer" />
+    
+    <bean id="assurantOrderHdrEnhancer" class="com.servicelive.orderfulfillment.orderprep.processor.assurant.AssurantOrderHdrEnhancer" parent="baseOrderHdrEnhancer" />
+
+    <bean id="hsrOrderHdrEnhancer" class="com.servicelive.orderfulfillment.orderprep.processor.hsr.HsrOrderHdrEnhancer" parent="baseOrderHdrEnhancer" />
+
+    <bean id="defaultOrderContactAndLocationEnhancer" class="com.servicelive.orderfulfillment.orderprep.processor.ri.OrderContactAndLocationEnhancer" parent="baseOrderEnhancer" />
+
+    <bean id="commonOrderContactAndLocationEnhancer" class="com.servicelive.orderfulfillment.orderprep.processor.common.CommonOrderContactAndLocationEnhancer" parent="baseOrderEnhancer" />
+
+    <bean id="permitSkuChecker" class="com.servicelive.orderfulfillment.orderprep.processor.common.PermitSkuChecker">
+        <property name="workOrderPermitSkus">
+            <list>
+                <value>03187</value>
+                <value>06187</value>
+                <value>09187</value>
+                <value>22187</value>
+                <value>26187</value>
+                <value>42187</value>
+                <value>46187</value>
+                <value>57187</value>
+                <value>71187</value>
+                <value>83187</value>
+                <value>99888</value>
+				<value>65000</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="condAutoRouteBasedEnhancer" class="com.servicelive.orderfulfillment.orderprep.processor.common.CommonCondAutoRouteBasedEnhancer">
+        <property name="marketPlatformRoutingRulesBO" ref="marketPlatformRemoteService" />
+        <property name="quickLookupCollection" ref="quickLookupCollection" />
+    </bean>
+
+    <bean id="defaultPartsEnhancer" class="com.servicelive.orderfulfillment.orderprep.processor.common.CommonPartsEnhancer" parent="baseOrderEnhancer" />
+
+    <bean id="marketAdjustedPricingSchemeCreator" class="com.servicelive.orderfulfillment.orderprep.pricing.creator.MarketAdjustedBuyerPricingSchemeCreator">
+        <property name="orderBuyerDao" ref="orderBuyerDao" />
+    </bean>
+
+    <bean id="hsrMarketAdjustedBuyerPricingSchemeCreator" class="com.servicelive.orderfulfillment.orderprep.pricing.creator.HsrMarketAdjustedBuyerPricingSchemeCreator" >
+    	<property name="orderBuyerDao" ref="orderBuyerDao" />
+    </bean>
+
+    <bean id="fixedBuyerPricingSchemeCreator" class="com.servicelive.orderfulfillment.orderprep.pricing.creator.FixedBuyerPricingSchemeCreator" >
+    	<property name="orderBuyerDao" ref="orderBuyerDao" />
+    </bean>
+    
+    <bean id="commonPricingScheme" class="com.servicelive.orderfulfillment.orderprep.pricing.CommonPricingScheme">
+    	<property name="orderBuyerDao" ref="orderBuyerDao" />
+    </bean>
+
+    <bean id="buyerOrderTemplateLoader" class="com.servicelive.orderfulfillment.orderprep.buyer.BuyerOrderTemplateLoader">
+        <property name="orderBuyerDao" ref="orderBuyerDao" />
+        <property name="marketPlatformBuyerBO" ref="marketPlatformRemoteService" />
+    </bean>
+
+    <bean id="buyerReferenceTypeLoader" class="com.servicelive.orderfulfillment.orderprep.buyer.BuyerReferenceTypeLoader">
+        <property name="marketPlatformBuyerBO" ref="marketPlatformRemoteService" />
+    </bean>
+    
+    <bean id="buyerSkuLoader" class="com.servicelive.orderfulfillment.orderprep.buyer.BuyerSkuLoader">
+        <property name="orderBuyerDao" ref="orderBuyerDao" />
+    </bean>
+
+    <bean id="orderBuyerDao" class="com.servicelive.orderfulfillment.dao.OrderBuyerDao" />
+
+    <bean id="defaultBusinessCalendar" class="com.servicelive.orderfulfillment.calendar.BusinessCalendar">
+        <constructor-arg index="0" ref="defaultBusinessCalendarInitializer" />
+    </bean>
+
+    <bean id="defaultBusinessCalendarInitializer" class="com.servicelive.orderfulfillment.calendar.BusinessCalendarInitializer">
+        <property name="resourcePath" value="com/servicelive/orderfulfillment/calendar/defaultcalendar.xml" />
+    </bean>
+
+	<bean id="fileUploadOrderHdrEnhancer" class="com.servicelive.orderfulfillment.orderprep.processor.fileupload.FileUploadOrderHdrEnhancer" parent="baseOrderHdrEnhancer">
+		<property name="marketPlatformBuyerBO" ref="marketPlatformRemoteService" />
+		<property name="marketPlatformDocumentServiceBO" ref="marketPlatformRemoteService" />
+		<property name="buyerOrderTemplateLoader" ref="buyerOrderTemplateLoader" />
+	</bean>
+
+	<bean id="fileUploadOrderTaskEnhancer" class="com.servicelive.orderfulfillment.orderprep.processor.fileupload.FileUploadOrderTaskEnhancer" parent="commonOrderTaskEnhancer" />
+	<bean id="fileUploadCustomRefEnhancer" class="com.servicelive.orderfulfillment.orderprep.processor.fileupload.FileUploadCustomRefEnhancer" parent="baseCustomRefEnhancer" >
+		<property name="marketPlatformBuyerBO" ref="marketPlatformRemoteService" />
+        <property name="quickLookupCollection" ref="quickLookupCollection" />
+	</bean>
+	
+	<!-- SL-20664 -->
+	<bean id="slDirectSkuTaskEnhancer" class="com.servicelive.orderfulfillment.orderprep.processor.sldirect.SlDirectOrderTaskEnhancer" parent="commonOrderTaskEnhancer"/>
+	<bean id="slDirectFixedPriceEnhancer" class="com.servicelive.orderfulfillment.orderprep.processor.sldirect.SlDirectFixedOrderPriceEnhancer" parent="baseOrderEnhancer" />
+</beans>

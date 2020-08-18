@@ -1,0 +1,176 @@
+<!DOCTYPE validators PUBLIC
+        "-//Apache Struts//XWork Validator 1.0.2//EN"
+        "http://struts.apache.org/dtds/xwork-validator-1.0.2.dtd">
+        
+<validators>
+    <field name="buyerRegistrationDTO.businessName">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="buyerRegistrationDTO.businessName.error.required" />
+      </field-validator>
+  </field>
+	  <field name="buyerRegistrationDTO.businessStructure">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="buyerRegistrationDTO.businessStructure.error.required" />
+      </field-validator>
+  	</field>
+  <field name="buyerRegistrationDTO.sizeOfCompany">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="buyerRegistrationDTO.sizeOfCompany.error.required" />
+      </field-validator>
+    </field>
+    <field name="buyerRegistrationDTO.primaryIndustry">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="buyerRegistrationDTO.primaryIndustry.error.required" />
+      </field-validator>
+  </field>
+  <field name="buyerRegistrationDTO.roleWithinCom">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="buyerRegistrationDTO.roleWithinCom.error.required" />
+      </field-validator>
+  </field>
+   <field name="buyerRegistrationDTO.annualSalesRevenue">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="buyerRegistrationDTO.annualSalesRevenue.error.required" />
+      </field-validator>
+  </field> 
+ <field name="buyerRegistrationDTO.businessStreet1">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="buyerRegistrationDTO.businessStreet1.error.required" />
+      </field-validator>
+  </field>
+   <field name="buyerRegistrationDTO.businessCity">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="buyerRegistrationDTO.businessCity.error.required" />
+      </field-validator>
+  </field>
+
+ <field name="buyerRegistrationDTO.businessState">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="buyerRegistrationDTO.businessState.error.required" />
+      </field-validator>
+  </field>
+
+     <field name="buyerRegistrationDTO.businessZip">
+	   <field-validator type="requiredstring" short-circuit="true">
+	        <param name="trim">true</param>
+	        <message key="buyerRegistrationDTO.businessZip.error.required" />
+	    </field-validator>
+	    <field-validator type="regex" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="regex">^\d+$</param>
+	        <message key="buyerRegistrationDTO.businessZip.error.required.number"/>
+	    </field-validator>
+	    <field-validator type="stringlength" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="minLength">5</param>
+	        <message key="buyerRegistrationDTO.businessZip.error.required.minlength"/>
+	    </field-validator>
+	</field>
+
+     <field name="buyerRegistrationDTO.mailingZip">
+	  
+	    <field-validator type="regex" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="regex">^\d+$</param>
+	        <message key="buyerRegistrationDTO.mailingZip.error.required.number"/>
+	    </field-validator>
+	    <field-validator type="stringlength" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="minLength">5</param>
+	        <message key="buyerRegistrationDTO.mailingZip.error.required.minlength"/>
+	    </field-validator>
+	</field>
+	 <field name="buyerRegistrationDTO.email">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="buyerRegistrationDTO.email.error.required" />
+      </field-validator>
+       <field-validator type="email">
+	        <param name="trim">true</param>
+	        <message key="buyerRegistrationDTO.email.error" />
+	    </field-validator>
+  </field>
+   <field name="buyerRegistrationDTO.confirmEmail">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="buyerRegistrationDTO.confirmEmail.error.required" />
+      </field-validator>
+      <field-validator type="email">
+	        <param name="trim">true</param>
+	        <message key="provider.registration.confirmEmail.error" />
+	    </field-validator>
+  </field>
+  <validator type="expression">
+      	<param name="expression">buyerRegistrationDTO.email.equals(buyerRegistrationDTO.confirmEmail)</param>
+      	<message key="provider.registration.mail.NotSame"></message>
+  	</validator>
+   <field name="buyerRegistrationDTO.altEmail">
+        <field-validator type="email">
+	        <param name="trim">true</param>
+	        <message key="provider.registration.altEmail.error" />
+	    </field-validator>
+ </field>
+   <field name="buyerRegistrationDTO.confAltEmail">
+        <field-validator type="email">
+	        <param name="trim">true</param>
+	        <message key="provider.registration.confirmAltEmail.error" />
+	    </field-validator>
+ </field>
+ <validator type="expression">
+      	<param name="expression">buyerRegistrationDTO.altEmail.equals(buyerRegistrationDTO.confAltEmail)</param>
+      	<message key="provider.registration.altMail.NotSame"></message>
+  	</validator>
+ <field name="buyerRegistrationDTO.firstName">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="buyerRegistrationDTO.firstName.error.required" />
+      </field-validator>
+  </field>
+  <field name="buyerRegistrationDTO.lastName">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="buyerRegistrationDTO.lastName.error.required" />
+      </field-validator>
+  </field>
+ <field name="buyerRegistrationDTO.userName">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="buyerRegistrationDTO.userName.error.required" />
+      </field-validator>
+            <field-validator type="stringlength" short-circuit="true">
+	   	<param name="trim">true</param>
+	    	<param name="minLength">8</param>
+	        <message key="buyerRegistrationDTO.userName.error.required.minlength"/>
+	   </field-validator>
+	   	    <field-validator type="stringlength" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="maxLength">30</param>
+	        <message key="buyerRegistrationDTO.userName.error.required.maxlength"/>
+	    </field-validator>
+  </field>
+ <field name="buyerRegistrationDTO.confirmUserName">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="buyerRegistrationDTO.confirmUserName.error.required" />
+      </field-validator>
+            <field-validator type="stringlength" short-circuit="true">
+	   	<param name="trim">true</param>
+	    	<param name="minLength">8</param>
+	        <message key="buyerRegistrationDTO.confirmUserName.error.required.minlength"/>
+	   </field-validator>
+	   	    <field-validator type="stringlength" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="maxLength">30</param>
+	        <message key="buyerRegistrationDTO.confirmUserName.error.required.maxlength"/>
+	    </field-validator>
+  </field>
+</validators>

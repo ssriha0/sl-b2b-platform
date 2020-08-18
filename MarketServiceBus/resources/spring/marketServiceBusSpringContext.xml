@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd" default-autowire="byName">
+
+	<bean id="esbPlaceholderConfig"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+			<value>classpath:servicelive_esb_${sl_app_lifecycle}.properties</value>
+		</property>
+		<property name="ignoreUnresolvablePlaceholders" value="true"/>
+	</bean>
+
+	<bean id="esbPropertiesResourceBundle" class="java.util.ResourceBundle"
+		factory-method="getBundle">
+		<constructor-arg index="0" value="servicelive_esb_${sl_app_lifecycle}" />
+	</bean>
+
+	<bean id="serviceOrdersMarshallerAction"
+		class="com.servicelive.esb.actions.ServiceOrdersUnMarshallerAction" />
+
+	<bean id="assurantCreateDraftRequestMapperAction" class="com.servicelive.esb.actions.AssurantCreateDraftRequestMapperAction">
+		<property name="draftMapper" ref="assurantCreateDraftMapper"></property>
+	</bean>
+	
+	<bean id="createDraftRequestMapperAction" class="com.servicelive.esb.actions.CreateDraftRequestMapperAction">
+		<property name="draftMapper" ref="omsCreateDraftMapper"></property>
+	</bean>
+	
+	<bean id="marginAndLeadTimeRetrieverAction" class="com.servicelive.esb.actions.MarginAndLeadTimeRetrieverAction"/>
+	
+	<bean id="assurantCreateDraftMapper" class="com.servicelive.esb.mapper.AssurantCreateDraftMapper" />	
+
+	<bean id="omsCreateDraftMapper" class="com.servicelive.esb.mapper.OMSCreateDraftMapper" />
+	
+		<!-- HSR related beans START-->
+	<bean id="hsrCreateDraftRequestProcessorAction" class="com.servicelive.esb.actions.HSRCreateDraftRequestProcessorAction" />
+	
+	<bean id="hsrServiceOrderUnMarshaller" class="com.servicelive.esb.actions.HSRServiceOrdersUnMarshallerAction">
+		<property name="integrationBO" ref="integrationBO" />
+		<property name="stagingService" ref="hsrStagingService" />
+	</bean>
+	
+	<bean id="hsrStageDataAction" class="com.servicelive.esb.actions.HSRStagingAction" />	
+
+	<bean id="hsrCreateDraftRequestMapperAction" class="com.servicelive.esb.actions.HSRCreateDraftRequestMapperAction" />
+	
+	<bean id="hsrCreateDraftRequestTranslatorAction" class="com.servicelive.esb.actions.HSRCreateDraftRequestTranslationAction" />
+	
+	<bean id="auditResponseRIUnmarshallerAction" class="com.servicelive.esb.actions.NPSAuditResponseRIUnmarshallerAction" />	
+	
+	<bean id="auditResponseMapperAction" class="com.servicelive.esb.actions.NPSAuditResponseMapperAction" />	
+	
+	<bean id="auditResponseTranslationAction" class="com.servicelive.esb.actions.NPSAuditResponseTranslationAction" />	
+	
+	<bean id="auditResponseProcessorAction" class="com.servicelive.esb.actions.NPSAuditResponseProcessorAction" />	
+	
+	
+	<!-- HSR related beans END-->
+	
+	
+	<bean id="jobCodeMarginService" class="com.servicelive.esb.service.JobCodeMarginServiceImpl">
+		<property name="orderService"> 
+			<bean id="orderServiceStub" factory-bean="orderServiceLocator" factory-method="getOrderService"/>
+		</property>
+		<property name="timeout" value="10000"/>
+	</bean>
+
+	<bean id="orderServiceLocator" class="com.sears.hs.order.service.OrderServiceServiceLocator">
+		<property name="orderServiceEndpointAddress" value="${SST_WEB_SERVICE_URL}"/>
+	</bean>
+	
+	<!--  <bean id="slOrderService" class="com.servicelive.esb.service.SLOrderServiceImpl">
+		<property name="orderServiceLocator"> 
+			<ref bean="serviceOrderSEI" />
+		</property>
+	</bean>
+
+	 -->
+
+	 <bean id="slOrderService" class="com.servicelive.esb.service.SLOrderServiceImpl">
+		<property name="soFileProcessingBridge"> 
+			<ref bean="soFileProcessingBridge" />
+		</property>
+	</bean>
+
+ <!-- 
+	<bean id="serviceOrderSEI" class="com.newco.marketplace.webservices.sei.serviceorder.ServiceOrderSEILocator"/>
+	 -->
+	<bean id="npsCallCloseSchedulerAction" class="com.servicelive.esb.actions.NPSCallCloseSchedulerAction"/>
+	<bean id="npsXMLGeneratorAction" class="com.servicelive.esb.actions.NPSXMLGeneratorAction"/>	
+	<bean id="npsProcessorAction" class="com.servicelive.esb.actions.NPSProcessorAction"/>		 
+</beans>

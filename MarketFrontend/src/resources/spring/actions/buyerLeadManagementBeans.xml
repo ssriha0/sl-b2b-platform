@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<bean id="buyerLeadManagementControllerAction" 
+		  class="com.newco.marketplace.web.action.BuyerLeadManagement.BuyerLeadManagementControllerAction" 
+		  scope="prototype">
+		 <property name="buyerLeadClient">
+		 	<ref bean="buyerLeadClient"/>
+		 </property>
+		<property name="buyerLeadManagementService">
+			<ref bean="buyerLeadManagementService"/>
+		</property>
+		<property name="applicationProperties" ref="applicationPropertiesWallet" />
+	</bean>
+	
+	 <bean id="buyerLeadManagementService"  class="com.servicelive.buyerleadmanagement.services.BuyerLeadManagementService">
+        <property name="buyerLeadManagementDao" ref="buyerLeadManagementDao" />
+        <property name="documentDao">
+    		<ref bean="documentDao"/>
+    	</property>	
+		<property name="applicationPropertiesDao">
+    		<ref bean="applicationPropertiesDao"/>
+    	</property>
+    </bean>
+    
+	<bean id="buyerLeadOrderSummaryControllerAction" 
+		  class="com.newco.marketplace.web.action.BuyerLeadManagement.BuyerLeadOrderSummaryControllerAction" 
+		  scope="prototype">
+		<property name="buyerLeadManagementService">
+			<ref bean="buyerLeadManagementService"/>
+		</property>
+		
+	</bean>
+     <bean id="buyerLeadManagementDao"  class="com.newco.marketplace.persistence.daoImpl.newservices.BuyerLeadManagementDaoImpl"
+    	lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient"/>
+		</property>
+	</bean>
+	
+	<bean id="buyerLeadClient" class="com.newco.marketplace.web.ordermanagement.api.services.LeadManagementRestClient" scope="prototype">
+	 		<property name="apiBaseUrl" 
+					value="${servicelive.api.base.url}" >
+	 		</property>
+	 		<property name="oAuthEnabled"
+				   value="${oauth.authentication}" >
+			</property>
+			<property name="consumerKey"
+				   value="${sl.public.oauth.ckey}" >
+			</property>
+			<property name="consumerSecret"
+				   value="${sl.public.oauth.csecret}" >
+			</property>
+ 	</bean>
+</beans>

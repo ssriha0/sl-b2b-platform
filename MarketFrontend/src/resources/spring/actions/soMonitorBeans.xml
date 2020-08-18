@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<import resource="classpath:resources/spring/backendApplicationContext.xml" />
+	
+	<bean id="serviceOrderMonitorAction" 
+		  class="com.newco.marketplace.web.action.monitor.ServiceOrderMonitorAction" 
+		  scope="prototype">
+		 <constructor-arg ref="serviceOrderManager"/>
+		 <property name="fetchDelegate">
+			<ref bean="SOWizardFetchBean"/>
+		</property>
+		<property name="buyerBo">
+			<ref bean="buyerBo"/>
+		</property>
+		<property name="buyerFeatureSetBO">
+			<ref bean="buyerFeatureSetBO" />
+		</property>
+		<property name="manageReasonCodeService">
+			<ref bean="manageReasonCodeService" />
+		</property>
+ 	</bean>
+
+	<bean id="serviceOrderSortAction" 
+		  class="com.newco.marketplace.web.action.monitor.ServiceOrderSortAction" 
+		  scope="prototype">
+		 <constructor-arg ref="serviceOrderManager"/>
+ 	</bean>
+
+	<bean id="createPDFAction" 
+		  class="com.newco.marketplace.web.action.monitor.SOCreatePDFAction" 
+		  scope="prototype">
+		 <constructor-arg ref="serviceOrderManager"/>
+ 	</bean>
+	
+ 	<bean id="ajaxActionBean" 
+		  class="com.newco.marketplace.web.action.ajax.AjaxAction" 
+		  scope="prototype">
+		  <constructor-arg ref="serviceOrderManager"/>
+ 	</bean>
+
+ 	<bean id="ajaxActionTester" 
+		  class="com.newco.marketplace.web.action.ajax.AjaxActionTester" 
+		  scope="prototype">
+		  <constructor-arg ref="serviceOrderManager"/>
+ 	</bean>
+ 	
+ 	<bean id="soSearchActionBean" 
+		  class="com.newco.marketplace.web.action.sosearch.ServiceOrderSearchAction" 
+		  scope="prototype">
+		  <constructor-arg ref="serviceOrderManager"/>
+ 	</bean>
+ 	
+ 	<bean 	id="filterActionBean"
+ 			class="com.newco.marketplace.web.action.monitor.ServiceOrderFilterAction"
+ 			scope="prototype">
+ 	</bean>
+
+	<bean id="soMonitorWidgetAddNote" 
+		  class="com.newco.marketplace.web.action.widgets.note.ServiceOrderAddNoteAction" 
+		  scope="prototype">
+		 <constructor-arg ref="serviceOrderManager"/>
+		 <property name="buyerOutBoundNotificationService" ref="buyerOutBoundNotificationService"/>
+		 <property name="buyerOutBoundNotificationJMSService">
+			<ref bean="buyerOutBoundNotificationJMSService" />
+		</property>
+		<property name="notificationService">
+			<ref bean="notificationService" />
+		</property>	 
+	    <property name="relayNotificationService">
+			<ref bean="relayNotificationService" />
+		</property>
+ 	</bean>
+ 	
+	<bean id="googleMapActionBean"	 
+			class="com.newco.marketplace.web.action.monitor.ServiceOrderGoogleMapScriptAction"	 
+			scope="prototype">	 
+	</bean>
+	
+</beans>

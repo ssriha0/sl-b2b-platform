@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd"
+	xmlns:tx="http://www.springframework.org/schema/tx">
+
+
+	<bean id="config" class="com.servicelive.integrationtest.util.Configuration"
+		scope="singleton" />
+
+	<bean id="integrationBO" class="com.servicelive.integrationtest.bo.IntegrationBO">
+		<property name="integrationDao" ref="integrationDao" />
+	</bean>
+
+	<bean id="integrationDao" class="com.servicelive.integrationtest.dao.IntegrationDao">
+		<property name="jdbcIntegrationTemplate" ref="jdbcIntegrationTemplate" />
+		<property name="jdbcSupplierTemplate" ref="jdbcSupplierTemplate" />
+	</bean>
+
+	<bean id="serviceOrderBO" class="com.servicelive.integrationtest.bo.ServiceOrderBO">
+		<property name="serviceOrderDao" ref="serviceOrderDao" />
+	</bean>
+
+	<bean id="serviceOrderDao" class="com.servicelive.integrationtest.dao.ServiceOrderDao">
+		<property name="jdbcSupplierTemplate" ref="jdbcSupplierTemplate" />
+	</bean>
+
+	<bean
+		class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate"
+		id="jdbcIntegrationTemplate">
+		<constructor-arg index="0" ref="dataSourceIntegration" />
+	</bean>
+	<bean
+		class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate"
+		id="jdbcSupplierTemplate">
+		<constructor-arg index="0" ref="dataSourceSupplier" />
+	</bean>
+
+	<bean id="dataSourceIntegration" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="jdbc/ServiceLiveMySqlIntegrationDS" />
+	</bean>
+	<bean id="dataSourceSupplier" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="jdbc/ServiceLiveMySqlDS" />
+	</bean>
+
+	<bean id="selectFilesAction"
+		class="com.servicelive.integrationtest.action.SelectFilesAction"
+		scope="prototype">
+	</bean>
+
+	<bean id="sendToEsbAction" class="com.servicelive.integrationtest.action.SendToEsbAction"
+		scope="prototype">
+		<property name="config" ref="config" />
+	</bean>
+
+	<bean id="outputReportAction"
+		class="com.servicelive.integrationtest.action.OutputReportAction"
+		scope="prototype">
+		<property name="config" ref="config" />
+		<property name="integrationBO" ref="integrationBO" />
+		<property name="serviceOrderBO" ref="serviceOrderBO" />
+	</bean>
+
+</beans>

@@ -1,0 +1,115 @@
+<div class="day-view">
+    <div class="row technician-select-view" *ngIf="!isCompanyView && providers.length > 0">
+        <div class="col-all-12">Techinician
+            <select name="selectedProvider" [(ngModel)]="selectedProvider" (change)="selectPro()">
+            <option *ngFor="let provider of providers; let index = index;" [ngValue]="index">{{provider.name}}</option>
+        </select>
+        </div>
+        <div class="col-all-12">
+            <!-- Pending Jobs : -->
+        </div>
+    </div>
+    <div class="row" *ngIf="proMultiEventListUI.length > 0 && providersUI.length > 0">
+        <!-- *ngIf="isCompanyView; else elseTemplate"> -->
+        <div class="col-all-2 border-cell">
+            <div class="row column-box-margin"></div>
+            <div class="row column-height default-tile border-cell provider-cell" *ngFor="let pro of providersUI; let proIndex = index"
+                [style.height.px]="(proMultiEventListUI[proIndex].length > maxResult ? maxResult : (proMultiEventListUI[proIndex].length < 2 ? 2 : proMultiEventListUI[proIndex].length)) * 50"
+                style="overflow:hidden;"><strong>{{pro.name}}</strong> <br />
+                <!-- Pending Jobs -->
+                <!-- [style.height.px]="(proMultiEventListUI[proIndex].length > maxResult ? maxResult : (proMultiEventListUI[proIndex].length < 2 ? 2 : proMultiEventListUI[proIndex].length)) * 50" -->
+            </div>
+        </div>
+
+        <div class="col-all-10 event-column-scroll border-cell">
+            <div class="max-window-width">
+                <div class="row" [style.width.px]="timeWindows.length * 100">
+                    <div *ngFor="let timeWindow of timeWindows; let timeIndex = index" class="time-header column-width default-tile border-cell">
+                        <strong>{{timeWindow}}:00</strong>
+                    </div>
+                </div>
+                <div class="row" [style.width.px]="timeWindows.length * 100">
+                    <div *ngFor="let eventProMultiWindow of proMultiEventListUI; let eventProMultiIndex = index" class="row column-height" style="margin:0px; overflow-y:auto; border-bottom: 1px solid lightgray;"
+                        [style.height.px]="(eventProMultiWindow.length > maxResult ? maxResult : (eventProMultiWindow.length < 2 ? 2 : eventProMultiWindow.length)) * 50">
+
+                        <div style="position:absolute; overflow-x: auto;" [style.max-height.px]="maxResult * 50" [style.width.px]="timeWindows.length * 100">
+
+                            <div *ngFor="let eventProWindow of eventProMultiWindow; let eventProIndex = index">
+                                <div *ngFor="let eventWindow of eventProWindow; let eventIndex = index" [style.height.px]="(eventWindow != 1 && eventWindow != 0) ? 50 : 0">
+                                    <div *ngIf="(eventWindow != 1 && eventWindow != 0)" class="pro-event column-box default-position-event" [style.left.px]="((eventWindow.start - timeWindows[0]) <= 0 ? 0 : (eventWindow.start - timeWindows[0])) * 100"
+                                        [style.width.px]="(((eventWindow.end <= (timeWindows[timeWindows.length - 1] + 1)) ? (eventWindow.end) : (timeWindows[timeWindows.length - 1] + 1)) - (eventWindow.start <= timeWindows[0] ? timeWindows[0] : eventWindow.start))*100"
+                                        [style.height.px]="50">
+                                        <div (click)="openSOAction(eventWindow)" class="event-decoration" [ngClass]="eventWindow.cssClass">
+                                            {{eventWindow.eventName}} <br/> {{eventWindow.id}}
+                                            <span *ngIf="eventDetailFilter.showCustomer"> <br/> 
+                                                {{eventWindow.memberFirstName}} {{eventWindow.memberLastName}} 
+                                            </span>
+                                            <span *ngIf="eventDetailFilter.showLocation"> 
+                                                <span *ngIf="eventDetailFilter.showCityState || eventDetailFilter.showZip"> <br /> </span>
+                                                <span *ngIf="eventDetailFilter.showCityState"> {{eventWindow.memberCity}}, {{eventWindow.memberState}} </span> 
+                                                <span *ngIf="eventDetailFilter.showZip"> {{eventWindow.memberZip}} </span>
+                                            </span>
+                                            <span *ngIf="eventDetailFilter.showPriorityOrStatus"> <br /> 
+                                                {{eventWindow.statusString}}
+                                            </span>
+                                        </div>
+                                        <div style="display:none">Pro index: {{eventProMultiIndex}} - window index: {{eventProIndex}} - {{eventIndex}}<br/>Start
+                                            {{eventWindow.start}} - End {{eventWindow.end}}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!--
+                        <div *ngFor="let eventWindow of eventProWindow; let eventIndex = index" class="pro-event column-box default-position-event"
+                            [style.left.px]="(eventWindow.start - timeWindows[0]) * 100" [style.width.px]="(((eventWindow.end <= (timeWindows[timeWindows.length - 1] + 1)) ? eventWindow.end : (timeWindows[timeWindows.length - 1] + 1)) - eventWindow.start)*100">
+                            <div (click)="openSOAction(eventWindow)" class="event-decoration" [ngClass]="eventWindow.cssClass">
+                                {{eventWindow.eventName}} <br/> {{eventWindow.id}} <br/> {{eventWindow.memberFirstName}}
+                                {{eventWindow.memberLastName}}
+                            </div>
+                            <div style="display:none">Pro index: {{eventProIndex}} - event index: {{eventIndex}}<br/>Start {{eventWindow.start}} -
+                                End {{eventWindow.end}}</div>
+                        </div>
+                        -->
+
+                        <div *ngFor="let timeWindow of timeWindows; let timeIndex = index" class="pro-event column-box blank-default-position-event"
+                            [style.left.px]="timeIndex * 100" [style.width.px]="100" [style.height.px]="(eventProMultiWindow.length > maxResult ? maxResult : (eventProMultiWindow.length < 2 ? 2 : eventProMultiWindow.length)) * 50">
+                            <div (click)="openAddNewEventPopUp(timeWindow)" class="event-decoration default-tile">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!--
+<ng-template #elseTemplate>
+    <div class="row technician-select-view" *ngIf="!isCompanyView">
+        <div class="col-all-12">Techinician
+            <select name="selectedProvider" [(ngModel)]="selectedProvider" (change)="selectPro()">
+            <option *ngFor="let provider of providers; let index = index;" [ngValue]="index">{{provider.name}}</option>
+        </select>
+        </div>
+        <div class="col-all-12">
+             Pending Jobs : 
+        </div>
+    </div>
+    <div class="row">
+        <div *ngFor="let timeWindow of selectedProHours; let timeIndex = index" class="pro-event individual-column-box" [style.width.px]="selectedProEvents[timeWindow] ? (((selectedProEvents[timeWindow].end - selectedProEvents[timeWindow].start) > maxResult ? maxResult : (selectedProEvents[timeWindow].end - selectedProEvents[timeWindow].start) ) * 113) : 113">
+            <div class="default-tile event-decoration" *ngIf="!selectedProEvents[timeWindow]; else valueTemplate">{{timeWindow}}:00</div>
+            <ng-template #valueTemplate>
+                <div (click)="openSOAction(eventWindow)" [ngClass]="selectedProEvents[timeWindow].cssClass" class="event-decoration value-tile">
+                    {{timeWindow}}:00 - {{selectedProEvents[timeWindow].end == 24 ? '23:59' : selectedProEvents[timeWindow].end + ':00'}}
+                    <br/>{{selectedProEvents[timeWindow].eventName}}
+                    <br />{{selectedProEvents[timeWindow].id}}
+                    <br/> {{selectedProEvents[timeWindow].memberFirstName}} {{selectedProEvents[timeWindow].memberLastName}}
+                </div>
+            </ng-template>
+        </div>
+    </div>
+</ng-template>
+-->

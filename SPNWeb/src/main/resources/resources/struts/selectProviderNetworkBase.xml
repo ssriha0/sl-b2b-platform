@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+   <!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+    <!-- <include file="struts-default.xml"/> -->
+    
+    <package name="selectProviderNetworkBase" namespace="/" extends="struts-default">
+        <interceptors>
+        	
+        	<interceptor class="com.servicelive.spn.security.LoggedInUserCheckInterceptor" name="loggedInUserCheckInterceptor" />
+            <interceptor-stack name="SPNInterceptorStack">
+            	<interceptor-ref name="loggedInUserCheckInterceptor"/> 
+                <interceptor-ref name="exception"/>
+                <interceptor-ref name="alias"/>
+                <interceptor-ref name="servletConfig"/>
+                <interceptor-ref name="prepare"/>
+                <interceptor-ref name="i18n"/>
+                  <interceptor-ref name="chain"/>
+                    <interceptor-ref name="debugging"/>
+                <interceptor-ref name="profiling"/>
+                   <interceptor-ref name="scopedModelDriven"/>
+                <interceptor-ref name="modelDriven"/>
+                <interceptor-ref name="fileUpload"/>
+                <interceptor-ref name="checkbox"/>
+                <interceptor-ref name="staticParams"/>
+               
+                <interceptor-ref name="params">
+                    <param name="excludeParams">dojo\..*,^struts\..*</param>
+                </interceptor-ref>
+                <interceptor-ref name="conversionError"/>
+                <!-- interceptor-ref name="validator" / -->
+			    <interceptor-ref name="validation" >
+			     <param name="excludeMethods">*</param>
+                 <param name="includeMethods">saveAndDone</param>
+                </interceptor-ref>
+			 
+			    <interceptor-ref name="workflow">
+			    	 <param name="excludeMethods">*</param>
+                   	 <param name="includeMethods">saveAndDone</param>
+			    </interceptor-ref>  
+			            
+            </interceptor-stack>
+        </interceptors>
+        
+      
+           
+
+
+
+		<global-results>
+             <result name="RecoverableException">/jsp/spn/common/default_error.jsp</result>
+             <result name="error" type="dispatcher">/jsp/spn/common/default_error.jsp</result>
+             <result name="FatalException">/jsp/spn/common/default_error.jsp</result>
+             <result name="NOT_LOGGED_IN" type="redirectAction">spnLoginAction_logoutUser</result>   
+             <result name="NOT_LOGGED_IN_AS_BUYER" type="redirectAction">spnLoginAction_logoutUser</result>
+            
+             
+        </global-results>
+
+
+        <global-exception-mappings>
+              <exception-mapping exception="java.lang.Exception" result="RecoverableException"/>
+               <exception-mapping exception="java.lang.Throwable" result="FatalException"/>
+        </global-exception-mappings>
+          
+		
+		<action name="spnLoginAction_loginUser" class="spnLoginAction"  method="loginUser">
+			<result name="success" type="redirectAction">
+			   <param name="actionName">${targetAction}</param>
+			</result>
+			<result name="error">/jsp/spn/common/login.jsp</result>
+		</action>
+		
+		<action name="spnLoginAction_display" class="spnLoginAction"  method="display">
+		    <result name="redirectAction" type="redirectAction">
+		     	<param name="actionName">${targetAction}</param>
+		    </result>
+			<result name="success">/jsp/spn/common/login.jsp</result>
+		</action>
+
+		<action name="spnLoginAction_ssoLogin" class="spnLoginAction"  method="ssoLogin">
+			<result name="serviceProDetailsPage" type="redirectAction">
+           		<param name="actionName">spnProviderDetails_displayNetworkInfoPageAjax</param>
+	            <param name="vendorId">${vendorId}</param>
+	            <param name="vendorResourceId">${vendorResourceId}</param>
+	            <param name="firstName">${firstName}</param>
+	            <param name="lastName">${lastName}</param>
+	 		</result>
+			<result name="providerFirmDetailsPage" type="redirectAction">
+           		<param name="actionName">spnProviderFirmDetails_displayNetworkInfoTabAjax</param>
+	            <param name="vendorId">${vendorId}</param>
+	            <param name="vendorName">${vendorName}</param>
+	            <param name="firstName">${firstName}</param>
+	            <param name="lastName">${lastName}</param>
+	 		</result>
+		</action>
+
+				
+        
+		<action name="spnLoginAction_logoutUser" class="spnLoginAction"  method="logoutUser" >
+			<result name="success" type="redirect"> ${targetAction}</result>
+			<!-- 		
+			<result name="success" type="redirectAction">
+	            <param name="actionName">spnMonitorCampaign_display</param>
+        	</result>
+        	-->  
+		</action>
+		
+        
+        
+    </package>
+</struts>

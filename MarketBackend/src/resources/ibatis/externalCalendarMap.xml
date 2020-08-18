@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+
+<sqlMap namespace="calendarEventVO">
+	<typeAlias alias="externalCalendarDTO" type="com.newco.marketplace.vo.calendarPortal.ExternalCalendarDTO" />
+	
+	<select id="fetchAllExternalCalendars.query" resultClass="externalCalendarDTO">
+		SELECT person_id AS personId , firm_id AS firmId, cronofy_acct_id AS cronofyAccId, calendar_id AS calendarId,
+		email_id AS emailId, cal_source AS calendarSource,access_token AS access_token, refresh_token AS refresh_token,
+		isSynced AS synced, created_date AS createdDate, modified_date AS modifiedDate, created_by AS createdBy, modified_by modifiedBy
+		from supplier_prod.resource_external_calendar;
+	</select>
+	
+	<select id="externalCalendarByPersonID.query" parameterClass="java.lang.Integer" resultClass="externalCalendarDTO">
+		SELECT person_id AS personId , firm_id AS firmId, cronofy_acct_id AS cronofyAccId, calendar_id AS calendarId,
+		email_id AS emailId, cal_source AS calendarSource,access_token AS access_token, refresh_token AS refresh_token,
+		isSynced AS synced, created_date AS createdDate, modified_date AS modifiedDate, created_by AS createdBy, modified_by modifiedBy
+		from supplier_prod.resource_external_calendar 
+	where
+		person_id = #personId#; 
+	</select>
+		
+	<insert id="externalCalendar.insertOrUpdate" parameterClass="externalCalendarDTO">
+		INSERT INTO supplier_prod.resource_external_calendar
+			(person_id,		firm_id,		cronofy_acct_id,	calendar_id,	email_id,
+			cal_source,		access_token,	refresh_token,		isSynced,		created_date,
+			modified_date,	created_by,		modified_by)
+		VALUES
+			(#personId#,		#firmId#,		#cronofyAccId#,		#calendarId#,	#emailId#,
+			#calendarSource#,	#access_token#,	#refresh_token#,	#synced#,		now(),
+			now(),				#createdBy#,	#modifiedBy#)
+		ON DUPLICATE KEY UPDATE
+			person_id = #personId#,			firm_id = #firmId#,					cronofy_acct_id = #cronofyAccId#,
+			calendar_id = #calendarId#,		email_id = #emailId#,				cal_source = #calendarSource#,
+			access_token = #access_token#,	refresh_token = #refresh_token#,	isSynced = #synced#,
+			modified_date = now(),			modified_by = #modifiedBy#;
+		</insert>
+	
+	<update id="externalCalendarAccessToken.update" parameterClass="externalCalendarDTO">
+		UPDATE supplier_prod.resource_external_calendar
+		SET
+		access_token = #access_token#,
+		modified_date = now()
+	WHERE 
+		cronofy_acct_id = #cronofyAccId#;	
+	</update>
+</sqlMap>

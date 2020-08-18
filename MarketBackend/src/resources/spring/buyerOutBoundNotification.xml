@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+     <bean id="buyerOutBoundNotificationDao" class="com.newco.marketplace.persistance.daoImpl.buyerOutBoundNotification.BuyerOutBoundNotificationDaoImpl"
+     	lazy-init="true">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	 
+    </bean>	
+    
+    
+    <bean id="buyerOutBoundNotificationService" class="com.newco.marketplace.business.businessImpl.buyerOutBoundNotification.BuyerOutBoundNotificationServiceImpl">
+	 	<property name="buyerOutBoundNotificationDao">
+			<ref bean="buyerOutBoundNotificationDao" />
+		</property>
+		<property name="applicationProperties" ref="applicationPropertiesWallet" />
+    </bean>
+     
+ 
+     
+     <bean id="buyerOutBoundAPIService"
+		class="com.newco.marketplace.business.businessImpl.buyerOutBoundNotification.BuyerOutBoundAPIServiceImpl">
+		<property name="buyerOutBoundNotificationService">
+			<ref bean="buyerOutBoundNotificationService"/>
+		</property>
+		<property name="buyerOutboundNotificationClient">
+			<ref bean="buyerOutboundNotificationClient"/>
+		</property>
+	</bean>
+	
+	 	 <!-- Out bound notifications -->
+ 	 <bean id="buyerOutBoundNotificationJMSService" class="com.newco.marketplace.business.businessImpl.buyerOutBoundNotification.BuyerOutBoundNotificationJMSServiceImpl">
+ 	 	<property name="invokeJMS">
+ 			<ref bean="invokeJMS"/>
+ 		 </property>
+     </bean>
+     	
+     <bean id="invokeJMS" class="com.newco.marketplace.business.businessImpl.buyerOutBoundNotification.mdb.BuyerJMSInvoker">
+     <property name="jmsProps">
+            <props>
+                <prop key="java.naming.factory.initial">
+                    ${java.naming.factory.initial}
+                </prop>
+                <prop key="java.naming.factory.url.pkgs">
+                    ${java.naming.factory.url.pkgs}
+                </prop>
+                <prop key="java.naming.provider.url">
+                    ${java.naming.provider.url}
+                </prop>
+            </props>
+        </property>
+     </bean>
+     
+     <bean class="com.newco.marketplace.business.businessImpl.buyerOutBoundNotification.mdb.BuyerOutBoundNotificationMDB" 
+     	factory-method="getInstance" scope="singleton">
+     	<property name="buyerOutBoundAPIService">
+ 			<ref bean="buyerOutBoundAPIService"/>
+ 		 </property>
+     </bean>
+     
+     <bean id="buyerOutboundNotificationClient" class="com.newco.marketplace.buyeroutboundnotification.service.BuyerOutboundNotificationClient">
+ 		 <property name="buyerOutBoundNotificationService">
+ 			<ref bean="buyerOutBoundNotificationService"/>
+ 		 </property>
+     </bean>
+     
+      <bean id="relayNotificationService" class="com.newco.marketplace.business.businessImpl.relayServicesNotification.RelayServiceNotificationImpl">
+	 	<property name="serviceOrderBO">
+			<ref bean="serviceOrderBOTarget" />
+	    </property>
+	    <property name="notificationDao">
+			<ref bean="notificationDao" />
+	    </property>
+     </bean>
+</beans>

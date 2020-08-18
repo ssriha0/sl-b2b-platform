@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<title>Table Sorter</title>
+
+
+<script type="text/javascript" src="/ServiceLiveWebUtil/javascript/jquery/jquery-1.3.2.min.js"></script>
+<script type="text/javascript" src="/ServiceLiveWebUtil/javascript/plugins/jquery.tablesorter.min.js"></script>
+
+<link rel="stylesheet" href="uicodesamples.css" type="text/css"></link>
+</head>
+
+<body>
+<div id="wrapper">
+<a id="home" href="/UICodeSamples">Home</a>
+<h1>Tablesorter</h1>
+
+<p>We use the jQueryUI tablesorter plugin. </p>
+<script type="text/javascript">
+	jQuery(document).ready(function($) {
+		$("#sortedTable").tablesorter();
+	});
+	
+	</script>
+
+<div>
+<table id="sortedTable"> 
+<thead> 
+<tr> 
+    <th>Last Name</th> 
+    <th>First Name</th> 
+    <th>Email</th> 
+    <th>Due</th> 
+    <th>Web Site</th> 
+</tr> 
+</thead> 
+<tbody> 
+<tr> 
+    <td>Smith</td> 
+    <td>John</td> 
+    <td>jsmith@gmail.com</td> 
+    <td>$50.00</td> 
+    <td>http://www.jsmith.com</td> 
+</tr> 
+<tr> 
+    <td>Bach</td> 
+    <td>Frank</td> 
+    <td>fbach@yahoo.com</td> 
+    <td>$50.00</td> 
+    <td>http://www.frank.com</td> 
+</tr> 
+<tr> 
+    <td>Doe</td> 
+    <td>Jason</td> 
+    <td>jdoe@hotmail.com</td> 
+    <td>$100.00</td> 
+    <td>http://www.jdoe.com</td> 
+</tr> 
+<tr> 
+    <td>Conway</td> 
+    <td>Tim</td> 
+    <td>tconway@earthlink.net</td> 
+    <td>$50.00</td> 
+    <td>http://www.timconway.com</td> 
+</tr> 
+</tbody> 
+</table> 
+    
+
+
+
+
+
+========<br/>
+
+
+<h2>How to:</h2>
+<ol>
+<li>Put these in the &lt;head>&lt;/head> section of your document: <br/>
+<pre>&lt;script type="text/javascript" src="${staticContextPath}/javascript/jquery/jquery-1.3.2.min.js">&lt;/script>
+&lt;script type="text/javascript" src="${staticContextPath}/javascript/plugins/jquery.tablesorter.min.js">&lt;/script>
+</pre>
+Note: The above code assumes that you've defined the "staticContextPath" variable in your JSP.
+</li>
+
+<li>Initialize the tablesorter object: <br/>
+<pre>
+&lt;script type="text/javascript">
+	jQuery(document).ready(function($) {
+		$("#sortedTable").tablesorter();
+	});
+	&lt;/script>
+
+</pre>
+</li>
+
+<li>Create a table to sort - the table must contain a thead and a tbody tag: <br/>
+<pre>
+&lt;table id="sortedTable"> 
+&lt;thead> 
+&lt;tr> 
+    &lt;th>Last Name&lt;/th> 
+    &lt;th>First Name&lt;/th> 
+    &lt;th>Email&lt;/th> 
+    &lt;th>Due&lt;/th> 
+    &lt;th>Web Site&lt;/th> 
+&lt;/tr> 
+&lt;/thead> 
+&lt;tbody> 
+&lt;tr> 
+    &lt;td>Smith&lt;/td> 
+    &lt;td>John&lt;/td> 
+    &lt;td>jsmith@gmail.com&lt;/td> 
+    &lt;td>$50.00&lt;/td> 
+    &lt;td>http://www.jsmith.com&lt;/td> 
+&lt;/tr> 
+&lt;tr> 
+    &lt;td>Bach&lt;/td> 
+    &lt;td>Frank&lt;/td> 
+    &lt;td>fbach@yahoo.com&lt;/td> 
+    &lt;td>$50.00&lt;/td> 
+    &lt;td>http://www.frank.com&lt;/td> 
+&lt;/tr> 
+&lt;tr> 
+    &lt;td>Doe&lt;/td> 
+    &lt;td>Jason&lt;/td> 
+    &lt;td>jdoe@hotmail.com&lt;/td> 
+    &lt;td>$100.00&lt;/td> 
+    &lt;td>http://www.jdoe.com&lt;/td> 
+&lt;/tr> 
+&lt;tr> 
+    &lt;td>Conway&lt;/td> 
+    &lt;td>Tim&lt;/td> 
+    &lt;td>tconway@earthlink.net&lt;/td> 
+    &lt;td>$50.00&lt;/td> 
+    &lt;td>http://www.timconway.com&lt;/td> 
+&lt;/tr> 
+&lt;/tbody> 
+&lt;/table> 
+</pre>
+</li>
+
+<li>CSS customization will be needed, in order to define the table's look and feel, and the headerSortUp and headerSortDown classes for the arrows. </li>
+</ol>
+
+
+
+
+Complete documentation available <a href="http://www.tablesorter.com/docs/">here</a>. 
+
+<div class="ltCorner"></div>
+<div class="rtCorner"></div>
+<div class="lbCorner"></div>
+<div class="rbCorner"></div>
+</div>
+</body>
+</html>

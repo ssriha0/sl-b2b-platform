@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="creditCard">
+	
+	<typeAlias alias="creditCard" type="com.servicelive.common.vo.SLCreditCardVO"/>
+	
+	<insert id="creditCard.insertWSResponse" parameterClass="creditCard">
+		INSERT 	INTO account_auth_resp
+			(account_id,
+			 response,
+			 resp_date,
+			 authorized_ind,
+			 ansi_code,
+			 cid_code,
+			 addr_code,
+		 	 trans_amt,
+			 trans_desc
+		
+			)
+		VALUES
+			(#cardId#,
+			 #response#,
+			 #responseDate#,
+			 #authorized#,
+			 #ansiResponseCode#,
+			 #cidResponseCode#,
+			 #addrResponseCode#,
+			 #transactionAmount#,
+			 #transIdentifier#
+			)
+	</insert>
+	
+	<insert id="creditCard.insertHSSResponse" parameterClass="creditCard">
+		INSERT 	INTO account_hs_auth_resp
+			(account_id,
+			 user_name,
+			 response,
+			 resp_date,
+			 response_code,
+			 response_message,
+			 trans_amt,
+			 addlResponse_data,
+		 	 ajb_key,
+			 ach_process_queue_id
+		
+			)
+		VALUES
+			(#cardId#,
+			 #userName#,
+			 #response#,
+			 #responseDate#,
+			 #responseCode#,
+			 #responseMessage#,
+			 #transAmount#,
+			 #addlResponseData#,
+			 #ajbKey#,
+			 #achProcessQueueID#
+			  <selectKey resultClass="long">
+            	SELECT last_insert_id() as respId
+        		</selectKey>
+			)
+	</insert>
+	
+	<select id="credit_card_response_code.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+		<![CDATA[
+		select ext_descr from lu_account_resp_cds
+		where resp_cd = #response# and action = 'Decline'
+		]]>
+	</select>    
+	
+	<select id="applicaionFlag.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT app_value FROM supplier_prod.application_flags WHERE app_key= #appKey#
+	</select>   
+	<update id="updateMaskedAccountToken.query" parameterClass="creditCard" >
+	   UPDATE account_hdr SET masked_acc_num = #maskedAccount#,token =#token# WHERE account_id =#cardId#
+	</update>
+</sqlMap>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	
+	<!-- Start DAO  Loading -->
+	
+	<bean id="activityDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.ActivityRegistryDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	
+	<bean id="luActivityDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.LuActivityDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	<bean id="lookupDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.LookupDAOImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	<bean id="skillAssignDAOImpl" class="com.newco.marketplace.persistence.daoImpl.provider.SkillAssignDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	<bean id="marketPlaceSearchDAOImpl" class="com.newco.marketplace.persistence.daoImpl.provider.MarketplaceSearchDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	<bean id="userProfileDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.UserProfileDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	<bean id="vendorCredentialsDocumentDAOImpl" class="com.newco.marketplace.persistence.daoImpl.provider.VendorCredentialsDocumentDAOImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	<bean id="vendorHdrDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.VendorHdrDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	<bean id="resourceStatusDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.ResourceStatusDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+    <!-- End DAO  Loading -->
+    
+    
+    <!-- Start BO  Loading -->
+    <bean id="skillAssignBOImpl" class="com.newco.marketplace.business.businessImpl.provider.SkillAssignBOImpl"
+    	lazy-init="true">
+		<constructor-arg index="0" ref="skillAssignDAOImpl"/>
+		<constructor-arg index="1" ref="marketPlaceSearchDAOImpl"/>
+		<constructor-arg index="2" ref="luActivityDaoImpl"/>
+		<constructor-arg index="3" ref="activityDaoImpl"/>
+		<constructor-arg index="4" ref="lookupDaoImpl"/>
+	
+		<property name="transactionManager">
+            <ref bean="dsTransactionManagerMain"/>
+        </property>
+	</bean>
+	
+</beans>

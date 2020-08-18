@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+    <package name="companyProfile" extends="ServiceLiveBase">
+    	<default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+       	<action name="companyProfileAction_*" class="companyProfileAction" method="{1}">
+       		<result name="load">/jsp/providerRegistration/modules/tab_company_complete_profile.jsp</result>
+			<result name="input" type="redirectAction">
+	             <param name="actionName">companyTabAction?tabView=tab1</param>
+	             <param name="namespace">/jsp/providerRegistration</param>
+	             <param name="nexturl">companyProfileAction.action</param>
+        	</result>
+			<result name="editCompanyProfile" type="redirectAction">
+	          <param name="actionName">allTabView?tabView=tab1</param>
+	            <param name="namespace">/jsp/providerRegistration</param>
+        	</result>
+			
+		</action>
+			<action name="companyPublicAction_*" class="companyProfileAction" method="{1}">
+       		<result name="load">/jsp/providerRegistration/modules/tab_company_public_profile.jsp</result>
+			<result name="input" type="redirectAction">
+	             <param name="actionName">companyTabAction?tabView=tab2</param>
+	             <param name="namespace">/jsp/providerRegistration</param>
+	             <param name="nexturl">companyPublicAction.action</param>
+        	</result>
+			<result name="editCompanyProfile" type="redirectAction">
+	          <param name="actionName">allTabView?tabView=tab1</param>
+	            <param name="namespace">/jsp/providerRegistration</param>
+        	</result>
+			
+		</action>
+		
+			<action name="companyTabAction" class="companyTabs">
+				<result name="success">/jsp/providerRegistration/providerFirm_tabs.jsp</result>
+			</action>
+		
+		</package>
+</struts>

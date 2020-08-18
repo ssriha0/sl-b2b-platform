@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="spn">
+
+	<typeAlias alias="tripChargeVO"
+		type="com.newco.marketplace.dto.vo.TripChargeVO" />
+	
+
+	<sql id="trip_charges_for_buyer.select">
+		SELECT 
+			btc.buyer_id AS buyerID,
+			btc.node_id AS nodeID,
+			btc.trip_charge AS tripCharge
+		FROM
+			buyer_trip_charge_by_skill btc
+	</sql>
+	
+	<select id="get_trip_charge_with_main_categery_name.query"
+		parameterClass="tripChargeVO" resultClass="tripChargeVO">
+		SELECT 
+			btc.buyer_id AS buyerID,
+			btc.node_id AS mainCategoryID,
+			btc.trip_charge AS tripCharge,
+			st.node_name AS mainCategoryDesc
+		FROM
+			buyer_trip_charge_by_skill btc JOIN skill_tree st
+				ON btc.node_id = st.node_id
+		WHERE
+			btc.buyer_id = #buyerID#
+			AND st.node_id = #mainCategoryID#
+	</select>
+	<select id="get_trip_charge_list_with_main_categery_name.query"
+		parameterClass="tripChargeVO" resultClass="tripChargeVO">
+		SELECT 
+			btc.buyer_id AS buyerID,
+			btc.node_id AS mainCategoryID,
+			btc.trip_charge AS tripCharge,
+			st.node_name AS mainCategoryDesc
+		FROM
+			buyer_trip_charge_by_skill btc JOIN skill_tree st
+				ON btc.node_id = st.node_id
+		WHERE
+			btc.buyer_id = #buyerID#
+	</select>
+	
+	
+
+	<update id="trip_charge.update" parameterClass="tripChargeVO">
+		UPDATE 
+			buyer_trip_charge_by_skill SET
+		  		trip_charge = #tripCharge#
+		WHERE 
+				buyer_id = #buyerID#
+				AND node_id = #mainCategoryID#
+	</update>
+	
+	<insert id="trip_charge.insert" parameterClass="tripChargeVO">
+		INSERT INTO buyer_trip_charge_by_skill (
+			buyer_id,
+			node_id,
+			trip_charge)
+		VALUES(
+			#buyerID#, 
+			#mainCategoryID#, 
+			#tripCharge#)
+	</insert>
+	
+	
+	
+	
+	<select id="get_trip_charges_for_buyer.query"
+		parameterClass="tripChargeVO" resultClass="tripChargeVO">
+		<include refid="trip_charges_for_buyer.select"/>
+		WHERE
+			buyer_id = #buyerID#
+	</select>
+    
+    <parameterMap id="highestByCategoryIdsParamMap" class="java.util.Map">
+        <parameter property="buyerID"/>
+        <parameter property="mainCategoryIds"/>
+    </parameterMap>
+    
+    <select id="tripChargeMap.getHighestByCategoryIds" parameterMap="highestByCategoryIdsParamMap" resultClass="java.lang.Double">
+    	select max(trip_charge) from buyer_trip_charge_by_skill
+		where buyer_id = #buyerID# and node_id in
+			<iterate property="mainCategoryIds" open="(" close=")" conjunction=",">
+				#mainCategoryIds[]#
+			</iterate>
+    </select>
+    
+</sqlMap>

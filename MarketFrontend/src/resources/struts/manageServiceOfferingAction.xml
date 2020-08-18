@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+    <package name="manageServiceOffering" extends="ServiceLiveBase" >
+    	<default-interceptor-ref name="ServiceLiveBaseInterceptorStack" />
+  
+       	<action name="manageServiceOfferingDashboardAction_execute" class="manageServiceOfferingDashboardAction" method="execute">
+			<result name="success" >/jsp/service_offerings/manage_service_offering.jsp</result>
+		   <result name="error">/jsp/service_offerings/error.jsp</result>	         
+		</action>
+		
+		<action name="manageServiceOfferingsAction_display" class="manageServiceOfferingsAction" method="display">
+			<result name="success" >/jsp/service_offerings/service_offering.jsp</result>
+		    <result name="error">/jsp/service_offerings/error.jsp</result>	         
+		</action>
+		
+		<action name="manageServiceOfferingsAction_save" class="manageServiceOfferingsAction" method="save">
+		    <result name="error">/jsp/service_offerings/error.jsp</result>	         
+		    <result name="dashboard" type="redirectAction">manageServiceOfferingDashboardAction_execute</result>	         
+		</action>
+		<action name="manageServiceOfferingsAction_viewhistory" class="manageServiceOfferingsAction" method="getHistory">
+			<result name="success" >/jsp/service_offerings/service_offering_history.jsp</result>
+		    <result name="error">/jsp/service_offerings/error.jsp</result>	         
+		</action>
+	</package>
+</struts>

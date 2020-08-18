@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="buyerCallbackEvent">
+	<typeAlias alias="buyerCallbackEventVO" type="com.newco.marketplace.dto.vo.buyerCallbackEvent.BuyerCallbackEvent" />	
+	<typeAlias alias="buyerDetailsEventCallbackVO" type="com.newco.marketplace.dto.vo.buyerCallbackEvent.BuyerDetailsEventCallbackVO" />
+	<typeAlias alias="buyerCallbackNotification" type="com.newco.marketplace.business.businessImpl.alert.BuyerCallbackNotification"/>
+	<typeAlias alias="callbackNotificationStatusVo" type="com.newco.marketplace.business.businessImpl.vibePostAPI.BuyerCallbackNotificationStatusVo"/>
+	<typeAlias alias="buyerKeysVO" type="com.newco.marketplace.buyercallbacknotificationscheduler.vo.BuyerKeysVO" />
+	
+	<select id="buyerCallbackEvent.getBuyerCallbackDetail"  parameterClass="java.util.Map" resultClass="buyerCallbackEventVO">
+	select 
+	 buyer_cs.buyer_id as buyerId , 
+		buyer_ce.event_id as eventId,
+		buyer_ce.action_id as actionId,
+		lu_em.event_name as eventName,
+		buyer_cfm.filter_id as filterId
+		from buyer_callback_events buyer_ce
+		left join buyer_callback_service buyer_cs  on buyer_cs.service_id = buyer_ce.service_id
+	    join lu_event_master lu_em on lu_em.event_id = buyer_ce.action_id and lu_em.event_type='CALLBACK'
+		left join buyer_callback_filter_map buyer_cfm on buyer_cfm.event_id = buyer_ce.event_id
+	    where buyer_ce.action_id=#actionId#
+		AND buyer_cs.buyer_id = #buyerId#;
+	</select>
+	
+	<select id="buyerCallbackEvent.getBuyerCallbackEventList"  parameterClass="java.util.Map" resultClass="buyerCallbackEventVO">
+	select 
+	  buyer_cs.buyer_id as buyerId , 
+		buyer_ce.event_id as eventId,
+		buyer_ce.action_id as actionId,
+		lu_em.event_name as eventName,
+		buyer_cfm.filter_id as filterId
+		from buyer_callback_events buyer_ce
+		left join buyer_callback_service buyer_cs  on buyer_cs.service_id = buyer_ce.service_id
+	    join lu_event_master lu_em on lu_em.event_id = buyer_ce.action_id and lu_em.event_type='CALLBACK'
+		left join buyer_callback_filter_map buyer_cfm on buyer_cfm.event_id = buyer_ce.event_id
+	    where  buyer_cs.buyer_id = #buyerId#;
+	</select>
+	
+	<select id="buyerCallbackEvent.getCallbackEventList" resultClass="buyerCallbackEventVO">
+	 select 
+		buyer_cs.buyer_id as buyerId , 
+		buyer_ce.event_id as eventId,
+		buyer_ce.action_id as actionId,
+		lu_em.event_name as eventName,
+		buyer_cfm.filter_id as filterId,
+		lu_filter.filter_names as filterNames
+		from buyer_callback_events buyer_ce
+		left join buyer_callback_service buyer_cs  on buyer_cs.service_id = buyer_ce.service_id
+	    join lu_event_master lu_em on lu_em.event_id = buyer_ce.action_id and lu_em.event_type='CALLBACK'
+		left join buyer_callback_filter_map buyer_cfm on buyer_cfm.event_id = buyer_ce.event_id
+		left join lu_callback_filter lu_filter on lu_filter.filter_id = buyer_cfm.filter_id;
+	    
+	</select>
+	
+	<select id="buyerCallbackEvent.getBuyerCallbackAPIDetailsList" resultClass="buyerDetailsEventCallbackVO">
+	  select 
+	    buyer_id as buyerId,
+	    method as method,
+		url as url, 
+		http_header_parameters as httpHeaderParameters,
+		authentication_type as authenticationType,
+		api_key as apiKey,
+		api_secret as apiSecret,
+		callback_type as callbackType,
+		<!-- SLT-3836 -->
+		callback_base as callbackBase
+		from buyer_callback_service
+	</select>
+	
+	
+	<select id="buyerCallbackEvent.getBuyerCallBackEventId"  parameterClass="java.util.Map"  resultClass="java.lang.Integer" >
+		select event_id from buyer_callback_events where action_id =#actionID# and service_id = (select
+		service_id from buyer_callback_service where buyer_id=#buyerId# )
+	</select>
+
+	
+	<update id="buyerEventCallback.updateNotification" parameterClass="java.util.HashMap">
+		UPDATE buyer_callback_notification SET status = #status#, response = #response#, exception = #exception#
+		WHERE notification_id = #notificationId#;
+	</update>
+	
+	<select id="buyerCallbackNotifications.query" parameterClass="java.lang.Integer" resultClass="buyerCallbackNotification">
+        SELECT
+        buyer.buyer_id as buyerId,
+        lu_em.event_name as event,
+        notification.notification_id as notificationId,
+        notification.request_data as data,
+        notification.no_of_retries as retries
+        FROM
+        buyer_callback_notification notification
+        join buyer_callback_events event on (notification.event_id = event.event_id)
+        join buyer_callback_service buyer on (event.service_id = buyer.service_id)
+        join lu_event_master lu_em on (lu_em.event_id = event.action_id) and lu_em.event_type='CALLBACK'
+        where 
+        ((notification.status= 'WAITING'
+        OR notification.status= 'AWS_FAILURE')
+         AND notification.no_of_retries <![CDATA[ <]]> 4) 
+         OR 
+        (notification.status= 'WAITING'
+        AND notification.no_of_retries <![CDATA[ >]]> 0 AND notification.no_of_retries <![CDATA[ <]]> 12
+        AND notification.modified_date <![CDATA[ <]]>= DATE_SUB(NOW(), INTERVAL 30 MINUTE) )         
+        ORDER BY notification.created_date asc limit #noOfRecords#
+   </select>
+   <update id="callbackNotification.setStatus" parameterClass="callbackNotificationStatusVo">
+        update
+        buyer_callback_notification
+        set
+        status = #status#,
+        no_of_retries = #noOfRetries#,
+        exception = #exception#,
+         <isNotNull property="response">
+		 response = #response#, 
+		 </isNotNull>
+        modified_date = NOW()
+        where
+        notification_id = #notificationId#
+    </update>    
+    
+    <select id="buyerEventCallback.getBuyerKeysList" resultClass="buyerKeysVO">
+	  select 
+	    ap.user_id as buyerId,
+	    ap.consumer_key as consumerkey,
+	    oc.consumer_secret as secretKey
+		from api_user_permission ap
+		join buyer_callback_service bcs on (bcs.buyer_id = ap.user_id)
+		join oauth_consumer oc on (oc.consumer_key = ap.consumer_key)
+	</select>
+	
+</sqlMap>

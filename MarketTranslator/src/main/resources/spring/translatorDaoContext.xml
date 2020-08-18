@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd" xmlns:tx="http://www.springframework.org/schema/tx">
+	
+	<tx:annotation-driven transaction-manager="jpaTransactionManagerMain" />
+	
+	<bean
+		id="DocumentDAO"
+		class="com.newco.marketplace.translator.dao.DocumentDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="LuZipMarketDAO"
+		class="com.newco.marketplace.translator.dao.LuZipMarketDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="BuyerReferenceTypeDAO"
+		class="com.newco.marketplace.translator.dao.BuyerReferenceTypeDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="BuyerSkuTaskAssocDAO"
+		class="com.newco.marketplace.translator.dao.BuyerSkuTaskAssocDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="BuyerRetailPriceDAO"
+		class="com.newco.marketplace.translator.dao.BuyerRetailPriceDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="LuFundingTypeDAO"
+		class="com.newco.marketplace.translator.dao.LuFundingTypeDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="ApplicationPropertiesDAO"
+		class="com.newco.marketplace.translator.dao.ApplicationPropertiesDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="SkillTreeDAO"
+		class="com.newco.marketplace.translator.dao.SkillTreeDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="BuyerDAO"
+		class="com.newco.marketplace.translator.dao.BuyerDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="LuMarketDAO"
+		class="com.newco.marketplace.translator.dao.LuMarketDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="BuyerMarketAdjustmentDAO"
+		class="com.newco.marketplace.translator.dao.BuyerMarketAdjustmentDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="LuDocumentCategoryDAO"
+		class="com.newco.marketplace.translator.dao.LuDocumentCategoryDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="BuyerLocationsDAO"
+		class="com.newco.marketplace.translator.dao.BuyerLocationsDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="UserProfilePermissionsDAO"
+		class="com.newco.marketplace.translator.dao.UserProfilePermissionsDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="UserRolesDAO"
+		class="com.newco.marketplace.translator.dao.UserRolesDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="UserProfileRoleDAO"
+		class="com.newco.marketplace.translator.dao.UserProfileRoleDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="UserProfilePasswordDAO"
+		class="com.newco.marketplace.translator.dao.UserProfilePasswordDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="UserProfileDAO"
+		class="com.newco.marketplace.translator.dao.UserProfileDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<!-- <import resource="businessObjectsContext.xml" /> -->
+	<bean id="BuyerSoTemplateDAO"
+		class="com.newco.marketplace.translator.dao.BuyerSoTemplateDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="ZipGeocodeDAO"
+		class="com.newco.marketplace.translator.dao.ZipGeocodeDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="ClientDAO"
+		class="com.newco.marketplace.translator.dao.ClientDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="WarrantyContractDAO"
+		class="com.newco.marketplace.translator.dao.WarrantyContractDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="IncidentDAO"
+		class="com.newco.marketplace.translator.dao.IncidentDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="IncidentEventDAO"
+		class="com.newco.marketplace.translator.dao.IncidentEventDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="IncidentContactDAO"
+		class="com.newco.marketplace.translator.dao.IncidentContactDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="IncidentPartDAO"
+		class="com.newco.marketplace.translator.dao.IncidentPartDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="IncidentNoteDAO"
+		class="com.newco.marketplace.translator.dao.IncidentNoteDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="LuServiceTypeTemplateDAO"
+		class="com.newco.marketplace.translator.dao.LuServiceTypeTemplateDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+
+	<bean id="IncidentAckDAO"
+		class="com.newco.marketplace.translator.dao.IncidentAckDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	
+	<bean id="BuyerSkuDAO"
+		class="com.newco.marketplace.translator.dao.BuyerSkuDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="BuyerSkuCategoryDAO"
+		class="com.newco.marketplace.translator.dao.BuyerSkuCategoryDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="BuyerSkuTaskDAO"
+		class="com.newco.marketplace.translator.dao.BuyerSkuTaskDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="BuyerSkuAttributesDAO"
+		class="com.newco.marketplace.translator.dao.BuyerSkuAttributesDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	
+</beans>

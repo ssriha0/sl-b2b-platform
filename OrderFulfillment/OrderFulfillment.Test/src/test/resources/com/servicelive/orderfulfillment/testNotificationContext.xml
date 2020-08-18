@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.springframework.org/schema/tx
+                        http://www.springframework.org/schema/tx/spring-tx.xsd"
+    >
+
+    <bean id="emailForRoutedSO" class="com.servicelive.orderfulfillment.notification.NotificationTaskBuilderContext">
+        <property name="templateId" value="58"/>
+        <property name="addressCodeSet">
+            <bean class="com.servicelive.orderfulfillment.notification.address.AddressCodeSet">
+                <property name="alertFromCode" value="SL" />
+                <property name="alertBccCode" value="ALL_RVR" />
+            </bean>
+        </property>
+        <property name="mapperKeys" value="SO_ID,FNAME,LNAME,CURRENT_DATE,TRANS_AMOUNT_POST" />
+    </bean>
+
+    <bean id="defaultValuesMapBuilder" class="com.servicelive.orderfulfillment.notification.NotificationValuesMapBuilder">
+        <property name="mappingId" value="mainMap" />
+        <property name="beanMapper" ref="dozerMapper"/>
+        <property name="checkMapKeyset" value="false" /> 
+    </bean>
+
+    <bean id="dozerMapper" class="org.dozer.DozerBeanMapper">
+        <property name="mappingFiles">
+            <list><value>com/servicelive/orderfulfillment/mapping/dozerMapping.xml</value></list>
+        </property>
+    </bean>
+
+    <bean id="taskBuilderContextResolver" class="com.servicelive.orderfulfillment.notification.TaskBuilderContextResolver" />
+
+
+    <bean id="serviceOrderDao" class="com.servicelive.orderfulfillment.dao.InMemoryServiceOrderDao" />
+
+</beans>

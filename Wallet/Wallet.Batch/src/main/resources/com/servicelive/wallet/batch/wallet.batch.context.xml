@@ -1,0 +1,596 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+        http://www.springframework.org/schema/jee 
+        http://www.springframework.org/schema/jee/spring-jee-2.0.xsd">
+	
+	<alias alias="balanceInquiryProcessor" name="GRP_BALANCE_INQUIRY.BALANCE_INQUIRY_PROCESSOR" />	
+	<alias alias="glProcessor" name="GRP_GL.GL_FEED" />
+	<alias alias="balancedFileProcessor" name="GRP_ACH.ACH_BALANCED" />
+	 
+	<bean id="sqlMapBatch" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation">
+			<value>classpath:/com/servicelive/wallet/batch/WalletBatchFinanceSqlMapConfig.xml</value>
+		</property>
+		<!-- property name="dataSource" ref="dataSource"/ -->
+		<property name="dataSource">
+			<ref bean="${datasource.finance.bean.id}" />
+		</property>
+	</bean>
+		
+	<bean id="sqlMapSupplierBatch" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation">
+			<value>classpath:/com/servicelive/wallet/batch/WalletBatchSupplierSqlMapConfig.xml</value>
+		</property>
+		<!-- property name="dataSource" ref="dataSource"/ -->
+		<property name="dataSource">
+			<ref bean="${datasource.main.bean.id}" />
+		</property>
+	</bean>
+	
+	<bean id="achFileReader"
+		class="com.servicelive.wallet.batch.ach.AchFileReader"
+		lazy-init="true">	
+		<property name="nachaMetaDataDao">
+			<ref bean="nachaMetaDataDaoWallet"/>
+		</property>
+	</bean>
+
+	<bean id="GRP_ACH.ACH_ACKNOWLEDGEMENT"
+		class="com.servicelive.wallet.batch.ach.acknowledgement.AcknowledgementProcessor"
+		lazy-init="true">	
+		<property name="nachaDao">
+			<ref bean="nachaDaoWallet"/>
+		</property>
+		<property name="nachaMetaDataDao">
+			<ref bean="nachaMetaDataDaoWallet"/>
+		</property>
+		<property name="applicationProperties">
+			<ref bean="applicationPropertiesWallet"/>
+		</property>
+		<property name="emailTemplateBO">
+			<ref bean="emailTemplateBO"/>
+		</property>
+		<property name="alertBO">
+			<ref bean="alertBO"/>
+		</property>
+	</bean>
+
+	<bean id="GRP_ACH.ACH_BALANCED"
+		class="com.servicelive.wallet.batch.ach.balanced.BalancedFileProcessor"
+		lazy-init="true">	
+		<property name="nachaDao">
+			<ref bean="nachaDaoWallet"/>
+		</property>
+		<property name="nachaTransformer">
+			<ref bean="nachaTransformer"/>
+		</property>
+		<property name="achBO">
+			<ref bean="ach"/>
+		</property>
+		<property name="nachaMetaDataDao">
+			<ref bean="nachaMetaDataDaoWallet"/>
+		</property>
+		<property name="applicationProperties">
+			<ref bean="applicationPropertiesWallet"/>
+		</property>
+		<property name="emailTemplateBO">
+			<ref bean="emailTemplateBO"/>
+		</property>
+		<property name="alertBO">
+			<ref bean="alertBO"/>
+		</property>
+		<property name="identifierDao">
+			<ref bean="identifierDaoWallet"/>
+		</property>
+	</bean>
+
+
+	<bean id="nachaTransformer"
+		class="com.servicelive.wallet.batch.ach.balanced.NachaTransformer"
+		lazy-init="true">	
+		<property name="nachaDao">
+			<ref bean="nachaDaoWallet"/>
+		</property>
+		<property name="cryptography">
+			<ref bean="cryptographyWallet"/>
+		</property>
+		<property name="nachaMetaDataDao">
+			<ref bean="nachaMetaDataDaoWallet"/>
+		</property>
+		<property name="cryptography128">
+			<ref bean="cryptography128Wallet"/>
+		</property>
+	</bean>
+
+	<bean id="GRP_ACH.ACH_ORIGINATION"
+		class="com.servicelive.wallet.batch.ach.originator.OriginationFileProcessor"
+		lazy-init="true">	
+		<property name="nachaDao">
+			<ref bean="nachaDaoWallet"/>
+		</property>
+		<property name="achFileReader">
+			<ref bean="achFileReader"/>
+		</property>
+		<property name="lookup">
+			<ref bean="lookup"/>
+		</property>
+		<property name="walletBO">
+			<ref bean="wallet"/>
+		</property>
+		<property name="accountDao">
+			<ref bean="accountDao"/>
+		</property>		
+		<property name="applicationProperties">
+			<ref bean="applicationPropertiesWallet"/>
+		</property>
+		<property name="emailTemplateBO">
+			<ref bean="emailTemplateBO"/>
+		</property>
+		<property name="alertBO">
+			<ref bean="alertBO"/>
+		</property>
+	</bean>
+
+	<bean id="GRP_ACH.ACH_RECONCILIATION"
+		class="com.servicelive.wallet.batch.ach.reconciliation.ReconciliationProcessor"
+		lazy-init="true">	
+		<property name="nachaDao">
+			<ref bean="nachaDaoWallet"/>
+		</property>
+		<property name="transactionDao">
+			<ref bean="transactionDaoWallet"/>
+		</property>
+		<property name="walletBO">
+			<ref bean="wallet"/>
+		</property>
+		<property name="applicationProperties">
+			<ref bean="applicationPropertiesWallet"/>
+		</property>
+		<property name="emailTemplateBO">
+			<ref bean="emailTemplateBO"/>
+		</property>
+		<property name="alertBO">
+			<ref bean="alertBO"/>
+		</property>
+		<property name="lookup">
+			<ref bean="lookup"/>
+		</property>
+	</bean>
+
+	<bean id="GRP_ACH.ACH_RETURN"
+		class="com.servicelive.wallet.batch.ach.returnfile.ReturnsFileProcessor"
+		lazy-init="true">
+		
+		<property name="walletBO">
+			<ref bean="wallet"/>
+		</property>
+		<property name="accountDao">
+			<ref bean="accountDao"/>
+		</property>		
+		<property name="nachaDao">
+			<ref bean="nachaDaoWallet"/>
+		</property>
+		<property name="achFileReader">
+			<ref bean="achFileReader"/>
+		</property>
+		<property name="lookup">
+			<ref bean="lookup"/>
+		</property>
+		<property name="applicationProperties">
+			<ref bean="applicationPropertiesWallet"/>
+		</property>
+		<property name="emailTemplateBO">
+			<ref bean="emailTemplateBO"/>
+		</property>
+		<property name="alertBO">
+			<ref bean="alertBO"/>
+		</property>
+	</bean>
+
+	<bean id="glDao"
+		class="com.servicelive.wallet.batch.gl.dao.GLDao"
+		lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapBatch" />
+		</property>
+	</bean>
+
+	<bean id="nachaMetaDataDaoWallet"
+		class="com.servicelive.wallet.batch.ach.dao.NachaMetaDataDao"
+		lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapBatch" />
+		</property>
+	</bean>
+
+	<bean id="nachaDaoWallet"
+		class="com.servicelive.wallet.batch.ach.dao.NachaDao"
+		lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapBatch" />
+		</property>
+	</bean>
+
+	<bean id="GRP_ACH.PPACT_DAILYRPT"
+		class="com.servicelive.wallet.batch.activity.DailyPlatformActivityBuilder"
+		lazy-init="true">
+		<property name="dailyEntityBalanceReport">
+			<ref bean="dailyEntityBalanceReport"/>
+		</property>		
+		<property name="dailyFulfillmentHealthReport">
+			<ref bean="dailyFulfillmentHealthReport"/>
+		</property>
+		<property name="dailyReconciliationViewFile">
+			<ref bean="dailyReconciliationViewFile"/>
+		</property>
+		<property name="dailyWalletBalanceVerification">
+			<ref bean="dailyWalletBalanceVerification"/>
+		</property>
+		<property name="applicationProperties">
+			<ref bean="applicationPropertiesWallet"/>
+		</property>
+		<property name="emailTemplateBO">
+			<ref bean="emailTemplateBO"/>
+		</property>
+		<property name="alertBO">
+			<ref bean="alertBO"/>
+		</property>
+	</bean>
+
+	<bean id="dailyEntityBalanceReport"
+		class="com.servicelive.wallet.batch.activity.DailyEntityBalanceReport"
+		lazy-init="true">
+		<property name="platformActivityDao">
+			<ref bean="platformActivityDaoWallet"/>
+		</property>		
+	</bean>
+
+	<bean id="dailyFulfillmentHealthReport"
+		class="com.servicelive.wallet.batch.activity.DailyFulfillmentHealthReport"
+		lazy-init="true">
+		<property name="platformActivityDao">
+			<ref bean="platformActivityDaoWallet"/>
+		</property>		
+	</bean>
+
+	<bean id="dailyReconciliationViewFile"
+		class="com.servicelive.wallet.batch.activity.DailyReconciliationViewFile"
+		lazy-init="true">
+		<property name="platformActivityDao">
+			<ref bean="platformActivityDaoWallet"/>
+		</property>		
+	</bean>
+
+	<bean id="dailyWalletBalanceVerification"
+		class="com.servicelive.wallet.batch.activity.DailyWalletBalanceVerification"
+		lazy-init="true">
+		<property name="platformActivityDao">
+			<ref bean="platformActivityDaoWallet"/>
+		</property>		
+	</bean>
+
+	<bean id="platformActivityDaoWallet"
+		class="com.servicelive.wallet.batch.activity.dao.PlatformActivityDao"
+		lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapBatch" />
+		</property>
+	</bean>
+
+	<bean id="GRP_GL.GL_FEED"
+		class="com.servicelive.wallet.batch.gl.GLProcessor"
+		lazy-init="true">
+		<property name="shcSupplierDao">
+			<ref bean="shcSupplierDaoWallet"/>
+		</property>		
+		<property name="glDao">
+			<ref bean="glDaoWallet"/>
+		</property>
+		<property name="glWriter">
+			<ref bean="glWriter"/>
+		</property>
+		<property name="glTransformer">
+			<ref bean="glTransformer"/>
+		</property>
+		<property name="applicationProperties">
+			<ref bean="applicationPropertiesWallet"/>
+		</property>
+		<property name="emailTemplateBO">
+			<ref bean="emailTemplateBO"/>
+		</property>
+		<property name="alertBO">
+			<ref bean="alertBO"/>
+		</property>
+	</bean>
+
+
+	<bean id="glTransformer"
+		class="com.servicelive.wallet.batch.gl.GLTransformer"
+		lazy-init="true">
+		<property name="fiscalCalendarDao">
+			<ref bean="fiscalCalendarDaoWallet"/>
+		</property>
+	</bean>
+
+	<bean id="glWriter"
+		class="com.servicelive.wallet.batch.gl.GLWriter"
+		lazy-init="true">
+		<property name="applicationProperties">
+			<ref bean="applicationPropertiesWallet"/>
+		</property>
+	</bean>
+
+	<bean id="glDaoWallet"
+		class="com.servicelive.wallet.batch.gl.dao.GLDao"
+		lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapBatch" />
+		</property>
+	</bean>
+
+	<bean id="fiscalCalendarDaoWallet"
+		class="com.servicelive.wallet.batch.gl.dao.FiscalCalendarDao"
+		lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapBatch" />
+		</property>
+	</bean>
+
+	<bean id="shcSupplierDaoWallet"
+		class="com.servicelive.wallet.batch.gl.dao.SHCOMSDao"
+		lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapSupplierBatch" />
+		</property>
+	</bean>
+
+	<bean id="ofacFileProcessor"
+		class="com.servicelive.wallet.batch.ofac.OFACFileProcessor"
+		lazy-init="true">
+		<property name="cryptography">
+			<ref bean="cryptography"/>
+		</property>		
+		<property name="ofacDaoWallet">
+			<ref bean="ofacDaoWallet"/>
+		</property>
+		<property name="ofacWriter">
+			<ref bean="ofacWriter"/>
+		</property>
+		<property name="applicationProperties">
+			<ref bean="applicationPropertiesWallet"/>
+		</property>
+		<property name="emailTemplateBO">
+			<ref bean="emailTemplateBO"/>
+		</property>
+		<property name="alertBO">
+			<ref bean="alertBO"/>
+		</property>
+	</bean>
+
+	<bean id="ofacWriter"
+		class="com.servicelive.wallet.batch.ofac.OFACWriter"
+		lazy-init="true">
+	</bean>
+
+	<bean id="ofacDaoWallet"
+		class="com.servicelive.wallet.batch.ofac.dao.OFACDao"
+		lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapSupplierBatch" />
+		</property>
+	</bean>
+
+	<bean id="GRP_PTD.PTD_FILE_PROCESSOR"
+		class="com.servicelive.wallet.batch.ptd.PTDProcessor"
+		lazy-init="true">
+		<property name="ptdReader">
+			<ref bean="ptdReader"/>
+		</property>		
+		<property name="ptdMessageBuilder">
+			<ref bean="ptdMessageBuilder"/>
+		</property>
+		<property name="ptdDao">
+			<ref bean="ptdDaoWallet"/>
+		</property>
+		<property name="valueLink">
+			<ref bean="valueLink"/>
+		</property>
+		<property name="ptdTransformer">
+			<ref bean="ptdTransformer"/>
+		</property>
+		<property name="applicationProperties">
+			<ref bean="applicationPropertiesWallet"/>
+		</property>
+		<property name="emailTemplateBO">
+			<ref bean="emailTemplateBO"/>
+		</property>
+		<property name="alertBO">
+			<ref bean="alertBO"/>
+		</property>
+	</bean>
+
+	<bean id="ptdTransformer"
+		class="com.servicelive.wallet.batch.ptd.PTDTransformer"
+		lazy-init="true">
+	</bean>
+
+	<bean id="ptdMessageBuilder"
+		class="com.servicelive.wallet.batch.ptd.PTDMessageBuilder"
+		lazy-init="true">
+		<property name="valueLink">
+			<ref bean="valueLink"/>
+		</property>
+	</bean>
+
+	<bean id="ptdReader"
+		class="com.servicelive.wallet.batch.ptd.PTDReader"
+		lazy-init="true">
+		<property name="ptdDao">
+			<ref bean="ptdDaoWallet"/>
+		</property>		
+	</bean>
+
+	<bean id="ptdDaoWallet"
+		class="com.servicelive.wallet.batch.ptd.dao.PTDDao"
+		lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapBatch" />
+		</property>
+	</bean>
+
+	<bean id="GRP_BALANCE_INQUIRY.BALANCE_INQUIRY_PROCESSOR"
+		class="com.servicelive.wallet.batch.vl.BalanceInquiryProcessor"
+		lazy-init="true">
+		<property name="accountDao">
+			<ref bean="accountDao"/>
+		</property>		
+		<property name="requestProcessor" ref="isoRequestProcessorWallet"></property>
+		<property name="sharpGateway" ref="sharpGateway" />
+		<property name="identifierDao" ref="identifierDaoWallet"/>
+		
+		<property name="applicationProperties">
+			<ref bean="applicationPropertiesWallet"/>
+		</property>
+		<property name="emailTemplateBO">
+			<ref bean="emailTemplateBO"/>
+		</property>
+		<property name="alertBO">
+			<ref bean="alertBO"/>
+		</property>
+	</bean>
+	
+	<bean id="jndiTemplate" class="org.springframework.jndi.JndiTemplate">
+	    <property name="environment">
+	        <props>
+	            <prop key="java.naming.factory.initial">
+	                ${java.naming.factory.initial}
+	            </prop>
+	            <prop key="java.naming.provider.url">
+	                ${java.naming.provider.url}
+	            </prop>
+	            <prop key="java.naming.factory.url.pkgs">
+	                ${java.naming.factory.url.pkgs}
+	            </prop>
+	        </props>
+	    </property>
+	</bean>
+	
+	<bean id="jmsTemplate" 
+	      class="org.springframework.jms.core.JmsTemplate102">
+	    <property name="connectionFactory">
+	        <ref bean="jmsQueueConnectionFactory"/>
+	    </property>
+	    <property name="defaultDestination">
+	        <ref bean="SLRequestQueue"/>
+	    </property>
+	</bean>
+	
+	<bean id="sharpGateway" class="com.servicelive.wallet.valuelink.sharp.SharpGateway">		 
+		<property name="jmsTemplate" ref="jmsTemplate" />
+		<property name="replyTo" ref="SLResponseQueue" />
+	</bean>
+	
+	<bean id="jmsQueueConnectionFactory"
+	      class="org.springframework.jndi.JndiObjectFactoryBean">
+	    <property name="jndiTemplate">
+	        <ref bean="jndiTemplate"/>
+	    </property>
+	    <property name="jndiName">
+	        <value>MQQueueConnectionFactory</value>
+	    </property>
+	</bean>
+	
+	<bean id="SLRequestQueue"
+	    class="org.springframework.jndi.JndiObjectFactoryBean">
+	    <property name="jndiTemplate">
+	        <ref bean="jndiTemplate"/>
+	    </property>
+	    <property name="jndiName">
+	        <value>wsmq/RequestQueue</value>
+	    </property>
+	</bean>
+	
+	<bean id="SLResponseQueue"
+	    class="org.springframework.jndi.JndiObjectFactoryBean">
+	    <property name="jndiTemplate">
+	        <ref bean="jndiTemplate"/>
+	    </property>
+	    <property name="jndiName">
+	        <value>wsmq/ResponseQueue</value>
+	    </property>
+	</bean>
+	
+	<bean id="GRP_TRAN.TRAN_FILE_PROCESSOR"
+		class="com.servicelive.wallet.batch.trans.TransFileProcessor"
+		lazy-init="true">
+		<property name="transFileDao">
+			<ref bean="transFileDaoWallet"/>
+		</property>		
+		<property name="transFileTransformer">
+			<ref bean="transFileTransformer"/>
+		</property>
+		<property name="applicationProperties">
+			<ref bean="applicationPropertiesWallet"/>
+		</property>
+		<property name="emailTemplateBO">
+			<ref bean="emailTemplateBO"/>
+		</property>
+		<property name="alertBO">
+			<ref bean="alertBO"/>
+		</property>
+	</bean>	
+	
+	<bean id="transFileTransformer"
+		class="com.servicelive.wallet.batch.trans.TransFileTransformer"
+		lazy-init="true">
+		<property name="cryptography">
+			<ref bean="cryptographyWallet"/>
+		</property>	
+		<property name="cryptography128">
+			<ref bean="cryptography128Wallet"/>
+		</property>	
+	</bean>
+	
+	<bean id="transFileDaoWallet"
+		class="com.servicelive.wallet.batch.trans.dao.TransFileDao"
+		lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapBatch" />
+		</property>
+	</bean>
+	
+	<bean id="GRP_GL.SHOPIFY_GL_FEED"
+		class="com.servicelive.wallet.batch.gl.ShopifyGLProcessor"
+		lazy-init="true">
+		<property name="shcSupplierDao">
+			<ref bean="shcSupplierDaoWallet"/>
+		</property>		
+		<property name="glDao">
+			<ref bean="glDaoWallet"/>
+		</property>
+		<property name="glWriter">
+			<ref bean="glWriter"/>
+		</property>
+		<property name="glTransformer">
+			<ref bean="glTransformer"/>
+		</property>
+		<property name="applicationProperties">
+			<ref bean="applicationPropertiesWallet"/>
+		</property>
+		<property name="emailTemplateBO">
+			<ref bean="emailTemplateBO"/>
+		</property>
+		<property name="alertBO">
+			<ref bean="alertBO"/>
+		</property>
+	</bean>
+	<import resource="classpath:/com/servicelive/lookup/serviceLiveLookupApplicationContext.xml"/>		
+	<import resource="classpath:/com/servicelive/wallet/service/walletServiceApplicationContext.xml"/>
+</beans>
+

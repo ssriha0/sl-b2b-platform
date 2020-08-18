@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+    
+<struts>
+
+   <package name="backgroundCheck" extends="ServiceLiveBase">
+      <default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+	<!-- Background Check Form Configuration include in struts.xml-->
+
+	<action name="backgroundCheckAction*" class="com.newco.marketplace.web.action.provider.BackgroundCheckAction" method="{1}">
+			
+			<result name="load">/jsp/providerRegistration/modules/tab_background.jsp</result>
+			<result name="share">/jsp/providerRegistration/modules/tab_background_info.jsp</result>
+			<result name="recertify">/jsp/providerRegistration/modules/tab_background_recertify.jsp</result>
+			
+			<result name="success" type="redirectAction">
+	             <param name="actionName">serviceProAllTab?tabView=tab5</param>
+	            <param name="namespace">/jsp/providerRegistration</param>
+        	</result>
+        	
+			<result name="validate" type="redirectAction">
+	             <param name="actionName">serviceProAllTab?tabView=tab5</param>
+	             <param name="namespace">/jsp/providerRegistration</param>	  
+	             <param name="nexturl">backgroundCheckActiondoInput.action</param>                    
+        	</result>
+        	        	
+			<result name="input" type="redirectAction">
+	             <param name="actionName">serviceProAllTab?tabView=tab5</param>
+	             <param name="namespace">/jsp/providerRegistration</param>	  
+	             <param name="nexturl">backgroundCheckActiondoInput.action</param>           
+        	</result>
+			
+			<result name="next" type="redirectAction">
+	           <param name="actionName">serviceProAllTab?tabView=tab6</param>
+	            <param name="namespace">/jsp/providerRegistration</param>
+        	</result>
+        	
+        	<result name="prev" type="redirectAction">
+	           <param name="actionName">serviceProAllTab?tabView=tab4</param>
+	            <param name="namespace">/jsp/providerRegistration</param>
+        	</result>
+        	
+        	<result name="updateProfile" type="redirectAction">
+	           <param name="actionName">regDashboarddoSubmitRegistration</param>
+	            <param name="namespace">/jsp/providerRegistration</param>
+        	</result>
+	</action>
+		
+         <!-- Add actions here -->
+    </package>
+</struts>

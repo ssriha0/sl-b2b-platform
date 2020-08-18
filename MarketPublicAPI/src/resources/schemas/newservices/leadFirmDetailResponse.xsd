@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:include schemaLocation="leadsCommon.xsd" />
+    <!-- This is the leadFirmDetailResponse -->
+    <!-- Root Element -->
+    <xs:element name="leadFirmDetailResponse">
+            <xs:complexType>
+                <xs:sequence>
+                   <xs:element ref="results"/>
+                   <xs:element name="leadId" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                   <xs:element name="buyerId" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+                   <xs:element name="buyerName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                   <xs:element name="jobType" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                   <xs:element name="serviceType" type="skillTypeEnum" minOccurs="0" maxOccurs="1"/>
+                   <xs:element name="serviceCategory" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                   <xs:element name="leadStatus" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                   <xs:element name="urgency" type="urgencyTypeEnum" minOccurs="0" maxOccurs="1"/>
+                   <xs:element name="projectDescription" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                   <xs:element name="secondaryProjects" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                   <xs:element ref= "customerDetails" minOccurs="0" maxOccurs="1"/>
+                   <xs:element name="servicePreferredDate" type="xs:string" minOccurs="0" maxOccurs="1" />
+				   <xs:element name="servicePreferredStartTime" type="xs:string" minOccurs="0" maxOccurs="1" />
+				   <xs:element name="servicePreferredEndTime" type="xs:string" minOccurs="0" maxOccurs="1" />
+	               <xs:element name="serviceTimeZone" type="serviceTimeZoneExt" minOccurs="0" maxOccurs="1"/>
+	               <xs:element ref ="firmDetailList" minOccurs="0" maxOccurs="1"/>
+                </xs:sequence>
+            </xs:complexType>
+      </xs:element>
+      <xs:simpleType name="serviceTimeZoneExt">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="7" />
+			<xs:minLength value="0"/>
+			<xs:whiteSpace value="collapse"/> 
+		</xs:restriction>
+	   </xs:simpleType>
+       <xs:element name="customerDetails">
+            <xs:complexType>
+                  <xs:sequence>
+                  		<xs:element name="firstName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="lastName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="middleName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="phone" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="email" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                        <xs:element ref="address" minOccurs="0"/>
+                  </xs:sequence>
+            </xs:complexType>
+      </xs:element>
+      <xs:element name="address">
+            <xs:complexType>
+                  <xs:sequence>
+                        <xs:element name="street" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="city" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="zip" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="state" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                  </xs:sequence>
+            </xs:complexType>
+      </xs:element>
+      
+      <xs:element name="firmDetailList">
+            <xs:complexType>
+                  <xs:sequence>
+                        <xs:element ref="firmDetail" minOccurs="0" maxOccurs="unbounded"/>
+                  </xs:sequence>
+            </xs:complexType>
+      </xs:element>
+    <xs:element name="firmDetail">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="firmId" type="xs:int" minOccurs="0" maxOccurs="1" />
+				<xs:element name="resourceId" type="xs:int" minOccurs="0" maxOccurs="1" />
+				<xs:element name="firmName" type="xs:string" minOccurs="0" maxOccurs="1" />
+				<xs:element name="firmOwner" type="xs:string" minOccurs="0" maxOccurs="1" />
+				<xs:element name="yearsOfService" type="xs:double" minOccurs="0" />
+				<xs:element name="phoneNo" minOccurs="0" maxOccurs="1" />
+				<xs:element name="phoneExtNo" minOccurs="0" maxOccurs="1" />
+				<xs:element name="mobileNo" minOccurs="0" maxOccurs="1" />
+				<xs:element name="email" minOccurs="1" maxOccurs="1">
+					  <xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:pattern value="[^@]+@[^\.]+\..+" />
+						</xs:restriction>
+					  </xs:simpleType>
+				 </xs:element>
+				<xs:element ref="locations" minOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+    <xs:element name="locations">
+      <xs:complexType>
+          <xs:sequence>
+             <xs:element ref="location" minOccurs="0"/>
+          </xs:sequence>
+      </xs:complexType>
+    </xs:element>
+     <xs:element name="location">
+      <xs:complexType>
+          <xs:sequence>
+             <xs:element name="locationType" type="xs:string" minOccurs="0" maxOccurs="1" />
+			 <xs:element name="street" type="xs:string" minOccurs="0" maxOccurs="1" />
+			 <xs:element name="city" type="xs:string" minOccurs="0" maxOccurs="1" />
+			 <xs:element name="zip" type="xs:string" minOccurs="0" maxOccurs="1" />
+			 <xs:element name="state" type="xs:string" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+      </xs:complexType>
+    </xs:element>
+ </xs:schema>

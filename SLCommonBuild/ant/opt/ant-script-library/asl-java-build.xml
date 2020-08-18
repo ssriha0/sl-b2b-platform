@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<!--
+********************************************************************************
+* Ant Script Library - Java build module 
+* Contains ant targets related to the compilation and packaging of Java code
+* Module property prefix: "java-build"
+********************************************************************************
+* Copyright 2009 Joe Schmetzer
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+********************************************************************************
+ -->
+<project name="asl-java-build">
+    <dirname property="java-build.basedir" file="${ant.file.asl-java-build}"/>
+    <import file="${java-build.basedir}/asl-common.xml"/>
+    
+    <!-- ***********************************************************************
+    * Default values for java-build properties.
+    ************************************************************************ -->
+    <property name="java-build.src-dir" 		location="src/main/java"/>
+    <property name="java-build.resources-dir" 	location="src/main/resources"/>
+    <property name="java-build.lib-dir" 		location="lib"/>
+    <property name="java-build.classes-dir" 	location="${common.target-dir}/classes"/>
+    <property name="java-build.dist-ext" 		value=".jar"/>
+    <property name="java-build.dist-filename" 	value="${ant.project.name}${java-build.dist-ext}"/>
+    <property name="java-build.dist-file" 		location="${common.dist-dir}/${java-build.dist-filename}"/>
+	<!--JBOSS Upgrade-->
+    <property name="java-build.source-ver" 		value="1.5"/>
+    <property name="java-build.target-ver" 		value="1.5"/>
+    <property name="java-build.debug" 			value="on"/>
+	<!-- ***********************************************************************
+	 * Junit report folder
+	************************************************************************ -->
+	<property name="junit-report.dir" 			value="${basedir}/${ant.project.name}Reports" />
+	<property name="junit-jar.dir" 				value="${sl-common.build-dir}/lib/nondeployables" />
+	
+    <!-- ***********************************************************************
+    * target: dist
+    ************************************************************************ -->
+    <target name="dist" depends="jar" />
+    		<!-- description="Create a distributable for this java project"/ -->
+
+    <!-- ***********************************************************************
+    * target: jar
+    ************************************************************************ -->
+    <target name="jar" depends="compile, copy-resources, -init-time, -init-jar-classpath"
+    		description="Create a jar for this java project">
+    		
+        <mkdir dir="${common.dist-dir}"/>
+        
+        <property name="java-build.jar-title"       value="${ant.project.name}"/>
+        <property name="java-build.jar-version"     value="dev-${DSTAMP}${TSTAMP}"/>
+        <property name="java-build.jar-compress"    value="true"/>
+        <property name="java-build.jar-vendor"      value=""/>
+        <property name="java-build.jar-main-class"  value=""/>
+        <property name="java-build.jar-vendor"      value="Service Live" />
+
+        <jar destfile="${java-build.dist-file}" compress="${java-build.jar-compress}">
+            <fileset dir="${java-build.classes-dir}" />
+            
+            <!-- shunter - added some attributes -->
+            <manifest>
+                <attribute name="Implementation-Vendor"	 value="${java-build.jar-vendor}"/>
+                <attribute name="Implementation-Title"   value="${java-build.jar-title}"/>
+                <attribute name="Implementation-Version" value="${java-build.jar-version}"/>
+                <attribute name="Build-Date" value="${common.timestamp-long}" />
+                <attribute name="Build-Username" value="${shell.USERNAME}"/>
+                <attribute name="Build-Hostname" value="${hostname}"/>
+                <attribute name="Build-java-version" value="${java.version}" />
+                <attribute name="Build-java-class-version" value="${java.class.version}" />
+                <attribute name="Build-java-home" value="${java.home}" />
+                <attribute name="Build-os-arch" value="${os.arch}" />
+                <attribute name="Build-os-name" value="${os.name}" />
+                <attribute name="Build-os-version" value="${os.version}" />
+                <attribute name="Class-Path" value="${java-build.jar-classpath}"/>
+                <attribute name="Main-Class" value="${java-build.jar-main-class}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <!-- ***********************************************************************
+    * target: compile
+    ************************************************************************ -->
+    <target name="compile" depends="generate,-init-classpath"
+            description="Compiles the java source">
+    	<delete dir="${java-build.classes-dir}" failonerror="false"/>
+        <mkdir dir="${java-build.classes-dir}"/>
+        <javac srcdir="${java-build.src-dir}"                
+         		destdir="${java-build.classes-dir}"
+                classpathref="java-build.classpath"
+                source="${java-build.source-ver}"
+                target="${java-build.target-ver}"
+               	debug="${java-build.debug}">
+        </javac>
+    	<copy todir="${java-build.classes-dir}">
+			<fileset dir="${java-build.src-dir}">
+				<include name="**/*.xml" />
+				<include name="**/*.properties" />
+			</fileset>
+    	</copy>
+    </target>
+
+	<!-- ***********************************************************************
+    * target: Compile Junit
+    ************************************************************************ -->
+    <target name="compile-test" description="Compile junit for this java project">
+    	<if><available file="${java-test.src-dir}" type="dir" />
+    	    <then>
+    	    		<delete dir="${java-test.classes-dir}" failonerror="false"/>
+		    	 	<mkdir dir="${java-test.classes-dir}"/>
+					<javac
+						srcdir="${java-test.src-dir}"
+						destdir="${java-test.classes-dir}"
+		    			classpathref="java-test.classpath"
+						source="${java-build.source-ver}"
+						target="${java-build.target-ver}"
+						debug="on"
+						deprecation="false"
+					>					
+		    		</javac>
+    	    </then>
+    	</if>	
+    </target>	
+	
+	<!-- ***********************************************************************
+    * target: Run Junit
+    ************************************************************************ -->
+	<target name="junit-report" depends="compile-test" description="Create junit report for this java project">
+		<if><available file="${java-test.src-dir}" type="dir" />
+		    <then>
+					<delete dir="${junit-report.dir}" failonerror="false"/>
+					<mkdir dir="${junit-report.dir}"/>				
+					<junit fork="no" haltonfailure="false" printsummary="withOutAndErr" showoutput="yes">	
+					  		<classpath>
+					  			<path refid="java-test.classpath"/>
+					  			<pathelement location="${java-test.classes-dir}"/>		  			
+					  			<pathelement path="${junit-jar.dir}/junit.jar"/>
+					  		</classpath>
+					   		<formatter type="xml" />
+					  			  		
+					  		<batchtest fork="no" todir="${junit-report.dir}" >
+					  				
+					  		 		<fileset dir="${java-test.src-dir}" >
+					  					<include name="**/*Test.java" />
+					  				</fileset>
+					  		</batchtest>
+						  			  		
+					</junit>
+					<echo message="Format the tests report" />
+					<junitreport todir="${junit-report.dir}">
+							<fileset dir="${junit-report.dir}">
+								<include name="TEST-*.xml" />
+							</fileset>
+							<report todir="${junit-report.dir}" />
+					</junitreport>
+		    </then>
+		 </if>
+	</target>
+
+    <!-- ***********************************************************************
+    * target: -init-classpath
+    ************************************************************************ -->
+    <!-- 
+    <target name="-init-classpath">
+    	<path id="java-build.classpath">
+    		<fileset dir="${java-build.lib-dir}">
+    			<include name="**/*.jar"/>
+    		</fileset>
+    	</path>
+    </target>
+    -->
+
+    <!-- ***********************************************************************
+    * target: -init-jar-classpath
+    ************************************************************************ -->
+    <target name="-init-jar-classpath" depends="-init-classpath" unless="java-build.jar-classpath">
+        <!-- SteveH: was:
+        <pathconvert property="java-build.jar-lib-classpath" refid="java-build.classpath" pathsep=" ">
+            <chainedmapper>
+    			      <flattenmapper/>
+	       		    <globmapper from="*.jar" to="lib/*.jar"/>
+            </chainedmapper>
+        </pathconvert>
+        <property name="java-build.jar-classpath" value="config/${java-build.jar-lib-classpath}"/>
+        -->
+
+        <pathconvert property="java-build.jar-lib-classpath" refid="java-build.classpath" pathsep=" ">
+            <chainedmapper>
+                <flattenmapper/>
+	       		    <globmapper from="*.jar" to="lib/*.jar"/>
+            </chainedmapper>
+        </pathconvert>
+        <property name="java-build.jar-classpath" value="${java-build.jar-lib-classpath}"/>
+    </target>
+    
+    <!-- ***********************************************************************
+    * target: copy-resources
+    *         description="Copies resources in preparation to be packaged in jar"
+    ************************************************************************ -->
+    <target name="copy-resources">
+        <!--  shunter - assume distinct resources dir -->
+        <if><available file="${java-build.resources-dir}" type="dir" />
+        <then>	       	       
+	        <copy todir="${java-build.classes-dir}">
+	            <fileset dir="${java-build.resources-dir}" />                
+	        </copy>
+        </then>
+        </if>
+    </target>
+    
+</project>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+	http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
+
+	<!-- transaction context -->
+	<import resource="classpath:spring/mainDSTransactionContext.xml" />
+	<import resource="classpath:spring/financeDSTransactionContext.xml" />
+	<import resource="classpath:spring/mainJpaTransactionContext.xml" />
+
+	<!-- beans from other modules -->
+	<import resource="classpath:resources/spring/backendApplicationContext.xml" />
+	<import resource="classpath:resources/spring/cachemanagerContext.xml"/>
+	<import resource="classpath:resources/spring/providerSkillsTree.xml" />
+	<import resource="classpath:resources/spring/loggingBeans.xml" />
+	<import resource="classpath:resources/spring/loginBeans.xml" />
+
+	<import resource="classpath:resources/spring/documentAppContext.xml" />
+	<import resource="classpath:spring/stagingDaoContext.xml" />
+    <import resource="classpath:com/servicelive/orderfulfillment/client/OrderFulfillmentClientAppContext.xml" />
+
+	<!-- beans in public api -->
+
+	<import resource="classpath*:META-INF/cxf/cxf.xml" />
+	<import resource="classpath*:META-INF/cxf/cxf-extension-jaxrs-binding.xml" />
+	<import resource="classpath*:META-INF/cxf/cxf-servlet.xml" />
+
+	<import resource="classpath:resources/spring/apiApplicationContext.xml" />
+	<import resource="classpath:spring/routingRulesAppContext.xml" />
+	<import resource="classpath:spring/providerSearchApplicationContext.xml" />
+	<import resource="classpath:resources/spring/alertBeans.xml" />
+	<import resource="classpath:resources/spring/alertAppContext.xml" />
+	
+</beans>

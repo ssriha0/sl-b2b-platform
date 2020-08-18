@@ -1,0 +1,1 @@
+alter table spnet_email_template change column action_cd action_cd varchar(50) not null;

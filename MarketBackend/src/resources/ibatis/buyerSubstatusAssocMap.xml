@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="buyerSubstatusAssoc" >
+
+	<typeAlias alias="buyerSubstatusAssoc"
+		type="com.newco.marketplace.dto.vo.buyer.BuyerSubstatusAssocVO" />
+		
+	
+	<select id="buyerSubstatusAssoc.getBuyerStatus" parameterClass="java.util.HashMap" resultClass="buyerSubstatusAssoc">
+		select buyer_substatus_assoc_id as buyerSubStatusAssocID ,
+		buyer_id as buyerId, wf_state_id as wfStateId,
+		so_substatus_id  as substatusId, buyer_status as buyerStatus,
+		comments as comments, update_count as updateCount
+		 from buyer_substatus_assoc
+		<dynamic prepend="where">
+			<isNotNull prepend="AND" property="buyerId">
+				buyer_id = #buyerId#
+			</isNotNull>
+			<isNotNull prepend="AND" property="statusId">
+				wf_state_id=#statusId#
+			</isNotNull>
+			<isNotNull prepend="AND" property="substatusId">
+				so_substatus_id = #substatusId#
+			</isNotNull>
+			<isNull prepend="AND" property="substatusId">
+				so_substatus_id is null
+			</isNull>
+			<isNotNull prepend="AND" property="buyerSubstatus">
+				buyer_status = #buyerSubstatus#
+			</isNotNull>
+		</dynamic>
+	</select>
+	
+	<select id="buyerSubstatusAssoc.getObject" parameterClass="java.lang.String" resultClass="buyerSubstatusAssoc">
+		select buyer_substatus_assoc_id as buyerSubStatusAssocID ,
+		buyer_id as buyerId, wf_state_id as wfStateId,
+		so_substatus_id  as substatusId, buyer_status as buyerStatus,
+		comments as comments, update_count as updateCount
+		 from buyer_substatus_assoc
+		where buyer_substatus_assoc_id = #buyerSubStatusAssocId#
+	</select>
+</sqlMap>

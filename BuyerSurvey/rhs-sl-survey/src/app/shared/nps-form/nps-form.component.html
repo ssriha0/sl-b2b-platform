@@ -1,0 +1,24 @@
+<div [formGroup]="parentForm">
+  <div formGroupName="NPS">
+    <div class="form-group">
+      <h3>{{ question }}</h3>
+      <app-nps-rating
+        [currentRating]="selectedRatings ? selectedRatings : ratings"
+      ></app-nps-rating>
+      <input type="hidden" value="ratings" formControlName="rating" />
+    </div>
+
+    <div class="form-group" *ngIf="ratings != null">
+      <h3>Comments (Optional):</h3>
+      <textarea
+        class="form-control"
+        id="npsComments"
+        rows="3"
+        formControlName="comments"
+        maxlength="255"
+        #npsComments
+      ></textarea>
+      <p class="hints">{{255 - npsComments.value.length}} characters left.</p>
+    </div>
+  </div>
+</div>

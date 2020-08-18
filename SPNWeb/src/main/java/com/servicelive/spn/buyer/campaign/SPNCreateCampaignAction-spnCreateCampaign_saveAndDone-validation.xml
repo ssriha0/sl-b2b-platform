@@ -1,0 +1,41 @@
+<!DOCTYPE validators PUBLIC
+        "-//Apache Struts//XWork Validator 1.0.2//EN"
+        "http://struts.apache.org/dtds/xwork-validator-1.0.2.dtd">
+
+       
+<validators>
+
+
+
+  <field name="campaignHeader.campaignName">
+     	<field-validator type="requiredstring" short-circuit="true">
+		<param name="trim">true</param>
+		<message key="errors.campaign.name.required"/>
+	</field-validator>
+  </field>
+  
+  <field name="startDate">
+     	<field-validator type="requiredstring" short-circuit="true">
+		<param name="trim">true</param>
+		<message key="errors.campaign.startdate.required"/>
+	</field-validator>
+  </field>
+
+  <field name="endDate">
+     	<field-validator type="requiredstring" short-circuit="true">
+		<param name="trim">true</param>
+		<message key="errors.campaign.enddate.required"/>
+	</field-validator>
+  </field>
+
+<field name="approvalItems.minimumCompletedServiceOrders">
+	
+	<field-validator type="regex" short-circuit="true">
+		<param name="trim">true</param>
+		<param name="regex">^\d+$</param>
+		<message key="errors.common.minimum.so.format"/>
+	 </field-validator>
+	
+  </field>
+ 
+</validators>

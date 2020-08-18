@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="MarketWebServices" basedir="../" default="distribute">
+	<echo level="info">
+	===============================================================================
+	                                ${ant.project.name} 
+	===============================================================================</echo>	
+	<target name="package" depends="distribute"/>
+
+	<target name="init">	
+		<!-- Create the time stamp -->
+	    	<tstamp/>
+	    <!-- Create build number file -->
+			<buildnumber />
+		<property name="dir.base" value="${basedir}" />
+		<property name="dir.overall.base" value="${dir.base}/overall/base" />
+		<property file="${dir.overall.base}/build.properties" />
+		<property name="dir.product.bin" value="${dir.base}/overall/product/bin" />		
+		<property name="dir.app" value="${dir.base}/web" />
+		<property name="dir.source" value="${dir.base}/src" />
+		<property name="dir.dest" value="${dir.base}/bin" />
+		<property name="dir.omsstaging.dist" value="../OMSStaging/dist" />
+		<property name="dir.build" value="${dir.base}/build" />
+		<property name="dir.test" value="${dir.base}/test" />
+		<property name="dir.moving-parts" value="${dir.base}/overall/product/moving-parts" />
+		<property name="dir.archive" value="${dir.base}/archive" />
+		<property name="dir.market.backend.base" value="../MarketBackend"/>
+		<property name="dir.market.document.base" value="../MarketDocument"/>
+		<property name="dir.market.frontend.base" value="../MarketFrontend"/>
+		<property name="dir.market.backend.dist" value="../MarketBackend/dist" />
+		<property name="dir.market.bi.dist" value="../MarketBusinessInterface/target/dist" />
+		<property name="dir.market.common.dist" value="../MarketCommon/dist" />
+		<property name="dir.routing.rule.dist" value="../RoutingRulesEngine/target/dist" />
+		<property name="dir.common.domain.dist" value="../ServiceLiveCommonDomain/target/dist" />
+		<property name="dir.market.document.dist" value="${dir.market.document.base}/dist" />
+		<property name="dir.wallet.ServiceLive.Common.dist" value="../Wallet/ServiceLive.Common/target/dist" />
+		<property name="env" value="dev" />
+		<property name="app.lastbuild.tag.auto" value="release_1_${build.number}_${env}_${DSTAMP}${TSTAMP}" />
+		<property name="dir.wallet.ServiceLive.Common.base" value="../Wallet/ServiceLive.Common" />
+		<property name="dir.wallet.ServiceLive.Lookup.base" value="../Wallet/ServiceLive.Lookup" />
+		<property name="dir.wallet.Wallet.Batch.base" value="../Wallet/Wallet.Batch" />
+		<property name="dir.wallet.Wallet.ACH.base" value="../Wallet/Wallet.ACH" />
+		<property name="dir.wallet.Wallet.Alert.base" value="../Wallet/Wallet.Alert" />
+		<property name="dir.wallet.Wallet.Common.base" value="../Wallet/Wallet.Common" />
+		<property name="dir.wallet.Wallet.Service.base" value="../Wallet/Wallet.Service" />
+		<property name="dir.wallet.Wallet.ServiceInterface.base" value="../Wallet/Wallet.ServiceInterface" />
+		<property name="dir.wallet.Wallet.Ledger.base" value="../Wallet/Wallet.Ledger" />
+		<property name="dir.wallet.Wallet.ValueLink.base" value="../Wallet/Wallet.ValueLink" />
+		<property name="dir.wallet.Wallet.CreditCard.base" value="../Wallet/Wallet.CreditCard" />
+
+        <!-- Folder under which all the libraries are kept -->
+        <property name="global.lib.endorsed" value="${dir.base}/lib/endorsed"/>
+		<property name="global.lib.marketjars" value="${dir.base}/lib/marketjars"/>
+		<property name="dir.service.live.web.util.base" value="../ServiceLiveWebUtil" />
+		<property name="deployables.lib" value="${dir.service.live.web.util.base}/lib/deployables"/>
+		<property name="struts2InitialDeployables.lib" value="${dir.service.live.web.util.base}/lib/Struts2InitialDeployables"/>
+		<property name="nondeployables.lib" value="${dir.service.live.web.util.base}/lib/nondeployables"/>
+		
+		<!-- JUnit report dir path -->
+		<property name="junit-report.dir" value="${basedir}/${ant.project.name}Reports" />
+		<property name="dir.slCommonBuild.generated" value="../SLCommonBuild/lib/generated" />
+		<property name="dir.slCommonBuild.nondeployables" value="../SLCommonBuild/lib/nondeployables"/>
+		
+		<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+			<classpath>
+				<pathelement location="${nondeployables.lib}/ant-contrib-1.0b3.jar"/>
+			</classpath>			 
+		</taskdef>
+
+	
+		<!-- Folder containing uncompressed final release software-->
+		<property name="dir.dist" value="${dir.base}/dist"/>
+		    
+		<path id="build.class.path">
+			<fileset dir="${dir.wallet.ServiceLive.Common.base}/target/dist">
+				<include name="*.jar"/>
+			</fileset>
+			<fileset dir="${dir.wallet.ServiceLive.Common.dist}">
+				<include name="*.jar"/>
+			</fileset>
+			<fileset dir="${global.lib.endorsed}">
+				<include name="*.jar"/>
+			</fileset>
+			<fileset dir="${deployables.lib}">
+				<include name="*.jar"/>
+			</fileset>
+			<fileset dir="${struts2InitialDeployables.lib}">
+				<include name="*.jar"/>
+			</fileset>
+			<fileset dir="${nondeployables.lib}">
+				<include name="*.jar"/>
+			</fileset>
+			<fileset dir="${dir.market.backend.dist}">
+				<include name="*.jar"/>
+			</fileset>
+			<fileset dir="${dir.market.bi.dist}">
+				<include name="*.jar"/>
+			</fileset>
+			<fileset dir="${dir.market.common.dist}">
+				<include name="*.jar"/>
+			</fileset>		
+			<fileset dir="${dir.market.document.dist}">
+					<include name="*.jar"/>
+			</fileset>
+			<fileset dir="${dir.routing.rule.dist}">
+				<include name="*.jar"/>
+			</fileset>
+			<fileset dir="${dir.common.domain.dist}">
+				<include name="*.jar"/>
+			</fileset>
+			<fileset dir="${dir.omsstaging.dist}">
+						<include name="OMSStaging.jar"/>
+			</fileset>
+		</path>
+		
+		<path id="test.class.path">
+    		<pathelement location="${build.class.path}" />
+			<pathelement location="${dir.dest}"/>
+    		<fileset dir="${dir.slCommonBuild.nondeployables}">
+	    			<include name="junit.jar" />
+	    			<include name="hamcrest-core-1.1.jar" />
+	    			<include name="hamcrest-library-1.1.jar" />
+	    			<include name="mockito-all-1.8.4.jar"/>
+    		</fileset>			
+			<fileset dir="${dir.slCommonBuild.generated}">	            	
+					<include name="ServiceLive.Common.jar" />
+					<include name="MarketCommon.jar" />
+					<include name="MarketBusinessInterface.jar" />		
+			</fileset>
+			<fileset dir="${struts2InitialDeployables.lib}">
+			        <include name="*.jar"/>
+			 </fileset>					
+			<fileset dir="${deployables.lib}">
+			        <include name="log4j-1.2.14.jar"/>
+			 </fileset>
+		</path>
+		
+	</target>
+
+	<target name="compile" depends="clean">
+		<javac 
+			srcdir="${dir.source}" destdir="${dir.dest}" 
+			classpathref="build.class.path" 
+			target="1.5" source="1.5" 
+			debug="on" deprecation="false" 
+		/>
+		<copy todir="${dir.dest}/resources">
+			<fileset dir="${dir.source}/resources" />
+		</copy>
+	</target>
+
+
+	<target name="config">
+		<if>
+		 <equals arg1="${env}" arg2="prod" />
+		 <then>
+			<copy file="${dir.moving-parts}/bootstrap.prod.properties" tofile="${dir.app}/WEB-INF/bootstrap.properties"/>
+			<copy file="${dir.moving-parts}/bootstrap.prod.properties" tofile="${dir.app}/WEB-INF/classes/bootstrap.properties"/>
+			<echo message="*****--- Setting Up Build For Production Environment ---*****"/>
+		 </then>
+		 <else>
+			<if>
+			 <equals arg1="${env}" arg2="qa" />
+			 <then>
+				<copy file="${dir.moving-parts}/bootstrap.qa.properties" tofile="${dir.app}/WEB-INF/bootstrap.properties"/>
+				<copy file="${dir.moving-parts}/bootstrap.qa.properties" tofile="${dir.app}/WEB-INF/classes/bootstrap.properties"/>
+				<echo message="*****--- Setting Up Build For QA Environment ---*****"/>
+			 </then>
+			 <else>
+				<copy file="${dir.moving-parts}/bootstrap.dev.properties" tofile="${dir.app}/WEB-INF/bootstrap.properties"/>
+				<copy file="${dir.moving-parts}/bootstrap.dev.properties" tofile="${dir.app}/WEB-INF/classes/bootstrap.properties"/>
+				<echo message="*****--- Setting Up Build For Dev Environment ---*****"/>
+			 </else>
+			</if>
+		 </else>
+		</if>
+	</target>
+
+	<target name="clean" depends="init">
+		<delete includeEmptyDirs="true">
+			<fileset dir="${dir.base}" includes="**/*.class" />
+			<fileset dir="${dir.base}" includes="**/*.war" />
+		</delete>
+		<delete dir="${dir.dest}" />
+		<mkdir dir="${dir.dest}"/>
+	    <delete dir="${dir.dist}" quiet="true" failonerror="false"/>
+		<mkdir dir="${dir.dist}"/>
+		<delete dir="${junit-report.dir}" failonerror="false"/>
+		<mkdir dir="${junit-report.dir}"/>	
+	</target>
+
+	<!-- Called by CruiseControl -->
+	<target name="update-distribute" depends="update,distribute">
+	</target>
+	
+	<target name="war" depends="init, clean, compile">
+		<war destfile="${dir.base}/marketws.war" webxml="${dir.app}/WEB-INF/web.xml">
+			<metainf dir="${dir.app}/META-INF" />
+
+			<webinf dir="${dir.app}/WEB-INF">
+				<include name="jboss-web.xml"/>
+			</webinf>
+			
+			<classes dir="${dir.dest}" />
+
+			<lib dir="${global.lib.endorsed}">
+					<include name="*.jar"/>
+					<exclude name="log4j*.jar"/>
+					<exclude name="spring.jar"/>
+			</lib>
+			<lib dir="${dir.dist}">
+					<include name="*.jar"/>
+			</lib>
+			<lib dir="${deployables.lib}">
+					<include name="*.jar"/>
+					<exclude name="log4j*.jar"/>
+			</lib>
+			<lib dir="${struts2InitialDeployables.lib}">
+					<include name="*.jar"/>
+			</lib>
+			<lib dir="${dir.market.backend.dist}">
+					<include name="*.jar"/>
+				<exclude name="MDB.jar"/>
+			</lib>
+			<lib dir="${dir.market.bi.dist}">
+					<include name="*.jar"/>
+			</lib>
+			<lib dir="${dir.market.common.dist}">
+					<include name="*.jar"/>
+			</lib>
+			<lib dir="${dir.market.document.dist}">
+				<include name="*.jar"/>
+			</lib>
+			<lib dir="${dir.routing.rule.dist}">
+				<include name="*.jar"/>
+			</lib>
+			<lib dir="${dir.common.domain.dist}">
+				<include name="*.jar"/>	
+			</lib>
+			<lib dir="${dir.omsstaging.dist}">
+			    <include name="OMSStaging.jar"/>
+			</lib>			
+			<lib dir="${dir.wallet.ServiceLive.Common.base}/target/dist">
+				<include name="*.jar"/>
+			</lib>
+			<lib dir="${dir.wallet.ServiceLive.Lookup.base}/target/dist">
+				<include name="*.jar"/>
+			</lib>
+			<lib dir="${dir.wallet.Wallet.Common.base}/target/dist">
+				<include name="*.jar"/>
+			</lib>
+			<lib dir="${dir.wallet.Wallet.Batch.base}/target/dist">
+				<include name="*.jar"/>
+			</lib>
+			<lib dir="${dir.wallet.Wallet.ACH.base}/target/dist">
+				<include name="*.jar"/>
+			</lib>
+			<lib dir="${dir.wallet.Wallet.Alert.base}/target/dist">
+				<include name="*.jar"/>
+			</lib>
+			<lib dir="${dir.wallet.Wallet.Service.base}/target/dist">
+				<include name="*.jar"/>
+			</lib>
+			<lib dir="${dir.wallet.Wallet.ServiceInterface.base}/target/dist">
+				<include name="*.jar"/>
+			</lib>
+			<lib dir="${dir.wallet.Wallet.Ledger.base}/target/dist">
+				<include name="*.jar"/>
+			</lib>
+			<lib dir="${dir.wallet.Wallet.ValueLink.base}/target/dist">
+				<include name="*.jar"/>
+			</lib>
+			<lib dir="${dir.wallet.Wallet.CreditCard.base}/target/dist">
+				<include name="*.jar"/>
+			</lib>
+		</war>
+	</target> 
+
+	
+	<target name="cleanWorkDir">
+		<delete dir="work"/>
+	</target>
+		
+	<target name="initWorkDir">
+		<mkdir dir="work"/>
+	</target>
+	
+	<!-- Target to refresh all the non-sources to be obtained from the repository -->	
+		<target name="update" description="Refresh project from CVS repository" depends="init">
+			<cvs command="-q update -d -P" cvsroot=":pserver:ajain04:ajain04@chef.sears.com:2402/cvs/source" 
+						package="." dest="${basedir}"/>
+	</target>
+
+	
+	<!-- Target to refresh all the non-sources to be obtained from the repository -->	
+	<target name="refresh" description="Refresh MarketWebServices from CVS repository" depends="init">
+		<cvs command="login" cvsroot="${app.CVSROOT}" />
+		<mkdir dir="."/>
+		<cvs command="update -A MarketWebServices" cvsroot="${app.CVSROOT}" dest="${source.dir.CVS}"/>
+	</target>
+	
+	<!-- Tag the files that are just used in the build with the id of the build-->
+	<target name="tag" depends="clean, init">
+		<cvs command="tag -R -c ${app.lastbuild.tag}" cvsroot="${app.CVSROOT}" package="."/>
+		<echo message="*****--- Tagged ALL modules with TAG ${app.lastbuild.tag} ---*****"/>
+	</target>
+	
+	<!-- Target to refresh all tagged files -->
+	<target name="refreshtag" depends="clean, init">
+		<cvs command="update -A" cvsroot="${app.CVSROOT}" tag="${app.build.tag}" dest="${source.dir.CVS}" />
+		<echo message="*****--- Refreshing ALL modules with TAG ${app.build.tag} ---*****"/>
+	</target>
+	
+	<target name="autotag" depends="clean, init">
+		<cvs command="tag -R -c ${app.lastbuild.tag.auto}" cvsroot="${app.CVSROOT}" package="."/>
+		<echo message="*****--- Tagged ALL modules with TAG ${app.lastbuild.tag} ---*****"/>
+	</target>
+	
+	<target name="mail" depends="init">
+		<taskdef name="mimemail" 
+		classname="org.apache.tools.ant.taskdefs.optional.mail.MimeMail"/>
+		<tstamp/>
+		<mimemail 
+		   messageMimeType="text/html"
+   		   messageFile="${dir.overall.base}/build.txt"
+		   tolist="${product.email.list}"
+		   mailhost="${smtp.server.name}"
+		   subject="${app.build.tag.prefix}_${env}_${DSTAMP}${TSTAMP} - Build Completed Successfully"
+		   from="${product.projectowner.email}">
+		</mimemail>
+	</target>
+	
+    <!-- Publish the deployment units to the website -->
+    <target name="publish" depends="init">    
+    	 <scp file="${deploy.local.filepath}/${deploy.local.filename}"
+    	       todir="${server.username}:${server.password}@${server.name}:${deploy.remote.dir}" 
+    	 	   trust="true"	 
+    	 />
+    </target>
+	
+	<!-- This target creates a milestone build -->	
+	<target name="milestone" description="Perform a milestone build" depends="init">
+		<antcall target="refresh"/>  
+		<antcall target="deploy"/>      
+		<antcall target="mail"/>
+		
+		<if>
+		 <equals arg1="${auto.publish}" arg2="on" />
+		 <then>					
+		  	  <input
+		  	    message="Are you sure you wish to Publish to the ${env} server?"
+		  	    validargs="y,n"
+		  	    addproperty="do.publish"
+		  	  />
+		  	  <condition property="do.abort">
+		  	    <equals arg1="n" arg2="${do.publish}"/>
+		  	  </condition>
+		  	  <fail if="do.abort">Publish aborted by user.</fail>
+
+		 	  <if>
+			  	<equals arg1="${do.publish}" arg2="y"/>
+			  	<then>
+			  		<antcall target="publish"/>  
+				 	<echo message="*****--- Successfully Published Milestone Build of ${app.product.name}  to ${env} server ---*****"/>
+			  	</then>
+			  </if>		 	
+		 </then>		
+		 <else>
+		 	<echo message="*****--- Auto Publish of Milestone Build of ${app.product.name} to ${env} server is currently turned off ---*****"/>
+		 </else>
+		</if>
+			
+		<echo message="*****--- Successfully Completed Milestone Build of ${app.product.name}          ---*****"/>
+		<echo message="*****--- Please Note:                                                           ---*****"/>
+		<echo message="*****---              This build should be tagged after a successful smoke test ---*****"/>
+		<echo message="*****---              Update tag id in build.properties.                        ---*****"/>
+		<echo message="*****---              Run 'ant tag' to tag this build.                          ---*****"/>
+	</target>
+	<target name="copy" depends="war">
+			<copy todir="${dir.dist}">
+				<fileset dir="${dir.base}" includes="*.war"/>
+			</copy>
+	</target>
+	
+	<target name="compile-test" depends="copy">
+				<javac
+					srcdir="${dir.test}"
+					destdir="${dir.dest}"
+					classpathref="build.class.path"
+					target="1.5"
+					source="1.5"
+					debug="on"
+					deprecation="false"
+				/>	
+	</target>
+	
+	<target name="junit-report" description="Runs the JUnit test cases" depends="compile-test">			
+				<junit fork="yes" haltonfailure="false" printsummary="withOutAndErr" showoutput="yes">		
+					<classpath>
+							<path refid="test.class.path"/>						  				
+					</classpath>
+			
+					<formatter type="xml" />
+						
+					<batchtest fork="yes" todir="${junit-report.dir}" >	 
+						<fileset dir="${dir.test}" >
+							<include name="**/*Test.java" />
+						</fileset>
+					</batchtest>	  
+				</junit>
+				<echo message="build date ">${DSTAMP}${TSTAMP}</echo>
+				<echo message="build.number ">${build.number}</echo>
+				<echo message="full tag ">${app.lastbuild.tag.auto}</echo>
+		
+				<echo message="Format the tests report" />
+				<junitreport todir="${junit-report.dir}">
+					<fileset dir="${junit-report.dir}">
+						<include name="TEST-*.xml" />
+					</fileset>
+					<report todir="${junit-report.dir}" />
+				</junitreport>		
+	</target>
+	
+	<target name="distribute" depends="junit-report">	
+	</target>
+	
+	<!-- Sonar Integration -->
+	<property name="dir.sonar.src" value="${basedir}/src" />
+	<property name="dir.sonar.ant.task" value="../SLCommonBuild/lib/nondeployables"/>
+	<import file="../../SLCommonBuild/ant/opt/ant-script-library/asl-java-sonar.xml"/>
+	<target name="sonar" depends="sonar-init, sonar-run">
+	</target>
+<!--
+	<target name="deploy" description="Copies .ear file into local server deploy dir" depends="ear">
+		<copy todir="${server.deploy.dir}">
+			<fileset dir="${dir.base}" includes="${app.product.name}.ear"/>
+		</copy>
+		
+	</target>
+-->
+<!--
+	<target name="deploywithcond" description="Copies .ear file into local server deploy dir" depends="ear">
+		<if>
+		 <equals arg1="${env}" arg2="dev" />
+		 <then>		
+			<copy todir="${server.deploy.dir}">
+				<fileset dir="${dir.base}" includes="${app.product.name}.ear"/>
+			</copy>
+		
+		 </then>
+		</if> 
+
+		<if>
+		 <equals arg1="${build.email}" arg2="on" />
+		 <then>		
+			<antcall target="mail"/>  
+		 </then>		
+		</if>
+	</target>
+	-->
+</project>

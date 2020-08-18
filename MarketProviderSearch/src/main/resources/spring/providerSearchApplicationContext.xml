@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	  
+	<bean id="searchProviderImpl" class="com.newco.marketplace.searchImpl.SearchProviderImpl">
+		 <constructor-arg index="0"  value="${solr.server}" />
+		 <constructor-arg index="1"  value="${http.proxy.host}" />
+		 <constructor-arg index="2"  value="${http.proxy.port}" />
+		 <constructor-arg index="3"  value="${http.proxy.set}" />
+ 		 <constructor-arg index="4"  value="${yahooSpellCheck.set}" />
+		 <constructor-arg index="5"  value="${yahooSpellCheck.appId}" />	 
+		 <constructor-arg index="6"  value="${yahooSpellCheck.timeout}" />
+		 <constructor-arg index="7"  value="${yahooSpellCheck.url}" />
+		 <property name="backendBO" ref="providerSearchBO" />	
+	</bean>	
+	    
+</beans>

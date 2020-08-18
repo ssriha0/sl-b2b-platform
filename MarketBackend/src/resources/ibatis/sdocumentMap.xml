@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="sdocument">
+	<typeAlias alias="sdocument" type="com.newco.marketplace.dto.vo.DocumentVO"/>
+	
+		<insert id="simple.document.insert" parameterClass="sdocument">
+		insert 
+		into 
+		simple_document
+		(
+			temp_buyer_id,
+			doc_category_id,
+			descr,
+			title,
+			file_name,
+			format,
+			source,
+			keywords,
+			expire_date,
+			purge_date,
+			role_id,
+			delete_ind,
+			doc_path, 
+			doc_size,
+			entity_id,
+			created_date
+		)                                        
+        values 
+		(
+			#soId#,
+			#docCategoryId#,
+			#description#,
+			#title#,
+			#fileName#,
+			#format#,
+			#source#,
+			#keywords#,
+			#expireDate#, 
+			#purgeDate#, 
+			#roleId#,
+			0,
+			#docPath#,
+			#docSize#,
+			#entityId#,
+			now())
+</insert>
+		
+		<select id="simple.document.select_single" parameterClass="sdocument" resultClass="java.lang.String">
+		
+		SELECT file_name as fileName
+		FROM simple_document 
+		WHERE simple_document_id=#documentId#
+		AND temp_buyer_id=#soId#
+		
+		</select>
+		
+		<select id="simple.document.select_multi" parameterClass="sdocument" resultClass="java.lang.String">
+		
+		SELECT file_name as fileName
+		FROM simple_document 
+		WHERE temp_buyer_id=#soId#
+		
+		</select>
+		
+		<delete id="simple.document.delete_single" parameterClass="sdocument">
+		DELETE FROM simple_document 
+			WHERE simple_document_id=#documentId#
+		AND temp_buyer_id=#soId#
+		</delete>
+		
+		<delete id="simple.document.delete_multi" parameterClass="sdocument">
+		DELETE FROM simple_document 
+		WHERE temp_buyer_id=#soId#
+		</delete>
+		
+<select id="simple.buyer.select_with_buyer_category" parameterClass="sdocument" resultClass="sdocument">
+		SELECT 
+			doc_category_id         as      docCategoryId,
+			descr                   as      description,
+			title                   as      title,
+			file_name               as      fileName,
+			format                  as      format,
+			source                  as      source,
+			keywords                as      keywords,
+			expire_date             as      expireDate,
+			purge_date              as      purgeDate,
+			role_id                 as      roleId,
+			delete_ind				as		delInd,
+			doc_path                as      docPath,
+			doc_size				as      docSize,
+			entity_id				as      entityId,
+			simple_document_id      as      documentId  
+		FROM 
+			simple_document 
+		WHERE 
+			temp_buyer_id=#soId#
+		AND 
+			doc_category_id=#docCategoryId#
+</select>		
+
+<select id="simple.buyer.select_with_buyer_documentid" parameterClass="sdocument" resultClass="sdocument">
+		SELECT 
+			doc_category_id         as      docCategoryId,
+			descr                   as      description,
+			title                   as      title,
+			file_name               as      fileName,
+			format                  as      format,
+			source                  as      source,
+			keywords                as      keywords,
+			expire_date             as      expireDate,
+			purge_date              as      purgeDate,
+			role_id                 as      roleId,
+			delete_ind				as		delInd,
+			doc_path                as      docPath,
+			doc_size				as      docSize,
+			entity_id				as      entityId
+		FROM 
+			simple_document 
+		WHERE 
+			simple_document_id=#documentId#
+		AND 
+			temp_buyer_id=#soId#
+</select>	
+
+<select id="simple.buyer.select_to_persist" parameterClass="sdocument" resultClass="sdocument">
+		SELECT 
+			doc_category_id         as      docCategoryId,
+			descr                   as      description,
+			title                   as      title,
+			file_name               as      fileName,
+			format                  as      format,
+			source                  as      source,
+			keywords                as      keywords,
+			expire_date             as      expireDate,
+			purge_date              as      purgeDate,
+			role_id                 as      roleId,
+			delete_ind				as		delInd,
+			doc_path                as      docPath,
+			doc_size				as      docSize,
+			entity_id				as      entityId,
+			temp_buyer_id           as      soId,
+			simple_document_id      as      documentId
+		FROM 
+			simple_document 
+		WHERE 
+			temp_buyer_id=#soId#
+</select>
+
+	<select id="simple.document.total_doc_size" parameterClass="java.lang.String" resultClass="java.lang.Long">
+		
+		SELECT sum(doc_size)as totalDocSize
+		FROM simple_document 
+		WHERE temp_buyer_id=#simpleBuyerId#
+		
+	</select>
+	
+		
+	<select id="image.query_validate_format" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT count(format) from lu_document_formats_allowed 
+			where format LIKE 'image%' 
+			and
+			format LIKE concat('%',#format#, '%')      
+	</select>
+	
+	 
+	<select id="temp.document.query_already_exists" parameterClass="document" resultClass="sdocument">
+	select simple_document_id AS documentId,
+		   temp_buyer_id as soId
+	  from simple_document 
+	  where temp_buyer_id = #soId#
+	   and file_name  = #fileName#
+	   and delete_ind = 0
+	</select>
+	
+	<select id="temp.document.query_metadata_by_document_id" parameterClass="java.lang.Integer" resultClass="sdocument">
+		
+		select doc_category_id as docCategoryId, 
+			   simple_document_id AS documentId,
+				descr as description, 
+				title as title,
+				file_name as fileName,
+				format as format,
+				source as source, 
+				keywords as keywords, 
+				expire_date as expireDate, 
+				purge_date as purgeDate,
+				role_id as roleId,
+				delete_ind AS delInd,
+				doc_path as docPath,
+				doc_size as docSize,
+				created_date as createdDate,
+				temp_buyer_id as soId
+		from simple_document
+		where simple_document_id = #documentId#
+
+	</select>
+	
+	
+	
+	
+	
+</sqlMap>

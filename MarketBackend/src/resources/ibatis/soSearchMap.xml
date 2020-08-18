@@ -1,0 +1,2856 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="soSearch">
+
+	<typeAlias alias="soHelper" 
+		type="com.newco.marketplace.dto.vo.serviceorder.ServiceOrderSearchHelper" />
+	<typeAlias alias="soSearchVO" 
+		type="com.newco.marketplace.dto.vo.serviceorder.ServiceOrderSearchResultsVO" />
+	<typeAlias alias="serviceOrderTabs" 
+		type="com.newco.marketplace.dto.vo.serviceorder.serviceOrderTabsVO" />
+	<typeAlias alias="soWorkflowStatus" 
+		type="com.newco.marketplace.dto.vo.pagination.WorkflowStatusVO" />
+	<typeAlias alias="serviceOrderMonitor" 
+		type="com.newco.marketplace.dto.vo.serviceorder.ServiceOrderMonitorVO" />
+	<typeAlias alias="taskDetailVO"
+		type="com.newco.marketplace.dto.vo.serviceorder.ServiceOrderTaskDetail" />
+	<typeAlias alias="providerResultVO" 
+		type="com.newco.marketplace.dto.vo.providerSearch.ProviderResultVO"/>
+	<typeAlias alias="pendingCancelDetailsVO" 
+		type="com.newco.marketplace.dto.vo.serviceorder.PendingCancelDetailsVO"/>
+	<typeAlias alias="searchFilterVO" 
+		type="com.newco.marketplace.dto.vo.serviceorder.SearchFilterVO" />
+	<typeAlias alias="invoiceParts"
+		type="com.newco.marketplace.dto.vo.serviceorder.ProviderInvoicePartsVO" />
+	<typeAlias alias="firmDetails"
+		type="com.newco.marketplace.dto.vo.provider.ProviderFirmVO" />
+	<typeAlias alias="searchFirms"
+		type="com.newco.marketplace.dto.vo.provider.SearchFirmsVO" />
+	<typeAlias alias="serviceOfferings"
+		type="com.newco.marketplace.dto.vo.provider.ServiceOfferingsVO" />
+			
+	<sql id="search_user_joins">
+		<isNotEmpty property="vendBuyerResourceId">
+			join buyer_resource br on s.buyer_id = br.buyer_id and br.resource_id = #vendBuyerResourceId#
+		</isNotEmpty>
+		<isNotEmpty property="acceptedResourceId">
+			join vendor_resource vr on vr.resource_id = #acceptedResourceId# and s.wf_state_id not in (100,125,130)
+			join so_routed_providers srp on s.so_id = srp.so_id 
+			                            and vr.vendor_id = srp.vendor_id 
+			                            and (srp.provider_resp_id != 3 or srp.provider_resp_id is null)
+			                            and (s.accepted_vendor_id = vr.vendor_id or s.accepted_vendor_id is null)
+		</isNotEmpty>
+	</sql>
+	
+	<sql id="filter_where_fragment">
+		<isNotEmpty property="soStatus">
+			and s.wf_state_id = #soStatus#
+		</isNotEmpty>	
+		<isNotEmpty property="soSubStatus">
+			<isEqual property="soSubStatus" compareValue="52">
+			 and s.so_substatus_id is null
+			</isEqual>
+			<isNotEqual property="soSubStatus" compareValue="52">			
+				 and s.so_substatus_id= #soSubStatus#
+			</isNotEqual>
+		</isNotEmpty>
+	</sql>  
+	
+	<resultMap class="invoiceParts" id="invoiceParts.resultmap">
+		<result property="soId" column="so_id" />
+		<result property="source" column="source" />
+		<result property="partCoverage" column="part_coverage" />
+		<result property="partNo" column="part_no" />
+		<result property="divisionNumber" column="division_number" />
+		<result property="sourceNumber" column="source_number" />
+		<result property="partsUrl" column="part_url" />
+		<result property="description" column="description" />
+
+		<result property="invoiceNo" column="invoice_no" />
+		<result property="unitCost" column="unit_cost" />
+		<result property="retailPrice" column="retail_price" />
+		<result property="qty" column="qty" />
+		<result property="estProviderPartsPayment" column="est_provider_parts_payment" />
+		<result property="finalPrice" column="final_price" />
+		<result property="nonSearsSource" column="source_non_sears"/>
+	</resultMap>
+	
+	
+	<resultMap id="somSearchGridProviderMap" class="soSearchVO">
+		<result property="soId" column="soId" />
+		<result property ="priceType" column="priceType"/>
+		<result property="parentGroupId" column="parentGroupId" />
+		<result property="parentGroupTitle" column="parentGroupTitle" />
+		<result property="groupCreatedDate" column="groupCreatedDate" />
+		<result property="routedDate" column="routedDate" />
+		<result property="completedDate" column="completedDate" />
+		<result property="closedDate" column="closedDate" />
+		<result property="acceptedDate" column="acceptedDate" />
+		<result property="activatedDate" column="activatedDate" />
+		<result property="groupSpendLimitLabor" column="groupSpendLimitLabor" />
+		<result property="groupSpendLimitParts" column="groupSpendLimitParts" />
+		<result property="endCustomerPrimaryPhoneNumber" column="endCustomerPrimaryPhoneNumber" />
+		<result property="groupSpendLimit" column="groupSpendLimit" />
+		<result property="sortSOandGroupID" column="sortSOandGroupID" />
+		<!--  <result property="sortSOandGroupSpendLimit" column="sortSOandGroupSpendLimit" /> -->
+		<result property="sortOrder" column="sortOrder" />
+		<result property="finalPartsPrice" column="finalPartsPrice" />
+		<result property="finalLaborPrice" column="finalLaborPrice" />
+		<result property="buyerID" column="buyerID" />
+		<result property="buyerCompanyName" column="buyerCompanyName" />
+		<result property="acceptedResourceId" column="acceptedResourceId" />
+		<result property="acceptedVendorId" column="acceptedVendorId" />
+		<result property="soTitle" column="soTitle" />
+		<result property="soTitleDesc" column="soTitleDesc" />
+		<result property="appointStartDate" column="appointStartDate" />
+		<result property="appointEndDate" column="appointEndDate" />
+		<result property="serviceTimeStart" column="serviceTimeStart" />
+		<result property="serviceTimeEnd" column="serviceTimeEnd" />
+		<result property="serviceLocationTimezone" column="serviceLocationTimezone" />
+		<result property="createdDate" column="createdDate" />
+		<result property="spendLimit" column="spendLimit" />
+		<result property="spendLimitParts" column="spendLimitParts" />
+		<result property="soStatus" column="soStatus" />
+		<result property="soSubStatus" column="soSubStatus" />
+		<result property="priceModel" column="priceModel" />
+		<result property="soStatusString" column="soStatusString" />
+		<result property="street1" column="street1" />
+		<result property="street2" column="street2" />
+		<result property="city" column="city" />
+		<result property="stateCd" column="stateCd" />
+		<result property="zip" column="zip" />
+		<result property="zip4" column="zip4" />
+		<result property="country" column="country" />
+		<result property="endCustomerFirstName" column="endCustomerFirstName" />
+		<result property="endCustomerLastName" column="endCustomerLastName" />
+		<result property="providerFirstName" column="providerFirstName" />
+		<result property="providerLastName" column="providerLastName" />
+		<result property="routedResourceId" column="routedResourceId" />
+		<result property="routedResourceFirstName" column="routedResourceFirstName" />
+		<result property="routedResourceLastName" column="routedResourceLastName" />
+		<result property="claimedByResource" column="claimedByResource" />
+		<result property="bidRangeMax" column="bidRangeMax" />
+		<result property="bidRangeMin" column="bidRangeMin" />
+		<result property="bidEarliestStartDate" column="bidEarliestStartDate" />
+		<result property="bidLatestEndDate" column="bidLatestEndDate" />
+		<result property="claimable" column="claimable" />
+		<result property="availableProviders" column="{soId=soId, vendorId=vendorId, resourceId=resourceId}" select="som.availableProvidersFirm" />
+		<result property="invoiceParts" column="{soId=soId}" select="invoicePartsNew.query" />
+		<result property="assignmentType" column="assignmentType"/>
+		<result property="nonFundedInd" column="nonFundedInd" />
+	</resultMap>
+	         
+	<sql id="soSearch.queryServiceOrdersByIds.nameyourprice">
+		SELECT STRAIGHT_JOIN 
+			s.so_id as soId,
+			s.price_type as priceType,
+			sg.so_group_id				as parentGroupId,
+			sg.group_title				as parentGroupTitle,
+			sg.created_date				as groupCreatedDate,
+			s.routed_date               as routedDate,
+			s.completed_date            as completedDate,
+			s.closed_date               as closedDate,
+			s.accepted_date             as acceptedDate,
+			s.activated_date            as activatedDate,
+			sgp.final_group_spend_limit_labor as groupSpendLimitLabor,
+			sgp.final_group_spend_limit_parts as groupSpendLimitParts,
+			scp.phone_no 				as endCustomerPrimaryPhoneNumber,
+			(sgp.final_group_spend_limit_labor + sgp.final_group_spend_limit_parts) as groupSpendLimit,
+			if (sg.so_group_id is null,s.so_id,sg.so_group_id) as sortSOandGroupID,
+			if (sg.so_group_id is null,s.spend_limit_labor,sgp.final_group_spend_limit_labor) as sortSOandGroupSpendLimit,
+			wf_alias.sort_order as sortOrder,
+			s.final_price_parts as finalPartsPrice,
+			s.final_price_labor as finalLaborPrice,
+			s.buyer_id as buyerID, 
+			b.business_name as buyerCompanyName,
+			s.accepted_resource_id as acceptedResourceId,
+			s.accepted_vendor_id as acceptedVendorId,
+			s.sow_title as soTitle,
+			s.sow_descr as soTitleDesc,
+			s.service_date1 as appointStartDate,
+			s.service_date2 as appointEndDate,
+			s.service_time_start as serviceTimeStart,
+			s.service_time_end as serviceTimeEnd,
+			s.service_locn_time_zone as serviceLocationTimezone,
+			s.created_date as createdDate,
+			s.spend_limit_labor as spendLimit,
+			s.spend_limit_parts as spendLimitParts,
+			s.wf_state_id as soStatus,
+			s.so_substatus_id as soSubStatus,
+			s.price_model as priceModel,
+			s.assignment_type as assignmentType,
+			wf_alias.descr as soStatusString,
+			sl.street_1 as street1,
+			sl.street_2 as street2,
+			sl.city as city,
+			sl.state_cd as stateCd,
+			sl.zip as zip,
+			sl.zip4 as zip4,
+			sl.country as country,
+			sc.first_name as endCustomerFirstName,
+			sc.last_name as endCustomerLastName,
+			cont2.first_name as providerFirstName,
+			cont2.last_name	as providerLastName,
+			srp.resource_id as routedResourceId,
+			con.first_name as routedResourceFirstName,
+			con.last_name as routedResourceLastName,
+			IF(swc.non_funded_ind IS NULL,0,swc.non_funded_ind)AS nonFundedInd,
+			concat(concat(c.first_name,' '),c.last_name) as claimedByResource,              
+                  (select max(incr_spend_limit)
+                  from so_routed_providers srp
+                  where srp.so_id = s.so_id
+                  and srp.provider_resp_id = 2
+                  and srp.incr_spend_limit is not null
+                  and s.wf_state_id=110) 	as bidRangeMax,
+                  
+                  (select min(incr_spend_limit)
+                  from so_routed_providers srp
+                  where srp.so_id = s.so_id
+                  and srp.provider_resp_id = 2
+                  and srp.incr_spend_limit is not null
+                  and s.wf_state_id=110) 	as bidRangeMin,
+                  
+					(select min(service_date1)
+					from so_routed_providers srp
+					where srp.so_id = s.so_id
+					and srp.service_date1 is not null
+					and s.wf_state_id=110) as bidEarliestStartDate,
+					
+					(select max(service_date2)
+					from so_routed_providers srp
+					where srp.so_id = s.so_id
+					and srp.service_date2 is not null
+					and s.wf_state_id=110) as bidLatestEndDate,
+
+			if(pbc.claimed_ind is null, true, not pbc.claimed_ind) as claimable,
+			#vendorId# 		as vendorId,
+			#resourceId# 	as resourceId
+		from so_hdr s
+			left outer join so_group sg on s.so_group_id = sg.so_group_id
+			left outer join so_group_price sgp on s.so_group_id = sgp.so_group_id
+			left outer join so_workflow_controls swc on s.so_id = swc.so_id
+			join buyer b on s.buyer_id = b.buyer_id
+			join lu_wf_states_alias wf_alias on s.wf_state_id = wf_alias.wf_state_id and wf_alias.role_id = #roleId#
+			<isEqual property="manageSOFlag" compareValue="false">	
+			left outer join so_routed_providers srp on s.so_id=srp.so_id 
+			and srp.vendor_id=#vendorId# and s.wf_state_id=110 and	(srp.provider_resp_id not in (3,5)
+      		OR srp.provider_resp_id is NULL)
+      		</isEqual>
+      		<isEqual property="manageSOFlag" compareValue="true">
+      		join so_routed_providers srp on s.so_id=srp.so_id 
+			and srp.vendor_id=#vendorId# and (s.wf_state_id in (155,160,130,150,170) or (s.wf_state_id = 110 and (srp.provider_resp_id not in (3,5)
+      		OR srp.provider_resp_id is NULL)))
+				and	srp.resource_id = #resourceId#	
+			</isEqual>
+      		left outer join vendor_resource v on v.resource_id = srp.resource_id
+			left outer join contact con on con.contact_id = v.contact_id	
+			left outer join so_contact_locn scl on s.so_id = scl.so_id and scl.so_contact_locn_type_id = 10
+			left outer join so_location sl on scl.so_locn_id = sl.so_locn_id and scl.so_id = sl.so_id
+			left outer join so_contact sc on scl.so_contact_id = sc.so_contact_id and scl.so_id = sc.so_id
+			left outer join vendor_resource vr on vr.resource_id = s.accepted_resource_id
+			left outer join contact cont2 on cont2.contact_id = vr.contact_id
+			left outer join (select distinct so_id, company_id, claimed_ind, claimed_by_id from wfm_so_queues where claimed_from_queue_id = queue_id) pbc on s.so_id = pbc.so_id 
+			left outer join vw_master_resource br2 on pbc.claimed_by_id = br2.resource_id and pbc.company_id = br2.company_id
+			left outer join contact c on br2.contact_id = c.contact_id
+			left outer 	join so_contact_phones scp on scp.so_contact_id = sc.so_contact_id and sc.so_id = scp.so_id and	scp.phone_type_id=1
+			<dynamic>
+			    <isNotNull property="filterId">
+				, wfm_so_queues wsq, wfm_queues wq
+				</isNotNull>			    
+				<isNotNull property="groupId" prepend="WHERE s.price_model = 'NAME_PRICE' and ">
+					s.so_group_id = #groupId#
+				</isNotNull>
+				<isNull property="groupId" prepend="WHERE s.price_model = 'NAME_PRICE' and s.so_id in ">
+					<iterate property="soIds" open="(" close=")"  conjunction=",">
+						#soIds[]#
+					</iterate>
+				</isNull>
+			    <isNotNull property="filterId">
+					and wsq.so_id = s.so_id and wsq.queue_id = wq.queue_id and wq.queue_id = #filterId#
+				</isNotNull>
+				<isEqual property="manageSOFlag" compareValue="false">					
+				 GROUP BY s.so_id 				 	
+				</isEqual>
+			</dynamic>	
+	</sql>
+	
+	<sql id="soSearch.queryServiceOrdersByIds.bidsandothers">
+		SELECT STRAIGHT_JOIN 
+			s.so_id as soId,
+			s.price_type as priceType,
+			sg.so_group_id				as parentGroupId,
+			sg.group_title				as parentGroupTitle,
+			sg.created_date				as groupCreatedDate,
+			s.routed_date               as routedDate,
+			s.completed_date            as completedDate,
+			s.closed_date               as closedDate,
+			s.accepted_date             as acceptedDate,
+			s.activated_date            as activatedDate,
+			sgp.final_group_spend_limit_labor as groupSpendLimitLabor,
+			sgp.final_group_spend_limit_parts as groupSpendLimitParts,
+			scp.phone_no 				as endCustomerPrimaryPhoneNumber,
+			(sgp.final_group_spend_limit_labor + sgp.final_group_spend_limit_parts) as groupSpendLimit,
+			if (sg.so_group_id is null,s.so_id,sg.so_group_id) as sortSOandGroupID,
+			if (sg.so_group_id is null,s.spend_limit_labor,sgp.final_group_spend_limit_labor) as sortSOandGroupSpendLimit,
+			wf_alias.sort_order as sortOrder,
+			s.final_price_parts as finalPartsPrice,
+			s.final_price_labor as finalLaborPrice,
+			s.buyer_id as buyerID, 
+			b.business_name as buyerCompanyName,
+			s.accepted_resource_id as acceptedResourceId,
+			s.accepted_vendor_id as acceptedVendorId,
+			s.sow_title as soTitle,
+			s.sow_descr as soTitleDesc,
+			s.service_date1 as appointStartDate,
+			s.service_date2 as appointEndDate,
+			s.service_time_start as serviceTimeStart,
+			s.service_time_end as serviceTimeEnd,
+			s.service_locn_time_zone as serviceLocationTimezone,
+			s.created_date as createdDate,
+			s.spend_limit_labor as spendLimit,
+			s.spend_limit_parts as spendLimitParts,
+			s.wf_state_id as soStatus,
+			s.so_substatus_id as soSubStatus,
+			s.price_model as priceModel,
+			s.assignment_type as assignmentType,
+			wf_alias.descr as soStatusString,
+			sl.street_1 as street1,
+			sl.street_2 as street2,
+			sl.city as city,
+			sl.state_cd as stateCd,
+			sl.zip as zip,
+			sl.zip4 as zip4,
+			sl.country as country,
+			sc.first_name as endCustomerFirstName,
+			sc.last_name as endCustomerLastName,
+			cont2.first_name as providerFirstName,
+			cont2.last_name	as providerLastName,
+			srp.resource_id as routedResourceId,
+			con.first_name as routedResourceFirstName,
+			con.last_name as routedResourceLastName,
+			IF(swc.non_funded_ind IS NULL,0,swc.non_funded_ind)AS nonFundedInd,
+			concat(concat(c.first_name,' '),c.last_name) as claimedByResource,              
+                  (select max(incr_spend_limit)
+                  from so_routed_providers srp
+                  where srp.so_id = s.so_id
+                  and srp.provider_resp_id = 2
+                  and srp.incr_spend_limit is not null
+                  and s.wf_state_id=110) 	as bidRangeMax,
+                  
+                  (select min(incr_spend_limit)
+                  from so_routed_providers srp
+                  where srp.so_id = s.so_id
+                  and srp.provider_resp_id = 2
+                  and srp.incr_spend_limit is not null
+                  and s.wf_state_id=110) 	as bidRangeMin,
+                  
+					(select min(service_date1)
+					from so_routed_providers srp
+					where srp.so_id = s.so_id
+					and srp.service_date1 is not null
+					and s.wf_state_id=110) as bidEarliestStartDate,
+					
+					(select max(service_date2)
+					from so_routed_providers srp
+					where srp.so_id = s.so_id
+					and srp.service_date2 is not null
+					and s.wf_state_id=110) as bidLatestEndDate,
+
+			if(pbc.claimed_ind is null, true, not pbc.claimed_ind) as claimable,
+			#vendorId# 		as vendorId,
+			#resourceId# 	as resourceId
+		from so_hdr s
+			left outer join so_group sg on s.so_group_id = sg.so_group_id
+			left outer join so_group_price sgp on s.so_group_id = sgp.so_group_id
+			left outer join so_workflow_controls swc on s.so_id = swc.so_id
+			join buyer b on s.buyer_id = b.buyer_id
+			join lu_wf_states_alias wf_alias on s.wf_state_id = wf_alias.wf_state_id and wf_alias.role_id = #roleId#
+			left outer join so_routed_providers srp on s.so_id=srp.so_id and srp.vendor_id=#vendorId# and s.wf_state_id=110 and	(srp.provider_resp_id not in (3,5)
+      		OR srp.provider_resp_id is NULL)
+      		left outer join vendor_resource v on v.resource_id = srp.resource_id
+			left outer join contact con on con.contact_id = v.contact_id	
+			left outer join so_contact_locn scl on s.so_id = scl.so_id and scl.so_contact_locn_type_id = 10
+			left outer join so_location sl on scl.so_locn_id = sl.so_locn_id and scl.so_id = sl.so_id
+			left outer join so_contact sc on scl.so_contact_id = sc.so_contact_id and scl.so_id = sc.so_id
+			left outer join vendor_resource vr on vr.resource_id = s.accepted_resource_id
+			left outer join contact cont2 on cont2.contact_id = vr.contact_id
+			left outer join (select distinct so_id, company_id, claimed_ind, claimed_by_id from wfm_so_queues where claimed_from_queue_id = queue_id) pbc on s.so_id = pbc.so_id 
+			left outer join vw_master_resource br2 on pbc.claimed_by_id = br2.resource_id and pbc.company_id = br2.company_id
+			left outer join contact c on br2.contact_id = c.contact_id
+			left outer 	join so_contact_phones scp on scp.so_contact_id = sc.so_contact_id and sc.so_id = scp.so_id and	scp.phone_type_id=1
+			<dynamic>
+			    <isNotNull property="filterId">
+				, wfm_so_queues wsq, wfm_queues wq
+				</isNotNull>
+			    <isNotNull property="groupId" prepend="WHERE s.price_model != 'NAME_PRICE' and ">
+					s.so_group_id = #groupId#
+				</isNotNull>
+				<isNull property="groupId" prepend="WHERE s.price_model != 'NAME_PRICE' and s.so_id in ">
+					<iterate property="soIds" open="(" close=")"  conjunction=",">
+						#soIds[]#
+					</iterate>
+				</isNull>
+			    <isNotNull property="filterId">
+					and wsq.so_id = s.so_id and wsq.queue_id = wq.queue_id and wq.queue_id = #filterId#
+				</isNotNull>
+			</dynamic>
+	</sql>
+	
+	<select id="soSearch.queryServiceOrdersByIds" parameterClass="soSearchVO" resultMap="somSearchGridProviderMap">
+		<include refid="soSearch.queryServiceOrdersByIds.nameyourprice" />			
+			UNION ALL
+		<include refid="soSearch.queryServiceOrdersByIds.bidsandothers" />
+	</select>
+	
+	<select id="soSearch.queryByPhoneNumber" parameterClass="soSearchVO" resultClass="soSearchVO">
+		SELECT DISTINCT s.so_id as soId, 
+		s.service_date1  as appointStartDate, 
+		s.spend_limit_labor as spendLimit, 
+		s.created_date as createdDate, 
+		wf_alias.sort_order as sortOrder
+		from so_hdr s
+		join so_contact sc on s.so_id = sc.so_id and sc.so_contact_type_id in (10,20)
+		join so_contact_phones scp on sc.so_id = scp.so_id and sc.so_contact_id = scp.so_contact_id
+		join lu_wf_states_alias wf_alias on s.wf_state_id = wf_alias.wf_state_id and wf_alias.role_id = #roleId#
+		<include refid="search_user_joins"/>
+		WHERE scp.phone_no = #searchByValue#
+		and s.wf_state_id is not null 
+		 <include refid="filter_where_fragment"/>
+		order by $sortColumnName$ $sortOrder$  				
+	</select>
+
+	<select id="soSearch.queryByCustomRef" parameterClass="soSearchVO" resultClass="soSearchVO">
+		SELECT DISTINCT s.so_id as soId, 
+				s.service_date1  as appointStartDate, 
+				s.spend_limit_labor as spendLimit, 
+				s.created_date as createdDate, 
+				wf_alias.sort_order as sortOrder
+				from so_hdr s
+				join so_custom_reference socr on  s.so_id = socr.so_id
+				join lu_wf_states_alias wf_alias on s.wf_state_id = wf_alias.wf_state_id
+		and wf_alias.role_id = #roleId#
+				<include refid="search_user_joins"/>
+				
+		WHERE socr.buyer_ref_value like concat('%',#searchByValue#,'%')
+		AND socr.buyer_ref_type_id = #searchByType#
+		and s.wf_state_id is not null 
+				 <include refid="filter_where_fragment"/>
+				
+		order by $sortColumnName$ $sortOrder$
+	</select>
+	<select id="soSearch.queryByCheckNumber" parameterClass="soSearchVO" resultClass="soSearchVO">
+		SELECT DISTINCT s.so_id as soId, 
+				s.service_date1  as appointStartDate, 
+				s.spend_limit_labor as spendLimit, 
+				s.created_date as createdDate, 
+				wf_alias.sort_order as sortOrder
+				from so_hdr s
+				join so_additional_payment soap on  s.so_id = soap.so_id
+				join lu_wf_states_alias wf_alias on s.wf_state_id = wf_alias.wf_state_id
+		and wf_alias.role_id = #roleId#
+		<include refid="search_user_joins"/>				
+		WHERE 
+			soap.payment_type= #paymentType# and
+			soap.check_no like concat('%',#searchByValue#,'%')			
+			and s.wf_state_id is not null 
+			<include refid="filter_where_fragment"/>				
+		order by $sortColumnName$ $sortOrder$
+	</select>
+	<select id="soSearch.queryForNames" parameterClass="soHelper" resultClass="soHelper">
+		select s.so_id as soID, 
+		cont_loc.so_contact_locn_type_id as contactLocationTypeID, 
+		cont.first_name as firstName,  	
+		cont.last_name as lastName,
+		lu_wf_substatus.descr as soSubStatus,    
+		wf_alias.descr as soStatus
+		from so_hdr s
+		join so_contact_locn cont_loc on s.so_id = cont_loc.so_id
+		join lu_so_contact_locn_type lu_cont_loc on lu_cont_loc.so_contact_locn_type_id = cont_loc.so_contact_locn_type_id
+		join so_contact cont on cont.so_id = cont_loc.so_id and cont.so_contact_id = cont_loc.so_contact_id 
+		join wf_states wf_state on wf_state.wf_state_id = s.wf_state_id	
+		join lu_wf_states_alias wf_alias on wf_alias.wf_state_id = wf_state.wf_state_id
+		left outer join lu_so_substatus lu_wf_substatus on lu_wf_substatus.so_substatus_id = s.so_substatus_id
+		<dynamic prepend="WHERE">
+			       <isNotNull property="roleType" prepend="AND">
+					wf_alias.user_type = #roleType#
+			       </isNotNull> 
+                    <isNotNull property="searchList" prepend=" AND s.so_id IN " >
+                        <iterate property="searchList" open="(" close=")"  conjunction=",">
+                           #searchList[].soId#
+                        </iterate>
+                    </isNotNull>  
+			       <isNotNull property="searchList">
+			           order by s.so_id
+			       </isNotNull>
+		</dynamic>
+   </select>
+	
+	<select id="soSearch.queryBySoID" parameterClass="soSearchVO" resultClass="soSearchVO">
+		SELECT DISTINCT s.so_id as soId
+		from so_hdr s   
+		<include refid="search_user_joins"/>
+    	WHERE (s.so_id = #searchByValue# or s.so_group_id = #searchByValue#)
+	    and s.wf_state_id is not null 
+	    <include refid="filter_where_fragment"/>
+	    limit 1	
+	</select>   
+
+  
+	<select id="soSearch.queryBySoIDForNames" parameterClass="soSearchVO" resultClass="soSearchVO">
+		select
+		s.so_id as so_id,
+		cont.first_name as buyerFirstName,
+		cont.last_name as buyerLastName,
+		cont1.first_name as providerFirstName,
+		cont1.last_name as providerLastName
+		from so_hdr s
+		join so_contact cont on cont.so_id = s.so_id
+		join so_contact cont1 on cont1.so_id = s.so_id
+		<dynamic prepend="WHERE">
+		    <isNotNull property="soId" prepend="AND"> 
+		    	s.so_id = #soId# 
+		    </isNotNull>
+		    <isNotNull property="buyerID" prepend="AND"> 
+		    	cont.entity_type_id = 10
+		    </isNotNull>
+		    <isNotNull property="buyerID" prepend="AND"> 
+		    	cont.entity_id =  #buyerID#
+		    </isNotNull>
+		    <isNotNull property="acceptedResourceId" prepend="AND"> 
+		    	cont1.entity_type_id = 20
+		    </isNotNull>
+		    <isNotNull property="acceptedResourceId" prepend="AND"> 
+		    	cont1.entity_id = #acceptedResourceId#
+		    </isNotNull>
+		</dynamic>
+   </select>
+
+   <select id="soSearch.queryByZipCode" parameterClass="soSearchVO" resultClass="soSearchVO">
+		SELECT DISTINCT s.so_id as soId, 
+		s.service_date1  as appointStartDate, 
+		s.spend_limit_labor as spendLimit, 
+		s.created_date as createdDate,
+		wf_alias.sort_order as sortOrder
+		from so_hdr s
+			join so_contact_locn scl on s.so_id = scl.so_id and scl.so_contact_locn_type_id = 10
+			join so_location sl on scl.so_id = sl.so_id and scl.so_locn_id = sl.so_locn_id and sl.zip = #searchByValue#
+			join lu_wf_states_alias wf_alias on s.wf_state_id = wf_alias.wf_state_id and wf_alias.role_id = #roleId#
+		<include refid="search_user_joins"/>
+		WHERE s.wf_state_id is not null
+		<include refid="filter_where_fragment"/>
+		order by $sortColumnName$ $sortOrder$ 
+	</select>
+	
+   <select id="soSearch.queryByAddress" parameterClass="soSearchVO" resultClass="soSearchVO">
+		SELECT DISTINCT s.so_id as soId, 
+		s.service_date1  as appointStartDate, 
+		s.spend_limit_labor as spendLimit, 
+		s.created_date as createdDate,
+		wf_alias.sort_order as sortOrder
+		from so_hdr s
+			join so_contact_locn scl on s.so_id = scl.so_id and scl.so_contact_locn_type_id = 10
+			join so_location sl on sl.so_id =  scl.so_id and scl.so_locn_id = sl.so_locn_id and
+					(lower(sl.street_1) like #searchByValue# or lower(sl.street_2) like #searchByValue# or
+						lower(sl.city) like #searchByValue# or lower(sl.apt_no) like #searchByValue#)
+			join lu_wf_states_alias wf_alias on s.wf_state_id = wf_alias.wf_state_id and wf_alias.role_id = #roleId#
+		<include refid="search_user_joins"/>
+		WHERE s.wf_state_id is not null
+		<include refid="filter_where_fragment"/>
+		order by $sortColumnName$ $sortOrder$ 
+	</select>
+	
+	<select id="soSearch.queryBySearchName" parameterClass="soSearchVO" resultClass="soSearchVO">
+		SELECT DISTINCT s.so_id as soId, 
+		s.service_date1  as appointStartDate, 
+		s.spend_limit_labor as spendLimit, 
+		s.created_date as createdDate, 
+		wf_alias.sort_order as sortOrder
+		from so_hdr s
+		join so_contact sc on s.so_id = sc.so_id and sc.so_contact_type_id in (10,20)
+		join lu_wf_states_alias wf_alias on s.wf_state_id = wf_alias.wf_state_id and wf_alias.role_id = #roleId#
+		<include refid="search_user_joins"/>
+		WHERE EXISTS (
+			select 1 from so_contact_locn scl2, so_contact sc2
+			where s.so_id = scl2.so_id
+			and sc2.so_id = s.so_id
+			and sc2.so_id = scl2.so_id
+			and scl2.so_contact_id = sc2.so_contact_id
+			and scl2.so_contact_locn_type_id IN (10,20)
+			and ( lower(first_name) like concat(#searchByValue#,'%') or
+			lower(last_name) like concat(#searchByValue#,'%') )
+			)
+		and s.wf_state_id is not null
+		<include refid="filter_where_fragment"/>
+		order by $sortColumnName$ $sortOrder$ 			 				
+	</select>	
+
+	<select id="soSearch.queryByTechnicianID" parameterClass="soSearchVO" resultClass="soSearchVO">
+		SELECT s.so_id as soId, 
+		s.service_date1  as appointStartDate, 
+		s.spend_limit_labor as spendLimit, 
+		s.created_date as createdDate, 		
+		wf_alias.sort_order as sortOrder
+		from so_hdr s
+			left outer join so_contact_locn scl on s.so_id = scl.so_id and scl.so_contact_locn_type_id = 10
+			left outer join so_location sl on scl.so_id = sl.so_id and scl.so_locn_id = sl.so_locn_id
+			left outer join so_contact sc on scl.so_id = sc.so_id and scl.so_contact_id = sc.so_contact_id 
+			join lu_wf_states_alias wf_alias on s.wf_state_id = wf_alias.wf_state_id and wf_alias.role_id = #roleId#
+			join so_routed_providers srp1 on s.so_id = srp1.so_id and srp1.resource_id = #searchByValue#
+			<isNotEmpty property="vendBuyerResourceId">
+				join buyer_resource br on s.buyer_id = br.buyer_id and br.resource_id = #vendBuyerResourceId#
+			</isNotEmpty>
+			<isNotEmpty property="acceptedResourceId">
+				join vendor_resource vr on vr.resource_id = #acceptedResourceId# and s.wf_state_id not in (100,125,130)
+				join so_routed_providers srp on s.so_id = srp.so_id 
+			                            and vr.vendor_id = srp.vendor_id 
+			                            and (s.accepted_vendor_id = vr.vendor_id or s.accepted_vendor_id is null)
+			</isNotEmpty>
+		<dynamic prepend="WHERE">
+			<isNotNull property="searchByValue">
+		     	s.wf_state_id is not null
+		     	<isEmpty property="buyerID">
+		     		<isNotNull property="searchByValue">
+			     		and s.accepted_resource_id = #searchByValue#
+						or (s.accepted_resource_id is null and s.wf_state_id=110 and srp1.resource_id= #searchByValue#)
+					</isNotNull>	
+				</isEmpty>				
+			</isNotNull>			
+		</dynamic> 	
+		<include refid="filter_where_fragment"/>
+		order by $sortColumnName$ $sortOrder$ 			
+	</select>
+	
+	<select id="soSearch.queryByProviderFirmID" parameterClass="soSearchVO" resultClass="soSearchVO">
+		SELECT s.so_id as soId,
+		s.service_date1  as appointStartDate, 
+		s.spend_limit_labor as spendLimit, 
+		s.created_date as createdDate, 		
+		wf_alias.sort_order as sortOrder
+		from so_hdr s
+		join lu_wf_states_alias wf_alias on
+		<isNotEqual property="roleType" compareValue="NewCo">            
+            wf_alias.user_type = #roleType# and  
+        </isNotEqual> 
+		s.wf_state_id = wf_alias.wf_state_id and wf_alias.role_id = #roleId#
+		<dynamic prepend="WHERE">
+			s.wf_state_id is not null
+			and s.wf_state_id not in (100,110,130,125)
+			<isNotNull property="searchByValue">
+				and s.accepted_vendor_id=#searchByValue#
+			</isNotNull>	
+			<isNotEmpty property="buyerID">
+				and s.buyer_id = #buyerID#
+			</isNotEmpty>
+			<isNotNull property="soSubStatus">
+				 and s.so_substatus_id= #soSubStatus#
+			</isNotNull>			   
+			<isNotNull property="soStatus">
+				and s.wf_state_id = #soStatus#
+			</isNotNull>	
+	 	</dynamic>
+		<include refid="filter_where_fragment"/>
+		order by $sortColumnName$ $sortOrder$ 	
+	</select>
+	
+	<select id="soSearch.queryByTechnicianName" parameterClass="soSearchVO" resultClass="soSearchVO">
+		SELECT DISTINCT s.so_id as soId, 
+		s.service_date1  as appointStartDate, 
+		s.spend_limit_labor as spendLimit, 
+		s.created_date as createdDate, 
+		wf_alias.sort_order as sortOrder
+		from so_hdr s
+			left outer join so_contact_locn scl on s.so_id = scl.so_id and scl.so_contact_locn_type_id = 10
+			left outer join so_location sl on scl.so_id = sl.so_id and scl.so_locn_id = sl.so_locn_id
+			left outer join so_contact sc on scl.so_id = sc.so_id and scl.so_contact_id = sc.so_contact_id
+			join lu_wf_states_alias wf_alias on s.wf_state_id = wf_alias.wf_state_id and wf_alias.role_id = #roleId#
+		<include refid="search_user_joins"/>
+		WHERE EXISTS (
+				select 1 from so_contact_locn scl2, so_contact sc2
+				where s.so_id = scl2.so_id
+				and scl2.so_contact_id = sc2.so_contact_id
+				and scl2.so_contact_locn_type_id = 50
+				and ( lower(first_name) like concat(#searchByValue#,'%') or
+				      lower(last_name) like concat(#searchByValue#,'%') )
+				)
+		 	and s.wf_state_id is not null			
+		<include refid="filter_where_fragment"/> 				
+		order by $sortColumnName$ $sortOrder$  
+	</select>
+		
+	<!-- KEEP IT - BUT NOT USED -->
+	<select id="soSearch.queryForBuyerNames" parameterClass="soSearchVO" resultClass="soSearchVO">
+   		select soc.last_name as buyerLastName , soc.first_name as buyerFirstName
+			from so_hdr as soh, so_contact_locn as socl, so_contact as soc
+			where soh.so_id = socl.so_id
+			and soh.so_id = socl.so_id
+			and socl.so_contact_id = soc.so_contact_id
+			and socl.so_contact_locn_type_id = 20 and
+			soc.so_id = #soId#
+   </select>
+   
+   <select id="soSearch.queryByStatusForBatch" parameterClass="serviceOrderTabs" resultClass="soSearchVO">
+		select
+		s.so_id as soId,
+		so_substatus_id as soSubStatus,
+		s.buyer_id as buyerID,
+		s.accepted_resource_id as acceptedResourceId,
+		s.sow_title as soTitle,
+		s.sow_descr as soTitleDesc,
+		s.service_date_type_id as serviceDateTypeId,
+		s.service_date1 as appointStartDate,
+		s.service_date2 as appointEndDate,
+		s.created_date as createdDate,
+		s.spend_limit_labor as spendLimit,
+		if (sp.original_spend_limit_labor is null, s.spend_limit_labor, sp.original_spend_limit_labor) as originalSpendLimitLabor,
+		if (sp.original_spend_limit_parts is null, s.spend_limit_parts, sp.original_spend_limit_parts) as originalSpendLimitParts,
+		s.final_price_parts as finalPartsPrice,
+		s.final_price_labor as finalLaborPrice,
+		s.wf_state_id as soStatus,
+		s.so_substatus_id as soSubStatus,
+		s.service_date1 as serviceDate1,
+		s.service_date2 as serviceDate2,
+		s.service_time_start as serviceTimeStart,
+		s.service_time_end as serviceTimeEnd,
+		s.service_locn_time_zone as serviceLocationTimezone,
+		s.so_group_id as parentGroupId,
+		s.primary_skill_category_id	as primarySkillCategoryId,
+		s.access_fee as accessFee,
+		s.spn_id as spnId
+		from
+		so_hdr s
+			left outer join so_price sp on s.so_id = sp.so_id
+			left outer join so_process_map spm ON s.so_id = spm.so_id
+		where (spm.so_id IS NULL OR spm.new_so = FALSE)
+		<dynamic >
+			<isNotNull property="soSubStatus" prepend="AND">
+				 s.so_substatus_id= #soSubStatus#
+			</isNotNull>			   
+			<isNotNull property="soStatus" prepend="AND">
+				s.wf_state_id = #soStatus#
+			</isNotNull>
+			<isNotNull property="today" prepend="AND">
+				s.created_date = #today# 
+			</isNotNull>					   
+			<isNotNull property="buyerId" prepend="AND">
+				s.buyer_id = #buyerId#
+			</isNotNull>
+			<isNotNull property="providerId" prepend="AND">
+				s.accepted_resource_id = #providerId#
+			</isNotNull>
+			<isNotNull property="entityId" prepend="AND">
+				s.accepted_vendor_id = #entityId#
+			</isNotNull>
+			<isNotNull property="currentDate" prepend="AND">
+				s.service_date1 <![CDATA[<=]]> #currentDate#
+			</isNotNull>	
+		</dynamic>
+		limit 7500 		
+	</select>
+	
+	<select id="soSearch.queryForConditionalRouting" parameterClass="serviceOrderTabs" resultClass="soSearchVO">
+		select
+		s.so_id as soId,
+		so_substatus_id as soSubStatus,
+		s.buyer_id as buyerID,
+		s.accepted_resource_id as acceptedResourceId,
+		s.sow_title as soTitle,
+		s.sow_descr as soTitleDesc,
+		s.service_date_type_id as serviceDateTypeId,
+		s.service_date1 as appointStartDate,
+		s.service_date2 as appointEndDate,
+		s.created_date as createdDate,
+		s.spend_limit_labor as spendLimit,
+		if (sp.original_spend_limit_labor is null, s.spend_limit_labor, sp.original_spend_limit_labor) as originalSpendLimitLabor,
+		if (sp.original_spend_limit_parts is null, s.spend_limit_parts, sp.original_spend_limit_parts) as originalSpendLimitParts,
+		s.final_price_parts as finalPartsPrice,
+		s.final_price_labor as finalLaborPrice,
+		s.wf_state_id as soStatus,
+		s.so_substatus_id as soSubStatus,
+		s.service_date1 as serviceDate1,
+		s.service_date2 as serviceDate2,
+		s.service_time_start as serviceTimeStart,
+		s.service_time_end as serviceTimeEnd,
+		s.service_locn_time_zone as serviceLocationTimezone,
+		s.so_group_id as parentGroupId,
+		s.primary_skill_category_id	as primarySkillCategoryId,
+		s.access_fee as accessFee,
+		s.spn_id as spnId
+		from
+		so_hdr s
+			join so_routing_rule_assoc sorra on ( s.so_id = sorra.so_id )
+			left outer join so_price sp on ( s.so_id = sp.so_id )
+			left outer join so_process_map spm ON s.so_id = spm.so_id
+		where
+			s.so_substatus_id is null
+			AND (spm.so_id IS NULL OR spm.new_so = FALSE)
+			AND s.so_id not in (select so_id from so_process_map where new_so = true)
+			<dynamic prepend="and">
+				<isNotNull property="soStatus">
+				s.wf_state_id = #soStatus#
+				</isNotNull>
+			</dynamic>
+			 		
+	</select>
+	
+	<!-- SC-KEEP IT -->
+	<select id="soServiceOrderGrid.queryServiceOrdersByStatuses" parameterClass="serviceOrderMonitor" resultClass="soDetails">
+		SELECT
+		s.so_id as soId,
+		so_substatus_id as soSubStatus,
+		b.business_name as buyerCompanyName,
+		s.buyer_id as buyerID,
+		s.accepted_resource_id as acceptedResourceId,
+		s.sow_title as soTitle,
+		s.sow_descr as soTitleDesc,
+		s.act_arrival_start_date as appointStartDate,
+		s.act_arrival_end_date as appointEndDate,
+		s.created_date as createdDate,
+		s.spend_limit_labor as spendLimit,
+		s.final_price_parts as finalPartsPrice,
+		s.final_price_labor as finalLaborPrice,
+		s.wf_state_id as soStatus,
+		s.so_substatus_id as soSubStatus,
+		loc.street_1 as street1,
+		loc.street_2 as street2,
+		loc.city as city,
+		loc.state_cd as stateCd,
+		loc.zip as zip,
+		loc.zip4 as zip4,
+		loc.country as country,
+		cont.first_name as endCustomerFirstName,
+		cont.last_name as endCustomerLastName    	
+		from
+		so_hdr s
+		join buyer b on s.buyer_id = b.buyer_id
+		join so_contact_locn cont_loc on s.so_id = cont_loc.so_id
+		join lu_so_contact_locn_type lu_cont_loc on lu_cont_loc.so_contact_locn_type_id = cont_loc.so_contact_locn_type_id
+		join so_location loc on loc.so_id = cont_loc.so_id and loc.so_locn_id = cont_loc.so_locn_id
+		join so_contact cont on cont.so_contact_id = cont_loc.so_contact_id
+		<dynamic prepend="WHERE">
+			<isNotNull property="soSubStatus" prepend="AND">
+				 s.so_substatus_id= #soSubStatus#
+			</isNotNull>			   
+			<isNotNull property="workFlowStatusIds" prepend=" AND wf_state_id in " >
+				<iterate property="workFlowStatusIds" open="(" close=")"  conjunction=",">
+					 #workFlowStatusIds[]#
+				</iterate>
+			</isNotNull>			   
+			<isNotNull property="buyerId" prepend="AND">
+				s.buyer_id = #buyerId#
+			</isNotNull>
+			<isNotNull property="startIndex" prepend="LIMIT ">
+				#startIndex#
+			</isNotNull>
+			<isNotNull property="numberOfRecords" prepend=",  ">
+				#numberOfRecords#
+			</isNotNull>
+		</dynamic> 		
+	</select>
+
+	<!-- For Buyer SOM -->
+	<select id="somGrid.querySOByStatusesForBuyer" parameterClass="serviceOrderMonitor" resultClass="soDetails">
+			SELECT STRAIGHT_JOIN s.so_id as soId,
+            s.price_type as priceType,
+            sg.so_group_id  as parentGroupId,
+            sg.group_title  as parentGroupTitle,
+            sg.created_date as groupCreatedDate,
+            s.routed_date as routedDate,
+            if (sgp.final_group_spend_limit_labor is null,sgp.original_group_spend_limit_labor,sgp.final_group_spend_limit_labor) as groupSpendLimitLabor,
+            if (sgp.final_group_spend_limit_labor is null,sgp.original_group_spend_limit_parts,sgp.final_group_spend_limit_parts) as groupSpendLimitParts,
+            if (sgp.final_group_spend_limit_labor is null,sgp.original_group_spend_limit_labor + sgp.original_group_spend_limit_parts,sgp.final_group_spend_limit_labor + sgp.final_group_spend_limit_parts) as groupSpendLimit,
+            if (sg.so_group_id is null,s.so_id,sg.so_group_id) as sortSOandGroupID,
+            if (sg.so_group_id is null,s.spend_limit_labor,sgp.final_group_spend_limit_labor) as sortSOandGroupSpendLimit,
+            s.buyer_id                          as buyerID,
+            b.business_name             as buyerCompanyName,
+            s.accepted_resource_id        as acceptedResourceId,
+            s.accepted_vendor_id          as acceptedVendorId,
+            s.sow_title                         as soTitle,
+            s.sow_descr                         as soTitleDesc,
+            s.service_date_type_id        as serviceDateTypeId,
+            s.service_date1               as appointStartDate,
+            s.service_date2               as appointEndDate,
+            s.service_time_start          as serviceTimeStart,
+            s.service_time_end                  as serviceTimeEnd,
+            s.created_date                      as createdDate,
+            s.spend_limit_labor           as spendLimit,
+            s.spend_limit_parts                 as spendLimitParts,
+            s.final_price_parts                 as finalPartsPrice,
+            s.final_price_labor                 as finalLaborPrice,
+            s.service_locn_time_zone      as serviceLocationTimezone,
+            s.wf_state_id                       as soStatus,
+            wf_alias.descr                      as soStatusString,
+            s.so_substatus_id                   as soSubStatus,
+            lu_wf_substatus.descr         as soSubStatusString,
+            loc.street_1                        as street1,
+            loc.street_2                        as street2,
+            loc.city                            as city,
+            loc.state_cd                        as stateCd,
+            loc.zip                             as zip,
+            loc.zip4                            as zip4,
+            loc.country                         as country,
+            cont.first_name               as endCustomerFirstName,
+            cont.last_name                      as endCustomerLastName,
+            scp.phone_no                        as endCustomerPrimaryPhoneNumber,
+            wf_alias.sort_order         as sortOrder,
+            s.price_model				as priceModel,
+            IF(ext.sealed_bid_ind IS NULL,0,ext.sealed_bid_ind)AS sealedBidInd,
+            IF(ext.non_funded_ind IS NULL,0,ext.non_funded_ind)AS nonFundedInd,
+            (select seh.total_price from so_estimation_history seh,so_estimation se 
+			 where seh.so_id = se.so_id and seh.so_id = s.so_id
+             and seh.status='ACCEPTED' order by seh.estimation_history_id desc  limit 1 ) as totalEstimationPrice,
+             <isEqual property="routedTab" compareValue="true">
+                  (select count(*)
+                  from so_hdr sh, so_routed_providers srp
+                  where sh.so_id = srp.so_id
+                  and sh.so_id = s.so_id)       as providerCounts,
+                  (select count(*)
+                  from so_hdr sh, so_routed_providers srp
+                  where sh.so_id = srp.so_id
+                  and sh.so_id = s.so_id
+                  and provider_resp_id = 2)     as condCounts,
+                  (select count(*)
+                  from so_hdr sh, so_routed_providers srp
+                  where sh.so_id = srp.so_id
+                  and sh.so_id = s.so_id
+                  and provider_resp_id in (3,5,7))      as rejectedCounts,
+                  
+                  (select max(incr_spend_limit)
+                  from so_routed_providers srp
+                  where srp.so_id = s.so_id
+                  and srp.provider_resp_id = 2
+                  and srp.incr_spend_limit is not null) 	as bidRangeMax,
+                  
+                  (select min(incr_spend_limit)
+                  from so_routed_providers srp
+                  where srp.so_id = s.so_id
+                  and srp.provider_resp_id = 2
+                  and srp.incr_spend_limit is not null) 	as bidRangeMin,
+                  
+					(select min(service_date1)
+					from so_routed_providers srp
+					where srp.so_id = s.so_id
+					and srp.provider_resp_date is not null) as bidEarliestStartDate,
+					
+					  
+					(select max(service_date2)
+					from so_routed_providers srp
+					where srp.so_id = s.so_id
+					and srp.provider_resp_date is not null) as bidLatestEndDate,
+                  
+                  (select count(incr_spend_limit)
+                  from so_routed_providers srp
+                  where srp.so_id = s.so_id
+                  and srp.provider_resp_id = 2
+                  and srp.incr_spend_limit is not null)		as bidCount
+            </isEqual>
+            <isEqual property="routedTab" compareValue="false">
+                  0 as providerCounts,
+                  0 as condCounts,
+                  0 as rejectedCounts,
+                  0 as bidRangeMax,
+                  0 as bidRangeMin,
+			   null as bidEarliestStartDate,
+			   null as bidLatestEndDate,
+                  0 as bidCount
+            </isEqual>
+            FROM
+
+			so_hdr s JOIN so_contact_locn cont_loc ON s.so_id = cont_loc.so_id         
+			LEFT OUTER JOIN so_workflow_controls ext ON ext.so_id = s.so_id  
+			
+			
+            left outer join so_group sg on s.so_group_id = sg.so_group_id
+            left outer join so_group_price sgp on s.so_group_id = sgp.so_group_id
+            join buyer b on s.buyer_id = b.buyer_id
+            
+            join so_location loc on s.so_id = loc.so_id and loc.so_locn_id = cont_loc.so_locn_id
+           
+            join so_contact cont on  s.so_id = cont.so_id and cont.so_contact_id = cont_loc.so_contact_id
+            LEFT OUTER join so_contact_phones scp on cont.so_id = scp.so_id and cont.so_contact_id = scp.so_contact_id and  scp.phone_type_id=1
+            join lu_wf_states_alias wf_alias on wf_alias.wf_state_id = s.wf_state_id and wf_alias.user_type = 'Buyer'
+            left outer join lu_so_substatus lu_wf_substatus on lu_wf_substatus.so_substatus_id = s.so_substatus_id      
+			
+            where cont_loc.so_contact_locn_type_id = 10
+		<dynamic>
+			<isNotNull property="groupId" prepend=" AND ">
+			  s.so_group_id = #groupId#
+			</isNotNull>
+			<isNotNull property="soSubStatus" prepend=" AND ">
+			       <isEqual property="soSubStatus" compareValue="52">
+				     s.so_substatus_id is null
+			       </isEqual>
+			       <isNotEqual property="soSubStatus" compareValue="52">            
+				     s.so_substatus_id= #soSubStatus#
+			       </isNotEqual>
+			 </isNotNull>
+			 <isNotNull property="priceModel" prepend=" AND ">
+			       s.price_model = #priceModel#
+			 </isNotNull>  
+			 <isNotNull property="workFlowStatusIds" prepend=" AND s.wf_state_id in " >
+			       <iterate property="workFlowStatusIds" open="(" close=")"  conjunction=",">
+				      #workFlowStatusIds[]#
+			       </iterate>
+			 </isNotNull>                    
+			 <isNotNull property="buyerId" prepend=" AND ">
+			       s.buyer_id = #buyerId#
+			 </isNotNull>
+			 <isNotNull property="searchSealedBid" prepend=" AND ">
+			       <isEqual property="searchSealedBid" compareValue="true">
+					ext.sealed_bid_ind = 1
+			       </isEqual>
+			 </isNotNull>
+			 <isNotNull property="filterByPriceModal" prepend=" AND ">
+			       <isEqual property="filterByPriceModal" compareValue="true">
+					(ext.sealed_bid_ind IS NULL OR ext.sealed_bid_ind  = 0)
+			       </isEqual>
+			 </isNotNull>
+			 
+			<isEqual property="serviceDateSort" compareValue="true">
+				ORDER BY CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%l:%i %p') HOUR_SECOND), 'GMT', s.service_locn_time_zone)
+				<isNotNull property="sortOrder">
+					$sortOrder$
+				</isNotNull>
+				<isNull property="groupId">
+					<isNotNull property="startIndex" prepend="LIMIT ">
+						#startIndex#
+					</isNotNull>
+					<isNotNull property="numberOfRecords" prepend=",  ">
+						#numberOfRecords#
+					</isNotNull>
+				</isNull>
+			 </isEqual>
+			<isNotEqual property="serviceDateSort" compareValue="true">
+				<isNotNull property="sortColumnName">
+			      	ORDER BY $sortColumnName$
+			      	<isNotNull property="sortOrder">
+				   		$sortOrder$
+			      	</isNotNull>
+				</isNotNull>
+				<isNull property="groupId">
+					<isNotNull property="startIndex" prepend="LIMIT ">
+				      #startIndex#
+					</isNotNull>
+					<isNotNull property="numberOfRecords" prepend=",  ">
+				      #numberOfRecords#
+					</isNotNull>
+			  	</isNull>			
+			</isNotEqual>
+ 	</dynamic>
+ 	</select> 
+	
+		<!-- For Buyer SOM -->
+	<select id="somGrid.querySOByStatusesForBuyerOld" parameterClass="serviceOrderMonitor" resultClass="soDetails">
+            SELECT STRAIGHT_JOIN s.so_id as soId,
+            s.price_type as priceType,
+            sg.so_group_id  as parentGroupId,
+            sg.group_title  as parentGroupTitle,
+            sg.created_date as groupCreatedDate,
+            s.routed_date as routedDate,
+            if (sgp.final_group_spend_limit_labor is null,sgp.original_group_spend_limit_labor,sgp.final_group_spend_limit_labor) as groupSpendLimitLabor,
+            if (sgp.final_group_spend_limit_labor is null,sgp.original_group_spend_limit_parts,sgp.final_group_spend_limit_parts) as groupSpendLimitParts,
+            if (sgp.final_group_spend_limit_labor is null,sgp.original_group_spend_limit_labor + sgp.original_group_spend_limit_parts,sgp.final_group_spend_limit_labor + sgp.final_group_spend_limit_parts) as groupSpendLimit,
+            if (sg.so_group_id is null,s.so_id,sg.so_group_id) as sortSOandGroupID,
+            if (sg.so_group_id is null,s.spend_limit_labor,sgp.final_group_spend_limit_labor) as sortSOandGroupSpendLimit,
+            s.buyer_id                          as buyerID,
+            b.business_name             as buyerCompanyName,
+            s.accepted_resource_id        as acceptedResourceId,
+            s.accepted_vendor_id          as acceptedVendorId,
+            s.sow_title                         as soTitle,
+            s.sow_descr                         as soTitleDesc,
+            s.service_date_type_id        as serviceDateTypeId,
+            s.service_date1               as appointStartDate,
+            s.service_date2               as appointEndDate,
+            s.service_time_start          as serviceTimeStart,
+            s.service_time_end                  as serviceTimeEnd,
+            s.created_date                      as createdDate,
+            s.spend_limit_labor           as spendLimit,
+            s.spend_limit_parts                 as spendLimitParts,
+            s.final_price_parts                 as finalPartsPrice,
+            s.final_price_labor                 as finalLaborPrice,
+            s.service_locn_time_zone      as serviceLocationTimezone,
+            s.wf_state_id                       as soStatus,
+            wf_alias.descr                      as soStatusString,
+            s.so_substatus_id                   as soSubStatus,
+            lu_wf_substatus.descr         as soSubStatusString,
+            loc.street_1                        as street1,
+            loc.street_2                        as street2,
+            loc.city                            as city,
+            loc.state_cd                        as stateCd,
+            loc.zip                             as zip,
+            loc.zip4                            as zip4,
+            loc.country                         as country,
+            cont.first_name               as endCustomerFirstName,
+            cont.last_name                      as endCustomerLastName,
+            scp.phone_no                        as endCustomerPrimaryPhoneNumber,
+            wf_alias.sort_order         as sortOrder,
+            s.price_model				as priceModel,
+            IF(s.sealed_bid_ind IS NULL,0,s.sealed_bid_ind)AS sealedBidInd,
+            IF(swc.non_funded_ind IS NULL,0,swc.non_funded_ind)AS nonFundedInd,
+            <isEqual property="routedTab" compareValue="true">
+                  (select count(*)
+                  from so_hdr sh, so_routed_providers srp
+                  where sh.so_id = srp.so_id
+                  and sh.so_id = s.so_id)       as providerCounts,
+                  (select count(*)
+                  from so_hdr sh, so_routed_providers srp
+                  where sh.so_id = srp.so_id
+                  and sh.so_id = s.so_id
+                  and provider_resp_id = 2)     as condCounts,
+                  (select count(*)
+                  from so_hdr sh, so_routed_providers srp
+                  where sh.so_id = srp.so_id
+                  and sh.so_id = s.so_id
+                  and provider_resp_id in (3,5,7))      as rejectedCounts,
+                  
+                  (select max(incr_spend_limit)
+                  from so_routed_providers srp
+                  where srp.so_id = s.so_id
+                  and srp.provider_resp_id = 2
+                  and srp.incr_spend_limit is not null) 	as bidRangeMax,
+                  
+                  (select min(incr_spend_limit)
+                  from so_routed_providers srp
+                  where srp.so_id = s.so_id
+                  and srp.provider_resp_id = 2
+                  and srp.incr_spend_limit is not null) 	as bidRangeMin,
+                  
+					(select min(service_date1)
+					from so_routed_providers srp
+					where srp.so_id = s.so_id
+					and srp.provider_resp_date is not null) as bidEarliestStartDate,
+					
+					  
+					(select max(service_date2)
+					from so_routed_providers srp
+					where srp.so_id = s.so_id
+					and srp.provider_resp_date is not null) as bidLatestEndDate,
+                  
+                  (select count(incr_spend_limit)
+                  from so_routed_providers srp
+                  where srp.so_id = s.so_id
+                  and srp.provider_resp_id = 2
+                  and srp.incr_spend_limit is not null)		as bidCount
+            </isEqual>
+            <isEqual property="routedTab" compareValue="false">
+                  0 as providerCounts,
+                  0 as condCounts,
+                  0 as rejectedCounts,
+                  0 as bidRangeMax,
+                  0 as bidRangeMin,
+			   null as bidEarliestStartDate,
+			   null as bidLatestEndDate,
+                  0 as bidCount
+            </isEqual>
+            FROM
+	    (            
+		    SELECT 	s.so_id, s.price_type,s.routed_date, s.spend_limit_labor,s.buyer_id, s.accepted_resource_id,s.accepted_vendor_id,s.sow_title, 
+					s.sow_descr, s.service_date1, s.service_date2 ,s.service_time_start, s.service_time_end, 
+					s.created_date, s.spend_limit_parts,s.final_price_parts,s.final_price_labor,s.service_locn_time_zone,
+					s.wf_state_id ,s.so_substatus_id ,s.price_model ,s.so_group_id, ext.sealed_bid_ind
+		    FROM so_hdr s JOIN so_contact_locn cont_loc ON s.so_id = cont_loc.so_id
+		      LEFT OUTER JOIN so_workflow_controls ext ON ext.so_id = s.so_id
+		    WHERE cont_loc.so_contact_locn_type_id = 10
+		    <dynamic>
+			<isNotNull property="groupId" prepend=" AND ">
+			  s.so_group_id = #groupId#
+			</isNotNull>
+			<isNotNull property="soSubStatus" prepend=" AND ">
+			       <isEqual property="soSubStatus" compareValue="52">
+				     s.so_substatus_id is null
+			       </isEqual>
+			       <isNotEqual property="soSubStatus" compareValue="52">            
+				     s.so_substatus_id= #soSubStatus#
+			       </isNotEqual>
+			 </isNotNull>
+			 <isNotNull property="priceModel" prepend=" AND ">
+			       s.price_model = #priceModel#
+			 </isNotNull>  
+			 <isNotNull property="workFlowStatusIds" prepend=" AND s.wf_state_id in " >
+			       <iterate property="workFlowStatusIds" open="(" close=")"  conjunction=",">
+				      #workFlowStatusIds[]#
+			       </iterate>
+			 </isNotNull>                    
+			 <isNotNull property="buyerId" prepend=" AND ">
+			       s.buyer_id = #buyerId#
+			 </isNotNull>
+			 <isNotNull property="searchSealedBid" prepend=" AND ">
+			       <isEqual property="searchSealedBid" compareValue="true">
+					ext.sealed_bid_ind = 1
+			       </isEqual>
+			 </isNotNull>
+			 <isNotNull property="filterByPriceModal" prepend=" AND ">
+			       <isEqual property="filterByPriceModal" compareValue="true">
+					(ext.sealed_bid_ind IS NULL OR ext.sealed_bid_ind  = 0)
+			       </isEqual>
+			 </isNotNull>
+					 <isEqual property="serviceDateSort" compareValue="true">
+						ORDER BY CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%l:%i %p') HOUR_SECOND), 'GMT', s.service_locn_time_zone)
+						<isNotNull property="sortOrder">
+							$sortOrder$
+			    		</isNotNull>
+						<isNull property="groupId">
+							<isNotNull property="startIndex" prepend="LIMIT ">
+				      			#startIndex#
+							</isNotNull>
+							<isNotNull property="numberOfRecords" prepend=",  ">
+				      			#numberOfRecords#
+							</isNotNull>
+			  			</isNull>
+					 </isEqual>
+		    </dynamic>
+	     ) s
+            left outer join so_group sg on s.so_group_id = sg.so_group_id
+            left outer join so_group_price sgp on s.so_group_id = sgp.so_group_id
+            join buyer b on s.buyer_id = b.buyer_id
+            join so_contact_locn cont_loc on s.so_id = cont_loc.so_id
+            join so_location loc on s.so_id = loc.so_id and loc.so_locn_id = cont_loc.so_locn_id
+            LEFT OUTER JOIN so_workflow_controls swc ON swc.so_id = s.so_id
+            join so_contact cont on  s.so_id = cont.so_id and cont.so_contact_id = cont_loc.so_contact_id
+            LEFT OUTER join so_contact_phones scp on cont.so_id = scp.so_id and cont.so_contact_id = scp.so_contact_id and  scp.phone_type_id=1
+            join lu_wf_states_alias wf_alias on wf_alias.wf_state_id = s.wf_state_id and wf_alias.user_type = 'Buyer'
+            left outer join lu_so_substatus lu_wf_substatus on lu_wf_substatus.so_substatus_id = s.so_substatus_id         
+            where cont_loc.so_contact_locn_type_id = 10
+			<isNotEqual property="serviceDateSort" compareValue="true">
+				<isNotNull property="sortColumnName">
+			      	ORDER BY $sortColumnName$
+			      	<isNotNull property="sortOrder">
+				   		$sortOrder$
+			      	</isNotNull>
+				</isNotNull>
+				<isNull property="groupId">
+					<isNotNull property="startIndex" prepend="LIMIT ">
+				      #startIndex#
+					</isNotNull>
+					<isNotNull property="numberOfRecords" prepend=",  ">
+				      #numberOfRecords#
+					</isNotNull>
+			  	</isNull>			
+			</isNotEqual>					 
+	</select>
+	
+	
+	
+	<select id="somGrid.providerphonebysoid" parameterClass="java.util.HashMap" resultClass="soSearchVO">
+		SELECT s.so_id        AS soid, 
+       c.first_name   AS providerfirstname, 
+       c.last_name    AS providerlastname, 
+       v.bus_phone_no AS providerprimaryphonenumber, 
+       c.phone_no     AS provideraltphonenumber,
+       c.phone_no     AS providerMainPhoneNo,
+       c.mobile_no    AS providerMobilePhoneNo
+		FROM   so_hdr s 
+       JOIN vendor_resource vr 
+         ON s.accepted_resource_id = vr.resource_id 
+       JOIN vendor_hdr v 
+         ON v.vendor_id = vr.vendor_id 
+       JOIN contact c 
+         ON vr.contact_id = c.contact_id 
+            AND s.so_id IN 
+		<iterate property="soIdList" open="(" close=")"  conjunction=",">
+					 #soIdList[]#
+		</iterate>
+	</select>
+		
+	<!-- For Associated Incidents -->
+	<select id="somGrid.queryAssociatedIncidents" parameterClass="soSearchVO" resultClass="com.newco.marketplace.dto.vo.incident.AssociatedIncidentVO">
+		SELECT scr.buyer_ref_type_id as buyerRefTypeId, 
+			brt.buyer_id as buyerId, 
+			scr.so_id as soId, 
+			brt.ref_type as refType, 
+			scr.buyer_ref_value as incidentId, 
+			DATEDIFF(now(), s.closed_date) as ageOfOrder
+		FROM so_custom_reference scr 
+			inner join buyer_reference_type brt on (brt.buyer_ref_type_id = scr.buyer_ref_type_id)
+			left join so_hdr s on (s.so_id = scr.so_id)
+		WHERE brt.ref_type = 'INCIDENTID' 
+			and closed_date is not null 
+			and scr.buyer_ref_value in (
+				SELECT scr.buyer_ref_value
+				FROM so_custom_reference scr 
+					inner join buyer_reference_type brt on (brt.buyer_ref_type_id = scr.buyer_ref_type_id)
+				WHERE so_id = #soId# and brt.ref_type = 'ASSOCIATED INCIDENT')	
+	</select>
+	
+	<!--  For backup Associated Incidents -->
+	      <procedure id="somGrid.queryAssociatedIncidents.storeproc" resultClass="com.newco.marketplace.dto.vo.incident.AssociatedIncidentVO" parameterClass="soSearchVO">
+            {call sp_IncidentTracker(#soId#)}
+      </procedure>
+      
+     <resultMap id="somGridProviderMap" class="soDetails">
+			<result property="soId" column="soId" />
+			<result property="parentGroupId" column="parentGroupId" />
+			<result property="parentGroupTitle" column="parentGroupTitle" />
+			<result property="groupCreatedDate" column="groupCreatedDate" />
+			<result property="routedDate" column="routedDate" />
+			<result property="groupSpendLimitLabor" column="groupSpendLimitLabor" />
+			<result property="groupSpendLimitParts" column="groupSpendLimitParts" />
+			<result property="groupSpendLimit" column="groupSpendLimit" />
+			<result property="sortSOandGroupID" column="sortSOandGroupID" />
+			<!--  result property="sortSOandGroupSpendLimit" column="sortSOandGroupSpendLimit" />-->
+			<result property="buyerID" column="buyerID" />
+			<result property="buyerCompanyName" column="buyerCompanyName" />
+			<result property="buyerRoleId" column="buyerRoleId" />
+			<result property="acceptedResourceId" column="acceptedResourceId" />
+			<result property="soTitle" column="soTitle" />
+			<result property="soTitleDesc" column="soTitleDesc" />
+			<result property="serviceDateTypeId" column="serviceDateTypeId" />
+			<result property="appointStartDate" column="appointStartDate" />
+			<result property="appointEndDate" column="appointEndDate" />
+			<result property="serviceTimeStart" column="serviceTimeStart" />
+			<result property="serviceTimeEnd" column="serviceTimeEnd" />
+			<result property="createdDate" column="createdDate" />
+			<result property="spendLimit" column="spendLimit" />
+			<result property="spendLimitParts" column="spendLimitParts" />
+			<result property="finalPartsPrice" column="finalPartsPrice" />
+			<result property="finalLaborPrice" column="finalLaborPrice" />
+			<result property="soStatus" column="soStatus" />
+			<result property="serviceLocationTimezone" column="serviceLocationTimezone" />
+			<result property="soStatusString" column="soStatusString" />
+			<result property="soSubStatus" column="soSubStatus" />
+			<result property="soSubStatusString" column="soSubStatusString" />
+			<result property="street1" column="street1" />
+			<result property="street2" column="street2" />
+			<result property="city" column="city" />
+			<result property="stateCd" column="stateCd" />
+			<result property="zip" column="zip" />
+			<result property="zip4" column="zip4" />
+			<result property="soLat" column="soLat" />
+			<result property="soLong" column="soLong" />
+			<result property="country" column="country" />
+			<result property="locnClassId" column="locnClassId" />
+			<result property="sortOrder" column="sortOrder" />
+			<result property="endCustomerPrimaryPhoneNumber" column="endCustomerPrimaryPhoneNumber" />
+			<result property="endCustomerFirstName" column="endCustomerFirstName" />
+			<result property="endCustomerLastName" column="endCustomerLastName" />
+			<result property="providerFirstName" column="providerFirstName" />
+			<result property="providerLastName" column="providerLastName" />
+			<result property="resourceId" column="resourceId" />
+			<result property="routedResourceId" column="routedResourceId" />
+			<result property="providerResponseId" column="providerResponseId" />
+			<result property="routedResourceFirstName" column="routedResourceFirstName" />
+			<result property="routedResourceLastName" column="routedResourceLastName" />
+			<result property="vendorResLat" column="vendorResLat" />
+			<result property="vendorResLong" column="vendorResLong" />
+			<result property="distanceInMiles" column="distanceInMiles" /> 
+			<result property="resStreet1" column="resStreet1" />
+			<result property="resStreet2" column="resStreet2" />
+			<result property="resCity" column="resCity" />
+			<result property="resStateCd" column="resStateCd" />
+			<result property="resZip" column="resZip" />
+			<result property="sealedBidInd" column="sealedBidInd" />
+			<result property="nonFundedInd" column="nonFundedInd" />
+			<result property="availableProviders" column="{soId=soId, vendorId=vendorId, resourceId=resourceId}" select="som.availableProvidersFirm" />
+			<result property="invoiceParts" column="{soId=soId}" select="invoicePartsNew.query" />
+			<!-- to show accepted estimation -->
+			<!-- <result property="totalEstimationPrice" column="totalEstimationPrice" /> -->
+			
+	</resultMap>
+	
+	<resultMap id="somGridAcceptedProviderMap" class="soDetails" extends="somGridProviderMap">
+		<result property="assignmentType" column="assignmentType"/>
+	</resultMap>
+	
+	<select id="somGrid.bidTab.maxBid" parameterClass="java.lang.String" resultClass="java.lang.Double">
+		select max(incr_spend_limit) from so_routed_providers srp where srp.so_id = #soId# and srp.provider_resp_id = 2 and srp.incr_spend_limit is not null
+	</select>
+	
+	<select id="somGrid.bidTab.minBid" parameterClass="java.lang.String" resultClass="java.lang.Double">
+		select min(incr_spend_limit) from so_routed_providers srp where srp.so_id = #soId# and srp.provider_resp_id = 2 and srp.incr_spend_limit is not null
+	</select>
+	
+	<select id="somGrid.bidTab.bidCount" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		select count(incr_spend_limit) from so_routed_providers srp where srp.so_id = #soId# and srp.provider_resp_id = 2 and srp.incr_spend_limit is not null
+	</select>
+	
+	<select id="somGrid.bidTab.currentBid" parameterClass="soDetails" resultClass="java.lang.Double">
+		select incr_spend_limit from so_routed_providers srp where srp.so_id = #soId# and srp.resource_id=#resourceId#
+	</select>
+	
+	<select id="somGrid.bidTab.bidExpDate" parameterClass="soDetails" resultClass="java.sql.Timestamp">
+		select offer_expiration_date from so_routed_providers srp where srp.so_id = #soId# and srp.resource_id=#resourceId#
+	</select>
+	
+	<select id="somGrid.bidTab.tasks" parameterClass="java.lang.String" resultClass="taskDetailVO">
+		select st.so_task_id as taskId,
+			   str.node_name as skillNodeDs,
+			   lt.descr as serviceTypeDs
+		from so_tasks st
+			join skill_tree str on st.skill_node_id = str.node_id
+			join lu_service_type_template lt on lt.service_type_template_id = st.service_type_template_id
+		where st.so_id=#soId#
+	</select>
+	
+	<select id="somGrid.bidTab.primarySkillCat" parameterClass="java.lang.String" resultClass="java.lang.String">
+		select str.node_name
+		from so_hdr s
+			join skill_tree str on s.primary_skill_category_id = str.node_id
+		where s.so_id=#soId#
+	</select>
+
+	<resultMap id="somGridProviderMapBidTab" class="soDetails" extends="somGridProviderMap" >
+		<result property="bidRangeMax" column="soId" select="somGrid.bidTab.maxBid" />
+		<result property="bidRangeMin" column="soId" select="somGrid.bidTab.minBid" />
+		<!--  
+		<result property="bidEarliestStartDate" column="soId" select="somGrid.bidTab.earliestStartDate" />
+		<result property="bidLatestEndDate" 	column="soId" select="somGrid.bidTab.latestEndDate" />
+		-->		
+		<result property="bidCount" column="soId" select="somGrid.bidTab.bidCount" />
+		<result property="currentBid" column="{soId=soId, resourceId=resourceId}" select="somGrid.bidTab.currentBid" />
+		<result property="bidExpirationDate" column="{soId=soId, resourceId=resourceId}" select="somGrid.bidTab.bidExpDate" />
+		<result property="primarySkillCategory" column="soId" select="somGrid.bidTab.primarySkillCat" />
+	</resultMap>
+
+	<select id="somGrid.bidTab.earliestStartDate" parameterClass="java.lang.String" resultClass="java.sql.Timestamp">
+		select min(service_date1) from so_routed_providers srp where srp.so_id = #soId# and srp.provider_resp_date is not null
+	</select>
+	
+	<select id="somGrid.bidTab.latestEndDate" parameterClass="java.lang.String" resultClass="java.sql.Timestamp">
+		select max(service_date2) from so_routed_providers srp where srp.so_id = #soId# and srp.provider_resp_date is not null
+	</select>
+
+	<resultMap id="somGridProviderMapBulletinBoardTab" class="soDetails" extends="somGridProviderMapBidTab" >
+		<result property="availableProviders" column="{soId=soId, vendorId=vendorId}" select="somGrid.BulletinBoardTab.availableProviders" />
+	</resultMap>
+
+	<select id="somGrid.BulletinBoardTab.availableProviders" resultClass="providerResultVO">
+		select distinct
+			vres.resource_id	as resourceId,
+			con.first_name		as providerFirstName,
+			con.last_name		as providerLastName
+		from 
+			vendor_resource vres 
+				join vendor_resource_service_area vrsa on vrsa.resource_id = vres.resource_id
+				join contact con on con.contact_id = vres.contact_id,
+			so_location_gis gis
+		where vres.vendor_id = #vendorId#
+			and gis.so_id = #soId# and gis.so_locn_type_id = 10
+			and intersects(vrsa.service_area, gis.location)
+			and fn_great_circle_distance(vrsa.latitude, gis.latitude, vrsa.longitude, gis.longitude) &lt;= vrsa.radius_miles
+	</select>
+	
+	<select id="somGrid.queryAcceptedSOForProvider"
+		parameterClass="serviceOrderMonitor" resultMap="somGridAcceptedProviderMap">
+	SELECT DISTINCT  
+		s.so_id 					as soId,
+		sg.so_group_id				as parentGroupId,
+		sg.group_title				as parentGroupTitle,
+		sg.created_date				as groupCreatedDate,
+		s.routed_date               as routedDate,
+		if (sgp.final_group_spend_limit_labor is null,sgp.original_group_spend_limit_labor,sgp.final_group_spend_limit_labor) as groupSpendLimitLabor,
+		if (sgp.final_group_spend_limit_labor is null,sgp.original_group_spend_limit_parts,sgp.final_group_spend_limit_parts) as groupSpendLimitParts,
+		if (sgp.final_group_spend_limit_labor is null,sgp.original_group_spend_limit_labor + sgp.original_group_spend_limit_parts,sgp.final_group_spend_limit_labor + sgp.final_group_spend_limit_parts) as groupSpendLimit,
+		if (sg.so_group_id is null,s.so_id,sg.so_group_id) as sortSOandGroupID,
+		s.buyer_id 					as buyerID,
+		b.business_name 		    as buyerCompanyName,
+		user.role_id				as buyerRoleId,
+		s.accepted_resource_id  	as acceptedResourceId,
+		s.sow_title 				as soTitle,
+		s.sow_descr 				as soTitleDesc,
+		s.service_date_type_id        as serviceDateTypeId,
+		s.service_date1 			as appointStartDate,
+		s.service_date2 			as appointEndDate,
+		s.service_time_start		as serviceTimeStart,
+		s.service_time_end			as serviceTimeEnd,
+		s.created_date 				as createdDate,
+		s.spend_limit_labor 		as spendLimit,
+		s.spend_limit_parts			as spendLimitParts,
+		s.final_price_parts 		as finalPartsPrice,
+		s.final_price_labor 		as finalLaborPrice,
+		s.wf_state_id 				as soStatus,
+		s.service_locn_time_zone	as serviceLocationTimezone,
+		wf_alias.descr 				as soStatusString,
+		s.so_substatus_id 			as soSubStatus,
+		lu_wf_substatus.descr 		as soSubStatusString,
+		loc.street_1 				as street1,
+		loc.street_2 				as street2,
+		loc.city 					as city,
+		loc.state_cd 				as stateCd,
+		loc.zip 					as zip,
+		loc.zip4 					as zip4,
+		loc.so_locn_class_id		as locnClassId,
+		geo.latitude				as soLat,
+		geo.longitude				as soLong,
+		loc.country 				as country,
+		wf_alias.sort_order         as sortOrder,
+		scp.phone_no				as endCustomerPrimaryPhoneNumber,
+		cont.first_name 			as endCustomerFirstName,
+		cont.last_name 				as endCustomerLastName,
+		IF(ext.sealed_bid_ind IS NULL,0,ext.sealed_bid_ind)AS sealedBidInd,
+		IF(ext.non_funded_ind IS NULL,0,ext.non_funded_ind)AS nonFundedInd,
+			vcontact.first_name         as providerFirstName,
+			vcontact.last_name          as providerLastName,
+			vresource.resource_id       as resourceId,
+			0 						as routedResourceId,
+			0						as providerResponseId,
+			''						as routedResourceFirstName,
+			''						as routedResourceLastName,
+			llocation.gis_latitude		as vendorResLat,
+			llocation.gis_longitude		as vendorResLong,
+			TRUNCATE(3956.5450000 * 2 * ATAN2(SQRT(SIN(RADIANS(geo.latitude -  llocation.gis_latitude) /2) * SIN(RADIANS(geo.latitude - llocation.gis_latitude) /2) + COS(RADIANS(geo.latitude)) * COS(RADIANS(llocation.gis_latitude)) * SIN((RADIANS(geo.longitude - llocation.gis_longitude)) /2) * SIN((RADIANS(geo.longitude - llocation.gis_longitude)) /2)), SQRT(1 - SIN(RADIANS(geo.latitude - llocation.gis_latitude) /2) * SIN(RADIANS(geo.latitude - llocation.gis_latitude) /2) + COS(RADIANS(llocation.gis_latitude)) * COS(RADIANS(geo.latitude)) * SIN((RADIANS(geo.longitude - llocation.gis_longitude)) /2) * SIN((RADIANS(geo.longitude - llocation.gis_longitude)) /2))),2) as distanceInMiles,
+			llocation.street_1			as resStreet1,
+			llocation.street_2			as resStreet2,
+			llocation.city 				as resCity,
+			llocation.state_cd 			as resStateCd,
+			llocation.zip 				as resZip,
+			#vendorId#				as vendorId,
+			s.assignment_type       as assignmentType,
+			(select seh.total_price from so_estimation_history seh,so_estimation se 
+			 where seh.so_id = se.so_id and seh.so_id = s.so_id
+             and seh.status='ACCEPTED' and (se.vendor_id=#vendorId# OR se.resource_id=#serviceProName#) 
+             order by seh.estimation_history_id desc  limit 1 ) as totalEstimationPrice 
+		FROM 
+			so_hdr s
+			left outer join so_group sg on s.so_group_id = sg.so_group_id
+			left outer join so_group_price sgp on s.so_group_id = sgp.so_group_id
+			join buyer b on s.buyer_id = b.buyer_id
+			join user_profile user on b.user_name = user.user_name
+		   	join so_contact_locn cont_loc on s.so_id = cont_loc.so_id
+		   	join lu_so_contact_locn_type lu_cont_loc on lu_cont_loc.so_contact_locn_type_id = cont_loc.so_contact_locn_type_id
+		    join so_location loc on loc.so_id = cont_loc.so_id and loc.so_locn_id = cont_loc.so_locn_id and s.so_id = loc.so_id
+		    join zip_geocode geo on loc.zip = geo.zip
+		    join so_contact cont on cont.so_id = cont_loc.so_id and cont.so_contact_id = cont_loc.so_contact_id and s.so_id = cont.so_id
+		    join lu_wf_states_alias wf_alias on wf_alias.wf_state_id = s.wf_state_id and wf_alias.user_type = 'Provider'
+		   	left outer join lu_so_substatus lu_wf_substatus on lu_wf_substatus.so_substatus_id = s.so_substatus_id
+		   	left outer join so_contact_phones scp on scp.so_contact_id = cont.so_contact_id and cont.so_id = scp.so_id and	scp.phone_type_id=1
+		   	LEFT OUTER JOIN so_workflow_controls ext ON   ext.so_id = s.so_id
+		   	LEFT OUTER JOIN vendor_resource vresource on vresource.resource_id = s.accepted_resource_id		   		
+		    LEFT OUTER JOIN location llocation on vresource.locn_id = llocation.locn_id 
+		   	LEFT OUTER JOIN lu_zip_market zmar on llocation.zip = zmar.zip
+		   	LEFT OUTER JOIN lu_market market on zmar.market_id = market.market_id
+			LEFT OUTER JOIN contact vcontact on vresource.contact_id = vcontact.contact_id
+		WHERE lu_cont_loc.so_contact_locn_type_id = 10 
+		<dynamic>
+			<isNotNull property="serviceProName" prepend="AND">
+				<isEqual property="bulletinBoardTab" compareValue="false">
+			  		vresource.resource_id =  #serviceProName#
+			  	</isEqual>
+				
+			</isNotNull>
+			<isNotNull property="buyerRoleId" prepend="AND"> 
+			  		user.role_id =  #buyerRoleId#
+			</isNotNull>
+			<isNotNull property="marketName" prepend="AND"> 
+			  		market.market_id= #marketName#
+			</isNotNull>
+		    <isNotNull property="groupId" prepend="AND"> 
+		    	s.so_group_id = #groupId#
+		    </isNotNull>		    
+			<isNotNull property="soSubStatus" prepend="AND">
+				 <isEqual property="soSubStatus" compareValue="52">
+			 		s.so_substatus_id is null
+				</isEqual>
+				<isNotEqual property="soSubStatus" compareValue="52">			
+				 	s.so_substatus_id= #soSubStatus#
+				</isNotEqual>
+			</isNotNull>			   
+			<isNotNull property="workFlowStatusIds" prepend=" AND s.wf_state_id in " >
+				<iterate property="workFlowStatusIds" open="(" close=")"  conjunction=",">
+					 #workFlowStatusIds[]#
+				</iterate>
+			</isNotNull>			   
+			<isNull property="serviceProName">
+				<isNotNull property="vendorId" prepend="AND">
+						s.accepted_vendor_id = #vendorId#
+				</isNotNull>
+			</isNull>
+			<isNotNull property="searchWords" prepend="AND">
+				(
+					s.sow_title like concat('%', #searchWords#, '%') 
+					or 
+					s.sow_descr like concat('%', #searchWords#, '%')
+				)
+			</isNotNull>
+			
+				 <isEqual property="serviceDateSort" compareValue="true">
+					ORDER BY CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%l:%i %p') HOUR_SECOND), 'GMT', s.service_locn_time_zone)
+					<isNotNull property="sortOrder">
+                    	$sortOrder$
+                    </isNotNull>
+				 </isEqual>
+				 <isNotEqual property="serviceDateSort" compareValue="true">
+                 	<isNotNull property="sortColumnName">
+                      ORDER BY $sortColumnName$
+                      <isNotNull property="sortOrder">
+                           $sortOrder$
+                      </isNotNull>
+                  	</isNotNull>
+				 </isNotEqual>
+		    <isNull property="groupId"> 
+				<isNotNull property="startIndex" prepend="LIMIT ">
+					#startIndex#
+				</isNotNull>
+				<isNotNull property="numberOfRecords" prepend=",  ">
+					#numberOfRecords#
+				</isNotNull>
+			</isNull>
+		</dynamic>
+	</select>
+	
+	
+	
+	<sql id="somGrid.querySOByStatusesForProviderSelect">
+		SELECT DISTINCT  
+		s.so_id 					as soId,
+		sg.so_group_id				as parentGroupId,
+		sg.group_title				as parentGroupTitle,
+		sg.created_date				as groupCreatedDate,
+		s.routed_date               as routedDate,
+		if (sgp.final_group_spend_limit_labor is null,sgp.original_group_spend_limit_labor,sgp.final_group_spend_limit_labor) as groupSpendLimitLabor,
+		if (sgp.final_group_spend_limit_labor is null,sgp.original_group_spend_limit_parts,sgp.final_group_spend_limit_parts) as groupSpendLimitParts,
+		if (sgp.final_group_spend_limit_labor is null,sgp.original_group_spend_limit_labor + sgp.original_group_spend_limit_parts,sgp.final_group_spend_limit_labor + sgp.final_group_spend_limit_parts) as groupSpendLimit,
+		if (sg.so_group_id is null,s.so_id,sg.so_group_id) as sortSOandGroupID,
+		s.buyer_id 					as buyerID,
+		b.business_name 		    as buyerCompanyName,
+		user.role_id				as buyerRoleId,
+		s.accepted_resource_id  	as acceptedResourceId,
+		s.sow_title 				as soTitle,
+		s.sow_descr 				as soTitleDesc,
+		s.service_date_type_id        as serviceDateTypeId,
+		s.service_date1 			as appointStartDate,
+		s.service_date2 			as appointEndDate,
+		s.service_time_start		as serviceTimeStart,
+		s.service_time_end			as serviceTimeEnd,
+		s.created_date 				as createdDate,
+		s.spend_limit_labor 		as spendLimit,
+		s.spend_limit_parts			as spendLimitParts,
+		s.final_price_parts 		as finalPartsPrice,
+		s.final_price_labor 		as finalLaborPrice,
+		s.wf_state_id 				as soStatus,
+		s.service_locn_time_zone	as serviceLocationTimezone,
+		wf_alias.descr 				as soStatusString,
+		s.so_substatus_id 			as soSubStatus,
+		lu_wf_substatus.descr 		as soSubStatusString,
+		loc.street_1 				as street1,
+		loc.street_2 				as street2,
+		loc.city 					as city,
+		loc.state_cd 				as stateCd,
+		loc.zip 					as zip,
+		loc.zip4 					as zip4,
+		loc.so_locn_class_id		as locnClassId,
+		geo.latitude				as soLat,
+		geo.longitude				as soLong,
+		loc.country 				as country,
+		wf_alias.sort_order         as sortOrder,
+		scp.phone_no				as endCustomerPrimaryPhoneNumber,
+		cont.first_name 			as endCustomerFirstName,
+		cont.last_name 				as endCustomerLastName,
+		IF(ext.sealed_bid_ind IS NULL,0,ext.sealed_bid_ind)AS sealedBidInd,
+		IF(ext.non_funded_ind IS NULL,0,ext.non_funded_ind)AS nonFundedInd
+		<isEqual property="bulletinBoardTab" compareValue="true">
+			,
+			#vendorId#					as vendorId,
+			''							as providerFirstName,
+			''							as providerLastName,
+			0							as resourceId
+		</isEqual>
+		<isEqual property="bulletinBoardTab" compareValue="false">
+		<isEqual property="routedTab" compareValue="false">
+			,
+			vcontact.first_name         as providerFirstName,
+			vcontact.last_name          as providerLastName,
+			vresource.resource_id       as resourceId
+		</isEqual>
+		</isEqual>
+		<isEqual property="bidTab" compareValue="true">
+			,
+			srp.resource_id 			as routedResourceId,
+			srp.provider_resp_id		as providerResponseId,
+			vcontact.first_name			as routedResourceFirstName,
+			vcontact.last_name				as routedResourceLastName,
+			llocation.gis_latitude		    as vendorResLat,
+			llocation.gis_longitude		    as vendorResLong,
+			TRUNCATE(3956.5450000 * 2 * ATAN2(SQRT(SIN(RADIANS(geo.latitude -  llocation.gis_latitude) /2) * SIN(RADIANS(geo.latitude - llocation.gis_latitude) /2) + COS(RADIANS(geo.latitude)) * COS(RADIANS(llocation.gis_latitude)) * SIN((RADIANS(geo.longitude - llocation.gis_longitude)) /2) * SIN((RADIANS(geo.longitude - llocation.gis_longitude)) /2)), SQRT(1 - SIN(RADIANS(geo.latitude - llocation.gis_latitude) /2) * SIN(RADIANS(geo.latitude - llocation.gis_latitude) /2) + COS(RADIANS(llocation.gis_latitude)) * COS(RADIANS(geo.latitude)) * SIN((RADIANS(geo.longitude - llocation.gis_longitude)) /2) * SIN((RADIANS(geo.longitude - llocation.gis_longitude)) /2))),2) as distanceInMiles,
+			llocation.street_1				as resStreet1,
+			llocation.street_2				as resStreet2,
+			llocation.city 					as resCity,
+			llocation.state_cd 				as resStateCd,
+			llocation.zip 					as resZip
+		</isEqual> 
+		<isEqual property="bulletinBoardTab" compareValue="true">
+			,
+			0 						as routedResourceId,
+			0						as providerResponseId,
+			''						as routedResourceFirstName,
+			''						as routedResourceLastName,
+			0						as vendorResLat,
+			0						as vendorResLong,
+			0						as distanceInMiles,
+			''						as resStreet1,
+			''						as resStreet2,
+			'' 						as resCity,
+			'' 						as resStateCd,
+			'' 						as resZip
+		</isEqual> 
+		<isEqual property="routedTab" compareValue="true">
+			,
+			0 						as routedResourceId,
+			IF(srp.provider_resp_id	IS NULL,0,srp.provider_resp_id)						as providerResponseId,
+			''						as routedResourceFirstName,
+			''						as routedResourceLastName,
+			0						as vendorResLat,
+			0						as vendorResLong,
+			0						as distanceInMiles,
+			''						as resStreet1,
+			''						as resStreet2,
+			'' 						as resCity,
+			'' 						as resStateCd,
+			'' 						as resZip,
+			''				        as providerFirstName,
+			''          			as providerLastName,
+			#resourceId#           	as resourceId
+		</isEqual> 
+		<isEqual property="routedTab" compareValue="false">
+		<isEqual property="bidTab" compareValue="false">
+		<isEqual property="bulletinBoardTab" compareValue="false">
+			,
+			0 						as routedResourceId,
+			0						as providerResponseId,
+			''						as routedResourceFirstName,
+			''						as routedResourceLastName,
+			llocation.gis_latitude		as vendorResLat,
+			llocation.gis_longitude		as vendorResLong,
+			TRUNCATE(3956.5450000 * 2 * ATAN2(SQRT(SIN(RADIANS(geo.latitude -  llocation.gis_latitude) /2) * SIN(RADIANS(geo.latitude - llocation.gis_latitude) /2) + COS(RADIANS(geo.latitude)) * COS(RADIANS(llocation.gis_latitude)) * SIN((RADIANS(geo.longitude - llocation.gis_longitude)) /2) * SIN((RADIANS(geo.longitude - llocation.gis_longitude)) /2)), SQRT(1 - SIN(RADIANS(geo.latitude - llocation.gis_latitude) /2) * SIN(RADIANS(geo.latitude - llocation.gis_latitude) /2) + COS(RADIANS(llocation.gis_latitude)) * COS(RADIANS(geo.latitude)) * SIN((RADIANS(geo.longitude - llocation.gis_longitude)) /2) * SIN((RADIANS(geo.longitude - llocation.gis_longitude)) /2))),2) as distanceInMiles,
+			llocation.street_1			as resStreet1,
+			llocation.street_2			as resStreet2,
+			llocation.city 				as resCity,
+			llocation.state_cd 			as resStateCd,
+			llocation.zip 				as resZip
+		</isEqual>
+		</isEqual>
+		</isEqual>
+			, #vendorId#				as vendorId
+		FROM 
+			so_hdr s
+			left outer join so_group sg on s.so_group_id = sg.so_group_id
+			left outer join so_group_price sgp on s.so_group_id = sgp.so_group_id
+			join buyer b on s.buyer_id = b.buyer_id
+			join user_profile user on b.user_name = user.user_name
+		   	join so_contact_locn cont_loc on s.so_id = cont_loc.so_id
+		   	join lu_so_contact_locn_type lu_cont_loc on lu_cont_loc.so_contact_locn_type_id = cont_loc.so_contact_locn_type_id
+		    join so_location loc on loc.so_id = cont_loc.so_id and loc.so_locn_id = cont_loc.so_locn_id and s.so_id = loc.so_id
+		    join zip_geocode geo on loc.zip = geo.zip
+		    join so_contact cont on cont.so_id = cont_loc.so_id and cont.so_contact_id = cont_loc.so_contact_id and s.so_id = cont.so_id
+		    join lu_wf_states_alias wf_alias on wf_alias.wf_state_id = s.wf_state_id and wf_alias.user_type = 'Provider'
+		   	left outer join lu_so_substatus lu_wf_substatus on lu_wf_substatus.so_substatus_id = s.so_substatus_id
+		   	left outer join so_contact_phones scp on scp.so_contact_id = cont.so_contact_id and cont.so_id = scp.so_id and	scp.phone_type_id=1
+		   	LEFT OUTER JOIN so_workflow_controls ext ON   ext.so_id = s.so_id
+		   	<isEqual property="routedTab" compareValue="false">
+		   	<isEqual property="bidTab" compareValue="false">
+			<isEqual property="bulletinBoardTab" compareValue="false">
+		   		join vendor_resource vresource on vresource.resource_id = s.accepted_resource_id		   		
+		   	</isEqual>
+		   	</isEqual>
+		   	</isEqual>
+		    <isEqual property="routedTab" compareValue="true">
+		      join so_routed_providers srp on s.so_id = srp.so_id
+		      join vendor_resource vresource on vresource.resource_id = srp.resource_id		      
+			</isEqual>
+			<isEqual property="bidTab" compareValue="true">
+		      join so_routed_providers srp on s.so_id = srp.so_id
+		      join vendor_resource vresource on vresource.resource_id = srp.resource_id		      
+			</isEqual>
+			<isEqual property="bulletinBoardTab" compareValue="false">
+		      join location llocation on vresource.locn_id = llocation.locn_id 
+		   	  join lu_zip_market zmar on llocation.zip = zmar.zip
+		   	  join lu_market market on zmar.market_id = market.market_id
+			  join contact vcontact on vresource.contact_id = vcontact.contact_id
+			</isEqual>
+		WHERE lu_cont_loc.so_contact_locn_type_id = 10 
+		<isEqual property="routedTab" compareValue="true">
+		 AND (srp.provider_resp_id != 3 OR srp.provider_resp_id is NULL)
+		 AND (srp.provider_resp_id != 5 OR srp.provider_resp_id is NULL)
+		 AND (srp.provider_resp_id != 7 OR srp.provider_resp_id is NULL)
+		 AND (srp.price_model='NAME_PRICE' OR srp.price_model is NULL)
+         AND (s.so_substatus_id != 64 OR s.so_substatus_id is NULL)
+         <isEqual property="manageSOFlag" compareValue="true">
+			AND	srp.resource_id = #resourceId#
+		</isEqual>
+        </isEqual> 
+		<isEqual property="bidTab" compareValue="true">
+		 AND (srp.provider_resp_id != 3 OR srp.provider_resp_id is NULL)
+		 AND (srp.provider_resp_id != 5 OR srp.provider_resp_id is NULL)
+		 AND (srp.provider_resp_id != 7 OR srp.provider_resp_id is NULL)
+		 AND srp.price_model in ('ZERO_PRICE_BID', 'BULLETIN')
+		</isEqual>
+		<isEqual property="bulletinBoardTab" compareValue="true">
+		 AND s.price_model = 'BULLETIN'
+		 AND (select count(*) = 0 from so_routed_providers where so_id = s.so_id and vendor_id = #vendorId#)
+		</isEqual>
+		<dynamic>
+			<isNotNull property="serviceProName" prepend="AND">
+				<isEqual property="bulletinBoardTab" compareValue="false">
+			  		vresource.resource_id =  #serviceProName#
+			  	</isEqual>
+				<isEqual property="bulletinBoardTab" compareValue="true">
+					(
+						select count(*) > 0
+						from vendor_resource_service_area vrsa,
+							so_location_gis gis
+						where vrsa.resource_id = #serviceProName#
+							and gis.so_id = s.so_id and gis.so_locn_type_id = 10
+							and intersects(vrsa.service_area, gis.location)
+							and fn_great_circle_distance(vrsa.latitude, gis.latitude, vrsa.longitude, gis.longitude) &lt;= vrsa.radius_miles
+					)
+			  	</isEqual>
+			</isNotNull>
+			<isNotNull property="buyerRoleId" prepend="AND"> 
+			  		user.role_id =  #buyerRoleId#
+			</isNotNull>
+			<isNotNull property="marketName" prepend="AND"> 
+			  		market.market_id= #marketName#
+			</isNotNull>
+		    <isNotNull property="groupId" prepend="AND"> 
+		    	s.so_group_id = #groupId#
+		    </isNotNull>		    
+			<isNotNull property="soSubStatus" prepend="AND">
+				 <isEqual property="soSubStatus" compareValue="52">
+			 		s.so_substatus_id is null
+				</isEqual>
+				<isNotEqual property="soSubStatus" compareValue="52">			
+				 	s.so_substatus_id= #soSubStatus#
+				</isNotEqual>
+			</isNotNull>			   
+			<isNotNull property="workFlowStatusIds" prepend=" AND s.wf_state_id in " >
+				<iterate property="workFlowStatusIds" open="(" close=")"  conjunction=",">
+					 #workFlowStatusIds[]#
+				</iterate>
+			</isNotNull>			   
+			<isNull property="serviceProName">
+				<isNotNull property="vendorId" prepend="AND">
+					<isEqual property="routedTab" compareValue="true">
+						srp.vendor_id = #vendorId#
+					</isEqual>
+					<isEqual property="bidTab" compareValue="true">
+						srp.vendor_id = #vendorId#
+					</isEqual>
+					<isEqual property="bulletinBoardTab" compareValue="true">
+						(
+							select count(*) > 0
+							from vendor_resource_service_area vrsa,
+								so_location_gis gis
+							where vrsa.vendor_id = #vendorId#
+								and gis.so_id = s.so_id and gis.so_locn_type_id = 10
+								and intersects(vrsa.service_area, gis.location)
+								and fn_great_circle_distance(vrsa.latitude, gis.latitude, vrsa.longitude, gis.longitude) &lt;= vrsa.radius_miles
+						)
+					</isEqual>
+					<isEqual property="routedTab" compareValue="false">
+					<isEqual property="bidTab" compareValue="false">
+					<isEqual property="bulletinBoardTab" compareValue="false">
+						s.accepted_vendor_id = #vendorId#
+					</isEqual>
+					</isEqual>
+					</isEqual>
+				</isNotNull>
+			</isNull>
+			<isNotNull property="searchWords" prepend="AND">
+				(
+					s.sow_title like concat('%', #searchWords#, '%') 
+					or 
+					s.sow_descr like concat('%', #searchWords#, '%')
+				)
+			</isNotNull>
+			<isEqual property="routedTab" compareValue="true">
+				GROUP BY s.so_id
+			</isEqual>
+				 <isEqual property="serviceDateSort" compareValue="true">
+					ORDER BY CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%l:%i %p') HOUR_SECOND), 'GMT', s.service_locn_time_zone)
+					<isNotNull property="sortOrder">
+                    	$sortOrder$
+                    </isNotNull>
+				 </isEqual>
+				 <isNotEqual property="serviceDateSort" compareValue="true">
+                 	<isNotNull property="sortColumnName">
+                      ORDER BY $sortColumnName$
+                      <isNotNull property="sortOrder">
+                           $sortOrder$
+                      </isNotNull>
+                  	</isNotNull>
+				 </isNotEqual>
+		    <isNull property="groupId"> 
+				<isNotNull property="startIndex" prepend="LIMIT ">
+					#startIndex#
+				</isNotNull>
+				<isNotNull property="numberOfRecords" prepend=",  ">
+					#numberOfRecords#
+				</isNotNull>
+			</isNull>
+		</dynamic>
+	</sql>
+	
+   <!-- For Provider SOM -->
+	<select id="somGrid.querySOByStatusesForProvider"
+		parameterClass="serviceOrderMonitor" resultMap="somGridProviderMap">
+		<include refid="somGrid.querySOByStatusesForProviderSelect" />
+	</select> 
+	
+	<select id="somGrid.querySOByStatusesForProviderBidTab"
+		parameterClass="serviceOrderMonitor" resultMap="somGridProviderMapBidTab">
+		<include refid="somGrid.querySOByStatusesForProviderSelect" />
+	</select>  
+	
+	<!-- bulletin board -->
+	<select id="somGrid.querySOByStatusesForProviderBulletinBoardTab"
+		parameterClass="serviceOrderMonitor" resultMap="somGridProviderMapBulletinBoardTab">
+		<include refid="somGrid.querySOByStatusesForProviderSelect" />
+	</select>
+
+   	<select id="SOWfStatesBuyerCounts.query" parameterClass="ajaxCache" resultClass="wfStatesCounts">
+	SELECT 
+		UPPER(ws.wf_state) AS tabType,
+		so_count AS soCount
+	FROM
+		buyer_tab_summary bts
+	JOIN 
+		wf_states ws ON ws.wf_state_id = bts.wf_state_id
+        WHERE       
+		buyer_id=#companyId#
+	</select>
+	
+	<select id="SOWfStatesSimpleBuyerCounts.query" parameterClass="ajaxCache" resultClass="wfStatesCounts">
+        SELECT      UPPER(wf.wf_state) as tabType, 
+                    count(*) as soCount
+        FROM so_hdr s
+            join wf_states wf on wf.wf_state_id = s.wf_state_id
+        WHERE       
+            s.buyer_id = #companyId#
+        GROUP BY wf.wf_state_id
+        HAVING count(*) > 0
+	</select>
+	
+	<select id="SOWfStatesProviderCounts.query" parameterClass="ajaxCache" resultClass="wfStatesCounts">
+        SELECT      UPPER(wf.wf_state) as tabType, 
+                    count(*) as soCount
+        FROM so_hdr s
+            join wf_states wf on wf.wf_state_id = s.wf_state_id
+        WHERE       
+            s.accepted_vendor_id = #companyId#
+        GROUP BY wf.wf_state_id
+	</select>
+	
+	<!-- R12_1 Jira SL-20362 -->
+	<select id="DashboardPendingRescheduleCount.query" parameterClass="ajaxCache" resultClass="java.lang.Integer">
+        
+	SELECT COUNT(*) FROM so_hdr WHERE resched_service_date1 IS NOT NULL
+	AND wf_state_id IN (150,155,170)
+	 			 <isNotNull property="roleType">
+	 			 <isEqual property="roleType" compareValue="BUYER">
+						AND buyer_id= #companyId#
+				 </isEqual>
+                 <isEqual property="roleType" compareValue="PROVIDER">
+						AND accepted_vendor_id= #companyId#
+				 </isEqual>
+				 </isNotNull>   
+		
+ 	
+	</select>
+	
+	
+	
+	<select id="providerReceivedCount.query" parameterClass="ajaxCache" resultClass="java.lang.Integer">
+		SELECT count(distinct so.so_id)
+		FROM so_hdr so
+		JOIN so_routed_providers srp ON so.so_id = srp.so_id
+		AND srp.vendor_id = #companyId#
+		AND (srp.provider_resp_id not in (3,5,7) OR srp.provider_resp_id is NULL)
+		<isEqual property="manageSoFlag" compareValue="true">
+		AND srp.resource_id = #vendBuyerResId#
+		</isEqual>
+		AND so.wf_state_id = 110
+		AND so.price_model='NAME_PRICE'
+        AND (so.so_substatus_id != 64 OR so.so_substatus_id is NULL)
+	</select>
+	
+	<select id="providerBidCount.query" parameterClass="ajaxCache" resultClass="java.lang.Integer">
+		SELECT count(*)
+		FROM so_hdr so
+		JOIN so_routed_providers srp ON srp.vendor_id = #companyId# 
+		AND so.so_id = srp.so_id
+		AND (srp.provider_resp_id not in (3,5,7) OR srp.provider_resp_id is NULL)
+		AND so.wf_state_id = 110
+		AND so.price_model in ('ZERO_PRICE_BID', 'BULLETIN')
+	</select>
+
+	<!-- bulletin board -->
+	<select id="providerBulletinBoardCount.query" parameterClass="ajaxCache" resultClass="java.lang.Integer">
+		select count(distinct so.so_id)
+		from 
+			vendor_resource_service_area vrsa,
+			so_location_gis gis
+				join so_hdr so on so.so_id = gis.so_id
+		where vrsa.vendor_id = #companyId#
+			and gis.so_locn_type_id = 10
+			and so.price_model = 'BULLETIN'
+			and not exists (select 1 from so_routed_providers where vendor_id = #companyId# and so_id = so.so_id)
+			and so.wf_state_id = 110
+			and intersects(vrsa.service_area, gis.location)
+			and fn_great_circle_distance(vrsa.latitude, gis.latitude, vrsa.longitude, gis.longitude) &lt;= vrsa.radius_miles
+	</select>
+	
+	<!-- SL-21465 -->
+	<!-- Estimation Request -->
+	
+	<select id="providerEstimationRequestCount.query" parameterClass="ajaxCache" resultClass="java.lang.Integer">
+		select count(distinct(so.so_id)) from so_hdr so
+			inner join so_routed_providers providers on 
+            providers.so_id=so.so_id and providers.vendor_id=#companyId# and
+            so.wf_state_id=110 AND (providers.provider_resp_id NOT IN(3,5,7)
+            OR providers.provider_resp_id IS NULL)
+			inner join so_custom_reference socust  on so.so_id=socust.so_id and buyer_ref_value='ESTIMATION'
+			inner join buyer_reference_type reftype on reftype.buyer_ref_type_id=socust.buyer_ref_type_id and reftype.ref_type='Order_Type';
+	</select>
+	<!-- <select id="providerEstimationRequestCount.query" parameterClass="ajaxCache" resultClass="java.lang.Integer">
+		select count(distinct(so.so_id))
+		from 
+			so_hdr so
+			inner join so_routed_providers providers on providers.so_id=so.so_id and providers.vendor_id=#companyId# and so.wf_state_id=110
+			inner join so_custom_reference socust  on so.so_id=socust.so_id and buyer_ref_value='ESTIMATION'
+			inner join buyer_reference_type reftype on reftype.buyer_ref_type_id=socust.buyer_ref_type_id and reftype.ref_type='Order_Type'
+			left join so_estimation est on est.so_id=so.so_id
+		where 
+			est.status is null OR (estimation_id in( select max(estimation_id) from so_estimation group by so_id ));
+        
+	</select> -->
+	
+	<!-- <select id="providerEstimationRequestCount.query" parameterClass="ajaxCache" resultClass="java.lang.Integer">
+		select count(distinct(so.so_id))
+		from 
+			so_hdr so
+			inner join so_routed_providers providers on providers.so_id=so.so_id and providers.vendor_id=#companyId# and so.wf_state_id=110
+			inner join so_custom_reference socust  on so.so_id=socust.so_id and buyer_ref_value='ESTIMATION'
+			inner join buyer_reference_type reftype on reftype.buyer_ref_type_id=socust.buyer_ref_type_id and reftype.ref_type='Order_Type'
+			left join so_estimation est on est.so_id=so.so_id
+		where 
+			est.status is null OR (estimation_id in( select max(estimation_id) from so_estimation group by so_id )and est.status in ('DRAFT', 'DECLINED'));
+        
+	</select> -->
+	
+	
+	
+	
+	<!-- USED BY PAGINATION -->
+	<select id="som.queryCountsByStatusForBuyer" parameterClass="soWorkflowStatus" resultClass="soWorkflowStatus">
+			SELECT  
+				COALESCE(SUM(count),0)  AS count
+            FROM 
+                  buyer_pagination_summary s
+            WHERE
+            	  s.buyer_id 
+            <dynamic>
+                  <isNotNull property="soSubstatusId" prepend="AND">
+                         s.so_substatus_id= #soSubstatusId#
+                  </isNotNull>                     
+                  <isNotNull property="workFlowStatusIds" prepend=" AND s.wf_state_id in " >
+                        <iterate property="workFlowStatusIds" open="(" close=")"  conjunction=",">
+                               #workFlowStatusIds[]#
+                        </iterate>
+                  </isNotNull>                     
+                  <isNotNull property="userId" prepend="AND">
+                        s.buyer_id = #userId#
+                  </isNotNull>
+            </dynamic>
+	</select>
+
+	<!-- USED BY PAGINATION -->
+	<select id="som.queryCountsByStatusForProvider" parameterClass="soWorkflowStatus" resultClass="soWorkflowStatus">
+            SELECT  count(distinct s.so_id) as count
+            FROM 
+                  so_hdr s
+              <isEqual property="routedTab" compareValue="false">
+              	<isNotNull property="serviceProName">
+		   			join vendor_resource vresource on vresource.resource_id = s.accepted_resource_id	
+		   		</isNotNull>	
+              	<isNotNull property="marketName">
+		   		join vendor_resource vresource1 on vresource1.resource_id = s.accepted_resource_id		   	
+		   		</isNotNull>		   		   	
+		   	</isEqual>
+		    <isEqual property="routedTab" compareValue="true">
+		      join so_routed_providers srp on s.so_id = srp.so_id
+		      <isNotNull property="resourceId">
+					<isNotEqual property="resourceId" compareValue="true">
+						and srp.resource_id = #resourceId# 
+			        </isNotEqual>
+			  </isNotNull>
+		      <isNotNull property="serviceProName">
+		     		join vendor_resource vresource on vresource.resource_id = srp.resource_id
+		      </isNotNull>
+              	<isNotNull property="marketName">
+		      join vendor_resource vresource1 on vresource1.resource_id = srp.resource_id		     
+		   		</isNotNull>		      		     
+			</isEqual> 
+			<isNotNull property="marketName">
+			 join contact cont2 on cont2.contact_id = vresource1.contact_id
+		     join location llocation on vresource1.locn_id = llocation.locn_id 
+		   	 join lu_zip_market zmar on llocation.zip = zmar.zip
+		   	 join lu_market market on zmar.market_id = market.market_id
+		   	 </isNotNull>		
+            WHERE s.so_id
+            <dynamic>
+            	<isNotNull property="serviceProName" prepend="AND"> 
+			  		vresource.resource_id =  #serviceProName#
+				</isNotNull>
+				<isNotNull property="marketName" prepend="AND"> 
+			  		market.market_id= #marketName#
+				</isNotNull>
+                  <isNotNull property="soSubstatusId" prepend="AND">
+                         s.so_substatus_id= #soSubstatusId#
+                  </isNotNull>                     
+                  <isNotNull property="workFlowStatusIds" prepend=" AND s.wf_state_id in " >
+                        <iterate property="workFlowStatusIds" open="(" close=")"  conjunction=",">
+                               #workFlowStatusIds[]#
+                        </iterate>
+                  </isNotNull>                     
+                  <isNotNull property="userId" prepend="AND">
+                        <isEqual property="routedTab" compareValue="true">
+                              srp.vendor_id = #userId#
+                              AND (srp.provider_resp_id != 3 OR srp.provider_resp_id is NULL)
+                        </isEqual>
+                        <isEqual property="routedTab" compareValue="false">
+                              s.accepted_vendor_id = #userId#
+                        </isEqual>
+                  </isNotNull>
+            </dynamic>
+    </select>
+
+
+	
+	<!--  Used by Cache for Detail Count-->
+	<select id="soSearch.queryBuyerPostedCache" parameterClass="ajaxCache" resultClass="soDetails">
+		SELECT  s.so_id 	as soId,
+			(select count(*)
+			from so_hdr sh, so_routed_providers srp
+			where sh.so_id = srp.so_id
+			and sh.so_id = s.so_id) 	as providerCounts,
+			(select count(*)
+			from so_hdr sh, so_routed_providers srp
+			where sh.so_id = srp.so_id
+			and sh.so_id = s.so_id
+			and provider_resp_id = 2) 	as condCounts,
+			(select count(*)
+			from so_hdr sh, so_routed_providers srp
+			where sh.so_id = srp.so_id
+			and sh.so_id = s.so_id
+			and provider_resp_id in (3,5,7)) 	as rejectedCounts,
+			s.spend_limit_labor			as spendLimit,
+			s.spend_limit_parts			as spendLimitParts
+		FROM 
+			so_hdr s
+		   	join so_contact_locn cont_loc on s.so_id = cont_loc.so_id
+		    join lu_so_contact_locn_type lu_cont_loc on lu_cont_loc.so_contact_locn_type_id = cont_loc.so_contact_locn_type_id
+		    join so_location loc on loc.so_locn_id = cont_loc.so_locn_id and s.so_id = loc.so_id
+		    join so_contact cont on cont.so_contact_id = cont_loc.so_contact_id and s.so_id = cont.so_id
+		    join lu_wf_states_alias wf_alias on wf_alias.wf_state_id = s.wf_state_id and wf_alias.user_type = 'Buyer'
+		WHERE lu_cont_loc.so_contact_locn_type_id = 10
+		AND s.wf_state_id = 110
+		AND s.buyer_id = #companyId#
+	</select>
+
+	<select id="providerReceivedCache.query" parameterClass="ajaxCache" resultClass="soDetails">
+		SELECT  s.so_id 			as soId,
+				s.spend_limit_labor as spendLimit,
+				s.spend_limit_parts	as spendLimitParts
+		from 	so_hdr 					s,
+				so_routed_providers srp
+		where 	s.so_id = srp.so_id	
+			and 	s.wf_state_id = 110
+			and 	srp.vendor_id = #companyId#
+	</select>
+	<!-- SL-19238  -->
+	<!-- <select id="soSearch.queryConditionalOfferForExipration" parameterClass="java.sql.Timestamp" resultClass="soSearchVO">
+		SELECT	rp.so_id as soId,
+				rp.resource_id as acceptedResourceId,
+				rp.provider_resp_id as providerResponseId,
+				so.so_group_id as groupId
+		FROM	so_routed_providers rp, so_hdr so
+		WHERE	rp.so_id = so.so_id AND so.wf_state_id = 110
+		  AND	rp.provider_resp_id = 2 
+		  AND	rp.offer_expiration_date <![CDATA[<=]]> #currentDateTime#
+	</select> -->
+	
+	<select id="soSearch.queryConditionalOfferForExipration" parameterClass="java.sql.Timestamp" resultClass="soSearchVO">
+		SELECT	rp.so_id as soId,
+				rp.resource_id as acceptedResourceId,
+				rp.provider_resp_id as providerResponseId,
+				so.so_group_id as groupId
+		FROM	so_routed_providers rp, so_hdr so
+		WHERE	rp.so_id = so.so_id AND so.wf_state_id <![CDATA[>=]]> 110
+		  AND	rp.provider_resp_id = 2 
+		  AND	rp.offer_expiration_date <![CDATA[<=]]> #currentDateTime#
+	</select>
+
+	<!-- KEEP IT BUT NOT USED -->
+	<select id="soSearch.queryProviderReceivedCache" parameterClass="java.lang.Integer" resultClass="soDetails">
+			select 	so.so_id as soId,
+			so.spend_limit_labor as spendLimit,
+			so.spend_limit_parts	 as spendLimitParts
+			vr.resource_id as routedResourceId
+		from 	vendor_hdr vh,
+			vendor_resource vr,
+			so_routed_providers srp,
+			wf_states wfs,
+			so_hdr so, 
+			lu_wf_states_alias luwfa,
+			lu_so_substatus lusosub,
+			lu_so_contact_locn_type lusocolt
+		
+		where	vh.vendor_id = vr.vendor_id AND 
+			vr.resource_id = srp.resource_id AND 
+			wfs.wf_state_id = vr.wf_state_id AND 
+			so.so_id = srp.so_id AND 
+			so.wf_state_id = luwfa.wf_state_id AND
+			so.so_substatus_id = lusosub.so_substatus_id AND
+			luwfa.user_type like 'Provider' AND
+			lusocolt.so_contact_locn_type_id = 20 AND
+			luwfa.wf_state_id = 110 AND
+			vr.vendor_id = #vendorId#
+	</select>
+	
+	<select id="soSearch.queryNotScheduledSO" resultClass="soSearchVO">
+		SELECT 
+		s.so_id as soId,
+		so_substatus_id as soSubStatus,
+		s.buyer_id as buyerID,
+		s.service_date1 as appointStartDate,
+		s.service_date2 as appointEndDate,
+		s.wf_state_id as soStatus,
+		s.service_date1 as serviceDate1,
+		s.service_date2 as serviceDate2,
+		s.service_time_start as serviceTimeStart,
+		s.service_time_end as serviceTimeEnd,
+		s.service_locn_time_zone as serviceLocationTimezone,
+		s.created_date as createdDate
+		from
+		vw_so_OMS_not_scheduled_confirmed s
+	</select>
+	<!-- Advance search Query -->
+	<select id="soSearch.advanceSearchQuery" parameterClass="soSearchVO" resultClass="soSearchVO" >
+		SELECT s.so_id AS soId, 
+		  s.price_type as priceType,
+    	  s.service_date1  AS appointStartDate, 
+    	  s.spend_limit_labor AS spendLimit, 
+    	  s.created_date AS createdDate, 
+    	  s.so_id AS sortSOandGroupID,
+     	  wf_alias.sort_order AS sortOrder,
+     	  s.accepted_vendor_id AS acceptedVendorId
+		FROM 
+			so_hdr s
+			join lu_wf_states_alias wf_alias force index (FK_lu_wf_states_alias_role_id) on
+			<isNotEqual property="roleType" compareValue="NewCo">            
+            wf_alias.user_type = #roleType# and 
+            </isNotEqual> 
+			 s.wf_state_id = wf_alias.wf_state_id and wf_alias.role_id = #roleId#
+		<!--   Check Number  -->
+		<isNotNull property="selectedCheckNumbers">
+			join so_additional_payment soap on  s.so_id = soap.so_id 
+		</isNotNull>	
+		<!--   Phone Number  -->
+		<isNotNull property="selectedPhones">
+			join so_contact sc on s.so_id = sc.so_id and sc.so_contact_type_id in (10,20)
+			join so_contact_phones scp on sc.so_id = scp.so_id and sc.so_contact_id = scp.so_contact_id
+				
+		</isNotNull>	
+		<!--   Zip code  -->
+		<isNotNull property="selectedZipCodes">
+			join so_contact_locn scl on s.so_id = scl.so_id and scl.so_contact_locn_type_id = 10
+			join so_location sloc1 on scl.so_id = sloc1.so_id and scl.so_locn_id = sloc1.so_locn_id 
+				
+		</isNotNull>	
+		<!-- Market  -->		
+		<isNotNull property="selectedMarkets">
+		 JOIN so_location sl ON  sl.so_id = s.so_id  and sl.so_locn_type_id = 10 
+		 JOIN lu_zip_market zmar ON zmar.zip = sl.zip 
+	    </isNotNull>	
+		<!--State -->
+		<isNotNull property="selectedStateCodes" >
+		 JOIN so_location sloc ON sloc.so_locn_type_id = 10 
+				AND sloc.so_id = s.so_id  
+	            
+	    </isNotNull>
+	    <!--Custom refs -->    
+		<!--  <isNotNull property="selectedCustomRefs">
+			and s.so_id in(select distinct socr.so_id from so_custom_reference socr where 
+			<iterate property="selectedCustomRefs" conjunction="or">			
+			socr.buyer_ref_type_id=#selectedCustomRefs[].refTypeId#  
+			and socr.buyer_ref_value like concat('%',#selectedCustomRefs[].refValue#,'%')
+			</iterate>
+			)
+		</isNotNull>-->
+		<isNotNull property="selectedCustomRefs">
+			join (SELECT socr.so_id  FROM so_custom_reference socr	WHERE 
+				<iterate property="selectedCustomRefs" conjunction="or">			        
+					socr.buyer_ref_type_id = #selectedCustomRefs[].refTypeId# 
+		<!--SL-21602: Code change Starts -->
+					AND socr.buyer_ref_value = #selectedCustomRefs[].refValue#
+		<!--SL-21602: Code change ends -->
+				</iterate>	
+					group by socr.so_id) TEMP
+                		on s.so_id = TEMP.so_id
+                </isNotNull>
+		<!--Skill -->
+		<isNotNull property="selectedSkills" 
+			prepend=" JOIN so_tasks stask ON  stask.so_id = s.so_id
+			and stask.service_type_template_id IN 
+			(select service_type_template_id from lu_service_type_template lstt where descr IN  "  
+			close=")">
+	             <iterate property="selectedSkills" open="(" close=")"  conjunction=",">
+	                     #selectedSkills[]#
+	             </iterate>  
+	    </isNotNull>	
+       <!-- Category  --> 
+    	<isNotNull property="selectedCatAndSubCatIdList">
+    		join so_tasks st1 on s.so_id = st1.so_id 
+    		join skill_tree skt1 on  st1.skill_node_id = skt1.node_id 
+		</isNotNull>
+		<!-- End Customer Name -->
+		<isNotNull property="selectedCustomerNames">
+			join so_contact scontact on s.so_id = scontact.so_id and scontact.so_contact_type_id in (10,20)
+		</isNotNull>
+		<!-- Technician Name -->
+		<isNotNull property="selectedServiceProNames">
+			left outer join so_contact_locn sclocn on s.so_id = sclocn.so_id and sclocn.so_contact_locn_type_id = 10
+			left outer join so_location slocation on sclocn.so_id = slocation.so_id and sclocn.so_locn_id = slocation.so_locn_id
+			left outer join so_contact scon on sclocn.so_id = scon.so_id and sclocn.so_contact_id = scon.so_contact_id
+		</isNotNull>
+		<!-- Technician Id -->
+		<isNotNull property="selectedServiceProIds">
+			left outer join so_contact_locn scl1 on s.so_id = scl1.so_id and scl1.so_contact_locn_type_id = 10
+			left outer join so_location sl1 on scl1.so_id = sl1.so_id and scl1.so_locn_id = sl1.so_locn_id
+			left outer join so_contact sc1 on scl1.so_id = sc1.so_id and scl1.so_contact_id = sc1.so_contact_id 
+			join so_routed_providers srp1 on s.so_id = srp1.so_id and srp1.resource_id in 
+				<iterate property="selectedServiceProIds" open="(" close=")"  conjunction=",">
+	                     #selectedServiceProIds[]#
+	             </iterate>  	        
+		</isNotNull>
+		<!-- <include refid="search_user_joins"/> -->		
+		<isNotEmpty property="acceptedResourceId">
+			join so_routed_providers srp on #vendorId# = srp.vendor_id  
+			                            and s.so_id = srp.so_id
+			                            and (srp.provider_resp_id not in (3,5,7) or srp.provider_resp_id is null)
+			                            and (s.accepted_vendor_id = #vendorId# or s.accepted_vendor_id is null)
+			                            and s.wf_state_id not in (100,125,130)
+		</isNotEmpty>
+		<!-- End Customer Name -->
+		<isNotNull property="selectedCustomerNames">
+			join (
+				select sc2.so_id
+				from so_contact_locn scl2, so_contact sc2
+				where sc2.so_id = scl2.so_id
+					and scl2.so_contact_id = sc2.so_contact_id
+					and scl2.so_contact_locn_type_id IN (10, 20)
+					and (
+					<iterate property="selectedCustomerNames" open="(" close=")"  conjunction=" or ">
+						sc2.last_name like concat(#selectedCustomerNames[]#, '%')
+						or sc2.full_name like concat(#selectedCustomerNames[]#, '%') 
+					</iterate>
+					)
+			) sc3 on sc3.so_id = s.so_id
+		</isNotNull>
+		<!-- Technician Name -->
+		<isNotNull property="selectedServiceProNames">
+			join (
+				select sc2.so_id
+				from so_contact_locn scl2, so_contact sc2
+				where sc2.so_id = scl2.so_id
+					and scl2.so_contact_id = sc2.so_contact_id
+					and scl2.so_contact_locn_type_id = 50
+					and (
+					<iterate property="selectedServiceProNames" open="(" close=")"  conjunction=" or ">
+						sc2.last_name like concat(#selectedServiceProNames[]#, '%')
+						or sc2.full_name like concat(#selectedServiceProNames[]#, '%') 
+					</iterate>
+					)
+			) sc3 on sc3.so_id = s.so_id
+		</isNotNull>
+		<!-- Order Acceptance Type --> 
+		<isNotNull property="selectedAcceptanceTypes">
+			join so_workflow_controls swc on s.so_id = swc.so_id
+			 	and (s.wf_state_id >= 150 or s.wf_state_id = 120) and swc.method_of_acceptance in 
+			 	<iterate property="selectedAcceptanceTypes" open="(" close=")"  conjunction=",">
+	             	#selectedAcceptanceTypes[]#
+	         	</iterate>
+		</isNotNull>
+		<!-- Posting Method --> 
+		<isNotNull property="selectedPostingMethods">
+			<isNull property="selectedAcceptanceTypes">
+				join so_workflow_controls swc on s.so_id = swc.so_id
+			</isNull>
+			 	and s.wf_state_id >= 110 and swc.method_of_routing in 
+			 	<iterate property="selectedPostingMethods" open="(" close=")"  conjunction=",">
+	             	#selectedPostingMethods[]#
+	         	</iterate>
+		</isNotNull>
+		<!-- Closure Method --> 
+		<isNotNull property="selectedClosureMethod">
+				join so_workflow_controls swc on s.so_id = swc.so_id			
+			 	and s.wf_state_id = 160 and swc.method_of_closure in 
+			 	<iterate property="selectedClosureMethod" open="(" close=")"  conjunction=",">
+	             	#selectedClosureMethod[]#
+	         	</iterate>
+		</isNotNull>
+	<dynamic prepend="  WHERE  ">		
+	<!-- Adding a prepend to the first condition after "dynamic" because it will have removeFirstPrepend="true" by default -->
+		<isNotEmpty property="vendBuyerResourceId"  prepend=" ">
+			 s.buyer_id = #buyerID#
+		</isNotEmpty>
+		<isEmpty  property="selectedStatuses" prepend=" AND ">
+			s.wf_state_id IS NOT NULL 			 	
+		 </isEmpty>
+		<isNotEmpty property="vendBuyerResourceId" prepend=" AND">
+			 s.buyer_id = #buyerID#
+		</isNotEmpty>
+		 <!--  </isEmpty> -->
+		<!--   Check Number  -->
+		<isNotNull property="selectedCheckNumbers" prepend=" AND">
+			 soap.payment_type= #paymentType# and
+			<iterate property="selectedCheckNumbers" conjunction="or">			
+				soap.check_no like concat('%',#selectedCheckNumbers[]#,'%') 						  
+			</iterate>
+		</isNotNull>
+		<!--   Phone Number  -->
+		<isNotNull property="selectedPhones" prepend=" AND">
+			 scp.phone_no in 
+			<iterate property="selectedPhones" open="(" close=")"  conjunction=",">
+                     #selectedPhones[]#
+        	</iterate>
+		</isNotNull>
+		<!--   Zip code  -->
+		<isNotNull property="selectedZipCodes" prepend=" AND">
+			 sloc1.zip in
+			<iterate property="selectedZipCodes" open="(" close=")"  conjunction=",">
+	                     #selectedZipCodes[]#
+	        </iterate>
+		</isNotNull>
+		<!-- Market  -->		
+		<isNotNull property="selectedMarkets" prepend=" AND">
+			 zmar.market_id IN
+	             <iterate property="selectedMarkets" open="(" close=")"  conjunction=",">
+	                     #selectedMarkets[]#
+	             </iterate>
+		</isNotNull>
+		<!--State -->
+		<isNotNull property="selectedStateCodes" prepend=" AND">
+			 sloc.state_cd IN 
+			 <iterate property="selectedStateCodes" open="(" close=")"  conjunction=",">
+	                     #selectedStateCodes[]#
+	         </iterate>
+		</isNotNull>
+		<!--Service Order Id -->
+		<isNotNull property="selectedServiceOrderIds" prepend="AND  " >	 	
+			<isNotEqual property="checkGroupedOrders" compareValue="true">
+				( s.so_id in
+			 		<iterate property="selectedServiceOrderIds" open="(" close=")"  conjunction=",">
+		                   	  #selectedServiceOrderIds[]#
+		        	</iterate>
+				)
+			</isNotEqual>
+			<isEqual property="checkGroupedOrders" compareValue="true">
+				( s.so_group_id in
+			 		<iterate property="selectedServiceOrderIds" open="(" close=")"  conjunction=",">
+		                   	  #selectedServiceOrderIds[]#
+		        	</iterate>
+				)
+			</isEqual>     
+		</isNotNull>
+		<!--Service Order Date -->
+		<isNotNull property="startDateList" prepend="AND " >	 	
+			 s.service_date1 in 
+		 	<iterate property="startDateList" open="(" close=")"  conjunction=",">
+	                   	  #startDateList[]#
+	        </iterate>
+	    </isNotNull>
+		<isNotNull property="endDateList" prepend="AND   " >	 	
+			s.service_date2 in
+			 	<iterate property="endDateList" open="(" close=")"  conjunction=",">
+		                   	  #endDateList[]#
+		        </iterate>
+	    </isNotNull>
+		<!--Main Category -->
+		<isNotNull property="selectedMainCatIdList" prepend=" AND  " >
+			( s.primary_skill_category_id in
+				<iterate property="selectedMainCatIdList" open="(" close=") "  conjunction=",">
+					#selectedMainCatIdList[]#
+				</iterate>
+		</isNotNull>	
+		<isNotNull property="selectedCatAndSubCatIdList">
+			<isNotNull property="selectedMainCatIdList">
+				OR 
+			</isNotNull>
+			<isNull property="selectedMainCatIdList">
+				 AND  
+		 	</isNull>
+		</isNotNull>		
+		<!--Category -->
+		<isNotNull property="selectedCatAndSubCatIdList" prepend=" st1.skill_node_id in " >						
+			<iterate property="selectedCatAndSubCatIdList" open="(" close=")"  conjunction=",">
+				#selectedCatAndSubCatIdList[]#
+			</iterate>
+		</isNotNull>
+		<isNotNull property="selectedMainCatIdList">
+			)
+		</isNotNull>
+		<!-- Technician Id -->
+		<isNotNull property="selectedServiceProIds" prepend = " AND ">
+			<!--  <isEmpty property="buyerID">-->
+			     		( s.accepted_resource_id  in
+			     			<iterate property="selectedServiceProIds" open="(" close=")"  conjunction=",">
+	                     		#selectedServiceProIds[]#
+	             			</iterate>
+						or (s.accepted_resource_id is null and s.wf_state_id=110 and srp1.resource_id in 
+							<iterate property="selectedServiceProIds" open="(" close=")"  conjunction=",">
+	                     		#selectedServiceProIds[]#
+	             			</iterate>
+	             			<isEqual property="manageSOFlag" compareValue="true">					   
+						AND srp1.resource_id=#acceptedResourceId#
+						</isEqual>
+	             			)  
+	             		 )	
+				<!--  </isEmpty>	-->
+		</isNotNull>
+		<!-- Provider Firm Id -->
+		<isNotNull property="selectedProviderFirmIds" prepend = " AND ">
+			s.wf_state_id not in (100,110,130,125)
+			and s.accepted_vendor_id in 
+				<iterate property="selectedProviderFirmIds" open="(" close=")"  conjunction=",">
+	                		#selectedProviderFirmIds[]#
+	             </iterate>
+			<isNotEmpty property="buyerID">
+				and s.buyer_id = #buyerID#
+			</isNotEmpty>
+		</isNotNull>
+	<!-- Status and SubStatus -->
+		<isNotNull property="selectedStatuses" prepend = " AND   ">	
+			(	
+			<iterate property="selectedStatuses" conjunction=" OR ">
+				(s.wf_state_id = #selectedStatuses[].wfStateId#
+				<isEqual property="selectedStatuses[].wfStateId" compareValue="110">
+					<isEqual property="manageSOFlag" compareValue="true">					   
+						AND (srp.resource_id=#acceptedResourceId#
+						OR s.price_model != 'NAME_PRICE')
+					</isEqual>
+				</isEqual>
+				<isNotEqual property="selectedStatuses[].substatusId" compareValue="0"> 
+					<isNotEqual property="selectedStatuses[].substatusId" compareValue="52">
+						AND s.so_substatus_id = #selectedStatuses[].substatusId#
+					</isNotEqual> 
+					<isEqual property="selectedStatuses[].substatusId" compareValue="52">
+						AND (s.so_substatus_id = #selectedStatuses[].substatusId#
+						OR s.so_substatus_id is null) 
+					</isEqual> 
+				</isNotEqual> 
+				) 
+			</iterate>
+			)			
+		</isNotNull>
+		<!-- Pricing Type --> 
+		<isNotNull property="selectedPricingTypes" prepend = " AND ">
+			 s.price_model in 
+			 	<iterate property="selectedPricingTypes" open="(" close=")"  conjunction=",">
+	             	#selectedPricingTypes[]#
+	         	</iterate>
+		</isNotNull>
+		<!-- Assignment Type --> 
+		<isNotNull property="selectedAssignmentTypes" prepend = " AND ">
+			 (s.wf_state_id >= 150 or s.wf_state_id = 120) and s.assignment_type in 
+			 	<iterate property="selectedAssignmentTypes" open="(" close=")"  conjunction=",">
+	             	#selectedAssignmentTypes[]#
+	         	</iterate>
+		</isNotNull>
+        <!-- do not pickup orders in posted state with pending wallet confirmation sub-status -->
+        <isNotEmpty property="roleId"  prepend=" AND ">
+            <isEqual property="roleId" compareValue="1">
+                ((s.wf_state_id = 110 and (s.so_substatus_id != 64 or s.so_substatus_id is null))
+                OR (s.wf_state_id != 110))
+            </isEqual>
+        </isNotEmpty>
+        
+        <!-- Pending Reschedule --> 
+		<isNotNull property="selectedPendingReschedule" prepend=" AND ">
+			s.wf_state_id IN (150,155,170) AND s.resched_service_date1 IS NOT NULL
+		</isNotNull>
+        
+	</dynamic>
+		group by soId,appointStartDate,spendLimit,createdDate,sortOrder
+		order by $sortColumnName$ $sortOrder$ 	
+		limit 5001
+	</select>
+	
+	<insert id="insert.search.filter" parameterClass="searchFilterVO">
+        insert into  search_filters ( entity_id, filter_name, 
+        template_html_content, role_id, template_value)
+		values( #entityId#, #filterName#, #templateHtmlContent#,
+		#roleId#, #templateValue#)
+        <selectKey resultClass="int">
+            SELECT last_insert_id() as search_filter_id
+        </selectKey>    
+    </insert>
+    <select id="query.search.filter" parameterClass="searchFilterVO" resultClass="searchFilterVO">
+		select search_filter_id as searchFilterId, 
+			entity_id as entityId, 
+			filter_name as filterName, 
+			template_html_content as templateHtmlContent,
+			role_id as roleId, 
+			template_value as templateValue
+			from search_filters
+			where entity_id=#entityId#  and role_id=#roleId#
+			order by LTRIM(filter_name)
+	</select>
+	<select id="query.selected.search.filter" parameterClass="searchFilterVO" resultClass="searchFilterVO">
+		select search_filter_id as searchFilterId, 
+			entity_id as entityId, 
+			filter_name as filterName, 
+			template_html_content as templateHtmlContent,
+			role_id as roleId, 
+			template_value as templateValue
+			from search_filters
+			where entity_id=#entityId#  and LTRIM(filter_name)=#filterName#
+			limit 1			
+	</select>
+	<delete id="delete.search.filter" parameterClass="searchFilterVO">
+		DELETE FROM search_filters
+		WHERE entity_id=#entityId# and filter_name=#filterName#
+	</delete>
+	
+	
+	<select id="som.providerEntryDetails" parameterClass="java.util.HashMap" resultClass="pendingCancelDetailsVO">
+		SELECT price AS price,created_date AS entryDate,comments AS comments FROM so_cancel_request_history
+	WHERE so_id=#soId# AND role_id=1 ORDER BY created_date DESC LIMIT 1
+	</select>
+	
+	
+	<select id="som.buyerEntryDetails" parameterClass="java.util.HashMap" resultClass="pendingCancelDetailsVO">
+		SELECT price AS price,created_date AS entryDate,comments AS comments FROM so_cancel_request_history
+	WHERE so_id=#soId# AND role_id=3 ORDER BY created_date DESC LIMIT 1
+	</select>
+	
+	<select id="som.availableProvidersFirm" parameterClass="java.util.HashMap" resultClass="providerResultVO">
+		SELECT
+			srp.resource_id 			as resourceId,
+			srp.provider_resp_id		as providerRespid,
+			srp.service_date1 		 	as serviceDate1,
+			srp.service_time_start		as serviceTimeStart,
+			srp.service_date2			as serviceDate2,
+			srp.service_time_end		as serviceTimeEnd,
+			offer_expiration_date 		as offerExpirationDate,
+			srp.incr_spend_limit		as incrSpendLimit,
+			srp.total_labor				as totalLabor,
+			srp.service_date1 		 	as conditionalChangeDate1,
+			srp.service_time_start		as conditionalStartTime,
+			srp.service_date2			as conditionalChangeDate2,
+			srp.service_time_end		as conditionalEndTime,
+			vcontact.first_name			as providerFirstName,
+			vcontact.last_name				as providerLastName,
+			llocation.gis_latitude		    as providerLatitude,
+			llocation.gis_longitude		    as providerLongitude,
+			TRUNCATE(3956.5450000 * 2 * ATAN2(SQRT(SIN(RADIANS(geo.latitude -  llocation.gis_latitude) /2) * SIN(RADIANS(geo.latitude - llocation.gis_latitude) /2) + COS(RADIANS(geo.latitude)) * COS(RADIANS(llocation.gis_latitude)) * SIN((RADIANS(geo.longitude - llocation.gis_longitude)) /2) * SIN((RADIANS(geo.longitude - llocation.gis_longitude)) /2)), SQRT(1 - SIN(RADIANS(geo.latitude - llocation.gis_latitude) /2) * SIN(RADIANS(geo.latitude - llocation.gis_latitude) /2) + COS(RADIANS(llocation.gis_latitude)) * COS(RADIANS(geo.latitude)) * SIN((RADIANS(geo.longitude - llocation.gis_longitude)) /2) * SIN((RADIANS(geo.longitude - llocation.gis_longitude)) /2))),2) as distanceFromBuyer,
+			llocation.street_1				as street1,
+			llocation.street_2				as street2,
+			llocation.city 					as city,
+			llocation.state_cd 				as state,
+			llocation.zip 					as zip,
+			CONCAT_WS(' ', llocation.street_1, llocation.street_2, llocation.city, llocation.state_cd, llocation.zip) as resourceDispatchAddr 
+		FROM so_hdr s   			
+		JOIN so_routed_providers srp ON s.so_id = srp.so_id AND srp.vendor_id=#vendorId#
+ 			AND (srp.provider_resp_id != 3 OR srp.provider_resp_id IS NULL)
+ 			AND (srp.provider_resp_id != 5 OR srp.provider_resp_id IS NULL)
+ 			AND (srp.provider_resp_id != 7 OR srp.provider_resp_id IS NULL)
+			AND (srp.price_model='NAME_PRICE' OR srp.price_model IS NULL)
+ 			AND (s.so_substatus_id != 64 OR s.so_substatus_id IS NULL)
+ 		JOIN so_contact_locn cont_loc ON s.so_id = cont_loc.so_id
+		JOIN lu_so_contact_locn_type lu_cont_loc ON lu_cont_loc.so_contact_locn_type_id = cont_loc.so_contact_locn_type_id
+			AND lu_cont_loc.so_contact_locn_type_id = 10 
+		JOIN so_location loc ON loc.so_id = cont_loc.so_id AND loc.so_locn_id = cont_loc.so_locn_id AND s.so_id = loc.so_id
+		JOIN zip_geocode geo ON loc.zip = geo.zip
+		JOIN vendor_resource vresource ON vresource.resource_id = srp.resource_id	
+		JOIN location llocation ON vresource.locn_id = llocation.locn_id 
+		JOIN lu_zip_market zmar ON llocation.zip = zmar.zip
+		JOIN lu_market market ON zmar.market_id = market.market_id
+		JOIN contact vcontact ON vresource.contact_id = vcontact.contact_id
+		WHERE s.so_id =#soId#
+		<isNotNull property="resourceId">
+			<isNotEqual property="resourceId" compareValue="0">
+			AND srp.resource_id = #resourceId#
+			</isNotEqual>
+		</isNotNull>
+		ORDER BY distanceFromBuyer ASC,
+		vcontact.last_name  ASC,
+ 		vcontact.first_name  ASC;
+	</select>
+	
+	<select id="som.availableProvidersFirmForGroup" parameterClass="java.util.HashMap" resultClass="providerResultVO">
+		SELECT  sgrp.resource_id AS resourceId,
+			provider_resp_id AS providerRespId,
+			sgrp.vendor_id AS vendorID,
+			sgrp.service_date1 AS conditionalChangeDate1,
+			sgrp.service_date2 AS conditionalChangeDate2,
+			sgrp.condl_offer_price AS groupCondIncrSpendLimit,
+			sgrp.service_time_start AS conditionalStartTime,
+			sgrp.service_time_end AS conditionalEndTime,
+			vcontact.first_name	AS providerFirstName,
+			vcontact.last_name	AS providerLastName,
+			TRUNCATE(3956.5450000 * 2 * ATAN2(SQRT(SIN(RADIANS(geo.latitude -  llocation.gis_latitude) /2) * SIN(RADIANS(geo.latitude - llocation.gis_latitude) /2) + COS(RADIANS(geo.latitude)) * COS(RADIANS(llocation.gis_latitude)) * SIN((RADIANS(geo.longitude - llocation.gis_longitude)) /2) * SIN((RADIANS(geo.longitude - llocation.gis_longitude)) /2)), SQRT(1 - SIN(RADIANS(geo.latitude - llocation.gis_latitude) /2) * SIN(RADIANS(geo.latitude - llocation.gis_latitude) /2) + COS(RADIANS(llocation.gis_latitude)) * COS(RADIANS(geo.latitude)) * SIN((RADIANS(geo.longitude - llocation.gis_longitude)) /2) * SIN((RADIANS(geo.longitude - llocation.gis_longitude)) /2))),2) AS distanceFromBuyer
+		FROM  
+			so_group_routed_providers sgrp
+			JOIN so_hdr s ON s.so_group_id = sgrp.so_group_id
+			JOIN vendor_resource vresource ON vresource.resource_id = sgrp.resource_id
+			JOIN contact vcontact ON vresource.contact_id = vcontact.contact_id
+			JOIN so_contact_locn cont_loc ON s.so_id = cont_loc.so_id
+			JOIN lu_so_contact_locn_type lu_cont_loc ON lu_cont_loc.so_contact_locn_type_id = cont_loc.so_contact_locn_type_id
+			AND lu_cont_loc.so_contact_locn_type_id = 10 
+			JOIN so_location loc ON loc.so_id = cont_loc.so_id AND loc.so_locn_id = cont_loc.so_locn_id AND s.so_id = loc.so_id
+			JOIN zip_geocode geo ON loc.zip = geo.zip
+			JOIN location llocation ON vresource.locn_id = llocation.locn_id 
+		WHERE sgrp.so_group_id = #groupId#
+			AND sgrp.vendor_id = #vendorId#
+			AND (sgrp.provider_resp_id != 3 OR sgrp.provider_resp_id IS NULL)
+ 			AND (sgrp.provider_resp_id != 5 OR sgrp.provider_resp_id IS NULL)
+ 			AND (sgrp.provider_resp_id != 7 OR sgrp.provider_resp_id IS NULL)
+			<isNotNull property="resourceId">
+				<isNotEqual property="resourceId" compareValue="0">
+				AND sgrp.resource_id = #resourceId#
+			</isNotEqual>
+			</isNotNull>
+			GROUP BY sgrp.resource_id
+			ORDER BY vcontact.last_name  ASC,
+ 			vcontact.first_name  ASC;
+	</select>
+	
+	<select id="soSearch.autocloseFailedByRule" parameterClass="soSearchVO" resultClass="soSearchVO" >
+	
+	                        
+  		SELECT 
+  			DISTINCT a.so_id as soId
+		FROM so_auto_close_rule_status s,
+  			so_auto_close_action a,
+  			auto_close_rule_hdr rule_hdr,
+  			auto_close_rules rules,so_hdr hdr
+		WHERE  hdr.so_id=a.so_id 
+			AND s.autoclose_id = a.autoclose_id 
+			AND hdr.wf_state_id=160 
+			AND hdr.buyer_id=#buyerID#
+    		AND rule_hdr.auto_close_rule_id = rules.auto_close_rule_id
+    		AND rule_hdr.auto_close_rule_hdr_id = s.rule_hdr_id
+    			<isNotNull property="autocloseRuleList" prepend="AND  " >	
+    				rule_hdr.auto_close_rule_id in 
+			 	<iterate property="autocloseRuleList" open="(" close=")"  conjunction=",">
+		                   	  #autocloseRuleList[]#
+		        </iterate>
+				</isNotNull>
+    		AND s.rule_status = 'yes'
+    		AND a.autoclose_status = 'Failed'
+    		AND a.autoclose_date = (SELECT
+                              		MAX(autoclose_date)
+                            		FROM so_auto_close_action
+                            		WHERE so_id = a.so_id)
+    </select>
+    
+    <select id="invoicePartsNew.query" resultMap="invoiceParts.resultmap">
+		select * from so_provider_invoice_parts where so_id=#soId#
+	</select>
+	<select id="getAcceptedFirmDetailsSOM.query" 
+		parameterClass="java.lang.String" resultClass="firmDetails">
+		SELECT   
+			vh.vendor_id AS vendorID,
+			business_name AS businessName,
+			bus_phone_no AS businessPhoneNumber
+		FROM vendor_hdr vh, so_routed_providers  srp 
+		WHERE  vh.vendor_id = srp.vendor_id
+		AND srp.provider_resp_id = 1
+		AND srp.so_id = #soId# ;
+	</select>
+	<select id="getAcceptedFirmDetls.query" 
+		parameterClass="java.lang.Integer" resultClass="firmDetails">
+		SELECT
+			vendor_id as vendorID,
+			business_name as businessName,
+			bus_phone_no as businessPhoneNumber
+		FROM vendor_hdr WHERE vendor_id = #vendorId#
+	</select>
+	<select id="getAssignmentType.query" parameterClass="java.lang.String" resultClass="java.lang.String" >
+	      SELECT assignment_type FROM so_hdr WHERE so_id = #soId#
+    </select>
+    
+    <!-- SL-21308: Query to fetch service offerings list in Search API -->
+    <select id="getServiceOfferings.query" parameterClass="searchFirms" resultClass="serviceOfferings">
+		SELECT bs.sku_id skuId,bs.sku as sku,
+		so.vendor_id as vendorId,so.service_offerings_id as serviceOfferingId, sop.zipcode as zip, sop.list_price as price, 
+		so.service_offering_daily_limit as dailyLimit
+ 		FROM buyer_sku bs
+		JOIN  buyer_sku_task bst ON(bs.sku_id = bst.sku_id) 
+		JOIN skill_tree st 
+		ON (bst.category_node_id = st.node_id AND bs.buyer_id=#buyerId# AND st.root_node_id = #mainCategory#)
+		JOIN
+		service_offerings so ON(so.sku_id=bs.sku_id AND so.offering_status = 'ON')
+		JOIN  service_offerings_price  sop
+		ON (so.service_offerings_id = sop.service_offering_id)
+		WHERE sop.delete_ind = 0
+		<isNotNull property="zipcodeList" prepend="AND  " >	
+    				sop.zipcode IN
+			 <iterate property="zipcodeList" open="(" close=")"  conjunction=",">
+		              #zipcodeList[]#
+		      </iterate>
+		</isNotNull>
+	</select>
+	
+
+	    <!-- SL-21308: Query to fetch available firm sku list in Search API -->
+    <select id="getAvailableFirmsSKUList.query" parameterClass="searchFirms" resultClass="serviceOfferings">
+		SELECT sof.vendor_id as vendorId,sof.sku_id as skuId,
+		COUNT(sh.so_id)as soCount,sof.service_offering_daily_limit as dailyLimit
+		FROM so_hdr sh, so_tasks st ,service_offerings sof 
+		WHERE sh.so_id = st.so_id 
+		AND	sh.buyer_id = #buyerId# 
+		AND sh.accepted_vendor_id= sof.vendor_id
+		AND st.sku_id = sof.sku_id
+		AND wf_state_id IN (150,155)
+		<isNotNull property="skuIdList" prepend="AND  " >	
+    				st.sku_id IN 
+			 <iterate property="skuIdList" open="(" close=")"  conjunction=",">
+		              #skuIdList[]#
+		      </iterate>
+		</isNotNull>
+		AND st.primary_task = 1 AND
+		sh.service_date1  <![CDATA[<=]]> #serviceDate1GMT# AND sh.service_date2 <![CDATA[>=]]>  #serviceDate2GMT#
+		<isNotNull property="vendorIdList" prepend="AND  " >	
+    				sh.accepted_vendor_id IN
+			 <iterate property="vendorIdList" open="(" close=")"  conjunction=",">
+		              #vendorIdList[]#
+		      </iterate>
+		</isNotNull>
+		GROUP BY sof.vendor_id,sof.sku_id
+		HAVING COUNT(sh.so_id) <![CDATA[<]]>  sof.service_offering_daily_limit
+	</select>
+	
+	<select id="getOfferingAvailabilityList.query" parameterClass="searchFirms" resultClass="serviceOfferings">
+		SELECT day_of_the_week as day, time_window as timeWindow, 
+		service_offering_id as serviceOfferingId
+		FROM service_offerings_availability WHERE
+		delete_ind = 0 
+		<isNotNull property="offeringIdList" prepend="AND  " >	
+    				service_offering_id IN
+			 <iterate property="offeringIdList" open="(" close=")"  conjunction=",">
+		              #offeringIdList[]#
+		      </iterate>
+		</isNotNull>      
+		<isNotNull property="serviceDays" prepend="AND  " >	
+    				day_of_the_week IN
+			 <iterate property="serviceDays" open="(" close=")"  conjunction=",">
+		              #serviceDays[]#
+		      </iterate>
+		</isNotNull>
+		<isNotNull property="timeWindow" prepend="AND  " >	
+    				time_window = #timeWindow#
+		</isNotNull>
+	</select>
+	
+	<select id="getProviderFirmNames.query" parameterClass="java.util.List" resultClass="java.util.HashMap">
+		 SELECT vh.vendor_id AS firmId,
+ 		 vh.business_name AS businessName
+ 		 FROM vendor_hdr vh WHERE vh.vendor_id IN 
+			<iterate open="(" close=")" conjunction=",">
+				#[]#
+			</iterate> 
+	</select>
+</sqlMap>

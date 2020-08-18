@@ -1,0 +1,130 @@
+<!DOCTYPE struts PUBLIC
+"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<constant name="struts.enable.DynamicMethodInvocation" value="true" />
+	<constant name="struts.objectFactory" value="spring" />
+	<constant name="struts.devMode" value="false" />
+	<constant name="struts.custom.il8n.resources " value="servicelive.properties" />
+	<constant name="struts.multipart.maxSize" value="1048576000" />
+
+
+
+	<include file="./resources/struts/ServiceLiveBase.xml" />
+	<include file="./resources/struts/homepage.xml" />
+	<include file="./resources/struts/serviceLiveSimple.xml" />
+	<include file="./resources/struts/selectProviderNetwork.xml" />
+	<include file="./resources/struts/soMonitor.xml" />
+	<include file="./resources/struts/contactUs.xml"></include>
+	<include file="./resources/struts/soDetails.xml"></include>
+	<include file="./resources/struts/soLogin.xml"></include>
+	<include file="./resources/struts/soWidgets.xml"></include>
+	<include file="./resources/struts/soDashboard.xml"></include>
+	<include file="./resources/struts/soWizard.xml"></include>
+	<include file="./resources/struts/joinnow.xml" />
+	<include file="./resources/struts/login.xml" />
+	<include file="./resources/struts/businessinfo.xml" />
+	<include file="./resources/struts/warranty.xml" />
+	<include file="./resources/struts/registration.xml" />
+	<include file="./resources/struts/termsAndCond.xml" />
+	<include file="./resources/struts/licensesAndCert.xml" />
+	<include file="./resources/struts/licenses.xml" />
+	<include file="./resources/struts/insurance.xml" />
+	<include file="./resources/struts/allTab.xml" />
+	<include file="./resources/struts/marketPlace.xml" />
+	<include file="./resources/struts/soWhatIsSL.xml"></include>
+	<include file="./resources/struts/soFinanceManager.xml"></include>
+	<!-- Provider Team Member configuration files -->
+	<include file="./resources/struts/serviceProAllTab.xml" />
+	<include file="./resources/struts/generalInfo.xml" />
+	<include file="./resources/struts/manageUsers.xml" />
+	<include file="./resources/struts/teamCredential.xml" />
+	<include file="./resources/struts/addServicePro.xml" />
+	<include file="./resources/struts/teamMemberBackgroundCheck.xml" />
+	<include file="./resources/struts/skillAssign.xml" />
+	<include file="./resources/struts/terms.xml" />
+	<include file="./resources/struts/admin.xml" />
+	<include file="./resources/struts/buyerAdmin.xml" />
+	<include file="./resources/struts/buyerPII.xml" />
+	<include file="./resources/struts/powerBuyer.xml" />
+	<include file="./resources/struts/exploreTheMarketplace.xml" />
+
+
+	<include file="./resources/struts/forgetUsername.xml" />
+	<include file="./resources/struts/resetPassword.xml" />
+	<include file="./resources/struts/soCommon.xml" />
+	<!-- Service provider registration -->
+	<include file="./resources/struts/addServicePro.xml" />
+	<include file="./resources/struts/publicProfile.xml" />
+	<include file="./resources/struts/companyProfile.xml" />
+
+
+	<include file="./resources/struts/auditorAjaxAction.xml" />
+
+	<!-- Buyer registration configuration files -->
+	<include file="./resources/struts/joinnow_buyer.xml" />
+	<include file="./resources/struts/joinnow_general.xml" />
+	<include file="./resources/struts/joinnow_buyer_simple.xml" />
+	<include file="./resources/struts/buyer.xml" />
+	<include file="./resources/struts/jobCodes.xml" />
+	<include file="./resources/struts/templateMaintenance.xml" />
+	<include file="./resources/struts/blackoutStates.xml" />
+	<!-- For buyer upload functionality -->
+	<include file="./resources/struts/upload.xml" />
+	
+	<!--Start SL-21464 -->
+	<include file="./resources/struts/d2cProviderPortal.xml" />
+	<!--End SL-21464 -->
+	
+	<include file="./resources/struts/calendarPortal.xml" />
+	
+	<!--SL-21142 -->
+	<include file="./resources/struts/lmsUpload.xml" />
+	<!-- <include file="./resources/struts/uploadajax.xml"/> -->
+	<include file="./resources/struts/serviceLiveWallet.xml" />
+	<!-- Added for I-22 - Manage Custom References -->
+	<include file="./resources/struts/manageCustomReferences.xml" />
+	<include file="./resources/struts/providerInfoPages.xml" />
+	<include file="./resources/struts/soProviderSelect.xml" />
+	<include file="./resources/struts/promotions.xml" />
+
+	<include file="./resources/struts/autoClose.xml" />
+
+
+	<include file="./resources/struts/orderGroup.xml" />
+	<include file="./resources/struts/powerAuditorWorkflow.xml" />
+	<include file="./resources/struts/powerAuditorWorkflowController.xml" />
+	<include file="./resources/struts/w9RegistrationAction.xml" />
+	<include file="./resources/struts/manageAutoOrderAcceptanceAction.xml" />
+	<include file="./resources/struts/manageServiceOfferingAction.xml" />
+
+	<include file="./resources/struts/assurant.xml" />
+	<include file="./resources/struts/searchportal.xml" />
+
+	<include file="./resources/struts/reasoncode.xml" />
+	<include file="./resources/struts/buyerSurvey.xml" />
+	<include file="./resources/struts/manageScope.xml" />
+	<include file="./resources/struts/providerPartsHSR.xml" />
+
+	<!-- SL-17698:Memeber offers -->
+	<include file="./resources/struts/memberOffers.xml" />
+
+	<!-- SL-17504 Sku maintenance START -->
+	<include file="./resources/struts/skuMaintenance.xml" />
+	<!-- SL-17504 Sku maintenance END -->
+
+	<!-- SL-15642 Order Management START -->
+	<include file="./resources/struts/orderManagement.xml"></include>
+	<include file="./resources/struts/buyerLeadManagement.xml"></include>
+	<include file="./resources/struts/feedback.xml"></include>
+	<!-- SL-15642 Order Management END -->
+	<include file="./resources/struts/nonSecureRedirectPage.xml" />
+	<!-- NS Leads Management START -->
+	<include file="./resources/struts/leadsManagement.xml"></include>
+	<!-- Parts Management START -->
+	<include file="./resources/struts/partsManagement.xml"></include>
+	<!-- Inhome Auto Close -->
+	<include file="./resources/struts/hsrAutoClose.xml" />
+	<!-- SLT-1475 -->
+	<include file="./resources/struts/zipCoverage.xml" />
+</struts>

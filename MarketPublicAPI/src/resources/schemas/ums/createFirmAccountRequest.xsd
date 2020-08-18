@@ -1,0 +1,676 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:include schemaLocation="../common.xsd" />
+	<xs:element name="createFirmAccountRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="legalBusinessName" type="businessNameType"
+					minOccurs="1" />
+				<xs:element name="dBAName" type="dBANameType"
+					minOccurs="0" />
+				<xs:element name="primaryIndustry" type="primaryIndustryType"
+					minOccurs="1" />
+				<xs:element name="businessStartedDate" type="dateType"
+					minOccurs="1" />
+				<xs:element name="businessStructure" type="businessStructureEnum" 
+					minOccurs="0" />
+				<xs:element name="dunsNumber" type="dunsNumberType" minOccurs="0"/>
+				<xs:element name="foreignOwnedPercentage" type="foreignOwnedPercentageType"
+					minOccurs="0" />
+				<xs:element name="companySize" type="companySizeEnum"
+					minOccurs="1" />
+				<xs:element name="annualSalesRevenue" type="annualSalesRevenueEnum" 
+					minOccurs="1" />
+				<xs:element name="websiteAddress" type="stringBigType"
+					minOccurs="0" />
+				<xs:element name="businessDesc" type="businessDescType"
+					minOccurs="1" />
+				<xs:element name="mainBusiPhoneNo" type="PhoneType"
+					nillable="true" minOccurs="1" />
+				<xs:element name="mainBusinessExtn" type="mainBusinessExtnType"
+					minOccurs="0" />
+				<xs:element name="businessFax" type="PhoneType"
+					minOccurs="0" />					
+				<xs:element name="businessAddress" type="businessAddressData"
+					minOccurs="1" />
+				<xs:element name="mailingAddress" type="mailingAddressData"
+					minOccurs="1" />
+				<xs:element name="roleWithinCom" type="roleWithinCompany"
+					minOccurs="1" />
+					<xs:element name="roles" type="roleDetails"
+					minOccurs="0" />
+				<xs:element name="jobTitle" type="stringFiftyType" minOccurs="0" />
+				<xs:element name="nameDetails" type="nameDetailsData"
+					minOccurs="0" />
+				<xs:element name="email" type="emailTypes" minOccurs="1" />
+				<xs:element name="altEmail" type="emailTypes" minOccurs="0" />
+				<xs:element name="userName" type="stringThirtyType" minOccurs="1" />
+				<xs:element name="howDidYouHear" type="howDidYouHearEnum" minOccurs="0" />
+				<xs:element name="referralCode" type="referralCodeType" minOccurs="0" />
+				<xs:element name="serviceCall" type="indicatorEnum"
+					minOccurs="0" />				
+				<xs:element name="projectEstimatesChargeInd" type="indicatorEnum"
+					minOccurs="1" />
+				<xs:element name="warrantyOnLabor" type="warrantyPeriodEnum"
+					minOccurs="0" />
+				<xs:element name="warrantyOnParts" type="warrantyPeriodEnum"
+					minOccurs="0" />
+				<xs:element name="drugTestingPolicyInd" type="indicatorEnum"
+					minOccurs="1" />
+				<xs:element name="drugTestingPolicyRequired" type="indicatorEnum"
+					minOccurs="0" />
+				<xs:element name="workEnvironmentPolicyInd" type="indicatorEnum"
+					minOccurs="1" />
+				<xs:element name="workEnvironmentPolicyRequired" type="indicatorEnum"
+					minOccurs="0" />
+				<xs:element name="employeeCitizenShipProofInd" type="indicatorEnum"
+					minOccurs="1" />
+				<xs:element name="employeeCitizenShipProofRequired" type="indicatorEnum"
+					minOccurs="0" />
+				<xs:element name="crewWearBadgesInd" type="indicatorEnum"
+					minOccurs="1" />
+				<xs:element name="crewWearBadgesRequired" type="indicatorEnum"
+					minOccurs="0" />
+
+				<xs:element name="licenseAndCertifications" type="credentialsData"
+					minOccurs="0" />
+
+				<xs:element name="insuranceDetails" type="insuranceDetailsData"
+					minOccurs="0" />
+
+				<xs:element name="w9Information" type="w9InformationData"
+					minOccurs="0" />
+				<xs:element name="firmType" type="stringFiftyType" minOccurs="0" />
+				<xs:element name="subContractorId" type="stringTwentyType" minOccurs="0" />
+
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="businessAddressData">
+		<xs:sequence>
+			<!-- Business Address -->
+			<xs:element name="businessStreet1" type="streetType"
+				minOccurs="1" />
+			<xs:element name="businessStreet2" type="stringFortyType"
+				minOccurs="0" />
+			<xs:element name="businessCity" type="stringCityType"
+				minOccurs="1" />
+			<xs:element name="businessState" type="stringStateType"
+				minOccurs="1" />
+			<xs:element name="businessZip" type="stringZipType" minOccurs="1" />
+			<xs:element name="businessAprt" type="stringTenType"
+				minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="mailingAddressData">
+		<xs:sequence>
+			<!-- Business Address -->
+			<xs:element name="mailingStreet1" type="streetType" 
+				minOccurs="1" />
+			<xs:element name="mailingStreet2" type="stringFortyType"
+				minOccurs="0" />
+			<xs:element name="mailingCity" type="stringCityType"
+				minOccurs="1" />
+			<xs:element name="mailingState" type="stringStateType"
+				minOccurs="1" />
+			<xs:element name="mailingZip" type="stringZipType" minOccurs="1" />
+			<xs:element name="mailingAprt" type="stringTenType"
+				minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	
+	
+	<xs:complexType name="nameDetailsData">
+		<xs:sequence>
+			<!-- Name Details -->
+			<xs:element name="firstName" type="nameType"
+				minOccurs="1" />
+			<xs:element name="middleName" type="stringFiftyType"
+				minOccurs="0" />
+			<xs:element name="lastName" type="nameType"
+				minOccurs="1" />
+			<xs:element name="nameSuffix" type="stringTenType"
+				minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	
+	
+		<xs:complexType name="roleDetails">
+		<xs:sequence>
+			<xs:element name="role" type="rolesEnumType"
+				minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="credentialsData">
+		<xs:sequence>
+		<xs:element name="licenseCertificationInd" type="indicatorEnum"
+				minOccurs="1" />
+			<xs:element name="credentials" type="credentialData"
+				minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="credentialData">
+		<xs:sequence>
+			<xs:element name="credential" type="credentialDetails"
+				minOccurs="1" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="credentialDetails">
+		<xs:sequence>
+			<xs:element name="credentialType" type="credType"
+				minOccurs="1" />
+			<xs:element name="credentialCategory" type="credDetailsType"
+				minOccurs="1" />
+			<xs:element name="licenseCertName" type="credCertType"
+				minOccurs="1" />
+			<xs:element name="credentialIssuer" type="credDetailsType"
+				minOccurs="1" />
+			<xs:element name="credentialNumber" type="credLicenseNoType"
+				minOccurs="0" />
+			<xs:element name="credentialCity" type="credDetailsType"
+				minOccurs="0" />
+			<xs:element name="credentialState" type="credDetailsType"
+				minOccurs="0" />
+			<xs:element name="credentialCounty" type="credDetailsType"
+				minOccurs="0" />
+			<xs:element name="credentialIssueDate" type="dateType"
+				minOccurs="1" />
+			<xs:element name="credentialExpirationDate" type="dateType"
+				minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="insuranceDetailsData">
+		<xs:sequence>
+			<xs:element name="generalLiabilityInsuranceInd" type="indicatorEnum"
+				minOccurs="1" />
+			<xs:element name="generalLiabilityInsuranceAmount" type="insAmountType"
+				minOccurs="0" />
+			<xs:element name="generalLiabilityDetails" type="generalLiabilityDetailsData"
+				minOccurs="0" />
+			<xs:element name="vehicleLiabilityInd" type="indicatorEnum"
+				minOccurs="1" />
+			<xs:element name="vehicleLiabilityAmount"
+				type="insAmountType " minOccurs="0" />	
+			<xs:element name="vehicleLiabilityDetails" type="vehicleLiabilityDetailsData"
+				minOccurs="0" />
+			<xs:element name="workmanCompensationInsuranceInd" type="indicatorEnum"
+				minOccurs="1" />
+				<xs:element name="workmanCompensationInsuranceAmount" type="insAmountType"
+				minOccurs="0" />	
+			<xs:element name="workmanCompensationDetails" type="workmanCompensationDetailsData"
+				minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="generalLiabilityDetailsData">
+		<xs:sequence>
+			<xs:element name="policyNumber" type="insPolicyType"
+				minOccurs="1" />
+			<xs:element name="carrierName" type="insCarrierType" minOccurs="1" />
+			<xs:element name="agencyName" type="insDetailType" minOccurs="1" />
+			<xs:element name="agencyState" type="insDetailType" minOccurs="1" />
+			<xs:element name="agencyCounty" type="insDetailType"
+				minOccurs="1" />
+			<xs:element name="issueDate" type="dateType" minOccurs="1" />
+			<xs:element name="expirationDate" type="dateType"
+				minOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="workmanCompensationDetailsData">
+		<xs:sequence>
+	
+			<xs:element name="policyNumber" type="insPolicyType"
+				minOccurs="1" />
+			<xs:element name="carrierName" type="insCarrierType" minOccurs="1" />
+			<xs:element name="agencyName" type="insDetailType" minOccurs="1" />
+			<xs:element name="agencyState" type="insDetailType" minOccurs="1" />
+			<xs:element name="agencyCounty" type="insDetailType"
+				minOccurs="1" />
+			<xs:element name="issueDate" type="dateType" minOccurs="1" />
+			<xs:element name="expirationDate" type="dateType"
+				minOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="vehicleLiabilityDetailsData">
+		<xs:sequence>
+			
+		
+			<xs:element name="policyNumber" type="insPolicyType"
+				minOccurs="1" />
+			<xs:element name="carrierName" type="insCarrierType" minOccurs="1" />
+			<xs:element name="agencyName" type="insDetailType" minOccurs="1" />
+			<xs:element name="agencyState" type="insDetailType" minOccurs="1" />
+			<xs:element name="agencyCounty" type="insDetailType"
+				minOccurs="1" />
+			<xs:element name="issueDate" type="dateType" minOccurs="1" />
+			<xs:element name="expirationDate" type="dateType"
+				minOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="w9InformationData">
+		<xs:sequence>
+			<xs:element name="legalBusinessName" type="businessNameType"
+				minOccurs="1" />
+			<xs:element name="businessName" type="businessNameType"
+				minOccurs="0" />
+			<xs:element name="taxStatus" type="businessStructureEnum" minOccurs="1" />
+			<xs:element name="address1" type="streetType" minOccurs="1" />
+			<xs:element name="address2" type="stringFortyType" minOccurs="0" />
+			<xs:element name="apartNo" type="stringTwentyType" minOccurs="0" />
+			<xs:element name="city" type="stringCityType" minOccurs="1" />
+			<xs:element name="state" type="stringStateType" minOccurs="1" />
+			<xs:element name="zip" type="stringZipType" minOccurs="1" />
+			<xs:element name="securityNoType" type="securityNoTypeEnum"
+				minOccurs="1" />
+			<xs:element name="taxPayerNo" type="stringTaxNoType" minOccurs="1" />
+			<xs:element name="taxExemptInd" type="indicatorEnum"
+				minOccurs="1" />
+			<xs:element name="legalTaxCheck" type="indicatorEnum"
+				minOccurs="1" />
+			<xs:element name="dateOfBirth" type="dateType" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	
+	
+	
+		<xs:simpleType name="businessNameType">
+		<xs:restriction base="xs:string">
+		<xs:minLength value="1"></xs:minLength>
+			<xs:maxLength value="100"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />  
+		</xs:restriction>
+	</xs:simpleType>
+	
+	
+	<xs:simpleType name="dBANameType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="30"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	
+	
+	
+	<xs:simpleType name="primaryIndustryType">
+		<xs:restriction base="xs:string">
+		<xs:minLength value="1"></xs:minLength>
+			<xs:maxLength value="30"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="businessStructureEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Corporation" />
+			<xs:enumeration value="Individual" />
+			<xs:enumeration value="LLC" />
+			<xs:enumeration value="LLP" />
+			<xs:enumeration value="Partnership" />
+			<xs:enumeration value="S Corporation" />
+			<xs:enumeration value="Sole Proprietor" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	
+	
+	<xs:simpleType name="dunsNumberType">
+		<xs:restriction base="xs:string">
+		<xs:maxLength value="30"></xs:maxLength>
+		<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+		<xs:simpleType name="foreignOwnedPercentageType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="0" />
+			<xs:enumeration value="10" />
+			<xs:enumeration value="20" />
+			<xs:enumeration value="30" />
+			<xs:enumeration value="40" />
+			<xs:enumeration value="50" />
+			<xs:enumeration value="60" />
+			<xs:enumeration value="70" />
+			<xs:enumeration value="80" />
+			<xs:enumeration value="90" />
+			<xs:enumeration value="100" />	
+		</xs:restriction>
+	</xs:simpleType>
+	
+
+	
+	<xs:simpleType name="companySizeEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Sole Proprietor or Individual" />
+			<xs:enumeration value="2 - 10 Employees" />
+			<xs:enumeration value="11 - 50 Employees" />
+			<xs:enumeration value="51 - 250 Employees" />
+			<xs:enumeration value="251 - 500 Employees" />
+			<xs:enumeration value="501 - 1000 Employees" />
+			<xs:enumeration value="1000+ Employees" />
+			<xs:enumeration value="Prefer to not disclose." />
+		</xs:restriction>
+	</xs:simpleType>
+
+
+	<xs:simpleType name="annualSalesRevenueEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Less than 10k" />
+			<xs:enumeration value="10k - 29k" />
+			<xs:enumeration value="30k - 59k" />
+			<xs:enumeration value="59k - 79k" />
+			<xs:enumeration value="80k - 99k" />
+			<xs:enumeration value="100k - 249k" />
+			<xs:enumeration value="250k - 499k" />
+			<xs:enumeration value="500k - 999k" />
+			<xs:enumeration value="1000k - 4999k" />
+			<xs:enumeration value="5000k or more" />
+			<xs:enumeration value="Prefer to not disclose." />		
+		</xs:restriction>
+	</xs:simpleType>
+	
+	
+	<xs:simpleType name="stringBigType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="255"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	
+	<xs:simpleType name="businessDescType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="255"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="stringSixType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="6"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="stringThirtyType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="30"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stringCityType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="30"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stringStateType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="50"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stringZipType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="5"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="nameType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="50"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	
+	<xs:simpleType name="credType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="25"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	
+	<xs:simpleType name="credDetailsType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="50"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="credCertType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="100"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="credLicenseNoType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="20"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="insAmountType">
+		<xs:restriction base='xs:decimal'>
+		      		<xs:maxInclusive value="999999999.99"/>
+              <xs:totalDigits value='11' />
+              <xs:fractionDigits value='2' />
+              <xs:pattern value='[0-9][.][0-9]*' />
+              <xs:pattern value='[1-9][0-9]*[.][0-9]*' />
+              <xs:pattern value='[1-9][0-9]*' />
+            </xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="insPolicyType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="20"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="insCarrierType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="100"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	 
+	
+		<xs:simpleType name="insDetailType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="50"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stringFortyType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="40"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	
+	
+	<xs:simpleType name="streetType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="40"></xs:maxLength>
+		<xs:pattern value=".*[^\s].*" />	
+		</xs:restriction>
+	</xs:simpleType>
+	
+	
+	
+	<xs:simpleType name="stringFiftyType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="50"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="stringTenType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="10"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	
+	<xs:simpleType name="stringTaxNoType">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="9"></xs:minLength>
+			<xs:maxLength value="9"></xs:maxLength>
+			<xs:pattern value="[0-9]{9}"/> 	
+		</xs:restriction>
+	</xs:simpleType>
+	
+	
+	
+		<xs:simpleType name="mainBusinessExtnType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="4"></xs:maxLength>
+			<xs:pattern value="[0-9]{1,4}"/> 	
+		</xs:restriction>
+	</xs:simpleType>
+	
+	
+	
+	<xs:simpleType name="stringTwentyType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="20"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="stringHundredType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="100"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+
+<xs:simpleType name="stringFifteenType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="15"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	
+<xs:simpleType name="referralCodeType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="200"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+</xs:simpleType>
+	 
+	
+	
+
+<xs:simpleType name="howDidYouHearEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Direct Mail" />
+			<xs:enumeration value="Magazine/Newspaper" />
+			<xs:enumeration value="Craig's List" />
+			<xs:enumeration value="Other website or forum" />
+			<xs:enumeration value="Friend or Business Associate" />
+			<xs:enumeration value="TV Commercial" />
+			<xs:enumeration value="Radio Advertisement" />
+			<xs:enumeration value="Email" />
+			<xs:enumeration value="ServiceLive 3rd Party" />
+			<xs:enumeration value="ServiceLive Agent" />
+			<xs:enumeration value="Rebuilding Together" />		
+		</xs:restriction>
+	</xs:simpleType>
+
+
+
+<xs:simpleType name="indicatorEnum">
+		<xs:restriction base="xs:integer">
+		 <xs:minInclusive value="0"/>
+     	 <xs:maxInclusive value="1"/>			
+		</xs:restriction>
+	</xs:simpleType>
+
+<xs:simpleType name="warrantyPeriodEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="90 days" />
+			<xs:enumeration value="180 days" />
+			<xs:enumeration value="1 year" />
+			<xs:enumeration value="2 years" />
+			<xs:enumeration value="5 years" />
+			<xs:enumeration value="10 years" />
+			<xs:enumeration value="Lifetime" />
+		</xs:restriction>
+	</xs:simpleType>
+
+<xs:simpleType name="securityNoTypeEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="SSN" />
+			<xs:enumeration value="EIN" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+<xs:simpleType name="roleWithinCompany">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="C-Level (CEO, COO, CFO, CIO, CTO, CMO)" />
+			<xs:enumeration value="President" />
+			<xs:enumeration value="Managing Director" />
+			<xs:enumeration value="Senior/Executive Vice President" />
+			<xs:enumeration value="Vice President" />
+			<xs:enumeration value="General Manager" />
+			<xs:enumeration value="Owner/Partner" />
+			<xs:enumeration value="Controller/Treasurer" />
+			<xs:enumeration value="Technical Staff/Information Systems" />
+			<xs:enumeration value="Group/Division Director" />
+			<xs:enumeration value="Sales Representative" />
+			<xs:enumeration value="Department Manager" />
+			<xs:enumeration value="Consultant" />
+			<xs:enumeration value="Professional (teacher, doctor, lawyer, etc)" />
+			<xs:enumeration value="Clerical/Support Staff" />
+			<xs:enumeration value="Government/Public Official" />	
+		</xs:restriction>
+</xs:simpleType>	
+	
+	<xs:simpleType name="rolesEnumType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Owner/Principal" />
+			<xs:enumeration value="Dispatcher/Scheduler" />
+			<xs:enumeration value="Manager" />
+			<xs:enumeration value="Service Provider" />
+			<xs:enumeration value="Other" />
+				
+		</xs:restriction>
+</xs:simpleType>
+		<xs:simpleType name="emailTypes">
+		<xs:restriction base="xs:string"> 
+           <xs:pattern value="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}"/>     
+              		</xs:restriction>
+    </xs:simpleType>    
+
+
+<xs:simpleType name="dateType">
+<xs:restriction base="xs:date">
+<xs:pattern value="\d{4}-\d{2}-\d{2}"/>
+</xs:restriction>
+</xs:simpleType>
+
+
+
+	
+</xs:schema>

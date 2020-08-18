@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="network.membermaintenance">
+
+	<typeAlias alias="memberMaintenanceProviderFirmVO" type="com.servicelive.spn.common.detached.MemberMaintenanceProviderFirmVO" />
+	<typeAlias alias="memberMaintenanceServiceProviderVO" type="com.servicelive.spn.common.detached.MemberMaintenanceServiceProviderVO" />
+
+	<update id="updateServiceProvider" parameterClass="memberMaintenanceServiceProviderVO">
+		update 
+			spnet_serviceprovider_state 
+		set 
+			provider_wf_state = #spnWorkflowState.id#,
+			modified_date = #newModifiedDate#,
+			modified_by = 'MemberMaintenance',
+			status_update_action_id = #statusUpdateActionId#,
+			status_override_comments = null,
+			status_override_reason_id = null,
+			status_override_ind = 0
+		where 
+			spn_id = #spnId# 
+			<isNotNull property="serviceProviderIds" prepend="AND  " >	
+    				service_provider_id in 
+			 	<iterate property="serviceProviderIds" open="(" close=")"  conjunction=",">
+		                   	  #serviceProviderIds[]#
+		        </iterate>
+			</isNotNull>
+			and provider_wf_state not in ('SP SPN REMOVED')
+	</update>
+
+	<update id="convertServiceProvidersToNonCompliant" parameterClass="java.util.Map">
+		update
+			spnet_serviceprovider_state sss,
+			vendor_resource vr 
+		set
+			sss.provider_wf_state = #state#,
+			sss.modified_date = #now#,
+			sss.modified_by = 'MemberMaintenance',
+			sss.status_update_action_id = #statusUpdateActionId#,
+			sss.status_override_comments = null,
+			sss.status_override_reason_id = null,
+			sss.status_override_ind = 0
+		where
+			sss.service_provider_id = vr.resource_id
+			<isNotNull property="providerFirmIdList" prepend="AND  " >	
+    				vr.vendor_id in 
+			 	<iterate property="providerFirmIdList" open="(" close=")"  conjunction=",">
+		                   	  #providerFirmIdList[]#
+		        </iterate>
+			</isNotNull>
+			and sss.provider_wf_state != #removedState#
+			and sss.spn_id = #spnId#
+	</update>
+
+	<update id="updateProviderFirm" parameterClass="memberMaintenanceProviderFirmVO">
+		update
+			spnet_provider_firm_state
+		set
+			provider_wf_state = #spnWorkflowState.id#,
+			modified_date = #newModifiedDate#,
+			modified_by = 'MemberMaintenance',
+			status_update_action_id = #statusUpdateActionId#,
+			status_override_comments = NULL,
+			status_override_reason_id = NULL,
+			status_override_ind = 0,
+			status_override_state = NULL
+		where
+			spn_id = #spnId#
+			<isNotNull property="providerFirmIdList" prepend="AND  " >	
+    				provider_firm_id in 
+			 	<iterate property="providerFirmIdList" open="(" close=")"  conjunction=",">
+		                   	  #providerFirmIdList[]#
+		        </iterate>
+			</isNotNull>
+			and provider_wf_state not in ('PF SPN DECLINED', 'PF SPN REMOVED FIRM')
+			and status_override_state is null
+	</update>
+
+	<insert id="insertServiceProvider" parameterClass="memberMaintenanceServiceProviderVO">
+		insert into 
+			spnet_serviceprovider_state 
+		( 
+			spn_id,
+			service_provider_id,
+			modified_date,
+			created_date,
+			modified_by,
+			provider_wf_state,
+			status_update_action_id
+		) values (
+			#spnId#,
+			#serviceProviderId#,
+			#newModifiedDate#,
+			#createdDate#,
+			'MemberMaintenance',
+			#spnWorkflowState.id#,
+			#statusUpdateActionId#
+		)
+	</insert>
+	
+	<select id="getOutOfCompliantAndRemovedOverriddenProviderFirms" resultClass="java.lang.Integer" parameterClass="java.lang.Integer">
+		(SELECT provider_firm_id FROM spnet_provider_firm_network_override WHERE spn_id = #spnId# AND active_ind = 1 AND overrided_network_status = 'PF FIRM OUT OF COMPLIANCE')
+		UNION (SELECT provider_firm_id FROM spnet_provider_firm_state WHERE spn_id = #spnId# AND provider_wf_state = 'PF SPN REMOVED FIRM')
+   </select>
+</sqlMap>

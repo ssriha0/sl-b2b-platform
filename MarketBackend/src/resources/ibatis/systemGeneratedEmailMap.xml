@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<typeAlias alias="sOLoggingDetailsVO" type="com.newco.marketplace.dto.vo.systemgeneratedemail.SOLoggingVO"/>
+	<typeAlias alias="eventActionDetailsVO" type="com.newco.marketplace.dto.vo.systemgeneratedemail.EventActionDetailsVO"/>
+	<typeAlias alias="emailServiceOrderDetailsVO" type="com.newco.marketplace.dto.vo.systemgeneratedemail.ServiceOrderDetailsVO"/>
+	<typeAlias alias="emailEventTemplateVO" type="com.newco.marketplace.dto.vo.systemgeneratedemail.EventTemplateVO"/>
+	<typeAlias alias="systemGeneratedEmailDataVO" type="com.newco.marketplace.dto.vo.systemgeneratedemail.EmailDataVO"/>
+	<typeAlias alias="systemGeneratedEmailContactDetails" type="com.newco.marketplace.dto.vo.systemgeneratedemail.SOContactDetailsVO"/>
+	<typeAlias alias="systemGeneratedEmailScheduleDetails" type="com.newco.marketplace.dto.vo.systemgeneratedemail.SOScheduleDetailsVO"/>
+	<typeAlias alias="systemGeneratedEmailProviderDetails" type="com.newco.marketplace.dto.vo.systemgeneratedemail.ProviderDetailsVO"/>
+	
+	<select id="getCounterValue.query" resultClass="java.lang.Long">
+		select app_value from application_parameters WHERE `app_key`='SYSTEM_GENERATED_EMAIL_COUNTER'
+	</select>
+	
+	<select id="getMaxValue.query" resultClass="java.lang.Long">
+		select MAX(so_logging_id) from so_logging
+	</select>
+	
+	<select id="getSOLoggingDetails.query" 	parameterClass="java.util.Map" resultClass="sOLoggingDetailsVO">
+		select log.so_logging_id as soLoggingId,
+			log.chg_comment as loggingChangeComment,
+			log.so_id as serviceOrderNo, 
+			log.action_id as actionId,
+         	hdr.buyer_id AS buyerId, 
+			hdr.sow_title AS soTitle, 
+ 			hdr.wf_state_id AS wfStateId, 
+            hdr.service_locn_time_zone as timeZone,
+ 			hdr.so_substatus_id AS soSubStatusId, 
+ 			hdr.service_date_type_id AS serviceDateType, 
+ 			hdr.service_date1 AS serviceDate1, 
+ 			hdr.service_date2 AS serviceDate2, 
+ 			hdr.service_time_start AS serviceDateStartTime, 
+ 			hdr.service_time_end AS serviceDateEndTime, 
+  			hdr.accepted_vendor_id  AS acceptedVendorId 
+    	from so_logging log join so_hdr hdr on log.so_id=hdr.so_id where 
+		action_id in <iterate property="actionIds" open="(" close=")" conjunction=",">
+							#actionIds[]#
+						</iterate>
+		 and buyer_id in <iterate property="buyerIds" open="(" close=")" conjunction=",">
+							#buyerIds[]#
+						</iterate> and
+		so_logging_id <![CDATA[>]]> #counterValue# and so_logging_id <![CDATA[<=]]> #maxValue#
+	</select>
+	
+	<select id="getEventTemplateDetailsForBuyer.query"
+		 resultClass="emailEventTemplateVO">
+		SELECT buyer_event_mapping_id AS buyerEventId,
+		event.buyer_id AS buyerId,
+		event.event_id AS eventId,
+		template_id AS templateId,
+		master.event_name as eventName,
+		master.event_type as eventType,
+		action_id AS actionId,
+		wf_state_id AS wfStateId,
+		so_substatus_id AS soSubStatusId 
+		FROM buyer_event_mapping event 
+		JOIN buyer_event_template_mapping template on event.buyer_event_mapping_id= template.buyer_event_id 
+		join lu_event_master master on master.event_id = event.event_id
+		join event_action_mapping action on action.event_id = master.event_id
+		join buyer_feature_set feature on feature.buyer_id = event.buyer_id 
+		WHERE event.isActive = 1 AND feature.active_ind=1 and 
+		((master.event_type = 'CONSUMER_EMAIL' and feature.feature='CONSUMER_EMAIL') or 
+		(master.event_type = 'CONSUMER_SURVEY' and feature.feature='CONSUMER_SURVEY'))
+	</select>
+	
+	<select id="getEmailDataForBuyer.query"
+		parameterClass="java.util.List" resultClass="systemGeneratedEmailDataVO">
+		SELECT buyer_id as buyerId, param_key as paramKey, param_value as paramValue FROM buyer_email_data WHERE buyer_id in 
+		<iterate open="(" close=")" conjunction=",">
+				#[]#
+		</iterate>
+	</select>
+	
+	<select id="getEmailDataForBuyerEvent.query"
+		parameterClass="java.util.List" resultClass="systemGeneratedEmailDataVO">
+		SELECT email.buyer_event_id as buyerEventId, param_key as paramKey, param_value as paramValue FROM 
+  		buyer_event_email_data email where 
+       	email.buyer_event_id IN
+		<iterate open="(" close=")" conjunction=",">
+				#[]#
+		</iterate>
+	</select>
+	
+	<select id="getEmailParameterForTemplate.query"
+		parameterClass="java.util.List" resultClass="systemGeneratedEmailDataVO">
+		SELECT template_id AS templateId,
+			parameter_value AS paramKey FROM template_parameter temp join lu_template_parameter lu on temp.parameter_id= lu.parameter_id WHERE template_id IN
+			<iterate open="(" close=")" conjunction=",">
+				#[]#
+			</iterate>
+	</select>
+	<select id="getContactDetailsForServiceOrder.query"
+		parameterClass="java.lang.String" resultClass="systemGeneratedEmailContactDetails">
+		select first_name as firstName, last_name as lastName, email from so_contact sc join so_contact_locn scl
+		on sc.so_id = scl.so_id and sc.so_contact_id = scl.so_contact_id
+		where scl.so_contact_locn_type_id = 10  and sc.so_id=#soId#
+	</select>
+	<select id="getScheduleDetailsForServiceOrder.query"
+		parameterClass="java.lang.String" resultClass="systemGeneratedEmailScheduleDetails">
+		select service_start_date as serviceStartDate,
+			service_start_time as serviceStartTime,
+			service_end_date as serviceEndDate,
+			service_end_time as  serviceEndTime,
+			slot_seleted_ind as selectedIndicator,
+			preference_ind as preferenceIndicator from so_service_datetime_slot where so_id=#soId#
+	</select>
+	<select id="getProviderDetailsForVendorId.query"
+		parameterClass="java.lang.Integer" resultClass="systemGeneratedEmailProviderDetails">
+		select business_name as providerFirmName, bus_phone_no as providerPhoneNumber , 
+		(select ser.rating_score  from survey_entity_rating ser 
+		where ser.entity_id = #vendorId# and entity_type_id = 40
+		and ser.score_type = 'CSAT' and ser.score_timeline_type = 'LIFETIME') as providerRating from vendor_hdr where vendor_id=#vendorId#
+	</select>
+		
+	<update id="updateSystemGeneratedEmailCounter.query" parameterClass="java.lang.Long">
+		update application_parameters set app_value=#soLoggingId# WHERE `app_key`='SYSTEM_GENERATED_EMAIL_COUNTER' 
+	</update>
+		
+	<select id="getEventTemplateDetailsForBuyerReminderService.query"
+		 resultClass="emailEventTemplateVO">
+		SELECT buyer_event_mapping_id AS buyerEventId,
+		event.buyer_id AS buyerId,
+		event.event_id AS eventId,
+		template_id AS templateId,
+		master.event_name as eventName,
+		master.event_type as eventType
+		FROM buyer_event_mapping event 
+		JOIN buyer_event_template_mapping template on event.buyer_event_mapping_id= template.buyer_event_id 
+		join lu_event_master master on master.event_id = event.event_id and master.event_name='ORDER_SERVICE_DUE_REMINDER'
+		join buyer_feature_set feature on feature.buyer_id = event.buyer_id 
+		WHERE event.isActive = 1 AND feature.active_ind=1 and 
+		((master.event_type = 'CONSUMER_EMAIL' and feature.feature='CONSUMER_EMAIL'))
+	</select>
+	
+	<select id="getSODetailsForNextDayService.query"
+		parameterClass="java.util.List" resultClass="sOLoggingDetailsVO">
+		SELECT so_id AS serviceOrderNo,buyer_id AS buyerId,sow_title AS soTitle,
+		wf_state_id AS wfStateId,service_date_type_id AS serviceDateType,
+		service_date1 AS serviceDate1,service_date2 AS serviceDate2,
+		service_time_start AS serviceDateStartTime,service_time_end AS serviceDateEndTime,
+		accepted_vendor_id AS acceptedVendorId,
+		service_locn_time_zone AS timeZone  
+		FROM so_hdr
+		WHERE buyer_id in 
+		<iterate open="(" close=")" conjunction=",">
+				#[]#
+		</iterate>
+		AND wf_state_id IN(150) AND
+		DATE(service_date1) = DATE(NOW() + INTERVAL 1 DAY)
+	</select>
+	
+	<select id="getAlertEmailValue.query" resultClass="java.lang.String"
+		parameterClass="java.lang.String">
+		SELECT app_constant_value FROM application_constants WHERE
+		app_constant_key=#appkey#
+	</select>
+	
+</sqlMap>

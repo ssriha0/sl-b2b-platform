@@ -1,0 +1,15 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="hsrPriceRate" extends="ServiceLiveBase" >
+        <default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+        	
+	    <action name="fetchReimbursementRate_*" class="retrieveHSRPriceRateAction" method="{1}">
+	        <result name="success">/jsp/details/body/html_sections/modules/summary_tab/panel_parts_hsr_new.jsp</result>	    	   
+	        <result name="homepage" type="redirectAction">homepage</result>	         
+	    </action> 
+	    
+    </package>
+    
+</struts>

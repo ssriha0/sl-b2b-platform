@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+
+    <!-- ### IMPORTS ### -->
+
+<!-- 
+    <bean id="propertyConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location">
+            <value>classpath:routingRulesEngine.dev.properties</value>
+        </property>
+    </bean>
+-->
+
+
+    <!-- ### ACTIONS ### -->
+
+    <bean id="routingRulesCreateRuleAction" scope="prototype" class="com.servicelive.routingrulesweb.action.RoutingRulesCreateRuleAction">
+		    <property name="routingRulesService" ref="routingRulesService" />
+		    <property name="criteriaService" ref="criteriaService" />
+		    <property name="validationService" ref="validationService" />
+    </bean>
+
+    <bean id="routingRulesDashboardAction" scope="prototype" class="com.servicelive.routingrulesweb.action.RoutingRulesDashboardAction">
+        <property name="routingRulesService" ref="routingRulesService" />
+        <property name="routingRulesPaginationService" ref="routingRulesPaginationService" />
+    </bean>
+
+	<bean id="routingRulesManageTabAction" scope="prototype" class="com.servicelive.routingrulesweb.action.RoutingRulesManageTabAction">
+        <property name="routingRulesService" ref="routingRulesService" />
+        <property name="routingRulesPaginationService" ref="routingRulesPaginationService" />
+    </bean>
+    
+    <bean id="routingRulesJsonAction" scope="prototype" class="com.servicelive.routingrulesweb.action.RoutingRulesJsonAction">
+        <property name="routingRulesService" ref="routingRulesService" />
+        <property name="routingRulesPaginationService" ref="routingRulesPaginationService" />
+    </bean>
+
+    <bean id="routingRulesSearchTabAction" scope="prototype" class="com.servicelive.routingrulesweb.action.RoutingRulesSearchTabAction">
+       <property name="routingRulesService" ref="routingRulesService" /> 
+       <property name="routingRulesPaginationService" ref="routingRulesPaginationService" />
+    </bean> 
+    
+    <bean id="routingRulesUploadTabAction" scope="prototype" 
+    		class="com.servicelive.routingrulesweb.action.RoutingRulesUploadTabAction">
+       <property name="routingRulesService" ref="routingRulesService" /> 
+       <property name="routingRulesPaginationService" ref="routingRulesPaginationService" />
+       <property name="applicationProperties" ref="applicationPropertiesWallet" />
+    </bean> 
+</beans>

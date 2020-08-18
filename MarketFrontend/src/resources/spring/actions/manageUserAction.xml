@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<!-- Start Action  Loading -->
+	<bean id="manageUserAction" class="com.newco.marketplace.web.action.provider.ManageUsersAction" scope="prototype" >
+		<constructor-arg index="0" ref="teamMemberDelegateImpl"/>
+		<constructor-arg index="1" ref="manageUsersDelegate"/>
+		<constructor-arg index="2" ref="teamProfileDTO"/>
+	</bean>
+	
+	<bean id="BackgroundCheckAction" class="com.newco.marketplace.web.action.provider.BackgroundCheckAction" scope="prototype" >
+		<constructor-arg index="0" ref="teamMemberDelegateImpl"/>
+		<constructor-arg index="1" ref="backgroundCheckDTO"/>
+	</bean>
+	
+</beans>

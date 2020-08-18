@@ -1,0 +1,105 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+    <package name="monitorNetwork" extends="selectProviderNetworkBase,json-default" >
+        <default-interceptor-ref name="SPNInterceptorStack"/>
+        
+		<action name="spnMonitorNetwork_display" class="spnMonitorNetworkAction" method="display">
+			<result name="success">/jsp/spn/buyer/network/monitor/tab_spn_monitor.jsp</result>
+		</action>
+
+		<action name="spnMonitorNetwork_viewNetworkHistoryAjax" class="spnMonitorNetworkAction"  method="viewNetworkHistoryAjax">
+			<result name="success">/jsp/spn/buyer/campaign/monitor/expanded_details/tab_network_history.jsp</result>
+		</action>
+
+		<action name="spnMonitorNetwork_viewNetworkTableAjax" class="spnMonitorNetworkAction"  method="viewNetworkTableAjax">
+			<result name="success">/jsp/spn/buyer/network/monitor/panel_network_monitor_results.jsp</result>
+		</action>
+		<action name="spnMonitorNetwork_viewExceptionsAjax" class="spnMonitorNetworkAction"  method="viewExceptionsAjax">
+			<result name="success">/jsp/spn/buyer/campaign/monitor/expanded_details/tab_spn_exceptions.jsp</result>
+		</action>
+		<action name="spnMonitorNetwork_saveExceptions" class="spnMonitorNetworkAction" method="saveExceptions">
+						<result name="json" type="json"> 
+			<param name="excludeProperties">
+			 	networkSummaryServices,
+			 	cryptography
+			 </param>
+			 </result>	
+		</action>
+		
+		<action name="spnMonitorNetwork_viewComplianceTabAjax" class="spnMonitorNetworkAction" method="viewComplianceTabAjax">
+						<result name="json" type="json">
+						<param name="includeProperties">
+			 	aaa
+			 </param> 
+			 </result>	
+		</action>
+		
+		<action name="spnMonitorNetwork_viewComplianceTabAjax3" class="spnMonitorNetworkAction" method="viewComplianceTabAjax">
+						<result name="json" type="json">
+						<param name="excludeProperties">
+			 	networkSummaryServices,
+			 	cryptography,
+			 	completeSPNCount,
+			 	exceptionsInd,
+			 	incompleteSPNCount,
+			 	networkCountAll,
+			 	networkCountLimit,
+			 	options,
+			 	spnId
+			 </param> 
+			 </result>	
+		</action>
+		
+		<action name="spnMonitorNetwork_viewCoverageDetailsAjax" class="spnMonitorNetworkAction" method="viewCoverageDetailsAjax">
+						<result name="json" type="json"> 
+						<param name="excludeProperties">
+			 	networkSummaryServices,
+			 	cryptography,
+			 	SAVED_DTO,
+			 	completeSPNCount,
+			 	exceptionsInd,
+			 	incompleteSPNCount,
+			 	networkCountAll,
+			 	networkCountLimit,
+			 	options,
+			 	spnId
+			 </param> 	
+			 </result>
+		</action>
+		
+		<action name="spnMonitorNetwork_viewComplianceTabAjax2" class="spnMonitorNetworkAction" method="viewComplianceTabAjax">
+						<result name="json" type="json">
+						<param name="includeProperties">
+			 	aaa,
+			 	bbb
+			 </param> 
+			 </result>	
+		</action>
+		
+		<action name="spnMonitorNetwork_viewComplianceTabAjax1" class="spnMonitorNetworkAction" method="viewComplianceTabAjax1">
+			<result name="success" >/jsp/spn/buyer/campaign/monitor/expanded_details/get_json.jsp</result>			
+		</action>  
+		
+		<action name="spnMonitorNetwork_viewComplianceAjax" class="spnMonitorNetworkAction"  method="viewComplianceAjax">
+			<result name="success">/jsp/spn/buyer/campaign/monitor/expanded_details/tab_spn_compliance.jsp</result>
+		</action>
+		
+		<action name="spnMonitorNetwork_demoviewComplianceAjax" class="spnMonitorNetworkAction"  method="demoviewComplianceAjax">
+			<result name="success">/jsp/spn/buyer/campaign/monitor/expanded_details/tab_spn_compliance.jsp</result>
+		</action>
+		
+		<action name="spnMonitorNetwork_viewComplianceTabAjax" class="spnMonitorNetworkAction" method="viewComplianceTabAjax">
+						<result name="json" type="json"> 
+			<param name="excludeProperties">
+			 	networkSummaryServices,
+			 	cryptography
+			 </param>
+			 </result>	
+		</action>
+		
+    </package>
+    
+</struts>

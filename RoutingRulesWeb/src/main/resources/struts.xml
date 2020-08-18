@@ -1,0 +1,174 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="routingRulesActions" extends="ServiceLiveBase">
+
+        <default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+        
+        <!-- SL-20363 Need to Add UI for Forceful CAR Activation for buyer# 3000 -->
+        <action name="rrCreateRuleActionForceActive" class="routingRulesJsonAction" method="forceFulActiveRule">
+		     <result name="success" type="redirectAction">
+				<param name="actionName">rrDashboard_display</param>
+		     </result>
+		     <result name="error">/jsp/public/error/body/errorBody.jsp</result>  
+		</action>
+
+
+		<!-- display:input, savedone:success|error  -->
+        <action name="rrCreateRuleAction_*" class="routingRulesCreateRuleAction" method="{1}">
+            <result name="input">/jsp/routingrules/create_edit_rule.jsp</result>
+            <result name="error">/jsp/public/error/body/errorBody.jsp</result>            
+            <result name="success" type="redirectAction">
+				<param name="actionName">rrDashboard_display</param>
+			</result>
+			<result name="search" type="redirectAction">
+				<param name="actionName">rrDashboard_displaySearch</param>
+			</result>
+        </action>
+
+ 		<action name="rrCreateRuleAction_addZipcodes" class="routingRulesCreateRuleAction" method="addZipcodes">
+            <result name="success">/jsp/routingrules/routing_rule_zipcodes.jsp</result>
+        </action>
+        
+        <action name="rrCreateRuleAction_deleteZipMarkets" class="routingRulesCreateRuleAction" method="deleteZipMarkets">
+            <result name="success">/jsp/routingrules/routing_rule_zipcodes.jsp</result>
+        </action>
+        
+        <action name="rrCreateRuleAction_loadZipCodeList" class="routingRulesCreateRuleAction" method="loadZipCodeList">
+            <result name="success">/jsp/routingrules/routing_rule_zipcodes.jsp</result>
+        </action>
+        
+        <action name="rrCreateRuleAction_loadCriteriaForRule" class="routingRulesCreateRuleAction" method="loadCriteriaForRule">
+            <result name="success">/jsp/routingrules/routing_rule_zipcodes.jsp</result>
+        </action>
+        
+        <action name="rrCreateRuleAction_addCustReference" class="routingRulesCreateRuleAction" method="addCustReference">
+            <result name="success">/jsp/routingrules/routing_rule_custom_reference.jsp</result>
+        </action>
+        
+        <action name="rrCreateRuleAction_loadCustRefList" class="routingRulesCreateRuleAction" method="loadCustRefList">
+            <result name="success">/jsp/routingrules/routing_rule_custom_reference.jsp</result>
+        </action>
+        
+        <action name="rrCreateRuleAction_deleteCustReference" class="routingRulesCreateRuleAction" method="deleteCustReference">
+            <result name="success">/jsp/routingrules/routing_rule_custom_reference.jsp</result>
+        </action>
+        
+        <action name="rrCreateRuleAction_addJobCodes" class="routingRulesCreateRuleAction" method="addJobCodes">
+            <result name="success">/jsp/routingrules/routing_rule_jobCode.jsp</result>
+        </action>
+        
+        <action name="rrCreateRuleAction_loadJobCodeList" class="routingRulesCreateRuleAction" method="loadJobCodeList">
+            <result name="success">/jsp/routingrules/routing_rule_jobCode.jsp</result>
+        </action>
+        
+        <action name="rrCreateRuleAction_deleteJobCodes" class="routingRulesCreateRuleAction" method="deleteJobCodes">
+            <result name="success">/jsp/routingrules/routing_rule_jobCode.jsp</result>
+        </action>
+        
+		<!-- ### -->
+        <action name="rrDashboard_*" class="routingRulesDashboardAction" method="{1}">
+            <result name="success">/jsp/routingrules/dashboard.jsp</result>
+        </action>
+
+        <action name="routingRuleSearch_*" class="routingRulesSearchTabAction" method="{1}">
+            <result name="success">/jsp/routingrules/searchrules_results.jsp</result>       
+        </action>  
+
+         <action name="rrManageTab_*" class="routingRulesManageTabAction" method="{1}">
+        	<result name="success">/jsp/routingrules/tab_manageRules.jsp</result>
+        </action>
+        
+		<action name="rrManageTab_displayError" class="routingRulesManageTabAction" method="displayError">
+        	<result name="success">/jsp/routingrules/tab_manageRulesErrors.jsp</result>
+        </action>
+		
+		<action name="rrManageTab_configureBuyerEmailId" class="routingRulesManageTabAction" method="configureBuyerEmailId">
+		<result name="success" type="redirectAction">
+				<param name="actionName">rrDashboard_display</param>
+			</result>
+        </action>
+        
+        <action name="rrManageTab_displayQuickView" class="routingRulesManageTabAction" method="displayQuickView">
+        	<result name="success">/jsp/routingrules/tab_manageRulesQuickView.jsp</result>
+        </action>
+        
+         <action name="rrManageTab_displayAutoAcceptHistoryForBuyer" class="routingRulesManageTabAction" method="displayAutoAcceptHistoryForBuyer">
+        	<result name="success">/jsp/routingrules/tab_autoAcceptHistoryBuyer.jsp</result>
+        </action>
+
+     	<action name="rrJson_*" class="routingRulesJsonAction" method="{1}">
+			<result name="success" >/jsp/routingrules/get_json.jsp</result>			
+		</action>        
+		
+		<action name="rr_getRoutingRuleHdrHist" class="routingRulesJsonAction" method="getRoutingRuleHdrHist">
+			<result name="success" >/jsp/routingrules/tab_rulesHistory.jsp</result>			
+		</action>        
+		
+		<action name="routingRulesUploadTabAction_display" class="routingRulesUploadTabAction" method="display">
+			<result name="success" >/jsp/routingrules/tab_uploadRules.jsp</result>
+			<result name="displayList" >/jsp/routingrules/uploadFileList.jsp</result>			
+		</action>
+		
+		<action name="routingRulesUploadTabAction_displayList" class="routingRulesUploadTabAction" method="display">
+			<result name="success" >/jsp/routingrules/uploadFileList.jsp</result>
+			<result name="displayList" >/jsp/routingrules/uploadFileList.jsp</result>			
+		</action>
+		
+		<action name="routingRulesUploadTabAction_uploadFile" class="routingRulesUploadTabAction" method="uploadFile">
+		    <result name="success">/jsp/routingrules/get_json.jsp</result>
+		</action> 
+		      
+	</package>
+
+	
+    <package name="routingRulesJson" extends="ServiceLiveBase">	
+     	<result-types>
+			<result-type name="json" default="true" class="code.google.struts2jsonresult.JSONResult">
+				<param name="prettyPrint">true</param>
+			</result-type>
+		</result-types>
+
+        <default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+
+		<action name="routingRulesJsonTest_*" class="routingRulesJsonAction" method="{1}">
+			<result name="headers"> 
+				<param name="target">routingRulesHeaders</param>
+				<param name="patterns"> -*.class</param>
+			</result>
+			<result name="test" >
+				<param name="target">routingRulesHeaders</param>
+			</result>			
+		</action>
+        
+    </package>
+
+<!-- 
+	<package name="json" extends="struts-default">
+		<result-types>
+			<result-type name="json" default="true" class="code.google.struts2jsonresult.JSONResult">
+				<param name="prettyPrint">true</param>
+			</result-type>
+		</result-types>
+
+		<action name="listByStudent" class="articleAction" method="listByStudent">
+			<result> 
+				<param name="target">result</param>
+				<param name="patterns"> -*.class, -gradeArticle </param>
+			</result>
+		</action>
+
+    </package>
+
+
+	<action name="routingRuleHeaderByBuyerId" class="routingRulesService"
+		method="routingRuleHeaders">
+		<result>
+			<param name="target">result</param>
+			<param name="patterns"> -*.class, -gradeArticle </param>
+		</result>
+	</action>
+-->
+
+</struts>

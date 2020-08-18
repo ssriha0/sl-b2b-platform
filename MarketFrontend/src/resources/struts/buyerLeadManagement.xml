@@ -1,0 +1,104 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="buyerLeadManagement" extends="ServiceLiveBase,json-default" >
+        <default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+        <global-results >
+			<result name="error" type="redirectAction">
+				<param name="actionName">errorAction</param>
+				<param name="errorMessage">${errorMessage}</param>
+				<param name="returnURL">${returnURL}</param>
+			</result>
+		</global-results>
+    	   	
+        <action name="buyerLeadManagementController" class="buyerLeadManagementControllerAction">
+			<result name="success">jsp/buyerLeadManagement/buyer_lead_management.jsp</result>
+		</action> 
+		
+		<action name="buyerLeadManagementController_cancelLead" class="buyerLeadManagementControllerAction" method="cancelLead">
+			<result name="success">jsp/buyerLeadManagement/buyer_lead_cancellation.jsp</result>
+		</action>
+		
+		<action name="buyerLeadManagementController_updateRewardPoints" class="buyerLeadManagementControllerAction" method="updateRewardPoints">
+			<result name="success">jsp/buyerLeadManagement/buyer_update_reward_points.jsp</result>
+		</action>
+		
+		<action name="buyerLeadManagementController_submitUpdateRewardPoints" class="buyerLeadManagementControllerAction" method="submitUpdateRewardPoints">
+			<result name="json" type="json">
+				<param name="excludeProperties">
+			 		buyerLeadManagementService,
+			 		applicationProperties,
+			 	</param>
+			 </result>
+		</action>
+		
+		<action name="buyerLeadManagementController_addNoteLead" class="buyerLeadManagementControllerAction" method="addNoteLead">
+			<result name="success">jsp/buyerLeadManagement/buyer_lead_add_note.jsp</result>
+		</action>
+		
+		<action name="buyerLeadManagementController_buyerLeadAddNote" class="buyerLeadManagementControllerAction" method="buyerLeadAddNote">
+			<result name="json" type="json">
+				<param name="excludeProperties">
+			 		buyerLeadManagementService,
+			 		applicationProperties,
+			 	</param>
+			 </result>
+		</action>
+		
+		 <action name="buyerLeadManagementControllerAction_loadBuyerLeadManagementTabInformationAction" class="buyerLeadManagementControllerAction"
+		 method="loadBuyerLeadManagementTabInformation">
+			<result name="json" type="json">
+				<param name="excludeProperties">
+			 	buyerLeadManagementService,
+			 	applicationProperties
+			 </param> 
+			 </result>
+		</action>
+		<action name="buyerLeadManagementControllerAction_leadCancellation" class="buyerLeadManagementControllerAction" method="buyerLeadCancellation">
+			<result name="json" type="json">
+				<param name="excludeProperties">
+			 		buyerLeadManagementService,
+			 		applicationProperties,
+			 	</param>
+			 </result>
+		</action>
+		 <action name="buyerLeadOrderSummaryController" class="buyerLeadOrderSummaryControllerAction">
+			<result name="success">jsp/buyerLeadManagement/buyer_lead_details.jsp</result>
+		</action>
+		
+		<action name="buyerLeadOrderSummaryController_loadUpdatedLeadInformation" class="buyerLeadOrderSummaryControllerAction" method="loadUpdatedLeadInformation">
+			<result name="success">jsp/buyerLeadManagement/buyer_lead_customer_information.jsp</result>
+		</action>
+		
+		<action name="buyerLeadOrderSummaryController_updateCustomerInfo" class="buyerLeadOrderSummaryControllerAction" method="updateCustomerInfo">
+			 <result name="success" type="redirect">${resultUrl}</result>
+		</action> 
+	
+		<action name="buyerLeadOrderSummaryController_viewNotes" class="buyerLeadOrderSummaryControllerAction" method="getBuyerLeadNotes">
+			<result name="json" type="json">
+				<param name="excludeProperties">
+			 		buyerLeadManagementService,
+			 		applicationProperties,
+			 	</param>
+			 </result>
+		</action>
+		
+		<action name="buyerLeadOrderSummaryController_buyerLeadViewNotes" class="buyerLeadOrderSummaryControllerAction" method="buyerLeadViewNotes">
+			<result name="success">jsp/buyerLeadManagement/buyer_lead_view_notes.jsp</result>
+		</action>
+		
+		<action name="buyerLeadOrderSummaryController_orderHistory" class="buyerLeadOrderSummaryControllerAction" method="getBuyerLeadHistory">
+			<result name="success">jsp/buyerLeadManagement/buyer_lead_history.jsp</result>
+		</action>
+		
+		<action name="buyerLeadManagementController_getAttachmentDetails" class="buyerLeadManagementControllerAction" method="getAttachmentDetails">
+			<result name="success">jsp/buyerLeadManagement/buyer_lead_attachments.jsp</result>
+		</action>
+		
+		<action name="buyerLeadManagementController_viewDocument" class="buyerLeadManagementControllerAction" method="viewDocument">
+			<result name="success">jsp/buyerLeadManagement/buyer_lead_attachments.jsp</result>
+		</action>
+		 
+	</package>	
+</struts>

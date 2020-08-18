@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:include schemaLocation="../../common.xsd" />
+	<!-- Root element -->
+	<xs:element name="submitWarrantyHomeReasonCodeRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="warrantyReasonCodeInfo" type="WarrantyReasonCodeInfoType"/>		
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:complexType name="WarrantyReasonCodeInfoType">
+		<xs:sequence>
+			
+			<xs:element name="reasonCode" type="xs:integer" minOccurs="1"/>
+		    <xs:element name="comments" type="stringFiftyType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+		<xs:simpleType name="stringFiftyType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="255"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

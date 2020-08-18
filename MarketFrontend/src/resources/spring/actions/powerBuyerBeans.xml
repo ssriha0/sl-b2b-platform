@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+
+	<bean id="pbControllerAction"  class="com.newco.marketplace.web.action.powerbuyer.PBControllerAction" scope="prototype">
+		 <property name="pbDelegate">
+			<ref bean="powerBuyerDelegate" />
+		</property>	
+		<property name="fetchDelegate">
+			<ref bean="SOWizardFetchBean"/>
+		</property>
+ 	</bean>
+
+	<bean id="pbWorkflowTabAction"  class="com.newco.marketplace.web.action.powerbuyer.PBWorkflowTabAction" scope="prototype">
+		<property name="pbDelegate">
+			<ref bean="powerBuyerDelegate" />
+		</property>
+		<property name="buyerSearchDelegate">
+			<ref bean="adminBuyerSearch" />
+		</property>		
+		<property name="buyerBO">
+			<ref bean="buyerBo" />
+		</property>		
+ 	</bean>
+	
+	<bean id="pbSearchTabAction"  class="com.newco.marketplace.web.action.powerbuyer.PBSearchTabAction" scope="prototype">
+		 <property name="pbDelegate">
+			<ref bean="powerBuyerDelegate" />
+		</property>	
+		<property name="buyerSearchDelegate">
+			<ref bean="adminBuyerSearch" />
+		</property>	
+ 	</bean>
+
+	<bean id="pbClaimedTabAction"  class="com.newco.marketplace.web.action.powerbuyer.PBClaimedTabAction" scope="prototype">
+		<property name="pbDelegate">
+			<ref bean="powerBuyerDelegate" />
+		</property>		
+		<property name="soMonitorDelegate">
+			<ref bean="serviceOrderManager" />
+		</property>				
+ 	</bean>
+ 	
+ 	<!-- SLT-1613 START -->
+ 	<bean id="pbConfigureAction"  class="com.newco.marketplace.web.action.powerbuyer.PBWorkflowConfigureAction" scope="prototype">
+		<property name="wfmDelegate">
+			<ref bean="wfmDelegate" />
+		</property>					
+ 	</bean>
+ 	<!-- SLT-1613 END -->
+</beans>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<bean id="soDetailsManager" class="com.newco.marketplace.web.delegatesImpl.SODetailsDelegateImpl">
+		<property name="surveyBO">
+			<ref bean="surveyAOP"/>
+		</property>	
+		<property name="serviceOrderBo">
+                <ref bean="soBOAOP"/>
+        </property>
+         <property name="soMonitor">
+				<ref bean="serviceOrderMonitorBO"/>
+		</property>
+		<property name="luDelegate">
+			<ref bean="lookupManager"/>
+		</property>
+		 <property name="timeOnSiteVisitBO">
+			<ref bean="onsiteVisitBO"/>
+		</property>
+		
+		<property name="orderGrpBO">
+			<ref bean="soOrderGroupBOAOP"/>
+		</property>
+		
+		<property name="promoBO">
+			<ref bean="promoBO" />
+		</property>	
+		
+		<property name="serviceOrderCloseBo">
+			<ref bean="soCloseBO"/>
+		</property>	
+		<property name="wfmBuyerQueueMapper">
+			<ref bean="wfmBuyerQueueMapper"/>
+		</property>
+		<property name="powerBuyerBO">
+			<ref bean="powerBuyerBO"/>
+		</property>
+     
+		<property name="upsellBO">
+			<ref bean="soUpsellBO"/>
+		</property>
+		<property name="buyerFeatureSetBO">
+			<ref bean="buyerFeatureSetBO" />
+		</property>
+		<property name="routeOrderGroupBO">
+			<ref bean="routeOrderGroupBO" />
+		</property>
+		
+		<property name="emailTemplateBO">
+			<ref bean="emailTemplateBean" />
+		</property>
+		<property name="helperOF" ref="ofHelper" />
+        <property name="resourceBO" ref="resourceBOImpl" />
+		
+		<property name="serviceOrderFeatureSetBO">
+			<ref bean="serviceOrderFeatureSetBO" />
+		</property>
+		
+		<property name="activityLogHelper">
+			<ref bean="activityLogHelper"/>
+		</property>
+		
+		<property name="cryptography">
+			<ref bean="cryptography"/>
+		</property>
+		<property name="buyerOutBoundNotificationService">
+			<ref bean="buyerOutBoundNotificationService"/>
+		</property>
+		<property name="buyerOutBoundNotificationJMSService">
+			<ref bean="buyerOutBoundNotificationJMSService" />
+		</property>	 
+		<property name="documentBO">
+			<ref bean="documentBO"/>
+		</property>
+		<property name="notificationService">
+			<ref bean="notificationService" />
+		</property>
+		<property name="cryptography128">
+			<ref bean="cryptography128"/>
+		</property>
+		<property name="hsTokenServiceCreditCardBo">
+			<ref bean="hsTokenServiceCreditCardBo" />
+		</property>
+		<property name="relayNotificationService">
+			<ref bean="relayNotificationService" />
+		</property>
+		<property name="techTalkByerBO">
+			<ref bean="techTalkPortalBO"/>
+		</property>
+		
+		<property name="pushNotificationAlertTask">
+			<ref bean="pushNotificationAlertTask" />
+		</property>
+	</bean> 
+
+				
+</beans>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd" xmlns:tx="http://www.springframework.org/schema/tx">
+	
+	<import resource="financeDataSource.xml" />
+	
+	<bean id="entityManagerFactoryFinance" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="persistenceUnitName" value="FinancePU" />
+		<property name="persistenceXmlLocation" value="classpath*:META-INF/persistence.xml" />
+		<property name="dataSource" ref="${datasource.finance.bean.id}" />
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+				<property name="database" value="${datasource.finance.jpaVendorAdapter.database}" />
+				<property name="databasePlatform" value="${datasource.finance.jpaVendorAdapter.databasePlatform}" />
+				<property name="showSql"  value="false" />
+				<property name="generateDdl" value="false" />
+			</bean>
+		</property>
+	</bean>
+    
+	<bean id="entityManagerFinance" class="org.springframework.orm.jpa.support.SharedEntityManagerBean">
+		<property name="entityManagerFactory" ref="entityManagerFactoryFinance"/>
+	</bean>
+
+	<bean id="jpaTransactionManagerFinance" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactoryFinance" />
+	</bean>
+
+</beans>

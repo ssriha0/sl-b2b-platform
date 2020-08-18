@@ -1,0 +1,39 @@
+<!DOCTYPE validators PUBLIC
+        "-//Apache Struts//XWork Validator 1.0.2//EN"
+        "http://struts.apache.org/dtds/xwork-validator-1.0.2.dtd">
+        
+<validators>
+	<field name="buyerAdminManageUsersAddEditDTO.priEmail">
+		<field-validator type="requiredstring">
+			<param name="trim">true</param>
+			<message key="accountDTO.email.error.required" />
+		</field-validator>
+		<field-validator type="email">
+			<param name="trim">true</param>
+			<message key="accountDTO.email.error" />
+		</field-validator>
+	</field>
+		
+	<field name="buyerAdminManageUsersAddEditDTO.confirmPriEmail">
+		<field-validator type="requiredstring">
+			<param name="trim">true</param>
+			<message key="accountDTO.emailConfirm.error.required" />
+		</field-validator>
+		<field-validator type="email">
+			<param name="trim">true</param>
+			<message key="provider.registration.confirmEmail.error" />
+		</field-validator>
+	</field>
+	<field name="buyerAdminManageUsersAddEditDTO.altEmail">		
+		<field-validator type="email">
+			<param name="trim">true</param>
+			<message key="provider.registration.altEmail.error" />
+		</field-validator>
+	</field>
+	<field name="buyerAdminManageUsersAddEditDTO.confirmAltEmail">		
+		<field-validator type="email">
+			<param name="trim">true</param>
+			<message key="provider.registration.confirmAltEmail.error" />
+		</field-validator>
+	</field>
+</validators>

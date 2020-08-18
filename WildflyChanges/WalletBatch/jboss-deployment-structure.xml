@@ -1,0 +1,16 @@
+<jboss-deployment-structure xmlns="urn:jboss:deployment-structure:1.2">
+  <deployment>
+    <exclude-subsystems>
+   <subsystem name="bouncycastle"/>
+   </exclude-subsystems>
+      <exclusions>
+            <module name="org.bouncycastle" />
+        </exclusions>
+    <resources>
+      <!-- bouncycastle + VFS workaround : https://community.jboss.org/message/806775#806775 -->
+      <!-- To avoid this error with crash : Cannot verify jar:vfs:..../platform-XXXX.ear/lib/bcprov-jdkAA-X.YZ.jar!/ -->
+      <resource-root path="WEB-INF/lib/bcpg-jdk15-144.jar" use-physical-code-source="true"/>
+	  <resource-root path="WEB-INF/lib/bcprov-jdk15-144.jar" use-physical-code-source="true"/>
+    </resources>
+  </deployment>
+</jboss-deployment-structure>

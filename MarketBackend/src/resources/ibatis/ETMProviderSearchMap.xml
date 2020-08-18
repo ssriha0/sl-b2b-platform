@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap>
+	<typeAlias alias="etmProviderRequest"
+			type="com.newco.marketplace.dto.vo.providerSearch.ETMProviderSearchRequest"/>
+	<typeAlias alias="emtProviderDataRecord"
+			type="com.newco.marketplace.dto.vo.providerSearch.ETMProviderRecord"/>
+	<typeAlias alias="emtProviderFilterRequest"
+			type="com.newco.marketplace.dto.vo.providerSearch.ETMProviderFilterRequest"/>		
+	<typeAlias alias="surveyRatingVO"
+		type="com.newco.marketplace.dto.vo.survey.SurveyRatingsVO" />
+	
+	<delete id="etm.provider.record.delete" parameterClass="java.lang.String">
+		delete from explore_market_results where search_query_key=#searchQueryKey#
+	</delete>	
+	
+	<delete id="etm.provider.old.record.delete">
+		delete from explore_market_results where created_date <![CDATA[<=]]> DATE_SUB(NOW(), INTERVAL 1 DAY)
+	</delete>
+	
+	<select id="etm.searchQueryKey.query" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		select count(*) from explore_market_results
+			where search_query_key=#searchQueryKey#
+	</select>
+	<!-- <update id="etm.provider.myratings.update" parameterClass="emtProviderDataRecord">
+		UPDATE explore_market_results 
+    	SET buyers_total_order = #buyersTotalOrder#,
+    		buyers_ratings_imageid = #buyersRatingsImageId#,
+    		buyers_ratings_for_servicepro = #buyersRatingScore#,
+    		buyers_ratingscount_for_servicepro = #buyersRatingCount#
+		WHERE 
+			search_query_key = #searchQueryKey#
+			AND resource_id =#resourceId#
+	</update> -->
+	
+	<update id="etm.provider.myratings.update" parameterClass="emtProviderDataRecord">
+		UPDATE explore_market_results 
+    	SET total_so_completed = #totalOrdersCompleted#,
+    		aggregate_rating_count = #ratingCount#,
+			aggregate_rating_score = #ratingScore#,
+			rating_image_id = #ratingImageId#,
+    		buyers_total_order = #buyersTotalOrder#,
+    		buyers_ratings_imageid = #buyersRatingsImageId#,
+    		buyers_ratings_for_servicepro = #buyersRatingScore#,
+    		buyers_ratingscount_for_servicepro = #buyersRatingCount#
+		WHERE 
+			search_query_key = #searchQueryKey#
+			AND resource_id =#resourceId#
+	</update>
+	<insert id="etm.provider.record.insert" parameterClass="emtProviderDataRecord">
+		INSERT into explore_market_results (
+						search_query_key,
+						resource_id,
+						node_id,
+						node_name,
+						first_name,
+						last_name,
+						  zip,
+						  city,
+						  state_cd,
+						  vendor_id,
+						  business_name,
+						  vr_background_state_id,
+						  background_check_status,
+						  total_so_completed,
+						  aggregate_rating_count,
+						  aggregate_rating_score,
+						  rating_image_id,
+						  hourly_rate,
+						  cred_category_id,
+						  cred_type_id,
+						  resource_credentials_wf_state,
+						  resource_language_id,
+						  language_id,
+						  vr_gis_latitude,
+						  vr_gis_longitude,
+						  distance_in_miles,
+						  user_name,
+						  created_date)
+								 VALUES
+								 (#searchQueryKey#,
+								  #resourceId#,
+								  #nodeId#,
+								  #nodeName#,
+								  #firstName#,
+								  #lastName#,
+								  #zip#,
+								  #city#,
+								  #state#,
+								  #vendorId#,
+								  #businessName#,
+								  #backgroundStateId#,
+								  #backgroundStatus#,
+								  #totalOrdersCompleted#,
+								  #ratingCount#,
+								  #ratingScore#,
+								  #ratingImageId#,
+								  #hourlyRate#,
+								  #credCatId#,
+								  #credTypeId#,
+								  #resourceCredWFState#,
+								  #resourceLangId#,
+								  #langId#,
+								  #vendorGisLat#,
+								  #vendorGisLong#,
+								  #distance#,
+								  #username#,
+								  #createdDate#)
+	</insert>
+
+
+  <select id="etm.get_market_ready_providers_by_vertical.query"
+      parameterClass="etmProviderRequest"
+      resultClass="emtProviderDataRecord">
+            SELECT
+            vr.resource_id AS resourceid,
+            rs.node_id AS nodeId,
+            st.node_name AS nodeName,
+            vc.first_name AS firstName,
+            vc.last_name AS lastName,
+            vr.vendor_id AS vendorId,
+            vh.business_name AS businessName,
+            vr.background_state_id AS backgroundStateId,
+            wfs1.wf_state AS backgroundStatus,
+            vr.total_so_completed AS totalOrdersCompleted,
+            vr.aggregate_rating_count AS ratingCount,
+            vr.aggregate_rating_score AS ratingScore,
+            vr.hourly_rate AS hourlyRate,
+            l.zip AS zip,
+            l.city AS city,
+            l.state_cd AS state,
+            l.gis_latitude AS vendorGisLat,
+            l.gis_longitude AS vendorGisLong,
+            rc.cred_category_id AS credCatId,
+            rc.cred_type_id AS credTypeId,
+            rc.wf_state_id AS resourceCredWFState,
+            rl.resource_language_id AS resourceLangId,
+            rl.language_id AS langId,
+            TRUNCATE(3956.5450000 * 2 * ATAN2(
+             SQRT(SIN(RADIANS(l.gis_latitude - #zipLatitude#) /2)
+                * SIN(RADIANS(l.gis_latitude - #zipLatitude#) /2) + COS(RADIANS(#zipLatitude#)) * COS(RADIANS(l.gis_latitude))
+                * SIN((RADIANS(gis_longitude - #zipLongitude#)) /2)
+                * SIN((RADIANS(gis_longitude - #zipLongitude#)) /2)),
+             SQRT(1 - SIN(RADIANS(l.gis_latitude - #zipLatitude#) /2)
+                * SIN(RADIANS(l.gis_latitude - #zipLatitude#) /2) + COS(RADIANS(#zipLatitude#)) * COS(RADIANS(l.gis_latitude))
+                * SIN((RADIANS(gis_longitude - #zipLongitude#)) /2)
+                * SIN((RADIANS(gis_longitude - #zipLongitude#)) /2))),2) AS distance
+            FROM resource_skill rs
+            JOIN vendor_resource vr ON rs.resource_id = vr.resource_id
+               AND vr.wf_state_id = 6
+               AND vr.resource_ind = 1
+               AND vr.mkt_place_ind = 1
+            JOIN vendor_resource_location l ON (vr.locn_id = l.locn_id)
+            AND INTERSECTS(l.location, GEOMFROMTEXT(
+                 CONCAT('POLYGON((',
+                    #zipLatitude# - (#distanceFilter# / 68),' ',#zipLongitude# - (#distanceFilter# / 34),',',
+                    #zipLatitude# + (#distanceFilter# / 68),' ',#zipLongitude# - (#distanceFilter# / 34),',',
+                    #zipLatitude# + (#distanceFilter# / 68),' ',#zipLongitude# + (#distanceFilter# / 34),',',
+                    #zipLatitude# - (#distanceFilter# / 68),' ',#zipLongitude# + (#distanceFilter# / 34),',',
+                    #zipLatitude# - (#distanceFilter# / 68),' ',#zipLongitude# - (#distanceFilter# / 34),'))'
+            )  )  )
+            JOIN vendor_hdr vh ON vh.vendor_id = vr.vendor_id AND vh.wf_state_id IN (3,34,26)
+            LEFT OUTER JOIN resource_credentials rc ON rc.resource_id = vr.resource_id AND rc.wf_state_id = 12
+            LEFT OUTER JOIN resource_languages rl ON rl.resource_id = vr.resource_id
+            JOIN skill_tree st ON rs.node_id = st.node_id
+            JOIN wf_states wfs1 ON vr.background_state_id = wfs1.wf_state_id
+            JOIN contact vc ON vr.contact_id = vc.contact_id
+            join vendor_resource_coverage cov on cov.resource_id = vr.resource_id
+            WHERE
+            cov.zip = #zip# AND
+            rs.node_id IN (#nodeId#)
+            AND TRUNCATE(3956.5450000 * 2 * ATAN2(
+               SQRT(SIN(RADIANS(gis_latitude - #zipLatitude#)/2)
+                  * SIN(RADIANS(gis_latitude - #zipLatitude#)/2) + COS(RADIANS(#zipLatitude#)) * COS(RADIANS(gis_latitude))
+                  * SIN((RADIANS(gis_longitude - #zipLongitude#)) /2) * SIN((RADIANS(gis_longitude - #zipLongitude#)) /2)),
+               SQRT(1 - SIN(RADIANS(gis_latitude - #zipLatitude#)/2)
+                  * SIN(RADIANS(gis_latitude - #zipLatitude#)/2) + COS(RADIANS(#zipLatitude#))
+                  * COS(RADIANS(gis_latitude)) * SIN((RADIANS(gis_longitude - #zipLongitude#)) /2)
+                  * SIN((RADIANS(gis_longitude - #zipLongitude#)) /2))), 2) <![CDATA[<=]]> #distanceFilter#
+            AND vr.wf_state_id = 6
+            AND vr.resource_ind = 1
+            AND vr.mkt_place_ind = 1
+            AND rs.root_node_ind = 1
+            GROUP BY vr.resource_id,rs.node_id,vr.vendor_id,vr.background_state_id,wfs1.wf_state,rc.cred_category_id,rc.cred_type_id,rc.wf_state_id,rl.resource_language_id,rl.language_id
+  </select>
+
+
+	<select id="etm.get_not_market_ready_providers_by_vertical.query"
+			parameterClass="etmProviderRequest"
+			resultClass="emtProviderDataRecord">
+		             SELECT       v.resource_id                       as resourceId,
+                                    v.node_id                           as nodeId,
+                                    v.node_name                         as nodeName,
+                                    v.first_name                        as firstName,
+                                    v.last_name                         as lastName,
+                                    l.zip                               as zip,
+                                    l.city                              as city,
+                                    l.state_cd                          as state,
+    								l.gis_latitude                      as vendorGisLat,
+                                    l.gis_longitude                     as vendorGisLong,
+                                    v.vendor_id                         as vendorId,
+                                    v.business_name                     as businessName,
+                                    v.vr_background_state_id            as backgroundStateId,
+                                    v.background_check_status           as backgroundStatus,
+                                    v.total_so_completed                as totalOrdersCompleted,
+                                    v.aggregate_rating_count            as ratingCount,
+                                    v.aggregate_rating_score            as ratingScore,
+                                    v.hourly_rate                       as hourlyRate,
+                                    rc.cred_category_id                 as credCatId,
+                                    rc.cred_type_id                     as credTypeId,
+                                    rc.wf_state_id                      as resourceCredWFState,
+                                    rl.resource_language_id             as resourceLangId,
+                                    rl.language_id                      as langId,
+									TRUNCATE(3956.5450000 * 2 * ATAN2(SQRT(SIN(RADIANS(l.gis_latitude - #zipLatitude#) /2) * SIN(RADIANS(l.gis_latitude - #zipLatitude#) /2) + COS(RADIANS(#zipLatitude#)) * COS(RADIANS(l.gis_latitude)) * SIN((RADIANS(gis_longitude - #zipLongitude#)) /2) * SIN((RADIANS(gis_longitude - #zipLongitude#)) /2)), SQRT(1 - SIN(RADIANS(l.gis_latitude - #zipLatitude#) /2) * SIN(RADIANS(l.gis_latitude - #zipLatitude#) /2) + COS(RADIANS(#zipLatitude#)) * COS(RADIANS(l.gis_latitude)) * SIN((RADIANS(gis_longitude - #zipLongitude#)) /2) * SIN((RADIANS(gis_longitude - #zipLongitude#)) /2))),2) as distance
+									from vw_provider_not_marketready_vertical v
+                                    JOIN vw_provider_not_marketready_locn l on (v.resource_id = l.resource_id)
+                                    LEFT OUTER JOIN resource_credentials rc on (v.resource_id = rc.resource_id AND rc.wf_state_id = 12)
+                                    LEFT OUTER JOIN resource_languages rl on (rl.resource_id = v.resource_id)
+                                    WHERE node_id IN (#nodeId#)
+                        			AND TRUNCATE(3956.5450000 * 2 * ATAN2(SQRT(SIN(RADIANS(l.gis_latitude - #zipLatitude#) /2) * SIN(RADIANS(l.gis_latitude - #zipLatitude#) /2) + COS(RADIANS(#zipLatitude#)) * COS(RADIANS(l.gis_latitude)) * SIN((RADIANS(gis_longitude - #zipLongitude#)) /2) * SIN((RADIANS(gis_longitude - #zipLongitude#)) /2)), SQRT(1 - SIN(RADIANS(l.gis_latitude - #zipLatitude#) /2) * SIN(RADIANS(l.gis_latitude - #zipLatitude#) /2) + COS(RADIANS(#zipLatitude#)) * COS(RADIANS(l.gis_latitude)) * SIN((RADIANS(gis_longitude - #zipLongitude#)) /2) * SIN((RADIANS(gis_longitude - #zipLongitude#)) /2))),2) <![CDATA[<=]]> #distanceFilter#
+	</select>
+
+	<!-- <select id="exploreResults.myRatings.query" parameterClass="etmProviderRequest" resultClass="surveyRatingVO">
+		SELECT res.total_so_completed               AS totalorderscomplete,
+		       res.aggregate_rating_count           AS numberofratingsreceived,
+		       res.aggregate_rating_score           AS historicalrating,
+		       summary.total_so_completed           AS myorderscomplete,
+		       summary.vendor_resource_rating_count AS numberofratingsgiven,
+		       summary.vendor_resource_rating_score AS myrating,
+		       summary.buyer_id                     AS buyerid,
+		       res.resource_id                      AS vendorresourceid
+		FROM   vendor_resource res
+		       JOIN explore_market_results eres
+		         ON eres.resource_id = res.resource_id
+		       JOIN survey_response_summary summary
+		         ON res.resource_id = summary.vendor_resource_id
+		WHERE  summary.buyer_id = #buyerID#
+		       AND eres.search_query_key = #searchQueryKey# 
+	</select> -->
+	
+	<select id="exploreResults.myRatings.query" parameterClass="etmProviderRequest" resultClass="surveyRatingVO">
+		SELECT vr.total_so_completed               AS totalorderscomplete,
+		       ser.rating_count           AS numberofratingsreceived,
+		       ser.rating_score           AS historicalrating,
+		       sbr.total_so_completed           AS myorderscomplete,
+		       sbrext.rating_count AS numberofratingsgiven,
+		       sbrext.rating_score AS myrating,
+		       sbr.buyer_id                     AS buyerid,
+		       ser.entity_id                      AS vendorresourceid
+		FROM   survey_entity_rating ser
+		      JOIN explore_market_results eres
+               ON eres.resource_id = ser.entity_id
+			    JOIN vendor_resource vr
+               ON vr.resource_id=ser.entity_id
+              LEFT 	JOIN survey_buyer_so_count sbr
+		       ON  sbr.vendor_resource_id = ser.entity_id
+		       JOIN survey_buyer_rating sbrext
+		       ON sbrext.survey_buyer_so_count_id = sbr.id
+			   AND sbrext.score_type ='CSAT'
+		WHERE  sbr.buyer_id  = #buyerID#
+		        AND ser.entity_type_id = 20
+				AND ser.score_timeline_type ='LIFETIME'
+				AND ser.score_type ='CSAT'
+                AND eres.search_query_key = #searchQueryKey#
+	</select>	
+	 
+	 <sql id="dynamic.where.for.filterby.query">
+		<isNotNull property="searchQueryKey" prepend="AND">
+				search_query_key = #searchQueryKey#		
+			</isNotNull>
+			<isNotNull property="distance" prepend="AND">
+				distance_in_miles <![CDATA[<=]]> #distance#
+			</isNotNull>
+			<isNotNull property="credentialCategory" prepend="AND">
+				resource_credentials_wf_state = 12
+				AND cred_type_id = #selectedCredential#
+			</isNotNull>	
+			<isNotNull property="selectedCredential" prepend="AND">
+				cred_category_id = #credentialCategory#
+			</isNotNull> 	
+			<isNotNull property="rating" prepend="AND">
+				aggregate_rating_score <![CDATA[>=]]> #rating#
+			</isNotNull>		
+			<isNotNull property="selectedLangs" prepend="AND language_id in">
+				<iterate property="selectedLangs" open="(" close=")"  conjunction=",">
+		    		#selectedLangs[]#
+			    </iterate>
+			</isNotNull>				
+	</sql>
+	
+	<sql id="dynamic.join.for.spnet.states" >
+		<isNotNull property="spnId" >
+				   <isGreaterThan  property="spnId" compareValue="0" >
+	 			      JOIN spnet_serviceprovider_state sn 
+			     			on em.resource_id = sn.service_provider_id 
+			     			and ( ( #spnId# = sn.spn_id	and sn.provider_wf_state = 'SP SPN APPROVED')
+	     		   			or 
+	     		   		   ( sn.spn_id = (select spn_id from spnet_hdr spnHdr where spnHdr.alias_original_spn_id =  #spnId# ) and
+	     		   		      sn.provider_wf_state = 'SP SPN APPROVED' )  )
+	     		   		       	<isNotNull property="performancelevels" prepend= " AND " > 
+	     		   		       	  sn.perf_level  in 
+	     		   		       	   <iterate property="performancelevels" open="(" close=")"  conjunction=",">
+							    		#performancelevels[]#
+								    </iterate>
+	     		   		       	</isNotNull>
+	 			</isGreaterThan>
+		</isNotNull>
+	</sql>
+	<select id="etm.getFilterCount.query"
+			parameterClass="emtProviderFilterRequest"
+			resultClass="java.lang.Integer">
+				SELECT 	count(DISTINCT resource_id)
+				FROM explore_market_results em
+				<include refid="dynamic.join.for.spnet.states"/>
+		<dynamic prepend="WHERE">	
+				<include refid="dynamic.where.for.filterby.query"/>  
+		</dynamic> 		
+	</select>
+
+	<select id="etm.filterby.query"
+			parameterClass="emtProviderFilterRequest"
+			resultClass="emtProviderDataRecord">
+				SELECT 	DISTINCT	resource_id                       as resourceId,
+                                   	node_id                           as nodeId,
+                                    node_name                         as nodeName,
+                                    first_name                        as firstName,
+                                    last_name                         as lastName,
+                                    zip                               as zip,
+                                    city                              as city,
+                                    state_cd                          as state,
+									vr_gis_latitude                   as vendorGisLat,
+                                    vr_gis_longitude                  as vendorGisLong,
+                                    vendor_id                         as vendorId,
+                                    business_name                     as businessName,
+                                    vr_background_state_id            as backgroundStateId,
+                                    background_check_status           as backgroundStatus,
+                                    total_so_completed                as totalOrdersCompleted,
+                                    aggregate_rating_count            as ratingCount,
+                                    aggregate_rating_score            as ratingScore,
+                                    rating_image_id					  as ratingImageId,
+                                    hourly_rate                       as hourlyRate,
+                                    distance_in_miles				  as distance,
+                                    buyers_total_order  			  as buyersTotalOrder,
+                                    buyers_ratings_imageid 			  as buyersRatingsImageId,
+                                    buyers_ratings_for_servicepro 	  as buyersRatingScore,
+                                    buyers_ratingscount_for_servicepro as buyersRatingCount	
+				FROM explore_market_results em
+				<include refid="dynamic.join.for.spnet.states"/>
+		<dynamic prepend="WHERE">
+			<include refid="dynamic.where.for.filterby.query"/>  
+			<isNotEmpty property="sortColumnName">
+				order by $sortColumnName$ $sortOrder$
+			</isNotEmpty>
+			<isNotNull property="startIndex" prepend="LIMIT ">
+				#startIndex#
+			</isNotNull>
+			<isNotNull property="numberOfRecords" prepend=",  ">
+				#numberOfRecords#
+			</isNotNull>
+		</dynamic> 		
+	</select>
+	
+		
+	
+</sqlMap>
+

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd"
+   	default-autowire="byName" >
+
+	<bean id="jpaSessionHandler" class="com.servicelive.orderfulfillment.jbpm.JPASessionHandler">
+		<property name="entityManagerFactory">
+			<ref bean="entityManagerFactory" /> 
+		</property>
+	</bean>
+	
+    <bean id="jbpmConfiguration" class="org.jbpm.pvm.internal.cfg.SpringConfiguration">
+   		<constructor-arg ref="jbpm-config-name" />
+	</bean>
+	<bean id="processEngine" factory-bean="jbpmConfiguration" factory-method="buildProcessEngine" />
+	<bean id="repositoryService" factory-bean="processEngine" factory-method="getRepositoryService" />
+	<bean id="executionService" factory-bean="processEngine" factory-method="getExecutionService" />
+
+<!-- jBPM deployment management - checks at startup if process definitions have changed and deploys -->		
+	<bean id="deploymentManager" class="com.servicelive.orderfulfillment.jbpm.WFProcessDeploymentManager">
+		<constructor-arg ref="repositoryService" />
+		<constructor-arg>
+			<list>
+		 	<value>classpath:/com/servicelive/orderfulfillment/jbpm/orderGroupProcess.jpdl.xml</value>
+             <value>classpath:/com/servicelive/orderfulfillment/jbpm/SB_ServiceOrderBPM.jpdl.xml</value>
+             <value>classpath:/com/servicelive/orderfulfillment/jbpm/leadProcess.jpdl.xml</value>             
+			</list>
+		</constructor-arg>
+	</bean>
+
+<!-- SO business and data access objects --> 	    
+	<bean id="soWorkflowManager" class="com.servicelive.orderfulfillment.jbpm.ServiceOrderWFManager">
+		<constructor-arg ref="executionService" />
+        <property name="maxTransitionWaitAttempts" value="3" />
+	</bean>
+
+<!-- For lead workflow --> 	    
+	<bean id="leadWorkflowManager" class="com.servicelive.orderfulfillment.jbpm.LeadWFManager">
+		<constructor-arg ref="executionService" />
+        <property name="maxTransitionWaitAttempts" value="3" />
+	</bean>
+	
+</beans>

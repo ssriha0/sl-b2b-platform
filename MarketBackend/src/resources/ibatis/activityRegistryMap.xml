@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="activityRegistry">
+
+	<typeAlias alias="activityRegistry" type="com.newco.marketplace.vo.provider.ActivityRegistry"/>
+	<select id="activity_registry.getProviderStatus"
+		parameterClass="activityRegistry" resultClass="java.util.HashMap">
+		select l.act_name as 'act_name', a.act_completed as 'status' from vendor_activity_registry a, lu_vendor_activity l 
+		where a.activity_id=l.activity_id  and l.act_link_key_type=#actLinkKeyType#
+		<isGreaterThan prepend=" and " property="actLinkKey" compareValue="-1">a.act_link_key = #actLinkKey#</isGreaterThan>
+	</select>
+
+	<update id="activity_registry.updateIds"
+		parameterClass="activityRegistry">
+		update vendor_activity_registry
+		set act_completed = 1	
+		where act_link_key = #actLinkKey#
+		 and activity_id IN 
+	 	<iterate property="activityIds" open="(" close=")" conjunction=",">
+			#activityIds[]#
+		</iterate>	
+	</update>
+	
+	
+	<update id="activity_registry.update"
+		parameterClass="activityRegistry">
+		update vendor_activity_registry
+		<dynamic prepend="set">
+			<isGreaterThan prepend=", " property="actCompleted"
+				compareValue="-1">
+				act_completed = #actCompleted#
+			</isGreaterThan>
+		</dynamic>
+		where act_link_key = #actLinkKey# and activity_id = #activityId#
+	</update>
+	
+	
+	
+	
+	<select id="getActivityId.query" parameterClass="string" resultClass="int">
+	      SELECT activity_id FROM lu_vendor_activity where act_name = #activityName# and act_link_key_type='Vendor'
+    </select>
+    
+    <insert id="activity_registry.insert" parameterClass="activityRegistry">
+      	INSERT INTO vendor_activity_registry(activity_id,act_link_key,act_completed) values(#activityId#,#actLinkKey#,#actCompleted#)
+    </insert>
+    
+    <select id="getResourceActivityId.query" parameterClass="string" resultClass="int">
+	      SELECT activity_id FROM lu_vendor_activity where act_name = #activityName# and act_link_key_type='Resource'
+    </select>
+    <select id="teamProfile.checkActivityStatus"  resultClass="java.util.List">
+		select distinct ar1.act_link_key , vr.vendor_id from vendor_activity_registry ar1 , vendor_resource vr , lu_vendor_activity lva
+		where ar1.act_link_key = vr.resource_id and lva.activity_id = ar1.activity_id and lva.act_link_key_type = "Resource"
+		and vr.vendor_id = #vendorId# and not exists (select 'X' from vendor_activity_registry ar2 ,lu_vendor_activity lva2
+		where ar2.act_completed = 0 and ar2.act_link_key = ar1.act_link_key and ar2.activity_id = lva2.activity_id
+		and lva2.act_link_key_type = "Resource" )
+	</select>
+
+</sqlMap>

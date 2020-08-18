@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
+	default-lazy-init="true">
+	
+	<bean id="tripCharge" 
+      class="com.newco.marketplace.dto.vo.TripChargeVO"/>
+      
+	<bean id="adminTripChargeDAO" 
+      class="com.newco.marketplace.persistence.daoImpl.admin.AdminTripChargeDAO">
+     	<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+	
+    <bean id="tripChargeBO" class="com.newco.marketplace.business.businessImpl.tripcharge.TripChargeBOImpl"
+		lazy-init="true">
+		<property name="adminTripChargeDao">
+			<ref bean="adminTripChargeDAO" />
+		</property>	
+	</bean>
+	
+
+</beans>

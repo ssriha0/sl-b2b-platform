@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/soRequest" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" targetNamespace="http://www.servicelive.com/namespaces/soRequest" elementFormDefault="qualified" jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+	<xs:include schemaLocation="../../common.xsd"/>
+	<xs:include schemaLocation="../../om_common.xsd"/>	
+	<!--  This is the new Provider Call API REQUEST-->
+	<!-- Root element -->
+	<xs:element name="updateScheduleDetlsRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="identification" type="IdentificationType"/>
+				<xs:element name="scheduleStatusId" type="xs:integer" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="reasonId" type="xs:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="soNotes" type="xs:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="specialInstructions" type="xs:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="eta" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="customerConfirmInd" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="source" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="serviceTimeStart" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="serviceTimeEnd" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="rescheduleServiceDateTime1" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="rescheduleServiceDateTime2" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="modifiedByName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<!-- SL 18896 R8.2, pass the startDate & endDate parameter START -->
+				<xs:element name="startDate" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="endDate" type="xs:string" minOccurs="0" maxOccurs="1"/>		
+				<!-- SL 18896 R8.2, pass the startDate & endDate parameter END -->	
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:decimal"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
+

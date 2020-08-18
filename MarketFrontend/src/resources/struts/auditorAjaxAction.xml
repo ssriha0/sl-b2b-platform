@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+
+	<package name="auditorAjax" extends="ServiceLiveBase">
+        <default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+		<!-- Ajax based action-->
+		<action name="commonAuditorAjax" class="auditAjaxAction" method="handleAjaxCall"/>
+		<action name="auditorApproval" class="auditAjaxAction" method="preformAdminAction"/>
+		<action name="addAuditorNote" class="auditAjaxAction" method="addCommonNote"/>
+		
+    </package>
+</struts>

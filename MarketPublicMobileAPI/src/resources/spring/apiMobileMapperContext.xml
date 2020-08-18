@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd
+http://cxf.apache.org/jaxrs
+http://cxf.apache.org/schemas/jaxrs.xsd">
+	<bean id="providerSearchSOMapper"
+		class="com.newco.marketplace.api.mobile.utils.mappers.ProviderSearchSOMapper">
+	</bean>
+
+	<bean id="detailsRetrieveMapper"
+		class="com.newco.marketplace.api.mobile.utils.mappers.SODetailsRetrieveMapper">
+	</bean>
+
+	<bean id="timeOnSiteMapper"
+		class="com.newco.marketplace.api.mobile.utils.mappers.MobileTimeOnSiteMapper">
+	</bean>
+	
+	<bean id="authenticateUserMapper" class="com.newco.marketplace.api.mobile.utils.mappers.AuthenticateUserMapper">
+	  <property name="authenticateUserBO">
+	      <ref bean="authenticateUserBO"/>
+	  </property>
+	</bean>
+	<bean id="updateSoCompletionMapper" class="com.newco.marketplace.api.utils.mappers.UpdateSOCompletionMapper">		
+		<property name="mobileSOActionsBO">
+			<ref bean="mobileSOActionsBO" />
+		</property>
+	</bean>
+	
+	<!-- Version 2.0 mapper beans starts here-->
+	<bean id="timeOnSiteMapper_v2_0"
+		class="com.newco.marketplace.api.mobile.utils.mappers.v2_0.MobileTimeOnSiteMapper">
+	</bean>
+	
+	<!-- SLT-4658 -->	
+	<bean id="updateSoCompletionMapper_v3_0" class="com.newco.marketplace.api.mobile.utils.mappers.v3_0.UpdateSOCompletionMapper">		
+		<property name="mobileSOActionsBO">
+			<ref bean="mobileSOActionsBO" />
+		</property>
+	</bean>
+	
+	<!-- Version 2.0 mapper beans ends here-->
+		<!-- Version 2.0 mapper beans ends here-->	
+	<!-- Version 2.0 Phase 2 mapper beans starts here-->
+	<bean id="mobileGenericMapper_v3_0"
+		class="com.newco.marketplace.api.mobile.utils.mappers.v3_0.MobileGenericMapper">
+		<property name="ofHelper">
+			<ref bean="ofHelper" />
+		</property>
+		<property name="mobileGenericBO">
+			<ref bean="mobileGenericBO" />
+		</property>
+	</bean>
+	<bean id="timeOnSiteMapper_v3_0"
+		class="com.newco.marketplace.api.mobile.utils.mappers.v3_0.MobileTimeOnSiteMapper">
+	</bean>
+	<!-- Version 2.0 Phase 2 mapper beans ends here-->
+	
+	<!-- v3.1 Mapper bean START-->
+	<bean id="newMobileGenericMapper_v3_1"
+		class="com.newco.marketplace.api.mobile.utils.mappers.v3_1.NewMobileGenericMapper">
+		<property name="mobileGenericBO" ref ="mobileGenericBO" />
+		<property name="newMobileGenericBO" ref ="newMobileGenericBO" />
+	</bean>
+	<!-- v3.1 Mapper bean END-->
+</beans>
+

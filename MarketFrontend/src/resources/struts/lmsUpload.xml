@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+
+	<package name="lms_upload" extends="struts-default,json-default">
+		<action name="lmsFileUploadAction" class="lmsFileUploadAction"
+			method="insertFileToDb">
+			<result name="success">/jsp/admin/modules/lms_integration_tool.jsp
+			</result>
+			<result name="error">/jsp/public/error/body/errorBody.jsp</result>
+			<result name="input">/jsp/admin/modules/lms_integration_tool.jsp
+			</result>
+			<result name="redirectLandingPage" type="redirectAction">lmsFileGetAction_getLmsDetailHistory?fileUploaded=true
+			</result>
+		</action>
+		<action name="lmsFileGetAction_getLmsDetailHistory" class="lmsFileUploadAction"
+			method="getLmsDetailHistory">
+			<result name="success">/jsp/admin/modules/lms_integration_tool.jsp
+			</result>
+		</action>
+		<action name="lmsGetErrorAction" class="lmsFileUploadAction"
+			method="getLmsErrorHistory">
+			<result name="success">/jsp/admin/modules/lms_integration_tool.jsp
+			</result>
+		</action>
+		<action name="downloadFile" class="lmsFileUploadAction"
+			method="downloadFileDocument">
+		</action>
+		<action name="ajaxBuyerIDAutoComplete" class="lmsFileUploadAction"
+			method="ajaxGetBuyerIDSuggestion">
+			<result type="json">
+    			<param name="noCache">true</param>
+     	 		<param name="excludeNullProperties">true</param>
+         		<param name="root">buyerSuggestionList</param>
+    		</result>  
+		</action>
+	</package>
+</struts>

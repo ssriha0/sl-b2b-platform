@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+<xs:include schemaLocation="../../common.xsd" />
+	<!-- Root element -->
+	<xs:element name="counterOfferRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="serviceDateTime1" type="xs:string" minOccurs="0" />
+				<xs:element name="serviceDateTime2" type="xs:string" minOccurs="0" />
+				<xs:element name="spendLimit" type="moneyCounterOffer" minOccurs="0" />
+				<xs:element name="offerExpirationDate" type="xs:string" minOccurs="1" />
+				<xs:element name="reasonCodes" type="ReasonCodes" minOccurs="1" maxOccurs="1" nillable="true" />
+				<xs:element name="resourceIds" type="CounterOfferResources" minOccurs="1" maxOccurs="1" nillable="true"/>					
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+		
+	<xs:complexType name="ReasonCodes" >
+		<xs:sequence>
+			<xs:element name="reasonCode" minOccurs="1" maxOccurs="6">
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:enumeration value="1" /> <!-- Not in this area on this day. -->
+						<xs:enumeration value="2" /> <!-- Evening / weekend / off hours requested. -->
+						<xs:enumeration value="3" /> <!-- Already booked or not working during proposed schedule date. -->
+						<xs:enumeration value="4" /> <!-- Location is outside of my normal service area. -->
+						<xs:enumeration value="5" /> <!-- Price is too low for the given statement of work. -->
+						<xs:enumeration value="6" /> <!-- Evening / weekend / off hours requested. -->
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CounterOfferResources">
+		 <xs:sequence>  
+      		<xs:element name="resourceId" type="xs:integer" minOccurs="1" maxOccurs="unbounded"/>  
+     	</xs:sequence>  
+	</xs:complexType>
+</xs:schema>
+
+

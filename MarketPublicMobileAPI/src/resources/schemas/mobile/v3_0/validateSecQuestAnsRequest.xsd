@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified">
+	<xs:include schemaLocation="../../common.xsd" />
+	<!-- Root element -->
+	<xs:element name="validateSecQuestAnsRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="requestFor" minOccurs="1" maxOccurs="1">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="UserName" />
+							<xs:enumeration value="Password" />
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="email" type="emailType" minOccurs="1"
+					maxOccurs="1" />
+				
+				<xs:element name="userDetails" type="userDetailsType" minOccurs="1"></xs:element>
+				
+				<xs:element name="verificationDetails" type="verificationDetailsType" minOccurs="1"></xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	  <xs:complexType name="verificationDetailsType">
+		<xs:choice minOccurs="1" maxOccurs="1">
+					<xs:element name="securityQuestAnsDetails" type="securityQuestAnsDetailsType"/>
+					<xs:element name="additionalVerificationDetails" type="additionalVerificationDetailsType"/>
+		</xs:choice>
+	</xs:complexType>
+	  <xs:complexType name="userDetailsType">
+		<xs:choice minOccurs="1" maxOccurs="1">
+					<xs:element name="userId" type="xs:integer" minOccurs="0"
+						maxOccurs="1" />
+					<xs:element name="userName" type="xs:string" minOccurs="0"
+						maxOccurs="1"/>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="securityQuestAnsDetailsType">
+		<xs:sequence>
+			<xs:element name="userAnswer" type="xs:string" minOccurs="1"
+				maxOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="additionalVerificationDetailsType">
+		<xs:sequence>
+			<xs:element name="userZipCode" type="zipCodeType"
+				minOccurs="1" maxOccurs="1" />
+			<xs:element name="userPhoneNumber" type="phoneNumType"
+				minOccurs="1" maxOccurs="1" />
+			<xs:element name="userCompanyName" type="xs:string"
+				minOccurs="1" maxOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="zipCodeType">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="\d{5}" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="phoneNumType">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="\d{4}" />
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>
+
+

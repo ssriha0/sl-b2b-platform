@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+<xs:include schemaLocation="../common.xsd" id="ccc"/>
+  <xs:element name="createFundingSourceResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="bankAccount"/>
+        <xs:element maxOccurs="unbounded" ref="creditCard"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="bankAccount">
+    <xs:complexType>
+        <xs:sequence>
+        	<!-- Bank -->
+          	<xs:element name="bankName" type="xs:string"/>
+        	<xs:element name="accountNumber" type="xs:string"/>
+        	<xs:element name="routingNumber" type="xs:string"/>
+        	<xs:element name="bankAccountType" type="xs:integer"/>
+        	<xs:element name="bankAccountId" type="xs:integer"/>
+        </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="creditCard">
+    <xs:complexType>
+        <xs:sequence>
+        	<!-- Credit Card -->
+        	<xs:element name="accountHolderName" type="xs:string"/>
+  			<xs:element name="cardType" type="xs:string"/>
+  			<xs:element name="cardNumber" type="xs:integer"/>
+  			<xs:element name="expirationDate" type="xs:string"/>
+  			<xs:element name="billingAddress1" type="xs:string"/>
+  			<xs:element name="billingAddress2" type="xs:string"/>
+  			<xs:element name="billingCity" type="xs:string"/>
+  			<xs:element name="billingState" type="xs:string"/>
+  			<xs:element name="billingZip" type="xs:integer"/>
+  			<xs:element name="ccAccountId" type="xs:integer"/>
+        </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

@@ -1,0 +1,7 @@
+<form [formGroup]="surveyForm" (ngSubmit)="onSubmit()" *ngIf="surveyDetails">
+  <div class="container-fluid inner-wrap">
+    <app-survey-header [buyerDetails]="buyerDetails"></app-survey-header>
+    <app-nps-form [parentForm]="surveyForm" [surveyDetails]="surveyDetails.nps" [buyer]="buyerDetails.name"></app-nps-form>
+  </div>
+  <app-survey-footer [parentForm]="surveyForm" [privacyLink]="surveyDetails.policyURL" [termsLink]="surveyDetails.termsURL"></app-survey-footer>
+</form>

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="Login">
+	<typeAlias alias="loginVO" type="com.newco.marketplace.vo.provider.LoginVO"/>	
+	<typeAlias alias="securityVO" type="com.newco.marketplace.vo.security.SecurityVO"/>
+	<typeAlias alias="loginBuyerVO" type="com.newco.marketplace.vo.common.LoginUserProfile"/>
+	<typeAlias alias="leadProfileDetailsVO" type="com.newco.marketplace.vo.leadprofile.LeadProfileDetailsVO"/>
+		<select id="selectUser" parameterClass="loginVO" resultClass="loginVO">
+	      select user_name as username, password as password, vendor_id as id, generated_password_ind as isTempPassword from user_profile where user_name = #username#
+	   </select> 
+   <select id="query.getUser" parameterClass="loginVO" resultClass="loginVO">
+          select user_name as username, password as password, vendor_id as id, modified_date modDate, role_id as role,
+	      generated_password_ind as isTempPassword, locked_ind as lockedInd, login_attempt_count as unsuccessLoginInd
+	      from user_profile where user_name = #username# AND active_ind = 1
+   </select> 
+   
+    <select id="query.checkcredentials" parameterClass="securityVO" resultClass="securityVO">     
+          select app_id as appId, api_key as appKey, entity_type as entityType,
+          entity_id as entityId from api_security where entity_type = #entityType# 
+          and entity_id = #entityId# and api_key = #appKey#  
+          <isNotNull property="ipAddress" prepend="AND">
+     classc_ip = #ipAddress#
+     </isNotNull>          
+   </select> 
+   
+   	<select id="query.authorizeuser" parameterClass="securityVO" resultClass="securityVO">
+          SELECT user_name as username,CASE (select role_id from user_profile where user_name=#username#)
+            WHEN 1 THEN
+            (
+                  SELECT vendor_id
+                  FROM  vendor_resource
+                  WHERE (user_name = #username#)
+            ) 
+            WHEN 2 THEN 
+            (
+                  SELECT company_id
+                  FROM  admin_resource
+                  WHERE (user_name = #username#)
+            ) 
+            ELSE
+            (
+                  SELECT buyer_id
+                  FROM  buyer_resource
+                  WHERE (user_name = #username#)
+            ) 
+      END AS entityId, role_id AS entityType from user_profile where user_name=#username#
+   </select>  
+ 
+	<select id="get_secret_question.query" resultClass="java.util.HashMap">
+		SELECT id, question_txt FROM lu_secret_question order by sort_order asc
+	</select>
+	
+	<select id="getVendorId.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+	      select vendor_id as vendorId from vendor_resource where user_name = #userName#	
+    </select>
+    
+    <select id="getSecretQuestionId.query" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	      select question_id from user_profile where user_name = #username#
+    </select>
+    
+    <select id="getProviderName.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+	      SELECT first_name FROM contact c where contact_id=(select contact_id from user_profile where user_name=#username#)
+    </select>
+
+    <select id="getAdminResourceId.query" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	      SELECT resource_id FROM admin_resource where user_name = #username#
+    </select>
+
+    <update id="updateInd.update" parameterClass="loginVO">
+		update user_profile 
+		<dynamic prepend="set">
+			<isNotNull prepend=", " property="lockedInd">locked_ind = #lockedInd#</isNotNull>
+			<isNotNull prepend=", " property="unsuccessLoginInd">login_attempt_count = #unsuccessLoginInd#</isNotNull>
+		</dynamic>
+		where user_name = #username#
+	</update>
+	<select id="getActiveState.query"  resultClass="java.lang.String">
+	     select lus.state_cd from lu_state_cds_active lus, vendor_hdr vh, vendor_location vlo, location lo where
+		 vh.vendor_id = vlo.vendor_id and vlo.locn_id = lo.locn_id and lo.locn_type_id=1 and 
+		 lo.state_cd = lus.state_cd and vh.vendor_id = #vendorId#
+    </select>
+    
+    <select id="getPassword.query"  resultClass="java.lang.String">
+	     select password as password from user_profile where user_name = #username# AND active_ind = 1
+    </select>
+	
+	 <select id="getBuyerLoginInfo.query" parameterClass="java.lang.String" resultClass="loginBuyerVO">
+	      select buyer_id as entityId, resource_id as resourceId, contact_id as contactId from buyer_resource
+	      where user_name = #username#
+    </select>
+    
+     <select id="getContactInfo.query" parameterClass="java.lang.String" resultClass="loginBuyerVO">
+	      select first_name as firstName, last_name as lastName from contact
+	      where contact_id = #contactid#
+    </select>
+    
+    <select id="getProviderLoginInfo.query" parameterClass="java.lang.String" resultClass="loginBuyerVO">
+	      select vendor_id as entityId, resource_id as resourceId, contact_id as contactId from vendor_resource
+	      where user_name = #username#
+    </select>
+		
+	<select id="getShowMemberOffersInd.query" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+	      select show_member_offers_ind from vendor_resource
+	      where resource_id = #vendorId#
+    </select>
+    
+    <select id="showLeadsTCIndicator.query" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+	      select lead_t_c_version from vendor_lead_profile
+	      where vendor_id = #vendorId#
+    </select>
+    
+    <update id="updateShowMemberOffersInd.query" parameterClass="java.lang.Integer">
+	      update vendor_resource set show_member_offers_ind = 0 
+	      where resource_id = #vendorId#
+    </update>	
+    
+    <select id="getUnarchivedCARRulesCount.query" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+    	 select count(*) from routing_rule_hdr hdr 
+			join routing_rule_vendor vendor
+			on hdr.routing_rule_hdr_id = vendor.routing_rule_hdr_id
+			and vendor.vendor_id = #vendorId# and hdr.rule_status != 'ARCHIVED'
+			and vendor.auto_accept_status IN ('ON','OFF')
+
+			join routing_rule_buyer_assoc buyer
+			on hdr.routing_rule_buyer_assoc_id = buyer.routing_rule_buyer_assoc_id
+
+			join buyer_feature_set feature
+			on buyer.buyer_id = feature.buyer_id
+			and feature.feature = 'AUTO_ACCEPTANCE' and feature.active_ind = 1
+    </select>
+    
+    <select id="getActivePendingCARRulesCount.query" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+    	 select count(*) from routing_rule_hdr hdr 
+			join routing_rule_vendor vendor
+			on hdr.routing_rule_hdr_id = vendor.routing_rule_hdr_id
+			and vendor.vendor_id = #vendorId# and hdr.rule_status = 'ACTIVE' 
+			and vendor.auto_accept_status = 'PENDING'
+			
+			join auto_accept_history history
+			on vendor.routing_rule_hdr_id = history.routing_rule_hdr_id 
+			and (vendor.vendor_id = history.vendor_id or history.vendor_id is null)
+
+			join routing_rule_buyer_assoc assoc
+			on hdr.routing_rule_buyer_assoc_id = assoc.routing_rule_buyer_assoc_id
+			
+			join buyer buyer
+			on assoc.buyer_id = buyer.buyer_id
+
+			join buyer_feature_set feature
+			on buyer.buyer_id = feature.buyer_id
+			and feature.feature = 'AUTO_ACCEPTANCE' and feature.active_ind = 1
+    </select>
+    
+    <select id="getBusinessProfilePermission.query" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+    	 select count(*) from user_profile_permissions user
+			join vendor_resource resource
+            on user.user_name = resource.user_name
+			where role_activity_id = 2 and resource_id = #resourceId#
+    </select>   
+    
+    <select id="getLeadsMemberInd.query" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+    	<!-- Changes for R14_0 B2C BLM/PLM  -->
+    	 <!-- select count(lms_partner_id) from vendor_lead_profile 
+			where vendor_id = #vendorId# 
+			and wf_state_id is not null 
+			and wf_state_id != 300 -->
+			SELECT COUNT(DISTINCT vendor_id) FROM lead_matched_firm 
+			WHERE vendor_id = #vendorId#
+    </select> 
+    
+    <update id="updateNewTandC.query" parameterClass="java.util.HashMap">
+	      UPDATE vendor_lead_profile set lead_t_c_version = 1, modified_date = now(), modified_by = #vendorId#, lead_t_c_date = now()
+	      where vendor_id = #vendorId#
+    </update>
+    <insert id="insertTCHistory.query" parameterClass="java.util.HashMap">
+		INSERT INTO vendor_lead_profile_level_history(vendor_id, action_name, old_value, new_value,
+		modified_date, modified_by)
+			VALUES  
+			(#vendorId#,
+			#actionName#,
+			'0',
+			#tc#,
+			now(),
+			#userName#)
+	</insert>
+</sqlMap>

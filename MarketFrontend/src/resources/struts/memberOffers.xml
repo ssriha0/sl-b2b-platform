@@ -1,0 +1,37 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="memberOffers" extends="ServiceLiveBase" >
+        <default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+        
+    	<global-results >
+			<result name="error" type="redirectAction">
+				<param name="actionName">errorAction</param>
+				<param name="errorMessage">${errorMessage}</param>
+				<param name="returnURL">${returnURL}</param>
+			</result>
+		</global-results>	   	
+        
+		
+	    <action name="memberOffers_*" class="memberOfferAction" method="{1}">
+	        <result name="success">/jsp/memberoffers/memberOffers.jsp</result>	    	   
+	        <result name="homepage" type="redirectAction">homepage</result>	         
+	    </action>
+	    
+	    <action name="memberOffersUpdateView" class="memberOfferAction" method="updateViewCount">
+	    </action>
+	    
+	    
+	    <action name="memberOffersFilter_*" class="memberOfferAction" method="{1}">
+	        <result name="success">/jsp/memberoffers/memberOffersRightView.jsp</result>	    	   	         
+	    </action> 
+	    
+	    <action name="memberOffers_displayOfferDetails" class="memberOfferAction" method="displayOfferDetails">
+	        <result name="success">/jsp/memberoffers/offerDetails.jsp</result>	    	   
+	    </action>    
+	      
+
+    </package>
+    
+</struts>

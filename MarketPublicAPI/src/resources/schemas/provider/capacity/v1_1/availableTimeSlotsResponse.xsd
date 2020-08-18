@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:include schemaLocation="../../../common.xsd"/>
+	
+	<!--  This is the Response for buyerSkuCategory web service-->
+	<!-- Root Element -->
+	<xs:element name="availableTimeSlotsResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="results"/>
+				<xs:element ref="availableTimeSlotList"  maxOccurs="unbounded" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="availableTimeSlotList">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="date" type="xs:string" minOccurs="1"/>
+				<xs:element ref="timeSlot" maxOccurs="unbounded" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="timeSlot">
+		<xs:complexType>
+			<xs:sequence>
+			    <xs:element name="startTime" type="xs:string" minOccurs="1"/>
+			    <xs:element name="endTime" type="xs:string" minOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	</xs:schema>
+	

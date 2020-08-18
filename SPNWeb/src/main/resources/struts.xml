@@ -1,0 +1,25 @@
+<!DOCTYPE struts PUBLIC
+"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+"http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+	<constant name="struts.enable.DynamicMethodInvocation" value="true" />
+	<constant name="struts.objectFactory" value="spring" />
+    <constant name="struts.devMode" value="false" />
+    <constant name="struts.multipart.maxSize" value="5242880" />
+    
+    
+	<include file="./resources/struts/selectProviderNetworkBase.xml"/> <!-- Do not move this from the top -->
+	
+	<include file="./resources/struts/buyer/spnAuditor.xml"/>
+	<include file="./resources/struts/buyer/createNetwork.xml"/>
+	<include file="./resources/struts/buyer/createCampaign.xml"/>
+	<include file="./resources/struts/buyer/monitorNetwork.xml"/>
+	<include file="./resources/struts/buyer/monitorCampaign.xml"/>
+	<include file="./resources/struts/provider/spnInvitation.xml"/>
+	<include file="./resources/struts/buyer/releaseTiers.xml"/>
+	<include file="./resources/struts/buyer/memberManagement.xml"/>
+	<include file="./resources/struts/buyer/routingPriority.xml"/>
+
+	
+</struts>

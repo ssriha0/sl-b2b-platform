@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="webserviceQueue">
+
+	<select id="webserviceQueue.query_queue_by_id" parameterClass="com.newco.marketplace.dto.vo.webservices.WSPayloadVO" resultClass="com.newco.marketplace.dto.vo.webservices.WSPayloadVO">
+		select 
+		queue_id as queueID,
+		create_timestamp as createTimestamp,
+		payload,
+		method_name as methodName,
+		port_name as portName
+		from 
+		ws_queue
+		where 
+		queue_id = #queueID#
+	</select>
+	
+	<select id="webserviceQueue.query_next10" parameterClass="com.newco.marketplace.dto.vo.webservices.WSPayloadVO" resultClass="com.newco.marketplace.dto.vo.webservices.WSPayloadVO">
+		select 
+		queue_id as queueID,
+		create_timestamp as createTimestamp,
+		payload,
+		method_name as methodName,
+		port_name as portName
+		from 
+		ws_queue
+		order by create_timestamp asc
+		limit 10
+	</select>
+	
+	<delete id="webserviceQueue.delete_by_queueID" parameterClass="com.newco.marketplace.dto.vo.webservices.WSPayloadVO">
+		delete from	ws_queue where queue_id = #queueID#
+	</delete>
+	
+	<insert id="webserviceQueue.insert" parameterClass="com.newco.marketplace.dto.vo.webservices.WSPayloadVO">
+		insert into ws_queue
+		(queue_id, create_timestamp, payload, method_name, port_name)
+		values
+		(#queueID#, CURRENT_TIMESTAMP, #payload#, #methodName#, #portName#)
+	</insert>
+	
+</sqlMap>

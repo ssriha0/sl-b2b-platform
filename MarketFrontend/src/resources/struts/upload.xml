@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+
+    <package name="upload_buyer" extends="ServiceLiveBase">
+    	<default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+		<action name="buyerFileUploadAction_*" class="buyerFileUploadAction" method="{1}">
+			<result name="success">/jsp/buyerFileUpload/fileUpload.jsp</result>		
+	        <result name="error">/jsp/public/error/body/errorBody.jsp</result>	    	    
+	        <result name="input">/jsp/buyerFileUpload/fileUpload.jsp</result>
+	        <result name="failure">/jsp/buyerFileUpload/fileUpload.jsp</result>	  
+	        <result name="errorList">/jsp/buyerFileUpload/errorList.jsp</result>
+	        <result name="redirectLandingPage" type="redirectAction">buyerFileUploadAction?fileUploaded=true</result>	        
+		</action>
+		 </package> 
+</struts>
+		

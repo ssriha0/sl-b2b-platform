@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-2.0.xsd">
+	
+	<!-- 
+		This bean reads the properties from the server.
+		In JBoss it is usually defined in 
+		properties-services.xml in the deploy folder
+		Properties needed by the Wallet.RemoteClient are
+		java.naming.factory.initial=org.jnp.interfaces.NamingContextFactory
+		java.naming.factory.url.pkgs=org.jboss.naming:org.jnp.interfaces
+		java.naming.url=localhost:1399 //this is configured in jndi.properties file
+		wallet.restservice.url=http://localhost:8180/Wallet.RemoteService/rest-services
+		wallet.jms.connection.factory.name=QueueConnectionFactory
+		wallet.jms.queue.name=queue/SLWalletRequestQueue		
+	 -->
+	<bean id="remoteClientPropertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"/>
+	
+	<bean id="jndiTemplate" class="org.springframework.jndi.JndiTemplate">
+	    <property name="environment">
+	        <props>
+	            <prop key="java.naming.factory.initial">
+	                ${java.naming.factory.initial}
+	            </prop>
+	            <prop key="java.naming.factory.url.pkgs">
+	                ${java.naming.factory.url.pkgs}
+	            </prop>
+	            <prop key="java.naming.provider.url">
+	                ${java.naming.provider.url}
+	            </prop>	           
+	        </props>
+	    </property>
+	</bean>
+	
+	<bean id="walletJmsQueueConnectionFactory"
+	      class="org.springframework.jndi.JndiObjectFactoryBean">
+	    <property name="jndiTemplate">
+	        <ref bean="jndiTemplate"/>
+	    </property>
+	    <property name="jndiName">
+	        <value>${wallet.jms.connection.factory.name}</value>
+	    </property>
+	</bean>
+	
+	<bean id="walletRequestQueue"
+	    class="org.springframework.jndi.JndiObjectFactoryBean">
+	    <property name="jndiTemplate">
+	        <ref bean="jndiTemplate"/>
+	    </property>
+	    <property name="jndiName">
+	        <value>${wallet.jms.queue.name}</value>
+	    </property>
+	</bean>
+
+	<bean id="walletRemoteClient" class="com.servicelive.wallet.remoteclient.WalletBO">
+		<property name="jmsTemplate" ref="walletJmsTemplate" />
+		<property name="walletRestUrl" value="${wallet.restservice.url}" />
+	</bean>	
+
+    <bean id="walletRemoteServiceChecker" class="com.servicelive.common.rest.ServiceLiveRemoteServiceChecker">
+        <property name="baseUrl" value="${wallet.restservice.url}" />
+        <property name="remoteServiceName" value="WalletRemoteService"/>
+    </bean>
+	<!-- JBOSS Upgrade: changed from JmsTemplate102 to JmsTemplate implementation-->
+	<bean id="walletJmsTemplate" 
+	      class="org.springframework.jms.core.JmsTemplate">
+	    <property name="connectionFactory" ref="walletJmsQueueConnectionFactory" />
+	    <property name="defaultDestination" ref="walletRequestQueue" />
+        <property name="sessionTransacted" value="true" />
+	</bean>	
+		
+</beans>
+

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.springframework.org/schema/tx
+                        http://www.springframework.org/schema/tx/spring-tx.xsd"
+    >
+
+    <bean id="baseSODecision" class="com.servicelive.orderfulfillment.decision.AbstractServiceOrderDecision" abstract="true">
+        <property name="serviceOrderDao" ref="serviceOrderDao"/>
+    </bean>
+
+    <!--
+	<bean id="fundsConfirmedCheck" class="com.servicelive.orderfulfillment.decisions.FundsConfirmedCheck" parent="baseSODecision">
+		<property name="gateWay" ref="gateWay"/>
+	</bean>
+	-->
+
+	<bean id="serviceDateTimePastCheck" class="com.servicelive.orderfulfillment.decision.ServiceDateTimePastCheck" parent="baseSODecision" />
+    <bean id="serviceDateTimeReachedCheck" class="com.servicelive.orderfulfillment.decision.ServiceDateTimeReachedCheck" parent="baseSODecision" />
+    <bean id="cancellationPenaltyCheck" class="com.servicelive.orderfulfillment.decision.CancellationPenaltyCheck" parent="baseSODecision" />
+
+    <bean id="serviceOrderDao" class="com.servicelive.orderfulfillment.dao.InMemoryServiceOrderDao" />
+
+    <!--
+    <bean id="gateWay" class="com.servicelive.orderfulfillment.gateway.GateWay">
+         <property name="walletBO" ref="walletRemoteClient" />
+    </bean>
+    -->
+</beans>

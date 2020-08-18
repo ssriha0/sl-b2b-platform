@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/getTabListResponse" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" targetNamespace="http://www.servicelive.com/namespaces/getTabListResponse" elementFormDefault="qualified" jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+	<xs:include schemaLocation="../../common.xsd" />
+	<xs:include schemaLocation="../../om_common.xsd" />
+
+	<!-- This is the new get Tab List Response -->
+	<!-- Root Element -->
+	<xs:element name="getTabListResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="results" />
+				<xs:element name="tabCountLists" type="tabCountList"
+					minOccurs="0"  maxOccurs="1" />	
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:decimal" />
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:complexType name="tabCountList">
+		<xs:sequence>
+	            <xs:element name="tabCount" type="omTabCounts" minOccurs="0"   
+                                            maxOccurs="unbounded" />
+	    </xs:sequence>		
+	</xs:complexType>
+	
+	<xs:complexType name="omTabCounts">
+		<xs:sequence>
+			<xs:element name="tabName" type="xs:string" />
+			<xs:element name="soCount" type="xs:integer" />
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="partsManagement">
+	<typeAlias alias="invoicePartVO"
+		type="com.newco.marketplace.vo.mobile.InvoicePartsVO" />
+	<typeAlias alias="lookupVO" type="com.newco.marketplace.dto.vo.LookupVO" />
+	<typeAlias alias="invoiceDocVO" type="com.newco.marketplace.vo.mobile.DocIdVO" />
+	<!-- Result Map -->
+	<resultMap class="com.newco.marketplace.vo.mobile.InvoicePartsVO"
+		id="invoiceDetails.resultsMap">
+		<result property="partInvoiceId" column="so_provider_invoice_parts_id" />
+		<result property="partCoverage" column="part_coverage" />
+		<result property="partSource" column="source" />
+		<result property="partNumber" column="part_no" />
+		<result property="partDescription" column="description" />
+		<result property="invoiceNumber" column="invoice_no" />
+		<result property="unitCost" column="unit_cost" />
+		<result property="soId" column="so_id" />
+		<result property="qty" column="qty" />
+		<result property="nonSearsSource" column="source_non_sears" />
+		<result property="partStatus" column="part_status" />
+		<result property="retailPrice" column="retail_price" />
+		<result property="claimStatus" column="claim_status" />
+		<result property="autoAdjudicationInd" column="auto_adjudication_ind" />
+		<result property="invoiceDocumentList" column="so_provider_invoice_parts_id"
+			select="fetchSOInvoiceDocuments.query" />
+			
+		<result property="divisionNumber" column="division_number" />
+		<result property="sourceNumber" column="source_number" />
+		<result property="partNoSource" column="part_source" />
+	</resultMap>
+
+	<resultMap class="com.newco.marketplace.api.mobile.beans.sodetails.Document"
+		id="doc.resultsMap">
+		<result property="documentId" column="documentId" />
+		<result property="documentType" column="documentType" />
+		<result property="fileName" column="fileName" />
+		<result property="documentDescription" column="documentDescription" />
+		<result property="uploadDateTime" column="uploadDateTime" />
+		<result property="uploadedBy" column="uploadedBy" />
+		<result property="uploadedbyName" column="documentId" select="fetchInvoicDocUploadedBy.query" />
+		<result property="fileType" column="fileType" />
+		<result property="docSize" column="docSize" />
+	</resultMap>
+	
+	<insert id="addPartsDetails.insert" parameterClass="invoicePartVO">
+		insert into
+		so_provider_invoice_parts(
+		so_id,
+		qty,
+		retail_price,
+		description,
+		part_url,
+		part_no,
+		division_number,
+		source_number,
+		created_date,
+		modified_date,
+		auto_adjudication_ind,
+		part_status,
+		part_source,
+		commercial_price)
+		values(
+		#soId#,
+		#qty#,
+		#retailPrice#,
+		#partDescription#,
+		#partUrl#,
+		#partNumber#,
+		#divisionNumber#,
+		#sourceNumber#,
+		NOW(),
+		NOW(),
+		#autoAdjudicationInd#,
+		#partStatus#,
+		#partNoSource#,
+		#commercialPrice#
+		)
+	</insert>
+	
+	<select id="getRetailPriceSum.query"  parameterClass="java.util.HashMap"  
+			resultClass="java.lang.Double">	
+			SELECT SUM(retail_price * qty) FROM so_provider_invoice_parts WHERE so_id = #soId# AND part_status =#partStatus# 
+			<isNotNull property="partInvoiceId">
+			AND so_provider_invoice_parts_id != #partInvoiceId#		
+	       </isNotNull>
+			;
+	</select>	
+
+	<select id="fetchInvoicDocUploadedBy.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT  CONCAT(COALESCE(c.first_name,''),' ',COALESCE(c.last_name,''))
+		FROM
+		document d JOIN vendor_resource v ON d.entity_id=v.resource_id
+		JOIN contact c ON c.contact_id=v.contact_id
+		WHERE
+		d.document_id = #documentId#
+ 	 </select> 
+ 	 
+ 	<select id="fetchSOInvoiceDocuments.query" parameterClass="java.lang.String" resultMap="doc.resultsMap">
+	 SELECT
+         d.document_id AS documentId,
+         d.title AS documentType,
+         d.file_name AS fileName,
+         d.descr AS documentDescription, d.created_date AS uploadDateTime,
+         IF(d.role_id = 1,'Provider','Buyer') AS uploadedBy, 
+         sd.modified_by AS uploadedbyName,
+         d.format AS fileType,
+         d.doc_size AS docSize
+        FROM so_document sd, document d,so_provider_invoice_doc sipd 
+        WHERE sd.document_id = d.document_id AND sd.document_id = sipd.invoice_document_id
+	 AND sipd.invoice_part_id = #invoicePartId#
+        AND d.delete_ind = 0
+        AND d.file_name NOT LIKE '%_Thumb%'
+        AND d.title = 'Parts Invoice'
+        ORDER BY d.created_date DESC
+ 	 </select> 
+ 	 
+
+	<select id="getPartDetails.query" parameterClass="java.util.List"
+		resultMap="invoiceDetails.resultsMap">
+		SELECT so_provider_invoice_parts_id,
+		part_coverage,
+		source,
+		part_no,
+		description,
+		invoice_no,
+		unit_cost,
+		qty,
+		source_non_sears,
+		part_status,
+		retail_price,
+		claim_status,
+		auto_adjudication_ind,
+		so_id,
+		division_number,
+		source_number,
+		part_source
+		FROM so_provider_invoice_parts
+		WHERE so_provider_invoice_parts_id IN
+		<iterate open="(" close=")" conjunction=",">
+			#invoicePartIds[]#
+		</iterate>
+
+	</select>
+	<select id="fetchPartStatusTypes.query" parameterClass="java.lang.String"
+		resultClass="lookupVO">
+		SELECT descr AS descr,
+               part_status_name AS TYPE
+        FROM lu_invoice_part_status
+        ORDER BY sort_order ASC
+	</select>
+	<select id="getInvoiceDetails.query" resultMap="invoiceDetails.resultsMap">
+		SELECT *
+		FROM so_provider_invoice_parts
+		WHERE invoice_no = #invoiceNum#
+		AND so_id = #soId#
+	</select>
+	<delete id="deletePartLcnDetails.delete" parameterClass="java.lang.Integer">
+		DELETE FROM so_provider_invoice_part_location WHERE invoice_part_id =
+		#partInvoiceId#
+	</delete>
+	<select id="getDocIdForInvoiceId.query" parameterClass="java.lang.Integer"
+		resultClass="java.lang.Integer">
+		SELECT invoice_document_id FROM so_provider_invoice_doc WHERE
+		invoice_part_id = #partInvoiceId#
+	</select>
+	<delete id="deletePartDocumentDetails.delete" parameterClass="java.lang.Integer">
+		DELETE FROM so_provider_invoice_doc WHERE invoice_part_id =
+		#partInvoiceId#
+	</delete>
+	<select id="getInvoiceIdCountForDocId.query" parameterClass="java.util.List"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(DISTINCT invoice_part_id) FROM so_provider_invoice_doc
+		WHERE invoice_document_id IN
+		<iterate open="(" close=")" conjunction=","> #[]#
+		</iterate>
+	</select>
+	<delete id="deleteSODocDetails.delete" parameterClass="java.util.HashMap">
+		DELETE FROM so_document WHERE
+		so_id = #soId# and document_id IN
+		<iterate property="documentIdList" open="(" close=")"
+			conjunction=",">
+			#documentIdList[]#
+		</iterate>
+	</delete>
+	<delete id="deleteDocDetails.delete" parameterClass="java.util.List">
+		DELETE FROM document WHERE document_id IN
+		<iterate open="(" close=")" conjunction=","> #[]#
+		</iterate>
+	</delete>
+	<delete id="deletePartInvoiceDetails.delete" parameterClass="java.lang.Integer">
+		DELETE FROM so_provider_invoice_parts WHERE
+		so_provider_invoice_parts_id = #partInvoiceId#
+	</delete>
+	<delete id="deletePartDocumentForDocumentId.delete" parameterClass="java.lang.Integer">
+		DELETE FROM so_provider_invoice_doc WHERE
+		invoice_document_id = #documentId#
+	</delete>
+	<insert id="invoicePartDocument.insert" parameterClass="invoiceDocVO"> INSERT
+		INTO so_provider_invoice_doc(invoice_part_id,invoice_document_id)
+		VALUES (#invoiceId#, #docId# )
+	</insert>
+	<delete id="deleteSelectedPartDocument.delete" parameterClass="java.util.HashMap">
+		DELETE FROM so_provider_invoice_doc WHERE invoice_document_id = #documentId# AND invoice_part_id IN
+		<iterate property="invoiceIdList" open="(" close=")"
+			conjunction=",">
+			#invoiceIdList[]#
+		</iterate>
+		
+	</delete>
+</sqlMap>

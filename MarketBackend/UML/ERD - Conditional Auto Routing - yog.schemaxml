@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemadesigner version="6.5">
+<source>
+<database charset="latin1" collation="latin1_swedish_ci">DEV_supplier_munged</database>
+</source>
+<canvas zoom="100">
+<tables>
+<table name="routing_rule_alert" view="colnames">
+<left>12</left>
+<top>23</top>
+<width>157</width>
+<height>176</height>
+<sql_create_table>CREATE TABLE `routing_rule_alert` (
+  `routing_rule_alert_id` int(10) NOT NULL auto_increment,
+  `routing_rule_hdr_id` int(10) NOT NULL,
+  `alert_type_id` int(10) NOT NULL,
+  `alert_status` varchar(20) default NULL,
+  `created_date` timestamp NULL default NULL,
+  `modified_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `modified_by` varchar(30) default NULL,
+  PRIMARY KEY  (`routing_rule_alert_id`),
+  KEY `FK_routing_rule_alert_routing_rule_hdr_id` (`routing_rule_hdr_id`),
+  KEY `FK_routing_rule_alert_alert_type_id` (`alert_type_id`),
+  KEY `IDX_routing_rule_alert_rr_alert_id_rr_hdr_id` (`routing_rule_hdr_id`,`routing_rule_alert_id`),
+  KEY `IDX_routing_rule_alert_rr_alert_id_rr_alert_type_id` (`alert_type_id`,`routing_rule_alert_id`),
+  CONSTRAINT `FK_routing_rule_alert_routing_rule_hdr_id` FOREIGN KEY (`routing_rule_hdr_id`) REFERENCES `routing_rule_hdr` (`routing_rule_hdr_id`),
+  CONSTRAINT `FK_routing_rule_alert_alert_type_id` FOREIGN KEY (`alert_type_id`) REFERENCES `lu_routing_alert_type` (`alert_type_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="routing_rule_buyer_assoc" view="colnames">
+<left>26</left>
+<top>401</top>
+<width>203</width>
+<height>144</height>
+<sql_create_table>CREATE TABLE `routing_rule_buyer_assoc` (
+  `routing_rule_buyer_assoc_id` int(10) NOT NULL auto_increment,
+  `buyer_id` int(10) unsigned NOT NULL,
+  `created_date` timestamp NULL default NULL,
+  `modified_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `modified_by` varchar(30) default NULL,
+  PRIMARY KEY  (`routing_rule_buyer_assoc_id`),
+  KEY `IDX_routing_rule_buyer_assoc_rr_buyer_assoc_id_buyer_id` (`buyer_id`,`routing_rule_buyer_assoc_id`),
+  KEY `FK_routing_rule_buyer_assoc_buyer_id` (`buyer_id`),
+  CONSTRAINT `FK_routing_rule_buyer_assoc_buyer_id` FOREIGN KEY (`buyer_id`) REFERENCES `buyer` (`buyer_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="routing_rule_criteria" view="colnames">
+<left>559</left>
+<top>39</top>
+<width>171</width>
+<height>192</height>
+<sql_create_table>CREATE TABLE `routing_rule_criteria` (
+  `routing_rule_criteria_id` int(10) NOT NULL auto_increment,
+  `routing_rule_hdr_id` int(10) default NULL,
+  `criteria_name` varchar(30) default NULL,
+  `criteria_value` varchar(30) default NULL,
+  `rule_type_id` int(10) default NULL,
+  `created_date` timestamp NULL default NULL,
+  `modified_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `modified_by` varchar(30) default NULL,
+  PRIMARY KEY  (`routing_rule_criteria_id`),
+  KEY `FK_routing_rule_criteria_rule_type_id` (`rule_type_id`),
+  KEY `FK_routing_rule_criteria_routing_rule_hdr_id` (`routing_rule_hdr_id`),
+  KEY `IDX_routing_rule_criteria_rr_criteria_id_rr_hdr_id` (`routing_rule_hdr_id`,`routing_rule_criteria_id`),
+  KEY `IDX_routing_rule_criteria_rr_criteria_id_rule_type_id` (`rule_type_id`,`routing_rule_criteria_id`),
+  CONSTRAINT `FK_routing_rule_criteria_rule_type_id` FOREIGN KEY (`rule_type_id`) REFERENCES `lu_routing_rule_type` (`rule_type_id`),
+  CONSTRAINT `FK_routing_rule_criteria_routing_rule_hdr_id` FOREIGN KEY (`routing_rule_hdr_id`) REFERENCES `routing_rule_hdr` (`routing_rule_hdr_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="routing_rule_hdr" view="colnames">
+<left>300</left>
+<top>304</top>
+<width>203</width>
+<height>208</height>
+<sql_create_table>CREATE TABLE `routing_rule_hdr` (
+  `routing_rule_hdr_id` int(10) NOT NULL auto_increment,
+  `routing_rule_buyer_assoc_id` int(10) NOT NULL,
+  `rule_name` varchar(30) NOT NULL,
+  `rule_status` varchar(20) NOT NULL default 'INACTIVE',
+  `contact_id` int(10) unsigned NOT NULL,
+  `rule_comment` varchar(255) default NULL,
+  `created_date` timestamp NULL default NULL,
+  `modified_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `modified_by` varchar(30) default NULL,
+  PRIMARY KEY  (`routing_rule_hdr_id`),
+  KEY `FK_routing_rule_hdr_contact_id` (`contact_id`),
+  KEY `FK_routing_rule_hdr_routing_rule_buyer_assoc_id` (`routing_rule_buyer_assoc_id`),
+  KEY `IDX_routing_rule_hdr_rr_hdr_id_contact_id` (`contact_id`,`routing_rule_hdr_id`),
+  KEY `IDX_routing_rule_hdr_rr_hdr_id_rr_buyer_assoc_id` (`routing_rule_buyer_assoc_id`,`routing_rule_hdr_id`),
+  CONSTRAINT `FK_routing_rule_hdr_contact_id` FOREIGN KEY (`contact_id`) REFERENCES `contact` (`contact_id`),
+  CONSTRAINT `FK_routing_rule_hdr_routing_rule_buyer_assoc_id` FOREIGN KEY (`routing_rule_buyer_assoc_id`) REFERENCES `routing_rule_buyer_assoc` (`routing_rule_buyer_assoc_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="routing_rule_hdr_hist" view="colnames">
+<left>39</left>
+<top>584</top>
+<width>177</width>
+<height>208</height>
+<sql_create_table>CREATE TABLE `routing_rule_hdr_hist` (
+  `routing_rule_hdr_hist_id` int(10) NOT NULL auto_increment,
+  `routing_rule_hdr_id` int(10) default NULL,
+  `rule_name` varchar(30) default NULL,
+  `rule_status` varchar(20) default NULL,
+  `rule_comment` varchar(255) default NULL,
+  `rule_action` varchar(255) default NULL,
+  `created_date` timestamp NULL default NULL,
+  `modified_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `modified_by` varchar(30) default NULL,
+  PRIMARY KEY  (`routing_rule_hdr_hist_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="routing_rule_price" view="colnames">
+<left>292</left>
+<top>595</top>
+<width>184</width>
+<height>176</height>
+<sql_create_table>CREATE TABLE `routing_rule_price` (
+  `routing_rule_price_id` int(10) NOT NULL auto_increment,
+  `routing_rule_speciality_id` int(10) default NULL,
+  `jobcode` int(10) NOT NULL,
+  `price` int(10) default NULL,
+  `created_date` timestamp NULL default NULL,
+  `modified_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `modified_by` varchar(30) default NULL,
+  PRIMARY KEY  (`routing_rule_price_id`),
+  KEY `FK_routing_rule_price_routing_rule_speciality_id` (`routing_rule_speciality_id`),
+  KEY `IDX_routing_rule_price_rr_price_id_rr_specialty_id` (`routing_rule_speciality_id`,`routing_rule_price_id`),
+  CONSTRAINT `FK_routing_rule_price_routing_rule_speciality_id` FOREIGN KEY (`routing_rule_speciality_id`) REFERENCES `routing_rule_speciality` (`routing_rule_speciality_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="routing_rule_speciality" view="colnames">
+<left>556</left>
+<top>610</top>
+<width>184</width>
+<height>192</height>
+<sql_create_table>CREATE TABLE `routing_rule_speciality` (
+  `routing_rule_speciality_id` int(10) NOT NULL auto_increment,
+  `routing_rule_hdr_id` int(10) NOT NULL,
+  `speciality` varchar(30) default NULL,
+  `auto_pulling` tinyint(1) unsigned default '0',
+  `rule_type_id` int(10) NOT NULL,
+  `created_date` timestamp NULL default NULL,
+  `modified_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `modified_by` varchar(30) default NULL,
+  PRIMARY KEY  (`routing_rule_speciality_id`),
+  KEY `FK_routing_rule_specialty_routing_rule_hdr_id` (`routing_rule_hdr_id`),
+  KEY `FK_routing_rule_speicality_rule_type_id` (`rule_type_id`),
+  KEY `IDX_routing_rule_specialty_rr_specialty_id_rr_hdr_id` (`routing_rule_hdr_id`,`routing_rule_speciality_id`),
+  KEY `IDX_routing_rule_specialty_rr_specialty_id_rr_type_id` (`rule_type_id`,`routing_rule_speciality_id`),
+  CONSTRAINT `FK_routing_rule_specialty_routing_rule_hdr_id` FOREIGN KEY (`routing_rule_hdr_id`) REFERENCES `routing_rule_hdr` (`routing_rule_hdr_id`),
+  CONSTRAINT `FK_routing_rule_speicality_rule_type_id` FOREIGN KEY (`rule_type_id`) REFERENCES `lu_routing_rule_type` (`rule_type_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="routing_rule_vendor" view="colnames">
+<left>556</left>
+<top>253</top>
+<width>171</width>
+<height>160</height>
+<sql_create_table>CREATE TABLE `routing_rule_vendor` (
+  `routing_rule_vendor_id` int(10) NOT NULL auto_increment,
+  `routing_rule_hdr_id` int(10) default NULL,
+  `vendor_id` int(10) unsigned NOT NULL,
+  `created_date` timestamp NULL default NULL,
+  `modified_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `modified_by` varchar(30) default NULL,
+  PRIMARY KEY  (`routing_rule_vendor_id`),
+  KEY `FK_routing_rule_vendor_routing_rule_hdr_id` (`routing_rule_hdr_id`),
+  KEY `FK_routing_rule_vendor_vendor_id` (`vendor_id`),
+  KEY `IDX_routing_rule_vendor_rr_vendor_id_rr_hdr_id` (`routing_rule_hdr_id`,`routing_rule_vendor_id`),
+  KEY `IDX_routing_rule_vendor_rr_vendor_id_vendor_id` (`vendor_id`,`routing_rule_vendor_id`),
+  CONSTRAINT `FK_routing_rule_vendor_routing_rule_hdr_id` FOREIGN KEY (`routing_rule_hdr_id`) REFERENCES `routing_rule_hdr` (`routing_rule_hdr_id`),
+  CONSTRAINT `FK_routing_rule_vendor_vendor_id` FOREIGN KEY (`vendor_id`) REFERENCES `vendor_hdr` (`vendor_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="so_routing_rule_assoc" view="colnames">
+<left>23</left>
+<top>223</top>
+<width>183</width>
+<height>160</height>
+<sql_create_table>CREATE TABLE `so_routing_rule_assoc` (
+  `routing_rule_so_assoc_id` int(10) NOT NULL auto_increment,
+  `so_id` varchar(30) NOT NULL,
+  `routing_rule_hdr_id` int(10) NOT NULL,
+  `created_date` timestamp NULL default NULL,
+  `modified_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `modified_by` varchar(30) default NULL,
+  PRIMARY KEY  (`routing_rule_so_assoc_id`),
+  KEY `FK_so_routing_rule_assoc_routing_rule_hdr_id` (`routing_rule_hdr_id`),
+  KEY `FK_so_routing_rule_assoc_so_id` (`so_id`),
+  KEY `IDX_so_routing_rule_assoc_rr_so_assoc_id_rr_hdr_id` (`routing_rule_hdr_id`,`routing_rule_so_assoc_id`),
+  KEY `IDX_so_routing_rule_assoc_rr_so_assoc_id_so_id` (`so_id`,`routing_rule_so_assoc_id`),
+  CONSTRAINT `FK_so_routing_rule_assoc_routing_rule_hdr_id` FOREIGN KEY (`routing_rule_hdr_id`) REFERENCES `routing_rule_hdr` (`routing_rule_hdr_id`),
+  CONSTRAINT `FK_so_routing_rule_assoc_so_id` FOREIGN KEY (`so_id`) REFERENCES `so_hdr` (`so_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="lu_routing_alert_type" view="colnames">
+<left>240</left>
+<top>23</top>
+<width>174</width>
+<height>144</height>
+<sql_create_table>CREATE TABLE `lu_routing_alert_type` (
+  `alert_type_id` int(10) NOT NULL auto_increment,
+  `descr` varchar(255) default NULL,
+  `created_date` timestamp NULL default NULL,
+  `modified_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `modified_by` varchar(30) default NULL,
+  PRIMARY KEY  (`alert_type_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="lu_routing_rule_type" view="colnames">
+<left>795</left>
+<top>162</top>
+<width>144</width>
+<height>160</height>
+<sql_create_table>CREATE TABLE `lu_routing_rule_type` (
+  `rule_type_id` int(10) NOT NULL auto_increment,
+  `descr` varchar(255) default NULL,
+  `internal_operand` varchar(20) default NULL,
+  `created_date` timestamp NULL default NULL,
+  `modified_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `modified_by` varchar(30) default NULL,
+  PRIMARY KEY  (`rule_type_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="contact" view="colnames">
+<left>787</left>
+<top>371</top>
+<width>168</width>
+<height>456</height>
+<sql_create_table>CREATE TABLE `contact` (
+  `contact_id` int(11) unsigned NOT NULL auto_increment,
+  `last_name` varchar(50) default NULL,
+  `first_name` varchar(50) default NULL,
+  `mi` varchar(50) default NULL,
+  `suffix` varchar(10) default NULL,
+  `title` varchar(50) default NULL COMMENT 'position in company',
+  `phone_no` varchar(30) default NULL,
+  `fax_no` varchar(30) default NULL,
+  `mobile_no` varchar(30) default NULL,
+  `pager_text` varchar(30) default NULL,
+  `email` varchar(255) default NULL,
+  `contact_group` int(11) default NULL,
+  `contact_method_id` int(11) unsigned default NULL,
+  `created_date` datetime NOT NULL default '0000-00-00 00:00:00',
+  `modified_date` datetime NOT NULL default '0000-00-00 00:00:00',
+  `modified_by` varchar(30) default NULL,
+  `honorific` varchar(5) default NULL COMMENT 'mr mrs ms',
+  `email_alt` varchar(255) default NULL,
+  `company_role_id` int(10) unsigned default NULL,
+  `pri_contact_method_id` int(10) unsigned default NULL,
+  `alt_contact_method_id` int(10) unsigned default NULL,
+  `phone_no_ext` varchar(6) default NULL,
+  `sms_no` varchar(30) default NULL,
+  `so_contact_method_id` int(10) unsigned default NULL,
+  `dob` date default NULL,
+  PRIMARY KEY  (`contact_id`),
+  KEY `FK_contact_method_id` (`contact_method_id`),
+  KEY `FK_contact_company_role_id` (`company_role_id`),
+  KEY `FK_contact_pri_contact_mthd_id` (`pri_contact_method_id`),
+  KEY `FK_contact_alt_contact_mthd_id` (`alt_contact_method_id`),
+  KEY `FK_contact_so_contact_method_id` (`so_contact_method_id`),
+  CONSTRAINT `FK_contact_alt_contact_mthd_id` FOREIGN KEY (`alt_contact_method_id`) REFERENCES `lu_contact_method` (`id`),
+  CONSTRAINT `FK_contact_company_role_id` FOREIGN KEY (`company_role_id`) REFERENCES `lu_company_role` (`company_role_id`),
+  CONSTRAINT `FK_contact_pri_contact_mthd_id` FOREIGN KEY (`pri_contact_method_id`) REFERENCES `lu_contact_method` (`id`),
+  CONSTRAINT `FK_contact_so_contact_method_id` FOREIGN KEY (`so_contact_method_id`) REFERENCES `lu_contact_method` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT</sql_create_table>
+</table>
+</tables>
+</canvas>
+</schemadesigner>

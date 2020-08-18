@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+    <!--  CONFIDENTIALITY  -->
+   	<bean id="confidentiality" class="java.lang.Boolean">
+         <constructor-arg>
+               <value>false</value>
+          </constructor-arg>
+    </bean>
+
+    <!--  COOKIES INTEGRITY  -->
+   	<bean id="avoidCookiesIntegrity" class="java.lang.Boolean">
+         <constructor-arg>
+               <value>true</value>
+          </constructor-arg>
+    </bean>
+
+    <!--  COOKIES CONFIDENTIALITY  -->    
+   	<bean id="avoidCookiesConfidentiality" class="java.lang.Boolean">
+         <constructor-arg>
+               <value>true</value>
+          </constructor-arg>
+    </bean>     
+
+    <!--  STRATEGY  -->
+   	<bean id="strategy" class="java.lang.String">
+         <constructor-arg>
+               <value>memory</value>
+          </constructor-arg>
+    </bean>
+    
+    <!--  RANDOM NAME FOR HDIV PARAMETER -->
+   	<bean id="randomName" class="java.lang.Boolean">
+         <constructor-arg>
+               <value>false</value>
+          </constructor-arg>
+    </bean>
+
+	<!--  HDIV Configuration Bean  -->
+	<bean id="config" class="org.hdiv.config.SLHDIVConfig">
+	
+		<property name="userStartParameters">			
+			<list> 
+			</list>
+		</property>
+		
+		<!-- <property name="userStartPages">
+			<list>			
+				<value>/</value>
+				<value>(create.*\.action)|(.*rrw.*\.action)|(.*routingRule.*\.action)|(.*assurant.*\.action)|(.*adminTripCharge.*\.action)|(.*examples.*\.action)|(.*buyerRegistration.*\.action)|(.*spnBuyer.*\.action)|(.*etm.*\.action)|(.*soWhatIsSL.*\.action)|(.*contactUsAction.*\.action)|(.*loginAction\.action)|(.*homepage\.action)|(.*homepage.*\.action)|(.*ssoController.*\.action)|(.*csoFindProviders.*\.action)|(.*csoDescribeAndSchedule.*\.action)|(.*csoCreateAccount.*\.action)|(.*csoDocumentsAndPhotos.*\.action)|(.*joinNowAction\.action)|(.*resetPasswordAction\!loadResetPasswordPage\.action)|(.*resetPasswordAction\!validateEmail\.action)|(.*resetPasswordAction\!validateAns\.action)|(.*resetPasswordAction\!cancelAnswer\.action)|(.*resetPasswordAction\!doCancel\.action)|(.*forgetUsernameAction\!doCancel\.action)|(.*forgetUsernameAction\!sendEmail\.action)|(.*forgetUsernameAction\!doValidatePhoneAndZip\.action)|(.*forgetUsernameAction\!doValidateSecretQuestion\.action)|(.*forgetUsernameAction\!validateEmail\.action)|(.*forgetUsernameAction\!loadForgetUserPage\.action)|(.*providerRegistrationAction\.action)|(.*providerRegSaveAction\.action)|(.*doLogin\.action)|(.*doLogout\.action)|(.*/public/.*)|(.*termsAndConditions.*\.action)|(.*profileTabAction.*\.action)|(.*publicProfileAction.*\.action)|(.*loginAdditionalInfo.*\.action)|(.*joinNowGeneralAction.*\.action)|(.*joinNowSimpleAction.*\.action)|(.*joinNowBuyerSimpleAction.*\.action)|(.*joinNowBuyerAction.*\.action)|(.*providerProfileInfoAction.*\.action)|(.*soProviderSelect.*\.action)|(.*google_maps.*\.jsp)|(.*orderGroup.*\.action)|(.*spnMonitorAction_getCompanyRequirementsList.*\.action)|(.*spnMonitorAction_getProviderRequirementsList.*\.action) |(.*buyerlogo_getBuyerLogo.*\.action)|(.*providerUtils.*\.action)</value>						
+			</list>			
+		</property> -->
+
+		<property name="userStartPages">
+			<list>
+			    
+			    <value>.*profileTabAction_execute.action</value>
+				<value>.*manageUserActiondoLoadUsers.action</value>
+				<value>.*manageUserAction!resetPassword.action</value>
+				<value>.*fmManageFunds_withdrawFundsSLAOperations.action</value>
+				<value>.*saveInsuranceTypeActiondoSave.action</value>
+				<value>.*fullfillmentAdminAction_sendBalanceInquiry.action</value>
+				<value>.*backgroundCheckAction!doLoad.action</value>
+				<value>.*teamCredentialAction!doLoad.action</value>
+				<value>.*skillAssignGeneralAction!doLoad.action</value>
+				<value>.*marketPlaceAction!doLoad.action</value>
+				<value>.*addInsuranceAction.action</value>
+				<value>.*adminAddEditUser_displayEditPage!resetPassword.action</value>					
+				<value>.*businessinfoActiondoLoad.action</value>
+				<value>.*businessinfoAction.action</value>
+				<value>.*businessinfoActiondoNext.action</value>
+				<value>.*doWarrantydoSave.action</value>
+				<value>.*licensesAndCertActiondoSave.action</value>
+				<value>.*licensesAndCertActiondoRemove.action</value>
+				<value>.*addInsuranceActionloadInsuranceList.action</value>
+				<value>.*addInsuranceActionsaveInsuranceList.action</value>
+				<value>.*addInsuranceActionloadInsuranceTypeList.action</value>
+				<value>.*soDetailsRateProviderSave.action</value>
+				<value>.*soDetailsTimeOnSite_.action</value>
+				<value>.*soDetailsSupportNote.action</value>
+				<value>.*w9registrationAction_execute.action</value>
+				<value>.*w9registrationAction_save.action</value>
+				<value>.*w9registrationAction_w9History.action</value>
+				
+				
+				<value>.*adminAddEditUser_save.action</value>
+				
+				<value>.*soDetailsSummarySubStatusChange.action</value>
+				
+				<value>.*soDetailsPartsTrackingChange.action</value>
+				
+				<value>.*soDetailsAddGeneralNote.action</value>
+				<value>.*requestReschedule.action</value>
+				<value>.*requestReschedule_validateRequestReschedule.action</value>
+				<value>.*serviceOrderCancel.action</value>
+				<value>.*fmFinancialProfileSave_save.action</value>
+				<value>.*fmManageAccounts_saveAccounts.action</value>
+				<value>.*fmManageFunds_depositFunds.action</value>
+				
+				<value>.*buyerAdminAddEdit_saveUser.action</value>
+				<value>.*buyerAdminAddEdit_displayEditPage!resetPassword.action</value>
+				<value>.*buyerEditCompanyProfileAction.action</value>
+				<value>.*buyerFileUploadAction.action</value>
+				<value>.*templateMaintenance_saveTemplate.action</value>
+			</list>			
+		</property>
+		
+		<property name="errorPage">
+			<value>errorAction.action</value>
+		</property>
+		
+		<property name="confidentiality">
+			<ref bean="confidentiality" />
+		</property>
+		
+		<property name="paramsWithoutValidation">
+			<map>												
+			</map>
+		</property>		
+		
+		<property name="validations">
+			<ref bean="editableParemetersValidations" />
+		</property>
+		
+		<property name="cookiesIntegrity">
+			<ref bean="avoidCookiesIntegrity" />
+		</property>
+		
+		<property name="cookiesConfidentiality">
+			<ref bean="avoidCookiesConfidentiality" />
+		</property>
+	</bean>
+    
+</beans>
+

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
+	default-lazy-init="true">
+	
+	<bean id="dashboardImpl" 
+				class="com.newco.marketplace.business.businessImpl.dashboard.DashboardDisplayBO">		
+				<property name="accTranMan">
+					<ref bean="accountingTransactionManagementImpl"/>
+				</property>	
+				<property name="provider">
+					<ref bean="providerDao"/>	
+				</property>
+				<property name="survey">
+					<ref bean="surveyBO"/>
+				</property>		
+				<property name="sodao">
+					<ref bean="roleSoDao"/>
+				</property>	
+				<property name="vendorHdrDao">
+					<ref bean="vendorHdrDaoImpl" />
+				</property>	
+				<property name="staleAfter" 
+			value="${lms.staleAfter.days}" >
+ 		</property>
+ 		<property name="goal" 
+			value="${lms.goal.minutes}" >
+ 		</property>
+	</bean>  
+	
+	<bean id="providerDao" class="com.newco.marketplace.persistence.daoImpl.provider.ProviderDaoImpl">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	 
+    </bean>	
+</beans>

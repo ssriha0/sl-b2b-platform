@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="template">
+
+	<typeAlias alias="AuditTemplateMappingVo"
+		type="com.newco.marketplace.vo.provider.AuditTemplateMappingVo" />
+		
+	<typeAlias alias="AlertEmailTemplateMappingVo"
+		type="com.newco.marketplace.dto.vo.alert.AlertTemplateMappingVo" />
+		
+	<typeAlias alias="AlertSMSTemplateMappingVo"
+		type="com.newco.marketplace.dto.vo.alert.AlertTemplateMappingVo" />
+		
+	<typeAlias alias="TemplateVo"
+		type="com.newco.marketplace.vo.provider.TemplateVo" />
+		
+	<select id="emailTemplate.auditEmailTemplateMappings"
+		resultClass="AuditTemplateMappingVo">
+		select 
+			wst.state_transition_id as stateTransitionId,
+			wsTar.wf_entity as workflowEntity, 
+			wst.target_state as	targetStateId, 
+			wsTar.wf_state as targetStateName,
+			wst.source_state as sourceStateId, 
+			wsTar.wf_state as sourceStateName, 
+			tpl.template_source as templateSource,
+			tpl.template_subject as templateSubject,
+			tpl.template_from as templateFrom ,
+			eid as eid,wst.audit_template_id as templateId
+			from wf_states wsTar, wf_state_transition wst, template tpl 
+		where 
+			wsTar.wf_state_id = wst.target_state and 
+			wst.audit_template_id = tpl.template_id
+	</select>
+	
+	<select id="emailTemplate.alertEmailTemplateMappings"
+		resultClass="AlertEmailTemplateMappingVo">
+			select 
+			wst.state_transition_id as stateTransitionId,
+			wsTar.wf_entity as workflowEntity, 
+			wst.target_state as	targetStateId, 
+			wsTar.wf_state as targetStateName,
+			wst.source_state as sourceStateId, 
+			wsTar.wf_state as sourceStateName, 
+			tpl.template_id as templateId,
+			tpl.template_source as templateSource,
+			tpl.template_subject as templateSubject,
+			tpl.template_from as templateFrom,
+			eid as eid
+		from wf_states wsTar, wf_state_transition wst, template tpl 
+		where 
+			wsTar.wf_state_id = wst.target_state and 
+			wst.email_template_id = tpl.template_id
+	</select>
+	
+	<select id="emailTemplate.alertSMSTemplateMappings"
+		resultClass="AlertSMSTemplateMappingVo">
+		select 
+			wst.state_transition_id as stateTransitionId,
+			wsTar.wf_entity as workflowEntity, 
+			wst.target_state as	targetStateId, 
+			wsTar.wf_state as targetStateName,
+			wst.source_state as sourceStateId, 
+			wsTar.wf_state as sourceStateName, 
+			tpl.template_id as templateId,
+			tpl.template_source as templateSource,
+			tpl.template_subject as templateSubject,
+			tpl.template_from as templateFrom,
+			eid as eid
+		from wf_states wsTar, wf_state_transition wst, template tpl 
+		where 
+			wsTar.wf_state_id = wst.target_state and 
+			wst.sms_template_id = tpl.template_id
+	</select>
+	
+	<select id="emailTemplate.getTemplateFromName"
+		resultClass="TemplateVo">
+		select
+			template_name as templateName,
+			template_source as templateSource,
+			template_subject as templateSubject,
+			template_from as templateFrom,
+			eid as templateEid,
+			template_id as templateId,
+			template_type_id as templateTypeId,
+			priority as priority
+		from 
+			template
+		where template_name =#value#
+	</select>
+	
+	<select id="emailTemplate.getTemplateFromId"
+		resultClass="TemplateVo">
+		select
+			template_name as templateName,
+			template_source as templateSource,
+			template_subject as templateSubject,
+			template_from as templateFrom,
+			eid as eid,
+			template_id as templateId,
+			template_type_id as templateTypeId,
+			priority as priority
+		from 
+			template 
+		where template_id =#value#
+	</select>
+	
+</sqlMap>

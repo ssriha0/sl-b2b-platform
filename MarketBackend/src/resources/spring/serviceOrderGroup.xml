@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<import resource="classpath*:routingRulesAppContext.xml"/>
+	
+	<bean id="OrderGroupBOTarget"
+		class="com.newco.marketplace.business.businessImpl.orderGroup.OrderGroupBOImpl" autowire="byName">
+		<property name="orderGroupDao">
+			<ref bean="orderGroupDAO" />
+		</property>
+		<property name="serviceOrderBo">
+			<ref bean="soBOAOP" />
+		</property>
+		<property name="serviceOrderDao">
+			<ref bean="serviceOrderDao" />
+		</property>
+		<property name="adminTripChargeDao">
+			<ref bean="adminTripChargeDAO" />
+		</property>
+		<property name="lookupDao">
+			<ref bean="lookupDAOImpl" />
+		</property>
+		<property name="serviceOrderUpdateBO">
+			<ref bean="serviceOrderUpdateBO"/>
+		</property>
+		<property name="financeManagerBO">
+			<ref bean="financeManagerBO" />
+		</property>
+		<property name="transBo">
+			<ref bean="accountingTransactionManagementBO" />
+		</property>
+		<!-- AUTOWIRED orderProcessingService
+		<property name="orderProcessingService">
+			<ref bean="orderProcessingService" />
+		</property>
+		 -->
+	</bean>
+
+	<bean id="orderGroupDAO"
+		class="com.newco.marketplace.persistence.daoImpl.orderGroup.OrderGroupDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+	
+	<bean id="routeOrderGroupBO"
+		class="com.newco.marketplace.business.businessImpl.orderGroup.RouteOrderGroupBOImpl">
+		<property name="serviceOrderBO">
+			<ref bean="soBOAOP" />
+		</property>
+		<property name="soTemplateBO">
+			<ref bean="buyerSOTemplateBO" />
+		</property>
+		<property name="provSearchBO">
+			<ref bean="providerSearchBO" />
+		</property>
+		<property name="masterCalcBO">
+			<ref bean="masterCalculatorBO" />
+		</property>
+		<property name="orderGroupDAO">
+			<ref bean="orderGroupDAO" />
+		</property>
+		<property name="orderGroupBO">
+           	<ref bean="OrderGroupBOTarget"/>
+        </property>
+	</bean>
+ 
+
+</beans>

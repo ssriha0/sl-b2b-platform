@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	
+	<xs:element name="getFirmDetailsRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="firmIds" minOccurs="1" maxOccurs="1" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	
+	<xs:element name="firmIds">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="firmId" type="firmType" minOccurs="1" maxOccurs="10" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:simpleType name="firmType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="9" />
+			<xs:minLength value="1"/>
+			<xs:pattern value="[0-9]{1,9}" />
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

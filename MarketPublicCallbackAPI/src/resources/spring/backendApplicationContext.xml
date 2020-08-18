@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+
+	<bean id="sqlMapClient"
+		class="org.springframework.orm.ibatis.SqlMapClientFactoryBean"
+		abstract="false" autowire="byName">
+		<property name="configLocation">
+			<value>classpath:resources/ibatis/SqlMapConfig.xml</value>
+		</property>
+		<property name="useTransactionAwareDataSource">
+			<value>true</value>
+		</property>
+		<property name="dataSource">
+			<ref bean="${datasource.main.bean.id}" />
+		</property>
+	</bean>
+	<bean id="sqlMapArchiveClient"
+		class="org.springframework.orm.ibatis.SqlMapClientFactoryBean"
+		abstract="false" autowire="byName">
+		<property name="configLocation">
+			<value>classpath:resources/ibatis/SqlMapConfig.xml</value>
+		</property>
+		<property name="useTransactionAwareDataSource">
+			<value>true</value>
+		</property>
+		<property name="dataSource">
+			<ref bean="dataSourceArchiveMySQL" />
+		</property>
+	</bean>
+	<bean id="sqlMapSecureClient"
+		class="org.springframework.orm.ibatis.SqlMapClientFactoryBean"
+		abstract="false" autowire="byName">
+		<property name="configLocation">
+			<value>classpath:resources/ibatis/SqlMapConfig.xml</value>
+		</property>
+		<property name="useTransactionAwareDataSource">
+			<value>true</value>
+		</property>
+		<property name="dataSource">
+			<ref bean="${datasource.secure.bean.id}" />
+		</property>
+	</bean>
+
+	<bean id="sqlMapClientFinance"
+		class="org.springframework.orm.ibatis.SqlMapClientFactoryBean"
+		abstract="false" lazy-init="true" autowire="byName">
+		<property name="configLocation">
+			<value>classpath:resources/ibatis/SqlMapConfig.xml</value>
+		</property>
+		<property name="useTransactionAwareDataSource">
+			<value>true</value>
+		</property>
+		<property name="dataSource">
+			<ref bean="${datasource.finance.bean.id}" />
+		</property>
+	</bean>
+	
+	<bean id="sqlMapClientIntegration"
+		class="org.springframework.orm.ibatis.SqlMapClientFactoryBean"
+		abstract="false" lazy-init="true" autowire="byName">
+		<property name="configLocation">
+			<value>classpath:resources/ibatis/SqlMapConfig.xml</value>
+		</property>
+		<property name="useTransactionAwareDataSource">
+			<value>true</value>
+		</property>
+		<property name="dataSource">
+			<ref bean="${datasource.integration.bean.id}" />
+		</property>
+	</bean>
+
+	<import resource="eventCallbackService.xml" />
+		
+	<bean id="apiSecurityDAO"
+		class="com.newco.marketplace.persistence.daoImpl.APISecurityDAOImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+	
+	
+
+
+</beans>
+

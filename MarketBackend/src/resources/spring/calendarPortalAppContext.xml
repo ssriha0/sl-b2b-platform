@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<bean id="calendarPortalBO"
+		class="com.newco.marketplace.business.businessImpl.calendarportal.CalendarPortalBOImpl"
+		lazy-init="true">
+		<property name="calendarService">
+			<ref bean="vendorSlCalendarService" />
+		</property>
+	</bean>
+	
+	<bean id="externalCalendarBOImpl"
+		class="com.newco.marketplace.business.businessImpl.externalcalendar.ExternalCalendarIntegrationBOImpl"
+		lazy-init="true">
+		<property name="externalCalendarDAO">
+			<ref bean="externalCalendarDAOImpl" />
+		</property>
+	</bean>
+
+	
+
+	<!-- ######################DAO ############################################ -->
+
+	<bean id="externalCalendarDAOImpl"
+		class="com.newco.marketplace.persistence.daoImpl.externalcalendar.ExternalCalendarDAOImpl"
+		lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+
+	<bean id="vendorSlCalendarDaoImpl"
+		class="com.newco.calendarPortal.dao.impl.VendorSlCalendarDaoImpl"
+		lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+
+	<bean id="vendorSlCalendarService"
+		class="com.newco.calendarPortal.Services.impl.VendorSlCalendarServiceImpl"
+		lazy-init="true">
+		<property name="vendorSlCalendarDao">
+			<ref bean="vendorSlCalendarDaoImpl" />
+		</property>
+	</bean>
+
+</beans>

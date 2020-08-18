@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="inhomeautoclose">
+
+<typeAlias alias="inhomeAutoCloseVO" type="com.newco.marketplace.inhomeautoclosenotification.vo.InHomeAutoCloseVO"/>
+
+<select id="getListOfFailureRecords.query" resultClass="inhomeAutoCloseVO">
+	SELECT 
+	so_inhome_auto_close_id AS autoCloseId,
+	so_id AS soId
+	FROM so_inhome_auto_close
+	WHERE STATUS = 'FAILURE'
+	AND email_ind = 0
+</select>
+
+
+<select id="getRecipientId.query" resultClass="java.lang.String" parameterClass="java.lang.String">
+	SELECT app_constant_value
+	FROM application_constants
+	WHERE app_constant_key = #appKey#
+</select>
+
+<update id="updateAutoCloseEmailInd.query" parameterClass="java.util.List">
+	UPDATE so_inhome_auto_close
+	SET email_ind = 1,
+	modified_date=NOW()
+	WHERE so_inhome_auto_close_id IN 
+	<iterate open="(" close=")" conjunction=",">	
+		#[]#
+	</iterate>
+</update>
+
+</sqlMap>

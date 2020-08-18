@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
+	default-lazy-init="true">
+	
+	<bean id="jobCodeMappingBO" 
+			class="com.newco.marketplace.business.businessImpl.jobcode.JobCodeMappingBOImpl" autowire="byName">
+		<property name="buyerSkuTaskDao">
+			<ref bean="buyerSkuTaskDao" />
+		</property>
+		<property name="buyerSOTemplateDao">
+			<ref bean="buyerSOTemplateDao" />
+		</property>
+		<property name="orderService"> 
+			<bean id="orderServiceStub" factory-bean="orderServiceLocator" factory-method="getOrderService"/>
+		</property>
+		<property name="buyerFeatureSetBO">
+			<ref bean="buyerFeatureSetBO" />
+		</property>
+		<!--  AUTOWIRED routingRulesService
+		<property name="routingRulesService">
+			<ref bean="routingRulesService" />
+		</property>
+		-->
+	</bean>
+	
+	<bean id="orderServiceLocator" class="com.sears.hs.order.service.OrderServiceServiceLocator">
+		<property name="orderServiceEndpointAddress" value="${SST_WEB_SERVICE_URL}"/>
+	</bean>
+	
+	<bean id="buyerSkuTaskDao" 
+			class="com.newco.marketplace.persistence.daoImpl.buyerskutask.BuyerSkuTaskDaoImpl">
+    	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	
+    </bean>
+</beans>	

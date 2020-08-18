@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/soPriceHistory"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" targetNamespace="http://www.servicelive.com/namespaces/soPriceHistory"
+	elementFormDefault="qualified" jaxb:version="1.0"
+	jaxb:extensionBindingPrefixes="xjc">
+	<xs:include schemaLocation="../../common.xsd" />
+	<xs:include schemaLocation="../soCommon.xsd" />
+	<xs:element name="soPriceHistory">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="results" minOccurs="0" />
+				<xs:element name="serviceOrders" type="serviceOrders" minOccurs="0" />
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:decimal" />
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="serviceOrders">
+		<xs:sequence>
+			<xs:element name="serviceOrder" type="serviceOrder" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="serviceOrder">
+		<xs:sequence>
+			<xs:element ref="results" minOccurs="0" />
+			<xs:element name="orderstatus" type="soStatus" minOccurs="0" />
+			<xs:element name="currentPrice" type="soCurrentPriceType" minOccurs="0" />
+			<xs:element name="orderPriceHistory" type="soLevelPriceHistoriesType" minOccurs="0" />
+			<xs:element name="taskPriceHistory" type="taskLevelPriceHistoriesType" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="soLevelPriceHistoriesType">
+		<xs:sequence>
+			<xs:element name="orderPriceHistoryRecord" type="soLevelPriceHistoryType" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="taskLevelPriceHistoriesType">
+		<xs:sequence>
+			<xs:element name="taskPriceHistoryRecord" type="taskLevelPriceHistoryType"	minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="maxPriceType">
+		<xs:sequence>
+			<xs:element name="maxLaborPrice" type="price-format" minOccurs="0" />
+			<xs:element name="maxPartPrice" type="price-format" minOccurs="0" />
+			<xs:element name="maxPermitPrice" type="price-format" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="finalPriceType">
+		<xs:sequence>
+			<xs:element name="finalLaborPrice" type="price-format" minOccurs="0" />
+			<xs:element name="finalPartPrice" type="price-format" minOccurs="0" />
+			<xs:element name="finalAddonPrice" type="price-format" minOccurs="0" />
+			<xs:element name="finalInvoicePartPrice" type="price-format" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="soCurrentPriceType">
+		<xs:sequence>
+			<xs:element name="maxPrice" type="maxPriceType" minOccurs="0" />
+			<xs:element name="finalPrice" type="finalPriceType"	minOccurs="0" />
+			<xs:element name="totalMaxPrice" type="price-format" minOccurs="0" />
+			<xs:element name="totalFinalPrice" type="price-format" minOccurs="0" />
+			<xs:element name="buyerPostingFee" type="price-format" minOccurs="0" />
+			<xs:element name="providerServiceFee" type="price-format" minOccurs="0" />
+			<xs:element name="providerPayment" type="price-format" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="soLevelPriceHistoryType">
+		<xs:sequence>
+			<xs:element name="laborPriceChange" type="signed-price-format" minOccurs="0" />
+			<xs:element name="partPriceChange" type="signed-price-format" minOccurs="0" />
+			<xs:element name="permitPriceChange" type="signed-price-format" minOccurs="0" />
+			<xs:element name="addonPriceChange" type="signed-price-format" minOccurs="0" />
+			<xs:element name="invoicePartPriceChange" type="signed-price-format" minOccurs="0" />
+			<xs:element name="totalPrice" type="price-format" minOccurs="0" />
+			<xs:element name="action" type="xs:string" minOccurs="0" />
+			<xs:element name="reasonCode" type="xs:string" minOccurs="0" />
+			<xs:element name="changedDate" type="xs:string" minOccurs="0" />
+			<xs:element name="changedByUserName" type="xs:string" minOccurs="0" />
+			<xs:element name="changedByUserId" type="xs:string" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="taskLevelPriceHistoryType">
+		<xs:sequence>
+			<xs:element name="taskName" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="35" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="sku" type="xs:string" minOccurs="0" />
+			<xs:sequence>
+				<xs:element name="priceHistory" type="taskPricehistoryType"	minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="taskPricehistoryType">
+		<xs:sequence>
+			<xs:element name="taskPrice" type="signed-price-format" minOccurs="0" />
+			<xs:element name="changedDate" type="xs:string" minOccurs="0" />
+			<xs:element name="changedByUserName" type="xs:string" minOccurs="0" />
+			<xs:element name="changedByUserId" type="xs:string" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

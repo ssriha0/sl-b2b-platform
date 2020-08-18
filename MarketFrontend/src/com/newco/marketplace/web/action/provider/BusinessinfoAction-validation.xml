@@ -1,0 +1,222 @@
+<!DOCTYPE validators PUBLIC
+        "-//Apache Struts//XWork Validator 1.0.2//EN"
+        "http://struts.apache.org/dtds/xwork-validator-1.0.2.dtd">
+        
+<validators>
+
+    <field name="businessinfoDto.mainBusiPhoneNo1">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="businessinfoDto.mainBusiPhoneNo1.error.required" />
+      </field-validator>
+      <field-validator type="regex" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="regex">^\d+$</param>
+	        <message key="businessinfoDto.mainBusiPhoneNo1.error.required.number"/>
+	    </field-validator>
+  </field>
+  <field name="businessinfoDto.mainBusiPhoneNo2">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="businessinfoDto.mainBusiPhoneNo1.error.required" />
+      </field-validator>
+      <field-validator type="regex" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="regex">^\d+$</param>
+	        <message key="businessinfoDto.mainBusiPhoneNo1.error.required.number"/>
+	    </field-validator>
+  </field>
+    <field name="businessinfoDto.mainBusiPhoneNo3">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="businessinfoDto.mainBusiPhoneNo1.error.required" />
+      </field-validator>
+      <field-validator type="regex" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="regex">^\d+$</param>
+	        <message key="businessinfoDto.mainBusiPhoneNo1.error.required.number"/>
+	    </field-validator>
+  </field>
+
+    <field name="businessinfoDto.businessFax1">
+      <field-validator type="regex" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="regex">^\d+$</param>
+	        <message key="businessinfoDto.businessFax1.error.required.number"/>
+	    </field-validator>
+	</field>
+	  <field name="businessinfoDto.businessFax2">
+      <field-validator type="regex" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="regex">^\d+$</param>
+	        <message key="businessinfoDto.businessFax1.error.required.number"/>
+	    </field-validator>
+	</field>
+	  <field name="businessinfoDto.businessFax3">
+      <field-validator type="regex" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="regex">^\d+$</param>
+	        <message key="businessinfoDto.businessFax1.error.required.number"/>
+	    </field-validator>
+	</field>
+	  <field name="businessinfoDto.mainBusinessExtn">
+      <field-validator type="regex" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="regex">^\d+$</param>
+	        <message key="businessinfoDto.mainBusinessExtn.error.required.number"/>
+	    </field-validator>
+	</field>
+	
+	<field name="businessinfoDto.busStartDt">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="businessinfoDto.busStartDt.error.required" />
+      </field-validator>
+  </field>
+	<field name="businessinfoDto.isForeignOwned">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="businessinfoDto.isForeignOwned.error.required" />
+      </field-validator>
+  </field>
+  <field name="businessinfoDto.foreignOwnedPct">
+     <field-validator type="ignoreDisabledField">
+  		<param name="trim">true</param>
+  		<param name="dependentFieldName">businessinfoDto.isForeignOwned</param>
+  	 	<message key="businessinfoDto.foreignOwnedPct.error.required" />
+	</field-validator>
+  </field>
+	
+	
+	
+  
+  <field name="businessinfoDto.companySize">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="businessinfoDto.companySize.error.required" />
+      </field-validator>
+  </field>
+  <field name="businessinfoDto.annualSalesRevenue">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="businessinfoDto.annualSalesRevenue.error.required" />
+      </field-validator>
+  </field>
+  
+  <field name="businessinfoDto.primaryIndustry">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="businessinfoDto.primaryIndustry.error.required" />
+      </field-validator>
+  </field>
+ <field name="businessinfoDto.description">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="businessinfoDto.description.error.required" />
+      </field-validator>
+  </field> 
+ 
+  
+  
+ <!-- removed <field name="businessinfoDto.noServicePros">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="businessinfoDto.noServicePros.error.required" />
+      </field-validator>
+  </field>-->
+  
+
+   <field name="businessinfoDto.businessStreet1">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="businessinfoDto.businessStreet1.error.required" />
+      </field-validator>
+  </field>
+   <field name="businessinfoDto.businessCity">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="businessinfoDto.businessCity.error.required" />
+      </field-validator>
+  </field>
+
+ <field name="businessinfoDto.businessState">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="businessinfoDto.businessState.error.required" />
+      </field-validator>
+  </field>
+
+     <field name="businessinfoDto.businessZip">
+	   <field-validator type="requiredstring" short-circuit="true">
+	        <param name="trim">true</param>
+	        <message key="businessinfoDto.businessZip.error.required" />
+	    </field-validator>
+	    <field-validator type="regex" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="regex">^\d+$</param>
+	        <message key="businessinfoDto.businessZip.error.required.number"/>
+	    </field-validator>
+	    <field-validator type="stringlength" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="minLength">5</param>
+	        <message key="businessinfoDto.businessZip.error.required.minlength"/>
+	    </field-validator>
+	</field>
+
+<field name="businessinfoDto.mailingCity">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="businessinfoDto.mailingCity.error.required" />
+      </field-validator>
+  </field>
+
+ <field name="businessinfoDto.mailingState">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="businessinfoDto.mailingState.error.required" />
+      </field-validator>
+  </field>
+     <field name="businessinfoDto.mailingZip">
+		<field-validator type="requiredstring" short-circuit="true">
+	        <param name="trim">true</param>
+	        <message key="businessinfoDto.mailingZip.error.required" />
+	    </field-validator>
+	    <field-validator type="regex" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="regex">^\d+$</param>
+	        <message key="businessinfoDto.mailingZip.error.required.number"/>
+	    </field-validator>
+	    <field-validator type="stringlength" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="minLength">5</param>
+	        <message key="businessinfoDto.mailingZip.error.required.minlength"/>
+	    </field-validator>
+	</field>
+	 <field name="businessinfoDto.email">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="businessinfoDto.email.error.required" />
+      </field-validator>
+       <!-- field-validator type="email">
+	        <param name="trim">true</param>
+	        <message key="businessinfoDto.email.error" />
+	    </field-validator-->
+  </field>
+   <field name="businessinfoDto.confirmEmail">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="businessinfoDto.confirmEmail.error.required" />
+      </field-validator>
+      <!-- field-validator type="email">
+	        <param name="trim">true</param>
+	        <message key="businessinfoDto.email.error" />
+	    </field-validator-->
+  </field>
+   <field name="businessinfoDto.altEmail">
+
+       <!--  field-validator type="email">
+	        <param name="trim">true</param>
+	        <message key="businessinfoDto.email.error" />
+	    </field-validator-->
+ </field>
+</validators>

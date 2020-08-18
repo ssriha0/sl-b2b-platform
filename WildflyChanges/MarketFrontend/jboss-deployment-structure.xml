@@ -1,0 +1,26 @@
+
+
+<jboss-deployment-structure xmlns="urn:jboss:deployment-structure:1.2">
+  <deployment>
+  <!-- Exclusions allow you to prevent the server from automatically adding some dependencies --> 
+   <exclude-subsystems>
+   <subsystem name="transactions"/>
+   <subsystem name="jpa"/>   
+   </exclude-subsystems>
+   
+    <exclusions>
+    <module name="org.jboss.resteasy.resteasy-jackson-provider" />
+	<module name="com.fasterxml.jackson.core.jackson-core" />
+	<module name="com.fasterxml.jackson.core.jackson-annotations" />
+	<module name="com.fasterxml.jackson.core.jackson-databind" />
+	<module name="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider" />
+	<module name="org.jboss.resteasy.resteasy-jackson2-provider" />   
+   <module name="org.hibernate"/> 
+    
+</exclusions> 
+<dependencies> 	
+	<module name="org.hibernate.validator" slot="main"/>
+	<module name="org.apache.commons.lang"/>	
+</dependencies>
+ </deployment>
+</jboss-deployment-structure>

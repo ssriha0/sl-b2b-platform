@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans 
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+     http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx-2.0.xsd"
+	default-autowire="byName">
+
+	<!-- transaction context -->
+	<!-- 
+	<import resource="classpath*:spring/mainDSTransactionContext.xml" />
+	<import resource="classpath*:spring/financeDSTransactionContext.xml" />
+	
+	<import resource="classpath*:spring/mainJpaTransactionContext.xml" />
+-->
+	<!-- beans from other modules -->
+	<!--  <import resource="classpath*:resources/spring/backendApplicationContextEJB.xml"/> -->       
+	<!-- <import resource="classpath*:resources/spring/documentAppContext.xml"/> -->
+	<!-- <import resource="classpath*:spring/routingRulesAppContext.xml"/> -->
+	<!-- <import resource="classpath*:spring/stagingApplicationContext.xml"/> -->
+	<bean id="datasourceBasePlaceholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="classpath:properties/datasource-BASE.properties" />
+		<property name="ignoreUnresolvablePlaceholders" value="true"/>
+		<property name="order" value="10"/>
+	</bean>
+	
+	 <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+	  
+
+	<bean id="datasourcePlaceholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="classpath:properties/datasource-${sl_app_lifecycle}.properties" />
+		<property name="ignoreUnresolvablePlaceholders" value="true"/>
+		<property name="order" value="9"/>
+	</bean>
+	 
+	 	<bean id="dataSourceMainJdbc" class="com.mysql.jdbc.jdbc2.optional.MysqlDataSource" name="dataSource">
+		<property name="url" value="jdbc:mysql://10.72.246.96:3306/supplier_prod?jdbcCompliantTruncation=false" />
+		<property name="user" value="supply_usr" />
+		<property name="password" value="supply" />
+	</bean>
+
+	
+	  
+	<bean id="entityManagerFactoryMain" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		
+		<property name="persistenceUnitName" value="MainPU" />
+		<property name="persistenceXmlLocation" value="classpath*:META-INF/persistence.xml" />
+		
+		<property name="dataSource" ref="dataSourceMainJdbc" />
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+				<property name="database" value="MYSQL" />
+				<property name="databasePlatform" value="org.hibernate.dialect.MySQLDialect" />
+				<property name="showSql"  value="true" />
+				<property name="generateDdl" value="false" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="entityManagerMain" class="org.springframework.orm.jpa.support.SharedEntityManagerBean">
+		<property name="entityManagerFactory" ref="entityManagerFactoryMain"/>
+	</bean>
+
+	<bean id="jpaTransactionManagerMain" class="org.springframework.orm.jpa.JpaTransactionManager" name="transactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactoryMain" />
+	</bean>
+	
+	
+	
+	<bean id="dsTransactionManagerMain" class="org.springframework.jdbc.datasource.DataSourceTransactionManager" autowire="byName" >
+		<property name="dataSource" ref="dataSourceMainJdbc" />
+	</bean>
+
+	<!-- beans from this module -->
+	<import resource="classpath*:/resources/spring/spnBackEndAppContext.xml"/>
+	<import resource="classpath*:/resources/spring/documentAppContext.xml" />
+	<import resource="classpath*:/resources/spring/alertAppContext.xml" />  
+	<tx:annotation-driven transaction-manager="dsTransactionManagerMain" proxy-target-class="true"/>
+	 
+</beans>

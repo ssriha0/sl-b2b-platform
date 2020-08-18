@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="OrderFulfillment.Remote.CancelTests" thread-count="1">
+    <test name="CancelAfterPost" >
+        <groups>
+            <run>
+                <include name="init" />
+            </run>
+        </groups>
+        <classes>
+            <class name="com.servicelive.orderfulfillment.remote.test.workflow.CancelTests">
+                <methods>
+                    <include name="createServiceOrder"/>
+                    <include name="editDraftOrder"/>
+                    <include name="postServiceOrder"/>
+                    <include name="voidServiceOrder"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="CancelAfterAccepted" >
+        <groups><run><include name="init" /></run></groups>
+        <classes>
+            <class name="com.servicelive.orderfulfillment.remote.test.workflow.CancelTests">
+                <methods>
+                    <include name="createServiceOrder"/>
+                    <include name="editDraftOrder"/>
+                    <include name="postServiceOrder"/>
+                    <include name="acceptServiceOrder"/>
+                    <include name="cancelServiceOrder"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="CancelAfterActive" >
+        <groups><run><include name="init" /></run></groups>
+        <classes>
+            <class name="com.servicelive.orderfulfillment.remote.test.workflow.CancelTests">
+                <methods>
+                    <include name="createServiceOrder"/>
+                    <include name="editDraftOrder"/>
+                    <include name="postServiceOrder"/>
+                    <include name="acceptServiceOrder"/>
+                    <include name="activateOrder"/>
+                    <include name="requestServiceOrderCancellation"/>
+                    <include name="completeOrderAfterCancelRequest"/>
+                    <include name="closeOrderAfterCancelRequestAndComplete"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>
+

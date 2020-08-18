@@ -1,0 +1,77 @@
+<!DOCTYPE validators PUBLIC
+        "-//Apache Struts//XWork Validator 1.0.2//EN"
+        "http://struts.apache.org/dtds/xwork-validator-1.0.2.dtd">
+        
+<validators>
+	<field name="accountDTO.username">
+		<field-validator type="requiredstring">
+			<param name="trim">true</param>
+			<message key="accountDTO.username.error.required" />
+		</field-validator>
+		<field-validator type="stringlength" short-circuit="true">
+			<param name="trim">true</param>
+			<param name="minLength">8</param>
+			<message key="accountDTO.username.error.required.minlength"/>
+		</field-validator>
+	   	    <field-validator type="stringlength" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="maxLength">30</param>
+	        <message key="accountDTO.username.error.required.maxlength"/>
+	    </field-validator>
+	</field>
+	<field name="accountDTO.usernameConfirm">
+		<field-validator type="requiredstring">
+			<param name="trim">true</param>
+			<message key="accountDTO.usernameConfirm.error.required" />
+		</field-validator>
+	</field>
+	<field name="accountDTO.firstName">
+		<field-validator type="requiredstring">
+			<param name="trim">true</param>
+			<message key="accountDTO.firstName.error.required" />
+		</field-validator>
+	</field>
+	<field name="accountDTO.lastName">
+		<field-validator type="requiredstring">
+			<param name="trim">true</param>
+			<message key="accountDTO.lastName.error.required" />
+		</field-validator>
+	</field>
+	<field name="accountDTO.email">
+		<field-validator type="requiredstring">
+			<param name="trim">true</param>
+			<message key="accountDTO.email.error.required" />
+		</field-validator>
+		<field-validator type="email">
+			<param name="trim">true</param>
+			<message key="accountDTO.email.error" />
+		</field-validator>
+	</field>
+	<field name="accountDTO.emailConfirm">
+    	<field-validator type="requiredstring">
+        	<param name="trim">true</param>
+			<message key="accountDTO.emailConfirm.error.required" />
+		</field-validator>
+		<field-validator type="email">
+			<param name="trim">true</param>
+			<message key="provider.registration.confirmEmail.error" />
+		</field-validator>
+	</field>
+	<validator type="expression">
+      	<param name="expression">accountDTO.email.equals(accountDTO.emailConfirm)</param>
+      	<message key="provider.registration.mail.NotSame"></message>
+  	</validator>
+	<field name="accountDTO.primaryPhone">
+		<field-validator type="requiredstring">
+			<param name="trim">true</param>
+			<message key="accountDTO.primaryPhone.error.required" />
+		</field-validator>
+	</field>
+</validators>
+	<!-- <field name="accountDTO">
+		<field-validator type="visitor">
+			<param name="context">accountContext</param>
+			<param name="appendPrefix">true</param>
+			<message>Account: </message>
+		</field-validator>
+	</field>   -->

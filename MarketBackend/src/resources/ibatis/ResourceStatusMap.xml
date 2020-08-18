@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="resourceStatus">
+	<typeAlias alias="vendResource" type="com.newco.marketplace.vo.provider.VendorResource"/>	
+	
+		<select id="resourceStatus.query"  parameterClass="vendResource" resultClass="java.lang.String">
+    	SELECT wf_state from wf_states
+        where wf_state_id = (select wf_state_id
+        from vendor_resource
+    	<dynamic prepend="where">
+			<isNotNull prepend="AND " property="resourceId">
+				resource_id = #resourceId#
+			</isNotNull>
+		</dynamic>)
+		</select>
+		
+		
+</sqlMap>

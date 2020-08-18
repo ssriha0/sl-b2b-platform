@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:c="http://www.servicelive.com/namespaces/soCommon" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" elementFormDefault="qualified" jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+	<xs:complexType name="soStatus">
+		<xs:sequence>
+			<xs:element name="soId" type="xs:string"/>
+			<xs:element name="status" type="xs:string"/>
+			<xs:element name="substatus" type="xs:string"/>
+			<xs:element name="createdDate" type="xs:dateTime"/>
+			<xs:element name="postedDate" type="xs:dateTime" nillable="false" minOccurs="0"/>
+			<xs:element name="acceptedDate" type="xs:dateTime" nillable="true" minOccurs="0"/>
+			<xs:element name="activeDate" type="xs:dateTime" nillable="true" minOccurs="0"/>
+			<xs:element name="completedDate" type="xs:dateTime" nillable="true" minOccurs="0"/>
+			<xs:element name="closedDate" type="xs:dateTime" nillable="true" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="soSectionGeneralType">
+		<xs:sequence>
+			<xs:element name="title" type="xs:string" nillable="true" minOccurs="0"/>
+			<xs:element name="overview" type="xs:string" nillable="true" minOccurs="0"/>
+			<xs:element name="buyerTerms" type="xs:string" nillable="true" minOccurs="0"/>
+			<xs:element name="specialInstructions" type="xs:string" nillable="true" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="soSectionSOWType">
+		<xs:sequence>
+			<xs:element name="mainCategoryID" type="xs:int"/>
+			 <xs:element name="tasks" type="TasksType" minOccurs="0" maxOccurs="1"/>
+             <xs:element name="skus" type="SKUsType" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TasksType">
+       <xs:sequence>
+            <xs:element name="task" type="TaskType" maxOccurs="50"/>
+       </xs:sequence>
+    </xs:complexType>
+	<xs:complexType name="TaskType">
+		<xs:sequence>
+			<xs:element name="taskId" type="xs:int" minOccurs="0"/>
+			<xs:element name="taskName" minOccurs="0">
+  			    <xs:simpleType>
+    				<xs:restriction base="xs:string">
+      					<xs:maxLength value="70"/>
+    				</xs:restriction>
+  			    </xs:simpleType>
+			</xs:element>
+			<xs:element name="categoryID" type="xs:int" minOccurs="0"/>
+			<xs:element name="serviceType" type="serviceTypeEnum" minOccurs="0"/>
+			<xs:element name="taskComment" type="xs:string" nillable="true" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SKUsType">
+         <xs:sequence>
+             <xs:element name="sku" type="xs:string" maxOccurs="50"/>
+         </xs:sequence>
+    </xs:complexType>
+	<xs:complexType name="LocationType">
+		<xs:sequence>
+			<xs:element name="locationType" type="locationClassEnum" nillable="true" minOccurs="0"/>
+			<xs:element name="locationName" nillable="true" minOccurs="0">
+			<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="100"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="address1" type="xs:string" nillable="true" minOccurs="0"/>
+			<xs:element name="address2" type="xs:string" nillable="true" minOccurs="0"/>
+			<xs:element name="city" type="xs:string" nillable="true" minOccurs="0"/>
+			<xs:element name="state" nillable="true" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:length value="2"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="zip" nillable="true" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:pattern value="\d{5}"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="note" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ScheduleType">
+		<xs:sequence>
+			<xs:element name="scheduleType" type="scheduleRangeEnum"/>
+			<xs:element name="serviceDateTime1" type="xs:dateTime" nillable="true" minOccurs="0"/>
+			<xs:element name="serviceDateTime2" type="xs:dateTime" minOccurs="0" nillable="true" />
+			<xs:element name="confirmWithCustomer" type="xs:boolean" default="false" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SOPricingType">
+		<xs:sequence>
+			<xs:element name="priceModel" type="priceModelEnum" minOccurs="0"/>
+			<xs:element name="laborSpendLimit" type="price-format" minOccurs="0" nillable="true"/>
+			<xs:element name="partsSpendLimit" type="price-format" minOccurs="0" nillable="true"/>
+			<xs:element name="spendLimitComments" type="xs:string" minOccurs="0" nillable="true"/>
+			<xs:element name="fundingSourceId" type="xs:string" minOccurs="0"/>			
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ContactsType">
+		<xs:sequence>
+			<xs:element name="buyerSupportResID" type="xs:int" minOccurs="0" maxOccurs="1"/> 
+			<xs:element name="contact" type="ContactType" minOccurs="0" maxOccurs="50"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ContactType">
+		<xs:sequence>
+			<xs:element name="contactLocnType" type="contactLocTypeEnum"/>
+			<xs:element name="firstName" type="xs:string"/>
+			<xs:element name="lastName" type="xs:string"/>
+			<xs:element name="primaryPhone" type="PhoneType"/>
+			<xs:element name="altPhone" type="PhoneType" nillable="true" minOccurs="0"/>
+			<xs:element name="email" type="emailType" nillable="true" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PhoneType">
+		<xs:sequence>
+			<xs:element name="phoneType" type="phoneTypeEnum"/>
+			<xs:element name="number">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:pattern value="\d{3}-\d{3}-\d{4}"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="extension" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AttachmentsType">
+		<xs:sequence>
+			<xs:element name="filename" type="xs:string" maxOccurs="50"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PartsType">
+		<xs:sequence>
+			<xs:element name="part" type="PartType" minOccurs="0" maxOccurs="100"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PartType">
+		<xs:sequence>
+			<xs:element name="partId" type="xs:int" minOccurs="0"/>
+			<xs:element name="manufacturer" type="xs:string" minOccurs="0"/>
+			<xs:element name="model" type="xs:string" minOccurs="0"/>
+			<xs:element name="description" type="xs:string" minOccurs="0"/>
+			<xs:element name="quantity" type="xs:int" default="1" minOccurs="0"/>
+			<xs:element name="dimensions" type="DimensionType" minOccurs="0"/>
+			<xs:element name="shipCarrier" type="shipCarrierEnum" minOccurs="0"/>
+			<xs:element name="shipTracking" type="xs:string" minOccurs="0"/>
+			<xs:element name="returnCarrier" type="shipCarrierEnum" minOccurs="0"/>
+			<xs:element name="returnTracking" type="xs:string" minOccurs="0"/>
+			<xs:element name="shippingDate" type="xs:date" minOccurs="0"/>
+			<xs:element name="requiresPickup" type="xs:boolean" default="false" minOccurs="0"/>
+			<xs:element name="pickupLocation" type="LocationType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DimensionType">
+		<xs:sequence>
+			<xs:element name="measurementType" type="measurementTypeEnum"/>
+			<xs:element name="height" type="xs:decimal" default="0" minOccurs="0"/>
+			<xs:element name="width" type="xs:decimal" default="0" minOccurs="0"/>
+			<xs:element name="length" type="xs:decimal" default="0" minOccurs="0"/>
+			<xs:element name="weight" type="xs:decimal" default="0" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CustomReferencesType">
+		<xs:sequence>
+			<xs:element name="customRef" type="CustomReferenceType" maxOccurs="50" nillable="true" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CustomReferenceType">
+		<xs:sequence>
+			<xs:element name="name" type="xs:string"/>
+			<xs:element name="value" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="NotesType">
+		<xs:sequence>
+			<xs:element name="note" type="NoteType" maxOccurs="50"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="NoteType">
+		<xs:sequence>
+			<xs:element name="roleId" type="xs:int"/>
+			<xs:element name="entityID" type="xs:int"/>
+			<xs:element name="createdDate" type="xs:dateTime"/>
+			<xs:element name="createdByName" type="xs:string"/>
+			<xs:element name="subject" type="xs:string"/>
+			<xs:element name="noteBody" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SOHistoryType">
+		<xs:sequence>
+			<xs:element name="logEntry" type="LogEntryType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="LogEntryType">
+		<xs:sequence>
+			<xs:element name="roleId" type="xs:int"/>
+			<xs:element name="entityID" type="xs:int"/>
+			<xs:element name="createdDate" type="xs:dateTime"/>
+			<xs:element name="createdByName" type="xs:string"/>
+			<xs:element name="action" type="xs:string"/>
+			<xs:element name="comment" type="xs:string"/>
+			<xs:element name="value" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="RoutedProvidersType">
+		<xs:sequence>
+			<xs:element name="routedProvider" type="RoutedProviderType" maxOccurs="300"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="RoutedProviderType">
+		<xs:sequence>
+			<xs:element name="resourceID" type="xs:int"/>
+			<xs:element name="companyID" type="xs:int"/>
+			<xs:element name="createdDate" type="xs:dateTime"/>
+			<xs:element name="response" type="xs:string" minOccurs="0"/>
+			<xs:element name="comment" type="xs:string" minOccurs="0"/>
+			<xs:element name="offerExpiration" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="increaseSpend" type="SOPricingType" minOccurs="0"/>
+			<xs:element name="rescheduleDates" type="ScheduleType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- Enumerations -->
+	<xs:simpleType name="serviceTypeEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Installation"/>
+			<xs:enumeration value="Repair"/>
+			<xs:enumeration value="Maintenance"/>
+			<xs:enumeration value="Training"/>
+			<xs:enumeration value="Estimate"/>
+			<xs:enumeration value="Delivery"/>
+			<xs:enumeration value="Upgrade"/>
+			<xs:enumeration value="Service"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="locationClassEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Commercial"/>
+			<xs:enumeration value="Residential"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="scheduleRangeEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="range"/>
+			<xs:enumeration value="fixed"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="contactLocTypeEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Service"/>
+			<xs:enumeration value="End User"/>
+			<xs:enumeration value="Buyer Support"/>
+			<xs:enumeration value="Pickup"/>
+			<xs:enumeration value="Provider"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="phoneTypeEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Work"/>
+			<xs:enumeration value="Mobile"/>
+			<xs:enumeration value="Home"/>
+			<xs:enumeration value="Pager"/>
+			<xs:enumeration value="Other"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="measurementTypeEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="English"/>
+			<xs:enumeration value="Metric"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="shipCarrierEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="UPS"/>
+			<xs:enumeration value="FedEx"/>
+			<xs:enumeration value="DHL"/>
+			<xs:enumeration value="USPS"/>
+			<xs:enumeration value="Other"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="emailType">
+		<xs:restriction base="xs:string">
+	 		<xs:pattern value=".+@.+[.]+.+"/>
+		</xs:restriction>
+    </xs:simpleType> 
+    <xs:simpleType name="priceModelEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="NAME_PRICE"/>
+			<xs:enumeration value="ZERO_PRICE_BID"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!-- positive-2  -->	
+	<xs:simpleType name="price-format">
+		<xs:restriction base="xs:decimal">
+      		<xs:minInclusive value="0"/>
+      		<xs:fractionDigits value="2"/>
+    	</xs:restriction>
+    </xs:simpleType>
+</xs:schema>

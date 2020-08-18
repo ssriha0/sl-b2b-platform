@@ -1,0 +1,115 @@
+@charset "ISO-8859-1";
+.dashboardLeftColumn{float:left;width:266px;padding:0 0 0 8px;margin:0; font-size:11px;}
+.dashboardRightColumn{float:right;width:697px;padding:0 8px 0 0;margin:0;}
+.dashboardVitalStatsHeader{width:697px;height:28px;background:url(../images/dashboard/vital_statistics.gif) no-repeat;}
+.dashboardVitalStatsBody{height:125px;width:695px;line-height:16px;border-left:1px solid #adadad;border-right:1px solid #adadad;border-bottom:1px solid #adadad;background:url(../images/dashboard/vital_stats_bg.gif);margin:0 0 17px;}
+.dashboardCommMonitorHeader{margin-top:17px;width:697px;height:28px;background:url(../images/dashboard/communications_monitor.gif) no-repeat;}
+.dashboardVitalStatsSeparator{background:url(../images/dashboard/dashboard_vital_stats_separator.gif) no-repeat right;}
+.dashboardVitalStatsCell{float:left;width:285px;height:97px;padding-left:13px;}
+.dashboardCommMonitorBody{height:300px;width:695px;border-left:1px solid #adadad;border-right:1px solid #adadad;border-bottom:1px solid #adadad;margin:0 0 17px;}
+.dashboardGridHdrs{background:#4cbcdf;color:#FFF;font-weight:bolder;width:695px;height:34px;border-top:1px solid #CCC;border-bottom:1px solid #CCC;}
+.dashboardPaganationCtrl{padding-top:5px;width:695px;text-align:center;border-top:1px solid #CCC;}
+.dashboardGridFrom{width:185px;height:22px;}
+.dashboardGridSubject{width:398px;height:22px;}
+.dashboardGridDate{width:95px;height:22px;}
+.floatLeft{float:left;}
+.floatRight{float:right;}
+.darkRed{color:red;}
+.radioOffsets{position:relative;top:3px;}
+*HTML> .radioOffsets{position:relative;top:3px;left:-5px;}
+*+HTML> .radioOffsets{position:relative;top:3px;left:-5px;}
+.antiRadioOffsets{position:relative;}
+*HTML> .antiRadioOffsets{position:relative;left:-5px;}
+*+HTML> .antiRadioOffsets{position:relative;left:-5px;}
+.grey_bottom_line{border-bottom:1px solid #CCC;}
+.dashboardGrid td{font-size:10px;}
+/* Left tiles */#dbTile_serviceOrders,#dbTile_recvdServiceOrders{font-size:11px;}
+#dbTile_overallStatusMonitor .content{padding-bottom:5px;}
+#dbTile_overallStatusMonitor .content p{padding-bottom:10px;}
+#dbTile_financeMgr{}
+#dbTile_adminOfc{}
+#dbTile_profilePrefs{}
+.largeDollarSign{width:41px;height:36px;float:left;}
+.largeDollarSign img{margin:4px 0 0;}
+.leftTileItem{clear:both;width:250px;margin-bottom:10px;__margin-bottom:5px;}
+.leftTileItem .titleContainer{background: #CCC; width: 242px;}
+.leftTileItem .titleContainer .titleBar{height:23px;min-height:23px;color:#fff;position: relative;}
+.leftTileItem .titleContainer h2 { font-size: 11px; padding-left: 10px; color: #58585a;}
+.leftTileItem .moreLink { font-weight: bold; position: absolute; right: 10px; top: 5px; color: #58585a;}
+.leftTileItem .titleContainer .titleBar .titleImage{padding-left:15px;}
+.leftTileItem .contentContainer .content{clear:both;width:225px;padding:8px 0 0 15px;padding-top:8px;border: 1px solid #CCC;}
+.leftTileItem .contentContainer .content img.icon{margin:-5px 5px 0 0;}
+.leftTileItem .contentContainer .content p{clear:both;padding-bottom:15px;/*|margin-bottom:7px;*/}
+.leftTileItem .contentContainer .content p.first{padding-bottom:5px;}
+#dbTile_recvdServiceOrders p{clear:none;padding-bottom:3px;}
+#dbTile_recvdServiceOrders p.last{padding-bottom:11px;}
+.leftWeatherTile{clear:both;width:260px;margin-bottom:10px;_margin-bottom:5px;}
+.leftWeatherTile .titleBar{background:url(../images/dashboard/titleBarWeather.gif) no-repeat top left;height:28px;width:260px;}
+.leftWeatherTile .contentContainer{width:260px;background:url(../images/dashboard/vital_stats_bg.gif) repeat-x bottom left;}
+.leftWeatherTile .contentContainer .content{clear:both;width:228px;padding:8px 15px 10px;padding-top:8px;border-style:solid;border-color:#ccc;border-width:0 1px 1px;}
+.leftWeatherTile .forecast{float:right;font-size:12px;font-family:arial, sans serif;width:100px;text-align:center;}
+table.balances{list-style:none;width:180px;margin:0 0 10px;}
+.balances td{display:inline;font-weight:700;float:left;padding:5px 0;}
+.balances td.column1{width:120px;}
+.balances td.column2{width:60px;text-align:right;}
+.balances td.bottom{padding-bottom:10px;}
+.redAlert{color:red;font-weight:700;}
+#dbTile_spnMonitor h4 {
+	font-size:  12px;
+	color:  #222;
+}
+#dbTile_spnMonitor ul {
+	list-style-type:  none;
+	margin-bottom:  5px;
+}
+
+#dbTile_spnMonitor ul a {
+	
+	font-weight: bold;
+	margin-left:  -10px;
+}
+
+#dbTile_spnMonitor ul li {
+	padding:  2px 2px 2px 10px;
+}
+
+#dbTile_spnMonitor ul li.comment {
+	color:  #8a1f11;
+	padding-left:  30px;
+	background: url("../images/s_icons/comment.png") 10px 2px no-repeat;
+	font-style: italic;
+}
+
+#dbTile_statusMonitor ul {
+	list-style-type:  none;
+	margin-bottom:  10px;
+}
+
+#dbTile_statusMonitor ul li {
+	padding:  2px 2px 2px 10px;
+}
+
+#dbTile_statusMonitor .approved {
+	color: rgb(0, 160, 210);
+}
+
+#dbTile_statusMonitor .unapproved {
+	color: #8a1f11;
+}
+
+#dbTile_statusMonitor strong {
+	color: #666;
+}
+
+#soStats {font-weight:bold; width:240px;}
+#soStats td { font-size: 11px; line-height: 160%; padding: 2px 5px;}
+#soStatsTitleBar, #commMonitorBar, #dashboardNewsTitleBar {background: #ccc; font-weight:bold; font-size: 11px; padding: 5px 10px;}
+#totalValue {text-align: right; padding:15px 13px 0 0; font-size: 11px;}
+#totalValue p {margin-top: 30px;}
+.glossaryItem {font-weight:bold; border-bottom:dotted 2px;}
+#explainer {display: none; width:220px;height:auto;border: 3px solid #adaaaa; background:#fcfae6; border-radius:10px;
+-moz-border-radius:10px; -webkit-border-radius:10px; padding:10px;}
+#proImageContainer {float:left; width:66px; height:66px; background: url(/ServiceLiveWebUtil/images/icons/proDefaultIcon.gif) no-repeat 0 0;}
+#dashboardNews {margin-bottom:20px;}
+#dashboardNewsBody {margin:10px 0; font-size:110%; line-height:140%;}
+#dashboardNewsIcon {float:left; margin:0 20px 10px 0;}

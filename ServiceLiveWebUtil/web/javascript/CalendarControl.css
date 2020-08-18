@@ -1,0 +1,237 @@
+#CalendarControlIFrame {
+  display: none;
+  left: 0px;
+  position: absolute;
+  top: 0px;
+  height: 250px;
+  width: 250px;
+  z-index: 5000;
+}
+
+#CalendarControl {
+  position:absolute;
+  background-color:#FFF;
+  margin:0;
+  padding:0;
+  display:none;
+  z-index: 5100;
+}
+
+#CalendarControl table {
+  font-family: arial, verdana, helvetica, sans-serif;
+  font-size: 8pt;
+  border-left: 1px solid #336;
+  border-right: 1px solid #336;
+}
+
+#CalendarControl th {
+  font-weight: normal;
+}
+
+#CalendarControl th a {
+  font-weight: normal;
+  text-decoration: none;
+  color: #FFF;
+  padding: 1px;
+}
+
+#CalendarControl td {
+  text-align: center;
+}
+
+#CalendarControl .header {
+  background-color: #336;
+}
+
+#CalendarControl .weekday {
+  background-color: #DDD;
+  color: #000;
+}
+
+#CalendarControl .weekend {
+  background-color: #FFC;
+  color: #000;
+}
+
+#CalendarControl .current {
+  border: 1px solid #339;
+  background-color: #336;
+  color: #FFF;
+}
+
+#CalendarControl .weekday,
+#CalendarControl .weekend,
+#CalendarControl .current {
+  display: block;
+  text-decoration: none;
+  border: 1px solid #FFF;
+  width: 2em;
+}
+
+#CalendarControl .weekday:hover,
+#CalendarControl .weekend:hover,
+#CalendarControl .current:hover {
+  color: #FFF;
+  background-color: #336;
+  border: 1px solid #999;
+}
+
+#CalendarControl .previous {
+  text-align: left;
+}
+
+#CalendarControl .next {
+  text-align: right;
+}
+
+#CalendarControl .previous,
+#CalendarControl .next {
+  padding: 1px 3px 1px 3px;
+  font-size: 1.4em;
+}
+
+#CalendarControl .previous a,
+#CalendarControl .next a {
+  color: #FFF;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+#CalendarControl .title {
+  text-align: center;
+  font-weight: bold;
+  color: #FFF;
+}
+
+#CalendarControl .empty {
+  background-color: #CCC;
+  border: 1px solid #FFF;
+}
+#CalendarControl .jqTitlePaneContentOuter {
+	background: #ffffff;
+	border:1px solid #9f9f9f;
+	border-top: 1px solid #9f9f9f;	/* w/out this, an <h1> on the top line causes a gap between the .content and .label */
+}
+#CalendarControl .jqTitlePaneContentInner {
+	padding:10px;
+	color: #000000;
+	background-color: #ededed;
+}
+.jqReset {
+	/* Use this style to null out padding, margin, border in your template elements
+		so that page specific styles don't break them.
+		- Use in all TABLE, TR and TD tags.	
+		- If there is more than one class on the tag, place this first so other classes override.
+	*/
+	margin:0px;
+	border:0px;
+	padding:0px;
+	line-height:normal;
+}
+.jqInlineBox {
+	/* To inline block elements, surround them with <fieldset class="dijitInlineBox"> */
+	display:inline-block;			/* webkit */
+	display: -moz-inline-stack;		/* gecko  */
+	#display:inline;				/* MSIE   */
+	border:0px;
+	padding:0px;
+	vertical-align:middle;
+}
+.jqTitleNode { font-family: Arial, Helvetica, sans-serif; font-size: 12px;}
+#CalendarControl .jqTitlePane .jqTitlePaneTitle { position: relative; z-index: 1;}
+
+.jqcontentWellPane .jqTitlePaneContentInner{background:#fff;border:1px solid #9f9f9f;border-top:none;}
+.jqcontentWellPane .jqTitlePaneSubTitle .jqTitlePaneContentInner{background:#ededed;border-width:0;}
+.jqcontentWellPane h4{padding:12px 0 8px;margin:0;}
+.jqcontentWellPane p{padding:6px 0;margin:0;line-height:14px;}
+.jqcontentWellPane td{padding:3px 0;vertical-align:top;line-height:16px;}
+.jqcontentWellPane table.noPad td{padding:0;}
+#CalendarControl .jqTitlePane .jqOpen .jqArrowNode {
+	background:url('images/arrowDown.gif') no-repeat center center; 
+}
+
+#CalendarControl .jqTitlePane .jqOpen .jqArrowNode {
+	background-image:url('images/arrowDown.gif'); 
+}
+
+#CalendarControl .jqTitlePane .jqArrowNodeInner { 
+	visibility:hidden;
+}
+.jq_a11y * {
+	background-image:none !important;
+	background-color:transparent !important;
+} 
+
+ .calloutUp
+    {
+        height: 0;
+        width: 0;
+        border-top: 12px dotted transparent;
+        border-left: 12px dotted transparent;
+        border-right: 12px solid #ffffff;
+        left: 0px;
+        top: 0px;
+       // margin-left: 1000px;
+        z-index: 10;
+    }
+    .calloutUp2
+    {
+        position: absolute;
+        left: -10px;
+        top: 2px;
+        height: 0;
+        width: 0;
+        border-bottom: 10px solid #ffffff;
+        border-left: 10px solid #ffffff;
+        border-right: 10px dotted transparent;
+        z-index: 11;
+    }
+    .calloutDown
+    {
+        height: 0;
+        width: 0;
+        border-top: 12px solid #ffffff;
+        border-left: 12px dotted transparent;
+        border-right: 12px dotted transparent;
+        left: 0px;
+        top: 0px;
+        margin-left: 20px;
+        z-index: 11;
+    }
+    .calloutDown2
+    {
+        position: relative;
+        left: -10px;
+        top: -12px;
+        height: 0;
+        width: 0;
+        border-top: 10px solid #9999ff;
+        border-left: 10px dotted transparent;
+        border-right: 10px dotted transparent;
+        z-index: 10;
+    }
+    .divContainerUp
+    {
+        background-color: #ffffff;
+        border: solid 1px #58585A;
+        position: absolute;
+       // top: -1px;
+       // z-index: 9;
+        width: 230px;
+        padding: 4px;
+    }
+    .divContainerDown
+    {
+        background-color: #9999ff;
+        border: solid 1px #ffffff;
+        position: relative;
+        top: 1px;
+        z-index: 3;
+        width: 500px;
+        padding: 4px;
+    }
+    .divContainerMain
+    {
+        background-color: #ccccff;
+        padding: 8px;
+    }

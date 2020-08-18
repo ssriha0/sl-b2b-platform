@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified" >
+	<xs:include schemaLocation="../common.xsd" />
+	<xs:include schemaLocation="../soMobileCommon.xsd" />
+	<xs:element name="getEstimateDetailsResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="results"/>
+				<xs:element name="estimationId" type="xs:integer" minOccurs="0"/>
+				<xs:element name="estimationRefNo" type="xs:string" minOccurs="0"/>
+				<xs:element name="estimateDate" type="xs:dateTime" minOccurs="0"/>
+				<xs:element name="resourceId" type="xs:integer" minOccurs="0"/>
+				<xs:element name="vendorId" type="xs:integer" minOccurs="0"/>
+				<!-- <xs:element name="description" type="xs:string" minOccurs="0"/>
+				<xs:element name="acceptSource" type="xs:string" minOccurs="0"/>
+				<xs:element name="tripCharge" type="xs:decimal" minOccurs="0"/> -->
+				<xs:element name="status" type="xs:string" minOccurs="0"/>
+				<!-- <xs:element name="respondedCustomerName" type="xs:string" minOccurs="0"/>-->
+				<xs:element name="responseDate" type="xs:dateTime" minOccurs="0"/> 
+				<xs:element ref="estimateDetails" minOccurs="0" />
+				<xs:element name="pricing" type ="pricingType" minOccurs="0"/>
+				<xs:element name="comments" type="xs:string" minOccurs="0"/>
+				<xs:element name="logoDocumentId" type="xs:integer" minOccurs="0"/>
+				<xs:element name="estimationExpiryDate" type="xs:dateTime" minOccurs="0"/>				
+				<xs:element name="estimateHistoryDetails" type ="estimateHistoryDetailsType" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="estimateDetails">
+		<xs:complexType>
+			<xs:sequence>
+			<xs:element ref="laborTasks" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element ref="parts" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element ref="otherServices" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="laborTasks">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="laborTask" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="laborTask">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="itemId" type="xs:integer" minOccurs="0"/>
+				<xs:element name="taskSeqNumber" type="xs:integer" minOccurs="0"/>
+				<xs:element name="taskName" type="xs:string" minOccurs="0"/>
+			    <xs:element name="description" type="xs:string" minOccurs="0"/>
+			    <xs:element name="unitPrice" type= "xs:decimal" minOccurs="0" />
+			    <xs:element name="quantity" type="xs:integer" minOccurs="0"/>
+			    <xs:element name="totalPrice" type="xs:decimal" minOccurs="0"/>
+			    <xs:element name="additionalDetails" type="xs:string" minOccurs="0"/>
+			    <xs:element name="action" type="xs:string" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="parts">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="part" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="part">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="itemId" type="xs:integer" minOccurs="0"/>			
+			    <xs:element name="partSeqNumber" type="xs:integer" minOccurs="0"/>
+			    <xs:element name="partNo" type="xs:string" minOccurs="0"/>
+			    <xs:element name="partName" type="xs:string" minOccurs="0"/>
+			    <xs:element name="description" type="xs:string" minOccurs="0"/>
+			    <xs:element name="unitPrice" type= "xs:decimal" minOccurs="0" />
+			    <xs:element name="quantity" type="xs:integer" minOccurs="0"/>
+			    <xs:element name="totalPrice" type="xs:decimal" minOccurs="0"/>
+			    <xs:element name="additionalDetails" type="xs:string" minOccurs="0"/>
+			    <xs:element name="action" type="xs:string" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="pricingType">
+		<xs:sequence>
+			<xs:element name="totalLaborPrice" type="xs:decimal" minOccurs="0"/>
+			<xs:element name="totalPartsPrice" type="xs:decimal" minOccurs="0"/>
+			<xs:element name="totalOtherServicePrice" type="xs:decimal" minOccurs="0"/>
+			<xs:element name="subTotal" type="xs:decimal" minOccurs="0"/>
+			<xs:element name="discountType" type="xs:string" minOccurs="0"/>
+			<xs:element name="discountedPercentage" type="xs:decimal" minOccurs="0"/>
+			<xs:element name="discountedAmount" type="xs:decimal" minOccurs="0"/>
+			<xs:element name="taxRate" type="xs:decimal" minOccurs="0"/>
+			<xs:element name="taxType" type="xs:string" minOccurs="0"/>
+			<xs:element name="taxPrice" type="xs:decimal" minOccurs="0"/>
+			<xs:element name="totalPrice" type="xs:decimal" minOccurs="0"/>
+			
+			<xs:element name="laborDiscountType" type="xs:string" minOccurs="0"/>
+			<xs:element name="laborDiscountedPercentage" type="xs:decimal" minOccurs="0"/>
+			<xs:element name="laborDiscountedAmount" type="xs:decimal" minOccurs="0"/>
+			<xs:element name="laborTaxRate" type="xs:decimal" minOccurs="0"/>
+			<xs:element name="laborTaxPrice" type="xs:decimal" minOccurs="0"/>
+			
+			<xs:element name="partsDiscountType" type="xs:string" minOccurs="0"/>
+			<xs:element name="partsDiscountedPercentage" type="xs:decimal" minOccurs="0"/>
+			<xs:element name="partsDiscountedAmount" type="xs:decimal" minOccurs="0"/>
+			<xs:element name="partsTaxRate" type="xs:decimal" minOccurs="0"/>
+			<xs:element name="partsTaxPrice" type="xs:decimal" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>	
+	<xs:element name="otherServices">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="otherService" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="otherService">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="itemId" type="xs:integer" minOccurs="0"/>			
+			    <xs:element name="otherServiceSeqNumber" type="xs:integer" minOccurs="0"/>
+			    <xs:element name="otherServiceType" type="xs:string" minOccurs="0"/>
+			    <xs:element name="otherServiceName" type="xs:string" minOccurs="0"/>
+			    <xs:element name="description" type="xs:string" minOccurs="0"/>
+			    <xs:element name="unitPrice" type= "xs:decimal" minOccurs="0" />
+			    <xs:element name="quantity" type="xs:integer" minOccurs="0"/>
+			    <xs:element name="totalPrice" type="xs:decimal" minOccurs="0"/>
+			    <xs:element name="additionalDetails" type="xs:string" minOccurs="0"/>
+			    <xs:element name="action" type="xs:string" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:simpleType name="stringTwentyFiveType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="25"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stringThirtyType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="30"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stringTwoFiftyFiveType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="30"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="estimateHistoryDetailsType">
+		<xs:sequence>
+				<xs:element ref="estimateHistory" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+	</xs:complexType>
+	
+	<xs:element name="estimateHistory">
+	<xs:complexType>
+		<xs:sequence>
+				<xs:element name="estimationHistoryId" type="xs:integer"/>
+				<xs:element name="estimationId" type="xs:integer"/>
+				<xs:element name="estimationRefNo" type="xs:string"/>
+				<xs:element name="estimateDate" type="xs:dateTime"/>
+				<xs:element name="resourceId" type="xs:integer" minOccurs="0"/>
+				<xs:element name="vendorId" type="xs:integer" minOccurs="0"/>
+				<xs:element name="status" type="xs:string" minOccurs="0"/>
+				<xs:element name="responseDate" type="xs:dateTime" minOccurs="0"/> 
+				<xs:element name="pricing" type ="pricingType" minOccurs="0"/>
+				<xs:element name="comments" type="xs:string" minOccurs="0"/>
+				<xs:element name="logoDocumentId" type="xs:integer" minOccurs="0"/>
+				<xs:element name="estimationExpiryDate" type="xs:dateTime" minOccurs="0"/>								
+				<xs:element name="action" type="xs:string" minOccurs="0"/>
+				<xs:element ref="estimateItemsHistory" minOccurs="0" />		
+		</xs:sequence>
+	</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="estimateItemsHistory">
+		<xs:complexType>
+			<xs:sequence>
+			<xs:element ref="laborTasks" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element ref="parts" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element ref="otherServices" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

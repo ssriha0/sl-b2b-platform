@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified">
+	<xs:include schemaLocation="leadsCommon.xsd" />
+	<!-- This is the new get Match Provider Response -->
+	<!-- Root Element -->
+	<xs:element name="MatchProviderResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="results" />
+				<xs:element name="LeadId" type="xs:string"
+					minOccurs="0" />
+				<xs:element ref="FirmDetailList" minOccurs="0" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="FirmDetailList">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="FirmDetail" minOccurs="0"
+					maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="FirmDetail">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="FirmId" type="xs:int" minOccurs="0"
+					maxOccurs="1" />
+				<xs:element name="FirmRank" type="xs:int" minOccurs="0"
+					maxOccurs="1" />
+				<xs:element name="FirmName" type="xs:string"
+					minOccurs="0" maxOccurs="1" />
+				<xs:element name="FirmOwner" type="xs:string"
+					minOccurs="0" maxOccurs="1" />
+				<xs:element name="FirmDistance" type="xs:double"
+					minOccurs="0" maxOccurs="1" />
+				<xs:element name="FirmCity" type="xs:string"
+					minOccurs="0" maxOccurs="1" />
+				<xs:element name="FirmState" type="xs:string"
+					minOccurs="0" maxOccurs="1" />
+				<xs:element name="YearsOfService" type="xs:double"
+					minOccurs="0" />
+				<xs:element name="FirmRating" type="xs:double"
+					minOccurs="0" maxOccurs="1" />
+				<xs:element ref="Contact" minOccurs="0" maxOccurs="1" />
+				<xs:element ref="FirmReviews" minOccurs="0"
+					maxOccurs="1" />
+                 <xs:element ref="Credentials" minOccurs="0" maxOccurs="1"/>
+                 <xs:element ref="Services" minOccurs="0" maxOccurs="1"/>   
+				<xs:element name="PointsAwarded" type="xs:int"
+					minOccurs="0" maxOccurs="1" />
+				
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="FirmReviews">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="FirmReview" minOccurs="0" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="FirmReview">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="ReviewerName" maxOccurs="1"
+					minOccurs="0" type="xs:string" />
+				<xs:element name="Comment" maxOccurs="1" minOccurs="0"
+					type="xs:string" />
+				<xs:element name="Rating" maxOccurs="1" minOccurs="0"
+					type="xs:double" />
+				<xs:element name="Date" maxOccurs="1" minOccurs="0"
+					type="xs:date" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	 <xs:element name="Insurances">
+         <xs:complexType>
+          <xs:sequence>
+            <xs:element name="Insurance" minOccurs="0" maxOccurs="unbounded">
+           		 <xs:complexType>
+            	<xs:sequence>
+           			 <xs:element type="xs:int" name="Amount" minOccurs="0"/>
+           			 <xs:element type="xs:date" name="VerificationDate" minOccurs="0"/>
+            	</xs:sequence>
+            		<xs:attribute type="xs:string" name="Name" use="optional"/>
+           		    <xs:attribute type="xs:string" name="Verified" use="optional"/>
+            	</xs:complexType>
+            </xs:element>
+           </xs:sequence>
+         </xs:complexType>
+      </xs:element>
+       
+     <xs:element name="Credentials">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Credential" minOccurs="0" maxOccurs="unbounded">
+                 	<xs:complexType>
+            			<xs:sequence>
+           			 		
+            				<xs:element type="xs:string" name="Type" minOccurs="0"/>
+           		    		<xs:element type="xs:string" name="Category" minOccurs="0"/>
+           		    		<xs:element type="xs:string" name="Source" minOccurs="0"/>
+           		   			 <xs:element type="xs:string" name="Name" minOccurs="0"/>
+            			</xs:sequence>
+            				<xs:attribute type="xs:string" name="Status" use="optional"/>
+           			 		<xs:attribute type="xs:string" name="CredentialType" use="optional"/>
+           			</xs:complexType>
+            	</xs:element>
+           		</xs:sequence>
+        	 </xs:complexType>
+      </xs:element>
+    
+               <xs:element name="Services">
+                 <xs:complexType>
+                   <xs:sequence>
+                     <xs:element ref="SubService" minOccurs="0" maxOccurs="unbounded"/>
+                   </xs:sequence>
+                 </xs:complexType>
+          </xs:element>
+         
+             <xs:element name="SubService">
+      <xs:complexType>
+                  <xs:sequence>
+                        <xs:element name="ServiceCategory" type="xs:string" minOccurs="0" maxOccurs="1" />
+                        <xs:element name="ProjectType" type="xs:string" minOccurs="0" maxOccurs="1" />              
+                        <xs:element name="ServiceScope" type="xs:string" minOccurs="0" maxOccurs="1" />
+                  </xs:sequence>
+      </xs:complexType></xs:element>
+</xs:schema>

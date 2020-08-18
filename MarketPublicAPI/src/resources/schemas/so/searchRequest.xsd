@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/searchRequest" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" targetNamespace="http://www.servicelive.com/namespaces/searchRequest" elementFormDefault="qualified" jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+	<xs:include schemaLocation="wsSecurity.xsd"/>
+	<xs:include schemaLocation="soCommon.xsd"/>
+	<!-- Root element -->
+	<xs:element name="searchRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="identification" type="IdentificationType"/>
+				<xs:element name="soSearch" type="ServiceOrderSearchType"/>
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:decimal"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- ServiceOrderSearch  -->
+	<xs:complexType name="ServiceOrderSearchType">
+		<xs:sequence>
+			<xs:element name="customerName" type="xs:string" minOccurs="0"/>
+			<xs:element name="serviceLocPhone" type="xs:string" minOccurs="0"/>
+			<xs:element name="serviceLocZipcode" nillable="true">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:pattern value="\d{5}"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="customReferences" type="CustomReferencesType" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="version" type="xs:decimal" use="required"/>
+		<xs:attribute name="maxResultSet" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:int">
+					<xs:enumeration value="10"/>
+					<xs:enumeration value="25"/>
+					<xs:enumeration value="50"/>
+					<xs:enumeration value="100"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+</xs:schema>

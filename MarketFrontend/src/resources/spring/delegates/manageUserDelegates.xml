@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+
+	<!-- Start DTO  Loading -->
+	<bean id="teamProfileDTO" class="com.newco.marketplace.web.dto.provider.TeamProfileDTO" scope="prototype"/>
+	<bean id="backgroundCheckDTO" class="com.newco.marketplace.web.dto.provider.BackgroundCheckDTO" scope="prototype"/>
+	<!-- End DTO  Loading -->
+	
+	<!-- Start Mapper Loading -->
+	<bean id="teamMemberMapper" class="com.newco.marketplace.web.utils.TeamMemberMapper" scope="prototype"/>
+	<!-- End Mapper  Loading -->
+	
+	<!-- Start Delegate  Loading -->
+	<bean name="teamMemberDelegateImpl" class="com.newco.marketplace.web.delegatesImpl.provider.TeamMemberDelegateImpl" scope="prototype">
+		<constructor-arg index="0" ref="teamProfileBOImpl"/>
+		<constructor-arg index="1" ref="teamMemberMapper"/>
+	</bean>
+	
+	<!-- Start Manage Users Delegate Loading -->
+	<bean id="manageUsersDelegate" class="com.newco.marketplace.web.delegatesImpl.ManageUsersDelegateImpl" scope="prototype">	
+		<constructor-arg index="0" ref="iUserManagementBO"/>
+		<constructor-arg index="1" ref="lookupBO"/>
+		<constructor-arg index="2" ref="forgotUsernameBOAOP"/>		
+	</bean>	
+	<!-- End  Manage Users Delegate Loading -->
+	
+	<bean id="adminTripChargeDelegate" class="com.newco.marketplace.web.delegates.AdminTripChargeDelegate" scope="prototype">
+		<property name="tripChargeBO">
+			<ref bean="tripChargeBO" />
+		</property>		
+	</bean>	
+	
+</beans>	

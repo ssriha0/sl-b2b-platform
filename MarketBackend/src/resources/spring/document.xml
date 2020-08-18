@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd" 
+	default-autowire="byName">
+	
+	<bean id="documentFactory"
+		class="com.newco.marketplace.persistence.daoImpl.document.DocumentDaoFactory" 
+		scope="singleton">
+		<property name="documentDaos">
+			<map>
+				<entry key="1" value-ref="ibuyerDocumentDao"/>
+				<entry key="2" value-ref="vendorDocumentDao"/>
+				<entry key="3" value-ref="resourceDocumentDao"/>
+				<entry key="4" value-ref="serviceOrderDocumentDAO"/>
+				<entry key="7" value-ref="spnDocumentDao"/>
+			</map>
+		</property>
+	</bean>
+
+	<bean id="serviceOrderDocumentDAO" 
+	      class="com.newco.marketplace.persistence.daoImpl.document.ServiceOrderDocumentDao" autowire="byName">
+		<property name="applicationPropertiesDao">
+			<ref bean="applicationPropertiesDao" />
+		</property>
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+		<property name="serviceOrderDao">
+			<ref bean="serviceOrderDao" />
+		</property>
+		<!-- AUTOWIRED documentService
+		<property name="documentService">
+			<ref bean="documentService" />
+		</property>
+		-->
+	</bean>
+	
+	<bean id="documentBO"
+		class="com.newco.marketplace.business.businessImpl.document.DocumentBO">
+		<property name="serviceOrderDao">
+			<ref bean="serviceOrderDao" />
+		</property>
+		<property name="simpleDocumentDao">
+			<ref bean="simpleDocumentDao" />
+		</property>
+		<property name="documentDaoFactory">
+			<ref bean="documentFactory" />
+		</property>	
+		<property name="buyerSOTemplateBO">
+			<ref bean="buyerSOTemplateBO" />			
+		</property>
+		<property name="templateDAO">
+			<ref bean="buyerSOTemplateDao" />			
+		</property>
+		<property name="relayNotificationService">
+			<ref bean="relayNotificationService" />
+		</property>
+	</bean>
+	
+	<bean id="ibuyerDocumentDao" 
+	      class="com.newco.marketplace.persistence.daoImpl.document.BuyerDocumentDaoImpl" autowire="byName">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+		<!-- AUTOWIRED documentService
+		<property name="documentService">
+			<ref bean="documentService" />
+		</property>
+		-->
+	</bean>
+	
+	<bean id="vendorDocumentDao" 
+	      class="com.newco.marketplace.persistence.daoImpl.document.VendorDocumentDaoImpl" autowire="byName">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+		<!-- AUTOWIRED documentService
+		<property name="documentService">
+			<ref bean="documentService" />
+		</property>
+		-->
+	</bean>
+	
+	<bean id="resourceDocumentDao" 
+	      class="com.newco.marketplace.persistence.daoImpl.document.ResourceDocumentDaoImpl" autowire="byName">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+		<!-- AUTOWIRED documentService
+		<property name="documentService">
+			<ref bean="documentService" />
+		</property>
+		-->
+	</bean>
+	
+	<bean id="providerProfileDocDao" 
+	      class="com.newco.marketplace.persistence.daoImpl.provider.ProviderProfileDocumentDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+
+	</bean>
+	
+	<bean id="spnDocumentDao" 
+	      class="com.newco.marketplace.persistence.daoImpl.document.SPNDocumentDaoImpl" autowire="byName">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+		<!-- AUTOWIRED documentService
+		<property name="documentService">
+			<ref bean="documentService" />
+		</property>
+		-->
+	</bean>
+	
+	<bean id="simpleDocumentDao" class="com.newco.marketplace.persistence.daoImpl.document.SimpleDocumentDaoImpl"  scope="prototype">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+		<property name="serviceOrderDocumentDAO" ref="serviceOrderDocumentDAO"></property>
+    </bean>
+    
+    <bean id="logoDocumentBO"
+		class="com.newco.marketplace.business.businessImpl.document.LogoDocumentBO">
+		<property name="documentBO">
+			<ref bean="documentBO" />
+		</property>
+	</bean>
+</beans>

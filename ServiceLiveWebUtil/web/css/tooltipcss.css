@@ -1,0 +1,82 @@
+/*---------- bubble tooltip -----------*/
+td.tt{
+    position:relative;
+    text-decoration:none;
+}
+td.tt span{ display: none; }
+ 
+
+td.tt:hover{ z-index:99999;}
+td.tt:hover span.tooltip{
+    display:block;
+    position:absolute;
+	padding: 5px 0 5px 0;
+	width:260px;
+	margin-top: -20px;
+	margin-left:120px;
+    text-align: left;
+	background-image: url(../images/toolTipBubble.png);
+}
+
+td.tt:hover span.middle{ 
+	display: block;
+	padding: 0 8px;
+	padding-left: 60px;
+}
+
+td.tt:hover span.tooltipleft{
+    display:block;
+    position:absolute;
+	padding: 5px 0 5px 0;
+	width:260px;
+	height:88px;
+	margin-top: -45px;
+	margin-left:-260px;
+    text-align: left;
+	background: url(../images/toolTipBubbleInvert.png);
+	background-repeat: no-repeat;	
+}
+
+td.tt:hover span.left{ 
+	display: block;
+	padding: 8px 8px 0px 20px;
+	vertical-align: middle;
+}
+
+td.tt:hover span.tooltipreject{
+    display:block;
+    position:absolute;
+	padding: 5px 0 5px 0;
+	width:260px;
+	height:55px;
+	margin-top: 10px;
+	margin-left:10px;
+    text-align: left;
+	background-image: url(../images/toolTipBubblereject.png);
+	background-repeat: no-repeat;
+}
+
+td.tt:hover span.middlereject{ 
+	display: block;
+	padding: 0 8px;
+	padding-left: 40px;
+	margin-top: 10px;
+}
+span.wfmCallOut{display: none;
+	position:relative;
+    text-decoration:none;}
+
+span.wfmCallOutIcon:hover span.wfmCallOut{
+	z-index:99999;
+	display:block;
+    position:absolute;
+	width:280px;
+	margin-top: -25px;
+	margin-left:50px;
+    text-align: left;
+	background-image: url(../images/callOut.png);
+	padding: 0 8px;
+	padding-top:15px;
+	height: 45px;
+	padding-left:30px;
+}

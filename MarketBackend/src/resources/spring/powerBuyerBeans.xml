@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+
+	<bean id="powerBuyerFilterDAO" 
+	      class="com.newco.marketplace.persistence.daoImpl.powerbuyer.PowerBuyerFilterDao">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+
+	<bean id="soClaimDAO" 
+	      class="com.newco.marketplace.persistence.daoImpl.powerbuyer.SOClaimDao">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+		<property name="applicationPropertiesDao">
+			<ref bean="applicationPropertiesDao" />
+		</property>			
+	</bean>
+	
+	<bean id="powerBuyerBO"
+		class="com.newco.marketplace.business.businessImpl.powerbuyer.PowerBuyerBOImpl">
+		<property name="pbfDao">
+			<ref bean="powerBuyerFilterDAO" />
+		</property>
+		<property name="claimDao">
+			<ref bean="soClaimDAO" />
+		</property>
+	</bean>
+	
+
+</beans>

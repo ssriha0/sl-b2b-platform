@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/leadProfileCreationRequest" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" targetNamespace="http://www.servicelive.com/namespaces/leadProfileCreationRequest" elementFormDefault="qualified" jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+ <xs:include schemaLocation="../common.xsd"/>
+  <xs:element name="leadProfileCreationRequest">
+    <xs:complexType>
+      <xs:sequence>  
+        <xs:element name="providerFirmId" type="xs:string" minOccurs="0"/>
+        <xs:element name="leadSmsNo" type="xs:string" minOccurs="0"/>
+        <xs:element name="leadEmailId" type="xs:string" minOccurs="0"/>
+        <xs:element name="leadPhoneNo" type="xs:string" minOccurs="0"/>
+        <xs:element name="leadDailyLimit" type="xs:string" minOccurs="0"/>
+        <xs:element name="leadMonthlyLimit" type="xs:string" minOccurs="0"/>
+        <xs:element name="leadMonthlyBudget" type="xs:string" minOccurs="0"/>
+        <xs:element name="leadPackageID" type="xs:string" minOccurs="0"/>
+        <xs:element name="availableDaysOfWeek" type="xs:string" minOccurs="0"/>
+       	<xs:element name="locationType" type="xs:string" minOccurs="0"/>
+        <xs:element name="interestedInSHSLeads" type="xs:boolean" minOccurs="0"/>   
+        <xs:element name="urgencyOfService" type="xs:string" minOccurs="0"/>
+        <xs:element name="skill" type="xs:string" minOccurs="0"/>
+        <xs:element name="coverageInMiles" type="xs:string" minOccurs="0"/>
+        <xs:element name="isLicensingRequired" type="xs:string" minOccurs="0"/>
+        <xs:element name="licensingStates" type="xs:string" minOccurs="0"/>
+     </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+ </xs:schema>
+
+
+
+

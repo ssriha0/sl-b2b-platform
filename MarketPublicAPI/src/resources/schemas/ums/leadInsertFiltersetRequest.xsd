@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/leadProfileCreationRequest" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" targetNamespace="http://www.servicelive.com/namespaces/leadProfileCreationRequest" elementFormDefault="qualified" jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+ <xs:include schemaLocation="../common.xsd"/>
+  <xs:element name="leadInsertFiltersetRequest">
+    <xs:complexType>
+      <xs:sequence>  
+        <xs:element name="vendorId" type="xs:integer" minOccurs="0"/>
+        <xs:element name="termsAndCondition" type="xs:string" minOccurs="0"/>
+        <xs:element ref="projects" maxOccurs="1"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  	<xs:element name="projects">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="project" minOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="project">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="categoryID" type="xs:integer" minOccurs="1"/>
+				<xs:element name="projectId" type="xs:integer" minOccurs="1"/>
+				<xs:element name="exclusivePriceSelected" type="xs:boolean" minOccurs="0"/>
+				<xs:element name="compPriceTwoSelected" type="xs:boolean" minOccurs="0"/>
+				<xs:element name="compPriceThree" type="xs:boolean" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+</xs:schema>
+
+
+
+

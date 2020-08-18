@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="audit_task">
+
+	<typeAlias alias="auditVo"
+		type="com.newco.marketplace.vo.audit.AuditVO" />
+
+	<insert id="audit_task.insert" parameterClass="auditVo">
+		insert into audit_task (vendor_id, resource_id, audit_link_id,
+		audit_key_id, document_id, wf_state_id) values (#vendorId#,
+		#resourceId#, #auditLinkId#, #auditKeyId#, #documentId#,
+		#wfStateId#)
+	</insert>
+	<update id="audit_task.updateStatusByTaskId"
+		parameterClass="auditVo">
+		update audit_task
+		<dynamic prepend="set">
+			<isNotNull prepend=", " property="wfStateId">
+				wf_state_id=#wfStateId#
+			</isNotNull>
+		</dynamic>
+		where audit_task_id=#auditTaskId# and audit_key_id=#auditKeyId#
+		order by modified_date desc limit 1
+	</update>
+
+	<update id="audit_task.updateStatusByResourceId"
+		parameterClass="auditVo">
+		update audit_task
+		<dynamic prepend="set">
+			<isNotNull prepend=", " property="wfStateId">
+				wf_state_id=#wfStateId#
+			</isNotNull>
+		</dynamic>
+		where resource_id=#resourceId# and audit_key_id=#auditKeyId#
+		order by modified_date desc limit 1
+	</update>
+
+	<update id="audit_task.updateStatusByVendorId"
+		parameterClass="auditVo">
+		update audit_task
+		<dynamic prepend="set">
+			<isNotNull prepend=", " property="wfStateId">
+				wf_state_id=#wfStateId#
+			</isNotNull>
+		</dynamic>
+		where vendor_id=#vendorId# and audit_key_id=#auditKeyId# order
+		by modified_date desc limit 1
+	</update>
+
+	<update id="audit_task.updateStatusVendorHeader"
+		parameterClass="auditVo">
+		update vendor_hdr
+		<dynamic prepend="set">
+			<isNotNull prepend=", " property="wfStateId">
+				wf_state_id=#wfStateId#
+			</isNotNull>
+		</dynamic>
+		where vendor_id=#vendorId# order by modified_date desc limit 1
+	</update>
+
+	<update id="audit_task.updateStatusVendorResource"
+		parameterClass="auditVo">
+		UPDATE vendor_resource r
+			JOIN
+		(SELECT * FROM vendor_resource  WHERE resource_id=#resourceId#) 
+		AS a ON(a.bg_check_id=r.bg_check_id)
+			SET r.wf_state_id=#wfStateId#
+	</update>
+
+	<update id="audit_task.updateStatusVendorCredential"
+		parameterClass="auditVo">
+		update vendor_credentials
+		<dynamic prepend="set">
+			<isNotNull property="wfStateId">
+				wf_state_id=#wfStateId#
+			</isNotNull>
+		</dynamic>
+		where vendor_id=#vendorId# order by modified_date desc limit 1
+	</update>
+
+	<update id="audit_task.updateStatusResourceCredential"
+		parameterClass="auditVo">
+		update resource_credentials
+		<dynamic prepend="set">
+			<isNotNull property="wfStateId">
+				wf_state_id=#wfStateId#
+			</isNotNull>
+		</dynamic>
+		where resource_id=#resourceId# order by modified_date desc limit
+		1
+	</update>
+
+	<select id="audit_task.getStatusVendorResource"
+		resultClass="java.lang.String" parameterClass="auditVo">
+		select wf_state from wf_states where wf_state_id = ( select
+		wf_state_id from vendor_resource where resource_id=#resourceId#
+		order by modified_date desc limit 1)
+	</select>
+
+
+	<select id="audit_task.getStatusVendorCredential"
+		resultClass="java.lang.String" parameterClass="auditVo">
+		select wf_state from wf_states where wf_state_id = (select
+		wf_state_id from vendor_credentials where vendor_id=#vendorId#
+		<isNotNull property="auditKeyId">
+			AND vendor_cred_id=#auditKeyId#
+		</isNotNull>
+		<isNull property="auditKeyId">
+			order by modified_date desc limit 1
+		</isNull>
+		)
+	</select>
+
+	<select id="audit_task.getStatusResourceCredential"
+		resultClass="java.lang.String" parameterClass="auditVo">
+		select wf_state from wf_states where wf_state_id=(select
+		wf_state_id from resource_credentials where
+		resource_id=#resourceId#
+		<isNotNull property="auditKeyId">
+			AND resource_cred_id=#auditKeyId#
+		</isNotNull>
+		<isNull property="auditKeyId">
+			order by modified_date desc limit 1
+		</isNull>
+		)
+	</select>
+
+	<select id="audit_task.getVendorIdByResourceId"
+		resultClass="java.lang.Integer" parameterClass="java.lang.Integer">
+		select vendor_id from vendor_resource where
+		resource_id=#resourceId# order by modified_date desc limit 1
+	</select>
+
+
+	<select id="audit_task.getVendorIdByUserName"
+		resultClass="java.lang.Integer" parameterClass="java.lang.String">
+		select vendor_id from user_profile where user_name=#value# order
+		by modified_date desc limit 1
+	</select>
+
+
+	<select id="audit_task.getStatusByResourceId"
+		resultClass="java.lang.String" parameterClass="auditVo">
+		select wf_state from wf_states where wf_state_id=(select
+		wf_state_id from audit_task where resource_id=#resourceId# and
+		audit_key_id=#auditKeyId# order by modified_date desc limit 1)
+	</select>
+
+	<select id="audit_task.getStatusByVendorId"
+		resultClass="java.lang.String" parameterClass="auditVo">
+		select wf_state from wf_states where wf_state_id = (select
+		wf_state_id from audit_task where vendor_id=#vendorId# and
+		audit_key_id=#auditKeyId# order by modified_date desc limit 1)
+	</select>
+
+	<select id="audit_task.getStatusByTaskId"
+		resultClass="java.lang.String" parameterClass="auditVo">
+		select wf_state from wf_states where wf_state_id=(select
+		wf_state_id from audit_task where resource_id=#resourceId# and
+		audit_key_id=#auditKeyId# order by modified_date desc limit 1)
+	</select>
+
+	<select id="audit_task.getAuditStatusForResource"
+		parameterClass="auditVo" resultClass="auditVo">
+		select vendor_id as vendorId, resource_id as resourceId,
+		audit_link_id as auditLinkId, audit_key_id as auditKeyId,
+		document_id as documentId, wf_state_id as wfStateId from
+		audit_task where resource_id=#resourceId# and
+		audit_key_id=#auditKeyId# order by modified_date desc limit 1
+	</select>
+
+
+	<select id="audit_task.getAuditStatusForVendor"
+		parameterClass="auditVo" resultClass="auditVo">
+		select vendor_id as vendorId, audit_link_id as auditLinkId,
+		audit_key_id as auditKeyId, document_id as documentId,
+		wf_state_id as wfStateId from audit_task where
+		vendor_id=#vendorId# and audit_key_id=#auditKeyId# order by
+		modified_date desc limit 1
+	</select>
+
+	<update id="audit_task.updateResourceBackgroundCheckStatus"
+		parameterClass="auditVo">
+		UPDATE vendor_resource
+		<dynamic prepend="set">
+			<isNotNull prepend=", " property="wfStateId">
+				background_state_id = #wfStateId#
+			</isNotNull>
+		</dynamic>
+		where resource_id = #resourceId#
+	</update>
+
+
+	<update id="audit_task.updateBGCheckByResourceId"
+		parameterClass="auditVo">
+		UPDATE audit_task
+		<dynamic prepend="SET">
+			<isNotNull prepend=", " property="vendorId">
+				vendor_id=#vendorId#
+			</isNotNull>
+			<isNotNull prepend=", " property="auditLinkId">
+				audit_link_id=#auditLinkId#
+			</isNotNull>
+			<isNotNull prepend=", " property="auditKeyId">
+				audit_key_id=#auditKeyId#
+			</isNotNull>
+			<isNotNull prepend=", " property="wfStateId">
+				wf_state_id= #wfStateId#
+			</isNotNull>
+		</dynamic>
+		WHERE resource_id=#resourceId# and audit_key_id=#auditKeyId# and
+		wf_state_id in (10, 9, 8, 7)
+	</update>
+
+
+	<select id="audit_task.getResourceBackgroundCheckStatus"
+		resultClass="java.lang.String" parameterClass="auditVo">
+		select wf_state from wf_states where wf_state_id = ( select
+		background_state_id from vendor_resource where
+		resource_id=#resourceId# order by modified_date desc limit 1 )
+	</select>
+
+
+	<update id="audit_task.updateByResourceId"
+		parameterClass="auditVo">
+		UPDATE audit_task a JOIN wf_states w ON a.wf_state_id = w.wf_state_id
+		<dynamic prepend="SET">
+			<isNotNull prepend=", " property="vendorId">
+				a.vendor_id=#vendorId#
+			</isNotNull>
+			<isNotNull prepend=", " property="auditLinkId">
+				a.audit_link_id=#auditLinkId#
+			</isNotNull>
+			<isNotNull prepend=", " property="auditKeyId">
+				a.audit_key_id=#auditKeyId#
+			</isNotNull>
+			<isNotNull prepend=", " property="wfStateId">
+				a.wf_state_id= #wfStateId#
+			</isNotNull>
+		</dynamic>
+		WHERE a.resource_id=#resourceId# 
+			AND a.audit_key_id=#auditKeyId#
+			AND w.wf_entity = 'Team Member Background Check'
+	</update>
+
+	<update id="audit_task.updateByVendorId" parameterClass="auditVo">
+		UPDATE audit_task
+		<dynamic prepend="SET">
+			<isNotNull prepend=", " property="resourceId">
+				resource_id=#resourceId#
+			</isNotNull>
+			<isNotNull prepend=", " property="auditLinkId">
+				audit_link_id=#auditLinkId#
+			</isNotNull>
+			<isNotNull prepend=", " property="auditKeyId">
+				audit_key_id=#auditKeyId#
+			</isNotNull>
+			<isNotNull prepend=", " property="wfStateId">
+				wf_state_id= #wfStateId#
+			</isNotNull>
+		</dynamic>
+		WHERE vendor_id=#vendorId# and audit_key_id=#auditKeyId# order
+		by modified_date desc limit 1
+	</update>
+
+	<select id="audit_task.getVendorComplianceStatus"
+		resultClass="java.lang.String" parameterClass="java.lang.Integer">
+		select wf_state from wf_states where wf_state_id = (select
+		wf_state_id from vendor_hdr where vendor_id=#value# order by
+		modified_date desc limit 1)
+	</select>
+
+	<update id="audit_task.submitForVendorComplianceStatus"
+		parameterClass="auditVo">
+		update vendor_hdr
+		<dynamic prepend="set">
+			<isNotNull prepend=", " property="wfStateId">
+				wf_state_id=#wfStateId#
+			</isNotNull>
+		</dynamic>
+		where vendor_id=#vendorId# order by modified_date desc limit 1
+	</update>
+
+	<update id="audit_task.setAuditPendingStatusForVendorHdr"
+		parameterClass="java.lang.Integer">
+		update vendor_hdr set audit_pending_ind=1 where
+		vendor_id=#value# order by modified_date desc limit 1
+	</update>
+
+	<update id="audit_task.unsetAuditPendingStatusForVendorHdr"
+		parameterClass="java.lang.Integer">
+		update vendor_hdr set audit_pending_ind=0 where
+		vendor_id=#value# order by modified_date desc limit 1
+	</update>
+
+	<select id="audit_task.getAuditPendingStatusForVendorHdr"
+		resultClass="java.lang.Integer" parameterClass="java.lang.Integer">
+		select audit_pending_ind from vendor_hdr where vendor_id=#value#
+		order by modified_date desc limit 1
+	</select>
+
+	<update id="audit_task.updateStateReasonCdForResource"
+		parameterClass="auditVo">
+		UPDATE audit_task SET wf_state_id = #wfStateId#,review_comments  = #reviewComments#,
+		reviewed_by = #reviewedBy# WHERE resource_id =
+		#resourceId# AND vendor_id = #vendorId# AND audit_link_id =
+		#auditLinkId# AND audit_key_id = #auditKeyId# AND audit_task_id
+		= #auditTaskId#
+	</update>
+
+	<delete id="audit_task.deleteReasonCdForResource"
+		parameterClass="auditVo">
+		DELETE FROM audit_task_reason_cd
+		WHERE audit_task_id = #auditTaskId#
+	</delete>
+
+	<insert id="audit_task.insertReasonCdForResource"
+		parameterClass="auditVo">
+		INSERT INTO audit_task_reason_cd
+		VALUES (#auditTaskId#, #reasonId#)
+	</insert>
+
+	<select id="audit_task.queryWfStateReasonCd"
+		parameterClass="auditVo" resultClass="auditVo">
+		SELECT wf_state_id as wfStateId, reason_cd as reasonId,
+		audit_task_id as auditTaskId 
+		FROM audit_task att
+		WHERE resource_id = #resourceId# 
+		AND vendor_id = #vendorId# 
+		AND audit_link_id = #auditLinkId# 
+		AND audit_key_id = #auditKeyId#
+		ORDER BY att.modified_date DESC 
+		LIMIT 1
+	</select>
+
+	<select id="audit_task.queryWfStateReasonCdTM"
+		parameterClass="auditVo" resultClass="auditVo">
+		SELECT att.wf_state_id as wfStateId, reason_cd as reasonId,
+		audit_task_id as auditTaskId 
+		FROM audit_task att, wf_states wf
+		WHERE att.wf_state_id = wf.wf_state_id 
+		AND resource_id = #resourceId# 
+		AND vendor_id = #vendorId# 
+		AND att.audit_link_id = #auditLinkId# 
+		AND audit_key_id = #auditKeyId# 
+		AND wf.wf_entity = #wfEntity# 
+		ORDER BY att.modified_date DESC 
+		LIMIT 1
+	</select>
+
+	<select id="getVendorCurrentStatus.query" parameterClass="java.lang.Integer" resultClass="java.lang.String">
+		SELECT 	ws.wf_state AS currentStatus
+		FROM 	vendor_hdr vh,
+				wf_states ws
+		WHERE 	vh.vendor_id = #vendorId#
+		AND 	ws.wf_state_id = vh.wf_state_id
+	</select>
+
+	<update id="audit_task.update_review_date" parameterClass="auditVo">
+		update audit_task
+			set review_date  = #reviewedDate#
+			where audit_task_id = #auditTaskId#
+	</update>
+	
+	<select id="audit_task.getReasonCdResourceCredential"
+		resultClass="java.lang.String" parameterClass="auditVo">
+		select lu.reason_name 
+		from resource_credentials rc 
+		JOIN audit_task au ON (rc.resource_cred_id=au.audit_key_id)
+		JOIN audit_task_reason_cd ard ON (au.audit_task_id=ard.audit_task_id)
+		JOIN lu_audit_reason_codes lu ON (ard.reason_cd = lu.reason_cd)	
+		where	
+		rc.resource_id=#resourceId#	
+		<isNotNull property="auditKeyId">
+		AND rc.resource_cred_id=#auditKeyId#
+		</isNotNull>
+		AND rc.resource_cred_id=au.audit_key_id 
+		AND rc.resource_id=au.resource_id
+		<isNull property="auditKeyId">
+			order by rc.modified_date desc limit 1
+		</isNull>
+	</select>
+	
+	<select id="audit_task.getReasonCdVendorCredential"
+		resultClass="java.lang.String" parameterClass="auditVo">
+		SELECT lu.reason_name 
+		FROM vendor_credentials vc 
+		JOIN audit_task au ON (vc.vendor_cred_id=au.audit_key_id)
+		JOIN audit_task_reason_cd ard ON (au.audit_task_id=ard.audit_task_id)
+		JOIN lu_audit_reason_codes lu ON (ard.reason_cd = lu.reason_cd)	
+		where	
+		vc.vendor_id=#vendorId#	
+		<isNotNull property="auditKeyId">
+		AND vc.vendor_cred_id=#auditKeyId#
+		</isNotNull>
+		AND vc.vendor_cred_id=au.audit_key_id AND vc.vendor_id=au.vendor_id
+		<isNull property="auditKeyId">
+			order by modified_date desc limit 1
+		</isNull>
+	</select>
+</sqlMap>

@@ -1,0 +1,951 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="network.auditorsearch">
+	<typeAlias alias="spnAuditorSearchCiteiraVO" type="com.servicelive.domain.spn.detached.SPNAuditorSearchCriteriaVO"/>
+	<typeAlias alias="spnAuditorSearchResultVO" type="com.servicelive.domain.spn.detached.SPNAuditorSearchResultVO"/>
+	<typeAlias alias="lookupVO" type="com.servicelive.domain.spn.detached.LookupVO"/>
+
+	<typeAlias alias="searchBackgroundInformationVO" type="com.servicelive.spn.common.detached.SearchBackgroundInformationVO"/>
+	<typeAlias alias="backgroundInformationVO" type="com.servicelive.spn.common.detached.BackgroundInformationVO"/>
+	<typeAlias alias="backgroundHistVO" type="com.servicelive.spn.common.detached.BackgroundCheckHistoryVO"/>
+	
+	<resultMap class="spnAuditorSearchResultVO" id="auditorSearchForFirm.resultmap">
+		<result property="spnId" column="spnId" />
+		<result property="providerFirmId" column="providerFirmId" />
+		<result property="membershipStatusId" column="membershipStatusId" />
+		<result property="reviewedDt" column="reviewedDt" />
+		<result property="modifiedDt" column="modifiedDt" />
+		<result property="lockedByName" column="lockedByName" />
+		<result property="lockedRecord" column="lockedRecord" />
+		<result property="membershipStatusName" column="membershipStatusName" />
+		<result property="spnName" column="spnName"/>
+		<result property="numEmployees" column="providerFirmId" select="provider_count.query"/>
+		<result property="providerFirmName" column="providerFirmName"/>
+		<result property="providerFirmStatusId" column="providerFirmStatusId"/>
+		<result property="providerFirmSLStatus" column="providerFirmSLStatus"/>
+		<result property="lockedById" column="lockedById" />
+		<result property="lockedByLastName" column="lockedByLastName" />
+		<result property="lockedByFirstName" column="lockedByFirstName" />
+		<result property="numSPNEmployees" column="{spnId=spnId,providerFirmId=providerFirmId}"
+				 select="spn_provider_count.query"/>
+		<result property="memberStatus" column="memberStatus"/>
+	</resultMap>
+	
+	<select id="provider_count.query" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		select count(vdr.resource_id) as numEmployees  
+             from vendor_resource vdr where vdr.vendor_id = #providerFirmId# and vdr.wf_state_id = 6
+	</select>
+	
+	<select id="spn_provider_count.query" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		select count(vdr.resource_id) as numSPNEmployees  
+             from vendor_resource vdr , spnet_serviceprovider_state s
+             where vdr.resource_id = s.service_provider_id
+             and vdr.vendor_id = #providerFirmId#
+             and  s.spn_id= #spnId#
+             and vdr.wf_state_id = 6
+             and provider_wf_state = 'SP SPN APPROVED'
+	</select>
+	
+	<select id="provider_firm_search_for_auditor" parameterClass="spnAuditorSearchCiteiraVO" resultMap="auditorSearchForFirm.resultmap">
+		
+		SELECT DISTINCT sb.spn_id AS spnId,
+		vrs.vendor_id AS providerFirmId,
+		spfs.provider_wf_state AS membershipStatusId,
+		spfs.reviewed_date AS reviewedDt,
+		spfs.modified_date AS modifiedDt,
+		spfs.reviewed_by AS lockedByName,
+		luw.membership_status AS membershipStatusName,
+		sphdr.spn_name AS spnName,
+		vh.business_name AS providerFirmName ,
+		vh.wf_state_id AS providerFirmStatusId,
+		wf.wf_state AS providerFirmSLStatus,
+	 ( spfs.reviewed_date <![CDATA[> ]]> #lockReferenceTime# ) as lockedRecord,
+   		br.resource_id as lockedById,
+     	conct.last_name as lockedByLastName,
+     	conct.first_name as lockedByFirstName,
+     	null AS memberStatus
+
+		from spnet_buyer sb JOIN spnet_hdr sphdr 
+			ON sphdr.spn_id = sb.spn_id AND sphdr.is_alias = FALSE
+			    
+		LEFT JOIN spnet_provider_firm_state spfs 
+			ON sb.spn_id = spfs.spn_id
+			    
+		JOIN lu_spnet_workflow_state luw 
+			ON luw.id = spfs.provider_wf_state
+			
+		JOIN vendor_hdr vh 
+			ON vh.vendor_id = spfs.provider_firm_id
+			
+		JOIN  vendor_resource vrs 
+			ON vh.vendor_id = vrs.vendor_id
+			
+		LEFT JOIN location locn 
+			ON((locn.locn_id = vrs.locn_id) AND (locn.locn_type_id = 4)) 
+		
+		LEFT JOIN lu_zip_market lzip 
+			ON locn.zip = lzip.zip
+		
+		LEFT JOIN lu_market mkt 
+			ON lzip.market_id = mkt.market_id
+		
+		LEFT JOIN contact ctres 
+			ON ctres.contact_id = vrs.contact_id 
+		
+		LEFT JOIN region_district_zip dzip 
+			ON dzip.zip = lzip.zip
+			
+		LEFT JOIN vendor_hdr vhr 
+			ON vhr.vendor_id = spfs.provider_firm_id
+			 
+		LEFT JOIN wf_states wf 
+			ON vh.wf_state_id = wf.wf_state_id AND vh.wf_state_id NOT IN ( 20,29,30)
+			       
+		LEFT JOIN buyer_resource br 
+			ON br.user_name = spfs.reviewed_by
+			    
+		LEFT JOIN contact conct 
+			ON conct.contact_id = br.contact_id       
+			 
+		where sb.buyer_id = #buyerId#  
+
+		<isNotNull property="providerFirmNumber" prepend=" AND " >
+ 		   spfs.provider_firm_id like concat(#providerFirmNumber#, '%')
+		</isNotNull>
+		<isNotNull property="spnId" prepend=" AND ">
+ 		   sb.spn_id = #spnId#
+		</isNotNull>
+		<isNotNull property="stateCd" prepend=" AND " >
+ 		   locn.state_cd = #stateCd#
+		</isNotNull>
+		<isNotNull property="zipCode" prepend=" AND "  >
+			lzip.zip like '$zipCode$%'
+		</isNotNull>
+		<isNotNull property="providerFirmName" prepend=" AND " >
+ 			vh.business_name like concat(#providerFirmName#, '%')
+		</isNotNull>
+		<isNotNull property="marketId" prepend=" AND " >
+ 			mkt.market_id = #marketId#
+		</isNotNull>
+		<isNotNull property="districtId" prepend=" AND " >
+ 			dzip.ri_district = #districtId#
+		</isNotNull>
+		<isNotNull property="providerFirmStatus" prepend=" AND " >
+ 			spfs.provider_wf_state = #providerFirmStatus#
+		</isNotNull>
+		group by 
+			sb.spn_id , 
+ 			vrs.vendor_id
+ 			
+ 			<isNull property="viewAll">limit 30</isNull>
+ 			<isNotNull property="viewAll"><isEqual property="viewAll" compareValue="false">limit 30</isEqual></isNotNull>		
+	</select>
+	
+	<select id="lookup.districts" resultClass="lookupVO">
+		SELECT ri_district as id, ri_district as description FROM vw_lu_ri_districts order by description asc
+	</select>
+	
+	<select id="notification_type_count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT audit.notification_type FROM audit_cred_expiry_notification audit 
+		JOIN vendor_credentials vendor
+		ON audit.cred_id = vendor.vendor_cred_id AND audit.vendor_id = #vendorId# AND audit.credential_ind IN (1,2)
+		
+		JOIN spnet_provider_firm_state spfs 
+		ON spfs.provider_firm_id = audit.vendor_id AND spfs.provider_wf_state = 'PF SPN MEMBER'
+			            
+		JOIN spnet_buyer sb 
+		ON sb.spn_id = spfs.spn_id AND sb.buyer_id = #buyerId# 
+			            
+ 		JOIN spnet_approval_criteria sp 
+ 		ON sp.spn_id = sb.spn_id AND sp.criteria_id IN (14,8,11,27) 					
+ 		AND ((vendor.cred_category_id = sp.value AND sp.criteria_id = 14)
+ 		OR (vendor.cred_category_id = 41 AND sp.criteria_id = 11)
+ 		OR (vendor.cred_category_id = 42 AND sp.criteria_id = 8) 
+ 		OR (vendor.cred_category_id = 43 AND sp.criteria_id = 27)) 
+		WHERE sp.spn_id = #spnId#
+		
+		UNION
+
+		SELECT audit.notification_type FROM audit_cred_expiry_notification audit 
+		JOIN resource_credentials resource
+		ON audit.cred_id = resource.resource_cred_id AND audit.vendor_id = #vendorId# AND audit.credential_ind = 3
+		
+		JOIN spnet_serviceprovider_state spnet 
+		ON audit.resource_id = spnet.service_provider_id AND spnet.provider_wf_state = 'SP SPN APPROVED'
+							
+		JOIN spnet_buyer sb 
+		ON sb.spn_id = spnet.spn_id AND sb.buyer_id = #buyerId# 
+				            
+		JOIN spnet_approval_criteria sp 
+		ON sp.spn_id = sb.spn_id		
+		AND resource.cred_category_id = sp.value
+		WHERE sp.criteria_id = 17 AND sp.spn_id = #spnId#
+	</select>
+	
+	<select id="search_provider_firms" parameterClass="spnAuditorSearchCiteiraVO" resultMap="auditorSearchForFirm.resultmap">
+			
+		SELECT DISTINCT sb.spn_id AS spnId,
+		vrs.vendor_id AS providerFirmId,
+		spfs.provider_wf_state AS membershipStatusId,
+		spfs.reviewed_date AS reviewedDt,
+		spfs.modified_date AS modifiedDt,
+		spfs.reviewed_by AS lockedByName,
+		luw.membership_status AS membershipStatusName,
+		sphdr.spn_name AS spnName,
+		vh.business_name AS providerFirmName ,
+		vh.wf_state_id AS providerFirmStatusId,
+		wf.wf_state AS providerFirmSLStatus,
+	 	( spfs.reviewed_date <![CDATA[> ]]> #lockReferenceTime# ) as lockedRecord,
+   		br.resource_id AS lockedById,
+		conct.last_name AS lockedByLastName,
+		conct.first_name AS lockedByFirstName,
+		<isNotNull property="memberStatus"><isEqual property="memberStatus" compareValue="Action">
+			'Action Required' AS memberStatus
+		</isEqual></isNotNull>
+		<isNotNull property="memberStatus"><isEqual property="memberStatus" compareValue="Attention">
+			'Attention Needed' AS memberStatus
+		</isEqual></isNotNull>
+		<isNotNull property="memberStatus"><isEqual property="memberStatus" compareValue="Compliance">
+			null AS memberStatus
+		</isEqual></isNotNull>
+
+		FROM spnet_buyer sb JOIN spnet_hdr sphdr 
+			ON sphdr.spn_id = sb.spn_id AND sphdr.is_alias = FALSE 
+			    
+		LEFT JOIN spnet_provider_firm_state spfs 
+			ON sb.spn_id = spfs.spn_id
+			    
+		JOIN lu_spnet_workflow_state luw 
+			ON luw.id = spfs.provider_wf_state
+			
+		JOIN vendor_hdr vh 
+			ON vh.vendor_id = spfs.provider_firm_id
+			
+		JOIN  vendor_resource vrs 
+			ON vh.vendor_id = vrs.vendor_id
+			
+		LEFT JOIN location locn 
+			ON((locn.locn_id = vrs.locn_id) AND (locn.locn_type_id = 4)) 
+		
+		LEFT JOIN lu_zip_market lzip 
+			ON locn.zip = lzip.zip
+		
+		LEFT JOIN lu_market mkt 
+			ON lzip.market_id = mkt.market_id
+		
+		LEFT JOIN contact ctres 
+			ON ctres.contact_id = vrs.contact_id 
+		
+		LEFT JOIN region_district_zip dzip 
+			ON dzip.zip = lzip.zip
+			
+		LEFT JOIN wf_states wf 
+			ON vh.wf_state_id = wf.wf_state_id AND vh.wf_state_id NOT IN ( 20,29,30)
+			       
+		LEFT JOIN buyer_resource br 
+			ON br.user_name = spfs.reviewed_by
+			    
+		LEFT JOIN contact conct 
+			ON conct.contact_id = br.contact_id 
+			
+		where sb.buyer_id = #buyerId#  
+			 
+		<isNotNull property="providerFirmNumber" prepend=" AND " >
+ 		   spfs.provider_firm_id like concat(#providerFirmNumber#, '%')
+		</isNotNull>
+		<isNotNull property="spnId" prepend=" AND ">
+ 		   sb.spn_id = #spnId#
+		</isNotNull>
+		<isNotNull property="stateCd" prepend=" AND " >
+ 		   locn.state_cd = #stateCd#
+		</isNotNull>
+		<isNotNull property="zipCode" prepend=" AND "  >
+			lzip.zip like '$zipCode$%'
+		</isNotNull>
+		<isNotNull property="providerFirmName" prepend=" AND " >
+ 			vh.business_name like concat(#providerFirmName#, '%')
+		</isNotNull>
+		<isNotNull property="marketId" prepend=" AND " >
+ 			mkt.market_id = #marketId#
+		</isNotNull>
+		<isNotNull property="districtId" prepend=" AND " >
+ 			dzip.ri_district = #districtId#
+		</isNotNull>
+		<isNotNull property="providerFirmStatus" prepend=" AND " >
+ 			spfs.provider_wf_state = #providerFirmStatus#
+		</isNotNull>
+		
+		<isNotNull property="memberStatus">
+			<isEqual property="memberStatus" compareValue="Action">
+				and fn_action_required(vrs.vendor_id, sb.spn_id, #buyerId#) = 1
+			</isEqual>
+		</isNotNull> 
+		
+		<isNotNull property="memberStatus">
+			<isEqual property="memberStatus" compareValue="Attention">
+				and fn_attention_needed(vrs.vendor_id, sb.spn_id, #buyerId#) = 1
+			</isEqual>
+		</isNotNull> 
+		
+		<isNotNull property="memberStatus">
+			<isEqual property="memberStatus" compareValue="Compliance">
+				and fn_in_compliance(vrs.vendor_id, sb.spn_id, #buyerId#) = 1
+			</isEqual>
+		</isNotNull>    
+		
+		group by 
+			sb.spn_id , 
+ 			vrs.vendor_id 
+ 			
+ 		<isNull property="viewAll">limit 30</isNull>
+ 		<isNotNull property="viewAll"><isEqual property="viewAll" compareValue="false">limit 30</isEqual></isNotNull>		
+	</select>
+	
+	<select id="get_admin_details" parameterClass="java.lang.String" resultClass="spnAuditorSearchResultVO">
+		select ar.resource_id as lockedById,
+     		c.last_name as lockedByLastName,
+     		c.first_name as lockedByFirstName,
+     		ar.user_name as lockedByName 
+        from admin_resource ar 
+        join user_profile user
+        	on user.user_name = #userName# and user.user_name = ar.user_name
+        join contact c
+        	on c.contact_id = user.contact_id
+	</select>
+	
+	<select id="getAdminResourceId" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT resource_id FROM admin_resource WHERE user_name = #username#
+	</select>
+	
+	<select id="auditor.background.getBackgroundInformationCount"
+	resultClass="java.lang.Integer" parameterClass="searchBackgroundInformationVO">
+		SELECT COUNT(*) FROM 
+	(SELECT vr.resource_id
+
+	FROM spnet_provider_firm_state spnet 
+
+	JOIN spnet_hdr spn 
+	ON(spn.is_alias = 0)	
+	JOIN
+		spnet_buyer spnetB 
+		ON(spnet.spn_id=spnetB.spn_id AND spn.spn_id=spnetB.spn_id) 
+	JOIN
+		vendor_resource vr 
+		ON(vr.vendor_id =spnet.provider_firm_id) 
+	JOIN
+		sl_pro_bkgnd_chk slbkchk 
+		ON(vr.bg_check_id= slbkchk.bg_check_id) 
+		
+	JOIN vendor_hdr vh ON(vr.vendor_id=vh.vendor_id)
+	
+	JOIN contact con ON(con.contact_id=vr.contact_id)	
+	
+	JOIN wf_states wf ON(wf.wf_state_id=vr.background_state_id)
+	
+	LEFT OUTER JOIN
+		audit_cred_expiry_notification aud 
+		ON(aud.resource_id=vr.resource_id AND 
+		aud.credential_ind = 4 )
+		
+	LEFT JOIN 
+		location locn 
+		ON((locn.locn_id = vr.locn_id) 
+		AND (locn.locn_type_id = 4)) 	
+	
+	LEFT JOIN lu_zip_market lzip 
+			ON locn.zip = lzip.zip
+		
+	LEFT JOIN lu_market mkt 
+			ON lzip.market_id = mkt.market_id	
+			
+	LEFT JOIN region_district_zip dzip 
+			ON dzip.zip = lzip.zip		
+		
+		LEFT OUTER JOIN
+		spnet_approval_criteria criteria 
+		ON(criteria.spn_id=spnet.spn_id AND 
+		criteria.criteria_id = 29 ) 	
+
+	WHERE 
+		spnetB.buyer_id=  #buyerId# AND vr.wf_state_id NOT IN(21,31,32)
+	 AND 
+		spnet.provider_wf_state IN ('PF SPN MEMBER')
+		
+		
+		
+ 		  <isNotNull property="providerFirmNumber" prepend=" AND " >
+ 		   spnet.provider_firm_id LIKE CONCAT(#providerFirmNumber#, '%')
+		  </isNotNull>
+		  
+		  <isNotNull property="spnId">
+		  <isNotEqual prepend=" AND " property="spnId" compareValue="-1">
+ 		   spnetB.spn_id = #spnId#
+ 		 </isNotEqual>  
+		 </isNotNull>
+	
+		<isNotNull property="stateCd">
+		<isNotEqual prepend=" AND " property="stateCd" compareValue="-1">
+ 		   locn.state_cd = #stateCd#
+ 		 </isNotEqual>  
+		</isNotNull>
+
+		<isNotNull property="zipCode" prepend=" AND "  >
+			lzip.zip LIKE '$zipCode$%'
+		</isNotNull>
+		<isNotNull property="providerFirmName" prepend=" AND " >
+ 			vh.business_name LIKE CONCAT(#providerFirmName#, '%')
+		</isNotNull>
+		<isNotNull property="marketId">
+		<isNotEqual prepend=" AND " property="marketId" compareValue="-1">
+ 			mkt.market_id = #marketId#
+ 		</isNotEqual>	
+		</isNotNull>
+		<isNotNull property="districtId">
+		<isNotEqual prepend=" AND " property="districtId" compareValue="-1">
+ 			dzip.ri_district = #districtId#
+ 		</isNotEqual>	
+		</isNotNull>
+		
+	
+		<isNotNull property="status">
+		<isNotEqual prepend=" AND " property="status" compareValue="-1">
+ 		  spnet.provider_wf_state = #status#
+ 		 </isNotEqual>  
+		</isNotNull>	
+		
+		<isNotNull property="sSearch">
+      AND (vr.resource_id LIKE '%$sSearch$%'
+	OR   vh.business_name LIKE '%$sSearch$%'
+	OR   con.first_name LIKE '%$sSearch$%'
+	OR   con.last_name LIKE '%$sSearch$%'
+	OR   vh.vendor_id LIKE '%$sSearch$%'
+	OR   wf.wf_state LIKE '%$sSearch$%'
+	OR   slbkchk.verification_date LIKE '%$sSearch$%'
+	OR   slbkchk.reverification_date LIKE '%$sSearch$%'
+   	OR   aud.notification_30_sent_date      LIKE '%$sSearch$%'
+    OR   aud.notification_7_sent_date      LIKE '%$sSearch$%'
+    OR   aud.notification_0_sent_date      LIKE '%$sSearch$%'
+      OR   slbkchk.recertification_status      LIKE '%$sSearch$%'
+		)
+   </isNotNull>		
+   
+       <isNotNull property="selectedSLBackgroundStatus">
+       <isNotEmpty property="selectedSLBackgroundStatus">
+       <isNotEqual prepend=" AND " property="selectedSLBackgroundStatus" compareValue="-1">		
+				wf.wf_state = #selectedSLBackgroundStatus#
+		</isNotEqual>
+		</isNotEmpty>
+	</isNotNull>
+	
+	 <isNotNull property="selectedSLBackgroundStatusAll">
+	 <isNotEmpty property="selectedSLBackgroundStatusAll">
+	    <isEqual prepend=" AND " property="selectedSLBackgroundStatusAll" compareValue="SLBackgroundStatusAll">		
+	  wf.wf_state IN ('Clear','Not Cleared','Not Started','In Process','Pending Submission')
+	   </isEqual>
+	   </isNotEmpty>
+		</isNotNull>
+	
+	   <isNotNull property="selectedReCertification">
+	   <isNotEmpty property="selectedReCertification">
+	    <isNotEqual prepend=" AND " property="selectedReCertification" compareValue="-1">		
+				  <isEqual  property="selectedReCertification" compareValue="30">
+	    	 		 DATEDIFF(slbkchk.reverification_date,NOW()) <![CDATA[<=]]> 30 
+	    	 		 AND
+	    	 		 DATEDIFF(slbkchk.reverification_date,NOW()) <![CDATA[>]]> 7
+	    		  </isEqual>
+	    		  <isEqual  property="selectedReCertification" compareValue="7">
+	    	 		 DATEDIFF(slbkchk.reverification_date,NOW()) <![CDATA[<=]]> 7 
+	    	 		 AND
+	    	 		 DATEDIFF(slbkchk.reverification_date,NOW()) <![CDATA[>]]> 0 
+	    		  </isEqual>
+	    		  <isEqual  property="selectedReCertification" compareValue="0">
+	    	 		 DATEDIFF(slbkchk.reverification_date,NOW()) = 0
+	    		  </isEqual>
+	    		  <isEqual  property="selectedReCertification" compareValue="InProcess">
+	    	 		 slbkchk.recertification_status = 'In Process'
+	    		  </isEqual>
+	    		   AND wf.wf_state = 'Clear'
+	   </isNotEqual>
+	   </isNotEmpty>
+	</isNotNull>
+	
+	<isNotNull property="selectedReCertificationAll">
+	<isNotEmpty property="selectedReCertificationAll">
+	    <isEqual prepend=" AND " property="selectedReCertificationAll" compareValue="ReCertificationAll">		
+		DATEDIFF(slbkchk.reverification_date,NOW()) <![CDATA[<=]]> 30 
+	   </isEqual>
+	   </isNotEmpty>
+		</isNotNull>
+	
+		 <isNotNull property="pastDue">
+		 <isNotEmpty property="pastDue">
+	    <isEqual prepend=" AND " property="pastDue" compareValue="Past">		
+	   DATEDIFF(slbkchk.reverification_date,NOW()) <![CDATA[< ]]> 0 AND wf.wf_state = 'Clear'
+	   </isEqual>
+	   </isNotEmpty>
+		</isNotNull>
+	
+	<isNotNull property="selectedSystemAction">
+	<isNotEmpty property="selectedSystemAction">
+	  <isNotEqual prepend=" AND " property="selectedSystemAction" compareValue="-1">		
+	aud.notification_type = #selectedSystemAction#
+	</isNotEqual>
+	</isNotEmpty>
+	</isNotNull>
+	
+	<isNotNull property="selectedSystemActionAll">
+	<isNotEmpty property="selectedSystemActionAll">
+	    <isEqual prepend=" AND " property="selectedSystemActionAll" compareValue="SystemActionAll">		
+		aud.notification_type IN (30,7,0)
+	   </isEqual>
+	   </isNotEmpty>
+		</isNotNull>
+	
+	<isNotNull property="selectedProviderFirmIds">
+	  <isNotEmpty property="selectedProviderFirmIds" prepend="AND  ">
+				vr.vendor_id IN
+				<iterate property="selectedProviderFirmIds" open="(" close=")" conjunction=",">
+					#selectedProviderFirmIds[]#
+				</iterate>
+			</isNotEmpty>
+	</isNotNull>
+	
+	GROUP BY vr.resource_id	
+			<isNotNull property="selectedReCertification">
+		    <isNotEmpty property="selectedReCertification">
+	   		<isNotEqual property="selectedReCertification" compareValue="-1">	
+			<isNotNull property="selectedSystemAction">
+			<isNotEmpty property="selectedSystemAction">
+	  		<isNotEqual property="selectedSystemAction" compareValue="-1">
+	   		 	HAVING COUNT(criteria.spn_id) <![CDATA[> ]]> 0
+			</isNotEqual>
+			</isNotEmpty>
+			</isNotNull>
+			</isNotEqual>
+	   		</isNotEmpty>
+	   		</isNotNull>
+
+
+			<isNotNull property="selectedReCertification">
+	     	<isNotEmpty property="selectedReCertification">
+	   		<isNotEqual property="selectedReCertification" compareValue="-1">	
+			<isNotNull property="selectedSystemAction">
+			<isNotEmpty property="selectedSystemAction">
+	  		<isEqual property="selectedSystemAction" compareValue="-1">
+	   		 	HAVING COUNT(criteria.spn_id) <![CDATA[> ]]> 0
+			</isEqual>
+			</isNotEmpty>
+			</isNotNull>
+			</isNotEqual>
+	   		</isNotEmpty>
+	   		</isNotNull>
+
+			<isNotNull property="selectedSystemAction">
+			<isNotEmpty property="selectedSystemAction">
+	  		<isNotEqual property="selectedSystemAction" compareValue="-1">	
+			<isNotNull property="selectedReCertification">
+		     <isNotEmpty property="selectedReCertification">
+	   		 <isEqual property="selectedReCertification" compareValue="-1">
+	
+				HAVING COUNT(criteria.spn_id) <![CDATA[> ]]> 0
+			</isEqual>
+	   		</isNotEmpty>
+	   		</isNotNull>
+			</isNotEqual>
+			</isNotEmpty>
+			</isNotNull>
+			
+		 	<isNotNull property="pastDue">
+		    <isNotEmpty property="pastDue">
+	   	    <isEqual property="pastDue" compareValue="Past">		
+	  		<isNotNull property="selectedSystemAction">
+			<isNotEmpty property="selectedSystemAction">
+	  		<isEqual property="selectedSystemAction" compareValue="-1">
+	   		 	HAVING COUNT(criteria.spn_id) <![CDATA[> ]]> 0
+			</isEqual>
+			</isNotEmpty>
+			</isNotNull>
+	   		</isEqual>
+	   	    </isNotEmpty>
+		    </isNotNull>
+		    
+		    <isNotNull property="pastDue">
+		    <isNotEmpty property="pastDue">
+	   	    <isEqual property="pastDue" compareValue="Past">		
+	  		<isNotNull property="selectedSystemAction">
+			<isNotEmpty property="selectedSystemAction">
+	  		<isNotEqual property="selectedSystemAction" compareValue="-1">
+	   		 	HAVING COUNT(criteria.spn_id) <![CDATA[> ]]> 0
+			</isNotEqual>
+			</isNotEmpty>
+			</isNotNull>
+	   		</isEqual>
+	   	    </isNotEmpty>
+		    </isNotNull>
+	 		
+	 		
+	) AS spnCount	
+	</select>
+
+	<select id="auditor.background.getBackgroundInformation"
+	resultClass="backgroundInformationVO" parameterClass="searchBackgroundInformationVO">
+	
+	SELECT DISTINCT vr.resource_id AS resourceId,COUNT(criteria.spn_id) as criteriaBg,
+ 	vh.business_name AS vendorBusinessName,
+ 	vh.vendor_id AS vendorId,
+	con.first_name AS providerFirstName,
+	con.last_name AS providerLastName,
+	wf.wf_state AS backgroundState,
+	slbkchk.overall AS overall,
+	slbkchk.driving AS driving,
+	slbkchk.criminal AS criminal,
+	slbkchk.civil AS civil,
+	slbkchk.verification_date AS verificationDate,
+	slbkchk.reverification_date AS reverificationDate,
+	aud.notification_30_sent_date AS notificationDateThirty,
+	aud.notification_7_sent_date AS notificationDateSeven,
+	aud.notification_0_sent_date AS notificationDateZero,
+	aud.notification_type AS notificationType,
+	DATEDIFF(slbkchk.reverification_date,NOW()) AS expiresIn,
+	slbkchk.recertification_status as recertificationStatus
+
+
+	FROM spnet_provider_firm_state spnet 
+	JOIN spnet_hdr spn 
+	ON(spn.is_alias = 0)	
+	JOIN
+		spnet_buyer spnetB 
+		ON(spnet.spn_id=spnetB.spn_id AND spn.spn_id=spnetB.spn_id) 
+	JOIN
+		vendor_resource vr 
+		ON(vr.vendor_id =spnet.provider_firm_id) 
+	JOIN
+		sl_pro_bkgnd_chk slbkchk 
+		ON(vr.bg_check_id= slbkchk.bg_check_id) 
+		
+	JOIN vendor_hdr vh ON(vr.vendor_id=vh.vendor_id)
+	
+	JOIN contact con ON(con.contact_id=vr.contact_id)	
+	
+	JOIN wf_states wf ON(wf.wf_state_id=vr.background_state_id)
+	
+	LEFT OUTER JOIN
+		audit_cred_expiry_notification aud 
+		ON(aud.resource_id=vr.resource_id AND 
+		aud.credential_ind = 4)
+		
+	LEFT JOIN 
+		location locn 
+		ON((locn.locn_id = vr.locn_id) 
+		AND (locn.locn_type_id = 4)) 	
+				
+	LEFT JOIN lu_zip_market lzip 
+			ON locn.zip = lzip.zip
+		
+	LEFT JOIN lu_market mkt 
+			ON lzip.market_id = mkt.market_id	
+			
+	LEFT JOIN region_district_zip dzip 
+			ON dzip.zip = lzip.zip	
+			
+					
+ 	LEFT OUTER JOIN
+		spnet_approval_criteria criteria 
+		ON(criteria.spn_id=spnet.spn_id AND 
+		criteria.criteria_id = 29 ) 
+
+	WHERE 
+		spnetB.buyer_id= #buyerId# AND vr.wf_state_id NOT IN(21,31,32)
+	 AND 
+		spnet.provider_wf_state IN ('PF SPN MEMBER') 
+	 
+	  <isNotNull property="providerFirmNumber" prepend=" AND " >
+ 		   spnet.provider_firm_id LIKE CONCAT(#providerFirmNumber#, '%')
+	  </isNotNull>	
+		
+	<isNotNull property="spnId">
+		<isNotEqual prepend=" AND " property="spnId" compareValue="-1">
+ 		   spnetB.spn_id = #spnId#
+ 		 </isNotEqual>  
+	</isNotNull>
+	
+	<isNotNull property="stateCd">
+		<isNotEqual prepend=" AND " property="stateCd" compareValue="-1">
+ 		   locn.state_cd = #stateCd#
+ 		 </isNotEqual>  
+	</isNotNull>	
+	
+	<isNotNull property="zipCode" prepend=" AND "  >
+			lzip.zip LIKE '$zipCode$%'
+	</isNotNull>
+		
+	<isNotNull property="providerFirmName" prepend=" AND " >
+ 			vh.business_name LIKE CONCAT(#providerFirmName#, '%')
+	</isNotNull>
+		
+		<isNotNull property="marketId">
+		<isNotEqual prepend=" AND " property="marketId" compareValue="-1">
+ 			mkt.market_id = #marketId#
+ 		</isNotEqual>	
+		</isNotNull>
+		
+		<isNotNull property="districtId">
+		<isNotEqual prepend=" AND " property="districtId" compareValue="-1">
+ 			dzip.ri_district = #districtId#
+ 		</isNotEqual>	
+		</isNotNull>
+	
+	<isNotNull property="status">
+		<isNotEqual prepend=" AND " property="status" compareValue="-1">
+ 		  spnet.provider_wf_state = #status#
+ 		 </isNotEqual>  
+	</isNotNull>		
+		
+		<isNotNull property="sSearch">
+      AND (vr.resource_id LIKE '%$sSearch$%'
+	OR   vh.business_name LIKE '%$sSearch$%'
+	OR   con.first_name LIKE '%$sSearch$%'
+	OR   con.last_name LIKE '%$sSearch$%'
+	OR   vh.vendor_id LIKE '%$sSearch$%'
+	OR   wf.wf_state LIKE '%$sSearch$%'
+	OR   slbkchk.verification_date LIKE '%$sSearch$%'
+	OR   slbkchk.reverification_date LIKE '%$sSearch$%'
+    OR   aud.notification_30_sent_date      LIKE '%$sSearch$%'
+    OR   aud.notification_7_sent_date      LIKE '%$sSearch$%'
+    OR   aud.notification_0_sent_date      LIKE '%$sSearch$%'
+    OR   slbkchk.recertification_status      LIKE '%$sSearch$%'
+		)
+   </isNotNull>
+   
+ 	<isNotNull property="selectedSLBackgroundStatus">
+ 	<isNotEmpty property="selectedSLBackgroundStatus">
+       <isNotEqual prepend=" AND " property="selectedSLBackgroundStatus" compareValue="-1">		
+				wf.wf_state = #selectedSLBackgroundStatus#
+		</isNotEqual>
+		</isNotEmpty>
+	</isNotNull>
+	
+	 <isNotNull property="selectedSLBackgroundStatusAll">
+	 <isNotEmpty property="selectedSLBackgroundStatusAll">
+	    <isEqual prepend=" AND " property="selectedSLBackgroundStatusAll" compareValue="SLBackgroundStatusAll">		
+	  wf.wf_state IN ('Clear','Not Cleared','Not Started','In Process','Pending Submission')
+	   </isEqual>
+	   </isNotEmpty>
+		</isNotNull>
+
+	   <isNotNull property="selectedReCertification">
+	      <isNotEmpty property="selectedReCertification">
+	    <isNotEqual prepend=" AND " property="selectedReCertification" compareValue="-1">	
+	    	 		<isEqual  property="selectedReCertification" compareValue="30">
+	    	 		 DATEDIFF(slbkchk.reverification_date,NOW()) <![CDATA[<=]]> 30 
+	    	 		 AND
+	    	 		 DATEDIFF(slbkchk.reverification_date,NOW()) <![CDATA[>]]> 7 
+	    		  </isEqual>
+	    		  <isEqual  property="selectedReCertification" compareValue="7">
+	    	 		 DATEDIFF(slbkchk.reverification_date,NOW()) <![CDATA[<=]]> 7 
+	    	 		 AND
+	    	 		 DATEDIFF(slbkchk.reverification_date,NOW()) <![CDATA[>]]> 0 
+	    		  </isEqual>
+	    		  <isEqual  property="selectedReCertification" compareValue="0">
+	    	 		 DATEDIFF(slbkchk.reverification_date,NOW()) = 0
+	    		  </isEqual>
+	    		  <isEqual  property="selectedReCertification" compareValue="InProcess">
+	    	 		 slbkchk.recertification_status = 'In Process'
+	    		  </isEqual>
+	    		  AND wf.wf_state = 'Clear'
+	   </isNotEqual>
+	   </isNotEmpty>
+	   </isNotNull>
+		
+		<isNotNull property="selectedReCertificationAll">
+		<isNotEmpty property="selectedReCertificationAll">
+	    <isEqual prepend=" AND " property="selectedReCertificationAll" compareValue="ReCertificationAll">		
+		DATEDIFF(slbkchk.reverification_date,NOW()) <![CDATA[<=]]> 30 
+	   </isEqual>
+	   </isNotEmpty>
+		</isNotNull>
+		
+		
+		 <isNotNull property="pastDue">
+		  <isNotEmpty property="pastDue">
+	    <isEqual prepend=" AND " property="pastDue" compareValue="Past">		
+	   DATEDIFF(slbkchk.reverification_date,NOW()) <![CDATA[< ]]> 0 AND wf.wf_state = 'Clear'
+	   </isEqual>
+	   </isNotEmpty>
+		</isNotNull>
+	
+	<isNotNull property="selectedSystemAction">
+	<isNotEmpty property="selectedSystemAction">
+	  <isNotEqual prepend=" AND " property="selectedSystemAction" compareValue="-1">		
+	aud.notification_type = #selectedSystemAction#
+	</isNotEqual>
+	</isNotEmpty>
+	</isNotNull>
+	
+	<isNotNull property="selectedSystemActionAll">
+	<isNotEmpty property="selectedSystemActionAll">
+	    <isEqual prepend=" AND " property="selectedSystemActionAll" compareValue="SystemActionAll">		
+		aud.notification_type IN (30,7,0) 
+	   </isEqual>
+	   </isNotEmpty>
+		</isNotNull>
+	
+	<isNotNull property="selectedProviderFirmIds">
+	  <isNotEmpty property="selectedProviderFirmIds" prepend="AND  ">
+				vr.vendor_id IN
+				<iterate property="selectedProviderFirmIds" open="(" close=")" conjunction=",">
+					#selectedProviderFirmIds[]#
+				</iterate>
+			</isNotEmpty>
+	</isNotNull>
+	GROUP BY vr.resource_id
+	 
+	 		<isNotNull property="selectedReCertification">
+		    <isNotEmpty property="selectedReCertification">
+	   		<isNotEqual property="selectedReCertification" compareValue="-1">	
+			<isNotNull property="selectedSystemAction">
+			<isNotEmpty property="selectedSystemAction">
+	  		<isNotEqual property="selectedSystemAction" compareValue="-1">
+	   		 	HAVING COUNT(criteria.spn_id) <![CDATA[> ]]> 0
+			</isNotEqual>
+			</isNotEmpty>
+			</isNotNull>
+			</isNotEqual>
+	   		</isNotEmpty>
+	   		</isNotNull>
+
+
+			<isNotNull property="selectedReCertification">
+	     	<isNotEmpty property="selectedReCertification">
+	   		<isNotEqual property="selectedReCertification" compareValue="-1">	
+			<isNotNull property="selectedSystemAction">
+			<isNotEmpty property="selectedSystemAction">
+	  		<isEqual property="selectedSystemAction" compareValue="-1">
+	   		 	HAVING COUNT(criteria.spn_id) <![CDATA[> ]]> 0
+			</isEqual>
+			</isNotEmpty>
+			</isNotNull>
+			</isNotEqual>
+	   		</isNotEmpty>
+	   		</isNotNull>
+
+			<isNotNull property="selectedSystemAction">
+			<isNotEmpty property="selectedSystemAction">
+	  		<isNotEqual property="selectedSystemAction" compareValue="-1">	
+			<isNotNull property="selectedReCertification">
+		    <isNotEmpty property="selectedReCertification">
+	   		<isEqual property="selectedReCertification" compareValue="-1">
+	
+				HAVING COUNT(criteria.spn_id) <![CDATA[> ]]> 0
+			</isEqual>
+	   		</isNotEmpty>
+	   		</isNotNull>
+			</isNotEqual>
+			</isNotEmpty>
+			</isNotNull>
+			
+		 	<isNotNull property="pastDue">
+		    <isNotEmpty property="pastDue">
+	   	    <isEqual property="pastDue" compareValue="Past">		
+	  		<isNotNull property="selectedSystemAction">
+			<isNotEmpty property="selectedSystemAction">
+	  		<isEqual property="selectedSystemAction" compareValue="-1">
+	   		 	HAVING COUNT(criteria.spn_id) <![CDATA[> ]]> 0
+			</isEqual>
+			</isNotEmpty>
+			</isNotNull>
+	   		</isEqual>
+	   	    </isNotEmpty>
+		    </isNotNull>
+		    
+		     <isNotNull property="pastDue">
+		    <isNotEmpty property="pastDue">
+	   	    <isEqual property="pastDue" compareValue="Past">		
+	  		<isNotNull property="selectedSystemAction">
+			<isNotEmpty property="selectedSystemAction">
+	  		<isNotEqual property="selectedSystemAction" compareValue="-1">
+	   		 	HAVING COUNT(criteria.spn_id) <![CDATA[> ]]> 0
+			</isNotEqual>
+			</isNotEmpty>
+			</isNotNull>
+	   		</isEqual>
+	   	    </isNotEmpty>
+		    </isNotNull>
+		    			
+	<isEqual property="sortColumnName" compareValue="firm">
+	ORDER BY vendorBusinessName
+	</isEqual>
+	<isEqual property="sortColumnName" compareValue="provider">
+	ORDER BY providerFirstName
+	<isNotNull property="sortOrder">
+				   		$sortOrder$
+	</isNotNull>,providerLastName
+	</isEqual>
+	<isEqual property="sortColumnName" compareValue="slStatus">
+	ORDER BY backgroundState
+	</isEqual>
+	<isEqual property="sortColumnName" compareValue="certDate">
+	ORDER BY
+	CASE WHEN slbkchk.verification_date IS NULL THEN 1 
+	 	 WHEN COUNT(criteria.spn_id) = 0 THEN 1	
+		 ELSE 0 END, slbkchk.verification_date
+	</isEqual>
+	<isEqual property="sortColumnName" compareValue="reCertDate">
+	ORDER BY 
+	CASE WHEN slbkchk.reverification_date IS NULL THEN 1 
+		 WHEN COUNT(criteria.spn_id) = 0 THEN 1	
+		 ELSE 0 END, slbkchk.reverification_date
+	</isEqual>
+	<isEqual property="sortColumnName" compareValue="reCertStatus">
+	ORDER BY CAST(REPLACE(recertificationStatus,'In Process',-30000) AS SIGNED)
+	</isEqual>
+	
+	<isNotNull property="sortOrder">
+				   		$sortOrder$
+	</isNotNull>
+		
+		   <isNotNull property="startIndex" prepend="LIMIT ">
+				      			#startIndex#
+							</isNotNull>
+							<isNotNull property="numberOfRecords" prepend=",  ">
+				      			#numberOfRecords#
+							</isNotNull>
+		
+	</select>
+	<select id="auditor.background.getBackgroundCheckHistoryDetails" resultClass="backgroundHistVO" parameterClass="backgroundHistVO">
+			
+			SELECT  
+			slh.bg_check_id AS bgCheckId,
+			slh.created_date AS displayDate,
+			slh.verification_date AS verificationDate,
+			slh.reverification_date AS reverificationDate,
+			slh.chg_comments AS changingComments,
+		    slh.recertification_status AS recertificationStatus,
+			wf.wf_state AS backgroundStatus,
+			con.first_name AS providerFirstName,
+			con.last_name AS providerLastName,
+			COUNT(spc.criteria_id)  AS criteriaIdCount
+		
+			FROM sl_pro_bkgnd_chk_history slh
+			JOIN vendor_resource vr  ON
+			(vr.bg_check_id = slh.bg_check_id
+			AND vr.resource_id = #resourceId#)
+			LEFT OUTER JOIN spnet_provider_firm_state spfs ON(spfs.provider_firm_id
+			 = vr.vendor_id)
+			LEFT OUTER  JOIN spnet_approval_criteria spc ON(spc.spn_id= spfs.spn_id
+			AND spc.criteria_id=29)
+			JOIN contact con ON(con.contact_id=vr.contact_id)
+			JOIN wf_states wf ON(wf.wf_state_id=slh.bg_state_id)
+			AND slh.chg_display_ind = 'Y'
+			GROUP BY vr.resource_id,slh.bg_check_history_id
+			ORDER BY displayDate DESC 
+	
+	</select>
+	<select id="auditor.getProviderName" parameterClass="java.lang.Integer" resultClass="java.lang.String">
+	SELECT CONCAT(first_name,' ',last_name) FROM contact WHERE contact_id IN (SELECT contact_id FROM vendor_resource WHERE resource_id = #resourceId#)
+	</select>
+	<select id = "auditor.getBuyerFeatureValue" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT feature from buyer_feature_set where buyer_id = #buyerId# and feature = #feature# and active_ind = 1
+	</select>
+</sqlMap>

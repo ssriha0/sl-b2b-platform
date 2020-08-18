@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/newservices"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+	targetNamespace="http://www.servicelive.com/namespaces/newservices"
+	elementFormDefault="qualified" jaxb:version="1.0"
+	jaxb:extensionBindingPrefixes="xjc">
+	<xs:include schemaLocation="leadsCommon.xsd" />
+	<!-- This is the new get Match Provider Response -->
+	<!-- Root Element -->
+	<xs:element name="MatchProviderResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="results" />
+				<xs:element name="LeadId" type="xs:string"
+					minOccurs="0" />
+				<xs:element ref="FirmDetailList" minOccurs="0" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="FirmDetailList">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="FirmDetail" minOccurs="0"
+					maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="FirmDetail">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="FirmId" type="xs:int" minOccurs="0"
+					maxOccurs="1" />
+				<xs:element name="FirmRank" type="xs:int" minOccurs="0"
+					maxOccurs="1" />
+				<xs:element name="FirmName" type="xs:string"
+					minOccurs="0" maxOccurs="1" />
+				<xs:element name="FirmOwner" type="xs:string"
+					minOccurs="0" maxOccurs="1" />
+				<xs:element name="FirmDistance" type="xs:double"
+					minOccurs="0" maxOccurs="1" />
+				<xs:element name="YearsOfService" type="xs:double"
+					minOccurs="0" />
+				<xs:element name="FirmRating" type="xs:double"
+					minOccurs="0" maxOccurs="1" />
+				<xs:element ref="Contact" minOccurs="0" maxOccurs="1" />
+				<xs:element ref="FirmReviews" minOccurs="0"
+					maxOccurs="1" />
+				<xs:element name="PointsAwarded" type="xs:int"
+					minOccurs="0" maxOccurs="1" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="FirmReviews">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="FirmReview" minOccurs="0" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="FirmReview">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="ReviewerName" maxOccurs="1"
+					minOccurs="0" type="xs:string" />
+				<xs:element name="Comment" maxOccurs="1" minOccurs="0"
+					type="xs:string" />
+				<xs:element name="Rating" maxOccurs="1" minOccurs="0"
+					type="xs:double" />
+				<xs:element name="Date" maxOccurs="1" minOccurs="0"
+					type="xs:date" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

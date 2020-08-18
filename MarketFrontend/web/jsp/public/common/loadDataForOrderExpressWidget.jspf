@@ -1,0 +1,101 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<% pageContext.setAttribute("newLineChar", "\n"); %>
+<script language="JavaScript" type="text/javascript">
+	_dataGridList${theTab} = new Array();
+	_ajaxDataGridList${theTab} = new Array();
+	var groupInfoMap${theTab} = {};
+	<c:set var="grpId" value="GSO_NONE"/>
+	<c:forEach var="dtoData2" items="${pageData}" varStatus="dtoIndex2">
+		//this.sowTitle = newco.jsutils.escapeApostrophe("${dtoData2.title}"); 
+		_dataGridList${theTab}[${dtoIndex2.count}] = {
+			statusId: '${dtoData2.status}',
+			roleId: '${role}',
+			status: '<fmt:message bundle="${serviceliveCopyBundle}"	key="workflow.state.${role}.${dtoData2.status}" />', 
+			soId : '${dtoData2.id}', 
+			theTitle: "${dtoData2.titleWidget}" , 
+			buyer : "${dtoData2.buyerWidget}",
+			<c:choose><c:when test="${not empty dtoData2.firmName}">
+				providerFirmLabel: "<fmt:message bundle='${serviceliveCopyBundle}'	key='widget.label.provider.firm' />",
+			</c:when>	
+				<c:otherwise>
+				
+				</c:otherwise></c:choose>
+			<c:choose><c:when test="${not empty dtoData2.firmName}">
+				providerFirm: "<a href='javascript:void(0);' onclick='openProviderFirmProfile(${dtoData2.acceptedVendorId})'>${dtoData2.firmName}</a>",
+			</c:when>	
+				<c:otherwise>
+				providerFirm: '',
+				</c:otherwise></c:choose>
+			<c:choose><c:when test="${not empty dtoData2.firmPhoneNumber}">
+				firmBusinessNumber:'${dtoData2.firmPhoneNumber}',
+			</c:when>
+				<c:otherwise>
+				firmBusinessNumber: '',
+				</c:otherwise></c:choose>
+			firmId:'${dtoData2.acceptedVendorId}',
+			//provider:'<a href="javascript:void(0);" onclick="openProviderProfile(${dtoData2.acceptedResourceId},${dtoData2.acceptedVendorId},${dtoData2.acceptedResourceId})">${fn:replace(dtoData2.providerWidget, newLineChar, ' ')}</a>',
+			//provider:'<a href="javascript:void(0);" onclick="openProviderProfile(${dtoData2.acceptedResourceId},${dtoData2.acceptedVendorId},'test')">${fn:replace(dtoData2.providerWidget, newLineChar, ' ')}</a>',
+			provider: "${fn:replace(dtoData2.providerWidget, newLineChar, ' ')}",
+			providerPrimaryPhoneNumberWidget: "${fn:replace(dtoData2.providerPrimaryPhoneNumberWidget, newLineChar, ' ')}",
+			providerAltPhoneNumberWidget: "${fn:replace(dtoData2.providerAltPhoneNumberWidget, newLineChar, ' ')}",
+			endCustomer: "${dtoData2.endCustomerWidget}",
+			endCustomerPrimaryPhoneNumberWidget : '${dtoData2.endCustomerPrimaryPhoneNumberWidget}',
+			location: "${fn:replace(dtoData2.locationWidget, newLineChar, ' ')}",
+			spendLimitTotal : '${dtoData2.spendLimitTotalCurrencyFormat}',
+			spendLimitLabor : '${dtoData2.spendLimitLabor}',
+			spendLimitParts : '${dtoData2.spendLimitParts}',
+			cancelAmount : '${dtoData2.cancelAmount}',
+			buyerPrice : '${dtoData2.buyerPrice}',
+			buyerComments : "${dtoData2.buyerComments}",
+			buyerEntryDate : '${dtoData2.buyerEntryDate}',
+			providerPrice : '${dtoData2.providerPrice}',
+			providerComments : "${dtoData2.providerComments}",
+			providerEntryDate : '${dtoData2.providerEntryDate}',
+			subStatus : '${dtoData2.subStatus}',
+			claimedforreviewby: "${dtoData2.claimedByResource}",
+			distanceInMiles: '${dtoData2.distanceInMiles}',
+			totalFinalPrice: '${dtoData2.totalFinalPrice}',
+			bidMin: '${dtoData2.lowBid}',
+			bidMax: '${dtoData2.highBid}',
+			bidEarliestStartDate: '${dtoData2.bidEarliestStartDate}',
+			bidLatestEndDate: '${dtoData2.bidLatestEndDate}',
+			priceModelType: '${dtoData2.priceModelType}',
+			resourceDispatchAddress: "${dtoData2.resourceDispatchAddress}",
+			zip: '${dtoData2.zip5}',
+			availableProviders: new Array(
+			<c:if test="${not empty dtoData2.availableProviders and fn:length(dtoData2.availableProviders)>0 }">
+				<c:forEach var="dtoIncident" items="${dtoData2.availableProviders}" varStatus="dtoIncidentIndex">
+					{
+						resourceId: '${dtoIncident.resourceId}',
+						firstName: "${dtoIncident.providerFirstName}",
+						lastName: "${dtoIncident.providerLastName}"
+					}
+					<c:if test="${dtoIncidentIndex.count < fn:length(dtoData2.availableProviders)}">,</c:if>
+				</c:forEach>
+			</c:if>),
+			associatedIncidents: new Array(
+			<c:if test="${not empty dtoData2.associatedIncidents and fn:length(dtoData2.associatedIncidents)>0 }">
+				<c:forEach var="dtoIncident" items="${dtoData2.associatedIncidents}" varStatus="dtoIncidentIndex">
+					{
+						soId: '${dtoIncident.soId}',
+						incidentId: '${dtoIncident.incidentId}',
+						ageOfOrder: '${dtoIncident.ageOfOrder}'
+						}
+					<c:if test="${dtoIncidentIndex.count < fn:length(dtoData2.associatedIncidents)}">,</c:if>
+				</c:forEach>
+			</c:if>
+			)
+		}
+		this.sowTitle = null;
+		_ajaxDataGridList${theTab}[${dtoData2.id}] = {spending : '${dtoData2.spendLimitTotalCurrencyFormat}'};
+		<c:if test="${not empty dtoData2.parentGroupId and dtoData2.parentGroupId != grpId}">
+			<c:set var="grpId" value="${dtoData2.parentGroupId}"/>
+				groupInfoMap${theTab}['${grpId}'] = {
+				soId: '${grpId}',
+				theTitle: "${dtoData2.parentGroupTitle}",
+				spendLimitTotal: '${dtoData2.groupSpendLimit}',
+				spendLimitLabor : '${dtoData2.groupSpendLimitLabor}',
+				spendLimitParts : '${dtoData2.groupSpendLimitParts}'};
+		</c:if>
+	</c:forEach>
+</script>

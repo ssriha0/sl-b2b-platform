@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:c="http://www.servicelive.com/namespaces/wsSecurity" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" elementFormDefault="qualified" jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+	<!-- Identification  -->
+	<xs:complexType name="IdentificationType">
+		<xs:sequence>
+			<xs:element name="applicationkey" type="xs:string" minOccurs="0"/>
+			<xs:element name="username" type="xs:string"/>
+			<xs:element name="password" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

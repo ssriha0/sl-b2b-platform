@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:element name="reportProblemRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="problemCode" type="probCodesEnum"/>        
+        <xs:element name="problemDescription" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:simpleType name="probCodesEnum">
+				<xs:restriction base="xs:int">
+					<xs:enumeration value="1"/><!-- Abandoned Work -->
+					<xs:enumeration value="2"/><!-- Additional Part Required -->
+					<xs:enumeration value="3"/><!-- Additional Work Required -->
+					<xs:enumeration value="7"/><!-- End User No Show -->
+					<xs:enumeration value="10"/><!-- Out of Scope/Scope Mismatch -->
+					<xs:enumeration value="17"/><!-- Property Damage -->
+					<xs:enumeration value="18"/><!-- Provider No Show -->
+					<xs:enumeration value="19"/><!-- Provider Not Qualified to Complete Work -->
+					<xs:enumeration value="27"/><!-- Site Not Ready -->
+					<xs:enumeration value="29"/><!-- Unprofessional Action / Behavior -->
+					<xs:enumeration value="30"/><!-- Work Not Completed -->
+					<xs:enumeration value="52"/><!-- No Substatus -->
+					<xs:enumeration value="54"/><!-- Customer Delayed Service -->
+					<xs:enumeration value="55"/><!-- Close and Pay / Completion Record - Issue -->
+					<xs:enumeration value="62"/><!-- Scope Change -->
+				</xs:restriction>
+  </xs:simpleType>
+</xs:schema>

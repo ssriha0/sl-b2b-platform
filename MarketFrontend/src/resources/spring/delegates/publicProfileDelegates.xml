@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<!-- Start DTO  Loading -->
+	<bean id="publicProfileDto" class="com.newco.marketplace.web.dto.provider.PublicProfileDto" scope="prototype"/>
+	<!-- End DTO  Loading -->
+	<!-- Start Delegate  Loading -->
+	<bean name="publicProfileDelegateImpl" class="com.newco.marketplace.web.delegatesImpl.provider.PublicProfileDelegateImpl">
+	 	<constructor-arg index="0" ref="publicProfileBOImpl"/>
+		<constructor-arg index="1" ref="publicProfileMapper"/>
+	</bean>
+	<!-- End Delegate  Loading -->
+	
+	<!-- Start Mapper Loading -->
+	<bean id="publicProfileMapper" class="com.newco.marketplace.web.utils.PublicProfileMapper" scope="prototype"/>
+	<!-- End Mapper  Loading -->
+</beans>	
+	

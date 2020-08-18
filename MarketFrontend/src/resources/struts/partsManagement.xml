@@ -1,0 +1,76 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="partsManagement" extends="ServiceLiveBase,json-default" >
+        <default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+        
+    	<global-results >
+			<result name="error" type="redirectAction">
+				<param name="actionName">errorAction</param>
+				<param name="errorMessage">${errorMessage}</param>
+				<param name="returnURL">${returnURL}</param>
+			</result>
+		</global-results>	   	
+        <action name="loadEditpart" class="partsManagementControllerAction" method="loadEditPart">
+			<result name="edit">/jsp/details/body/html_sections/modules/panel_parts_hsr_edit_parts.jsp</result>
+			<result name="view">/jsp/details/body/html_sections/modules/panel_parts_hsr_view_parts.jsp</result>
+		</action>	
+		<action name="loadEditPartUploadedFiles" class="partsManagementControllerAction" method="loadEditPartUploadedFiles">
+			<result name="success">/jsp/details/body/html_sections/modules/edit_parts_uploaded_files.jsp</result>
+		</action>
+		
+		<action name="loadEditPartUploadedFilesInvoice" class="partsManagementControllerAction" method="loadEditPartUploadedFilesInvoice">
+			<result name="success">/jsp/details/body/html_sections/modules/add_invoice_uploaded_files.jsp</result>
+		</action>
+			
+		<action name="editpart" class="partsManagementControllerAction" method="editPart">
+			<result name="success">/jsp/auto_acceptance/get_json.jsp</result>
+		</action>	
+		<action name="loadInvoiceOnAddInvoice" class="partsManagementControllerAction" method="loadInvoiceOnAddInvoice">
+			<result name="success">/jsp/details/body/html_sections/modules/panel_parts_hsr_add_invoice.jsp</result>
+		</action>	
+		<action name="loadInvoiceOnInvoiceNumber" class="partsManagementControllerAction" method="loadInvoiceOnInvoiceNumber">
+			 <result name="edit">/jsp/details/body/html_sections/modules/panel_parts_hsr_add_invoice.jsp</result>
+			 <result name="view">/jsp/details/body/html_sections/modules/panel_parts_hsr_view_invoice.jsp</result>
+		</action>	
+         <action name="savePartDetails" class="partsManagementControllerAction" method="savePartDetails">
+				<result name="success">/jsp/details/body/html_sections/modules/panel_search_parts.jsp</result>
+		</action>	
+		<action name="deletePart" class="partsManagementControllerAction" method="deletePart">
+			<result name="success" type="json"></result>
+		</action>
+		<action name="loadPartDetails" class="partsManagementControllerAction" method="loadPartDetails">
+			<result name="success">/jsp/details/body/html_sections/modules/panel_parts_hsr_summary_edit.jsp</result>
+		</action>
+		<action name="uploadPartsDocuments" class="partsManagementControllerAction" method="documentUpload">
+			<result name="success">/jsp/auto_acceptance/get_json.jsp</result>
+		</action>
+		
+		<action name="uploadPartsDocumentsInvoice" class="partsManagementControllerAction" method="documentUploadInvoice">
+			<result name="success">/jsp/auto_acceptance/get_json.jsp</result>
+		</action>
+		
+		<action name="viewPartsDocument" class="partsManagementControllerAction" method="viewDocument">
+			<result name="success">/jsp/details/body/html_sections/modules/edit_parts_uploaded_files.jsp</result>
+		</action>
+		<action name="deletePartsDocument" class="partsManagementControllerAction" method="removeDocument">
+			<result name="success">/jsp/auto_acceptance/get_json.jsp</result>
+		</action>
+		<action name="loadUpdatePartsDetails" class="partsManagementControllerAction" method="loadUpdatePartDetails">
+			<result name="success">/jsp/details/body/html_sections/modules/panel_parts_hsr_update_parts_status.jsp</result>
+		</action>
+		<action name="updatePartStatus" class="partsManagementControllerAction" method="updatePartStatus">
+			<result name="success" type="json"></result>
+		</action>
+		<action name="saveInvoiceDetails" class="partsManagementControllerAction" method="saveInvoiceDetails">
+			<result name="success">/jsp/auto_acceptance/get_json.jsp</result>
+		</action>
+		<action name="searchParts" class="partsManagementControllerAction" method="searchParts">
+			<result name="success">/jsp/details/body/html_sections/modules/panel_search_parts.jsp</result>
+		</action>
+		<action name="saveLisParts" class="partsManagementControllerAction" method="saveLisParts">
+			<result name="success">/jsp/auto_acceptance/get_json.jsp</result>
+		</action>
+	 </package>
+</struts>

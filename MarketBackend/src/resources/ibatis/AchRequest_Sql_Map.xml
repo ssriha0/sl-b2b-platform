@@ -1,0 +1,588 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap>
+
+	<typeAlias alias="achQueueEntry"
+		type="com.newco.marketplace.dto.vo.ach.AchProcessQueueEntryVO" />
+	<typeAlias alias="nachaProcessQueueVo"
+		type="com.newco.marketplace.dto.vo.ach.NachaProcessQueueVO" />
+	<typeAlias alias="transactionBatchVO"
+		type="com.newco.marketplace.dto.vo.ach.TransactionBatchVO" />
+	<typeAlias alias="nachaProcessLogVO"
+		type="com.newco.marketplace.dto.vo.ach.NachaProcessLogVO" />
+	<typeAlias alias="nachaProcessLogHistoryVO"
+		type="com.newco.marketplace.dto.vo.ach.NachaProcessLogHistoryVO" />
+	<typeAlias alias="achResponseReasonVO"
+		type="com.newco.marketplace.dto.vo.ach.AchResponseReasonVO" />
+	<typeAlias alias="entityEmailVO" 
+		type="com.newco.marketplace.dto.vo.ach.EntityEmailVO"/>
+	<typeAlias alias="ofacprocessqueuevo" 
+		type="com.newco.marketplace.dto.vo.ach.OFACProcessQueueVO"/>
+	<typeAlias alias="ofacprocesslogvo" 
+		type="com.newco.marketplace.dto.vo.ach.OFACProcessLogVO"/>
+			
+	<insert id="achqueueEntry.query" parameterClass="achQueueEntry">
+		INSERT INTO ach_process_queue ( entity_type_id,
+		entity_id, account_id, ledger_entry_id, transaction_type_id,
+		trans_amount, ach_transcode_acc_id, process_status_id) values (
+		#entityTypeId#, #entityId#, #accountId#,
+		#ledgerEntryId#, #transactionTypeId#, #transactionAmount#,
+		#achBatchAssocId#, #processStatusId#)
+
+	</insert>
+
+	<select id="nachaExtract.getNachaExtractByBatchId"
+		parameterClass="java.util.HashMap" 
+		resultClass="nachaProcessQueueVo">
+		SELECT na.acct_type_descr AS accTypeDescr
+		       ,na.entity_type_descr AS entityTypeDescr
+		       ,na.bank_name AS bankName
+		       ,na.country_id AS countryId
+		       ,na.account_type_id AS accountTypeId
+		       ,na.account_status_id AS accountStatusId
+		       ,na.routing_no AS routingNo
+		       ,na.account_no AS accountNo
+		       ,na.trans_type_descr AS transTypeDescr
+		       ,na.card_holder_name AS username
+		       ,apq.ach_process_id AS achProcessId
+		       ,apq.entity_id AS entityId
+		       ,apq.ledger_entry_id AS ledgerEntryId
+		       ,apq.transaction_type_id AS transactionTypeId
+		       ,apq.trans_amount AS transAmount
+		       ,apq.entry_date AS entryDate
+		       ,apq.account_id AS accountId
+		       ,apq.entity_type_id AS entityTypeId
+		       ,apq.process_status_id AS processStatusId
+		       ,apq.ach_transcode_acc_id AS achTranscodeAccId
+		       ,c.merchant_id AS discretionaryData
+			   ,IFNULL(lte.trans_amount,apq.trans_amount)AS ledgerTransAmount
+		  FROM ach_process_queue apq join nacha_accounts na on (apq.account_id = na.account_id and apq.transaction_type_id = na.trans_type_id)
+		       join lu_ach_transcode_acc atc on (apq.ach_transcode_acc_id = atc.ach_transcode_acc_id)
+		       join lu_ach_batch_mid c on (atc.ledger_trans_entry_type_id = c.entry_type_id and apq.entity_type_id = c.entity_type_id) 
+		       left join ledger_transaction_entry lte on (apq.ledger_entry_id = lte.ledger_entry_id and lte.entry_type_id = 1)
+		 WHERE 
+		       apq.process_status_id = 10
+		       AND apq.ach_transcode_acc_id = #batchId#
+		       AND apq.transaction_type_id NOT IN (1100)
+			   <isNotNull prepend="AND" property="endDate">
+					   date(apq.created_date)  <![CDATA[ = ]]> date(#endDate#)
+			   </isNotNull>
+	</select>
+
+	<select id="allUnbalancedAchQueue.query"  
+		parameterClass="java.lang.Integer" 
+		resultClass="nachaProcessQueueVo">
+		select na.acct_type_descr as accTypeDescr, na.entity_type_descr
+		as entityTypeDescr, na.bank_name as bankName, na.country_id as
+		countryId, na.account_type_id as accountTypeId,
+		na.account_status_id as accountStatusId, na.routing_no as
+		routingNo, na.account_no as accountNo, na.trans_type_descr as
+		transTypeDescr, na.card_holder_name as username,
+		apq.ach_process_id as achProcessId, apq.entity_id as entityId,
+		apq.ledger_entry_id as ledgerEntryId, apq.transaction_type_id as
+		transactionTypeId, apq.trans_amount as transAmount,
+		apq.entry_date as entryDate, apq.account_id as accountId,
+		apq.entity_type_id as entityTypeId, apq.process_status_id as
+		processStatusId, apq.ach_transcode_acc_id as achTranscodeAccId,
+    	balanced_ind as balanced_ind
+		from ach_process_queue apq,nacha_accounts na where
+		apq.account_id=na.account_id and
+		apq.transaction_type_id=na.trans_type_id 
+    	and transaction_type_id=1100 and
+    	process_status_id=10 and
+		apq.ach_transcode_acc_id=#batchId#
+	</select>
+
+	<update id="nachaExtract.setProcessStatus"
+		parameterClass="java.lang.Integer">
+		update ach_process_queue set process_status_id = 20 where
+		account_id = #accountId#
+	</update>
+
+	<update id="nacha.setStatusCompleteFlag"
+		parameterClass="transactionBatchVO">
+		update ach_process_queue set process_status_id = 20,
+		nacha_process_log_id=#processLogId# where ach_process_id IN
+		<iterate property="achProcessIds" open="(" close=")"
+			conjunction=",">
+			#achProcessIds[]#
+		</iterate>
+	</update>
+
+	<insert id="achProcessLog.insert"
+		parameterClass="nachaProcessLogVO">
+		Insert into ach_process_log ( nacha_process_id,
+		generated_file_name, generated_machine_name, created_date,
+		modified_date, process_status) values ( #nachaProcessId#,
+		#generatedFileName#, #generatedMachineName#, #createdDate#,
+		#modifiedDate#, #processStatusId# )
+		<selectKey resultClass="java.lang.Long">
+			SELECT nacha_process_id FROM ach_process_log where
+			generated_file_name=#generatedFileName#
+		</selectKey>
+	</insert>
+	<select id="nachaExtract.creditSum"
+		resultClass="nachaProcessQueueVo">
+		Select (
+
+		(select ifnull(sum(apq.trans_amount),0) from ach_process_queue
+		apq where apq.process_status_id=10 and ( apq.nacha_process_log_id
+		= 0 or apq.nacha_process_log_id is null) and transaction_type_id
+		in(800) ) - (select ifnull(sum(apq.trans_amount),0) from
+		ach_process_queue apq where apq.process_status_id=10 and (
+		apq.nacha_process_log_id = 0 or apq.nacha_process_log_id is
+		null) and transaction_type_id=100 ) ) as transAmount
+
+
+	</select>
+
+	<update id="achProcessLog.update"
+		parameterClass="nachaProcessLogVO">
+		update ach_process_log
+		<dynamic prepend="SET">
+			<isNotNull prepend="," property="modifiedDate">
+				modified_date=#modifiedDate#
+			</isNotNull>
+			<isNotNull prepend="," property="generatedMachineName">
+				generated_machine_name=#generatedMachineName#
+			</isNotNull>
+			<isNotNull prepend="," property="generatedFileName">
+				generated_file_name=#generatedFileName#
+			</isNotNull>
+			<isNotNull prepend="," property="processStatusId">
+				process_status=#processStatusId#
+			</isNotNull>
+			<isNotNull prepend="," property="achDateTime">
+				ach_datetime=#achDateTime#
+			</isNotNull>
+			<isNotNull prepend="," property="nachaRunDate">
+				nacha_run_date=#nachaRunDate#
+			</isNotNull>
+			<isNotNull prepend="," property="totalDebitAmount">
+				nacha_total_debit_amount=#totalDebitAmount#
+			</isNotNull>
+			<isNotNull prepend="," property="totalCreditAmount">
+				nacha_total_credit_amount=#totalCreditAmount#
+			</isNotNull>
+			<isNotNull prepend="," property="recordCount">
+				nacha_record_count=#recordCount#
+			</isNotNull>
+		</dynamic>
+		where nacha_process_id=#nachaProcessId#
+		 <isNotNull prepend="AND" property="processStatusId">
+			process_status  <![CDATA[ <= ]]> #processStatusId#
+		</isNotNull>
+		
+	</update>
+
+	<insert id="achProcessLogHistory.insert"
+		parameterClass="nachaProcessLogHistoryVO">
+		insert into ach_process_log_history ( ach_process_log_id,
+		ach_process_status_id, comments, updated_date, updated_by)
+		values ( #achProcessLogId# , #achProcessStatusId# , #comments# ,
+		#updatedDate# , #updatedBy#
+
+		)
+		<selectKey resultClass="java.lang.Long">
+			SELECT max(ach_process_log_history_id) FROM
+			ach_process_log_history where
+			ach_process_log_id=#achProcessLogId# and
+			ach_process_status_id=#achProcessStatusId#
+		</selectKey>
+	</insert>
+
+	<update id="achProcessLogHistory.update"
+		parameterClass="nachaProcessLogHistoryVO">
+		update ach_process_log_history
+		<dynamic prepend="SET">
+			<isNotNull prepend="," property="comments">
+				comments=#comments#
+			</isNotNull>
+			<isNotNull prepend="," property="updatedDate">
+				updated_date=#updatedDate#
+			</isNotNull>
+			<isNotNull prepend="," property="updatedBy">
+				updated_by=#updatedBy#
+			</isNotNull>
+
+		</dynamic>
+		where ach_process_log_history_id=#achProcessLogHistoryId#
+	</update>
+
+	<delete id="achProcessQueueRollBack.delete"
+		parameterClass="transactionBatchVO">
+		delete from ach_process_queue where
+		ach_process_id=#totalCreditProcessId#
+	</delete>
+	<update id="achProcessQueueRollBack.update"
+		parameterClass="transactionBatchVO">
+		update ach_process_queue set process_status_id=10 where
+		ach_process_id IN
+		<iterate property="achProcessIds" open="(" close=")"
+			conjunction=",">
+			#achProcessIds[]#
+		</iterate>
+	</update>
+
+	<update id="achProcessRerun.update"
+		parameterClass="transactionBatchVO">
+		update ach_process_queue set process_status_id=10,
+		nacha_process_log_id = null where nacha_process_log_id
+		=#processLogId#
+	</update>
+	<delete id="achProcessRerun.delete"
+		parameterClass="transactionBatchVO">
+		delete from ach_process_queue where nacha_process_log_id
+		=#processLogId# and ledger_entry_id=0
+	</delete>
+
+	<update id="achqueueEntry.update" parameterClass="achQueueEntry">
+		UPDATE ach_process_queue SET ach_transcode_acc_id = (SELECT
+		ach_transcode_acc_id FROM lu_ach_transcode_acc WHERE
+		account_type_id = (SELECT account_type_id FROM account_hdr WHERE
+		account_id = #accountId#) AND ledger_trans_entry_type_id =
+		#transactionEntryTypeId#) WHERE ach_process_id = #achProcessId#
+	</update>
+
+	<select id="ledgerIdsForOldAccount.query" parameterClass="com.servicelive.common.vo.SLAccountVO"
+		resultClass="nachaProcessQueueVo">
+		SELECT ledger_entry_id as ledgerEntryId from ach_process_queue
+		WHERE account_id = #account_id# AND reconciled_ind =
+		#reconciledInd#
+	</select>
+
+	<update id="origProcessQueue.update"
+		parameterClass="achQueueEntry">
+		update ach_process_queue set
+		process_status_id=#processStatusId#,
+		reject_reason_id=#rejectReasonId#,
+		modified_date = #modifiedDate#,
+		reconciled_ind=#reconciledIndicator# where ledger_entry_id
+		=#ledgerEntryId#
+	</update>
+
+	<update id="achProcessQueueCreatedDate.update"
+		parameterClass="achQueueEntry">
+		update 
+			ach_process_queue 
+		set
+			created_date = #createdDate#
+		where 
+			ach_process_id = #achProcessId#
+	</update>
+
+  	<update id="origProcessLog.update"
+		parameterClass="nachaProcessLogVO">
+		update ach_process_log set process_status=50,
+		origination_run_date=#originationRunDate#,
+		origination_total_debit_amount=#totalDebitAmount#,
+		origination_total_credit_amount=#totalCreditAmount#
+		where
+		nacha_process_id =#nachaProcessId#
+		
+	</update>
+	
+
+	<select id="processIdForledgerId.query"
+		parameterClass="java.lang.Long" resultClass="java.lang.Long">
+		Select nacha_process_log_id from ach_process_queue where
+		ledger_entry_id=#ledgerEntryId#
+	</select>
+
+	<update id="reconciledByLedgerId.update"
+		parameterClass="java.util.HashMap">
+		UPDATE ach_process_queue set reconciled_ind = #status_id#,
+		nacha_process_log_id = null, process_status_id=10,
+		reject_reason_id=0 where ledger_entry_id=#ledger_entry_id#
+	</update>
+
+	<select id="achPorcessLogCount.query" parameterClass="java.sql.Date"
+		resultClass="java.lang.Integer">
+		select count(*) from ach_process_log where date(created_date) =
+		date(#currentDate#)
+	</select>
+
+	<delete id="consolidatedBalanceRecord.delete"
+		parameterClass="java.util.HashMap">
+		DELETE from ach_process_queue where
+		transaction_type_id=#transaction_type_id# and
+		nacha_process_log_id=#process_log_id#
+	</delete>
+
+	<update id="batchStatus.update">
+		UPDATE ach_process_queue set reconciled_ind = #status_id#,
+		balanced_ind=#balanced_ind#, process_status_id=#status_id#, nacha_process_log_id=null
+		where nacha_process_log_id=#process_log_id#
+	</update>
+
+	<select id="achReasonInfo.query"
+		parameterClass="achResponseReasonVO"
+		resultClass="achResponseReasonVO">
+		SELECT rescod.reason_id reasonId, rescod.file_type_id
+		fileTypeId, rescod.category_id categoryId, rescat.category_desc
+		categoryDesc, rescod.reason_code reasonCode, rescod.reason_desc
+		reasonDesc FROM lu_ach_reason_codes rescod,
+		lu_ach_reason_category rescat WHERE rescod.category_id =
+		rescat.category_id AND rescod.file_type_id = rescat.file_type_id
+		AND reason_code = #reasonCode# AND rescod.file_type_id =
+		#fileTypeId#
+	</select>
+
+	<update id="balancedInd.update"
+		parameterClass="java.util.HashMap">
+		UPDATE ach_process_queue set balanced_ind=#balance_ind# where
+		nacha_process_log_id=#process_log_id#
+	</update>
+
+	<select id="achAllReasonInfo.query"
+		parameterClass="java.lang.Integer"
+		resultClass="achResponseReasonVO">
+		SELECT rescod.reason_id reasonId, rescod.file_type_id
+		fileTypeId, rescod.category_id categoryId, rescat.category_desc
+		categoryDesc, rescod.reason_code reasonCode, rescod.reason_desc
+		reasonDesc, rescod.reversal_ind reversalInd FROM lu_ach_reason_codes rescod,
+		lu_ach_reason_category rescat WHERE rescod.category_id =
+		rescat.category_id AND rescod.file_type_id = rescat.file_type_id
+		AND rescod.file_type_id = #fileTypeId#
+	</select>
+	<select id="sumOfRejectedEntries.query"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		select sum(trans_amount) from ach_process_queue b where
+		b.nacha_process_log_id =#batchId# and
+		b.transaction_type_id=#transTypeId# and b.reject_reason_id != 0
+	</select>
+	<update id="consolidatedTransAmount.update"
+		parameterClass="java.util.HashMap">
+		update ach_process_queue set
+		trans_amount=(trans_amount-#amount#) where
+		transaction_type_id=1000 and nacha_process_log_id=#batchId#
+	</update>
+	<update id="achProcessQueueReturn.update"
+		parameterClass="java.util.HashMap">
+		update ach_process_queue set reconciled_ind= '60', balanced_ind
+		= '0',process_status_id= '60', reject_reason_id=#rejectReasonId# where Ledger_entry_id=#LedgerEntryId#
+	</update>
+	<update id="achProcessLogReturn.update"
+		parameterClass="java.lang.Long">
+		update ach_process_log set process_status= '60' where
+		nacha_process_id =(select nacha_process_log_id from
+		ach_process_queue where Ledger_entry_id=#value#)
+	</update>
+	<select id="accountIdFromLedgerId.select"
+		parameterClass="java.lang.Long" resultClass="java.lang.Long">
+		select account_id from ach_process_queue where
+		Ledger_entry_id=#value#
+	</select>
+	<select id="achqueueEntryTotal.query"
+		resultClass="java.lang.Double">
+		SELECT SUM(trans_amount) FROM ach_process_queue WHERE
+		balanced_ind =0 and transaction_type_id != '1100'
+	</select>
+	<update id="achUnbalancedFlag.update">
+		update ach_process_queue 
+		set balanced_ind = 1 
+		where transaction_type_id = '800'
+		  and reconciled_ind = 60
+	</update>
+	<select id="processLogId.count" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		select * from ach_process_log where nacha_process_id=#process_log_id# and process_status=#status_id# 
+	</select>
+	
+	<select id="ledgerIdFromDateTime.select"
+		parameterClass="java.lang.String" resultClass="java.lang.Long">
+		SELECT nacha_process_id FROM ach_process_log WHERE ach_datetime =#value#
+	</select>
+	<select id="headerDetails.query" parameterClass="java.lang.Long" resultClass="java.lang.Integer">
+		select ah.entity_id from account_hdr ah, ach_process_queue apq where ah.account_id=apq.account_id and apq.ledger_entry_id=#ledgerId#
+	</select>	
+	<select id="countRecordsSent.select" resultClass="java.lang.Integer">
+		select count(1) from ach_process_queue where nacha_process_log_id = (select nacha_process_id from ach_process_log order by created_date desc limit 1 )
+	</select>
+	<select id="reasonCodeDetailByCode.select" parameterClass="java.lang.Integer" 
+		resultClass="achResponseReasonVO">
+		select reason_id as reasonId, file_type_id as fileTypeId, 
+		category_id as categoryId, reason_code as reasonCode, reason_desc as reasonDesc, reversal_ind as reversalInd
+		from lu_ach_reason_codes where reason_id=#value#
+	</select>
+	<select id="contactEmailByLedgerId.select" parameterClass="java.lang.Long" resultClass="entityEmailVO">
+		select entity_id as entityId, ledger_entry_id as ledgerEntryId,
+			entity_type_id as entityTypeId, trans_amount as transAmount, email as email 
+			from entity_email where ledger_entry_id = #value#
+	</select>
+	
+	<select id="achProcessRecordByLedgerId.select" parameterClass="java.lang.Long" resultClass="achQueueEntry">
+		select apq.entity_id as entityId
+			,apq.ledger_entry_id as ledgerEntryId
+			,lte.transaction_id as ledgerTransactionId
+			,apq.entity_type_id as entityTypeId
+			,apq.trans_amount as transactionAmount
+			,process_status_id as processStatusId
+		from ach_process_queue apq 
+			left join ledger_transaction_entry lte  on (apq.ledger_entry_id = lte.ledger_entry_id
+			and apq.entity_id = lte.ledger_entity_id
+			and apq.entity_type_id = lte.ledger_entity_type_id)
+		where apq.ledger_entry_id = #value#
+	</select>
+	
+	<select id="CCConsolidationAmount.select" parameterClass="achQueueEntry" resultClass="java.lang.Double">
+		select ifnull(sum(trans_amount),0) from ach_process_queue 
+		where 
+		ach_transcode_acc_id=#achBatchAssocId# and process_status_id = #processStatusId# and transaction_type_id=#transactionTypeId#
+	</select>
+	
+	<select id="AutoAchConsolidationAmount.select" parameterClass="achQueueEntry" resultClass="achQueueEntry">
+		select ifnull(sum(trans_amount),0) as transactionAmount,entity_id as entityId, entity_type_id as entityTypeId, account_id as accountId from ach_process_queue 
+		where 
+		ach_transcode_acc_id=#achBatchAssocId# and process_status_id = #processStatusId# and transaction_type_id=#transactionTypeId#
+		group by entity_id, entity_type_id, account_id
+	</select>
+	
+	<select id="OFAC.processQueue.select"  resultClass="ofacprocessqueuevo">
+		select userType,entityId,TaxPayerId,userName as user,UserID,businessName,contactNumber,
+		firstName,lastName,email,street1,street2,city,state,ZipCode,aptNo,V1Account,V2Account,
+		CreatedDate,DateofBirth as dateOfBirth,AlternateIdType as alternateIdType,AlternateIDCountryofIssuance as alternateIdCountryOfIssuance,taxPayerIdType from vw_ofac_info
+	</select>
+	
+	<select id="OFAC.getPeriodStartDate.select"  resultClass="java.sql.Timestamp">
+		SELECT MAX(period_end_date) FROM accounts_prod.ofac_process_log;
+	</select>
+	
+	<insert id="OFAC.processLog.insert" parameterClass="ofacprocesslogvo">
+		INSERT INTO accounts_prod.ofac_process_log(
+			processed_date,
+			period_start_date,
+   			period_end_date,
+   			generated_file_name,
+   			process_successful,
+   			created_date,
+   			modified_date,
+   			transaction_count)
+   		VALUES(
+   			#processedDate#,
+   			#periodStartDate#,
+   			#periodEndDate#,
+   			#generatedFileName#,
+   			#processSuccessful#,
+   			NOW(),
+   			NOW(),
+   			#transactionCount#);
+	</insert>
+	
+	<select id="creditCardAuthLedgerId.select" parameterClass="achQueueEntry" resultClass="java.lang.Long">
+		select ledger_entry_id from ach_process_queue 
+		where
+		ach_transcode_acc_id=#achBatchAssocId# and process_status_id = #processStatusId# and transaction_type_id=#transactionTypeId#
+	</select>
+	<update id="CCAuthReconcilation.update" parameterClass="achQueueEntry">
+		update ach_process_queue set process_status_id = #tmpProcessStatusId# 
+		<dynamic>
+			<isNotNull prepend=", " property="reconciledIndicator">
+				reconciled_ind=#reconciledIndicator#
+			</isNotNull>
+		</dynamic>
+		where ach_transcode_acc_id=#achBatchAssocId# and process_status_id =#processStatusId# and transaction_type_id=#transactionTypeId#
+		and date(created_date) = date(#createdDate#)
+	</update>
+	
+	<update id="ledger_entry_reconciledForCreditCard.update"
+		parameterClass="java.util.ArrayList">
+		UPDATE ledger_entry SET reconsiled_ind = 1, reconsided_date = now()
+		WHERE ledger_entry_id IN
+		<iterate  open="(" close=")"
+			conjunction=",">
+			#ledgerIds[]#
+		</iterate>
+		AND reconsided_date IS NULL
+	</update>
+	
+<!-- 	<select id="rejectReasonCodes.select"   resultClass="java.lang.String">
+		select w.reason_code as 'reason_code'  from withdrawreversal_reject_reason_codes w,lu_ach_reason_codes l 
+		where w.reason_code=l.reason_code
+	</select>  -->
+	
+	<select id="rejectReasonCodes.select"   resultClass="java.lang.String">
+		Select reason_code from lu_ach_reason_codes	
+	</select>
+	
+	<select id="dailyReconciliation.Nacha.lastRan" resultClass="java.sql.Date">
+		select date(created_date) as lastRanDate from ach_process_log where nacha_process_id = (select max(nacha_process_id) from ach_process_log)
+	</select>
+	
+	<select id="dailyReconciliation.Nacha.status.lastRan" parameterClass="java.util.List" resultClass="java.sql.Date">
+	select date(created_date) from ach_process_log where process_status in 
+	<iterate  open="(" close=")"
+			conjunction=",">
+			#processStatusIds[]#
+		</iterate> 
+	 order by created_date desc limit 1
+	</select>
+	
+	<select id="dailyReconciliation.AckOrg.status.lastRan" parameterClass="java.lang.Integer" resultClass="java.sql.Date">
+		select date(created_date) from ach_process_log where process_status >= #processStatusId#  order by created_date desc limit 1
+	</select>
+	
+	<select id="dailyReconciliation.ptd.lastRan" resultClass="java.sql.Date">
+		select date(process_run_date) from ptd_process_log where ptd_log_id = (select max(ptd_log_id) from ptd_process_log)
+	</select>
+	
+	
+	<select id="dailyReconciliation.GeneralLedger.lastRan" resultClass="java.sql.Date">
+		select date(process_date) from gl_process_log where gl_process_id = (select max(gl_process_id) from gl_process_log)
+	</select>	
+	
+	<select id="dailyReconciliation.Tran.lastRan" resultClass="java.sql.Date">
+		select date(created_date) as lastRanDate from trans_process_log where trans_log_id = (select max(trans_log_id) from trans_process_log)
+	</select>
+	
+	<select id="dailyReconciliation.transfile.view" parameterClass="java.lang.Integer" resultClass="com.newco.marketplace.dto.vo.ach.ReconciliationViewVO">
+		select ltt.descr as transactionType, count(*) as numOfRecords, sum(apq.trans_amount) as amount
+		from ach_process_queue apq inner join ledger_transaction_types ltt 
+			on ltt.transaction_type_id = apq.transaction_type_id
+		where apq.transaction_type_id = #transactionTypeId#
+			and trans_log_id = (
+				select max(trans_log_id) from trans_process_log
+			)
+		group by ltt.descr
+	</select>
+	
+	<select id="dailyReconciliation.Nacha.view" parameterClass="java.util.HashMap" resultClass="com.newco.marketplace.dto.vo.ach.ReconciliationViewVO">
+	select ledger_transaction_types.descr as transactionType,
+	count(*) as numOfRecords , sum(trans_amount) as amount
+	from ach_process_queue  inner join  ledger_transaction_types on ledger_transaction_types.transaction_type_id = ach_process_queue.transaction_type_id
+	where nacha_process_log_id = (select max(nacha_process_id) from ach_process_log)
+	and ach_process_queue.transaction_type_id = #transactionTypeId# and entity_type_id = #entityTypeId#
+	group by ach_process_queue.transaction_type_id
+	</select>
+
+	<select id="dailyReconciliation.AutoAchConsolidated.Nacha.view" resultClass="com.newco.marketplace.dto.vo.ach.ReconciliationViewVO">
+		SELECT ledger_transaction_types.descr AS transactionType
+		       ,count(*) AS numOfRecords
+		       ,sum(trans_amount) AS amount
+		FROM    ach_process_queue
+		       INNER JOIN
+		          ledger_transaction_types
+		       ON ledger_transaction_types.transaction_type_id =
+		             ach_process_queue.transaction_type_id
+		WHERE ach_process_queue.transaction_type_id = 2000
+		       AND nacha_process_log_id = (SELECT max(nacha_process_id)
+		                                     FROM ach_process_log)
+		GROUP BY ach_process_queue.transaction_type_id
+	</select>
+
+	<update id="nacha.updateAchProcessAcIdForDisabledAccts">
+
+	Update ach_process_queue apq inner join account_hdr ah on (ah.account_id = apq.account_id)
+    set apq.account_id = IFNULL((select account_id from account_hdr ahr 
+    where ahr. entity_type_id = apq.entity_type_id 
+    and ahr.entity_id = apq.entity_id and ahr.enabled_ind = 1 and ahr.active_ind = 1 and ahr.account_type_id != 30 ) , apq.account_id)
+	where  apq.process_status_id = 10 and ah.enabled_ind = 0;		
+	</update>
+	
+	<select id="nacha.sumAchProcessByLogId"
+		parameterClass="java.lang.Long" resultClass="java.util.HashMap">
+		SELECT COALESCE(sum(trans_amount),0.0) as sumTransAmount,COALESCE(count(1),0.0) as totalCount from ach_process_queue where nacha_process_log_id=#processLogId#
+	</select>
+	
+	
+	
+</sqlMap>

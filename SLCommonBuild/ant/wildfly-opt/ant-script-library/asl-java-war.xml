@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<!--
+********************************************************************************
+* Ant Script Library - Java war module 
+* Targets to create a war
+* Module property prefix: "java-war"
+********************************************************************************
+* Copyright 2009 Joe Schmetzer
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+********************************************************************************
+ -->
+<project name="asl-java-war">
+    <dirname property="asl-java-war.basedir" file="${ant.file.asl-java-war}"/>
+
+    <import file="${asl-java-war.basedir}/asl-java-build.xml"/>
+
+    <property name="java-war.dist-filename"     value="${ant.project.name}.war"/>
+    <property name="java-war.dist-file"         location="${common.dist-dir}/${java-war.dist-filename}"/>
+    <property name="java-war.libs-dir"          location="${common.dist-dir}/war-libs"/>
+    <property name="java-war.web-content-dir"   location="src/main/webapp"/>
+    <property name="java-war.web-xml"           location="src/main/webapp/WEB-INF"/>
+    <property name="java-war.webapp-name"       location="${ant.project.name}"/>
+
+
+<!-- SteveH: {{ -->
+    <!-- If true, target/classes wind up in your war's WEB-INF/classes -->
+    <property name="asl-java-war.include-my-classes" value="true" />
+
+    <!-- If true, this project's jar appears in war's WEB-INF/lib -->
+    <property name="asl-java-war.include-my-jar" value="false" />
+
+    <!-- If true, this project's generated/deployable jars go in war's WEB-INF/lib -->
+    <property name="asl-java-war.include-depends" value="true" />
+<!-- }} SteveH -->
+
+
+    <!-- ***********************************************************************
+    * target: war
+    ************************************************************************ -->
+    <target name="war" depends="compile, copy-resources, jar, -init-time, -war-prepare-libs"
+            description="Create a war for this web project">
+            
+        <mkdir dir="${common.dist-dir}"/>
+        
+        <property name="java-war.compress"    value="false"/>
+        <property name="java-war.build-id"    value="Built by ${user.name} at ${common.timestamp} running on ${os.name} ${os.version} ${os.arch}"/>
+        
+        <!-- shunter: was: webxml="src/metadata/myapp.xml" -->
+        <war destfile="${java-war.dist-file}" compress="${java-war.compress}" filesonly="true" needxmlfile="false">
+            <fileset dir="${java-war.web-content-dir}" />
+            <manifest>
+                <attribute name="Build-Id" value="${java-war.build-id}"/>
+                <attribute name="Implementation-Vendor"	 value="${java-build.jar-vendor}"/>
+                <attribute name="Implementation-Title"   value="${ant.project.name}"/>
+                <attribute name="Implementation-Version" value="${java-build.jar-version}"/>
+                <attribute name="Build-Date" value="${common.timestamp-long}" />
+                <attribute name="Build-Username" value="${shell.USERNAME}"/>
+                <attribute name="Build-Hostname" value="${hostname}"/>
+                <attribute name="Build-java-version" value="${java.version}" />
+                <attribute name="Build-java-class-version" value="${java.class.version}" />
+                <attribute name="Build-java-home" value="${java.home}" />
+                <attribute name="Build-os-arch" value="${os.arch}" />
+                <attribute name="Build-os-name" value="${os.name}" />
+                <attribute name="Build-os-version" value="${os.version}" />
+            </manifest>
+            <lib dir="${java-war.libs-dir}"/>
+        </war>
+
+        <!-- SteveH: Ensure WEB-INF/classes makes it into war, unless project disables it.
+             (Normally the war target refs the classes dir via the 'classes' attr, but this 
+              gives projects like Wallet.ValueLink.EJB the option to not include them)
+        -->
+        <if><equals arg1="${asl-java-war.include-my-classes}" arg2="true" />
+            <then>
+                <zip destfile="${java-war.dist-file}" compress="${java-war.compress}" update="true" filesonly="true">
+                    <zipfileset prefix="WEB-INF/classes" dir="${java-build.classes-dir}"  />
+                </zip>
+            </then>
+        </if>
+    </target>
+
+
+
+    <!-- ***********************************************************************
+    * target: -war-prepare-libs
+    ************************************************************************ -->
+    <!-- SteveH: The ASL version of this presumes a fileset of **/*.java in your project 'lib' dir.
+         We're specifying each jar within SLCommonBuild/lib dir, using pathelements to preserve order. -->
+    <target name="-war-prepare-libs" depends="-init">
+        <mkdir dir="${java-war.libs-dir}"/>
+
+        <if><equals arg1="${asl-java-war.include-depends}" arg2="true" />
+            <then>
+            	<if><isreference refid="java-build.deployables-classpath.fileset" />
+            		<then>
+						<copy todir="${java-war.libs-dir}" overwrite="true"
+							  flatten="true" failonerror="true" verbose="true">
+							<fileset refid="java-build.deployables-classpath.fileset" />
+						</copy>
+                    </then>
+                </if>
+            	<if><isreference refid="java-build.generated-classpath.fileset" />
+            		<then>
+		                <copy todir="${java-war.libs-dir}" overwrite="true"
+		                      flatten="true" failonerror="true" verbose="true">
+		                    <fileset refid="java-build.generated-classpath.fileset" />
+		                </copy>
+                    </then>
+                </if>
+            </then>
+        </if>
+
+        <if><equals arg1="${asl-java-war.include-my-jar}" arg2="true" />
+            <then>
+                <copy todir="${java-war.libs-dir}" overwrite="true"
+                      flatten="true" failonerror="true" verbose="true">
+                    <fileset file="${java-build.dist-file}" />
+                </copy>
+            </then>
+        </if>
+    </target>
+
+
+
+</project>

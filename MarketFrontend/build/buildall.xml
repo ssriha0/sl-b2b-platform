@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- $Author: ccarle5 $ $Date: 2008/06/12 18:54:38 $ $Revision: 1.28 $ -->
+
+<project name="MarketFrontend-BuildAll" basedir="../" default="developer-war">
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+
+    <target name="developer-war" depends="init, compile-dependencies, war" />
+    <target name="limited-war" depends="init, compile-limited, war" />
+	<target name="compile-limited">
+        <ant antfile="../MarketFrontend/build/build.xml" dir="../MarketFrontend" inheritAll="false"/>
+	</target>
+
+    <target name="dwlimited" depends="init, compile-limited, war" />
+
+
+    <target name="init">
+        <!-- Create the time stamp -->
+        <tstamp/>
+        <!-- Create build number file -->
+        <buildnumber />
+        <property name="dir.base" value="${basedir}" />
+
+        <property file="${dir.overall.base}/build.properties" />
+        <property name="dir.app" value="${dir.base}/web" />
+        <property name="dir.app.ear" value="${dir.base}/ear" />
+        <property name="dir.source" value="${dir.base}/src" />
+        <property name="dir.dest" value="${dir.base}/bin" />
+        <property name="dir.build" value="${dir.base}/build" />
+        <property name="dir.test" value="${dir.base}/test" />
+        <property name="dir.market.frontend.base" value="../MarketFrontend" />
+        <property name="dir.market.backend.base" value="../MarketBackend" />
+        <property name="dir.market.bi.base" value="../MarketBusinessInterface" />
+        <property name="dir.market.common.base" value="../MarketCommon" />
+        <property name="dir.market.document.base" value="../MarketDocument" />
+        <property name="dir.market.staging.base" value="../OMSStaging" />
+        <property name="dir.market.permissions.base" value="../Permissions" />
+        <property name="dir.market.gwt.providersearch.base" value="../MarketGWTProviderSearch"/>
+        <property name="dir.service.live.web.util.base" value="../ServiceLiveWebUtil" />
+        <property name="dir.service.live.common.domain.base" value="../ServiceLiveCommonDomain" />
+        <property name="dir.routing.rules.web.base" value="../RoutingRulesWeb" />
+        <property name="dir.routing.rules.engine.base" value="../RoutingRulesEngine" />
+        <property name="dir.market.alerts.base" value="../MarketAlertsManager" />
+    	<property name="dir.orderfulfillment.Client.base" value="../OrderFulfillment/OrderFulfillment.Client" />
+		<property name="dir.orderfulfillment.Domain.base" value="../OrderFulfillment/OrderFulfillment.Domain" />
+		<property name="dir.orderfulfillment.ServiceInterface.base" value="../OrderFulfillment/OrderFulfillment.ServiceInterface" />
+        <property name="dir.market.responsys.dist" value="../ResponsysClient/target/dist" />   
+        <property name="dir.market.responsys.interact.dist" value="../ResponsysInteractClient/target/dist" />  
+    	<property name="dir.slCommonBuild.nondeployables" value="../SLCommonBuild/lib/nondeployables"/>
+        <property name="dir.archive" value="${dir.base}/archive" />
+        <property name="env" value="dev" />
+        <property name="app.lastbuild.tag.auto" value="release_1_${build.number}_${env}_${DSTAMP}${TSTAMP}Ztest" />
+
+        <!-- For projects that use SLCommonBuild scripts, the 'dist' target (usually the default) writes to here -->
+        <property name="generated" location="../SLCommonBuild/lib/generated" />
+        <echo>@@@ generated = ${generated}</echo>
+
+        <!-- Folder under which all the libraries are kept -->
+        <property name="endorsed.lib" value="${dir.service.live.web.util.base}/lib/deployables"/>
+    	<property name="struts2Deployables.lib" value="${dir.service.live.web.util.base}/lib/Struts2Deployables"/>
+
+        <!-- Folder containing uncompressed final release software-->
+        <property name="dir.dist" value="${dir.base}/dist"/>
+    </target>
+
+    <target name="compile-dependencies">
+        <ant antfile="../ServiceLive.Common/build/build.xml" dir="../Wallet/ServiceLive.Common" inheritAll="false"/>
+        <ant antfile="../Wallet.Common/build/build.xml" dir="../Wallet/Wallet.Common" inheritAll="false"/>
+        <ant antfile="../ServiceLive.Lookup/build/build.xml" dir="../Wallet/ServiceLive.Lookup" inheritAll="false"/>
+        <ant antfile="../Wallet.ServiceInterface/build/build.xml" dir="../Wallet/Wallet.ServiceInterface" inheritAll="false"/>
+
+        <ant antfile="../MarketCommon/build/build.xml"   dir="../MarketCommon" inheritAll="false" />
+        <ant antfile="../MarketBusinessInterface/build/build.xml" dir="../MarketBusinessInterface" inheritAll="false"/>
+        <ant antfile="../MarketDocument/build/build.xml"   dir="../MarketDocument" inheritAll="false"/>
+        <ant antfile="../OMSStaging/build/build.xml"   dir="../OMSStaging" inheritAll="false"/>
+        <ant antfile="../ServiceLiveCommonDomain/build/build.xml" dir="../ServiceLiveCommonDomain" inheritAll="false" />
+    	
+
+        <!-- SLCommonBuild-based projects will build any dependent jar that isn't in SLCB/lib/generated.
+             Legacy build.xml files don't copy them here, though.  For the three that RoutingRules depends on,
+             copy them there now to prevent them from being built twice.  The list of projects that
+             need this consideration can be found in SLCB/ant/sl-common/sl-deps.xml. -->
+        <copy todir="${generated}" overwrite="true" flatten="true" verbose="true" failonerror="false">
+            <resources>
+                <file file="${dir.market.common.base}/dist/MarketCommon.jar" />
+                <file file="${dir.service.live.common.domain.base}/target/dist/ServiceLiveCommonDomain.jar" />
+            </resources>
+        </copy>
+        <ant antfile="../RoutingRulesEngine/build/build.xml" dir="../RoutingRulesEngine" inheritAll="false"/>
+
+        <ant antfile="../MarketBackend/build/build.xml" dir="../MarketBackend" inheritAll="false"/>
+        <ant antfile="../MarketGWTProviderSearch/build.xml" dir="../MarketGWTProviderSearch" inheritAll="false"/>
+
+        <ant antfile="../Wallet.Alert/build/build.xml" dir="../Wallet/Wallet.Alert" inheritAll="false"/>
+        <ant antfile="../Wallet.ACH/build/build.xml" dir="../Wallet/Wallet.ACH" inheritAll="false"/>
+        <ant antfile="../Wallet.CreditCard/build/build.xml" dir="../Wallet/Wallet.CreditCard" inheritAll="false"/>
+        <ant antfile="../Wallet.Ledger/build/build.xml" dir="../Wallet/Wallet.Ledger" inheritAll="false"/>
+        <ant antfile="../Wallet.ValueLink/build/build.xml" dir="../Wallet/Wallet.ValueLink" inheritAll="false"/>
+        <ant antfile="../Wallet.Service/build/build.xml" dir="../Wallet/Wallet.Service" inheritAll="false"/>
+
+        <!-- Default for the Wallet.Batch build.xml is the 'war' target, but we need the jar in our 'generated' dir -->
+        <ant antfile="../Wallet.Batch/build/build.xml" dir="../Wallet/Wallet.Batch" inheritAll="false" target="dist" />
+    	<ant antfile="../OrderFulfillment.Domain/build/build.xml" dir="../OrderFulfillment/OrderFulfillment.Domain" inheritAll="false"/>
+    	<ant antfile="../OrderFulfillment.ServiceInterface/build/build.xml" dir="../OrderFulfillment/OrderFulfillment.ServiceInterface" inheritAll="false"/>
+    	<ant antfile="../OrderFulfillment.Client/build/build.xml" dir="../OrderFulfillment/OrderFulfillment.Client" inheritAll="false"/>
+                
+        <ant antfile="../RoutingRulesWeb/build/build.xml" dir="../RoutingRulesWeb" inheritAll="false"/>
+        <ant antfile="../ResponsysClient/build/build.xml"   dir="../ResponsysClient"/>
+        <ant antfile="../ResponsysInteractClient/build/build.xml"   dir="../ResponsysInteractClient"/>
+        <ant antfile="../MarketAlertsManager/build/build.xml"   dir="../MarketAlertsManager" inheritAll="false"/>
+    	<ant antfile="../CSRF/build/build.xml" dir="../CSRF" inheritAll="false"/>
+        <ant antfile="../MarketFrontend/build/build.xml" dir="../MarketFrontend" inheritAll="false"/>
+     </target>
+
+                        
+    <target name="war">
+        <copy todir="${dir.app}/WEB-INF/classes">
+            <fileset dir="${dir.dest}">
+                <include name="**/*.class"/>
+                <include name="**/*.xml"/>
+            </fileset>
+            <fileset dir="${dir.market.frontend.base}/src/resources/properties">
+                <include name="servicelive.properties"/>
+            </fileset>
+            <fileset dir="${dir.market.backend.base}/src/resources/images">
+                <include name="service_live_logo.gif"/>
+            </fileset>
+            <fileset dir="${dir.dest}">
+                <include name="**/*.properties"/>
+            </fileset>
+        	<fileset dir="${dir.slCommonBuild.nondeployables}">
+        									<include name="*.jar"/>
+        								</fileset>
+        </copy>
+    	
+        <mkdir dir="${dir.app}/WEB-INF/classes/resources/properties"/>
+        <mkdir dir="${dir.app}/WEB-INF/classes/resources/images"/>   
+    	<mkdir dir="${dir.app}/WEB-INF/classes/resources/pdficons"/>
+        <copy todir="${dir.app}/WEB-INF/classes/resources/properties">
+            <fileset dir="${dir.market.frontend.base}/src/resources/properties">
+                <include name="*.properties"/>
+            </fileset>
+        </copy>
+        <copy todir="${dir.app}/WEB-INF/classes/resources/images">
+            <fileset dir="${dir.market.backend.base}/src/resources/images">
+                <include name="*.gif"/>
+            </fileset>
+        </copy>        
+    	<copy todir="${dir.app}/WEB-INF/classes/resources/pdficons">
+    	    <fileset dir="${dir.market.backend.base}/src/resources/pdficons">
+    	    	 <include name="*.png"/>
+    	    </fileset>
+    	</copy> 
+        <delete dir="${dir.app}/WEB-INF/classes/demo" />
+        <delete dir="${dir.app}/WEB-INF/classes/resources/spring/test" />    
+        <copy todir="${dir.app}/WEB-INF">
+            <fileset dir="${dir.dest}">
+                <include name="**/*.tld"/>
+            </fileset>
+            <fileset dir="${dir.dest}">
+                <include name="**/*.properties"/>
+            </fileset>
+        </copy>
+
+        <copy todir="${dir.app}/WEB-INF/lib">        	
+            <fileset dir="${endorsed.lib}">
+                <include name="*.jar"/>
+            	<exclude name="hdiv-core-2.0.4.jar"/>
+            	<exclude name="hdiv-struts-2.0.9-2.0.4.jar"/>
+                <exclude name="log4j*.jar"/>
+            </fileset>
+ 			<fileset dir="${struts2Deployables.lib}">
+                <include name="*.jar"/>
+			</fileset>
+            <fileset dir="${dir.market.backend.base}/dist">
+                <include name="*.jar"/>
+                <exclude name="MDB.jar"/>
+            </fileset>
+            <fileset dir="${dir.market.bi.base}/target/dist">
+                <include name="*.jar"/>
+            </fileset>
+            <fileset dir="${dir.market.common.base}/dist">
+                <include name="*.jar"/>
+            </fileset>
+            <fileset dir="${dir.market.document.base}/dist">
+                <include name="*.jar"/>
+            </fileset>
+            <fileset dir="${dir.market.staging.base}/dist">
+                <include name="*.jar"/>
+            </fileset>
+            <!-- fileset dir="${dir.market.permissions.base}/dist">
+                <include name="*.jar"/>
+            </fileset -->
+            <fileset dir="${dir.market.gwt.providersearch.base}/dist">
+                <include name="MarketGWTProviderSearch.jar"/>
+            </fileset>
+            <fileset dir="${dir.dist}/lib">
+                <include name="*.jar"/>
+            </fileset>
+            <fileset dir="${dir.service.live.common.domain.base}/target/dist">
+                <include name="*.jar"/>
+            </fileset>
+            <fileset dir="${dir.routing.rules.web.base}/target/dist">
+                <include name="*.jar"/>
+            </fileset>
+            <fileset dir="${dir.routing.rules.engine.base}/target/dist">
+                <include name="*.jar"/>
+            </fileset>
+            <fileset dir="${dir.market.responsys.dist}">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${dir.market.responsys.interact.dist}">
+				<include name="*.jar" />
+			</fileset>	
+            <fileset dir="${dir.market.alerts.base}/dist">
+                <include name="*.jar"/>
+            </fileset>    
+            <fileset dir="${generated}">
+                <include name="ServiceLive.Common.jar" />
+                <include name="ServiceLive.Lookup.jar" />
+                <include name="Wallet.ACH.jar" />
+                <include name="Wallet.Alert.jar" />
+                <include name="Wallet.Batch.jar" />
+                <include name="Wallet.Common.jar" />
+                <include name="Wallet.CreditCard.jar" />
+                <include name="Wallet.Ledger.jar" />
+                <include name="Wallet.Service.jar" />        
+                <include name="Wallet.ServiceInterface.jar" />
+                <include name="Wallet.ValueLink.jar" />
+        		<include name="CSRF.jar" />
+            </fileset>
+			<fileset dir="${dir.orderfulfillment.Client.base}/target/dist">
+				<include name="*.jar"/>
+			</fileset>
+			<fileset dir="${dir.orderfulfillment.Domain.base}/target/dist">
+				<include name="*.jar"/>
+			</fileset>
+			<fileset dir="${dir.orderfulfillment.ServiceInterface.base}/target/dist">
+				<include name="*.jar"/>
+			</fileset>
+
+        </copy>
+        
+         <!-- Deleting the jars to avoid conflict with latest version -->
+         <delete file="${dir.app}/WEB-INF/lib/xbean-2.2.0.jar"/>
+         <delete file="${dir.app}/WEB-INF/lib/poi-2.5.1.jar"/> 
+
+        <!-- Build the WAR file -->
+        <jar compress="yes" jarfile="${dir.base}/MarketFrontend.war">
+            <fileset dir="${dir.app}">
+                <include name="**/*.class"/>
+                <include name="**/*.html"/>
+                <include name="**/*.inc"/>
+                <include name="**/*.jsp"/>
+                <include name="**/*.jspf"/>
+                <include name="**/*.htm"/>
+                <include name="**/*.xml"/>
+                <include name="**/*.jrxml"/>
+                <include name="**/*.xml"/>
+                <include name="**/*.tld"/>
+                <include name="**/*.properties"/>
+                <include name="**/*.so"/>
+                <include name="**/*.zip"/>
+                <include name="**/*.swf"/>
+                <include name="**/*.tag"/>
+                <include name="**/*.jar"/>
+                <include name="**/*.gif"/>
+                <include name="**/*.css"/>
+                <include name="**/*.js"/>
+                <include name="**/*.png"/>
+                <include name="**/*.rpc"/>
+                <include name="**/*.less"/>
+            	<include name="**/*.eot"/>
+            	<include name="**/*.svg"/>
+            	<include name="**/*.ttf"/>
+            	<include name="**/*.woff"/>
+                <exclude name="omsstagingclient.jar"/>
+            </fileset>
+        </jar>
+    </target>
+       
+</project>

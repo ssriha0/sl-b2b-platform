@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<bean id="loginDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.LoginDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+		
+	<bean id="auditLogDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.AuditLogDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	<bean id="vendorResourceDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.VendorResourceImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	
+	<bean id="loginBOImpl" class="com.newco.marketplace.business.businessImpl.provider.LoginBOImpl">
+		<constructor-arg ref="loginDaoImpl"/>
+		<constructor-arg ref="vendorHdrDaoImpl"/>	
+		<constructor-arg ref="vendorResourceDaoImpl"/>
+	</bean>
+	
+	<bean id="auditLogBOImpl" class="com.newco.marketplace.business.businessImpl.provider.AuditLogBOImpl">
+		<constructor-arg ref="auditLogDaoImpl"/>
+	</bean>
+</beans>

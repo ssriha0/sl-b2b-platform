@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<!-- Start Action  Loading -->
+	<bean id="loadMarketPlaceAction" class="com.newco.marketplace.web.action.provider.MarketPlaceAction" scope="prototype">
+		<constructor-arg index="0" ref="marketPlaceDelegate"/>
+		<constructor-arg index="1" ref="marketPlaceDTO"/>
+		<constructor-arg index="2" ref="activityRegistryDelegates"/>
+		<constructor-arg index="3" ref="manageUsersDelegate"/>
+		<property name="auditLogDelegates">
+			<ref bean="auditLogDelegates" />
+		</property>
+	</bean>
+	<!-- End Action Loading -->
+	
+	<!-- Start DTO  Loading -->
+	<bean id="marketPlaceDTO" class="com.newco.marketplace.web.dto.provider.MarketPlaceDTO" scope="prototype"/>
+	<!-- End DTO  Loading -->
+	
+	<!-- Start Mapper Loading-->
+	<bean id="marketPlaceMapper" class="com.newco.marketplace.web.utils.MarketPlaceMapper" scope="prototype"/>
+	<!-- End Mapper Loading -->
+	
+	<!-- Start Delegate Loading -->
+	<bean id="marketPlaceDelegate" class="com.newco.marketplace.web.delegatesImpl.provider.MarketPlaceDelegateImpl" scope="prototype">
+		<constructor-arg index="0" ref="marketPlaceBOImpl"/>
+		<constructor-arg index="1" ref="marketPlaceMapper"/>
+	</bean>
+	
+	<!-- End Delegate  Loading -->
+ 	
+</beans>

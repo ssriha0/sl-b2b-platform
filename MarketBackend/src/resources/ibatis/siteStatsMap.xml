@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="site_stats">
+
+	<typeAlias alias="siteStats"
+		type="com.newco.marketplace.dto.vo.sitestatistics.SiteStatisticsVO" />
+
+	<typeAlias alias="popularServices"
+		type="com.newco.marketplace.dto.vo.sitestatistics.PopularServicesVO" />
+	
+	<select id="siteStats.query" resultClass="siteStats">
+		select satisfaction_rating as satisfactionRating,
+		registered_providers as registeredServicePros
+		from site_stats
+	</select>
+	
+	<insert id="siteStats.insert" parameterClass="siteStats">
+		insert into site_stats (satisfaction_rating, registered_providers) 
+		values (#satisfactionRating#, #registeredServicePros#)
+	</insert>
+	
+	<delete id="siteStats_delete_all.delete" parameterClass="java.lang.Integer">
+		delete from site_stats
+	</delete>
+	
+	<update id="siteStats_satisfaction_rating.update" parameterClass="java.lang.Integer">
+		update site_stats set satisfaction_rating = #satisfactionRating# 
+	</update>
+	
+	<update id="siteStats_num_sp.update" parameterClass="java.lang.Integer">
+		update site_stats set registered_providers = #registeredServicePros# 
+	</update>
+	
+	<select id="popularServicesByBuyerType.query" parameterClass="java.lang.Integer" resultClass="popularServices">
+		select name
+		, main_category_id as mainCategoryId
+		, category_id as categoryId
+		, sub_category_id as subCategoryId
+		, service_type_template_id as serviceTypeTemplateId
+		, buyer_type_id as buyerTypeId
+		from popular_services
+		where buyer_type_id = #buyerType#
+		order by sort_order
+	</select>
+	
+	<insert id="popularServices.insert" parameterClass="popularServices">
+		insert into popular_services(name, main_category_id
+		,category_id,sub_category_id,service_type_template_id,sort_order,buyer_type_id) 
+		values (#name#,#mainCategoryId#,#categoryId#,#subCategoryId#,#serviceTypeTemplateId#,
+		#sortOrder#,#buyerTypeId#)
+	</insert>
+	
+	<delete id="popularServicesByBuyerType.delete" parameterClass="java.lang.Integer">
+		delete from popular_services where buyer_type_id = #buyerType#
+	</delete>
+</sqlMap>

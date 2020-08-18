@@ -1,0 +1,2405 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<typeAlias alias="balanceVO"
+		type="com.newco.marketplace.vo.activity.WalletBalanceVO" />
+	<typeAlias alias="soLogging"
+		type="com.newco.marketplace.dto.vo.logging.SoLoggingVo" />
+	<typeAlias alias="soNote"
+		type="com.newco.marketplace.dto.vo.serviceorder.ServiceOrderNote" />
+	<typeAlias alias="transactionRule"
+		type="com.newco.marketplace.dto.vo.ledger.TransactionRuleVO" />
+	<typeAlias alias="transaction"
+		type="com.newco.marketplace.dto.vo.ledger.TransactionVO" />
+	<typeAlias alias="transactionEntry"
+		type="com.newco.marketplace.dto.vo.ledger.TransactionEntryVO" />
+	<typeAlias alias="businessTrans"
+		type="com.newco.marketplace.dto.vo.ledger.LedgerBusinessTransactionVO" />
+	<typeAlias alias="businessTransAccount"
+		type="com.newco.marketplace.dto.vo.ledger.LedgerBusinessTransactionAccountVO" />
+	<typeAlias alias="transactionEntryType"
+		type="com.newco.marketplace.dto.vo.ledger.TransactionEntryTypeVO" />
+	<typeAlias alias="ledgerSummary"
+		type="com.newco.marketplace.dto.vo.ledger.LedgerSummaryVO" />
+	<typeAlias alias="glprocesslog"
+		type="com.newco.marketplace.dto.vo.ledger.GlProcessLogVO" />
+	<typeAlias alias="baifilevo"
+		type="com.newco.marketplace.dto.vo.ledger.BAIFileVO" />
+	<typeAlias alias="LedgerIdsList"
+		type="com.newco.marketplace.dto.vo.ledger.LedgerIdsVO" />
+	<typeAlias alias="fiscalCalendar"
+		type="com.newco.marketplace.dto.vo.ledger.FiscalCalendarVO" />
+	<typeAlias alias="ajaxVO"
+		type="com.newco.marketplace.dto.vo.ajax.AjaxCacheVO" />
+	<typeAlias alias="account"
+		type="com.newco.marketplace.dto.vo.ledger.Account" />
+	<typeAlias alias="glSummary"
+		type="com.newco.marketplace.dto.vo.ledger.GLSummaryVO"/>
+	<typeAlias alias="accountHistory"
+		type="com.newco.marketplace.dto.vo.ledger.AccountHistoryVO"/>		
+	<typeAlias alias="nachaProcessQueueVo" 
+		type="com.newco.marketplace.dto.vo.ach.NachaProcessQueueVO"/>
+
+	<typeAlias alias="glDetailVO" 
+		type="com.newco.marketplace.dto.vo.fullfillment.GLDetailVO"/>
+
+	<typeAlias alias="soReceiptsVO"
+		type="com.newco.marketplace.vo.receipts.SOReceiptsVO"/>
+	<typeAlias alias="fmReportVO" 
+		type="com.newco.marketplace.dto.vo.financemanger.FMReportVO"/>
+	<typeAlias alias="providerPaymentBySO" 
+		type="com.newco.marketplace.dto.vo.financemanger.ProviderSOReportVO"/>
+    <typeAlias alias="fmW9ProfileVO" 
+		type="com.newco.marketplace.dto.vo.financemanger.FMW9ProfileVO"/>
+    <typeAlias alias="buyerSOReportVO" 
+		type="com.newco.marketplace.dto.vo.financemanger.BuyerSOReportVO"/>
+	 <typeAlias alias="adminPaymentVO" 
+		type="com.newco.marketplace.dto.vo.financemanger.AdminPaymentVO"/>		
+	<typeAlias alias="exportStatusVO" 
+		type="com.newco.marketplace.dto.vo.financemanger.ExportStatusVO"/>	
+	<typeAlias alias="transferReasonCodeVO"
+		type="com.newco.marketplace.vo.audit.TransferReasonCodeVO"/>
+			
+    <resultMap id="spVLBCResult" class="balanceVO">
+        <result property="ledgerEntryId" column="ledger_entry_id"/>
+        <result property="transAmount" column="out_balanceAmount"/>
+        <result property="validatedAmount" column="validated_amount"/>
+    </resultMap>
+
+    <parameterMap id="spVLBCBalance" class="java.util.Map">
+        <parameter property="in_ledgerEntryId" mode="IN"/>
+    </parameterMap>
+	
+	<!-- Query to load all records -->
+
+	<select id="transaction_rule.query" parameterClass="transactionRule"
+		resultClass="transactionRule">
+		SELECT  lbt.bus_trans_id as busTransId, 
+			lbt.bus_trans_type as busTransType, 
+			lbt.bus_trans_descr as busTransDescr,
+			ltr.ledger_entry_rule_id as ledgerEntryRuleId,
+			ltr.ledger_entity_type_id as ledgerEntityTypeId,
+			ltr.transaction_type_id as transactionTypeId, ltr.type as
+			transRuleType, ltr.descr as transRuleDescr,
+			ltr.debit_entity_type_id as transRuleDebitEntityTypeId,
+			ltr.debit_t_acct_no as transRuleDebitTAcctNo,
+			ltr.credit_entity_type_id as transRuleCreditEntityTypeId,
+			ltr.credit_t_acct_no as transRuleCreditTAcctNo, 
+			let.type as entityType, 
+			let.descr as entityDescr, 
+			let.default_entity_id as entityDefaultEntityId, 
+			lra.t_acct_no as refAcctsDebitTAcctNo,
+			lra.locn as refAcctsDebitLocn, lra.descr1 as
+			refAcctsDebitDescr1, lra.descr2 as refAcctsDebitDescr2,
+			lra2.t_acct_no as refAcctsCreditTAcctNo, 
+			lra2.locn as refAcctsCreditLocn, 
+			lra2.descr1 as refAcctsCreditDescr1,
+			lra2.descr2 as refAcctsCreditDescr2,
+			ltr.affects_balance as affectsBalanceInd,
+			ltr.auto_ach_ind as autoAchInd
+		FROM ledger_business_transaction lbt, 
+		    ledger_transaction_rule ltr,
+			ledger_transaction_types ltt, 
+			ledger_reference_accounts lra,
+			ledger_reference_accounts lra2, 
+			ledger_entity_type let
+		<isEqual property="ledgerEntityTypeId" compareValue="10">
+			, ledger_transaction_rule_funding ltrf
+		</isEqual>
+		WHERE lbt.bus_trans_id = ltr.bus_trans_id AND
+			ltr.ledger_entity_type_id = let.ledger_entity_type_id AND
+			ltr.transaction_type_id = ltt.transaction_type_id AND
+			ltr.debit_t_acct_no = lra.t_acct_no AND 
+			ltr.credit_t_acct_no = lra2.t_acct_no AND 
+			lbt.bus_trans_id = #busTransId#
+			<!-- AND let.ledger_entity_type_id = #ledgerEntityTypeId#   -->
+		<isEqual property="ledgerEntityTypeId" compareValue="10">
+			AND ltrf.bus_trans_id = lbt.bus_trans_id AND
+			ltrf.ledger_entry_rule_id = ltr.ledger_entry_rule_id AND
+			ltrf.funding_type_id = #fundingTypeId#
+		</isEqual>
+		order by ltr.sort_order
+	</select>
+	
+	<select id="gl_summary.query" resultClass="glSummary" parameterClass="java.util.HashMap">
+		SELECT le.ledger_entry_id as ledgerEntryId,
+			lte.transaction_id as transactionId,
+			lte.ledger_entity_type_id as ledgerEntityTypeId,
+			lte.ledger_entity_id as ledgerEntityId,
+			lte.trans_amount as transactionAmount,
+			lgta.gl_t_account_no as gl_t_account_no,
+			lte.entry_type_id as entryTypeId,
+			lgta.credit_ind as creditInd,
+			lte.created_date as createdDate,
+			lte.modified_date as modifiedDate,
+			lra.gl_division as gl_division,
+			le.so_id as soId
+		FROM ledger_entry le JOIN ledger_transaction_entry lte ON (le.ledger_entry_id=lte.ledger_entry_id)
+		     JOIN ledger_reference_accounts lra ON (lte.t_acct_no=lra.t_acct_no)
+		     JOIN ledger_gl_t_accounts lgta ON (lra.gl_t_account_no = lgta.gl_t_account_no)
+		WHERE
+			lgta.active_ind = 1 AND le.entry_date >= DATE(#glDate#)
+			AND	(
+				((le.reconsiled_ind = 1 OR lte.transaction_type_id=800) AND DATE(le.entry_date) = DATE(#glDate#))
+				OR 
+				(le.reconsiled_ind = 1 AND lte.transaction_type_id=100 AND DATE(le.reconsided_date) = DATE(#glDate#)) 
+			)
+		ORDER BY gl_t_account_no, gl_division ASC
+	</select>
+	
+	<select id="query.getAllGLTAccounts" resultClass="glSummary">
+		SELECT gl_t_account_no, gl_division FROM ledger_gl_t_accounts
+	</select>
+	<select id="nacha_fee_details.query" resultClass="ledgerSummary"
+		parameterClass="ledgerSummary">
+		SELECT le.ledger_entry_id as ledgerEntryId,
+		lte.transaction_type_id as transactionTypeId, lte.trans_amount
+		as transactionAmount FROM ledger_entry le,
+		ledger_transaction_entry lte, ledger_transaction_rule ltr WHERE
+		le.ledger_entry_id=lte.ledger_entry_id AND (le.ach_processed is
+		null OR le.ach_processed = 0) AND
+		le.ledger_entry_rule_id=ltr.ledger_entry_rule_id AND
+		lte.transaction_type_id=#transactionTypeId# AND
+		lte.ledger_entity_type_id=#ledgerEntityTypeId#
+	</select>
+	<select id="ledger_entries_transaction_types.query"
+		resultClass="java.lang.Integer" parameterClass="LedgerIdsList">
+		SELECT le.ledger_entry_id FROM ledger_entry le,
+		ledger_transaction_rule ltr WHERE
+		le.ledger_entry_rule_id=ltr.ledger_entry_rule_id AND
+		(le.gl_processed = 0 OR gl_processed is null) AND
+		ltr.transaction_type_id IN
+		<iterate property="transactionTypeIds" open="(" close=")"
+			conjunction=",">
+			#transactionTypeIds[]#
+		</iterate>
+	</select>
+
+	<select id="ledger_entry.query" resultClass="transaction"
+		parameterClass="transaction">
+		SELECT le.ledger_entry_id as ledgerEntryId, le.bus_trans_id as
+		businessTransId, le.ledger_entry_rule_id as ledgerEntryRuleId,
+		le.entry_date as ledgerEntryDate, le.reference_no as
+		referenceNo, le.so_id as soId, le.entry_remark as entryRemark,
+		le.reconsiled_ind as reconsiledInd, le.reconsided_date as
+		reconsidedDate, le.authorized_ind as authorizedInd,
+		le.authorized_date as authorizedDate, le.authorization_no as
+		authorizationNo FROM ledger_entry le WHERE le.bus_trans_id =
+		#businessTransId#
+	</select>
+	<select id="ledger_entry_for_withdraw.query"
+		resultClass="transaction" parameterClass="java.lang.Long">
+		SELECT trans_amount as transactionAmount, created_date as createdDate from
+		ledger_transaction_entry WHERE account_id = #accountId# AND
+		entry_type_id = '2' and date(created_date) = date(NOW())
+	</select>
+
+	<select id="ledger_business_trans.query" resultClass="businessTrans"
+		parameterClass="java.lang.Integer">
+		SELECT lbt.bus_trans_id as businessTransId, lbt.bus_trans_type
+		as businessTransType, lbt.bus_trans_descr as businessTransDesc
+		FROM ledger_business_transaction lbt WHERE lbt.bus_trans_id =
+		#businessTransId#
+	</select>
+
+	<select id="ledger_transaction_entry.query"
+		resultClass="transactionEntry" parameterClass="java.lang.Integer">
+		SELECT lte.transaction_id as transactionId,
+		lte.transaction_type_id as transactionTypeId,
+		lte.ledger_entry_id as ledgerEntryId, lte.ledger_entity_type_id
+		as ledgerEntityTypeId, lte.ledger_entity_id as ledgerEntityId,
+		lte.entry_type_id as entryTypeId, lte.trans_amount as
+		transactionAmount, t_acct_no as transactionAccountNo FROM
+		ledger_transaction_entry lte WHERE lte.ledger_entry_id =
+		#ledgerEntryId#
+	</select>
+
+	<select id="ledger_transaction_entry_byEntityId.query"
+		resultClass="transactionEntry" parameterClass="ajaxVO">
+		SELECT lte.transaction_id as transactionId,
+		lte.transaction_type_id as transactionTypeId,
+		lte.ledger_entry_id as ledgerEntryId, lte.ledger_entity_type_id
+		as ledgerEntityTypeId, lte.ledger_entity_id as ledgerEntityId,
+		lte.entry_type_id as entryTypeId, lte.trans_amount as
+		transactionAmount, t_acct_no as transactionAccountNo, 
+		le.reconsiled_ind as reconsiledInd FROM
+		ledger_transaction_entry lte, ledger_entry le
+		<dynamic prepend=" WHERE">
+			<isNotNull property="roleType">
+				lte.ledger_entity_id = #companyId#
+			</isNotNull>
+			<isNotNull property="roleType">
+				AND lte.ledger_entry_id=le.ledger_entry_id
+			</isNotNull>
+			<isEqual property="roleType" compareValue="BUYER">
+				AND lte.ledger_entity_type_id=10
+			</isEqual>
+			<isEqual property="roleType" compareValue="PROVIDER">
+				AND lte.ledger_entity_type_id=20
+			</isEqual>
+			<isEqual property="roleType" compareValue="NEWCO">
+				AND lte.ledger_entity_type_id=90
+			</isEqual>
+		</dynamic>
+
+	</select>
+	
+	<select id="ledger_transactions_by_sloperation.query"
+		resultClass="transactionEntry">
+		SELECT lte.transaction_id as transactionId,
+		lte.transaction_type_id as transactionTypeId,
+		lte.ledger_entry_id as ledgerEntryId, lte.ledger_entity_type_id
+		as ledgerEntityTypeId, lte.ledger_entity_id as ledgerEntityId,
+		lte.entry_type_id as entryTypeId, lte.trans_amount as
+		transactionAmount, t_acct_no as transactionAccountNo
+		FROM ledger_transaction_entry lte, ledger_entry le
+		WHERE le.reconsiled_ind=1 AND lte.ledger_entity_type_id= 90 AND lte.ledger_entry_id=le.ledger_entry_id
+	</select>	
+	
+	
+	<select id="ledger_transaction_entry_byEntityId_for_current.query"
+		resultClass="transactionEntry" parameterClass="ajaxVO">
+
+		select 1 as entryTypeId, 0.00 as transactionAmount
+		union
+		select 2, project_balance
+		from ledger_balance 
+		where ledger_balance_id=(
+			select ledger_balance_id from ledger_balance use index (IDX_ledger_balance_max_balance)
+			where ledger_entity_id=#companyId# and ledger_entity_type_id = 10
+			order by ledger_balance_id DESC LIMIT 1
+		)
+	</select>
+	
+	<select id="ledger_transaction_entry_byEntityId_for_pendingRequests.query"
+		resultClass="transactionEntry" parameterClass="ajaxVO">
+		select lte.transaction_id as transactionId,
+		lte.transaction_type_id as transactionTypeId,
+		lte.ledger_entry_id as ledgerEntryId, lte.ledger_entity_type_id
+		as ledgerEntityTypeId, lte.ledger_entity_id as ledgerEntityId,
+		lte.entry_type_id as entryTypeId, lte.trans_amount as
+		transactionAmount, t_acct_no as transactionAccountNo 
+		FROM ledger_transaction_entry lte, ledger_entry le 
+		WHERE le.ledger_entry_id = lte.ledger_entry_id
+		and lte.ledger_entity_id = #companyId# 
+		and lte.ledger_entity_type_id = 10
+		and le.bus_trans_id = 10
+		and le.reconsiled_ind = 0
+	</select>
+	
+	<select id="ledger_trans_entry_type.query"
+		resultClass="transactionEntryType">
+		SELECT entry_type_id as entryTypeId, type as type, descr as
+		descr FROM ledger_trans_entry_type
+	</select>
+
+	<insert id="ledger_entry.insert" parameterClass="transaction">
+		INSERT INTO ledger_entry (ledger_entry_id, bus_trans_id,
+		ledger_entry_rule_id, entry_date, reference_no, so_id,
+		entry_remark, reconsiled_ind, authorized_ind, authorized_date,
+		authorization_no, reconsided_date, gl_processed, transfer_reason_code_id,user_name,affects_balance)
+		VALUES(#ledgerEntryId#, #businessTransId#, #ledgerEntryRuleId#,
+		#ledgerEntryDate#, #referenceNo#, #soId#, #entryRemark#,
+		#reconsiledInd#, #authorizedInd#, #authorizedDate#,
+		#authorizationNo#, #reconsidedDate#, 0, #transferReasonCode#,#user#,#affectsBalanceInd#)
+	</insert>
+
+	<insert id="ledger_transaction_entry.insert"
+		parameterClass="transactionEntry">
+		INSERT INTO ledger_transaction_entry (transaction_id,
+		transaction_type_id, ledger_entry_id, ledger_entity_type_id,
+		ledger_entity_id, originating_buyer_id, entry_type_id, trans_amount, t_acct_no,
+		cc_ind, created_date, modified_date, modified_by,account_id)
+		VALUES(#transactionId#, #transactionTypeId#, #ledgerEntryId#,
+		#ledgerEntityTypeId#, #ledgerEntityId#, #originatingBuyerId#, #entryTypeId#,
+		#transactionAmount#, #taccountNo#, #CCInd#, #createdDate#,
+		#modifiedDate#, #modifiedBy#,#accountNumber#)
+	</insert>
+
+	<insert id="ledger_business_transaction.insert"
+		parameterClass="businessTrans">
+		INSERT INTO ledger_business_transaction (bus_trans_id,
+		bus_trans_type, bus_trans_descr ) VALUES (#businessTransId#,
+		#businessTransType#, #businessTransDesc# )
+	</insert>
+
+	<select id="ledger_entry_glprocessed.query"
+		resultClass="transaction" parameterClass="java.lang.Long">
+		SELECT le.ledger_entry_id as ledgerEntryId, le.bus_trans_id as
+		businessTransId, le.ledger_entry_rule_id as ledgerEntryRuleId,
+		le.entry_date as ledgerEntryDate, le.reference_no as
+		referenceNo, le.so_id as soId, le.entry_remark as entryRemark,
+		le.reconsiled_ind as reconsiledInd, le.reconsided_date as
+		reconsidedDate, le.authorized_ind as authorizedInd,
+		le.authorized_date as authorizedDate, le.authorization_no as
+		authorizationNo, le.gl_processed as glProcessed,
+		le.gl_processed_date glProcessedDate FROM ledger_entry le WHERE
+		le.ledger_entry_id = #ledgerEntryId#
+
+
+	</select>
+
+	<update id="ledger_entry_glprocessed.update"
+		parameterClass="java.util.ArrayList">
+		UPDATE ledger_entry SET gl_processed = 1, gl_processed_date = now(), 
+		gl_process_id = #ledgerEntries[0].gl_process_id#
+		WHERE ledger_entry_id IN
+		<iterate  open="(" close=")"
+			conjunction=",">
+			#ledgerEntries[].ledgerEntryId#
+		</iterate>
+	</update>
+	
+	<update id="ledger_entry_fullfillment_grp_id.update"
+		parameterClass="java.util.HashMap">
+		UPDATE ledger_entry SET fullfillment_grp_id = #fullfillmentGroupId# 
+		WHERE ledger_entry_id = #ledgerEntryId#
+	</update>
+	
+	
+	<select id="account_hdr.query" resultClass="account"
+		parameterClass="java.lang.Integer">
+		SELECT account_id as account_id ,bank_name as bank_name, card_holder_name as account_holder_name,
+		country_id as country_id, entity_id as owner_entity_id,entity_type_id as owner_entity_type_id,
+		account_no as account_no, account_type_id as account_type_id,
+		account_status_id as account_status_id, routing_no as
+		routing_no, card_type_id as cardTypeId, account_descr as account_descr, created_date as
+		created_date, modified_date as modified_date, modified_by as
+		modified_by from account_hdr where entity_id =#entityId# 
+	</select>
+	
+<!-- 	code change for SLT-2112 -->
+	<select id="account_hdr_active.query" resultClass="account"
+		parameterClass="java.util.HashMap">
+			SELECT account_id as account_id ,bank_name as bank_name,card_holder_name as account_holder_name,
+			country_id as country_id, entity_id as owner_entity_id,entity_type_id as owner_entity_type_id,
+			account_no as account_no, account_type_id as account_type_id,
+			account_status_id as account_status_id,active_ind as active_ind, enabled_ind as enabled_ind,routing_no as
+			routing_no, card_type_id as cardTypeId, account_descr as account_descr, created_date as
+			created_date, modified_date as modified_date, modified_by as
+			modified_by from account_hdr where entity_id =#entityId# and active_ind = 1 and account_type_id != 30
+			and account_type_id != 60
+	</select>
+	
+	<select id="account_hdr_escheat_active.query" resultClass="account"
+		parameterClass="java.lang.Integer">
+			SELECT account_id as account_id ,bank_name as bank_name,card_holder_name as account_holder_name,
+			country_id as country_id, entity_id as owner_entity_id,entity_type_id as owner_entity_type_id,
+			account_no as account_no, account_type_id as account_type_id,
+			account_status_id as account_status_id,active_ind as active_ind, enabled_ind as enabled_ind,routing_no as
+			routing_no, card_type_id as cardTypeId, account_descr as account_descr, created_date as
+			created_date, modified_date as modified_date, modified_by as
+			modified_by from account_hdr where entity_id =#entityId# and active_ind = 1 and account_type_id != 30
+			and account_type_id = 60
+	</select>
+	
+		<select id="account_hdr_active_all.query" resultClass="account"
+			parameterClass="java.lang.Integer">
+			SELECT account_id as account_id ,bank_name as bank_name, card_holder_name as account_holder_name,
+			country_id as country_id, entity_id as owner_entity_id,entity_type_id as owner_entity_type_id,
+			account_no as account_no, account_type_id as account_type_id,
+			account_status_id as account_status_id, routing_no as
+			routing_no, card_type_id as cardTypeId, account_descr as account_descr, created_date as
+			created_date, modified_date as modified_date, modified_by as
+			modified_by from account_hdr where entity_id =#entityId# and active_ind = 1
+	</select>	
+	
+	<select id="ledger_entry_ruleid.query" resultClass="ledgerSummary"
+		parameterClass="java.lang.Integer">
+		SELECT le.ledger_entry_id as ledgerEntryId FROM ledger_entry le
+		WHERE le.ledger_entry_rule_id=#ruleId# AND le.gl_processed=0
+	</select>
+
+	<insert id="gl_feed_long.insert" parameterClass="glprocesslog">
+		INSERT INTO gl_process_log (process_date,
+		generated_file_name, process_successful, initiated_manually,from_date,to_date)
+		VALUES (#processDate#, #fileName#,
+		#processSuccesfull#, #initiatedManually#,#fromDate#,#toDate#)
+		<selectKey resultClass="int">
+	            SELECT last_insert_id() as glProcessId
+	    </selectKey>   
+	</insert>
+	<!-- This method is used to update ledger transactions from BAI file data. -->
+	<update id="bai_reconsile.update" parameterClass="baifilevo">
+		UPDATE ledger_entry
+		<dynamic prepend="SET">
+			<isNotNull prepend=", " property="reconsiledInd">
+				reconsiled_ind = #reconsiledInd#, reconsided_date = now()
+			</isNotNull>
+
+		</dynamic>
+		where ledger_entry_id = #ledgerEntryId#
+
+	</update>
+	
+	<!-- This method is used to update ledger transactions entry table from BAI file data. -->
+	<update id="lte_modified_date.update" parameterClass="baifilevo">
+		UPDATE ledger_transaction_entry 
+		set modified_date = #modifiedDate#
+		where ledger_entry_id = #ledgerEntryId#
+
+	</update>
+	
+	<select id="fiscal_calendar.query" resultClass="fiscalCalendar"
+		parameterClass="fiscalCalendar">
+		SELECT acct_yr as accountingYear, acct_qtr as accountingQuarter,
+		acct_mo as accountingMonth, cal_wk_start_date as
+		calendarStartWeek, cal_wk_end_date as calendarEndWeek, period_wk
+		as preiodWeek, no_wk_period as numberWorkPeriod, qtr_fiscal_wk
+		as quarterFiscalWeek, yr_fiscal_wk as yearFiscalWeek,
+		acct_mo_descr as accountingMonthDesc FROM ledger_fiscal_calendar
+		WHERE #checkFiscalWeek# BETWEEN cal_wk_start_date AND
+		cal_wk_end_date
+
+	</select>
+	
+	<select id="gl_t_account.query" parameterClass="glSummary" resultClass="glSummary">
+		select gl_division, category, descr
+		from ledger_gl_t_accounts
+		where gl_t_account_no =#gl_t_account_no#
+		<isNotNull prepend="AND" property="gl_division">
+			gl_division =#gl_division#
+		</isNotNull>
+	</select>
+	<insert id="save_account.insert" parameterClass="account">
+		INSERT INTO account_hdr( account_id, bank_name, card_holder_name, entity_type_id, entity_id,
+		country_id, account_no, account_type_id, account_status_id,
+		routing_no, account_descr, active_ind, enabled_ind) VALUES( #account_id#, #bank_name#, #account_holder_name#, #owner_entity_type_id#,
+		#owner_entity_id#, #country_id#, #account_no#,
+		#account_type_id#, #account_status_id#, #routing_no#, #account_descr#, #active_ind#, #enabled_ind#)
+	</insert>
+	<update id="save_account.update" parameterClass="account">
+		update account_hdr set bank_name = #bank_name#, entity_type_id =
+		#owner_entity_type_id#, entity_id = #owner_entity_id#,
+		country_id = #country_id#, account_no = #account_no#,
+		account_type_id = #account_type_id#, account_status_id =
+		#account_status_id#, routing_no = #routing_no#, account_descr = #account_descr# where account_id
+		= #account_id#
+	</update>
+	
+	<update id="deactivate_account.update" parameterClass="account">
+		update account_hdr set active_ind = #active_ind#
+		where account_id = #account_id#
+	</update>
+	
+	<select id="gl_process_log_id.query" resultClass="java.lang.Integer">
+		select max(gl_process_id) from gl_process_log
+	</select>
+	
+	<select id="account_history.query"
+		resultClass="accountHistory" parameterClass="accountHistory">
+		SELECT transactionId, entryDate, modifiedDate, transactionalType,
+ 		soId, achReconciledInd, achProcessId, achRejectId, ledgerReconciledInd,  transAmount,credDebInd, availableBalance, rejectReasonCode  from (
+		SELECT  te.transaction_id   AS transactionId, le.entry_date  AS entryDate,
+		te.modified_date AS modifiedDate, ltr.descr AS transactionalType, le.so_id AS soId,
+		apq.reconciled_ind   AS achReconciledInd, apq.ach_process_id   AS achProcessId,
+		apq.reject_reason_id AS achRejectId, le.reconsiled_ind AS ledgerReconciledInd,
+		te.trans_amount AS transAmount, te.entry_type_id AS credDebInd,
+		lb.available_balance AS availableBalance, arc.reason_code AS rejectReasonCode, lb.ledger_balance_id AS balanceId,te.modified_date AS mDate
+		FROM   ledger_transaction_entry te
+		JOIN ledger_entry le ON ( te.ledger_entry_id = le.ledger_entry_id )
+		JOIN ledger_transaction_rule ltr ON ( ltr.ledger_entry_rule_id = le.ledger_entry_rule_id )
+		LEFT JOIN ledger_balance lb ON (lb.ledger_entry_id = le.ledger_entry_id
+		AND lb.ledger_entity_type_id = te.ledger_entity_type_id AND te.ledger_entity_id = lb.ledger_entity_id)
+		LEFT JOIN ach_process_queue apq ON (apq.ledger_entry_id = le.ledger_entry_id)
+		LEFT JOIN lu_ach_reason_codes arc ON (arc.reason_id = apq.reject_reason_id)
+		WHERE te.ledger_entity_id = #entityId# AND te.ledger_entity_type_id = #entityTypeId#
+			<isNotNull prepend="AND" property="fromDate">
+				te.modified_date  <![CDATA[ >= ]]> #fromDate#
+			</isNotNull>
+			<isNotNull prepend="AND" property="toDate">
+				te.modified_date  <![CDATA[ < ]]> #toDate#
+			</isNotNull>
+		ORDER BY te.modified_date DESC 
+		 <isNotEqual property="returnCountLimit" compareValue="0">
+				LIMIT #returnCountLimit#
+		 </isNotEqual>		
+		) a ORDER BY mDate DESC,balanceId DESC
+	</select>
+	
+	<select id="account_history_count.query"
+		resultClass="java.lang.Integer" parameterClass="accountHistory">
+			SELECT COUNT(*)
+        	FROM   ledger_entry le
+               	JOIN ledger_transaction_entry te
+                 	ON ( te.ledger_entry_id = le.ledger_entry_id )
+               	JOIN ledger_transaction_rule ltr
+                 	ON ( ltr.ledger_entry_rule_id = le.ledger_entry_rule_id)
+       			LEFT JOIN ledger_balance lb
+         			ON ( lb.ledger_entry_id = le.ledger_entry_id
+              		AND lb.ledger_entity_type_id = te.ledger_entity_type_id
+              		AND te.ledger_entity_id = lb.ledger_entity_id )
+       			LEFT JOIN ach_process_queue apq
+         			ON ( apq.ledger_entry_id = le.ledger_entry_id )
+       			LEFT JOIN lu_ach_reason_codes arc
+         			ON ( arc.reason_id = apq.reject_reason_id )         
+        	WHERE  te.ledger_entity_id = #entityId#
+               		AND te.ledger_entity_type_id = #entityTypeId#
+       		<isNotNull prepend="AND" property="fromDate">
+               te.modified_date  <![CDATA[ >= ]]> #fromDate#
+        	</isNotNull>
+             
+        	<isNotNull prepend="AND" property="toDate">
+              te.modified_date <![CDATA[ < ]]> #toDate#
+       		</isNotNull>
+ 	</select>
+
+	
+	<select id="account_history_sladmin_count.query"
+		resultClass="java.lang.Integer" parameterClass="accountHistory">
+		SELECT      COUNT(*)
+        FROM ledger_transaction_entry te JOIN ledger_entry le ON (te.ledger_entry_id = le.ledger_entry_id)
+             	JOIN ledger_transaction_rule ltr ON (ltr.ledger_entry_rule_id = le.ledger_entry_rule_id)
+            LEFT JOIN ledger_balance lb ON (lb.ledger_entry_id = te.ledger_entry_id AND lb.ledger_entity_type_id = te.ledger_entity_type_id AND te.ledger_entity_id = lb.ledger_entity_id)
+           	LEFT JOIN ach_process_queue apq ON (apq.ledger_entry_id = te.ledger_entry_id)
+           	LEFT JOIN lu_ach_reason_codes arc ON (arc.reason_id = apq.reject_reason_id)
+           	LEFT JOIN account_hdr ahr ON te.account_id=ahr.account_id AND te.ledger_entity_type_id=ahr.entity_type_id
+        WHERE te.ledger_entity_id = #entityId# AND te.ledger_entity_type_id = #entityTypeId#
+         <isNotNull prepend="AND" property="fromDate">
+         		te.modified_date  <![CDATA[ >= ]]> #fromDate#
+         </isNotNull>
+         <isNotNull prepend="AND" property="toDate">
+               	te.modified_date  <![CDATA[ < ]]> #toDate#
+         </isNotNull>
+	</select>
+	
+	<select id="account_history_sladmin.query"
+		resultClass="accountHistory" parameterClass="accountHistory">
+		SELECT transactionId, entryDate, modifiedDate, transactionalType,
+ 		soId, achReconciledInd, achProcessId, achRejectId, ledgerReconciledInd,  transAmount,credDebInd, availableBalance,bankName, rejectReasonCode ,accountId , accountNumber from (
+		SELECT 	te.transaction_id   AS transactionId,
+       			le.entry_date       AS entryDate,
+       			te.modified_date    AS modifiedDate,
+       			ltr.descr            AS transactionalType,
+       			le.so_id            AS soId,
+				apq.reconciled_ind AS achReconciledInd,
+				apq.ach_process_id AS achProcessId,
+            	apq.reject_reason_id AS achRejectId,
+				le.reconsiled_ind AS ledgerReconciledInd,
+				te.trans_amount AS transAmount,
+				te.entry_type_id AS credDebInd,
+				lb.available_balance AS availableBalance,
+            	CASE ahr.account_type_id 
+		         	WHEN 30 THEN (SELECT card_type FROM lu_card_types where lu_card_types.card_id = ahr.card_type_id)
+		       		ELSE bank_name
+				END  as bankName,
+            	arc.reason_code AS rejectReasonCode,
+            	lb.ledger_balance_id AS balanceId,
+				ahr.account_id as accountId,
+				ahr.account_no as accountNumber,te.modified_date AS mDate
+		FROM   ledger_transaction_entry te
+         JOIN ledger_entry le ON ( te.ledger_entry_id = le.ledger_entry_id )
+         JOIN ledger_transaction_rule ltr ON ( ltr.ledger_entry_rule_id = le.ledger_entry_rule_id )
+	     LEFT JOIN ledger_balance lb ON (lb.ledger_entry_id = le.ledger_entry_id AND lb.ledger_entity_type_id = te.ledger_entity_type_id AND te.ledger_entity_id = lb.ledger_entity_id)
+	     LEFT JOIN ach_process_queue apq ON (apq.ledger_entry_id = le.ledger_entry_id)
+	     LEFT JOIN lu_ach_reason_codes arc ON (arc.reason_id = apq.reject_reason_id)
+	     LEFT JOIN account_hdr ahr ON te.account_id=ahr.account_id and te.ledger_entity_type_id=ahr.entity_type_id
+		WHERE te.ledger_entity_id = #entityId# AND te.ledger_entity_type_id = #entityTypeId#
+	         <isNotNull prepend="AND" property="fromDate">
+				te.modified_date  <![CDATA[ >= ]]> #fromDate#
+			</isNotNull>
+			<isNotNull prepend="AND" property="toDate">
+				te.modified_date  <![CDATA[ < ]]> #toDate#
+			</isNotNull>
+		ORDER BY te.modified_date DESC 
+		<isNotEqual property="returnCountLimit" compareValue="0">
+				LIMIT #returnCountLimit#
+		</isNotEqual>	
+		) a order by  mDate DESC,balanceId DESC
+	</select>
+
+	
+		<select id="account_history_record.query"
+		resultClass="accountHistory" parameterClass="accountHistory">
+		select transactionId, entryDate, modifiedDate, transactionalType,
+ 		soId, achReconciledInd, achProcessId, achRejectId, ledgerReconciledInd,  transAmount,credDebInd, availableBalance, rejectReasonCode from (
+		SELECT 	te.transaction_id   AS transactionId,
+       			le.entry_date       AS entryDate,
+       			te.modified_date    AS modifiedDate,
+       			ltr.descr            AS transactionalType,
+       			le.so_id            AS soId,
+       			apq.reconciled_ind   AS achReconciledInd,
+       			apq.ach_process_id   AS achProcessId,
+       			apq.reject_reason_id AS achRejectId,
+       			le.reconsiled_ind   AS ledgerReconciledInd,
+       			te.trans_amount     AS transAmount,
+       			te.entry_type_id    AS credDebInd,
+       			lb.available_balance AS availableBalance,
+       			lb.ledger_balance_id AS balanceId,
+       			arc.reason_code      AS rejectReasonCode,te.modified_date AS mDate
+		FROM   ledger_transaction_entry te
+         JOIN ledger_entry le ON ( te.ledger_entry_id = le.ledger_entry_id )
+         JOIN ledger_transaction_rule ltr ON ( ltr.ledger_entry_rule_id = le.ledger_entry_rule_id )
+	     LEFT JOIN ledger_balance lb ON (lb.ledger_entry_id = le.ledger_entry_id AND lb.ledger_entity_type_id = te.ledger_entity_type_id AND te.ledger_entity_id = lb.ledger_entity_id)
+	     LEFT JOIN ach_process_queue apq ON (apq.ledger_entry_id = le.ledger_entry_id)
+	     LEFT JOIN lu_ach_reason_codes arc ON (arc.reason_id = apq.reject_reason_id)
+		WHERE te.ledger_entity_id = #entityId# AND te.ledger_entity_type_id = #entityTypeId#
+	        <isNotNull prepend="AND" property="fromDate">
+				te.modified_date  <![CDATA[ >= ]]> #fromDate#
+			</isNotNull>
+			<isNotNull prepend="AND" property="toDate">
+				te.modified_date  <![CDATA[ < ]]> #toDate#
+			</isNotNull>
+		ORDER BY te.modified_date DESC 
+		<isNotNull property="startIndex" prepend="LIMIT ">
+			#startIndex#
+		</isNotNull>
+		<isNotNull property="numberOfRecords" prepend=",  ">
+			 #numberOfRecords#
+		</isNotNull> 
+		) a order by mDate DESC,balanceId DESC
+	</select>
+	
+	
+	<select id="account_history_sladmin_record.query"
+		resultClass="accountHistory" parameterClass="accountHistory">
+		SELECT transactionId, entryDate, modifiedDate, transactionalType,
+ 		soId, achReconciledInd, achProcessId, achRejectId, ledgerReconciledInd,  transAmount,credDebInd, availableBalance,bankName, rejectReasonCode ,accountId , accountNumber from (
+		SELECT 	te.transaction_id   AS transactionId,
+       			le.entry_date       AS entryDate,
+       			te.modified_date    AS modifiedDate,
+       			ltr.descr            AS transactionalType,
+       			le.so_id            AS soId,
+				apq.reconciled_ind AS achReconciledInd,
+				apq.ach_process_id AS achProcessId,
+            	apq.reject_reason_id AS achRejectId,
+				le.reconsiled_ind AS ledgerReconciledInd,
+				te.trans_amount AS transAmount,
+				te.entry_type_id AS credDebInd,
+				lb.available_balance AS availableBalance,
+            	CASE ahr.account_type_id 
+		         	WHEN 30 THEN (SELECT card_type FROM lu_card_types where lu_card_types.card_id = ahr.card_type_id)
+		       		ELSE bank_name
+				END  as bankName,
+            	arc.reason_code AS rejectReasonCode,
+            	lb.ledger_balance_id AS balanceId,
+				ahr.account_id as accountId,
+				ahr.account_no as accountNumber,te.modified_date AS mDate
+		 FROM   ledger_transaction_entry te
+         JOIN ledger_entry le ON ( te.ledger_entry_id = le.ledger_entry_id )
+         JOIN ledger_transaction_rule ltr ON ( ltr.ledger_entry_rule_id = le.ledger_entry_rule_id )
+	     LEFT JOIN ledger_balance lb ON (lb.ledger_entry_id = le.ledger_entry_id AND lb.ledger_entity_type_id = te.ledger_entity_type_id AND te.ledger_entity_id = lb.ledger_entity_id)
+	     LEFT JOIN ach_process_queue apq ON (apq.ledger_entry_id = le.ledger_entry_id)
+	     LEFT JOIN lu_ach_reason_codes arc ON (arc.reason_id = apq.reject_reason_id)
+	     LEFT JOIN account_hdr ahr ON te.account_id=ahr.account_id and te.ledger_entity_type_id=ahr.entity_type_id
+		WHERE te.ledger_entity_id = #entityId# AND te.ledger_entity_type_id = #entityTypeId#
+	         <isNotNull prepend="AND" property="fromDate">
+				te.modified_date  <![CDATA[ >= ]]> #fromDate#
+			</isNotNull>
+			<isNotNull prepend="AND" property="toDate">
+				te.modified_date  <![CDATA[ < ]]> #toDate#
+			</isNotNull>
+		ORDER BY te.modified_date DESC
+		<isNotNull property="startIndex" prepend="LIMIT ">
+			#startIndex#
+		</isNotNull>
+		<isNotNull property="numberOfRecords" prepend=",  ">
+		 #numberOfRecords#
+		</isNotNull>
+		) a order by mDate DESC,balanceId DESC
+	</select>
+
+	<!-- <select id="returnAccountCount.query" parameterClass="account" resultClass="java.lang.Integer">
+		SELECT count(*) FROM ach_process_queue apq
+		where apq.account_id = #account_id# and
+		apq.reconciled_ind = #reconciledInd#
+	</select>  -->
+	<!--  <select id="ledgerIdsForOldAccount.query" parameterClass="account" resultClass="java.util.ArrayList">
+		SELECT ledger_entry_id from ach_process_queue 
+		WHERE account_id = #account_id# 
+		AND reconciled_ind = #reconciledInd#
+	</select>  -->
+	
+	<!-- 
+		<update id="updateledgerTransactionEntries.query" parameterClass="java.util.ArrayList" >
+		UPDATE ledger_transaction_entry SET account_id = 1
+		WHERE ledger_entry_id IN
+		<iterate  open="(" close=")"
+			conjunction=",">
+			#achProcessQueueList[].ledgerEntryId#
+		</iterate>
+	</update>
+	 -->
+	
+	<update id="updateAchProcessQueue.query" parameterClass="businessTransAccount">
+		UPDATE ach_process_queue SET account_id = #newAccount.account_id#, reconciled_ind = #newAccount.reconciledInd#
+		WHERE account_id = #oldAccount.account_id# 
+		AND reconciled_ind = #oldAccount.reconciledInd#
+	</update>
+	
+	<update id="updateledgerTransactionEntries.query" parameterClass="businessTransAccount" >
+		UPDATE ledger_transaction_entry SET account_id = #accountId#
+		WHERE ledger_entry_id IN
+		<iterate open="(" close=")"
+			conjunction="," property='ledgerEntryIdList'>
+			#ledgerEntryIdList[].ledgerEntryId#
+		</iterate>
+	</update>
+	
+	<select id="returnAccountCount.query" parameterClass="account" resultClass="java.lang.Integer">
+		SELECT count(*) FROM account_hdr ah
+		WHERE ah.account_id = #account_id# AND
+		ah.enabled_ind = #enabled_ind# AND
+		ah.active_ind = #active_ind#
+	</select>
+	
+	<update id="updateAccountEnableInd.query" parameterClass="java.util.HashMap">
+		UPDATE account_hdr SET enabled_ind = #enabledInd# 
+		WHERE account_id = #accountId#
+	</update>
+
+	<select id="getPostSOLedgerAmount.query" parameterClass="transaction" resultClass="java.lang.Double" >
+		SELECT IFNULL(SUM(credits),0) - IFNULL(SUM(debits),0) AS so_project_balance
+		FROM (
+		SELECT 
+		            CASE WHEN lte.entry_type_id = 1 THEN
+		                        IFNULL(lte.trans_amount,0) 
+		            END AS debits,
+		            CASE WHEN lte.entry_type_id = 2 THEN
+		                        IFNULL(lte.trans_amount,0) 
+		            END AS credits
+		FROM ledger_transaction_entry lte INNER JOIN ledger_entry le ON (le.ledger_entry_id = lte.ledger_entry_id)
+		WHERE lte.ledger_entity_type_id = 30 AND le.so_id = #soId#
+		) AS ledgerAmount
+	</select>
+
+	<resultMap class="nachaProcessQueueVo" id="reconciledSchedulerMap">
+		<result property="achProcessId" column="processLogId"/>
+		<result property="entryDate" column="modifiedDate"/>
+		<result property="transAmount" column="transAmount"/>
+		<result property="entityId" column="entityId"/>
+		<result property="ledgerEntryId" column="ledgerEntryId"/>
+		<result property="entityTypeId" column="entityTypeId"/>
+		<result property="transactionTypeId" column="transactionTypeId"/>
+		<result property="ledgerTransactionEntryId" column="ledgerTransactionEntryId"/>
+	</resultMap>		     
+		     
+	<select id="reconciledScheduler.query" parameterClass="java.lang.Integer" resultMap="reconciledSchedulerMap">
+		select distinct npl.nacha_process_id as processLogId, 
+		npl.modified_date as modifiedDate,
+		apq.trans_amount as transAmount,
+		apq.entity_id as entityId,
+		apq.ledger_entry_id as ledgerEntryId,
+		apq.entity_type_id as entityTypeId ,
+		IFNULL(lte.transaction_type_id,0) as transactionTypeId,
+		lte.transaction_id as ledgerTransactionEntryId  
+		from ach_process_queue apq join ach_process_log npl on npl.nacha_process_id=apq.nacha_process_log_id 
+		LEFT JOIN ledger_transaction_entry lte on apq.ledger_entry_id = lte.ledger_entry_id 
+		LEFT JOIN lu_ach_reason_codes arc on apq.reject_reason_id = arc.reason_id
+		where ((apq.reject_reason_id is null or apq.reject_reason_id = 0) or arc.reversal_ind = 0)
+		and lte.ledger_entity_id =  (Select entity_id from  ach_process_queue where ledger_entry_id = apq.ledger_entry_id)
+		and  apq.process_status_id=#value#
+	</select>
+
+	<update id="saveReassignSOHdr.update" parameterClass="java.util.HashMap">
+		update so_hdr set accepted_resource_id=#resourceId# where so_id = #soId#
+	</update>
+	
+	<insert id="saveReassignSO.insert" parameterClass="soLogging">
+		INSERT INTO so_logging(so_id,old_value,new_value,action_id,chg_comment,created_date,
+		modified_date, modified_by, role_id, created_by_name,entity_id) VALUES (#serviceOrderNo#, #oldValue#,#newValue#,
+		#actionId#, #comment#, #createdDate#, #modifiedDate#, #modifiedBy#, #roleId#, #createdByName#,#entityId#)
+	</insert>
+	
+	<update id="saveReassignSOContact.update" parameterClass="soLogging">
+		update so_contact set last_name=#lastName#,first_name=#firstName#,email=#email#,modified_date=#modifiedDate#,entity_id=#newValue# where so_id = #serviceOrderNo# and entity_id=#oldValue# and entity_type_id=20
+	</update>
+	<update id="saveReassignSoRoutedProvidersNull.update" parameterClass="soLogging">
+	    UPDATE so_routed_providers  SET 
+	          provider_resp_id=NULL,
+	          provider_resp_comment=NULL,
+	          provider_resp_date=NULL
+	    WHERE so_id=#serviceOrderNo# AND provider_resp_id=1
+	</update>
+	<update id="saveReassignSoRoutedProviders.update" parameterClass="soLogging">
+	    UPDATE so_routed_providers SET 
+	               provider_resp_id=1,
+	               provider_resp_comment=#reassignReason#,
+	               provider_resp_date=NOW()
+        WHERE resource_id=#newValue# AND  so_id=#serviceOrderNo#
+	</update>
+	<update id="reconciledScheduler.update" parameterClass="java.util.HashMap">
+		update ach_process_queue apq 
+		LEFT JOIN lu_ach_reason_codes arc on apq.reject_reason_id = arc.reason_id
+		set process_status_id =#statusSuccess#,
+		reconciled_ind = #reconsiledInd# 
+		where nacha_process_log_id = #processLogId# 
+	     and process_status_id = #StatusComplete# and ((apq.reject_reason_id is null or apq.reject_reason_id = 0 ) or arc.reversal_ind = 0)
+	</update>
+	
+	<select id="maxNotesId.query" resultClass="java.lang.Long">
+		select max(note_Id)+1 from so_notes
+	</select>
+<!--	
+	<insert id="saveReassignSONotes.insert" parameterClass="soNote">
+		INSERT INTO so_notes(so_id,note_id,created_date,note_subject,role_id,note,created_by_name,modified_date,modified_by,note_type_id,entity_id,private_ind)
+		VALUES (#soId#,#noteId#,#createdDate#, #subject#, #roleId#, #note#, #createdByName#, #modifiedDate#, #modifiedBy#, #noteTypeId#,#entityId#, #privateId#)
+	</insert>
+-->
+	<select id="ledger_transaction_deposit_sum.query"
+				resultClass="java.lang.String" parameterClass="java.lang.Integer">
+	 	SELECT SUM(trans_amount) amount  
+	 	FROM ledger_transaction_entry  lte, ledger_entry le
+    	WHERE lte.ledger_entity_id = #buyerId#
+   		AND lte.ledger_entry_id = le.ledger_entry_id AND le.bus_trans_id IN (10,260,270,210)
+	</select>
+	
+	<select id="account_hdr_all.query" resultClass="account"
+	parameterClass="java.lang.Long">
+	SELECT account_id as account_id ,bank_name as bank_name,
+	country_id as country_id, entity_id as owner_entity_id,entity_type_id as owner_entity_type_id,
+	account_no as account_no, account_type_id as account_type_id,
+	account_status_id as account_status_id, routing_no as
+	routing_no, card_type_id as cardTypeId, account_descr as account_descr, created_date as
+	created_date, modified_date as modified_date, modified_by as
+	modified_by from account_hdr where account_id =#accountId# 
+	</select>
+	
+	<select id="account_hdr_active_include_cc.query" resultClass="account"
+		parameterClass="java.lang.Integer">
+		SELECT account_hdr.account_id as account_id,
+		       CASE account_type_id 
+		         WHEN 30 THEN (SELECT card_type FROM lu_card_types where lu_card_types.card_id = account_hdr.card_type_id)
+			 ELSE bank_name
+			 END  as bank_name,
+		       country_id as country_id, 
+		       entity_id as owner_entity_id,
+		       entity_type_id as owner_entity_type_id,
+		       account_no as account_no, 
+		       account_type_id as account_type_id,
+		       account_status_id as account_status_id, 
+		       routing_no as routing_no, 
+		       card_type_id as cardTypeId, 
+		       account_descr as account_descr, 
+		       created_date as created_date, 
+		       modified_date as modified_date, 
+		       modified_by as modified_by,
+               active_ind,
+               masked_acc_num AS maskedAccountNo
+		      FROM account_hdr 
+		WHERE entity_id = #entityId# 
+		AND account_type_id !=60
+		 AND enabled_ind=1
+		 
+	</select>
+	<select id="select_so_transaction_receipt.query" resultClass="soReceiptsVO"
+		parameterClass="soReceiptsVO">
+		SELECT
+			lte.transaction_id AS transactionID,
+			lte.ledger_entry_id AS ledgerEntryID,
+			le.so_id AS soID,
+			lte.trans_amount AS transactionAmount,
+			le.ledger_entry_rule_id AS ledgerEntryRuleID,
+			lte.ledger_entity_type_id AS entityTypeID 
+		FROM
+			ledger_transaction_entry lte,
+			ledger_entry le
+		WHERE
+			le.ledger_entry_id = lte.ledger_entry_id
+			AND le.ledger_entry_rule_id = #ledgerEntryRuleID#
+			AND lte.ledger_entity_type_id = #entityTypeID#
+			AND lte.ledger_entity_id = #ledgerEntityID#
+			AND le.so_id = #soID#
+		order by lte.created_date desc LIMIT 1			
+			
+	</select>
+	
+	<select id="select_so_transaction_receipt_repost.query" resultClass="soReceiptsVO"
+		parameterClass="soReceiptsVO">
+		SELECT
+			lte.transaction_id AS transactionID,
+			lte.ledger_entry_id AS ledgerEntryID,
+			le.so_id AS soID,
+			lte.trans_amount AS transactionAmount,
+			le.ledger_entry_rule_id AS ledgerEntryRuleID,
+			lte.ledger_entity_type_id AS entityTypeID 
+		FROM
+			ledger_transaction_entry lte,
+			ledger_entry le
+		WHERE
+			le.ledger_entry_id = lte.ledger_entry_id
+			AND le.ledger_entry_rule_id in(1200,1250)
+			AND lte.ledger_entity_type_id = #entityTypeID#
+			AND lte.ledger_entity_id = #ledgerEntityID#
+			AND le.so_id = #soID#
+	        AND TIMESTAMPDIFF(SECOND, lte.created_date, NOW())  <![CDATA[ < ]]> 5 <!--  calculating diiference of more than 5 seconds --> 
+		order by lte.created_date desc LIMIT 1			
+			
+	</select>
+	
+	<select id="select_buyer_payandclose_receipt.query" resultClass="soReceiptsVO"
+		parameterClass="java.lang.String">
+		SELECT
+ 			lte.transaction_id AS transactionID, 
+ 			lte.trans_amount AS transactionAmount
+		FROM
+			ledger_transaction_entry lte,
+			ledger_entry le
+		WHERE
+			le.ledger_entry_id = lte.ledger_entry_id
+			AND lte.entry_type_id= 1
+			AND le.ledger_entry_rule_id = 1405
+			AND lte.ledger_entity_type_id = 30
+			AND lte.ledger_entity_id = 2
+			AND le.so_id = #soID#
+	</select>
+	<select id="select_sl_bucks_transaction_info.query" resultClass="soReceiptsVO"
+		parameterClass="soReceiptsVO">
+		SELECT 
+			lte.transaction_id AS transactionID, 
+			lte.trans_amount AS transactionAmount,
+			lte.created_date AS createdDate
+		FROM 
+			ledger_transaction_entry lte, 
+			ledger_entry le 
+		WHERE 
+			le.ledger_entry_id = lte.ledger_entry_id 
+			AND le.ledger_entry_rule_id = #ledgerEntryRuleID# 
+			AND lte.ledger_entity_type_id = #entityTypeID#
+			AND lte.ledger_entity_id = #ledgerEntityID#
+			AND timediff(current_timestamp, lte.created_date) <![CDATA[ >= ]]> #timeDiffLowerThreshold#
+			AND timediff(current_timestamp, lte.created_date) <![CDATA[ < ]]> #timeDiffUpperThreshold# order by  lte.created_date desc limit 1	
+	</select>
+	
+	<select id="ledger_transaction_entry_byEntityId_for_availablebalance.query" resultClass="java.util.HashMap"
+	parameterClass="ajaxVO">
+		SELECT
+			ledger_entity_id AS buyer_id,
+			IFNULL(ledger_balance_id, 0) AS ledger_balance_id,
+			IFNULL(ledger_entry_id, 0) AS ledger_entry_id,
+			IFNULL(available_balance, 0) AS available_balance,
+			IFNULL(project_balance, 0) AS project_balance
+		FROM ledger_balance
+		WHERE ledger_balance_id = (
+			SELECT ledger_balance_id
+			FROM ledger_balance
+			WHERE ledger_entity_id = #companyId#
+				AND ledger_entity_type_id = (
+					SELECT ledger_entity_type_id
+					FROM ledger_entity_type let
+					WHERE UPPER(let.descr) = #roleType#
+				)
+			ORDER BY ledger_balance_id DESC
+			LIMIT 1
+		)
+	</select>
+
+	<select id="ledger_transaction_entry_byEntityId_for_projectbalance.query" resultClass="java.util.HashMap"
+	parameterClass="ajaxVO">
+		select ledger_entity_id as buyer_id, project_balance 
+		from ledger_balance 
+		where ledger_balance_id=(
+			select ledger_balance_id from ledger_balance use index (IDX_ledger_balance_max_balance)
+			where ledger_entity_id=#companyId# and ledger_entity_type_id = 10
+			order by ledger_balance_id DESC LIMIT 1
+		)
+	</select>
+	
+	
+	<select id="ledger_transaction_entry_byEntityId_for_pendingbalance.query" resultClass="java.util.HashMap"
+		parameterClass="ajaxVO">
+		SELECT buyer_id, sum(balance_tran) as pending_balance
+		FROM (
+		select lte.ledger_entity_id as buyer_id, 
+			   'Debits' as balance_type, 
+			    sum(lte.trans_amount)*-1 as balance_tran 
+				FROM ledger_transaction_entry lte, ledger_entry le 
+				WHERE le.ledger_entry_id = lte.ledger_entry_id
+				and lte.ledger_entity_id = #companyId#
+				and lte.ledger_entity_type_id = 10
+				and le.bus_trans_id = 10
+				and le.reconsiled_ind = 0
+				and lte.entry_type_id = 1 
+		GROUP BY 1, 2
+		union 
+		select lte.ledger_entity_id as buyer_id, 
+			   'credits' as balance_type, 
+			    sum(lte.trans_amount) as balance_tran 
+				FROM ledger_transaction_entry lte, ledger_entry le 
+				WHERE le.ledger_entry_id = lte.ledger_entry_id
+				and lte.ledger_entity_id = #companyId#
+				and lte.ledger_entity_type_id = 10
+				and le.bus_trans_id = 10
+				and le.reconsiled_ind = 0
+				and lte.entry_type_id = 2 
+		GROUP BY 1, 2 ) AS buyer_pending_balance
+		GROUP BY 1
+	</select>
+
+	<select id="getAutoFundingCount.query" parameterClass="java.lang.Long" resultClass="java.lang.Integer">
+		SELECT count(*) FROM auto_funding_service afs
+		WHERE 
+		afs.entity_id = #owner_entity_id#
+	</select>
+    <select id="getEnableIndCount.query" parameterClass="java.lang.Long" resultClass="java.lang.Integer">
+    SELECT count(entity_id) FROM auto_funding_service afs
+    WHERE
+    afs.entity_id=#owner_entity_id#  AND enabled_ind=1
+    </select>
+    
+    <update id="autoFundingSeviceFundingTypeId.update" parameterClass="account">
+    update auto_funding_service set account_id=#account_id#
+    where entity_id=#owner_entity_id#
+    </update>
+    
+	<insert id="save_autoFunding.insert" parameterClass="account">
+		INSERT INTO
+		auto_funding_service(entity_id,
+		entity_type_id,account_id,enabled_ind)
+		VALUES( #owner_entity_id#, #owner_entity_type_id#, #account_id#, 1)
+   </insert>
+
+	<update id="save_autoFunding.update" parameterClass="account">
+		update
+		auto_funding_service set entity_type_id =
+		#owner_entity_type_id#,
+		enabled_ind = 1, account_id = #account_id#
+		where entity_id = #owner_entity_id#
+	</update>
+	
+	<update id="buyer_FundingTypeId.update" parameterClass="account">
+	update supplier_prod.buyer b set b.funding_type_id=#fundingTypeId#
+	where b.buyer_id=#owner_entity_id#
+	</update>
+
+	<select id="BuyerFundingTypeId.select" parameterClass="java.lang.Integer"
+		resultClass="java.lang.Integer">
+		SELECT funding_type_id FROM supplier_prod.buyer
+		WHERE
+		buyer_id=#buyerId#
+	</select>
+	
+	<select id="getAutoFundingIndicator.query" parameterClass="java.lang.Integer" resultClass="account">
+		SELECT 
+			enabled_ind AS enabled_ind,
+			account_id AS account_id
+		FROM auto_funding_service afs
+		WHERE 
+		afs.entity_id = #vendorId#
+	</select>
+	
+				
+	  <procedure id="insertSHCGLHistory.storeproc" parameterClass="java.lang.Integer">
+            {CALL sp_SHCGeneralLedgerHistory(#glProcessLogId#)}
+      </procedure>
+	
+  <procedure id="runGLDetails.storeproc" parameterClass="java.lang.Integer">
+            {CALL sp_gl_details(#glProcessLogId#)}
+   </procedure>
+
+  <select id="getGLDetails.query" parameterClass="java.lang.Integer" resultClass="glDetailVO">
+		select 
+			entry_id as entryId,
+			nps_order as npsOrder,
+			nps_unit as npsUnit,
+			gl_unit as glUnit,
+			gl_division as glDivision,
+			gl_account as glAccount,
+			gl_category as glCategory,
+		  	ledger_rule as ledgerRule,
+			so_funding_type as soFundingType,
+			transaction_type as transactionType,
+			transaction_id as transactionId,
+			transactionAmount,order_number as orderNumber,
+			gl_date_posted as glDatePosted, 
+			transaction_date as transactionDate,
+			peoplesoft_file as peopleSoftFile
+		from rpt_gl_detail
+		where gl_process_id=#glProcessId#
+		order by entry_id
+   </select>  
+   
+    <select id="getVLBalanceFromFullfillmentEntry.query" parameterClass="java.lang.Integer" resultClass="balanceVO">
+	   	SELECT fe.vl_balance as validatedAmount, fe.modified_date as startDate
+		FROM fullfillment_entry fe                           
+		WHERE fe.ledger_entity_id = #entityId#
+					  AND fe.entity_type_id = 20
+					  AND fe.reconsiled_ind IN (1, 2, 4, 5, 6)
+					  AND fe.vl_balance IS NOT NULL
+		ORDER BY fe.modified_date DESC, fe.sort_order DESC
+		LIMIT 1
+	</select>
+	
+	  <select id="getVLBalanceFromFullfillmentVLAccnts.query" parameterClass="java.lang.Integer" resultClass="balanceVO">
+		SELECT fvla.v1_account_balance as validatedAmount, fvla.v1_balance_date as startDate
+		FROM fullfillment_vlaccounts fvla
+		WHERE fvla.ledger_entity_id = #entityId#
+			AND fvla.entity_type_id = 20
+		LIMIT 1 
+	</select> 
+	
+	<select id="getValidBuyerIds.query" parameterClass="java.util.ArrayList" resultClass="java.lang.Integer">
+		SELECT buyer_id FROM supplier_prod.buyer WHERE buyer_id IN
+		<iterate  open="(" close=")"
+			conjunction=",">
+			#buyerIds[]#
+		</iterate>
+	</select>	
+	
+	<select id="getValidProviderIds.query" parameterClass="java.util.ArrayList" resultClass="java.lang.Integer">
+		SELECT vendor_id FROM supplier_prod.vendor_hdr WHERE vendor_id IN
+		<iterate  open="(" close=")"
+			conjunction=",">
+			#providerIds[]#
+		</iterate>
+	</select>
+	
+	<select id="getProviderPaymentBySO.query" parameterClass="fmReportVO" resultClass="providerPaymentBySO">
+	SELECT 	
+	   s.buyer_id AS buyerId,
+           b.business_name AS buyerName,
+           s.completed_date AS completedDate,
+           s.so_id AS soId,
+           IF(s.wf_state_id=120,s.cancelled_date,s.closed_date) AS datePaid,  
+           IFNULL(s.final_price_labor,0.00) AS grossLabor ,
+          IF(s.wf_state_id=120,0.00,(t.trans_amt +lte.trans_amt- s.final_price_labor ))AS grossOther,
+          IF(s.wf_state_id=120,IFNULL(s.final_price_labor,0.00),(t.trans_amt +lte.trans_amt))  AS totalFinalPrice,
+           IF(s.wf_state_id=120,0.00,lte.trans_amt) AS serviceLiveFee,
+           IF(s.wf_state_id=120,IFNULL(s.final_price_labor,0.00),t.trans_amt) AS netPayment
+            FROM
+              supplier_prod.so_hdr s
+              LEFT OUTER JOIN accounts_prod.fullfillment_entry t ON (t.fullfillment_entry_rule_id =3720 AND t.so_id=s.so_id)
+              LEFT OUTER JOIN accounts_prod.fullfillment_entry lte ON (lte.fullfillment_entry_rule_id =3710 AND lte.so_id=s.so_id)
+		JOIN supplier_prod.buyer b ON s.buyer_id = b.buyer_id
+			  	   WHERE 
+				   s.wf_state_id IN (180,120)
+	   AND s.accepted_vendor_id = #roleId#
+        <dynamic>
+         <isEqual property="reportByCompletedDate" compareValue="true" >
+	           AND((s.completed_date  <![CDATA[ >= ]]>  #fromDate#
+	           AND s.completed_date  <![CDATA[ <= ]]>  #toDate#)
+	           OR
+	           (s.cancelled_date  <![CDATA[ >= ]]>  #fromDate#
+	           AND s.cancelled_date  <![CDATA[ <= ]]>  #toDate#))
+          </isEqual>
+         <isEqual property="reportByPaymentDate" compareValue="true" >
+	           AND((s.closed_date  <![CDATA[ >= ]]>  #fromDate#
+	           AND s.closed_date  <![CDATA[ <= ]]>  #toDate#)
+	           OR
+	           (s.cancelled_date  <![CDATA[ >= ]]>  #fromDate#
+	           AND s.cancelled_date  <![CDATA[ <= ]]>  #toDate#))
+          </isEqual>
+          <isEqual property="reportForSpecificBuyers" compareValue="true">  
+          AND s.buyer_id IN
+              <iterate  open="(" close=")"
+                        conjunction="," property="buyerList">
+                        #buyerList[]#
+                </iterate> 
+          </isEqual>
+        ORDER BY buyerName , datePaid DESC
+       <isEqual property="export" compareValue="false" >
+		<isNotNull property="startIndex" prepend="LIMIT ">
+			#startIndex#
+		</isNotNull>
+		<isNotNull property="numberOfRecords" prepend=",  ">
+			 #numberOfRecords#
+		</isNotNull>
+	   </isEqual>
+	   </dynamic>
+	   ;
+	</select>
+	
+	<select id="getProviderPaymentBySOAdmin.query" parameterClass="fmReportVO" resultClass="providerPaymentBySO">
+	SELECT 	
+	       s.accepted_vendor_id AS providerFirmId,
+	       vh.business_name AS 'providerFirmName',
+	       s.buyer_id AS buyerId,
+           b.business_name AS buyerName,
+           s.completed_date AS completedDate,
+           s.so_id AS soId,
+           IF(s.wf_state_id=120,s.cancelled_date,s.closed_date) AS datePaid,  
+           IFNULL(s.final_price_labor,0.00) AS grossLabor ,
+        IF(s.wf_state_id=120,0.00,(t.trans_amt +lte.trans_amt- s.final_price_labor ))AS grossOther,
+         IF(s.wf_state_id=120,IFNULL(s.final_price_labor,0.00),(t.trans_amt +lte.trans_amt))  AS totalFinalPrice,
+          IF(s.wf_state_id=120,0.00,lte.trans_amt) AS serviceLiveFee,
+           IF(s.wf_state_id=120,IFNULL(s.final_price_labor,0.00),t.trans_amt) AS netPayment
+            FROM
+              supplier_prod.so_hdr s
+              	LEFT OUTER JOIN accounts_prod.fullfillment_entry t ON (t.fullfillment_entry_rule_id =3720 AND t.so_id=s.so_id)
+				LEFT OUTER JOIN accounts_prod.fullfillment_entry lte  ON(lte.fullfillment_entry_rule_id =3710 AND lte.so_id=s.so_id)	  
+				JOIN supplier_prod.buyer b 
+				JOIN supplier_prod.vendor_hdr vh 
+	      	 		WHERE s.buyer_id = b.buyer_id
+						AND s.wf_state_id IN (180,120)
+	   					AND vh.vendor_id=s.accepted_vendor_id
+       					AND s.accepted_vendor_id IN
+       <dynamic>
+	        <iterate  open="(" close=")"
+	                        conjunction="," property="providerList">
+	                        #providerList[]#
+	        </iterate> 
+           <isEqual property="reportByCompletedDate" compareValue="true" >
+	           AND((s.completed_date  <![CDATA[ >= ]]>  #fromDate#
+	           AND s.completed_date  <![CDATA[ <= ]]>  #toDate#)
+	           OR
+	           (s.cancelled_date  <![CDATA[ >= ]]>  #fromDate#
+	           AND s.cancelled_date  <![CDATA[ <= ]]>  #toDate#))
+          </isEqual>
+         <isEqual property="reportByPaymentDate" compareValue="true" >
+	           AND((s.closed_date  <![CDATA[ >= ]]>  #fromDate#
+	           AND s.closed_date  <![CDATA[ <= ]]>  #toDate#)
+	           OR
+	           (s.cancelled_date  <![CDATA[ >= ]]>  #fromDate#
+	           AND s.cancelled_date  <![CDATA[ <= ]]>  #toDate#))
+          </isEqual>
+          <isEqual property="reportForSpecificBuyers" compareValue="true">  
+          AND s.buyer_id IN
+              <iterate  open="(" close=")"
+                        conjunction="," property="buyerList">
+                        #buyerList[]#
+                </iterate> 
+          </isEqual>
+       ORDER BY providerFirmName, buyerName , datePaid DESC
+       <isEqual property="export" compareValue="false" >
+		<isNotNull property="startIndex" prepend="LIMIT ">
+			#startIndex#
+		</isNotNull>
+		<isNotNull property="numberOfRecords" prepend=",  ">
+			 #numberOfRecords#
+		</isNotNull>
+	   </isEqual>
+	   </dynamic>
+	   ;
+	</select>
+
+	<select id="getCompletedAndFailedRecords.query" resultClass="fmReportVO">
+		select r.report_id as reportId,
+			    r.report_generated_date as reportGeneratedDate,
+                r.report_requested_date as reportRequestedDate,
+                r.file_path as filePath				   	
+    	from supplier_prod.report_input_criteria r where r.report_status = 'Completed' OR r.report_status = 'Failed'
+	</select>
+	
+	<select id="getCompletedExportRecords.query" parameterClass="java.util.ArrayList" resultClass="fmReportVO">
+		select r.report_id as reportId,
+			   r.report_name as reportNameForExport,
+			   r.report_type as reportName,
+			   r.report_requested_date as reportRequestedDate,
+			   r.report_generated_date as reportGeneratedDate,
+			   r.all_buyer_ind as reportForAllBuyers,
+			   r.all_provider_ind as reportForAllProviders,
+			   r.buyer_ids as buyers,
+			   r.provider_firm_ids as providers,
+			   r.report_by_payment_date_ind as reportByPaymentDate,
+			   r.from_date as fromDate,
+			   r.to_date as toDate,
+			   r.submitted_by as resourceId,
+			   r.company_id as roleId,
+			   r.role_id as role,	
+			   r.file_path as filePath,	
+			   r.report_status as reportStatus,
+			   r.record_count as totalRecords,
+			   r.exception as exception
+    	FROM supplier_prod.report_input_criteria r 
+    	WHERE r.report_id IN 
+    	<iterate  open="(" close=")"
+                        conjunction=",">
+                        #reportIds[]#
+        </iterate> 
+    	 
+	</select>
+	
+	<update id="updateDeletedStatus.query" parameterClass="java.util.ArrayList">
+		update supplier_prod.report_input_criteria set
+			report_status = 'Deleted'
+		WHERE report_id IN 
+    	<iterate  open="(" close=")"
+                        conjunction=",">
+                        #reportIds[]#
+        </iterate>	
+	</update>
+	
+	<update id="updateStatus.query" parameterClass="fmReportVO">
+		update supplier_prod.report_input_criteria 
+		SET report_status = #reportStatus#, 
+			attempt_no = #numberOfAttepmts#,
+			process_start_time = NOW()
+		where report_id = #reportId# 	
+	</update>
+	
+	<select id="getQueuedRecords.query" parameterClass="java.lang.Integer"  resultClass="fmReportVO">
+		select r.report_id as reportId,
+			   r.report_name as reportNameForExport,
+			   r.report_type as reportName,
+			   r.report_requested_date as reportRequestedDate,
+			   r.report_generated_date as reportGeneratedDate,
+			   r.all_buyer_ind as reportForAllBuyers,
+			   r.all_provider_ind as reportForAllProviders,
+			   r.buyer_ids as buyers,
+			   r.provider_firm_ids as providers,
+			   r.report_by_payment_date_ind as reportByPaymentDate,
+			   r.from_date as fromDate,
+			   r.to_date as toDate,
+			   r.submitted_by as resourceId,
+			   r.company_id as roleId,
+			   r.role_id as role,	
+			   r.file_path as filePath,	
+			   r.report_status as reportStatus,
+			   r.record_count as totalRecords,
+			   r.exception as exception,
+			   r.attempt_no as numberOfAttepmts
+    	from supplier_prod.report_input_criteria r where r.report_status = 'Pending'
+    	LIMIT 0, #numberOfReportsToBeProcessed#;
+	</select>
+	
+	<select id="getProviderNetPaymentSummary.query" parameterClass="fmReportVO" resultClass="providerPaymentBySO">
+	SELECT
+	    s.buyer_id AS buyerId,
+           b.business_name AS buyerName,
+           SUM(IF(s.wf_state_id=120,IFNULL(s.final_price_labor,0.00),t.trans_amt +lte.trans_amt))  AS totalFinalPrice,
+           SUM(IF(s.wf_state_id=120,0.00,lte.trans_amt)) AS serviceLiveFee,
+           SUM(IF(s.wf_state_id=120,IFNULL(s.final_price_labor,0.00),t.trans_amt)) AS netPayment
+            FROM
+              supplier_prod.so_hdr s
+              	LEFT OUTER JOIN accounts_prod.fullfillment_entry t ON (t.fullfillment_entry_rule_id =3720 AND t.so_id=s.so_id)
+				LEFT OUTER JOIN  accounts_prod.fullfillment_entry lte ON (lte.fullfillment_entry_rule_id =3710 AND lte.so_id=s.so_id)
+	 			JOIN   supplier_prod.buyer b
+	            WHERE s.buyer_id = b.buyer_id
+				   	AND s.wf_state_id IN (180,120)
+ 					AND s.accepted_vendor_id = #roleId#
+    <dynamic> 
+    <isEqual property="reportByCompletedDate" compareValue="true" >	          
+	           AND( (s.completed_date  <![CDATA[ >= ]]>  #fromDate#
+	           AND s.completed_date  <![CDATA[ <= ]]>  #toDate#)
+	           OR
+	           (
+	           s.cancelled_date  <![CDATA[ >= ]]>  #fromDate#
+	           AND s.cancelled_date  <![CDATA[ <= ]]>  #toDate#)
+	           )
+          </isEqual>
+         <isEqual property="reportByPaymentDate" compareValue="true" >	           
+	           AND( (s.closed_date  <![CDATA[ >= ]]>  #fromDate#
+	           AND s.closed_date  <![CDATA[ <= ]]>  #toDate#)
+	           OR
+	           (
+	           s.cancelled_date  <![CDATA[ >= ]]>  #fromDate#
+	           AND s.cancelled_date  <![CDATA[ <= ]]>  #toDate#)
+	           )
+          </isEqual>
+          <isEqual property="reportForSpecificBuyers" compareValue="true">  
+          AND s.buyer_id IN
+              <iterate  open="(" close=")"
+                        conjunction="," property="buyerList">
+                        #buyerList[]#
+                </iterate> 
+          </isEqual>       
+       GROUP BY  s.buyer_id
+       <isEqual property="export" compareValue="false" >
+		<isNotNull property="startIndex" prepend="LIMIT ">
+			#startIndex#
+		</isNotNull>
+		<isNotNull property="numberOfRecords" prepend=",  ">
+			 #numberOfRecords#
+		</isNotNull>
+		</isEqual>
+		   UNION
+		   SELECT
+		     '9' AS buyerId,
+			  "SERVICE LIVE ADMIN" AS buyerName,
+			   IFNULL(SUM(other_payment),0)   AS totalFinalPrice,
+			   0                    AS serviceLiveFee,
+			   IFNULL(SUM(other_payment) ,0)  AS netPayment
+	       FROM 
+	       	
+		       (SELECT
+		               te.ledger_entity_id     AS vendor_id,
+		               SUM(te.trans_amount)    AS other_payment
+		                 FROM accounts_prod.ledger_transaction_entry te
+				         INNER JOIN accounts_prod.ledger_entry le ON le.ledger_entry_id = te.ledger_entry_id
+				         INNER JOIN accounts_prod.ledger_transaction_rule ltr ON ltr.ledger_entry_rule_id = le.ledger_entry_rule_id
+				         WHERE (ltr.ledger_entry_rule_id = 5400 AND te.entry_type_id = 2)
+						          AND (so_id IS NULL)
+						          AND te.trans_amount > 0
+						          AND le.affects_balance = 1
+						          
+								  AND te.ledger_entity_id  = #roleId#
+								  AND (te.created_date) <![CDATA[ >= ]]>  #fromDate# AND
+				                (te.created_date) <![CDATA[ <= ]]>  #toDate#
+						       GROUP BY te.ledger_entity_id  
+				                 
+		      UNION
+		        SELECT
+		               te.ledger_entity_id     AS vendor_id,
+		               SUM(-1*te.trans_amount)  AS other_payment
+		                    FROM accounts_prod.ledger_transaction_entry te
+		                     INNER JOIN accounts_prod.ledger_entry le  ON le.ledger_entry_id = te.ledger_entry_id
+		                     INNER JOIN accounts_prod.ledger_transaction_rule ltr ON ltr.ledger_entry_rule_id = le.ledger_entry_rule_id
+		                            WHERE (ltr.ledger_entry_rule_id = 5600   AND te.entry_type_id = 1)
+		                                  AND ltr.transaction_type_id != 800
+		                                  AND (so_id IS NULL)
+		                                  AND te.trans_amount > 0
+		                                  AND le.affects_balance = 1
+			                               AND te.ledger_entity_id  = #roleId#
+			                               AND (te.created_date) <![CDATA[ >= ]]>  #fromDate# AND
+				                (te.created_date) <![CDATA[ <= ]]>  #toDate#
+									           GROUP BY te.ledger_entity_id 
+				             ) AS a 
+				     GROUP BY a.vendor_id
+				     ORDER BY buyerName	
+		</dynamic>
+		 ;
+	</select>
+	
+	<select id="getProviderNetPaymentSummaryAdmin.query" parameterClass="fmReportVO" resultClass="providerPaymentBySO">
+	SELECT 
+	       s.accepted_vendor_id AS providerFirmId,
+	       vh.business_name AS 'providerFirmName',
+	       s.buyer_id AS buyerId,
+           b.business_name AS buyerName,
+           SUM(IF(s.wf_state_id=120,IFNULL(s.final_price_labor,0.00),t.trans_amt +lte.trans_amt))  AS totalFinalPrice,
+           SUM(IF(s.wf_state_id=120,0.00,lte.trans_amt)) AS serviceLiveFee,
+           SUM(IF(s.wf_state_id=120,IFNULL(s.final_price_labor,0.00),t.trans_amt)) AS netPayment
+            FROM
+	          supplier_prod.vendor_hdr vh JOIN supplier_prod.so_hdr s ON (vh.vendor_id=s.accepted_vendor_id)
+           JOIN supplier_prod.buyer b ON(s.buyer_id = b.buyer_id)
+	LEFT OUTER JOIN accounts_prod.fullfillment_entry t ON (t.fullfillment_entry_rule_id =3720 AND t.so_id=s.so_id)
+	LEFT OUTER JOIN	accounts_prod.fullfillment_entry lte ON(lte.fullfillment_entry_rule_id =3710 AND lte.so_id=s.so_id) 	 
+	WHERE  s.wf_state_id IN (180,120)
+	  AND s.accepted_vendor_id IN
+       <dynamic> 
+	        <iterate  open="(" close=")"
+	                        conjunction="," property="providerList">
+	                        #providerList[]#
+	        </iterate>
+          <isEqual property="reportByCompletedDate" compareValue="true" >	          
+	           AND( (s.completed_date  <![CDATA[ >= ]]>  #fromDate#
+	           AND s.completed_date  <![CDATA[ <= ]]>  #toDate#)
+	           OR
+	           (
+	           s.cancelled_date  <![CDATA[ >= ]]>  #fromDate#
+	           AND s.cancelled_date  <![CDATA[ <= ]]>  #toDate#)
+	           )
+          </isEqual>
+         <isEqual property="reportByPaymentDate" compareValue="true" >	           
+	           AND( (s.closed_date  <![CDATA[ >= ]]>  #fromDate#
+	           AND s.closed_date  <![CDATA[ <= ]]>  #toDate#)
+	           OR
+	           (
+	           s.cancelled_date  <![CDATA[ >= ]]>  #fromDate#
+	           AND s.cancelled_date  <![CDATA[ <= ]]>  #toDate#)
+	           )
+          </isEqual>
+          <isEqual property="reportForSpecificBuyers" compareValue="true">  
+          AND s.buyer_id IN
+              <iterate  open="(" close=")"
+                        conjunction="," property="buyerList">
+                        #buyerList[]#
+                </iterate> 
+          </isEqual>       
+       GROUP BY  s.buyer_id
+       <isEqual property="export" compareValue="false" >
+		<isNotNull property="startIndex" prepend="LIMIT ">
+			#startIndex#
+		</isNotNull>
+		<isNotNull property="numberOfRecords" prepend=",  ">
+			 #numberOfRecords#
+		</isNotNull>
+		</isEqual>
+		   UNION
+		   SELECT
+			  vh.vendor_id AS providerFirmId,
+			  vh.business_name AS providerFirmName,
+			  '9' AS buyerId,
+			  "SERVICE LIVE ADMIN" AS buyerName,
+			   IFNULL(SUM(other_payment),0)   AS totalFinalPrice,
+			   0                    AS serviceLiveFee,
+			   IFNULL(SUM(other_payment) ,0)  AS netPayment
+	       FROM 
+	       	
+		       (SELECT
+		               te.ledger_entity_id     AS vendor_id,
+		               SUM(te.trans_amount)    AS other_payment
+		                 FROM accounts_prod.ledger_transaction_entry te
+				         INNER JOIN accounts_prod.ledger_entry le ON le.ledger_entry_id = te.ledger_entry_id
+				         INNER JOIN accounts_prod.ledger_transaction_rule ltr ON ltr.ledger_entry_rule_id = le.ledger_entry_rule_id
+				         WHERE (ltr.ledger_entry_rule_id = 5400 AND te.entry_type_id = 2)
+						          AND (so_id IS NULL)
+						          AND te.trans_amount > 0
+						          AND le.affects_balance = 1						          
+								 AND te.ledger_entity_id IN
+								 <iterate  open="(" close=")" conjunction="," property="providerList">
+										  #providerList[]#
+						          </iterate>
+						          AND (te.created_date) <![CDATA[ >= ]]>  #fromDate# AND
+				                (te.created_date) <![CDATA[ <= ]]>  #toDate# 
+						       GROUP BY te.ledger_entity_id  
+
+		      UNION
+		        SELECT
+		               te.ledger_entity_id     AS vendor_id,
+		               SUM(-1*te.trans_amount)  AS other_payment
+		                    FROM accounts_prod.ledger_transaction_entry te
+		                     INNER JOIN accounts_prod.ledger_entry le  ON le.ledger_entry_id = te.ledger_entry_id
+		                     INNER JOIN accounts_prod.ledger_transaction_rule ltr ON ltr.ledger_entry_rule_id = le.ledger_entry_rule_id
+		                            WHERE (ltr.ledger_entry_rule_id = 5600   AND te.entry_type_id = 1)
+		                                  AND ltr.transaction_type_id != 800
+		                                  AND (so_id IS NULL)
+		                                  AND te.trans_amount > 0
+		                                  AND le.affects_balance = 1
+									       AND te.ledger_entity_id IN
+										        <iterate  open="(" close=")"
+										                        conjunction="," property="providerList">
+										                        #providerList[]#
+										        </iterate>
+										        AND (te.created_date) <![CDATA[ >= ]]>  #fromDate# AND
+				                (te.created_date) <![CDATA[ <= ]]>  #toDate# 
+		                                         GROUP BY te.ledger_entity_id 
+				             ) AS a 
+	                         INNER JOIN  supplier_prod.vendor_hdr vh 
+				             ON vh.vendor_id=a.vendor_id 
+				             WHERE vh.vendor_id IN
+								<iterate  open="(" close=")"    conjunction="," property="providerList">
+									 #providerList[]#
+							   </iterate> 	
+			         GROUP BY a.vendor_id
+			         ORDER BY providerFirmName, buyerName
+		</dynamic>
+		 ;
+	</select>
+	
+ <select id="buyerso_report_count.query" parameterClass="fmReportVO" resultClass="java.lang.Integer">
+ SELECT COUNT(*) AS numRows
+		FROM
+			supplier_prod.so_hdr sh
+			WHERE sh.wf_state_id IN (120, 180)
+			<dynamic>
+			AND sh.buyer_id =#roleId#
+			<isEqual property="reportForSpecificProviders"  compareValue="true">
+		                       AND sh.accepted_vendor_id IN
+					              <iterate  open="(" close=")"
+					                        conjunction="," property="providerList">
+					                        #providerList[]#
+					               </iterate> 
+		                  </isEqual>   
+			AND (
+					( 
+						sh.cancelled_date <![CDATA[ >= ]]> #fromDate#
+						AND sh.cancelled_date <![CDATA[ <= ]]> #toDate#
+					) 
+						OR 
+					(
+						 sh.closed_date <![CDATA[ >= ]]> #fromDate#
+						AND sh.closed_date <![CDATA[ <= ]]> #toDate#
+					) 
+				)
+
+	;
+	</dynamic>
+</select>
+	
+	<select id="buyerso_report_count_admin.query" parameterClass="fmReportVO" resultClass="java.lang.Integer">
+	SELECT COUNT(*) AS numRows
+		FROM
+			supplier_prod.so_hdr sh
+			WHERE sh.wf_state_id IN (120, 180)
+			AND sh.buyer_id IN
+			<dynamic>
+				<iterate  open="(" close=")" conjunction="," property="buyerList">
+					   #buyerList[]#
+				</iterate> 
+				<isEqual property="reportForSpecificProviders"  compareValue="true">
+		                       AND sh.accepted_vendor_id IN
+					              <iterate  open="(" close=")"
+					                        conjunction="," property="providerList">
+					                        #providerList[]#
+					               </iterate> 
+		        </isEqual>   
+			  AND (
+					( 
+						sh.cancelled_date <![CDATA[ >= ]]> #fromDate#
+						AND sh.cancelled_date <![CDATA[ <= ]]> #toDate#
+					) 
+						OR 
+					(
+						 sh.closed_date <![CDATA[ >= ]]> #fromDate#
+						AND sh.closed_date <![CDATA[ <= ]]> #toDate#
+					) 
+				)
+	;
+	</dynamic>
+</select>
+	
+<select id="getBuyerPaymentBySO.query" parameterClass="fmReportVO" resultClass="buyerSOReportVO">
+	SELECT	
+		vh.vendor_id AS 'providerFirmId',
+		vh.business_name AS 'providerFirmName',
+		lb.descr AS 'taxPayerType',
+		CASE WHEN vw.tax_exempt_ind  = 1   THEN 'Y' ELSE 'N' END AS "exempt" ,
+		vw.taxpayer_id_number_type  AS 'taxPayerTypeId',
+		vw.ein_no  AS 'encrypedTaxPayerId' ,
+		sh.so_id AS "serviceOrderId" ,
+		IF(sh.wf_state_id=120,sh.cancelled_date,sh.closed_date) AS 'paymentDate',
+		IF(sh.wf_state_id=120,IFNULL(sh.final_price_labor,0.00),t.trans_amt+lte.trans_amt)  AS 'totalGrossPayment',
+		sh.posting_fee AS 'postingFee',
+		IF(sh.wf_state_id=120,0.00,lte.trans_amt) AS 'providerServiceLiveFee'	
+		
+		FROM
+	 		      supplier_prod.so_hdr sh
+	 		      LEFT OUTER JOIN accounts_prod.fullfillment_entry t ON (t.fullfillment_entry_rule_id =3720 AND t.so_id=sh.so_id)
+	 		      LEFT OUTER JOIN  accounts_prod.fullfillment_entry lte ON (lte.fullfillment_entry_rule_id =3710 AND lte.so_id=sh.so_id)
+			      JOIN supplier_prod.vendor_hdr vh ON vh.vendor_id=sh.accepted_vendor_id
+			      JOIN supplier_prod.lu_business_type lb ON lb.id=vh.business_type_id  
+			      JOIN supplier_prod.vendor_w9 vw ON vw.vendor_id=vh.vendor_id
+			     WHERE  
+			        sh.wf_state_id IN (180,120)
+			    <dynamic>  
+		      	 	AND sh.buyer_id =#roleId# 
+				     <isEqual property="reportForSpecificProviders"  compareValue="true">
+		                       AND sh.accepted_vendor_id IN
+					              <iterate  open="(" close=")"
+					                        conjunction="," property="providerList">
+					                        #providerList[]#
+					               </iterate> 
+		             </isEqual>   
+			        AND (
+					(
+					sh.closed_date     <![CDATA[ >= ]]> #fromDate#
+					AND sh.closed_date   <![CDATA[ <= ]]> #toDate#
+					)
+					OR
+					(
+					sh.cancelled_date   <![CDATA[ >= ]]> #fromDate#
+					AND sh.cancelled_date  <![CDATA[ <= ]]> #toDate#
+					)
+				    )
+		ORDER BY providerFirmName, paymentDate DESC
+		<isEqual property="export" compareValue="false">
+		<isNotNull property="startIndex" prepend="LIMIT ">
+			#startIndex#
+		</isNotNull>
+		<isNotNull property="numberOfRecords" prepend=",  ">
+			 #numberOfRecords#
+		</isNotNull>
+		</isEqual> 
+		</dynamic>
+	;
+</select>
+	
+	<!-- For admin -->
+	<select id="getBuyerPaymentBySOAdmin.query" parameterClass="fmReportVO" resultClass="buyerSOReportVO">
+	SELECT	
+		sh.buyer_id AS buyerId,
+      	b.business_name AS buyerName,
+		vh.vendor_id AS 'providerFirmId',
+		vh.business_name AS 'providerFirmName',
+		lb.descr AS 'taxPayerType',
+		CASE WHEN vw.tax_exempt_ind  = 1   THEN 'Y' ELSE 'N' END AS "exempt" ,
+		vw.taxpayer_id_number_type  AS 'taxPayerTypeId',
+		vw.ein_no  AS 'encrypedTaxPayerId' ,
+		sh.so_id AS "serviceOrderId" ,
+		IF(sh.wf_state_id=120,sh.cancelled_date,sh.closed_date) AS 'paymentDate',
+		IF(sh.wf_state_id=120,IFNULL(sh.final_price_labor,0.00),t.trans_amt+lte.trans_amt)  AS 'totalGrossPayment',
+		sh.posting_fee AS 'postingFee',
+		IF(sh.wf_state_id=120,0.00,lte.trans_amt) AS 'providerServiceLiveFee'	
+		
+		FROM
+	 		      supplier_prod.so_hdr sh
+	 		      LEFT OUTER JOIN accounts_prod.fullfillment_entry t ON (t.fullfillment_entry_rule_id =3720 AND t.so_id=sh.so_id)
+	 		      LEFT OUTER JOIN  accounts_prod.fullfillment_entry lte ON (lte.fullfillment_entry_rule_id =3710 AND lte.so_id=sh.so_id)
+			      JOIN supplier_prod.vendor_hdr vh ON vh.vendor_id=sh.accepted_vendor_id
+			      JOIN supplier_prod.lu_business_type lb ON lb.id=vh.business_type_id  
+			      JOIN supplier_prod.vendor_w9 vw ON vw.vendor_id=vh.vendor_id
+			      JOIN supplier_prod.buyer b ON sh.buyer_id=b.buyer_id
+			     WHERE  
+			        sh.wf_state_id IN (180,120)
+			    	AND sh.buyer_id IN
+				  <dynamic> 
+					 <iterate  open="(" close=")"
+					                        conjunction="," property="buyerList">
+					                 #buyerList[]#
+					 </iterate>
+				     <isEqual property="reportForSpecificProviders"  compareValue="true">
+		                       AND sh.accepted_vendor_id IN
+					              <iterate  open="(" close=")"
+					                        conjunction="," property="providerList">
+					                        #providerList[]#
+					               </iterate> 
+		             </isEqual>   
+			        AND (
+					(
+						sh.closed_date     <![CDATA[ >= ]]> #fromDate#
+						AND sh.closed_date   <![CDATA[ <= ]]> #toDate#
+					)
+					OR
+					(
+						sh.cancelled_date   <![CDATA[ >= ]]> #fromDate#
+						AND sh.cancelled_date  <![CDATA[ <= ]]> #toDate#
+					)
+				    )
+		ORDER BY buyerName, providerFirmName, paymentDate DESC
+			<isEqual property="export" compareValue="false">
+				<isNotNull property="startIndex" prepend="LIMIT ">
+					#startIndex#
+				</isNotNull>
+				<isNotNull property="numberOfRecords" prepend=",  ">
+					 #numberOfRecords#
+				</isNotNull>
+			</isEqual> 
+		</dynamic>
+	;
+	</select>
+	
+	
+<select id="getBuyerReportByTaxPayer.query" parameterClass="fmReportVO" resultClass="buyerSOReportVO">
+	SELECT
+	vh.vendor_id AS providerFirmId,
+	vh.business_name AS providerFirmName,
+	vh.dba_name AS dbaName,
+	lb.descr AS taxPayerType,
+	CASE WHEN vw.tax_exempt_ind  = 1   THEN 'Y' ELSE 'N' END AS exempt ,
+        vw.taxpayer_id_number_type  AS 'taxPayerTypeId',
+	vw.ein_no  AS 'encrypedTaxPayerId' ,
+	IF (sh.wf_state_id=120,sh.cancelled_date,sh.closed_date) AS 'paymentDate',
+	IF (sh.wf_state_id=120,IFNULL(sh.final_price_labor,0.00),t.trans_amt+lte.trans_amt)  AS 'totalGrossPayment',
+	vw.street_1 AS street1, 
+	vw.apt_no AS aptNo,
+	vw.street_2 AS street2,
+	vw.city AS city, 
+	vw.state_cd AS state, 
+	vw.zip AS zip, 
+	vw.zip4  AS zip4
+		FROM
+ 		   supplier_prod.so_hdr sh
+ 		   LEFT OUTER JOIN accounts_prod.fullfillment_entry t ON (t.fullfillment_entry_rule_id =3720 AND t.so_id=sh.so_id)
+ 		   LEFT OUTER JOIN  accounts_prod.fullfillment_entry lte ON (lte.fullfillment_entry_rule_id =3710 AND lte.so_id=sh.so_id)
+ 		   JOIN supplier_prod.vendor_hdr vh ON vh.vendor_id=sh.accepted_vendor_id
+		   JOIN supplier_prod.vendor_w9 vw ON vw.vendor_id=vh.vendor_id
+		   JOIN supplier_prod.lu_business_type lb ON lb.id=vh.business_type_id 
+		WHERE 
+		   sh.wf_state_id IN (120,180 ) 
+		    <dynamic>
+		        AND sh.buyer_id = #roleId#
+				<isEqual property="reportForSpecificProviders"  compareValue="true">
+	                       AND sh.accepted_vendor_id IN
+				              <iterate  open="(" close=")"
+				                        conjunction="," property="providerList">
+				                        #providerList[]#
+				               </iterate> 
+	            </isEqual>   
+		          AND(
+						(
+			                 sh.closed_date   <![CDATA[ >= ]]> #fromDate#
+							AND sh.closed_date   <![CDATA[ <= ]]> #toDate#
+					   )
+					     OR
+					   (
+					    sh.cancelled_date   <![CDATA[ >= ]]> #fromDate#
+					    AND sh.cancelled_date  <![CDATA[ <= ]]> #toDate#
+					    )
+				   )
+				   
+
+		                 
+  UNION ALL
+	 SELECT
+			'9' AS  providerFirmId,
+			"SERVICE LIVE ADMIN" AS providerFirmName,			   
+			"NA" AS dbaName,
+			"NA" AS taxPayerType,
+			"NA" AS exempt ,
+								'0'  AS taxPayerTypeId,				
+								NULL AS encrypedTaxPayerId,
+								NULL AS 'paymentDate',
+								IFNULL(SUM(other_payment),0)   AS 'totalGrossPayment',
+								"NA" AS street1, 
+								"" AS aptNo,
+								"" AS street2,
+								"" AS city, 
+								"" AS state, 
+								NULL AS zip, 
+								NULL  AS zip4        
+			FROM (
+					SELECT
+						te.ledger_entity_id     AS vendor_id,
+						SUM(te.trans_amount)    AS other_payment
+						FROM accounts_prod.ledger_transaction_entry te
+						INNER JOIN accounts_prod.ledger_entry le ON le.ledger_entry_id = te.ledger_entry_id
+						INNER JOIN accounts_prod.ledger_transaction_rule ltr ON ltr.ledger_entry_rule_id = le.ledger_entry_rule_id
+						WHERE (ltr.ledger_entry_rule_id = 5300 AND te.entry_type_id = 2)
+										          AND (so_id IS NULL)
+										          AND te.trans_amount > 0
+										          AND le.affects_balance = 1
+												  AND te.ledger_entity_id  = #roleId#
+												  AND (te.created_date)  <![CDATA[ >= ]]> #fromDate# AND
+									              (te.created_date) <![CDATA[ <= ]]> #toDate# 											   
+											      GROUP BY te.ledger_entity_id  
+						      
+  	UNION ALL
+						      
+		SELECT
+			 te.ledger_entity_id     AS vendor_id,
+			SUM(-1*te.trans_amount)  AS other_payment
+						                    FROM accounts_prod.ledger_transaction_entry te
+						                     INNER JOIN accounts_prod.ledger_entry le  ON le.ledger_entry_id = te.ledger_entry_id
+						                     INNER JOIN accounts_prod.ledger_transaction_rule ltr ON ltr.ledger_entry_rule_id = le.ledger_entry_rule_id
+						                            WHERE (ltr.ledger_entry_rule_id = 5500   AND te.entry_type_id = 1)
+						                                  AND ltr.transaction_type_id != 800
+						                                  AND (so_id IS NULL)
+						                                  AND te.trans_amount > 0
+						                                  AND le.affects_balance = 1
+							                              AND te.ledger_entity_id  = #roleId#
+							                              AND (te.created_date) <![CDATA[ >= ]]> #fromDate# AND
+								                			(te.created_date) <![CDATA[ <= ]]> #toDate#
+													      GROUP BY te.ledger_entity_id 
+						                                   
+			) AS a 
+			GROUP BY a.vendor_id
+			ORDER BY providerFirmName, paymentDate DESC
+			<isEqual property="export" compareValue="false">
+							<isNotNull property="startIndex" prepend="LIMIT ">
+								#startIndex#
+							</isNotNull>
+							<isNotNull property="numberOfRecords" prepend=",  ">
+								#numberOfRecords#
+							</isNotNull>
+		    </isEqual>
+		  </dynamic>
+		   ;
+	</select>
+	
+	<select id="getBuyerReportByTaxPayerAdmin.query" parameterClass="fmReportVO" resultClass="buyerSOReportVO">
+		SELECT
+			vendor_id  AS buyerId,
+      		bname AS buyerName,
+			'9' AS  providerFirmId,
+			"SERVICE LIVE ADMIN" AS providerFirmName,			   
+			"NA" AS dbaName,
+			"NA" AS taxPayerType,
+			"NA" AS exempt ,
+								'0'  AS taxPayerTypeId,				
+								NULL AS encrypedTaxPayerId,
+								NULL AS 'paymentDate',
+								IFNULL(SUM(other_payment),0)   AS 'totalGrossPayment',
+								"NA" AS street1,
+								"" AS aptNo, 
+								"" AS street2,
+								"" AS city, 
+								"" AS state, 
+								NULL AS zip, 
+								NULL  AS zip4        
+			<dynamic>
+			FROM (
+					SELECT
+						b.business_name AS bname,
+						te.ledger_entity_id     AS vendor_id,
+						SUM(te.trans_amount)    AS other_payment
+						FROM accounts_prod.ledger_transaction_entry te
+						INNER JOIN accounts_prod.ledger_entry le ON le.ledger_entry_id = te.ledger_entry_id
+						INNER JOIN accounts_prod.ledger_transaction_rule ltr ON ltr.ledger_entry_rule_id = le.ledger_entry_rule_id
+						INNER JOIN supplier_prod.buyer b ON b.buyer_id= te.ledger_entity_id
+						WHERE (ltr.ledger_entry_rule_id = 5300 AND te.entry_type_id = 2)
+										          AND (so_id IS NULL)
+										          AND te.trans_amount > 0
+										          AND le.affects_balance = 1
+												  AND te.ledger_entity_id  IN
+												  <iterate  open="(" close=")" conjunction="," property="buyerList">
+								 						#buyerList[]#
+													</iterate>	
+												  AND (te.created_date) <![CDATA[ >= ]]> #fromDate# AND
+									              (te.created_date) <![CDATA[ <= ]]> #toDate#											   
+											      GROUP BY te.ledger_entity_id  
+   UNION ALL
+						      
+				SELECT
+						b.business_name AS bname,
+			 			te.ledger_entity_id     AS vendor_id,
+						SUM(-1*te.trans_amount)  AS other_payment
+						                    FROM accounts_prod.ledger_transaction_entry te
+						                     INNER JOIN accounts_prod.ledger_entry le  ON le.ledger_entry_id = te.ledger_entry_id
+						                     INNER JOIN accounts_prod.ledger_transaction_rule ltr ON ltr.ledger_entry_rule_id = le.ledger_entry_rule_id
+						                     INNER JOIN supplier_prod.buyer b ON b.buyer_id= te.ledger_entity_id
+						                            WHERE (ltr.ledger_entry_rule_id = 5500   AND te.entry_type_id = 1)
+						                                  AND ltr.transaction_type_id != 800
+						                                  AND (so_id IS NULL)
+						                                  AND te.trans_amount > 0
+						                                  AND le.affects_balance = 1
+							                              AND te.ledger_entity_id IN  
+														<iterate  open="(" close=")" conjunction="," property="buyerList">
+										 						#buyerList[]#
+															</iterate> 
+							                              AND (te.created_date) <![CDATA[ >= ]]> #fromDate# AND
+								                			(te.created_date) <![CDATA[ <= ]]> #toDate#
+													      GROUP BY te.ledger_entity_id 
+						                                   
+				)  AS t
+
+	UNION ALL	
+	
+		SELECT
+			sh.buyer_id AS buyerId,
+			b.business_name AS buyerName,
+			vh.vendor_id AS providerFirmId,
+			vh.business_name AS providerFirmName,
+			vh.dba_name AS dbaName,
+			lb.descr AS taxPayerType,
+			CASE WHEN vw.tax_exempt_ind  = 1   THEN 'Y' ELSE 'N' END AS exempt ,
+		        vw.taxpayer_id_number_type  AS 'taxPayerTypeId',
+			vw.ein_no  AS 'encrypedTaxPayerId' ,
+			IF (sh.wf_state_id=120,sh.cancelled_date,sh.closed_date) AS 'paymentDate',
+			IF (sh.wf_state_id=120,IFNULL(sh.final_price_labor,0.00),t.trans_amt+lte.trans_amt)  AS 'totalGrossPayment',
+			vw.street_1 AS street1,
+			vw.apt_no AS aptNo, 
+			vw.street_2 AS street2,
+			vw.city AS city, 
+			vw.state_cd AS state, 
+			vw.zip AS zip, 
+			vw.zip4  AS zip4
+				FROM
+		 		   supplier_prod.so_hdr sh
+		 		   LEFT OUTER JOIN accounts_prod.fullfillment_entry t ON (t.fullfillment_entry_rule_id =3720 AND t.so_id=sh.so_id)
+		 		   LEFT OUTER JOIN  accounts_prod.fullfillment_entry lte ON (lte.fullfillment_entry_rule_id =3710 AND lte.so_id=sh.so_id)
+		 		   JOIN supplier_prod.vendor_hdr vh ON vh.vendor_id=sh.accepted_vendor_id
+				   JOIN supplier_prod.vendor_w9 vw ON vw.vendor_id=vh.vendor_id
+				   JOIN supplier_prod.lu_business_type lb ON lb.id=vh.business_type_id 				   
+				   JOIN supplier_prod.buyer b ON sh.buyer_id=b.buyer_id 
+				WHERE 
+				   sh.wf_state_id IN (120,180 ) AND sh.buyer_id IN
+				   <iterate  open="(" close=")"  conjunction="," property="buyerList">
+							 #buyerList[]#
+				  </iterate>
+				  <isEqual property="reportForSpecificProviders"  compareValue="true">
+						AND sh.accepted_vendor_id IN
+						<iterate  open="(" close=")" conjunction="," property="providerList">
+								#providerList[]#
+						</iterate> 
+				 </isEqual>
+				          AND(
+							(
+				                sh.closed_date   <![CDATA[ >= ]]> #fromDate#
+								AND sh.closed_date   <![CDATA[ <= ]]> #toDate#
+						   )
+						     OR
+						   (
+						    	sh.cancelled_date  <![CDATA[ >= ]]> #fromDate#
+						    	AND sh.cancelled_date  <![CDATA[ <= ]]> #toDate#
+						    )
+						  )
+					ORDER BY buyerName, providerFirmName, paymentDate DESC
+				<isEqual property="export" compareValue="false">
+						<isNotNull property="startIndex" prepend="LIMIT ">
+									#startIndex#
+						</isNotNull>
+						<isNotNull property="numberOfRecords" prepend=",  ">
+										#numberOfRecords#
+						</isNotNull>
+				</isEqual>
+		</dynamic>
+			;
+</select>			    
+	
+	
+	<select id="getAdminPaymentReport.query" parameterClass="fmReportVO" resultClass="adminPaymentVO">
+		SELECT 
+		w9.vendor_id AS vendorID, 
+		SUM(other_payment_credit)AS goodwillCredits, 
+		SUM(other_payment_debit)AS goodwillDebits,
+		(SUM(other_payment_credit) -  SUM(other_payment_debit) )AS netGoodwillAmount 
+		FROM 
+			supplier_prod.vendor_w9 w9 
+		JOIN 
+		(SELECT 
+			te.ledger_entity_id AS vendor_id, 
+			SUM(te.trans_amount)AS other_payment_credit, 
+			0 AS other_payment_debit
+			FROM 
+				accounts_prod.ledger_transaction_entry te 
+				INNER JOIN accounts_prod.ledger_entry le ON le.ledger_entry_id = te.ledger_entry_id 
+				INNER JOIN accounts_prod.ledger_transaction_rule ltr ON ltr.ledger_entry_rule_id = le.ledger_entry_rule_id 
+			WHERE 
+				(ltr.ledger_entry_rule_id = 5400 AND te.entry_type_id = 2) 
+				AND (so_id IS NULL) 
+				AND te.trans_amount <![CDATA[ > ]]>  0 
+				AND le.affects_balance = 1 
+				AND te.ledger_entity_id <![CDATA[ > ]]>  10 			
+					AND le.entry_date <![CDATA[ >= ]]>  #fromDate#
+					AND le.entry_date <![CDATA[ <= ]]>  #toDate#
+	  
+			GROUP BY 
+				te.ledger_entity_id 
+			UNION 
+			SELECT 
+				te.ledger_entity_id AS vendor_id, 
+				0 AS other_payment_credit, 
+				SUM(te.trans_amount)AS other_payment_debit
+			FROM 
+				accounts_prod.ledger_transaction_entry te 
+				INNER JOIN accounts_prod.ledger_entry le ON le.ledger_entry_id = te.ledger_entry_id 
+				INNER JOIN accounts_prod.ledger_transaction_rule ltr ON ltr.ledger_entry_rule_id = le.ledger_entry_rule_id 
+			WHERE 
+				(ltr.ledger_entry_rule_id = 5600 AND te.entry_type_id = 1) 
+				AND ltr.transaction_type_id != 800 
+				AND (so_id IS NULL) 
+				AND te.trans_amount <![CDATA[ > ]]>  0 
+				AND le.affects_balance = 1 
+				AND te.ledger_entity_id <![CDATA[ > ]]>  10 
+				
+				AND le.entry_date <![CDATA[ >= ]]>  #fromDate# 
+				AND le.entry_date <![CDATA[ <= ]]> #toDate#  
+			GROUP BY 
+				te.ledger_entity_id
+			) AS tran ON (tran.vendor_id = w9.vendor_id) 
+		GROUP BY 
+			w9.vendor_id	
+			ORDER BY vendorID	
+	</select>
+	<insert id="report_scheduler.insert" parameterClass="fmReportVO">
+		INSERT INTO supplier_prod.report_input_criteria 
+		(report_type, report_name, report_requested_date,
+		modified_date, created_date, all_buyer_ind, all_provider_ind, buyer_ids,
+		provider_firm_ids, report_by_payment_date_ind, from_date,
+		to_date, submitted_by, company_id, role_id , report_status )  
+		VALUES 
+		(#reportName#, #reportNameForExport#, NOW(),NOW(),NOW(),#reportForAllBuyers#,
+		#reportForAllProviders#,#buyers#,#providers#, #reportByPaymentDate# ,#fromDate#,
+		#toDate#,#resourceId#,#roleId#,#role#,#reportStatus#)
+	</insert>
+	<select id="getStatusOfReportExport.query" parameterClass="java.lang.Integer" resultClass="exportStatusVO">
+		SELECT 
+		report_id AS 'reportId',
+		report_name AS 'reportName',
+		report_type AS 'reportType',
+		all_buyer_ind AS 'allBuyers',
+		all_provider_ind AS 'allProviders',
+		buyer_ids AS 'buyerIds',
+		provider_firm_ids AS 'providerIds',
+		from_date AS 'fromDate',
+		to_date AS 'toDate',
+		report_requested_date as 'reportDate',
+		report_status AS 'reportStatus',
+		record_count AS 'totalRecords',
+		submitted_by AS 'resourceId',
+		report_by_payment_date_ind AS 'reportByPaymentDate',
+		file_path AS 'filePath'
+		FROM supplier_prod.report_input_criteria inputs
+		WHERE inputs.company_id = #slId# AND inputs.report_status != 'Deleted'
+		ORDER BY inputs.report_requested_date DESC		
+	</select>
+	
+	<select id="getFMW9History.query" parameterClass="fmReportVO" resultClass="fmW9ProfileVO" >
+	      SELECT vh.vendor_id AS vendorId,
+	             vw.business_name AS businessName,
+                 vw.dba_name AS dbaName,
+                 vw.street_1 AS street1,
+                 vw.street_2 AS street2,
+                 vw.zip AS zip,
+                 vw.zip4 AS zip4,
+                 vw.city AS city,
+                 vw.state_cd AS state,
+				 vhi.ein_no AS encryptedTaxPayerId, 
+				 vhi.taxpayer_id_number_type AS taxPayerType,    
+				 vhi.modified_date  AS modifiedDate,
+				 lb.descr AS taxPayerTypeDescr,
+		         CASE WHEN vhi.tax_exempt_ind  = 1   THEN 'Y' ELSE 'N' END AS "exempt" 
+                             FROM supplier_prod.vendor_hdr vh   
+                             INNER JOIN  supplier_prod.vendor_w9_history vhi ON vh.vendor_id=vhi.vendor_id   
+                             INNER JOIN  supplier_prod.vendor_w9 vw ON vw.vendor_id=vh.vendor_id  
+                             INNER JOIN  supplier_prod.lu_business_type lb  ON lb.id=vhi.tax_status_id 
+                            <isEqual property="reportForSpecificProviders"  compareValue="false">    
+                             INNER JOIN supplier_prod.so_hdr sh ON sh.accepted_vendor_id=vh.vendor_id
+                            </isEqual>           
+                             WHERE 
+                               <isEqual property="reportForSpecificProviders"  compareValue="false"> 
+								   sh.buyer_id =#roleId# 
+				                   AND sh.wf_state_id IN (180, 120)
+									AND
+									(
+										(
+											sh.closed_date  <![CDATA[ >= ]]>  #fromDate# 
+											AND sh.closed_date   <![CDATA[ <= ]]>  #toDate#
+										 )
+										     OR
+										(
+											sh.cancelled_date   <![CDATA[ >= ]]>  #fromDate#
+											AND sh.cancelled_date  <![CDATA[ <= ]]>  #toDate#
+										)
+									)
+				             </isEqual>
+		                   <isEqual property="reportForSpecificProviders"  compareValue="true">
+	                                 vh.vendor_id IN
+				              <iterate  open="(" close=")"
+				                        conjunction="," property="providerList">
+				                        #providerList[]#
+				              </iterate>             
+	                      </isEqual>      
+	                          	 AND vhi.taxpayer_id_number_type IS NOT NULL               
+		                         GROUP BY vh.vendor_id,vhi.ein_no,vhi.taxpayer_id_number_type,lb.descr,vhi.tax_exempt_ind
+		                         ORDER BY vhi.vendor_id, vhi.modified_date DESC
+	</select>
+	
+	
+	<select id="getFMW9HistoryAddress.query" parameterClass="fmReportVO" resultClass="fmW9ProfileVO" >
+	      SELECT vh.vendor_id AS vendorId,
+	             vw.business_name AS businessName,
+                 vw.dba_name AS dbaName,
+                 vw.street_1 AS street1,
+                 vw.street_2 AS street2,
+                 vw.zip AS zip,
+                 vw.zip4 AS zip4,
+                 vw.city AS city,
+                 vw.state_cd AS state,
+				 vhi.ein_no AS encryptedTaxPayerId, 
+				 vhi.taxpayer_id_number_type AS taxPayerType,    
+				 vhi.modified_date  AS modifiedDate,
+				 lb.descr AS taxPayerTypeDescr,
+		         CASE WHEN vhi.tax_exempt_ind  = 1   THEN 'Y' ELSE 'N' END AS "exempt" 
+                             FROM supplier_prod.vendor_hdr vh   
+                             INNER JOIN  supplier_prod.vendor_w9_history vhi ON vh.vendor_id=vhi.vendor_id   
+                             INNER JOIN  supplier_prod.vendor_w9 vw ON vw.vendor_id=vh.vendor_id  
+                             INNER JOIN  supplier_prod.lu_business_type lb  ON lb.id=vhi.tax_status_id 
+                            <isEqual property="reportForSpecificProviders"  compareValue="false">    
+                             INNER JOIN supplier_prod.so_hdr sh ON sh.accepted_vendor_id=vh.vendor_id
+                            </isEqual>           
+                             WHERE 
+                               <isEqual property="reportForSpecificProviders"  compareValue="false"> 
+								   sh.buyer_id =#roleId# 
+				                   AND sh.wf_state_id IN (180, 120)
+									AND
+									(
+										(
+											sh.closed_date  <![CDATA[ >= ]]>  #fromDate# 
+											AND sh.closed_date   <![CDATA[ <= ]]>  #toDate#
+										 )
+										     OR
+										(
+											sh.cancelled_date   <![CDATA[ >= ]]>  #fromDate#
+											AND sh.cancelled_date  <![CDATA[ <= ]]>  #toDate#
+										)
+									)
+				             </isEqual>
+		                   <isEqual property="reportForSpecificProviders"  compareValue="true">
+	                                 vh.vendor_id IN
+				              <iterate  open="(" close=")"
+				                        conjunction="," property="providerList">
+				                        #providerList[]#
+				              </iterate>             
+	                      </isEqual>      
+	                          	 AND vhi.taxpayer_id_number_type IS NOT NULL               
+		                         GROUP BY vh.vendor_id,vhi.ein_no,vhi.taxpayer_id_number_type,lb.descr,vhi.tax_exempt_ind
+		                         ORDER BY vhi.vendor_id, vhi.modified_date DESC
+	</select>
+	
+	<select id="getFMW9HistoryAdmin.query" parameterClass="fmReportVO" resultClass="fmW9ProfileVO" >
+	       SELECT vh.vendor_id AS vendorId,
+	             vw.business_name AS businessName,
+                 vw.dba_name AS dbaName,
+                 vw.street_1 AS street1,
+                 vw.street_2 AS street2,
+                 vw.zip AS zip,
+                 vw.zip4 AS zip4,
+                 vw.city AS city,
+                 vw.state_cd AS state,
+				 vhi.ein_no AS encryptedTaxPayerId, 
+				 vhi.taxpayer_id_number_type AS taxPayerType,    
+				 vhi.modified_date  AS modifiedDate,
+				 lb.descr AS taxPayerTypeDescr,
+		         CASE WHEN vhi.tax_exempt_ind  = 1   THEN 'Y' ELSE 'N' END AS "exempt" 
+                             FROM supplier_prod.vendor_hdr vh   
+                             INNER JOIN  supplier_prod.vendor_w9_history vhi ON vh.vendor_id=vhi.vendor_id   
+                             INNER JOIN  supplier_prod.vendor_w9 vw ON vw.vendor_id=vh.vendor_id 
+                             INNER JOIN  supplier_prod.lu_business_type lb  ON lb.id=vhi.tax_status_id   
+                            <isEqual property="reportForSpecificProviders"  compareValue="false">    
+                             INNER JOIN supplier_prod.so_hdr sh ON sh.accepted_vendor_id=vh.vendor_id
+                            </isEqual>           
+                             WHERE 
+                               <isEqual property="reportForSpecificProviders"  compareValue="false"> 
+								     sh.buyer_id IN
+									 <iterate  open="(" close=")"
+												 conjunction="," property="buyerList">
+												 #buyerList[]#
+									 </iterate> 
+	                                 	AND sh.wf_state_id IN (180, 120)
+										AND
+										(
+											(
+												sh.closed_date  <![CDATA[ >= ]]>  #fromDate# 
+												AND sh.closed_date   <![CDATA[ <= ]]>  #toDate#
+											 )
+											     OR
+											(
+												sh.cancelled_date   <![CDATA[ >= ]]>  #fromDate#
+												AND sh.cancelled_date  <![CDATA[ <= ]]>  #toDate#
+											)
+										) 
+				             </isEqual>
+		                   <isEqual property="reportForSpecificProviders"  compareValue="true">
+	                                 vh.vendor_id IN
+				              <iterate  open="(" close=")"
+				                        conjunction="," property="providerList">
+				                        #providerList[]#
+				              </iterate>             
+	                      </isEqual>      
+	                          	 AND vhi.taxpayer_id_number_type IS NOT NULL               
+		                         GROUP BY vh.vendor_id,vhi.ein_no,vhi.taxpayer_id_number_type,lb.descr,vhi.tax_exempt_ind 
+		                         ORDER BY vhi.vendor_id, vhi.modified_date DESC
+	</select>
+	
+	
+	<select id="getFMW9HistoryAdminAddress.query" parameterClass="fmReportVO" resultClass="fmW9ProfileVO" >
+	       SELECT vh.vendor_id AS vendorId,
+	             vw.business_name AS businessName,
+                 vw.dba_name AS dbaName,
+                 vw.street_1 AS street1,
+                 vw.street_2 AS street2,
+                 vw.zip AS zip,
+                 vw.zip4 AS zip4,
+                 vw.city AS city,
+                 vw.state_cd AS state,
+				 vhi.ein_no AS encryptedTaxPayerId, 
+				 vhi.taxpayer_id_number_type AS taxPayerType,    
+				 vhi.modified_date  AS modifiedDate,
+				 lb.descr AS taxPayerTypeDescr,
+		         CASE WHEN vhi.tax_exempt_ind  = 1   THEN 'Y' ELSE 'N' END AS "exempt" 
+                             FROM supplier_prod.vendor_hdr vh   
+                             INNER JOIN  supplier_prod.vendor_w9_history vhi ON vh.vendor_id=vhi.vendor_id   
+                             INNER JOIN  supplier_prod.vendor_w9 vw ON vw.vendor_id=vh.vendor_id 
+                             INNER JOIN  supplier_prod.lu_business_type lb  ON lb.id=vhi.tax_status_id   
+                            <isEqual property="reportForSpecificProviders"  compareValue="false">    
+                             INNER JOIN supplier_prod.so_hdr sh ON sh.accepted_vendor_id=vh.vendor_id
+                            </isEqual>           
+                             WHERE 
+                               <isEqual property="reportForSpecificProviders"  compareValue="false"> 
+								     sh.buyer_id IN
+									 <iterate  open="(" close=")"
+												 conjunction="," property="buyerList">
+												 #buyerList[]#
+									 </iterate> 
+	                                 	AND sh.wf_state_id IN (180, 120)
+										AND
+										(
+											(
+												sh.closed_date  <![CDATA[ >= ]]>  #fromDate# 
+												AND sh.closed_date   <![CDATA[ <= ]]>  #toDate#
+											 )
+											     OR
+											(
+												sh.cancelled_date   <![CDATA[ >= ]]>  #fromDate#
+												AND sh.cancelled_date  <![CDATA[ <= ]]>  #toDate#
+											)
+										) 
+				             </isEqual>
+		                   <isEqual property="reportForSpecificProviders"  compareValue="true">
+	                                 vh.vendor_id IN
+				              <iterate  open="(" close=")"
+				                        conjunction="," property="providerList">
+				                        #providerList[]#
+				              </iterate>             
+	                      </isEqual>      
+	                          	 AND vhi.taxpayer_id_number_type IS NOT NULL               
+		                         GROUP BY vh.vendor_id,vhi.ein_no,vhi.taxpayer_id_number_type,lb.descr,vhi.tax_exempt_ind
+		                         ORDER BY vhi.vendor_id, vhi.modified_date DESC
+	</select>
+	
+	<update id="updateExportDetails.query" parameterClass="fmReportVO">
+		update supplier_prod.report_input_criteria set
+			report_name = #reportNameForExport#,
+			report_type = #reportName#,
+			report_requested_date = #reportRequestedDate#,
+			report_generated_date = #reportGeneratedDate#,
+			modified_date = NOW(),
+			all_buyer_ind = #reportForAllBuyers#,
+			all_provider_ind = #reportForAllProviders#,
+			buyer_ids = #buyers#,
+			provider_firm_ids = #providers#,
+			from_date = #fromDate#,
+			to_date = #toDate#,
+			submitted_by = #resourceId#,
+			company_id = #roleId#,
+			role_id = #role#,
+			file_path = #filePath#,	
+			report_status = #reportStatus#,
+			record_count = #totalRecords#,
+			attempt_no = #numberOfAttepmts#,		
+			report_footer = #reportFooter#,
+			exception = #exception#
+		where report_id = #reportId# ; 		
+	</update>		
+	
+	<select id="getReportCritirea.query" parameterClass="java.lang.Integer" resultClass="fmReportVO">
+		SELECT
+		report_name AS reportNameForExport,
+		report_type AS reportName,
+		all_buyer_ind  AS reportForAllBuyers,
+		all_provider_ind AS reportForAllProviders,
+		buyer_ids AS buyers,
+		provider_firm_ids AS providers,
+		from_date  AS fromDate,
+		to_date  AS toDate,
+		report_by_payment_date_ind AS reportByPaymentDate,
+		company_id AS roleId,
+		role_id AS role,
+		file_path AS filePath,
+		report_status AS reportStatus,
+		record_count AS totalRecords,
+		report_footer AS reportFooter,
+		submitted_by AS resourceId				
+		FROM supplier_prod.report_input_criteria 
+		WHERE report_id = #reportId#;
+	</select>
+	<update id="deleteReportFromFrontEnd.query" parameterClass="fmReportVO">
+		update supplier_prod.report_input_criteria set
+			modified_date = NOW(),
+			report_status = #reportStatus#
+		where report_id = #reportId#; 		
+	</update>
+		
+	<update id="checkAndUpdateInProcessReport.query" parameterClass="java.lang.Integer">
+		UPDATE supplier_prod.report_input_criteria 
+		SET report_status = 'Pending',
+		attempt_no = 0 
+		WHERE TIME_TO_SEC( TIMEDIFF( NOW(), process_start_time )) > #timeInSec#
+		AND report_status = 'In Process' ; 		
+	</update>
+	<!-- SLT 2230 Wallet control audit notes for transfer SLBucks -->
+	<select id="getTransferReasonCode.query"
+		resultClass="transferReasonCodeVO" parameterClass="java.util.HashMap">
+		SELECT trc.description AS description,
+		trc.transfer_reason_note AS transferReasonNote  
+		FROM lu_transfer_reason_codes trc 
+		WHERE reason_code_id=#transferReasonCodeId#;
+	</select>
+
+	<select id="walletHoldBalance.select" parameterClass="java.lang.Integer"
+		resultClass="java.lang.Double">
+		SELECT amount FROM supplier_prod.entity_wallet_control
+		WHERE entity_id = #entityId#
+		AND wallet_control_id = (SELECT wallet_control_id FROM supplier_prod.entity_wallet_control
+		WHERE entity_id = #entityId#
+		AND on_hold=1
+		ORDER BY modified_date DESC
+		LIMIT 1)
+		ORDER BY modified_date DESC
+        LIMIT 1
+	</select>
+
+	<update id="entityRemainingBalance.update" parameterClass="java.util.HashMap">
+		UPDATE supplier_prod.entity_wallet_control
+		SET remaining_amount = #remainingHoldBal#
+		WHERE entity_id = #entityId#
+		AND wallet_control_id = #walletControlId#
+		ORDER BY modified_date DESC
+        LIMIT 1
+	</update>
+
+	<select id="walletControlId.entity.select" parameterClass="java.lang.Integer"
+		resultClass="java.lang.Integer">
+		SELECT wallet_control_id FROM supplier_prod.entity_wallet_control
+		WHERE entity_id = #entityId#
+		AND on_hold=1
+		ORDER BY modified_date DESC
+		LIMIT 1
+	</select>
+
+	<select id="entityWalletControl.banner.Id" parameterClass="java.lang.Integer"
+		resultClass="java.lang.String">
+		SELECT banner FROM supplier_prod.lu_wallet_control
+		WHERE id = #walletControlId#
+	</select>
+	
+	<!-- 	code change for SLT-2228 -->
+	<select id="getTemplateIdByReasoncode" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT email_template_id FROM lu_transfer_reason_codes WHERE reason_code_id = #reasonCodeId#
+	</select>
+	
+</sqlMap>

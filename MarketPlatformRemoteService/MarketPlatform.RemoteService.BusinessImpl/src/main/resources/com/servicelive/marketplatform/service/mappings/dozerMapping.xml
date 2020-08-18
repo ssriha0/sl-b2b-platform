@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns="http://dozer.sourceforge.net"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://dozer.sourceforge.net http://dozer.sourceforge.net/schema/beanmapping.xsd">
+
+    <configuration>
+        <stop-on-errors>true</stop-on-errors>
+        <wildcard>true</wildcard>
+    </configuration>
+
+    <mapping type="one-way">
+        <class-a>com.servicelive.marketplatform.common.vo.ServiceOrderNotificationTask</class-a>
+        <class-b>com.servicelive.marketplatform.notification.domain.NotificationTask</class-b>
+        <field>
+            <a>templateId</a>
+            <b>templateId</b>
+        </field>
+        <field>
+            <a>addresses.from</a>
+            <b>taskSender</b>
+        </field>
+        <field>
+            <a>addresses.to</a>
+            <b>taskRecipient</b>
+        </field>
+        <field>
+            <a>addresses.cc</a>
+            <b>taskCCRecipient</b>
+        </field>
+        <field>
+            <a>addresses.bcc</a>
+            <b>taskBCCRecipient</b>
+        </field>
+    </mapping>
+
+</mappings>

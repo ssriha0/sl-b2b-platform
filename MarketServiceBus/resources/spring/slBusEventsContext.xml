@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+    	http://www.springframework.org/schema/beans/spring-beans.xsd
+	    http://www.springframework.org/schema/tx
+    	http://www.springframework.org/schema/tx/spring-tx.xsd"
+	default-autowire="no">
+
+	<!--ServiceLive Bus-->
+	<import resource="classpath:serviceLiveBusContext.xml" />
+
+	<!-- Service Live Bus Event Adapter for handling Assurant related Service Order Events -->
+	<bean id="assurantServiceOrderEventAdapter" class="com.servicelive.bus.EventAdapterFactory"
+		parent="abstractAssurantServiceOrderEventAdapter">
+		<property name="clientId" value="${wsmq.subscriber.assurant.clientId}" />
+		<property name="eventHandlerList">
+			<list>
+				<ref bean="assurantServiceOrderEventHandler" />
+			</list>
+		</property>
+		<property name="messageSelector" ref="assurantServiceOrderEventsMessageSelector" />
+	</bean>
+
+	<!-- Message selector for filtering Assurant-specific Service Order Events -->
+	<bean id="assurantServiceOrderEventsMessageSelector"
+		class="com.servicelive.bus.event.order.ServiceOrderMessageSelector">
+		<property name="buyers">
+			<list>
+				<value>1085</value>
+			</list>
+		</property>
+		<property name="orderEventType">
+			<list>
+				<value>CREATED</value>
+				<value>POSTED</value>
+				<value>ACCEPTED</value>
+				<value>COMPLETED</value>
+				<value>VOIDED</value>
+				<value>DELETED</value>
+				<value>SUBSTATUS_CHANGE</value>
+				<value>BUYER_NOTIFICATION</value>
+				<value>PARTS_SHIPPED</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- Service Live Bus Event Adapter for handling Sears RI related Service Order Events -->
+	<bean id="searsRiServiceOrderEventAdapter" class="com.servicelive.bus.EventAdapterFactory"
+		parent="abstractServiceOrderEventAdapter">
+		<property name="clientId" value="${wsmq.subscriber.ri.clientId}" />
+		<property name="eventHandlerList">
+			<list>
+				<ref bean="searsRiOrderClosedEventHandler" />
+			</list>
+		</property>
+		<property name="messageSelector" ref="searsRiOrderClosedServiceOrderEventsMessageSelector" />
+	</bean>
+
+	<!-- Message selector for filtering Sears RI-specific Service Order Events -->
+	<bean id="searsRiOrderClosedServiceOrderEventsMessageSelector"
+		class="com.servicelive.bus.event.order.ServiceOrderMessageSelector">
+		<property name="buyers">
+			<list>
+				<value>1000</value>
+			</list>
+		</property>
+		<property name="orderEventType">
+			<list>
+				<value>CLOSED</value>
+				<value>DELETED</value>
+				<value>VOIDED</value>
+				<value>CANCELLED</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- Service Live Bus Event Adapter for handling Sears HSR related Service Order Events -->
+	<bean id="searsHsrServiceOrderEventAdapter" class="com.servicelive.bus.EventAdapterFactory"
+		parent="abstractHSRServiceOrderEventAdapter">
+		<property name="clientId" value="${wsmq.subscriber.hsr.clientId}" />
+		<property name="eventHandlerList">
+			<list>
+				<ref bean="searsHsrOrderAcceptedEventHandler" />
+			</list>
+		</property>
+		<property name="messageSelector" ref="searsHsrOrderAcceptedServiceOrderEventsMessageSelector" />
+	</bean>
+
+	<!-- Message selector for filtering Sears HSR-specific Service Order Events -->
+	<bean id="searsHsrOrderAcceptedServiceOrderEventsMessageSelector"
+		class="com.servicelive.bus.event.order.ServiceOrderMessageSelector">
+		<property name="buyers">
+			<list>
+				<value>3000</value>
+			</list>
+		</property>
+		<property name="orderEventType">
+			<list>
+			<!-- Changes for SL-21380 starts -->
+				<!-- value>ACCEPTED</value-->
+				<!-- Changes for SL-21380 ends -->
+				<value>CLOSED</value>
+			</list>
+		</property>
+	</bean>
+</beans>

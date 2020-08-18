@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<bean id="performanceMetricDaoImpl" class="com.newco.marketplace.persistence.match.rank.performancemetric.dao.PerformanceMetricDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+	
+	<bean id="rankMatchingDaoImpl" class="com.newco.marketplace.persistence.match.rank.performancemetric.dao.RankMatchingDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+	
+	<bean id="performanceMetricService" class="com.newco.match.rank.performancemetric.service.PerformanceMetricService" lazy-init="true">
+		<property name="performanceMetricDaoImpl">
+			<ref bean="performanceMetricDaoImpl" />
+		</property>
+	</bean>
+	
+	<bean id="rankMatchingService" class="com.newco.match.rank.performancemetric.service.RankMatchingServiceImpl" lazy-init="true">
+		<property name="rankMatchingDaoImpl">
+			<ref bean="rankMatchingDaoImpl" />
+		</property>
+	</bean>
+	
+	<bean id="rankMetricBo" class="com.newco.match.rank.service.RankMetricsBoImpl" lazy-init="true">
+		<!-- <property name="performanceMetricService">
+			<ref bean="performanceMetricService" />
+		</property> -->
+		<property name="rankMatchingService">
+			<ref bean="rankMatchingService" />
+		</property>
+	</bean>
+
+	<bean id="providerSearchMatchRankBO" class="com.newco.marketplace.business.businessImpl.provider.searchmatchrank.ProviderSearchMatchRankBOImpl" lazy-init="true">
+		<property name="d2cProviderPortalService">
+			<ref bean="d2cProviderPortalService" />
+		</property>
+		<property name="rankMetricBo">
+			<ref bean="rankMetricBo" />
+		</property>
+		<property name="matchCriteriaServiceImpl">
+			<ref bean="matchCriteriaServiceImpl" />
+		</property>
+	</bean>
+	
+	<bean id="matchingCriteriaDao" class="com.newco.marketplace.persistence.match.rank.performancemetric.dao.MatchingCriteriaDaoImpl" lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+	
+	<bean id="matchCriteriaServiceImpl" class="com.newco.match.rank.service.MatchCriteriaServiceImpl" lazy-init="true">
+		<property name="matchingCriteriaDao">
+			<ref bean="matchingCriteriaDao" />
+		</property>
+		<property name="generalInfoBO">
+			<ref bean="generalInfoBOImpl" />
+		</property>
+		<property name="vendorSlCalendarService">
+			<ref bean="vendorSlCalendarService" />
+		</property>
+	</bean>
+	
+</beans>

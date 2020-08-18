@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="walletControl">
+
+<typeAlias alias="walletControlVO"
+		type="com.newco.marketplace.dto.vo.wallet.WalletControlVO" />
+		
+<typeAlias alias="walletControlDocumentVO"
+		type="com.newco.marketplace.dto.vo.wallet.WalletControlDocumentVO" />
+<typeAlias alias="document" type="com.newco.marketplace.dto.vo.DocumentVO"/>
+
+<!-- code change for SLT-2323 -->
+<typeAlias alias="lookupWalletControl"
+		type="com.newco.marketplace.dto.vo.wallet.LookupWalletControl" />
+	
+
+
+
+<insert id="walletControl.insertOrUpdate" parameterClass="walletControlVO">
+		insert into entity_wallet_control
+			(id,
+			entity_id, 
+			wallet_control_id,
+			amount,
+			remaining_amount,
+			on_hold,
+			modified_by, hold_date , modified_date, released_date)			 
+		values(#id#,#entityId#,
+			   #walletControlId#,
+			   #amount#,
+			   #remainingAmount#,
+			   #onHold#,
+			   	#modifiedBy# , now() , now(), #releasedDate#)
+			   	ON DUPLICATE KEY UPDATE	   
+				id = #id#, entity_id = #entityId#, wallet_control_id = #walletControlId#,amount= #amount#,
+			    remaining_amount=#remainingAmount#, on_hold =  #onHold#,	 
+				modified_by = #modifiedBy# ,modified_date = now()
+				<isEqual prepend="," property="onHold" compareValue="0">
+				released_date=now()
+		</isEqual>;
+       <selectKey resultClass="int">
+            SELECT last_insert_id() as id
+        </selectKey>    
+	</insert>
+	
+	
+	
+	<insert id="walletControlDocument.insertOrUpdate" parameterClass="walletControlDocumentVO">
+		insert into entity_wallet_control_document
+			(id,
+			document_id, 
+			entity_wallet_control_id,
+			doc_category_id,
+			modified_by, created_date , modified_date)			 
+		values(#id#,#documentId#,
+			   #entityWalletControlId#,
+			   #docCategoryId#,
+			  #modifiedBy# , now() , now())
+	ON DUPLICATE KEY UPDATE	   
+			id = #id#, document_id = #documentId#, entity_wallet_control_id = #entityWalletControlId#, doc_category_id =  #docCategoryId#,	 
+			modified_by = #modifiedBy# , created_date=now(),modified_date = now();
+           <selectKey resultClass="int">
+            SELECT last_insert_id() as id
+        </selectKey>     
+	</insert>
+	
+	<select id="lookup.walletControl.query" resultClass="java.lang.Integer" parameterClass="java.lang.String">
+		select id as walletControlId from lu_wallet_control lu
+		where lu.name= #name#
+	</select>
+	
+	<select id="walletControl.selectForEntityID.query" parameterClass="java.lang.Integer" resultClass="walletControlVO">
+		select w.id as id,
+			w.entity_id as entityId, 
+			w.wallet_control_id as walletControlId,
+            lu.name as walletControlType,
+			w.amount as amount,
+			w.remaining_amount as remainingAmount,
+			w.on_hold as onHold from entity_wallet_control w join lu_wallet_control lu on w.wallet_control_id = lu.id
+			where w.entity_id= #entityID# order by w.hold_date desc limit 1
+	</select>
+	
+	<select id="walletControlDocument.selectForEntityWalletControlID.query" parameterClass="java.lang.Integer" resultClass="walletControlDocumentVO">
+		select w.id as id,
+			w.document_id as documentId, 
+			w.entity_wallet_control_id as entityWalletControlId,
+			w.doc_category_id as docCategoryId ,
+			d.file_name as documentName
+				from entity_wallet_control_document w join document d on w.document_id= d.document_id
+		where entity_wallet_control_id= #entityWalletControlId# 
+	</select>
+	
+	<select id="lookup.documentCategory.query" resultClass="java.lang.Integer" parameterClass="java.lang.String">
+		select doc_category_id as documentCategoryId from lu_document_category lu
+		where lu.type= #name#
+	</select>
+
+	<!-- code change for SLT-2323 -->
+	<select id="template.getHoldReleaseTemplateIds.query" resultClass="lookupWalletControl"		parameterClass="java.util.HashMap">
+		select email_template_id as emailTemplateId, release_email_template_id as releaseTemplateId ,id as id from lu_wallet_control 
+		WHERE id=#walletControlId#
+	</select>
+	
+		
+	<select id="document.query_document_by_document_id" parameterClass="java.lang.Integer" resultClass="document">
+		select descr as description, 
+					title as title,
+					file_name as fileName,
+					format as format,
+					doc_path as docPath,
+					document_id as documentId
+		 from document 
+		 where document_id=#documentId#
+	</select>
+	<delete id="document.delete_entity_wallet_control_document_by_documentId" parameterClass="java.lang.Integer">
+		DELETE FROM entity_wallet_control_document 
+			WHERE document_id = #documentID#
+	</delete>
+	
+	<delete id="document.delete_document_by_documentId" parameterClass="java.lang.Integer">
+		DELETE FROM document 
+			WHERE document_id = #documentID#
+	</delete>
+
+	
+
+</sqlMap>

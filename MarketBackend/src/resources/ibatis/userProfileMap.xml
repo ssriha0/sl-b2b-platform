@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="user_profile">
+	<typeAlias alias="userProfile" type="com.newco.marketplace.vo.provider.UserProfile"/>	
+	<typeAlias alias="buyerUserProfile" type="com.newco.marketplace.dto.vo.buyer.BuyerUserProfile"/>
+	<typeAlias alias="lostUserName" type="com.newco.marketplace.vo.provider.LostUsernameVO"/>
+	<typeAlias alias="userProfileLogging" type="com.newco.marketplace.dto.vo.logging.UserProfileLoggingVO"/>
+	
+		<select id="user_profile.query" parameterClass="userProfile" resultClass="userProfile">
+	    	select up.user_name as userName, 
+					up.contact_id as contactId,
+					up.question_id as questionId,
+					up.password as password, 
+					up.answer_txt as answerTxt,
+					up.created_date as createdDate, 
+					up.modified_date as modifiedDate,
+					c.email as email,
+					c.email_alt as altEmail,
+					c.first_name as firstName,
+					c.last_name as lastName
+			from user_profile up, contact c
+			where up.contact_id =c.contact_id  and up.user_name = #userName#
+		</select>
+		
+		<!--  To check for duplicate buyer user Id -->
+		<select id="user_profile_buyer.query" parameterClass="buyerUserProfile" resultClass="buyerUserProfile">
+	    	select up.user_name as userName, 
+					up.contact_id as contactId,
+					coalesce(up.question_id, 0) as questionId,
+					up.password as password, 
+					up.answer_txt as answerTxt,
+					up.created_date as createdDate, 
+					up.modified_date as modifiedDate,
+					c.email as email,
+					c.email_alt as altEmail,
+					c.first_name as firstName,
+					c.last_name as lastName
+			from user_profile up, contact c
+			where up.contact_id =c.contact_id  and up.user_name = #userName#
+		</select>
+	
+	
+	<select id="user_profile.queryWithName" parameterClass="userProfile" resultClass="userProfile">
+		select up.user_name as userName, 
+				up.contact_id as contactId,
+				coalesce(up.question_id, 0) as questionId,
+				up.password as password, 
+				up.answer_txt as answerTxt,
+				up.created_date as createdDate, 
+				up.modified_date as modifiedDate,
+				up.role_id as roleId,
+				c.email as email,
+				c.first_name as firstName,
+				c.last_name as lastName
+		from user_profile up, contact c
+		where up.contact_id =c.contact_id and up.user_name = #userName#
+		 
+				
+	</select>
+	
+	<update id="user_profile.update" parameterClass="userProfile">
+		update user_profile
+		<dynamic prepend="set">
+			<isGreaterThan prepend=", " property="contactId" compareValue="-1">contact_id = #contactId#</isGreaterThan>
+			<isGreaterThan prepend=", " property="questionId" compareValue="-1">question_id = #questionId#</isGreaterThan>
+			<isNotNull prepend=", " property="password">password = #password#</isNotNull>
+			<isNotNull prepend=", " property="answerTxt">answer_txt = #answerTxt#</isNotNull>
+			<isNotNull prepend=", " property="createdDate">created_date = #createdDate#</isNotNull>
+			<isNotNull prepend=", " property="modifiedDate">modified_date = #modifiedDate#</isNotNull>
+		</dynamic>
+		where user_name = #userName#
+	</update>
+	
+		<insert id="user_profile.insert" parameterClass="userProfile">
+		insert into user_profile
+			(user_name, 
+			contact_id,
+			question_id,
+			password,
+			answer_txt,
+			generated_password_ind,
+			role_id)			
+		values(#userName#,
+			   #contactId#,
+			   #questionId#,
+			   #password#,
+			   #answerTxt#,
+			   #passwordFlag#,
+			   #roleId#)
+	</insert>	
+	
+	<!--  For buyer registration -->
+	
+	<insert id="user_profile_buyer.insert" parameterClass="buyerUserProfile">
+		insert into user_profile
+			(user_name, 
+			contact_id,
+			question_id,
+			password,
+			answer_txt,
+			generated_password_ind,
+			role_id,
+			created_date,
+			modified_date,
+			modified_by,opt_in)			
+		values(#userName#,
+			   #contactId#,
+			   #questionId#,
+			   #password#,
+			   #answerTxt#,
+			   #passwordFlag#,
+			   #roleId#,
+			   #createdDate#,
+			   #modifiedDate#,
+			   #modifiedBy#,
+			   #promotionalMailInd#)
+	</insert>
+	
+	<select id="user_profile.getSecretAnswer"
+		resultClass="java.lang.String">
+		SELECT answer_txt from user_profile where user_name=#username#
+	</select>
+
+	<select id="user_profile.getUserPassword"
+		resultClass="java.lang.String">
+		SELECT password from user_profile where user_name= #username#
+	</select>
+	
+	<select id="user_profile.rold_id" resultClass="java.lang.Integer">
+		SELECT role_id from user_profile where user_name= #username#
+	</select>
+	
+	<select id="user_profile.getSecretQuestionAns"
+		parameterClass="lostUserName" resultClass="lostUserName">
+		SELECT up.question_id as questionId,sq.question_txt as questionTxt from lu_secret_question sq, user_profile up
+			where sq.id=up.question_id and up.user_name=#userName#
+	</select>
+	
+	
+	
+	<select id="user_profile.validateAns"
+		parameterClass="lostUserName" resultClass="lostUserName">
+		SELECT up.question_id, up.answer_txt as questionId from user_profile up 
+		where up.user_name=#userName# 
+		and up.question_id=#questionId#		
+	</select>
+	
+	
+
+	<select id="user_profile_lost_username.query" parameterClass="lostUserName" resultClass="lostUserName">
+		select user_name as userName, c.email, up.question_id as questionId,up.answer_txt as questionTxtAnswer,
+		CASE WHEN up.generated_password_ind IS NULL THEN 0 ELSE up.generated_password_ind END as pwdInd
+			  from contact c,
+			    user_profile up
+			  where c.contact_id = up.contact_id
+			  and up.role_id = #userId#
+			  and email = #emailAddress#
+	 </select>	 
+	 
+	 <select id="user_profile_lost_username.query_by_email" parameterClass="java.lang.String" resultClass="lostUserName">
+		select user_name as userName, 
+		       c.email as emailAddress, up.question_id as questionId,
+		       up.role_id as userId
+			   from contact c,
+			   user_profile up
+			   where email = #emailAddress# 
+			   and c.contact_id = up.contact_id
+	 </select>	
+	 
+	 
+	 <select id="user_profile.getSecretQuestionForgetUserName"
+		 parameterClass="java.lang.Integer" resultClass="java.lang.String" >
+		SELECT question_txt FROM lu_secret_question 
+			where id=#questionId#
+	</select>
+	
+	 <select id="buyer_get_detail_profile.query" parameterClass="java.lang.String" resultClass="lostUserName">
+	   SELECT 	up.user_name as userName, 
+       			c.email as emailAddress,
+       			buy.business_name as businessName,  
+       			up.question_id as questionId,
+       			up.answer_txt as questionTxtAnswer,
+       			up.role_id as userId,
+       			c.first_name as firstName, 
+       			SUBSTRING(c.last_name,1,1) as lastName, 
+       			vr.resource_id as resourceId ,
+       			buy.bus_phone_no as phoneNoBiz,
+       			c.phone_no as phoneNo,
+       			up.locked_ind as lockedInd,
+       			lo.zip as zip, 
+       			up.modified_date as modifiedDate,
+       			CASE WHEN up.generated_password_ind IS NULL THEN 0 ELSE up.generated_password_ind END as pwdInd
+       	FROM	buyer buy, buyer_resource vr, location lo, contact c, user_profile up
+       	WHERE	up.user_name= #userName#
+             	and buy.buyer_id= vr.buyer_id  
+             	and vr.user_name = up.user_name            
+             	and c.contact_id = up.contact_id
+             	and buy.pri_locn_id = lo.locn_id
+             	and vr.resource_id is not null 
+	 </select>
+	 
+	 <select id="buyer_get_user_name_from_resource_id.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT 	vr.user_name as userName 
+		FROM 	buyer_resource vr			    
+		WHERE 	vr.resource_id = #resourceId#		        
+	 </select>
+	 
+	 <select id="provider_get_detail_profile.query" parameterClass="java.lang.String" resultClass="lostUserName">
+		SELECT 	up.user_name as userName, 
+				c.email as emailAddress,
+                up.question_id as questionId,
+				up.answer_txt as questionTxtAnswer,
+				up.role_id as userId,
+				c.first_name as firstName, 
+				SUBSTRING(c.last_name,1,1) as lastName, 				
+				vhdr.business_name as businessName,
+				up.locked_ind as lockedInd,
+                c.phone_no as phoneNo,
+				lo.zip as zip,          
+				vr.resource_id as resourceId,   
+				up.modified_date as modifiedDate,                   
+				CASE WHEN up.generated_password_ind IS NULL THEN 0 ELSE up.generated_password_ind END as pwdInd
+		FROM 	contact c,
+			    user_profile up,
+                vendor_hdr vhdr,
+			    vendor_resource vr,
+			    vendor_location bl,
+			    location lo
+		WHERE 	up.user_name = #userName#
+		        and c.contact_id = up.contact_id 
+		  	    and vr.user_name = up.user_name 
+                and vhdr.vendor_id = vr.vendor_id 
+		        and bl.vendor_id = vr.vendor_id 
+		        and lo.locn_id = bl.locn_id 
+                and lo.locn_type_id='1'
+                and vr.resource_id is not null
+	 </select>
+	  
+	<select id="provider_get_user_name_from_resource_id.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT 	vr.user_name as userName 
+		FROM 	vendor_resource vr			    
+		WHERE 	vr.resource_id = #resourceId#		        
+	</select>
+	
+	<select id="user_profile_lite_by_email_username.query" parameterClass="lostUserName" resultClass="lostUserName">
+		select user_name as userName, 
+		      c.email as emailAddress, up.locked_ind as lockedInd,
+		      up.role_id as userId,
+		      up.modified_date as modifiedDate,
+		      c.first_name as firstName, 
+			  SUBSTRING(c.last_name,1,1) as lastName, 
+		CASE WHEN up.generated_password_ind IS NULL THEN 0 ELSE up.generated_password_ind END as pwdInd,question_id as questionId
+			  from contact c,
+			    user_profile up
+			  where c.contact_id = up.contact_id
+			  and c.email = #emailAddress#
+			  and up.user_name = #userName#
+	 </select>
+	 
+	 <update id="user_profile_password.update" parameterClass="userProfile">
+		update user_profile set password=#password# , locked_ind = 0 , login_attempt_count = 0, verification_attempt_count = 0 where user_name=#userName# 
+	 </update>
+	 
+	  <update id="user_profile_password.reset" parameterClass="userProfile">
+		update user_profile set password=#password#,generated_password_ind=1 , locked_ind = 0,  login_attempt_count = 0 where user_name=#userName# 
+	 </update>
+	 
+	 <update id="user_profile_vendorId.update" parameterClass="java.util.Map">
+		update user_profile set vendor_id=#vendorId#  where user_name=#userName# 
+	 </update>
+	 
+	 <insert id="teammember.userprofile.insert" parameterClass="userProfile">
+		insert into user_profile
+			(user_name, 
+			contact_id,
+			question_id,
+			answer_txt,
+			generated_password_ind,
+			role_id)			
+		values(#userName#,
+			   #contactId#,
+			   #questionId#,
+			   #answerTxt#,
+			   #passwordFlag#,
+			   #roleId#)
+	</insert>
+	 	
+	 <select id="multi_user_lost_username.query" parameterClass="lostUserName" resultClass="lostUserName">
+		SELECT 	up.user_name as userName, 
+				c.email as emailAddress,
+				up.question_id as questionId,
+				up.answer_txt as questionTxtAnswer,
+				c.first_name as firstName, 
+				SUBSTRING(c.last_name,1,1) as lastName, 
+				vr.resource_id as resourceId,
+				up.role_id,
+				CASE WHEN up.generated_password_ind IS NULL THEN 0 ELSE up.generated_password_ind END as pwdInd
+		FROM 	contact c,
+			    user_profile up,
+			    vendor_resource vr
+		WHERE 	c.contact_id = up.contact_id 
+				and up.user_name = vr.user_name
+			  	and email = #emailAddress#
+			    <isNotEqual prepend="and" property="resourceId" compareValue="">  
+    	       		vr.resource_id = #resourceId#
+	            </isNotEqual>
+	 </select>
+	 
+	 <select id="multi_buyer_user_lost_username.query" parameterClass="lostUserName" resultClass="lostUserName">
+		SELECT 	up.user_name as userName, 
+				c.email as emailAddress,
+				up.question_id as questionId,
+				up.answer_txt as questionTxtAnswer,
+				c.first_name as firstName, 
+				SUBSTRING(c.last_name,1,1) as lastName, 
+				vr.resource_id as resourceId, 
+				c.phone_no as phoneNo,
+				lo.zip as zip,
+				up.role_id,
+				CASE WHEN up.generated_password_ind IS NULL THEN 0 ELSE up.generated_password_ind END as pwdInd
+		FROM 	contact c,
+			    user_profile up,
+			    buyer_resource vr,
+			    buyer_locations bl,
+			    location lo
+		WHERE 	c.contact_id = up.contact_id
+		  	    and up.user_name = vr.user_name
+		        and vr.locn_id = bl.locn_id
+		        and bl.locn_id = lo.locn_id				
+			  	and email = #emailAddress#			  	
+			    <isNotEqual prepend="and" property="resourceId" compareValue="">  
+    	       		vr.resource_id = #resourceId#
+	            </isNotEqual>
+	 </select>		
+	 
+	 
+	 <select id="multi_general_user_lost_username.query" parameterClass="lostUserName" resultClass="lostUserName">
+		SELECT 	up.user_name as userName, 
+				c.email, up.question_id as questionId,
+				up.answer_txt as questionTxtAnswer,
+				c.first_name as firstName, 
+				SUBSTRING(c.last_name,1,1) as lastName, 
+				vr.resource_id as resourceId,
+				CASE WHEN up.generated_password_ind IS NULL THEN 0 ELSE up.generated_password_ind END as pwdInd
+		FROM 	contact c,
+			    user_profile up,
+			    buyer_resource vr
+		WHERE 	c.contact_id = up.contact_id 
+				and up.user_name = vr.user_name 
+				and email = #emailAddress#
+			  	<isNotEqual prepend="and" property="resourceId" compareValue="">  
+    	       		vr.resource_id = #resourceId#
+	            </isNotEqual>
+		UNION
+		SELECT 	up.user_name as userName, 
+				c.email, up.question_id as questionId,
+				up.answer_txt as questionTxtAnswer,
+				c.first_name as firstName, 
+				SUBSTRING(c.last_name,1,1) as lastName, 
+				vr.resource_id as resourceId,
+				CASE WHEN up.generated_password_ind IS NULL THEN 0 ELSE up.generated_password_ind END as pwdInd
+		FROM 	contact c,
+			    user_profile up,
+			    vendor_resource vr
+		WHERE 	c.contact_id = up.contact_id 
+				and up.user_name = vr.user_name 
+				and email = #emailAddress#
+			    <isNotEqual prepend="and" property="resourceId" compareValue="">  
+    	       		vr.resource_id = #resourceId#
+	            </isNotEqual>
+	 </select>		
+	 
+	 <select id="user_profile_details.queryWithResourceId" parameterClass="java.lang.String" resultClass="userProfile">
+		SELECT  up.user_name 				as userName, 
+				up.password 				as password, 
+				up.generated_password_ind 	as passwordFlag, 
+				ct.email					as email
+  		FROM    user_profile up, 
+  				vendor_resource vr, 
+  				contact ct
+  		WHERE 	up.contact_id = vr.contact_id
+          		AND vr.contact_id = ct.contact_id
+          		AND vr.resource_id = #resourceId#	
+	</select>
+	
+	<select id="user_profile_details_admin.queryWithUserName" parameterClass="java.lang.String" resultClass="userProfile">
+		SELECT 	vhdr.business_name 	As businessName, 
+				vhdr.vendor_id 		As vendorId, 
+				ct.first_name 		As firstName, 
+				ct.last_name 		As lastName, 
+				vr.resource_id 		As resourceId, 
+				ct.email 			As email
+		FROM 	vendor_hdr vhdr, 
+				vendor_resource vr, 
+				contact ct
+		WHERE 	vhdr.vendor_id = vr.vendor_id 
+				AND vr.contact_id = ct.contact_id 
+				AND vr.user_name = #provUserName# 
+	</select>	
+	
+	<select id="user_profile_details_admin.query" resultClass="java.lang.String">
+		select email from contact where contact_id = 
+			(select contact_id from vendor_resource where vendor_id = 
+				(select vendor_id from vendor_resource where user_name=#userName#) and primary_ind = 1)
+	</select>
+	
+	<select id="user_profile_buyer_details_admin.query" resultClass="java.lang.String">
+		select email from contact where contact_id = 
+			(select contact_id from buyer_resource where buyer_id = 
+				(select buyer_id from buyer_resource where user_name=#userName#) and primary_ind = 1)
+	</select>
+		
+	<select id="user_profile.verification_attempt_count" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT up.verification_attempt_count as count from user_profile up
+			where up.user_name=#userName#
+	</select>
+	
+	<update id="user_profile.update_verification_attempt_count" parameterClass="java.util.Map">
+		update user_profile set verification_attempt_count=#count# where user_name=#userName# 
+	</update>
+	
+	 <update id="user_profile.lock" parameterClass="java.util.Map">
+		update user_profile set locked_ind = 1 where user_name=#userName# 
+	 </update>
+	 
+	 <update id="user_profile.unlock" parameterClass="java.util.Map">
+		update user_profile set locked_ind = 0, verification_attempt_count = 0 where user_name=#userName# 
+	 </update>
+	
+	 <select id="user_profile_like.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+	    	select user_name as userName
+			from user_profile where user_name LIKE concat(#username#,'%') order by user_name desc 
+	 </select>
+     <select id="user_profile_not_like.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+	    	select user_name as userName
+			from user_profile where user_name=#username#
+  </select>
+  
+  
+  <select id="provider_get_resource_id_from_user_name.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT 	vr.resource_id as resourceId 
+		FROM 	vendor_resource vr			    
+		WHERE 	vr.user_name = #username#		        
+	</select>
+	
+</sqlMap>

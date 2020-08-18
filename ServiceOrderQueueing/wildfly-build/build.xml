@@ -1,0 +1,31 @@
+<!--
+<project name="ServiceOrderQueueing" default="war" basedir="..">
+
+    <import file="../../SLCommonBuild/ant/sl-common/sl-common.xml" />
+
+    <target name="-init-jar-classpath" depends="-init-classpath" unless="java-build.jar-classpath">
+        <pathconvert property="java-build.jar-lib-classpath"  
+                refid="java-build.classpath" pathsep=" ">
+            <chainedmapper>
+    			<flattenmapper/>
+            </chainedmapper>
+        </pathconvert>
+        <property name="java-build.jar-classpath" value="${java-build.jar-lib-classpath}"/>
+    </target>
+	
+	<target name="war" depends="dist" description="Build a WAR for this project">
+    	<war destfile="${java-war.dist-file}" webxml="webapp/WEB-INF/web.xml" />
+    </target>
+-->
+	<project name="ServiceOrderQueueing" default="war-junit" basedir="..">
+		<property name="java-war.dist-filename"     value="ServiceOrderQueueing.war"/>
+		<property name="java-war.web-content-dir"   location="webapp"/>
+		<property name="java-war.web-xml"           location="webapp/WEB-INF"/>
+		<property name="java-war.webapp-name"       location="ServiceOrderQueueing"/>
+	    <import file="../../SLCommonBuild/ant/wildfly-sl-common/sl-common.xml"/>
+		 
+		<target name="package" depends="war-junit"/>
+
+	</project>
+
+

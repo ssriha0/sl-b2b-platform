@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+    <package name="publicProfile" extends="ServiceLiveBase" >
+    	<default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+       	<action name="completeProfileAction*" class="completeProfileAction" method="{1}">
+       	<result name="load">/jsp/providerRegistration/modules/tab_user_complete_profile.jsp</result>
+			<result name="input" type="redirectAction">
+	             <param name="actionName">profileTabAction?tabView=tab1</param>
+	             <param name="namespace">/jsp/providerRegistration</param>
+	             <param name="nexturl">publicProfileAction.action</param>
+        	</result>
+			<result name="error">/jsp/public/error/body/errorBody.jsp</result>	
+			<result name="editPublicProfile" type="redirectAction">
+	          <param name="actionName">serviceProAllTab?tabView=tab1</param>
+	            <param name="namespace">/jsp/providerRegistration</param>
+        	</result>
+			
+		</action>
+		
+		<action name="publicProfileAction*" class="publicProfileAction" method="{1}">
+       	<result name="load">/jsp/providerRegistration/modules/tab_user_public_profile.jsp</result>
+			<result name="input" type="redirectAction">
+	             <param name="actionName">profileTabAction?tabView=tab2</param>
+	             <param name="namespace">/jsp/providerRegistration</param>
+	             <param name="nexturl">publicProfileAction.action</param>
+        	</result>
+			<result name="error">/jsp/public/error/body/errorBody.jsp</result>	
+			
+			
+		</action>
+		
+		
+			<action name="profileTabAction_*" class="profileTabAction" method="{1}">
+				<result name="success">/jsp/providerRegistration/provider_profile_tabs.jsp</result>
+				<result name="successpopup" type="redirectAction">providerProfileInfoAction_execute.action</result>
+				<result name="load">/jsp/providerRegistration/provider_profile_tabs.jsp</result>
+			</action>
+		
+		</package>
+</struts>

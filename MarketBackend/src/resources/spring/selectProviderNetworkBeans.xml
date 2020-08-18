@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<bean id="spnDAO" class="com.newco.marketplace.persistence.daoImpl.spn.SPNDaoImpl" autowire="byName">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+		<!-- AUTOWIRED documentService
+		<property name="documentService">
+			<ref bean="documentService" />
+		</property>
+		-->
+	</bean>
+	
+	<bean id="documentDAO" class="com.newco.marketplace.persistence.daoImpl.provider.DocumentDAOImpl" autowire="byName">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+		<!-- AUTOWIRED documentService
+		<property name="documentService">
+			<ref bean="documentService" />
+		</property>
+		-->
+	</bean>
+	
+	
+	<bean id="selectProviderNetworkBOTarget"
+		class="com.newco.marketplace.business.businessImpl.spn.SelectProviderNetworkBOImpl">
+		<property name="spnDAO">
+			<ref bean="spnDAO" />
+		</property>
+		<property name="providerSearchDao">
+			<ref bean="providerSearchDao" />
+		</property>	
+		<property name="marketplaceSkillSearch">
+			<ref bean="marketplaceSearchBean" />
+		</property>
+		<property name="masterCalculatorBO">
+        	<ref bean="masterCalculatorBO"/>
+        </property>
+        <property name="buyerDao">
+			<ref bean="buyerDao" />
+		</property>
+		<property name="vendorCredentialDAO">
+			<ref bean="vendorCredentialsDao" />
+		</property>
+		<property name="lookupDAO">
+			<ref bean="lookupDao"/>
+		</property>
+	</bean>
+	
+	<bean id="spnMonitorBO" class="com.newco.marketplace.business.businessImpl.spn.SPNMonitorBOImpl">
+		<property name="spnDAO">
+				<ref bean="spnDAO" />
+			</property>
+		<property name="documentDAO">
+				<ref bean="documentDAO" />
+		</property>
+	</bean>
+	
+	<bean id="spnetworkBO"  class="com.newco.marketplace.business.businessImpl.spn.SPNetworkBOImpl">
+		<property name="spnetDao">
+			<ref bean="spnetDao" />
+		</property>
+	</bean>
+		
+	<bean id="spnetDao" class="com.newco.marketplace.persistence.daoImpl.spn.SPNetDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+</beans>

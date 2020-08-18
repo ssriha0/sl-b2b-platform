@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="survey">
+	<cacheModel type="LRU" id="aopAdvicesCache">
+		<flushInterval hours="24" />
+		<property name="size" value="500" />
+	</cacheModel>
+
+	<typeAlias alias="aopAdviceVO" type="com.newco.marketplace.dto.vo.aop.AOPAdviceVO" />
+
+	<select id="aopAdvices.query" parameterClass="java.lang.String" resultClass="aopAdviceVO">
+		SELECT actm.action_id AS actionId, 
+			   actm.action_name AS actionName, 
+			   aopm.aop_id AS aopId, 
+			   aopm.aop_name AS aopName,
+			   actassoc.aop_action_id AS aopActionId,
+			   target.aop_action_target_id AS aopActionTargetId,
+			   target.template_id AS templateId, 
+			   target.caching_event_id AS cachingEventId 
+		FROM lu_action_master actm, 
+			 lu_aop_master aopm,
+			 lu_aop_action_assoc actassoc, 
+			 lu_aop_action_target_assoc target
+		WHERE actm.action_name = #actionName# 
+			AND aopm.aop_id = actassoc.aop_id 
+			AND actm.action_id = actassoc.action_id 
+			AND actassoc.aop_action_id = target.aop_action_id
+	</select>
+
+	<select id="aopAdviceCache.query" parameterClass="java.lang.Integer" resultClass="aopAdviceVO">
+		SELECT caching_event_id AS cachingEventId, 
+			   caching_event_class AS cachingEventClass
+		FROM lu_caching_event_master
+		WHERE caching_event_id = #cachingEventId# 
+	</select>
+
+</sqlMap>

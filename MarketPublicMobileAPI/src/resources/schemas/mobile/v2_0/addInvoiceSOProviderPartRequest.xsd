@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:include schemaLocation="../../common.xsd" />
+	<!-- Root element -->
+	<xs:element name="addInvoiceSOProviderPartRequest">
+		<xs:complexType>
+		 <xs:sequence>	
+		     <xs:element name="currentTripNo" type="xs:integer"	minOccurs="1"/>		
+		     <xs:element name="tripStatus" type="xs:string"	minOccurs="0"/>		
+			<xs:element name="providerPartsList" type="ProviderPartsListType" minOccurs="0" />
+		 </xs:sequence>
+		</xs:complexType>
+	</xs:element>	
+	
+	<!--ProviderPartsListType -->
+	<xs:complexType name="ProviderPartsListType">
+		<xs:sequence>
+		<xs:element name="providerPart" type="ProviderPartType" minOccurs="0"	maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!--ProviderPartType -->
+	<xs:complexType name="ProviderPartType">
+		<xs:sequence>
+			<xs:element name="invoiceId" type="xs:integer" minOccurs="1" />
+			<xs:element name="partSource" type="partSourceType" minOccurs="1" />
+			<xs:element name="nonSearsSource" type="stringFiftyType" minOccurs="0" />
+			<xs:element name="invoiceNumber" type="invoiceType"	minOccurs="1" />
+			<xs:element name="unitCost" type="price-format" minOccurs="1" />
+			<xs:element name="retailPrice" type="price-format" minOccurs="0" />
+			<xs:element name="partStatus" type="partStatusEnum" minOccurs="0"/>
+			<xs:element name="qty" type="qtyType" minOccurs="0"/>
+			<xs:element ref="document" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+		<!--partCoverageType -->
+
+	<xs:simpleType name="partCoverageType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Protection Agreement" />
+			<xs:enumeration value="In-Warranty" />			
+		</xs:restriction>
+	</xs:simpleType>
+
+		<!--part source Type -->
+
+	<xs:simpleType name="partSourceType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Sears" />
+			<xs:enumeration value="Non Sears" />
+			<xs:enumeration value="Truck Stock" />
+		</xs:restriction>
+	</xs:simpleType>
+		<!--stringFiftyType -->
+
+	<xs:simpleType name="stringFiftyType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="50"></xs:maxLength>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--invoiceType -->
+
+	<xs:simpleType name="invoiceType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="15"></xs:maxLength>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!-- documentType -->
+    <xs:element name="document">
+		<xs:complexType>
+			<xs:sequence>
+				 <xs:element name="documentId" type="xs:integer" minOccurs="1" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	 <!-- Invoice Part Status enum values -->
+    <xs:simpleType name="partStatusEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Available" />
+			<xs:enumeration value="Not Available" />
+			<xs:enumeration value="Ordered" />
+			<xs:enumeration value="Back Ordered" />
+			<xs:enumeration value="Received Hold for pickup" />
+			<xs:enumeration value="Received With provider" />
+			<xs:enumeration value="Installed" />
+			<xs:enumeration value="Returned" />
+			<xs:enumeration value="Not Installed" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="qtyType">
+		<xs:restriction base="xs:integer">
+			<xs:minInclusive value="1"></xs:minInclusive>
+			<xs:maxInclusive value="999"></xs:maxInclusive>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

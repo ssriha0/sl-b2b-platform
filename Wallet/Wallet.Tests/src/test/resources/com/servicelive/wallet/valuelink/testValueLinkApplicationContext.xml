@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-2.0.xsd
+        http://www.springframework.org/schema/jee 
+        http://www.springframework.org/schema/jee/spring-jee-2.0.xsd">
+
+<!-- 
+   	<jee:jndi-lookup id="SLRequestQueue" jndi-name="queue/SLRequestQueue">
+	    <jee:environment>
+	        java.naming.factory.initial=${java.naming.factory.initial}
+	        java.naming.provider.url=${java.naming.provider.url}
+	        java.naming.factory.url.pkgs=${java.naming.factory.url.pkgs}
+    	</jee:environment>
+	</jee:jndi-lookup>
+	
+	<jee:jndi-lookup id="RemoteSLRequestQueue" jndi-name="queue/SLRequestQueue">
+	    <jee:environment>
+	        java.naming.factory.initial=${java.naming.factory.initial}
+	        java.naming.provider.url=${java.naming.provider.url}
+	        java.naming.factory.url.pkgs=${java.naming.factory.url.pkgs}
+    	</jee:environment>
+	</jee:jndi-lookup>
+	
+	<jee:jndi-lookup id="SLResponseQueue" jndi-name="queue/SLResponseQueue">
+	    <jee:environment>
+	        java.naming.factory.initial=${java.naming.factory.initial}
+	        java.naming.provider.url=${java.naming.provider.url}
+	        java.naming.factory.url.pkgs=${java.naming.factory.url.pkgs}
+    	</jee:environment>
+	</jee:jndi-lookup>
+		
+	<jee:jndi-lookup id="connectionFactory" jndi-name="QueueConnectionFactory">
+	    <jee:environment>
+	        java.naming.factory.initial=${java.naming.factory.initial}
+	        java.naming.provider.url=${java.naming.provider.url}
+	        java.naming.factory.url.pkgs=${java.naming.factory.url.pkgs}
+    	</jee:environment>
+	</jee:jndi-lookup>
+	 -->
+	<import resource="classpath:/testApplicationContext.xml" />
+	<import resource="classpath:/com/servicelive/common/serviceLiveCommonApplicationContext.xml" />
+	<import resource="classpath:/com/servicelive/wallet/common/walletCommonApplicationContext.xml" />
+	<import resource="classpath:/com/servicelive/wallet/ledger/ledgerApplicationContext.xml" />
+	<import resource="classpath:/com/servicelive/wallet/creditcard/creditCardApplicationContext.xml" />
+	<import resource="classpath:/com/servicelive/wallet/ach/wallet.ach.context.xml" />
+	<import resource="classpath:/com/servicelive/wallet/valuelink/valueLinkApplicationContext.xml" />
+	<!-- 
+	<import resource="classpath:/com/servicelive/wallet/valuelink/ejb/valueLinkEJBApplicationContext.xml" />
+	 -->
+	<import resource="classpath:/com/servicelive/wallet/service/walletServiceApplicationContext.xml" />
+	<import resource="classpath:/com/servicelive/wallet/serviceinterface/walletServiceInterfaceApplicationContext.xml" />
+	
+	<bean name="mockValueLinkDao" class="com.servicelive.wallet.valuelink.mocks.MockValueLinkDao">
+		<property  name="valueLinkDao" ref="valueLinkDao"/>
+	</bean>
+	
+	<bean name="mockValueLinkResponseHandler" class="com.servicelive.wallet.valuelink.mocks.MockValueLinkResponseHandlerBO">
+	</bean>
+	
+	<alias name="dataSourceMySQLFinance" alias="dataSource"/>
+	<alias name="dsTransactionManagerFinance" alias="transactionManager"/>
+		
+</beans>
+

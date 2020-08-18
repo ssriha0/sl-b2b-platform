@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<bean id="partsManagementControllerAction" 
+		  class="com.newco.marketplace.web.action.PartsManagement.PartsManagementControllerAction" scope="prototype">
+		 <property name="partsManagementService">
+			<ref bean="partsManagementService"/>
+		</property>
+		<property name="isoWizardPersistDelegate">
+			<ref bean="SOWizardPersistBean"/>
+		</property>
+		<property name="fetchDelegate">
+			<ref bean="SOWizardFetchBean"/>
+		</property>
+		<property name="detailsDelegate">
+			<ref bean="soDetailsManager" />
+		</property>
+ 	</bean>	
+ 	
+ 	<bean id="partsManagementService" 
+		  class="com.servicelive.partsManagement.services.impl.PartsManagementServiceImpl"  scope="prototype">
+		 <property name="partsManagementDao">
+			<ref bean="partsManagementDao"/>
+		</property>
+		<property name="mobileSOActionsBO">
+			<ref bean="mobileSOActionsBO" />
+		</property>
+		 <property name="mobileSOActionsDao">
+			<ref bean="mobileSOActionsDao"/>
+		</property>
+		 <property name="mobileSOManagementDao">
+			<ref bean="mobileSOManagementDao"/>
+		</property>
+		<property name="notificationService">
+			<ref bean="notificationService" />
+		</property>	
+		<property name="inhomeAutoCloseDao">
+			<ref bean="inhomeAutoCloseDao" />
+		</property>	
+		<property name="lisClient">
+			<ref bean="lisClient" />
+		</property>	
+ 	</bean>	
+ 	
+ 	<bean id="lisClient" class="com.servicelive.partsManagement.services.impl.LISClient"  scope="prototype"/>
+ 	
+ 		<bean id="partsManagementDao" 
+		  class="com.newco.marketplace.persistence.daoImpl.partsManagement.PartsManagementDaoImpl" 
+		  lazy-init="true"  scope="prototype">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient"/>
+		</property>
+ 	</bean>	
+ 	
+</beans>

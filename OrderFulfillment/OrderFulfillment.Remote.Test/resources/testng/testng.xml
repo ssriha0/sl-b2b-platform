@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="OrderFulfillment.Remote" parallel="tests" thread-count="7">
+    <suite-files>
+        <suite-file path="testng/ReportProblemResolution.xml" />
+        <suite-file path="testng/Reschedule.xml" />
+        <suite-file path="testng/ReleaseServiceOrder.xml" />
+        <suite-file path="testng/OnSiteVisit.xml" />
+    </suite-files>
+
+    <test name="HappyPath" >
+        <groups><run><include name="unit" /></run>
+        </groups>
+        <classes>
+            <class name="com.servicelive.orderfulfillment.remote.test.workflow.MainPathTests">
+                <methods>
+                    <include name="createServiceOrder"/>
+                    <include name="postServiceOrder"/>
+                    <include name="acceptServiceOrder"/>
+                    <include name="activateOrder"/>
+                    <include name="completeOrder"/>
+                    <include name="closeOrder"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>
+

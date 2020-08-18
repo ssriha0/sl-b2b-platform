@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="OrderFulfillment.Remote.CancelPendingTransactionTest" thread-count="1">
+    <test name="CancelPendingTransactionTest" >
+        <groups><run><include name="init" /></run></groups>
+        <classes>
+            <class name="com.servicelive.orderfulfillment.remote.test.workflow.state.CancelPendingTransactionTest">
+                <methods>
+                    <include name="createServiceOrder"/>
+                    <include name="editDraftOrder"/>
+                    <include name="postServiceOrder"/>
+                    <include name="acceptServiceOrderNoWait"/>
+                    <include name="getPendingServiceOrders"/>
+                    <include name="cancelWalletTransaction"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="OrderFulfillment.Remote.CancelPendingTransactionTest" thread-count="1">
+    <test name="CancelPendingTransactionTest" >
+        <groups><run><include name="init" /></run></groups>
+        <classes>
+            <class name="com.servicelive.orderfulfillment.remote.test.workflow.state.CancelPendingTransactionTest">
+                <methods>
+                    <include name="createServiceOrder"/>
+                    <include name="editDraftOrder"/>
+                    <include name="postServiceOrder"/>
+                    <include name="acceptServiceOrderNoWait"/>
+                    <include name="cancelWalletTransaction"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>
+

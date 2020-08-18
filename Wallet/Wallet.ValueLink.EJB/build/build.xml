@@ -1,0 +1,99 @@
+<project name="Wallet.ValueLink.EJB" default="ear" basedir="..">
+
+	<target name="package" depends="ear"/>
+	
+    <import file="../../../SLCommonBuild/ant/sl-common/sl-common.xml" />
+	
+	
+    <target name="-init-jar-classpath" depends="-init-classpath" unless="java-build.jar-classpath">
+        <pathconvert property="java-build.jar-lib-classpath"  
+                refid="java-build.classpath" pathsep=" ">
+            <chainedmapper>
+    			<flattenmapper/>
+            </chainedmapper>
+        </pathconvert>
+        <property name="java-build.jar-classpath" value="${java-build.jar-lib-classpath}"/>
+    </target>
+	
+	<target name="war" depends="dist" description="Build a WAR for this project">
+    	<war destfile="${java-war.dist-file}" webxml="src/main/webapp/WEB-INF/web.xml" />
+    </target>
+    
+    <target name="ear" depends="dist, war" description="Build an EAR for this project">
+    
+        <ear destfile="${common.dist-dir}/${java-ear.dist-filename}" filesonly="true"
+
+            appxml="src/main/ear/META-INF/application.xml">
+
+            <fileset dir="${common.dist-dir}">
+                <include name="${java-build.dist-filename}"/>
+                <include name="${java-war.dist-filename}"/>
+            </fileset>
+        	
+        	<fileset dir="${generated}">
+        		<include name="ServiceLive.Common.jar"/>
+        		<include name="ServiceLive.Lookup.jar"/>
+        		<include name="Wallet.Common.jar"/>
+        		<include name="Wallet.ServiceInterface.jar"/>
+        		<include name="Wallet.ValueLink.jar"/>
+        		<include name="Wallet.Alert.jar"/>
+        	</fileset>     
+        	
+        	<fileset dir="${deployables}">
+        		<include name="activation-1.1.jar"/>
+        		<include name="commons-discovery-0.2.jar" />
+        		<include name="commons-io-1.4.jar" />
+	    		
+        		<include name="commons-pool-20070604.jar" />
+	    		<include name="ibatis-common-2.jar" />
+	    		<include name="ibatis-sqlmap-2.jar" />
+	    		<include name="mail-1.4.jar" />
+        		<include name="poi-2.5.1.jar" />
+	    		<include name="quartz-1.6.0.jar" />
+        		<include name="spring-2.0.8.jar" />
+	    		<include name="velocity-1.5.jar" />
+        		<include name="velocity-dep-1.5.jar" />
+	    		<include name="xstream-1.3.jar" />
+        		<include name="j2ee-1.4.jar" />
+	    		<include name="log4j-1.2.8.jar" />
+        		<include name="commons-logging-1.1.jar" />
+        		<include name="jbossmq-4.2.0.GA.jar" />
+        		<include name="com.ibm.mq-6.0.2.6.jar" />
+        		<include name="com.ibm.mqjms-6.0.2.6.jar" />
+				<include name="commons-lang3-3.1.jar" />
+        	</fileset>
+
+            <manifest>
+                <attribute name="Build-Id" value="${java-ear.build-id}"/>
+                <attribute name="Implementation-Vendor"	 value="${java-build.jar-vendor}"/>
+                <attribute name="Implementation-Title"   value="${ant.project.name}"/>
+                <attribute name="Implementation-Version" value="${java-build.jar-version}"/>
+                <attribute name="Build-Date" value="${common.timestamp-long}" />
+                <attribute name="Build-Username" value="${shell.USERNAME}"/>
+                <attribute name="Build-Hostname" value="${hostname}"/>
+                <attribute name="Build-java-version" value="${java.version}" />
+                <attribute name="Build-java-class-version" value="${java.class.version}" />
+                <attribute name="Build-java-home" value="${java.home}" />
+                <attribute name="Build-os-arch" value="${os.arch}" />
+                <attribute name="Build-os-name" value="${os.name}" />
+                <attribute name="Build-os-version" value="${os.version}" />
+                <attribute name="Class-Path" value="${java-build.jar-classpath} ${java-build.dist-filename}"/>
+            </manifest>
+        </ear>
+    </target>
+
+
+    <target name="-ear-prepare-libs" depends="-init">
+        <mkdir dir="${common.dist-dir}/ear-libs"/>
+
+        <copy todir="${ear.libs-dir}" overwrite="true"
+              flatten="true" failonerror="true" verbose="true">
+            <fileset refid="java-build.deployables-classpath.fileset" />
+            <fileset refid="java-build.generated-classpath.fileset" />
+        </copy>
+
+    </target>
+
+
+</project>
+

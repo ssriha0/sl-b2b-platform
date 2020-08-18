@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/soRequest" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
+xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" targetNamespace="http://www.servicelive.com/namespaces/soRequest" 
+elementFormDefault="qualified" jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+
+	<!-- Root element -->
+	<xs:element name="soUpdateEstimate">
+		<xs:complexType>
+			<xs:sequence>
+							<xs:element name="identification" type="IdentificationType" />
+			
+				<xs:element name="estimationId" type="integerNoType" minOccurs="0" />
+				<xs:element name="estimationRefNo" type="stringThirtyType"/>
+				<xs:element name="estimationDate" type="xs:dateTime"/>
+				<xs:element ref="estimateTasks"/>
+				<xs:element ref="estimateParts" minOccurs="0" />
+				<xs:element ref="otherEstimateServices" minOccurs="0" />
+				<xs:element name="pricing" type ="pricingType"/>
+				<xs:element name="comments" type="stringFiveThousandType" minOccurs="0"/>
+				<xs:element name="logoDocumentId" type="integerNoType"/>	
+				<xs:element name="isDraftEstimate" type="YesNoType" minOccurs="0"/>
+				<xs:element name="estimationExpiryDate" type="xs:dateTime"  minOccurs="0"/>								
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+		<!-- User Identification element -->
+	<xs:complexType name="IdentificationType">
+		<xs:sequence>
+			<xs:element name="id" type="xs:integer" />
+		</xs:sequence>
+		<xs:attribute name="type" type="identificationTypeEnum"
+			use="required" />
+	</xs:complexType>
+	<xs:simpleType name="identificationTypeEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="BuyerResourceId" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="estimateTasks">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="estimateTask" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="estimateTask">
+		<xs:complexType>
+			<xs:sequence>
+			    <xs:element name="taskSeqNumber" type="seqNoType" minOccurs="0"/>
+			    <xs:element name="taskName" type="stringTwoFiftyFiveType"/>
+			    <xs:element name="description" type="stringFiveThousandType" minOccurs="0"/>
+			    <xs:element name="unitPrice" type= "money" minOccurs="0" />
+			    <xs:element name="quantity" type="integerNoType" minOccurs="0"/>
+			    <xs:element name="totalPrice" type="money" minOccurs="0"/>
+			    <xs:element name="additionalDetails" type="additionalDetailsType" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="estimateParts">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="estimatePart" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="estimatePart">
+		<xs:complexType>
+			<xs:sequence>
+			    <xs:element name="partSeqNumber" type="seqNoType" minOccurs="0"/>
+			    <xs:element name="partNumber" type="stringHundredType" minOccurs="0"/>
+			    <xs:element name="partName" type="stringTwoFiftyFiveType"/>
+			    <xs:element name="description" type="stringFiveThousandType" minOccurs="0"/>
+			    <xs:element name="unitPrice" type= "money" minOccurs="0" />
+			    <xs:element name="quantity" type="integerNoType" minOccurs="0"/>
+			    <xs:element name="totalPrice" type="money" minOccurs="0"/>
+			    <xs:element name="additionalDetails" type="additionalDetailsType" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="otherEstimateServices">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="otherEstimateService" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="otherEstimateService">
+		<xs:complexType>
+			<xs:sequence>
+			    <xs:element name="otherServiceSeqNumber" type="seqNoType" minOccurs="0"/>
+			    <xs:element name="otherServiceType" type="estimateServiceType" minOccurs="0"/>
+			    <xs:element name="otherServiceName" type="stringTwoFiftyFiveType"/>
+			    <xs:element name="description" type="stringFiveThousandType" minOccurs="0"/>
+			    <xs:element name="unitPrice" type= "money" minOccurs="0" /> 
+			    <xs:element name="quantity" type="integerNoType" minOccurs="0"/>
+			    <xs:element name="totalPrice" type="money" minOccurs="0"/>
+			    <xs:element name="additionalDetails" type="additionalDetailsType" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="pricingType">
+		<xs:sequence>
+			<xs:element name="totalLaborPrice" type="money"/>
+			<xs:element name="totalPartsPrice" type="money" minOccurs="0"/>
+			<xs:element name="totalOtherServicePrice" type="money" minOccurs="0"/>
+			<xs:element name="discountType" type="discountTypeEnum" minOccurs="0"/>
+			<xs:element name="discountedPercentage" type="percentageType" minOccurs="0"/>
+			<xs:element name="discountedAmount" type="money" minOccurs="0"/>
+			<xs:element name="taxRate" type="percentageType" minOccurs="0"/>
+			<xs:element name="taxType" type="stringThirtyType" minOccurs="0"/>
+			<xs:element name="taxPrice" type="money" minOccurs="0"/>
+			<xs:element name="totalPrice" type="money"/>
+			
+			<xs:element name="laborDiscountType" type="discountTypeEnum" minOccurs="0"/>
+			<xs:element name="laborDiscountedPercentage" type="percentageType" minOccurs="0"/>
+			<xs:element name="laborDiscountedAmount" type="money" minOccurs="0"/>
+			<xs:element name="laborTaxRate" type="percentageType" minOccurs="0"/>
+			<xs:element name="laborTaxPrice" type="stringThirtyType" minOccurs="0"/>
+			
+			<xs:element name="partsDiscountType" type="discountTypeEnum" minOccurs="0"/>
+			<xs:element name="partsDiscountedPercentage" type="percentageType" minOccurs="0"/>
+			<xs:element name="partsDiscountedAmount" type="money" minOccurs="0"/>
+			<xs:element name="partsTaxRate" type="percentageType" minOccurs="0"/>
+			<xs:element name="partsTaxPrice" type="stringThirtyType" minOccurs="0"/>
+			
+		</xs:sequence>
+	</xs:complexType>	
+	<xs:simpleType name="discountTypeEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="AMOUNT" />
+			<xs:enumeration value="PERCENTAGE" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="YesNoType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="YES" />
+			<xs:enumeration value="NO" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stringTwentyFiveType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="25"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stringThirtyType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="30"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stringHundredType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="100"></xs:maxLength>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stringTwoFiftyFiveType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="255"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="additionalDetailsType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="255"></xs:maxLength>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stringFiveThousandType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="5000"></xs:maxLength>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="percentageType">
+		<xs:restriction base='xs:decimal'>
+			<xs:totalDigits value='5' />
+			<xs:fractionDigits value='2' />
+			<xs:pattern value='[0-9][.][0-9]*' />
+			<xs:pattern value='[1-9][0-9]*[.][0-9]*' />
+			<xs:pattern value='[1-9][0-9]*' />
+		</xs:restriction>
+	</xs:simpleType>
+	 <xs:simpleType name="seqNoType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="5"/>
+			<xs:pattern value="[0-9]+"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="integerNoType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="10"/>
+			<xs:pattern value="[0-9]+"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="estimateServiceType">
+		<xs:restriction base="xs:string">
+				<xs:enumeration value="Service Fee" />
+				<xs:enumeration value="Cancellation Fee" />
+				<xs:enumeration value="Other" />
+		</xs:restriction>
+	</xs:simpleType>
+		<xs:simpleType name="money">
+		<xs:restriction base='xs:decimal'>
+			<xs:totalDigits value='11' />
+			<xs:fractionDigits value='2' />
+			<xs:pattern value='[0-9][.][0-9]*' />
+			<xs:pattern value='[1-9][0-9]*[.][0-9]*' />
+			<xs:pattern value='[1-9][0-9]*' />
+		</xs:restriction>
+	</xs:simpleType>  
+</xs:schema> 
+
+

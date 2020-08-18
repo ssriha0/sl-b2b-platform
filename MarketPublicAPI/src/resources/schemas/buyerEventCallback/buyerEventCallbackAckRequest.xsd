@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/buyerEventCallbackAckRequest" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" targetNamespace="http://www.servicelive.com/namespaces/buyerEventCallbackAckRequest" elementFormDefault="qualified" jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+	<xs:element name="buyerEventCallbackAckRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="result"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="result">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="code" type="httpResultCodeEnum" default="200"/>
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- Http status codes -->
+	<xs:simpleType name="httpResultCodeEnum">
+		<xs:restriction base="xs:int">
+			<xs:enumeration value="100"/>  <!-- Continue -->
+			<xs:enumeration value="101"/>  <!-- Switching Protocols -->
+			<xs:enumeration value="102"/>  <!-- Processing -->
+			<xs:enumeration value="103"/>  <!-- Checkpoint -->
+			<xs:enumeration value="200"/>  <!-- OK -->
+			<xs:enumeration value="201"/>  <!-- Created -->
+			<xs:enumeration value="202"/>  <!-- Accepted -->
+			<xs:enumeration value="203"/>  <!-- Non-Authoritative Information -->
+			<xs:enumeration value="204"/>  <!-- No Content -->
+			<xs:enumeration value="205"/>  <!-- Reset Content -->
+			<xs:enumeration value="206"/>  <!-- Partial Content -->
+			<xs:enumeration value="207"/>  <!-- Multi-Status -->
+			<xs:enumeration value="208"/>  <!-- Already Reported -->
+			<xs:enumeration value="226"/>  <!-- IM Used -->
+			<xs:enumeration value="300"/>  <!-- Multiple Choices -->
+			<xs:enumeration value="301"/>  <!-- Moved Permanently -->
+			<xs:enumeration value="302"/>  <!-- Found -->
+			<xs:enumeration value="303"/>  <!-- See Other -->
+			<xs:enumeration value="304"/>  <!-- Not Modified -->
+			<xs:enumeration value="307"/>  <!-- Temporary Redirect -->
+			<xs:enumeration value="308"/>  <!-- Permanent Redirect -->
+			<xs:enumeration value="400"/>  <!-- Bad Request -->
+			<xs:enumeration value="401"/>  <!-- Unauthorized -->
+			<xs:enumeration value="402"/>  <!-- Payment Required -->
+			<xs:enumeration value="403"/>  <!-- Forbidden -->
+			<xs:enumeration value="404"/>  <!-- Not Found -->
+			<xs:enumeration value="405"/>  <!-- Method Not Allowed -->
+			<xs:enumeration value="406"/>  <!-- Not Acceptable -->
+			<xs:enumeration value="407"/>  <!-- Proxy Authentication Required -->  
+			<xs:enumeration value="408"/>  <!-- Request Timeout -->
+			<xs:enumeration value="409"/>  <!-- Conflict -->
+			<xs:enumeration value="410"/>  <!-- Gone -->
+			<xs:enumeration value="411"/>  <!-- Length Required -->
+			<xs:enumeration value="412"/>  <!-- Precondition Failed -->
+			<xs:enumeration value="413"/>  <!-- Payload Too Large -->
+			<xs:enumeration value="414"/>  <!-- URI Too Long -->
+			<xs:enumeration value="415"/>  <!-- Unsupported Media Type -->
+			<xs:enumeration value="416"/>  <!-- Requested range not satisfiable -->
+			<xs:enumeration value="417"/>  <!-- Expectation Failed -->
+			<xs:enumeration value="418"/>  <!-- I'm a teapot -->
+			<xs:enumeration value="422"/>  <!-- Unprocessable Entity -->
+			<xs:enumeration value="423"/>  <!-- Locked -->
+			<xs:enumeration value="424"/>  <!-- Failed Dependency -->
+			<xs:enumeration value="426"/>  <!-- Upgrade Required -->
+			<xs:enumeration value="428"/>  <!-- Precondition Required -->
+			<xs:enumeration value="429"/>  <!-- Too Many Requests -->
+			<xs:enumeration value="431"/>  <!-- Request Header Fields Too Large -->
+			<xs:enumeration value="451"/>  <!-- Unavailable For Legal Reasons -->
+			<xs:enumeration value="500"/>  <!-- Internal Server Error -->
+			<xs:enumeration value="501"/>  <!-- Not Implemented -->
+			<xs:enumeration value="502"/>  <!-- Bad Gateway -->
+			<xs:enumeration value="503"/>  <!-- Service Unavailable -->
+			<xs:enumeration value="504"/>  <!-- Gateway Timeout -->
+			<xs:enumeration value="505"/>  <!-- HTTP Version not supported -->
+			<xs:enumeration value="506"/>  <!-- Variant Also Negotiates -->
+			<xs:enumeration value="507"/>  <!-- Insufficient Storage -->
+			<xs:enumeration value="508"/>  <!-- Loop Detected -->
+			<xs:enumeration value="509"/>  <!-- Bandwidth Limit Exceeded -->
+			<xs:enumeration value="510"/>  <!-- Not Extended -->
+			<xs:enumeration value="511"/>  <!-- Network Authentication Required -->
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- Http status codes -->
+</xs:schema>

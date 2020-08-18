@@ -1,0 +1,1311 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<title>ServiceLive Dashboard</title><link rel="shortcut icon" href="../../images/favicon.ico" />
+
+	<style type="text/css">
+	@import "../../javascript/dojo/dijit/themes/tundra/tundra.css";
+	@import "../../javascript/dojo/dijit/themes/tundra/tundra_rtl.css";
+	</style>
+	<link rel="stylesheet" type="text/css"
+	href="../../css/dijitTitlePane-serviceLive.css">
+	<link rel="stylesheet" type="text/css"
+	href="../../css/dijitTabPaneTall-serviceLive.css">
+	<link rel="stylesheet" type="text/css"
+	href="../../css/main.css" />
+	<link rel="stylesheet" type="text/css"
+	href="../../css/iehacks.css" />
+
+	<link rel="stylesheet" type="text/css"
+	href="../../css/top-section.css" />
+	<link rel="stylesheet" type="text/css"
+	href="../../css/dashboard.css" />
+	<link rel="stylesheet" type="text/css"
+	href="../../css/tooltips.css" />
+	<link rel="stylesheet" type="text/css"
+	href="../../css/service_provider_profile.css" />
+	<link rel="stylesheet" type="text/css"
+	href="../../css/buttons.css" />
+	<link rel="stylesheet" type="text/css"
+	href="../../css/admin.css" />
+	<script type="text/javascript"
+	src="../../javascript/jquery-1.2.3.min.js"></script>
+	<script language="JavaScript"
+	src="../../javascript/tooltip.js"
+	type="text/javascript"></script>
+
+	<script language="JavaScript" type="text/javascript"
+	src="../../javascript/formfields.js"></script>
+	<script type="text/javascript"
+	src="../../javascript/jquery-1.2.3.min.js"></script>
+	<script language="JavaScript" type="text/javascript"
+	src="../../javascript/nav.js"></script>
+</head>
+<body class="tundra">
+
+	<!-- SiteCatalyst code version: H.14.
+		Copyright 1997-2007 Omniture, Inc. More info available at
+		http://www.omniture.com -->
+
+
+
+		<script language="JavaScript"><!--
+		var s_account="searssearsliveproviderdev";
+		//--></script>
+		<script language="JavaScript" src="../../javascript/s_code.js"></script>
+		<script language="JavaScript"><!--
+		/* You may give each page an identifying name, server, and channel on
+		the next lines. */
+		s.pageName="Buyer Admin - Dashboard";
+
+		/************* DO NOT ALTER ANYTHING BELOW THIS LINE ! **************/
+		var s_code=s.t();if(s_code)document.write(s_code)//--></script>
+		<script language="JavaScript"><!--
+		if(navigator.appVersion.indexOf('MSIE')>=0)document.write(unescape('%3C')+'\!-'+'-')
+		//--></script><!--/DO NOT REMOVE/-->
+		<!-- End SiteCatalyst code version: H.14. -->
+
+
+
+
+		<div id="page_margins">
+			<div id="page">
+				<table width="100%" border=0 cellspacing=0 cellpaddig=0>
+
+					<tr>
+						<td colspan=2>
+
+							<!-- START HEADER -->
+							<div id="headerShort">
+
+
+
+
+
+
+
+
+
+								<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+								<title>ServiceLive : </title><link rel="shortcut icon" href="../../images/favicon.ico" />
+								<script type="text/javascript"
+								src="../../javascript/jquery-1.2.3.min.js"></script>
+
+								<script type="text/javascript"
+								src="../../javascript/toolbox.js"></script>
+								<script type="text/javascript"
+								src="../../javascript/vars.js"></script>
+
+								<script language="javascript" type="text/javascript">
+
+								jQuery.noConflict();
+								jQuery(document).ready(function($){
+									$("a#").addClass("selected");
+
+								});
+
+
+
+								</script>
+								<link rel="stylesheet" type="text/css"
+								href="../../css/top-section.css" />
+								<link rel="stylesheet" type="text/css"
+								href="../../css/global.css" />
+								<link rel="stylesheet" type="text/css"
+								href="../../css/main.css" />
+								<link rel="stylesheet" type="text/css"
+								href="../../css/iehacks.css" />
+
+								<link rel="stylesheet" type="text/css"
+								href="../../css/acquity.css" />
+								<script language="JavaScript" type="text/javascript">
+								function clear_enter_zip()
+								{
+									if (document.getElementById('zipCode').value == 'Enter Zip Code')
+									{
+										document.getElementById('zipCode').value = '';
+									}
+								}
+
+								function add_enter_zip()
+								{
+									if (document.getElementById('zipCode').value == '')
+									{
+										document.getElementById('zipCode').value = 'Enter Zip Code';
+									}
+								}
+
+
+								</script>
+
+
+								<div id="logo">
+									<a href="/MarketFrontend" title="ServiceLive"> 
+
+
+										<img
+										src="../../images/artwork/common/service_live_logo.gif"
+										alt="ServiceLive" />
+
+									</a>
+								</div>
+								<div id="topNav">
+
+
+
+									<div class="smallText">
+										Welcome, Contractor
+										Services!
+
+
+										<em>#22</em>
+
+
+
+
+
+										<img
+										src="../../images/common/stars_20.gif"
+										alt="" border="0" />
+
+
+										<br />
+										<a href="http://community.servicelive.com"
+										onclick="window.open(this.href); return false;"
+										onkeypress="window.open(this.href); return false;">Community</a> 	|
+										<a href="http://blog.servicelive.com" title="Blog">Blog</a> | 
+										<a href="/MarketFrontend/jsp/public/support/support_main.jsp">Support</a> 	|
+										<a href="/MarketFrontend/contactUsAction.action">Contact Us</a> 		|
+										<a href="/MarketFrontend/doLogout.action">Logout</a>
+
+									</div>
+
+
+
+								</div>
+
+								<div class="jqmWindow" id="exploreMarketPlace">
+									<div class="modalHomepage">
+										<a href="#" class="jqmClose">Close</a>
+									</div>
+
+									<form id="homepage_submitZip.action" name="mp" onsubmit="return true;" action="/MarketFrontend/homepage_submitZip.action" method="POST">
+
+										<div class="modalContent">
+											<h2>Please enter the Zip Code of the location where work will be done.</h2>
+											<input type="text" name="zipCode" value="Enter Zip Code" id="zipCode" onclick="clear_enter_zip();" onblur="add_enter_zip();"/>
+
+											<input type="image" alt="Submit" src="../../images/simple/button-find-sp.png" id="homepage_submitZip.action_0" value="Submit" class="findProv"/>
+
+										</div>
+										<input id="pop_name" type="hidden" name="popularSimpleServices[0].name" value="" />
+										<input id="mainCategoryId" type="hidden" name="popularSimpleServices[0].mainCategoryId" value="" />
+
+										<input id="categoryId" type="hidden" name="popularSimpleServices[0].categoryId" value="" />
+										<input id="subCategoryId" type="hidden" name="popularSimpleServices[0].subCategoryId" value="" />
+										<input id="serviceTypeTemplateId" type="hidden" name="popularSimpleServices[0].serviceTypeTemplateId" value="" />
+										<input id="buyerId" type="hidden" name="popularSimpleServices[0].buyerTypeId" value="" />
+									</form>
+
+
+
+
+								</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								<script>				 
+								function exploreTheMarketplace(buyerTypeId)
+								{
+									//alert("Fields are: name = " + name + " mainCategoryId =  " + mainCategoryId + " categoryId = " + categoryId + " subCategoryId = " + subCategoryId + " serviceTypeTemplateId =  " + serviceTypeTemplateId + " Buyer type:" + buyerTypeId);
+									document.getElementById('buyerId').value=buyerTypeId;
+
+									jQuery.noConflict();
+									jQuery(document).ready(function($) {
+										$('#exploreMarketPlace').jqm({modal:true, toTop: true});
+										$('#exploreMarketPlace').jqmShow();
+									});
+
+								}
+								</script>
+
+
+
+								<div id="mainNav">
+									<ul>
+
+
+
+
+
+										<li>
+											<a href="/MarketFrontend/dashboardAction.action" id="dashboard"></a>
+										</li>
+
+
+
+
+
+
+
+
+
+
+
+
+										<li>
+											<a href="/MarketFrontend/serviceOrderMonitor.action"
+											id="serviceOrderMonitor"></a>
+
+										</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+										<li>
+											<a href="/MarketFrontend/financeManagerController_execute.action"
+											id="financialMgr"></a>
+										</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+										<li>
+											<a href="/MarketFrontend/pbController_execute.action"
+											id="menuPowerBuyer"></a>
+										</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+										<li>
+											<a href="/MarketFrontend/etmSearch_execute.action" id="exploreMktplace"></a>
+
+										</li>
+
+
+
+
+
+
+
+
+
+
+
+									</ul>
+								</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								<script language="javascript" type="text/javascript">
+
+								jQuery.noConflict();
+								jQuery(document).ready(function($){
+									$("a#").addClass("selected");
+
+								});
+
+
+
+								</script>
+
+
+								<script language="JavaScript" type="text/javascript">
+								function clear_enter_zip()
+								{
+									if (document.getElementById('zipCode').value == 'Enter Zip Code')
+									{
+										document.getElementById('zipCode').value = '';
+									}
+								}
+
+								function add_enter_zip()
+								{
+									if (document.getElementById('zipCode').value == '')
+									{
+										document.getElementById('zipCode').value = 'Enter Zip Code';
+									}
+								}
+
+
+								</script>
+								<link rel="stylesheet" type="text/css"
+								href="../../css/top-section.css" />
+								<link rel="stylesheet" type="text/css"
+								href="../../css/global.css" />
+								<link rel="stylesheet" type="text/css"
+								href="../../css/main.css" />
+								<link rel="stylesheet" type="text/css"
+								href="../../css/iehacks.css" />
+
+								<link rel="stylesheet" type="text/css"
+								href="../../css/acquity.css" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								<div id="auxNav">
+
+
+									<ul>
+										<li class="parentNavItem" style="width: 110px;">
+											<a href="/MarketFrontend/dashboardAction.action" id="adminOfc"></a>
+											<ul id="auxSublist1" class="level2">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+												<li class="parentNavItem">
+													<a class="subnavArrow"
+													href="/MarketFrontend/buyerAdminManageUsers_execute.action">
+													Manage Team
+												</a>
+											</li>
+
+											<li class="parentNavItem">
+												<a class="subnavArrow" href="/MarketFrontend/buyerEditCompanyProfileAction_execute.action?headerTxt=Edit Company Profile">
+													Edit Company Profile
+												</a>
+											</li>
+											<li class="parentNavItem">
+												<a class="subnavArrow" href="/MarketFrontend/manageCustomRefs_displayPage.action?headerTxt=Manage Custom References">
+													Manage Custom References
+												</a>
+
+											</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+											<li class="parentNavItem">
+												<a class="subnavArrow"
+												href="/MarketFrontend/buyerFileUploadAction.action">Service Order Import Tool</a>
+											</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+											<li class="parentNavItem">
+												<a class="subnavArrow" href="" onclick="return false;" style="cursor: text">Maintenance Panel</a>
+												<ul class="level3">
+
+
+
+
+
+
+
+
+
+
+
+
+
+													<li>
+														<a href="/MarketFrontend/adminMarketAdj_displayPage.action"
+														class="subnav" id="marketAdjustmentLink">Market Adjustment
+														Rate</a>
+													</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+													<li>
+														<a href="/MarketFrontend/jobCode_execute.action" class="subnav"
+														id="jobCodeMappingLink">Job Code Mapping</a>
+													</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+													<li>
+														<a href="/MarketFrontend/templateMaintenance_execute.action"
+														class="subnav" id="templateMaintenanceLink">Template
+														Maintenance</a>
+
+													</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+													<li>
+														<a href="/MarketFrontend/adminTripCharge_displayPage.action"
+														class="subnav" id="templateMaintenanceLink">Trip Charge Config</a>
+													</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+													<li>
+														<a href="/MarketFrontend/orderGroupManager_displayPage.action"
+														class="subnav" id="templateMaintenanceLink">Order Group Manager</a>
+													</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+												</ul>
+
+											</li>
+
+
+
+
+										</ul>
+									</ul>
+
+
+								</div>
+
+
+
+
+
+
+								<div id="pageHeader">
+									<h2>
+
+									</h2>
+
+								</div>
+
+
+
+								<!-- /#header -->
+
+
+								<div id="pageHeader">
+									<div>
+										<img
+										src="../../images/dashboard/dashboard_header.gif" />
+									</div>
+								</div>
+							</div>
+
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div class="dashboardLeftColumn">
+
+
+
+
+
+								<div class="leftTileItem" id="dbTile_serviceOrders">
+									<div class="titleContainer">
+										<div class="titleBar">
+											<h2>Service Orders</h2>
+
+											<a class="moreLink" href="serviceOrderMonitor.action">View &raquo;
+											</a>
+										</div>
+									</div>
+									<div class="contentContainer">
+										<div class="content">
+											<p>
+												<a href="soWizardController.action?action=create">
+
+
+													<img src="../../images/dashboard/icoPencilAdd.gif" width="28"
+													height="26" border="0" align="left" class="icon" />
+												</a>
+												<strong>
+													<a href="soWizardController.action?action=create">
+														Create a Service Order
+													</a>
+												</strong>
+											</p>
+											<p>
+
+												<a href="serviceOrderMonitor.action?displayTab=Today">
+													<img src="../../images/dashboard/icoDollarSign.gif" width="28"
+													height="26" border="0" align="left" class="icon" />
+												</a>
+												<strong>
+													Today's Orders:
+													<a href="serviceOrderMonitor.action?displayTab=Today">
+														<span id="todays">
+															14
+														</span>
+													</a>
+
+												</strong>
+											</p>
+											<p>
+												<a href="serviceOrderMonitor.action?displayTab=Posted">
+													<img src="../../images/dashboard/icoPin.gif"
+													width="28" height="26" border="0" align="left" class="icon" />
+												</a>
+												<strong>
+													Posted Service Orders:
+													<a href="serviceOrderMonitor.action?displayTab=Posted" >
+
+														<span id="posted">
+															1
+														</span>
+													</a>
+												</strong>
+											</p>
+										</div>
+									</div>
+									<div class="shadowBottom"></div>
+
+								</div>
+
+
+
+
+
+
+								<div class="leftTileItem" id="dbTile_financeMgr">
+
+									<div class="titleContainer">
+										<div class="titleBar"><h2>ServiceLive Wallet</h2> <a class="moreLink" href="/MarketFrontend/financeManagerController_execute.action">View &raquo;</a> </div>
+									</div>
+
+									<div class="contentContainer">
+
+										<div class="content">
+											<table class="balances" cellpadding="0" cellspacing="0">
+												<tr>
+													<td class="column1">
+														Available Balance:
+													</td>
+													<td class="column2">
+														<span id="available_balance">$110.00</span>
+													</td>
+
+												</tr>
+												<tr>
+													<td class="column1 bottom">
+														Current Balance:
+													</td>
+													<td class="column2 bottom">
+														<span id="current_balance">$1,384.97</span>
+													</td>
+												</tr>
+
+											</table>
+
+										</div>
+									</div>
+									<div class="shadowBottom"></div>
+
+								</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								<div class="leftTileItem" id="dbTile_adminOfc">
+									<div class="titleContainer">
+										<div class="titleBar">
+
+											<h2>Administrator Office</h2>
+
+										</div>
+									</div>
+									<div class="contentContainer">
+										<div class="content">
+
+
+
+
+
+
+
+
+
+
+
+
+											<table width="100%" border=0>
+												<tr>
+													<td align="left">
+
+														<p>
+															<strong>
+																<a style="" href="/MarketFrontend/buyerAdminDocManager_execute.action">
+																	Document Manager
+																</a>
+															</strong>
+														</p>
+														<td align="right">
+
+														</td>
+
+													</tr>
+												</table>
+
+
+
+
+											</div>
+										</div>
+										<div class="shadowBottom"></div>
+									</div>
+
+
+								<!-- begin new box for provier SPN -->
+								<div class="leftTileItem" id="dbTile_statusMonitor">
+									<div class="titleContainer">
+										<div class="titleBar">
+											<h2>Overall Status Monitor</h2>
+										</div>
+									</div>
+									<div class="contentContainer">
+										<div class="content">
+											<!-- begin loop for Buyer -->
+												<h4>Service Providers</h4>
+												<ul>
+												<li class="approved"><strong>Approved: </strong>1</li>
+												<li class="unapproved"><strong>Unapproved: </strong>0</li>
+												</ul>
+												<ul style="margin-left: -10px;">
+												<li class="approved"><strong>Provider Firm Registration Status: </strong>ServiceLive Approved</li>
+												</ul>
+											<!-- end loop for each Buyer -->
+										</div>
+									</div>
+									<div class="shadowBottom"></div>
+								</div>
+								<!-- end new box for provier SPN -->
+
+
+
+								<!-- begin new box for provier SPN -->
+								<div class="leftTileItem" id="dbTile_spnMonitor">
+									<div class="titleContainer">
+										<div class="titleBar">
+											<h2><abbr title="Select Provider Network">SPN</abbr> Monitor</h2>
+											<a class="moreLink" href="#">View &raquo;</a>
+										</div>
+									</div>
+									<div class="contentContainer">
+										<div class="content">
+											<!-- begin loop for Buyer -->
+											<h4>Buyer Name</h4>
+											<!-- begin loop for each spn -->
+											<ul>
+												<li><a href="#" title="SPN Name">SPN Name</a></li>
+												<li><strong>Membership Status</strong> Incomplete</li>
+												<li><strong>Qualified Providers</strong> 2/23</li>
+											</ul>
+											<!-- end loop for each SPN -->
+											<!-- begin loop for each spn -->
+											<ul>
+												<li><a href="#" title="SPN Name">SPN Name</a></li>
+												<li><strong>Membership Status</strong> Incomplete</li>
+												<li class="comment">Need more information</li>
+												<li><strong>Qualified Providers</strong> 2/23</li>
+											</ul>
+											<!-- end loop for each SPN -->
+											
+											<hr />
+											
+											<!-- end loop for each Buyer -->
+											
+											<!-- begin loop for Buyer -->
+											<h4>Buyer Name</h4>
+											<!-- begin loop for each spn -->
+											<ul>
+												<li><a href="#" title="SPN Name">SPN Name</a></li>
+												<li><strong>Membership Status</strong> Member</li>
+												<li class="comment">Out of compliance</li>
+												<li><strong>Qualified Providers</strong> 2/23</li>
+											</ul>
+											<!-- end loop for each SPN -->
+											<!-- end loop for each Buyer -->
+										</div>
+									</div>
+									<div class="shadowBottom"></div>
+								</div>
+								<!-- end new box for provier SPN -->
+
+
+
+								</div>
+							</td>
+
+							<td>
+								<div class="dashboardRightColumn">
+
+
+
+									<div class="dashboardVitalStatsHeader">  </div>
+									<div class="dashboardVitalStatsBody">
+										<div class="dashboardVitalStatsCell dashboardVitalStatsSeparator"> <br/>
+											<b>Current Orders:</b>
+											<table width="217px">
+												<tr>
+
+													<td>
+														Draft -
+														<b>
+															<a href="serviceOrderMonitor.action?displayTab=Draft" style="">
+																<span id="drafted">
+																	15
+																</span>
+															</a>
+														</b>
+													</td>
+
+													<td>
+														Accepted -
+														<b>
+															<a href="serviceOrderMonitor.action?displayTab=Accepted" style="">
+																<span id="accepted">
+																	0
+																</span>
+															</a>
+														</b>
+													</td>
+
+												</tr>
+												<tr>
+													<td>
+														Posted -
+														<b>
+															<a href="serviceOrderMonitor.action?displayTab=Posted" style="">
+																<span id="posted">        			
+																	1
+																</span>
+															</a>
+
+														</b>
+													</td>
+													<td>
+														Problem -
+														<b>
+															<a href="serviceOrderMonitor.action?displayTab=Problem" style="color: #F00">
+																<span id="problem">       			
+																	1
+																</span>
+															</a>
+
+														</b>
+													</td>
+												</tr>
+											</table>
+										</div>
+										<div id="lifetimeRatings" class="tipLeft">
+											<div class="tipContents">
+												<p>4.9/5.00</p>
+
+											</div>
+										</div>
+										<div id="currentRatings" class="tipLeft">
+											<div class="tipContents">
+												<p>4.9/5.00</p>
+											</div>
+										</div>
+										<div id="givenRatings" class="tipLeft">
+
+											<div class="tipContents">
+												<p>3.6177059/5.00</p>
+											</div>
+										</div>
+
+										<div class="dashboardVitalStatsCell"> <br/>
+
+											<b>Ratings:</b>
+											<table width="217px">
+
+												<tr>
+													<td><b>Received (2)</b></td>
+													<td><b>Given (74)</b></td>
+												</tr>
+												<tr>
+													<td>
+														<table width="100%">
+															<tr>
+
+																<td width="45%">
+																	Lifetime -
+																</td>
+																<td width="55%">
+
+																	<span>
+
+
+
+																		<img src="../../images/common/stars_20.gif" border="0" />
+
+
+																	</span>
+																</td>
+															</tr>
+
+														</table>
+													</td>
+													<td>
+
+														<span>
+
+
+
+															<img src="../../images/common/stars_14.gif" border="0" />
+
+
+														</span>
+													</td>
+												</tr>
+
+												<tr>
+													<td>
+														<table width="100%">
+															<tr>
+																<td width="45%">
+																	Current -
+																</td>
+																<td width="55%">
+
+																	<span>
+
+
+
+
+																		<img src="../../images/common/stars_20.gif" border="0" />
+
+
+																	</span>
+																</td>
+															</tr>
+														</table>
+													</td>
+													<td></td>
+												</tr>
+											</table>
+
+										</div>
+
+
+									</div>
+
+
+
+
+								</div>
+							</div>
+							<div class="clearfix"></div>
+
+
+						</div>
+					</td>
+
+				</tr>
+
+				<tr>
+					<td colspan=2>
+						<!-- START FOOTER -->
+
+						<div style="clear: both;"></div>
+						<div id="theFooter">
+							<div id="footer" style="">
+								<div class="footericons">
+									<script src="https://seal.verisign.com/getseal?host_name=www.servicelive.com&size=S&use_flash=NO&use_transparent=NO&lang=en"></script>
+
+								</div>
+								<p class="lightBlue">
+									<a href="/MarketFrontend/joinNowBuyerSimpleAction.action">About Us</a>
+									<span class="PIPES">|</span>
+									<a href="/MarketFrontend/jsp/public/common/footer/terms_of_use.jsp">Terms
+										of Use</a>
+										<span class="PIPES">|</span>
+										<a href="https://transformco.com/privacy" target="_blank">Privacy
+											Policy</a>
+
+											<span class="PIPES">|</span>
+											<a href="https://transformco.com/privacy#_Toc31123888" target="_blank">California Privacy
+												Policy</a>
+												<span class="PIPES">|</span>
+												<a href="termsAndConditions_displayProviderAgreement.action">Provider
+													Agreement</a>
+													<span class="PIPES">|</span>
+													<a href="termsAndConditions_displayBuyerAgreement.action">Buyer
+														Agreement</a>
+
+													</p>
+													<p class="faintgrey">
+														&copy; 2019 Transform ServiceLive LLC. (v 3.0)
+													</p>		
+												</div>
+											</div>
+
+
+											<div id="warningMsg" class="jqmWindow">
+												<div class="modalHeader">
+													<a href="#" class="jqmClose">Close</a>
+
+												</div>
+												<div class="modalContent">
+													<strong>Warning</strong>
+													<p class="warningMessage"></p>
+												</div>
+											</div>
+
+											<!-- Start of DoubleClick Spotlight Tag: Please do not remove-->
+											<!-- Activity Name for this tag is:ServiceLive-Universal-Tag -->
+											<!-- Web site URL where tag should be placed: http://www.servicelive.com  Global Footer-->
+											<!-- This tag must be placed within the opening <body> tag, as close to the beginning of it as possible-->
+
+												<!-- Creation Date:12/4/2008 -->
+												<SCRIPT language="JavaScript">
+												var axel = Math.random()+"";
+												var a = axel * 10000000000000;
+												document.write('<IFRAME SRC="https://fls.doubleclick.net/activityi;src=2077836;type=landi583;cat=servi443;ord=1;num='+ a + '?" WIDTH=1 HEIGHT=1 FRAMEBORDER=0></IFRAME>');
+												</SCRIPT>
+												<NOSCRIPT>
+													<IFRAME SRC="https://fls.doubleclick.net/activityi;src=2077836;type=landi583;cat=servi443;ord=1;num=1?" WIDTH=1 HEIGHT=1 FRAMEBORDER=0></IFRAME>
+												</NOSCRIPT>
+												<!-- End of DoubleClick Spotlight Tag: Please do not remove-->
+												<!-- END FOOTER -->
+
+											</td>
+										</tr>
+									</table>
+								</div>
+
+							</div>
+						</body>
+						</html>

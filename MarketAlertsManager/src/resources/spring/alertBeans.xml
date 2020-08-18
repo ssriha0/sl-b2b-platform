@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+   <bean id="emailAlertBO"
+		class="com.newco.marketplace.business.businessImpl.EmailAlertBOImpl">
+			<property name="emailAlertDao">
+				<ref bean="emailAlertDao" />
+			</property>	
+			<property name="sqlMapClient">
+    		<ref bean="alertSqlMapClient"/>
+  		</property>
+			
+  </bean>
+  <bean id="dataSourceBO"
+		class="com.newco.marketplace.business.businessImpl.DataSourceBOImpl">
+			<property name="emailAlertDao">
+				<ref bean="emailAlertDao" />
+			</property>	
+ </bean>
+     <bean id="emailAlertDao"
+		class="com.newco.marketplace.persistence.daoImpl.EmailAlertDaoImpl">
+	 	<property name="sqlMapClient">
+    		<ref bean="alertSqlMapClient"/>
+  		</property>
+			
+  </bean>
+	<bean id="rtmAlertService" class="com.newco.marketplace.service.serviceImpl.RTMServiceImpl">
+			<property name="emailAlertBO">
+				<ref bean="emailAlertBO" />
+			</property>	
+			<property name="emailAlertUtility">
+				<ref bean="emailAlertUtility" />
+			</property>
+			<property name="providerRTMService">
+				<ref bean="providerRTMService" />
+			</property>
+			<property name="responsysEnableMode">
+				<value>${responsys.enable.mode}</value>
+			</property>						
+	</bean>
+	
+	<bean id="providerRTMService" class="com.newco.servicelive.campaigns.service.ResponsysRTMServiceImpl">
+			<property name="alertServiceProperties">
+				<ref bean="alertServiceProperties" />
+			</property>			
+	</bean>
+
+	<!-- SL-20653 Responsys Upgrade START -->
+	<bean id="responsysInteractService" class="com.newco.marketplace.service.serviceImpl.ResponsysServiceImpl">
+			<property name="emailAlertBO">
+				<ref bean="emailAlertBO" />
+			</property>	
+			<property name="emailAlertUtility">
+				<ref bean="emailAlertUtility" />
+			</property>
+			<property name="providerResponsysService">
+				<ref bean="providerResponsysService" />
+			</property>
+			<property name="responsysInteractEnableMode">
+				<value>${responsys.interact.enable.mode}</value>
+			</property>						
+	</bean>
+	
+	<bean id="providerResponsysService" class="com.newco.servicelive.campaign.service.ResponsysInteractServiceImpl">
+			<property name="alertServicePropertiesResponsys">
+				<ref bean="alertServicePropertiesResponsys" />
+			</property>			
+	</bean>	
+	<!-- SL-20653 Responsys Upgrade END-->	
+		
+	<bean id="serviceLiveEmailService" class="com.newco.marketplace.service.serviceImpl.ServiceLiveEmailServiceImpl">
+			<property name="emailAlertBO">
+				<ref bean="emailAlertBO" />
+			</property>	
+			<property name="emailAlertUtility">
+				<ref bean="emailAlertUtility" />
+			</property>
+			<property name="jwtUtil">
+				<ref bean="jwtUtil" />
+			</property>
+			<property name="jsonUtils">
+				<ref bean="jsonUtils" />
+			</property>
+			<property name="serviceLiveWebUtilImageUrl">
+				<value>${servicelive.webutil.image.url}</value>
+			</property>	
+			<property name="configProperties">    
+	  			<props>
+		  			<prop key="apiKey">${adobe.client.id}</prop>
+		  			<prop key="emailEndpoint">${adobe.event.email.endpoint}</prop>
+	  			</props>
+  			</property>			
+	</bean>
+	
+	<bean id="adobeTokenService" class="com.newco.marketplace.service.serviceImpl.AdobeTokenServiceImpl">
+		<property name="jwtUtil">
+			<ref bean="jwtUtil" />
+		</property>
+	</bean>
+	
+	<bean id="jwtUtil" class="com.newco.marketplace.utils.utility.JWTUtil">
+		<property name="jsonUtils">
+			<ref bean="jsonUtils" />
+		</property>
+		<property name="configProperties">    
+	  		<props>
+	  			<prop key="imsHost">${adobe.ims.host}</prop>
+	  			<prop key="technicalAccountId">${adobe.jwt.technical.account.id}</prop>
+	  			<prop key="issuer">${adobe.jwt.issuer}</prop>
+	  			<prop key="metascopes">${adobe.jwt.metascopes}</prop>
+	  			<prop key="keyPath">${adobe.private.key.file}</prop>
+	  			<prop key="apiKey">${adobe.client.id}</prop>
+	  			<prop key="secret">${adobe.client.secret}</prop>
+	  			<prop key="imsExchange">${adobe.ims.exchange.jwt}</prop>
+	  		</props>
+  		</property>
+	</bean>
+	
+	<bean id="jsonUtils" class="com.newco.marketplace.utils.utility.JSONUtils"/>	
+	
+	<bean id="datasourceService" class="com.newco.marketplace.service.serviceImpl.DataSourceServiceImpl">
+			<property name="dataSourceBO">
+				<ref bean="dataSourceBO" />
+			</property>
+			<property name="providerDataSourceService">
+				<ref bean="providerDataSourceService" />
+			</property>
+			<property name="responsysEnableMode">
+				<value>${responsys.enable.mode}</value>
+			</property>	
+	</bean>
+
+	<bean id="providerDataSourceService" class="com.newco.servicelive.campaigns.service.ResponsysDataSourceServiceImpl">
+			<property name="alertServiceProperties">
+				<ref bean="alertServiceProperties" />
+			</property>
+	</bean>
+	
+	<bean id="emailAlertUtility" class="com.newco.marketplace.utils.utility.EmailAlertUtility"/>
+	<bean id="alertServiceProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+  		 <property name="properties">    
+  		 <props>
+  		 	<prop key="username">${responsys.username}</prop>
+  			<prop key="password">${responsys.password}</prop>
+  			<prop key="tmpDSLocation">${responsys.datasource.loc}</prop>
+  			<prop key="testMode">${responsys.test.mode}</prop>
+  			<prop key="responsysURL">${responsys.url}</prop>
+  			<prop key="responsysBatchURL">${responsys.batch.url}</prop>
+  			
+  			<!-- <prop key="responsysInteractUsername">${responsys.interact.username}</prop>
+  			<prop key="responsysInteractPassword">${responsys.interact.password}</prop>
+  			<prop key="responsysInteractURL">${responsys.interact.url}</prop>
+  			<prop key="responsysInteractTestMode">${responsys.interact.test.mode}</prop> -->
+  		</props>
+  		</property>
+	</bean>
+	
+	<bean id="alertServicePropertiesResponsys" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+  		 <property name="properties">    
+  		 <props>
+  			<prop key="responsysInteractUsername">${responsys.interact.username}</prop>
+  			<prop key="responsysInteractPassword">${responsys.interact.password}</prop>
+  			<prop key="responsysInteractURL">${responsys.interact.url}</prop>
+  			<prop key="responsysInteractTestMode">${responsys.interact.test.mode}</prop>
+  		</props>
+  		</property>
+	</bean>		
+			
+</beans> 

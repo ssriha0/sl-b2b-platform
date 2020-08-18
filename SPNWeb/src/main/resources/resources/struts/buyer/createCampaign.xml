@@ -1,0 +1,80 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+    <package name="createCampaign" extends="selectProviderNetworkBase" >
+        <default-interceptor-ref name="SPNInterceptorStack"/>
+        
+	
+		<action name="spnCreateCampaign_display" class="spnCreateCampaignAction" method="display">
+			<result name="success">/jsp/spn/buyer/campaign/create/create_campaign.jsp</result>
+		</action>
+		
+		<action name="spnCreateCampaign_saveAndDone" class="spnCreateCampaignAction"  method="saveAndDone" >
+			<result name="input" type="redirectAction">
+					 <param name="actionName">spnCreateCampaign_display</param>
+					 <param name="vf">true</param>
+			</result>
+		
+			<result name="success" type="redirectAction">
+	            <param name="actionName">spnMonitorCampaign_display</param>
+        	</result>  
+		</action>
+
+		<!--  PLEASE TRY TO PUT ALL THE AJAX CALLS UNDERNEATH HERE -->
+		<action name="spnCreateCampaign_loadSelectedSpnDataAjax" class="spnCreateCampaignAction"  method="loadSelectedSpn">
+			<result name="success">/jsp/spn/buyer/campaign/create/campaign_criterias.jsp</result>
+		</action>
+		
+		<action name="spnCreateCampaign_getMainServicesWithSkillsAjax" class="spnCreateCampaignAction"  method="getMainServicesWithSkillsAjax">
+			<result name="servicesWithSkills">/jsp/spn/common/checkbox_services_with_skills.jsp</result>
+		</action>
+
+		<action name="spnCreateCampaign_updateRightSideAjax" class="spnCreateCampaignAction"  method="updateRightSideAjax">
+			<result name="success">/jsp/spn/buyer/campaign/create/right_side_create_campaign.jsp</result>
+		</action>
+		
+		<action name="spnCreateCampaign_getCampaignCountsAjax" class="spnCreateCampaignAction"  method="getCampaignCountsAjax">
+			<result name="success">/jsp/spn/buyer/campaign/create/provider_count_matching_campaign.jsp</result>
+		</action>
+		
+		<action name="spnCreateCampaign_getSPNCountsAjax" class="spnCreateCampaignAction"  method="getSPNCountsAjax">
+			<result name="success">/jsp/spn/buyer/campaign/create/provider_count_matching_spn_ajax.jsp</result>
+		</action>
+		
+		
+		<action name="spnCreateCampaign_loadSelectedCampaignDataAjax" class="spnCreateCampaignAction"  method="loadSelectedCampaign">
+			<result name="success">/jsp/spn/buyer/campaign/create/campaign_criterias.jsp</result>
+		</action>
+		
+		<action name="spnCreateCampaign_loadSpnListDataAjax" class="spnCreateCampaignAction"  method="loadSpnList">
+			<result name="success">/jsp/spn/common/spn_list.jsp</result>
+		</action>
+		
+		<action name="spnCreateCampaign_getSubCategoriesAjax" class="spnCreateCampaignAction"  method="getSubCategoriesAjax">
+			<result name="subServices2">/jsp/spn/common/subServices2.jsp</result>
+			<result name="subCategories">/jsp/spn/buyer/campaign/create/subcategories.jsp</result>
+		</action>
+		
+		<action name="spnCreateCampaign_getSub2CategoriesAjax" class="spnCreateCampaignAction"  method="getSub2CategoriesAjax">
+			<result name="subServices2">/jsp/spn/common/subServices2.jsp</result>
+			<result name="subCategories">/jsp/spn/buyer/campaign/create/subcategories.jsp</result>
+		</action>
+		
+		<action name="spnCreateCampaign_getMainServicesWithSkillsAjax" class="spnCreateCampaignAction"  method="getMainServicesWithSkillsAjax">
+			<result name="servicesWithSkills">/jsp/spn/common/checkbox_services_with_skills.jsp</result>
+		</action>
+		
+		<action name="spnCreateCampaign_getResCredTypesWithCategoriesAjax" class="spnCreateCampaignAction"  method="getResCredTypesWithCategoriesAjax">
+			<result name="resCredTypesWithCategories">/jsp/spn/common/checkbox_res_cred_categories_with_types.jsp</result>
+		</action>
+		
+		<action name="spnCreateCampaign_getVendorCredTypesWithCategoriesAjax" class="spnCreateCampaignAction"  method="getVendorCredTypesWithCategoriesAjax">
+			<result name="vendorCredTypesWithCategories">/jsp/spn/common/checkbox_vendor_cred_categories_with_types.jsp</result>
+		</action>
+
+
+    </package>
+    
+</struts>

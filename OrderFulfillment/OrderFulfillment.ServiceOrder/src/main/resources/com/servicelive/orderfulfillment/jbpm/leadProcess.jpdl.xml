@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process name="leadProcess" xmlns="http://jbpm.org/4.0/jpdl">
+	<start g="14,23,48,48" name="start">
+        <transition g="-28,-7" name="SaveDraft" to="PreDraftCheck"/>
+    </start>
+
+   	<decision g="116,52,48,48" name="PreDraftCheck">
+        <handler expr="#{leadDraftStateCheck}" />
+        <transition g="142,145:-24,-20" name="forward" to="PreDraft" />
+    </decision>
+    
+	<state name="PreDraft">
+        <transition g="207,38:-24,-20" name="UNMATCHED_POST" to="Unmatched"/>
+    </state>
+    
+    <state name="Unmatched">
+        <transition g="207,38:-24,-20" name="MATCHED_POST" to="Matched"/>
+    </state>
+    
+    <state name="Matched">
+        <transition g="207,38:-24,-20" name="COMPLETE_LEAD" to="Completed">
+          <event-listener	class="com.servicelive.orderfulfillment.jbpm.jBPMLeadCommandRunnerProxy">
+    			<field name="commandList">
+    			     <string value="LeadLoggingCmd()" />
+    			</field>
+    		</event-listener>
+        </transition>
+               
+        <transition g="207,38:-24,-20" name="CANCEL_LEAD" to="Cancelled">
+          <event-listener	class="com.servicelive.orderfulfillment.jbpm.jBPMLeadCommandRunnerProxy">
+    			<field name="commandList">
+    			     <string value="LeadLoggingCmd()" />
+    			</field>
+    		</event-listener>
+        </transition>
+    </state>   
+     
+    <end g="421,94,88,52" name="Completed"/>
+    
+    <end g="421,94,88,52" name="Cancelled"/>
+</process>

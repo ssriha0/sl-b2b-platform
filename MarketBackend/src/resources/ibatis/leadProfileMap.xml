@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="lead_profile">
+
+	<typeAlias alias="leadServicePriceVO" type="com.newco.marketplace.vo.leadprofile.LeadServicePriceVO"/>	
+	<typeAlias alias="leadProfileCreationRequestVO" type="com.newco.marketplace.vo.leadprofile.LeadProfileCreationRequestVO"/>
+	<typeAlias alias="getLeadProjectTypeRequestVO" type="com.newco.marketplace.vo.leadprofile.GetLeadProjectTypeRequestVO"/>
+	<typeAlias alias="getLeadProjectTypeResponseVO" type="com.newco.marketplace.vo.leadprofile.GetLeadProjectTypeResponseVO"/>
+	<typeAlias alias="projectVO" type="com.newco.marketplace.vo.leadprofile.LeadProjectVO"/>
+	
+	<resultMap id="profileDetails.resultMap" class="leadProfileCreationRequestVO">
+        <result property="companyName" column="companyName"/>
+        <result property="firstName" column="firstName"/>
+        <result property="lastName" column="lastName"/>
+        <result property="address" column="address"/>
+        <result property="street2" column="street2"/>
+        <result property="city" column="city"/>
+        <result property="state" column="state"/>
+        <result property="country" column="country"/>
+        <result property="zip" column="zip"/>
+        <result property="contactEmail" column="contactEmail"/>
+        <result property="fax" column="fax"/>
+    </resultMap>
+	
+	<select id="lead_availability_indicator.query" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+			select count(1) as count from vendor_lead_profile where vendor_id = #vendorId# and lms_partner_id IS NOT NULL
+	</select>
+		
+	<select id="lead_project_type_indicator.query" parameterClass="projectVO" resultClass="leadServicePriceVO">
+		SELECT lsp.service_mapping_id AS projectTypeMappingId,
+			<isEqual property="compPrice" compareValue="true">
+				lsp.competitive_price AS competitivePrice,
+			</isEqual>
+			<isEqual property="compPrice" compareValue="false">
+				NULL AS competitivePrice,
+			</isEqual>
+			<isEqual property="exclusive" compareValue="true">
+				lsp.exclusive_price AS exclusivePrice,
+			</isEqual>
+			<isEqual property="exclusive" compareValue="false">
+				NULL AS exclusivePrice,
+			</isEqual>
+			lsm.lms_project_type_id AS lmsProjectTypeId,
+			lsm.service_category_id AS leadCategoryId,
+			lsm.lms_project_type_description AS lmsProjectTypeDesc,
+			lsc.service_category_description AS lmsServiceCategoryDesc
+		FROM lead_service_price lsp
+		JOIN lead_service_mapping lsm
+			ON lsp.service_mapping_id = lsm.service_mapping_id
+		JOIN lead_service_category lsc
+			ON lsc.service_category_id  =  lsm.service_category_id
+		WHERE (lsp.launch_market_id =  
+				(SELECT lm.launch_market_id 
+				FROM lu_lead_launch_market lm
+				JOIN vendor_hdr vh
+					ON vh.vendor_id = #vendorId#
+				JOIN vendor_location vl
+					ON vl.vendor_id = vh.vendor_id
+				JOIN location l
+					ON vl.locn_id = l.locn_id 
+				WHERE l.locn_type_id = 1 AND l.state_cd = lm.state_cd)
+			OR lsp.launch_market_id IS NULL)
+		AND lsm.service_mapping_id = #projectId#
+		AND lsm.service_category_id = #categoryID#
+		ORDER BY lsp.launch_market_id DESC LIMIT 1
+	</select>
+		
+	<insert id="insert_lead_registration_data.insert" parameterClass="leadProfileCreationRequestVO">
+		insert into vendor_lead_profile(vendor_id, lead_profile_email, lead_profile_phone_no, lead_profile_sms_no, location_type,
+		mon_ind,tues_ind,wed_ind,thurs_ind,fri_ind,sat_ind,sun_ind,service_time,monthly_budget,daily_limit,monthly_limit,
+		created_date,modified_date,created_by,modified_by,lms_password,lead_package_id,shs_leads_interested_ind,coverage_in_miles,skill,licensing_states,urgency_of_service,
+		licensing_required_ind,comments,multiple_locn_ind)
+			values
+			(#providerFirmId#, #leadEmailId#, #leadPhoneNo#,#leadSmsNo#,#locationType#,#mondayInd#,#tuesndayInd#,
+			#wednesdayInd#,#thursdayInd#,#fridayInd#,#saturdayInd#,#sundayInd#,#serviceTime#,#monthlyBudget#,#leadDailyLimit#,#leadMonthlyLimit#,
+			NOW(),NOW(),#createdBy#,#modifiedBy#,#lmsPassword#,#leadPackageID#,#interestedInSHSLeads#,#coverageInMiles#,#skill#,#licensingStates#,#urgencyServices#,#isLicensingRequired#,
+			#comments#,#isMultipleLocation#)		
+			
+		ON DUPLICATE KEY UPDATE
+		
+		lead_profile_email=#leadEmailId#, lead_profile_phone_no=#leadPhoneNo#, lead_profile_sms_no=#leadSmsNo#,
+		location_type=#locationType#,mon_ind=#mondayInd#,tues_ind=#tuesndayInd#,
+		wed_ind=#wednesdayInd#,thurs_ind=#thursdayInd#,fri_ind=#fridayInd#,sat_ind=#saturdayInd#,sun_ind=#sundayInd#,service_time=#serviceTime#,
+		monthly_budget=#monthlyBudget#,daily_limit=#leadDailyLimit#,monthly_limit=#leadMonthlyLimit#,created_date=NOW(),modified_date=NOW(),
+		created_by=#createdBy#,modified_by=#modifiedBy#,lead_package_id=#leadPackageID#,shs_leads_interested_ind=#interestedInSHSLeads# ,
+		coverage_in_miles = #coverageInMiles#,skill = #skill# ,licensing_states = #licensingStates# ,urgency_of_service = #urgencyServices# , 
+		licensing_required_ind=#isLicensingRequired#, comments=#comments#,multiple_locn_ind=#isMultipleLocation#
+		
+	</insert>
+	
+	<delete id="delete_lead_project_type_price_data_for_vendor" parameterClass="java.lang.String">
+		DELETE FROM vendor_lead_service_price WHERE vendor_id = #vendorId#		
+	</delete>
+	
+	<insert id="insert_lead_project_type_price_data" parameterClass="java.util.List">
+		insert into vendor_lead_service_price(vendor_id, service_mapping_id, competitive_price, exclusive_price,
+		created_date, modified_date, created_by, modified_by)
+			values  
+			<iterate  conjunction=", ">
+			(#priceVO[].providerFirmId#, #priceVO[].projectTypeMappingId#, #priceVO[].competitivePrice#,
+			#priceVO[].exclusivePrice#, now(), now(), #priceVO[].providerFirmId#, #priceVO[].providerFirmId#)
+			</iterate>	
+			on duplicate key update
+			competitive_price = IF(VALUES(competitive_price) IS NOT NULL,VALUES(competitive_price),competitive_price), 
+			exclusive_price = IF(VALUES(exclusive_price) IS NOT NULL,VALUES(exclusive_price),exclusive_price), modified_date = now()		
+	</insert>
+	
+	<update id="update_partnerId" parameterClass="java.util.HashMap">
+		UPDATE vendor_lead_profile SET 
+		<isNotNull property="partnerId">
+			lms_partner_id = #partnerId#,
+		</isNotNull>
+			 modified_date = now(),
+			wf_state_id = (SELECT wf_state_id FROM wf_states 
+			WHERE wf_state = #wfStatus#
+			AND wf_entity='Lead Profile')
+			WHERE vendor_id = #vendorId#;
+	</update>
+	
+	<update id="update_filterSetId" parameterClass="java.util.HashMap">
+		update vendor_lead_profile set 
+			<isEqual property="filterType" compareValue="competitiveInsertFilterSet">
+				competitive_filter_set_id = #filterSetId#, 
+			</isEqual>
+			<isEqual property="filterType" compareValue="exclusiveInsertFilterSet">
+				exclusive_filter_set_id = #filterSetId#, 
+			</isEqual>
+			modified_date = now(),
+			wf_state_id = (SELECT wf_state_id FROM wf_states WHERE wf_state = #wfStatus#
+			AND wf_entity='Lead Profile')
+			where lms_partner_id = #partnerId#
+	</update>
+
+	<update id="update_billing_ind.query" parameterClass="leadProfileCreationRequestVO">
+		update vendor_lead_profile set lms_billing_account_ind = #billingAccInd#, wf_state_id = #wfStateId# , modified_date = now()
+			where lms_partner_id = #partnerId#
+	</update>
+	
+	<select id="getProfileDetails.query" parameterClass="java.lang.String" resultMap="profileDetails.resultMap">
+		SELECT vh.business_name AS companyName,
+			c.first_name AS firstName,
+			c.last_name AS lastName,
+			l.street_1 AS address,
+			l.street_2 AS street2,
+			l.city AS city,
+			l.state_cd AS state,
+			l.country AS country,
+			l.zip AS zip,
+			c.email AS contactEmail,
+			c.fax_no AS fax
+		FROM vendor_hdr vh
+		JOIN vendor_resource vr
+			ON vh.vendor_id = vr.vendor_id
+		JOIN contact c
+			ON vr.contact_id = c.contact_id
+		JOIN vendor_location vl
+			ON vl.vendor_id = vh.vendor_id
+		JOIN location l
+			ON vl.locn_id = l.locn_id 
+		WHERE vh.vendor_id = #vendorId#
+			AND vr.primary_ind = 1 AND l.locn_type_id = 1
+	</select>
+	
+	<select id="getProjectTypesAndRates" parameterClass="java.lang.String" resultClass="getLeadProjectTypeResponseVO">
+		SELECT lsc.service_category_id AS categoryID,
+			lsc.service_category_description AS category,
+			lsm.service_mapping_id AS projectId,
+			lsm.lms_project_type_description AS projectName,
+			lsp.competitive_price AS competitivePrice,
+			lsp.exclusive_price AS exclusivePrice,
+			lsp.launch_market_id AS launchMarket,
+			lsp.service_mapping_id AS mappingId,
+			lsm.client_project_description AS  projectDescription
+		FROM lead_service_price lsp
+		JOIN lead_service_mapping lsm
+			ON lsp.service_mapping_id = lsm.service_mapping_id
+		JOIN lead_service_category lsc
+			ON lsc.service_category_id = lsm.service_category_id
+		WHERE (lsp.launch_market_id =  
+				(SELECT lm.launch_market_id 
+				FROM lu_lead_launch_market lm
+				JOIN vendor_hdr vh
+					ON vh.vendor_id = #vendorId#
+				JOIN vendor_location vl
+					ON vh.vendor_id = vl.vendor_id
+				JOIN location l
+					ON vl.locn_id = l.locn_id 
+				WHERE l.locn_type_id = 1 AND l.state_cd = lm.state_cd)
+			OR lsp.launch_market_id IS NULL)
+		ORDER BY categoryId,projectId,launchMarket DESC
+	</select>
+	
+	<select id="getPartnerIdForFirm" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		select lms_partner_id from vendor_lead_profile where vendor_id = #vendorId#
+	</select>
+	
+	<select id="getVendorIdFormPartnerId" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		select vendor_id from vendor_lead_profile where lms_partner_id = #partnerId#
+	</select>
+	
+    <update id="update_crmStatus.update" parameterClass="java.util.HashMap">
+		update vendor_hdr set crm_status = #crmStatus# where vendor_id = #vendorId#
+	</update>
+	
+	<select id="checkVendorId" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		select count(vendor_id) from vendor_hdr where vendor_id = #vendorId#
+	</select>
+	
+	<update id="update_lms_error" parameterClass="java.util.HashMap">
+		update vendor_lead_profile set lms_error = #errors#	where vendor_id = #vendorId#
+	</update>
+	
+	<update id="update_lms_status" parameterClass="java.util.HashMap">
+		update vendor_lead_profile set lms_partner_status = #status#, lms_status_reason=#statusReason# 
+		where vendor_id = #vendorId#
+	</update>
+	
+	<select id="getFilterDetails.query" parameterClass="java.lang.String" resultClass="leadProfileCreationRequestVO">
+		SELECT 
+		    vlp.lms_password AS lmsPassword,
+		    vlp.lead_profile_phone_no AS leadPhoneNo,
+		    vlp.lead_profile_email AS leadEmailId,
+		    vlp.lead_profile_sms_no AS leadSmsNo,
+		    vlp.lead_package_id AS leadPackageID,
+		    llp.lead_package_description AS leadPackageDesc ,
+		    vlp.monthly_budget AS monthlyBudget,
+		    vlp.daily_limit AS leadDailyLimit,
+		    vlp.monthly_limit AS leadMonthlyLimit,
+		    vlp.comments AS comments,
+		    vlp.daily_limit AS leadDailyLimit,
+		    vlp.monthly_limit AS leadMonthlyLimit,
+		    vlp.mon_ind AS mondayInd,
+		    vlp.tues_ind AS tuesndayInd,
+		    vlp.wed_ind AS wednesdayInd,
+	        vlp.thurs_ind AS thursdayInd,
+		    vlp.fri_ind AS fridayInd,
+		    vlp.sat_ind AS saturdayInd,
+		    vlp.sun_ind AS sundayInd,
+		    vlp.service_time AS serviceTime,
+		    vlp.location_type AS locationType,
+		    vlp.skill AS skill,
+		    vlp.urgency_of_service AS urgencyServices,
+		    vlp.lms_partner_id AS partnerId,
+		    vlp.coverage_in_miles AS coverageInMiles,
+		    vlp.licensing_required_ind AS isLicensingRequired,
+		    vlp.licensing_states AS licensingStates,
+		    vlp.multiple_locn_ind AS isMultipleLocation
+		FROM vendor_lead_profile vlp,lu_lead_package llp 
+		WHERE  vlp.lead_package_id =  llp.lu_lead_package_id
+		AND vendor_id = #vendorId#
+	</select>
+	
+	<select id="getFilters.query" parameterClass="java.lang.String" resultClass="leadProfileCreationRequestVO">
+		select competitive_filter_set_id as compFilterId,
+		exclusive_filter_set_id as exclFilterId
+		from vendor_lead_profile where vendor_id = #vendorId#
+	</select>
+	
+	<update id="insert_tc_ind" parameterClass="java.util.HashMap">
+		update vendor_lead_profile set lead_t_c_version = #tc#, modified_date = now() ,lead_t_c_date = now()
+		where vendor_id = #vendorId#
+	</update>
+	
+	<insert id="insert_tc_history" parameterClass="java.util.HashMap">
+		INSERT INTO vendor_lead_profile_level_history(vendor_id, action_name, old_value, new_value,
+		modified_date, modified_by)
+			VALUES
+			(#vendorId#,
+			#actionName#,
+			'0',
+			#tc#,
+			now(),
+			#userName#)
+	</insert>
+    
+    <select id="lead_package_datails.query" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+    select daily_limit as dailyLimit,monthly_limit as monthlyLimit,monthly_budget as monthlyBudget,lead_package_description AS leadPackageDescription from lu_lead_package
+    where lu_lead_package_id= #packageId#
+    </select>
+    
+    <select id="getServiceurgency.query" parameterClass="java.util.List" resultClass="java.lang.String">
+		SELECT lead_service_urgency_desc 
+		FROM lu_lead_service_urgency 
+		WHERE lead_service_urgency_id IN 
+		<iterate  open="(" close=")" conjunction=",">
+			#parameters[]#
+		</iterate>
+	</select>
+	
+	 <select id="inside_sales_api_invoke_switch.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT f.app_value FROM application_flags f WHERE f.app_key = #key#
+	</select>
+	
+	<select id="getSkill.query" parameterClass="java.util.List" resultClass="java.lang.String">
+		SELECT lead_skill_desc 
+		FROM lu_lead_skills 
+		WHERE lead_skill_id IN 
+		<iterate  open="(" close=")" conjunction=",">
+			#parameters[]#
+		</iterate>
+	</select>
+	
+	<select id="get_username_for_vendor_id.query" parameterClass="java.lang.Integer" resultClass="java.lang.String">
+		SELECT user_name FROM vendor_resource WHERE vendor_id=#vendorId# 
+		AND primary_ind=1
+	</select>
+      <update id="update_isResponse.update" parameterClass="java.util.HashMap">
+		update vendor_hdr set inside_sale_response = #isResponse#,crm_status = #crmStatus# where vendor_id = #vendorId#
+	</update>
+	<select id="getStateName.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+	     SELECT state_name FROM lu_state_cds WHERE state_cd =#businessState# and blackout_ind=0
+	</select>
+	
+</sqlMap>

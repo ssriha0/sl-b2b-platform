@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/leadProfileBillingRequest" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" targetNamespace="http://www.servicelive.com/namespaces/leadProfileBillingRequest" elementFormDefault="qualified" jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+ <xs:include schemaLocation="../common.xsd"/>
+  <xs:element name="leadProfileBillingRequest">
+    <xs:complexType>
+      <xs:sequence>  
+        <xs:element name="partnerId" type="xs:string" minOccurs="1"/>
+        <xs:element name="cardType" type="xs:string" minOccurs="1"/>
+        <xs:element name="cardNo" type="xs:string" minOccurs="1"/>
+        <xs:element name="expirationYear" type="xs:integer" minOccurs="1"/>
+        <xs:element name="expirationMonth" type="xs:integer" minOccurs="1"/>
+        <xs:element name="ccv" type="xs:integer" minOccurs="1"/>
+        <!--<xs:element name="amount" type="xs:double" minOccurs="0"/>
+        <xs:element name="description" type="xs:string" minOccurs="0"/>  -->
+        
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
+
+
+
+

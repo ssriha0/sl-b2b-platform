@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
+	 default-lazy-init="true">
+	
+
+	<bean id="creditCardBO" class="com.newco.marketplace.business.businessImpl.ledger.CreditCardBOImpl">
+		<property name="cryptography">
+			<ref bean="cryptography" />
+		</property>
+		<property name="creditCardDao">
+			<ref bean="creditCardDao" />
+		</property>
+		<property name="locationDao">
+			<ref bean="fmlocationDaoImpl" />
+		</property>
+		<property name="accountingTransactionBO">
+    		<ref bean="accountingTransactionManagementImpl"/>
+		
+		<property name="walletBO" ref="walletTx" />
+		
+		<property name="lookupBO" ref="lookup" />
+    	</property>
+    	<property name="financeManagerBO">
+    		<ref bean="financeManagerBO"/>
+    	</property>     	
+	</bean>
+	
+    <bean id="creditCardDao" class="com.newco.marketplace.persistence.daoImpl.ledger.CreditCardDaoImpl">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClientFinance"/>
+  		</property>	 
+    </bean>	
+</beans>

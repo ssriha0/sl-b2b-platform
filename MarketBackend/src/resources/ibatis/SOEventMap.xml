@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="soEvent">
+
+	<typeAlias alias="aliasSOEventVO" type="com.newco.marketplace.dto.vo.serviceorder.SOEventVO"></typeAlias>
+	<typeAlias alias="aliasInOutVO" type="com.newco.marketplace.dto.vo.serviceorder.InOutVO"></typeAlias>
+	<resultMap class="aliasSOEventVO" id="soEventVO">
+		<result property="eventID" column="event_id"/>
+		<result property="serviceOrderID" column="so_id"/>
+		<result property="createDate" column="created_date"/>
+		<result property="eventTypeID" column="event_type_id"/>
+		<result property="eventReasonCode" column="event_reason_code"/>
+		<result property="processInd" column="process_ind"/>
+		<result property="resourceID" column="resource_id"/>		
+	</resultMap>
+
+	<resultMap class="java.util.Map" id="eventMap">
+		<result property="setter" resultMap="soEventVO"/>
+		<result property="getter" resultMap="soEventVO"/>
+	</resultMap>	
+	<select id="soEvent.query_event_by_id" 
+		parameterClass="com.newco.marketplace.dto.vo.serviceorder.SOEventVO"
+		resultClass="com.newco.marketplace.dto.vo.serviceorder.SOEventVO">
+		select event_id as eventID, so_id, resource_id, created_date, event_type_id, event_reason_code)
+	</select>
+	<insert id="soEvent.insert" parameterClass="com.newco.marketplace.dto.vo.serviceorder.SOEventVO">
+		insert into so_events
+		(so_id, resource_id, created_date, event_type_id, event_reason_code)
+		values
+		(#serviceOrderID#, #resourceID#, CURRENT_TIMESTAMP, #eventTypeID#, #eventReasonCode#)
+		 <selectKey resultClass="int" > 
+		   select LAST_INSERT_ID() as value
+		 </selectKey>
+
+	</insert>
+	<sql id="out.list">
+		<isPropertyAvailable property="out">
+		<isNotEmpty property="out">
+		<iterate prepend="order by " property="out" conjunction="," >$out[]$</iterate>
+		</isNotEmpty>
+		</isPropertyAvailable>
+	</sql>
+	<select id="soEvent.select" parameterClass="aliasInOutVO" resultMap="soEventVO">
+		select * from so_events	
+		<dynamic prepend="where"><isNotNull prepend="and" property="in.eventID">#in.eventID#=event_id</isNotNull>
+			<isNotNull prepend="and" property="in.serviceOrderID">#in.serviceOrderID#=so_id</isNotNull>
+			<isNotNull prepend="and" property="in.createDate">#in.createDate#=created_date></isNotNull>
+			<isNotNull prepend="and" property="in.eventTypeID">#in.eventTypeID#=event_type_id</isNotNull>
+			<isNotNull prepend="and" property="in.eventReasonCode">#in.eventReasonCode#=event_reason_code</isNotNull>
+			<isNotNull prepend="and" property="in.processInd">#in.processInd#=process_ind</isNotNull>		
+		</dynamic>
+		<include refid="out.list"/>
+	</select>
+	
+
+	<update id="soEvent.update" parameterClass="aliasInOutVO">
+		update so_events
+		<dynamic prepend="set">
+			<isNotNull prepend="," property="out.eventTypeID">event_type_id=#out.eventTypeID#</isNotNull>
+			<isNotNull prepend="," property="out.eventReasonCode">event_reason_code=#out.eventReasonCode#</isNotNull>
+			<isNotNull prepend="," property="out.processInd">process_ind=#out.processInd#</isNotNull>		
+		</dynamic>
+		<dynamic prepend="where">
+			<isNotNull prepend="and" property="in.eventID">event_id=#in.eventID#</isNotNull>
+			<isNotNull prepend="and" property="in.serviceOrderID">so_id=#in.serviceOrderID#</isNotNull>
+			<isNotNull prepend="and" property="in.createDate">created_date=#in.createDate#></isNotNull>
+			<isNotNull prepend="and" property="in.eventTypeID">#in.eventTypeID#=event_type_id</isNotNull>
+			<isNotNull prepend="and" property="in.eventReasonCode">#in.eventReasonCode#=event_reason_code</isNotNull>
+			<isNotNull prepend="and" property="in.processInd">#in.processInd#=process_ind</isNotNull>		
+		</dynamic>
+	</update>
+
+</sqlMap>

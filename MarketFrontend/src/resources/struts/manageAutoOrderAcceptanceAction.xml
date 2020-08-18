@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+    <package name="manageAutoOrderAcceptance" extends="ServiceLiveBase" >
+    	<default-interceptor-ref name="ServiceLiveBaseInterceptorStack" />
+
+       	<action name="manageAutoOrderAcceptanceAction_execute" class="manageAutoOrderAcceptanceAction" method="execute">
+			<result name="success" >/jsp/auto_acceptance/manage_auto_order_acceptance.jsp</result>
+		</action>
+		
+		<action name="manageAutoOrderAcceptanceAction_fetchCARRulesForProvider" class="manageAutoOrderAcceptanceAction" method="fetchCARRulesForProvider">
+			<result name="success" >/jsp/auto_acceptance/car_notification.jsp</result>
+		</action>
+		
+		<action name="manageAutoOrderAcceptanceAction_saveRules" class="manageAutoOrderAcceptanceAction" method="saveRules">
+			<result name="success" >/jsp/auto_acceptance/get_json.jsp</result>
+		</action>
+		
+		<action name="manageAutoOrderAcceptanceAction_displayQuickView" class="manageAutoOrderAcceptanceAction" method="displayQuickView">
+			<result name="success" >/jsp/auto_acceptance/tab_manageRulesQuickView.jsp</result>
+		</action>
+		
+		<action name="manageAutoOrderAcceptanceAction_saveAndFetchRules" class="manageAutoOrderAcceptanceAction" method="saveAndFetchRules">
+			<result name="success" >/jsp/auto_acceptance/manage_auto_order_acceptance.jsp</result>
+		</action>
+		
+		<action name="manageAutoOrderAcceptanceAction_loadDetails" class="manageAutoOrderAcceptanceAction" method="loadDetails">
+			<result name="success" >/jsp/auto_acceptance/auto_acceptance_grid.jsp</result>
+		</action>
+		
+	</package>
+</struts>

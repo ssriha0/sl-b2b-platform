@@ -1,0 +1,236 @@
+<!DOCTYPE validators PUBLIC "-//Apache Struts//XWork Validator 1.0.2//EN"
+       "http://struts.apache.org/dtds/xwork-validator-1.0.2.dtd">
+<validators>
+<!-- Modified by MTedder -->
+	<!--
+		Validation Part for 'Business Information'
+	-->
+	<field name="registrationDto.mainBusinessExtn">
+	    <field-validator type="regex" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="regex">^\d+$</param>
+	        <message key="provider.registration.extension.numberError"/>
+	    </field-validator>
+	    <field-validator type="stringlength" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="minLength">4</param>
+	        <message key="provider.registration.extension.lengthError"/>
+	    </field-validator>
+	</field>
+	
+ 	<field name="registrationDto.primaryIndustry">
+	   <field-validator type="requiredstring">
+			<param name="trim">true</param>
+			<message key="provider.registration.primaryInd.required"/>	
+	    </field-validator>
+	</field>
+	
+	<field name="registrationDto.legalBusinessName">
+	   <field-validator type="requiredstring">
+			<param name="trim">true</param>
+			<message key="provider.registration.legalBusinessName.required"/>	
+	    </field-validator>
+	</field>
+	
+	 <field name="registrationDto.mainBusiPhoneNo1">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="provider.registration.phoneNumber1.required" />
+      </field-validator>
+      <field-validator type="regex" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="regex">^\d+$</param>
+	        <message key="provider.registration.phoneNumber1.numberError"/>
+	    </field-validator>
+  </field>
+  <field name="registrationDto.mainBusiPhoneNo2">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="provider.registration.phoneNumber2.required" />
+      </field-validator>
+      <field-validator type="regex" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="regex">^\d+$</param>
+	        <message key="provider.registration.phoneNumber2.numberError"/>
+	    </field-validator>
+  </field>
+    <field name="registrationDto.mainBusiPhoneNo3">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="provider.registration.phoneNumber3.required" />
+      </field-validator>
+      <field-validator type="regex" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="regex">^\d+$</param>
+	        <message key="provider.registration.phoneNumber3.numberError"/>
+	    </field-validator>
+  </field>
+	
+ 	<!--
+ 		Validation for 'Business Address' 
+ 	 -->
+ 
+ 	<field name="registrationDto.businessStreet1">
+	   <field-validator type="requiredstring">
+	        <param name="trim">true</param>
+	        <message key="provider.registration.businessSt1.required" />
+	    </field-validator>
+	</field>
+	
+	<field name="registrationDto.businessCity">
+	   <field-validator type="requiredstring">
+	        <param name="trim">true</param>
+	        <message key="provider.registration.businessCity.required" />
+	    </field-validator>
+	</field>
+
+ 	<field name="registrationDto.businessZip">
+	   <field-validator type="requiredstring" short-circuit="true">
+	        <param name="trim">true</param>
+	        <message key="provider.registration.businessZip.required" />
+	    </field-validator>
+	    <field-validator type="regex" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="regex">^\d+$</param>
+	        <message key="provider.registration.businessZip.number"/>
+	    </field-validator>
+	    <field-validator type="stringlength" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="minLength">5</param>
+	        <message key="provider.registration.businessZip.minlength"/>
+	    </field-validator>
+	</field>
+ 	<!--
+ 		 Validation for 'Mailing Address'
+ 	 -->
+  	
+  	<field name="registrationDto.mailingState">
+	   <field-validator type="requiredstring">
+			<param name="trim">true</param>
+			<message key="provider.registration.mailingState.required"/>	
+	    </field-validator>
+	</field>
+	
+ 	 <field name="registrationDto.mailingStreet1">
+	   <field-validator type="requiredstring">
+	        <param name="trim">true</param>
+	        <message key="provider.registration.mailSt1.required" />
+	    </field-validator>
+	</field>
+	
+	<field name="registrationDto.mailingCity">
+	   <field-validator type="requiredstring">
+	        <param name="trim">true</param>
+	        <message key="provider.registration.mailCity.required" />
+	    </field-validator>
+	</field>
+	
+	<field name="registrationDto.mailingZip">
+	   <field-validator type="requiredstring">
+	        <param name="trim">true</param>
+	        <message key="provider.registration.mailZip.required" />
+	    </field-validator>	
+ 		<field-validator type="regex" short-circuit="true">
+	          <param name="trim">true</param>
+              <param name="regex">^\d+$</param>
+              <message key="provider.registration.mailZip.number"/>
+        </field-validator>
+        <field-validator type="stringlength" short-circuit="true">
+	          <param name="trim">true</param>
+              <param name="minLength">5</param>
+              <message key="provider.registration.mailZip.minlength"/>
+        </field-validator>
+    </field>
+ 	<!--
+ 		Validation for 'Primary Contact Information - Administrator'  
+ 	-->
+ 	<field name="registrationDto.roleWithinCom">
+	   <field-validator type="requiredstring">
+			<param name="trim">true</param>
+			<message key="provider.registration.roleWithinCom.required"/>	
+	    </field-validator>
+	</field>
+	
+ 	<field name="registrationDto.firstName">
+	   <field-validator type="requiredstring">
+	        <param name="trim">true</param>
+	        <message key="provider.registration.firstName.required" />
+	    </field-validator>
+	</field>
+	
+	<field name="registrationDto.lastName">
+	   <field-validator type="requiredstring">
+	        <param name="trim">true</param>
+	        <message key="provider.registration.lastName.required" />
+	    </field-validator>
+	</field>
+	
+	<field name="registrationDto.email">
+	   <field-validator type="requiredstring" short-circuit="true">
+	        <param name="trim">true</param>
+	        <message key="provider.registration.email.required" />
+	    </field-validator>
+	    <!-- field-validator type="email">
+	        <param name="trim">true</param>
+	        <message key="provider.registration.email.error" />
+	    </field-validator-->
+	</field>
+	
+	<field name="registrationDto.confirmEmail">
+	   <field-validator type="requiredstring" short-circuit="true">
+	        <param name="trim">true</param>
+	        <message key="provider.registration.confirmEmail.required" />
+	    </field-validator>
+	    <!-- field-validator type="email">
+	        <param name="trim">true</param>
+	        <message key="provider.registration.confirmEmail.error" />
+	    </field-validator-->
+	</field>
+	
+	<validator type="expression">
+      	<param name="expression">registrationDto.email.equals(registrationDto.confirmEmail)</param>
+      	<message key="provider.registration.mail.NotSame"></message>
+  	</validator>
+	
+	<field name="registrationDto.altEmail">
+	    <!-- field-validator type="email">
+	        <param name="trim">true</param>
+	        <message key="provider.registration.altEmail.error" />
+	    </field-validator-->
+	</field>
+	
+	<field name="registrationDto.confAltEmail">
+	    <!-- field-validator type="email">
+	        <param name="trim">true</param>
+	        <message key="provider.registration.confirmAltEmail.error" />
+	    </field-validator-->
+	</field>
+	
+	<validator type="expression">
+      	<param name="expression">registrationDto.altEmail.equals(registrationDto.confAltEmail)</param>
+      	<message key="provider.registration.altMail.NotSame"></message>
+  	</validator>	
+	
+	<field name="registrationDto.userName">
+	   <field-validator type="requiredstring" short-circuit="true">
+	        <param name="trim">true</param>
+	        <message key="provider.registration.userName.required" />
+	   </field-validator>
+	   
+	   <field-validator type="stringlength" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="minLength">8</param>
+	    	<param name="maxLength">30</param>
+	        <message key="provider.registration.userName.count.error"/>
+	    </field-validator>
+	    
+	</field>
+	
+	<field name="registrationDto.howDidYouHear">
+	   <field-validator type="requiredstring">
+			<param name="trim">true</param>
+			<message key="provider.registration.howDidYou.required"/>	
+	    </field-validator>
+	</field>
+ 	 
+</validators>

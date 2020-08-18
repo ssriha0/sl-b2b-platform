@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
+	default-lazy-init="true">
+	
+	<bean id="isDataLoadProcessor" class="com.newco.batch.isleads.InsideSalesDataLoadProcessor">
+		<property name="leadProcessingBO">
+	         <ref bean="leadProcessingBO"/>
+	      </property>
+		<property name="isApiBaseUrl" 
+			value="${servicelive.is.api.base.url}" >
+ 		</property>
+ 		<property name="isApiUserName" 
+			value="${servicelive.is.api.username}" >
+ 		</property>
+ 		<property name="isApiPassword" 
+			value="${servicelive.is.api.password}" >
+ 		</property>
+ 		<property name="isApiToken" 
+			value="${servicelive.is.api.token}" >
+ 		</property>
+	</bean>
+</beans>

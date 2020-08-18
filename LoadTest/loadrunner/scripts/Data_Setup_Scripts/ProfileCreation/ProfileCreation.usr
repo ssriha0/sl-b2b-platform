@@ -1,0 +1,95 @@
+[General]
+Type=Multi
+AdditionalTypes=QTWeb
+ActiveTypes=QTWeb
+GenerateTypes=QTWeb
+RecordedProtocols=QTWeb
+DefaultCfg=default.cfg
+AppName=
+BuildTarget=
+ParamRightBrace=}
+ParamLeftBrace={
+NewFunctionHeader=1
+LastActiveAction=Action2
+CorrInfoReportDir=result1
+LastResultDir=result1
+DevelopTool=Vugen
+ActionLogicExt=action_logic
+MajorVersion=9
+MinorVersion=5
+ParameterFile=ProfileCreation.prm
+GlobalParameterFile=
+RunType=cci
+LastModifyVer=9.5.0.0
+[Transactions]
+Home=
+Login=
+ProviderFirmProfile=
+BusinessInfo=
+Warranty&Policies=
+L&C=
+Insurance=
+T&C=
+ServiceProProfile=
+ManageTeam=
+AddServicePro=
+GeneralInfo=
+MarketPlacePerferences=
+Skills&Services=
+BackgroundCheck=
+Terms&C=
+LogOut=
+[TransactionsOrder]
+Order="Home__*delimiter*__Login__*delimiter*__ProviderFirmProfile__*delimiter*__BusinessInfo__*delimiter*__Warranty&Policies__*delimiter*__L&C__*delimiter*__Insurance__*delimiter*__T&C__*delimiter*__ServiceProProfile__*delimiter*__ManageTeam__*delimiter*__AddServicePro__*delimiter*__GeneralInfo__*delimiter*__MarketPlacePerferences__*delimiter*__Skills&Services__*delimiter*__BackgroundCheck__*delimiter*__Terms&C__*delimiter*__LogOut"
+[ExtraFiles]
+globals.h=
+[Actions]
+vuser_init=vuser_init.c
+Action=Action.c
+Action2=Action2.c
+vuser_end=vuser_end.c
+[Recorded Actions]
+vuser_init=0
+Action=1
+Action2=0
+vuser_end=0
+[Replayed Actions]
+vuser_init=1
+Action=1
+Action2=1
+vuser_end=1
+[Modified Actions]
+vuser_init=1
+Action=1
+Action2=1
+vuser_end=1
+[Interpreters]
+vuser_init=cci
+Action=cci
+vuser_end=cci
+[ProtocolsVersion]
+QTWeb=9.5.0.0
+[RunLogicFiles]
+Default Profile=default.usp
+[StateManagement]
+1=1
+5=0
+6=1
+7=0
+8=0
+9=0
+10=0
+11=0
+12=0
+13=0
+14=0
+15=0
+CurrentState=6
+VuserStateHistory= 0 65536 65552 1048576 1048592
+LastReplayStatus=2
+LastReplayErrorID1=-26366
+LastReplayErrorMsg1=vuser_end.c(8): Error -26366: "Text=ServiceLive : Home Improvement & Repair" not found for web_reg_find  	[MsgId: MERR-26366]
+LastReplayErrorID2=-26366
+LastReplayErrorMsg2=vuser_end.c(8): Error -26366: "Text=ServiceLive : " not found for web_reg_find  	[MsgId: MERR-26366]
+LastReplayErrorID3=-26366
+LastReplayErrorMsg3=vuser_end.c(8): Error -26366: "Text=ServiceLive [Service Provider Registration]" not found for web_reg_find  	[MsgId: MERR-26366]

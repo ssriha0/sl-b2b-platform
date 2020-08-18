@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="../" default="compile-dependencies" name="Orderfulfillment.Integration-Buildall">
+    <target name="compile-dependencies">
+        <ant antfile="../OrderFulfillment.Integration/wildfly-build/build.xml" dir="../../OrderFulfillment/OrderFulfillment.Integration" target="clean"/>
+        <ant antfile="../OrderFulfillment.Integration/wildfly-build/build.xml" dir="../../OrderFulfillment/OrderFulfillment.Integration"/>
+    </target>
+</project>
+	

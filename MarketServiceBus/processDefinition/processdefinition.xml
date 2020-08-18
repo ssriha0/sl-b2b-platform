@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process-definition
+  xmlns=""  name="SL_OMS_ServiceOrderProcess">
+   <start-state name="start">
+      <event type="node-leave">
+         <action name="action1" class="com.servicelive.esb.process.actions.MyBPMActionHandler" config-type="bean"></action>
+      </event>
+      <transition name="" to="end1"></transition>
+   </start-state>
+
+<!--   
+   <node name="node1">
+      <action name="action2" class="org.jboss.soa.esb.services.jbpm.actionhandlers.EsbActionHandler">
+         <esbCategoryName>BPM_Orchestration_Service1</esbCategoryName>
+         <esbServiceName>Service1</esbServiceName>
+         <millisToWaitForResponse>5000</millisToWaitForResponse>
+         <jbpmToEsbVars>
+         	<mapping jbpm="theBody" esb="BODY_CONTENT" />
+         </jbpmToEsbVars>
+         <returnVars>
+         	<mapping jbpm="theBody" esb="BODY_CONTENT" />
+         </returnVars>
+      </action>
+      <transition name="" to="end1"></transition>
+   </node>
+-->
+   
+<!--    
+   <node name="node2">
+      <action name="action2" class="org.jboss.soa.esb.services.jbpm.actionhandlers.EsbActionHandler">
+         <esbCategoryName>BPM_Orchestration_Service2</esbCategoryName>
+         <esbServiceName>Service2</esbServiceName>
+         <millisToWaitForResponse>5000</millisToWaitForResponse>
+         <jbpmToEsbVars>
+         	<mapping jbpm="theBody" esb="BODY_CONTENT" />
+         </jbpmToEsbVars>
+         <returnVars>
+         	<mapping jbpm="theBody" esb="BODY_CONTENT" />
+         </returnVars>
+      </action>
+      <transition name="" to="node3"></transition>
+   </node>
+   
+   <node name="node3">
+      <action name="action2" class="org.jboss.soa.esb.services.jbpm.actionhandlers.EsbActionHandler">
+         <esbCategoryName>BPM_Orchestration_Service3</esbCategoryName>
+         <esbServiceName>Service3</esbServiceName>         
+         <millisToWaitForResponse>5000</millisToWaitForResponse>            
+         <jbpmToEsbVars>
+         	<mapping jbpm="theBody" esb="BODY_CONTENT" />
+         </jbpmToEsbVars>
+         <returnVars>
+         	<mapping jbpm="theBody" esb="BODY_CONTENT" />
+         </returnVars>
+      </action>
+      <transition name="" to="Send Results"></transition>
+   </node>
+
+   <node name="Send Results">
+      <event type="node-enter">
+         <action name="action1" class="com.servicelive.esb.process.actions.MyBPMActionHandler" config-type="bean"></action>
+      </event>
+      <action name="action2" class="org.jboss.soa.esb.services.jbpm.actionhandlers.EsbActionHandler">
+         <esbCategoryName>BPM_Orchestration_ResultsService</esbCategoryName>
+         <esbServiceName>ResultsService</esbServiceName>         
+         <millisToWaitForResponse>5000</millisToWaitForResponse>            
+         <jbpmToEsbVars>
+         	<mapping jbpm="theBody" esb="BODY_CONTENT" />
+         </jbpmToEsbVars>
+         <returnVars>
+         	<mapping jbpm="theBody" esb="BODY_CONTENT" />
+         </returnVars>
+      </action>
+   
+      <transition name="" to="end1"></transition>
+   </node>
+-->   
+   <end-state name="end1"></end-state>
+</process-definition>

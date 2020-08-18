@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+		                   http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		                   http://www.springframework.org/schema/tx
+		                   http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+		                   http://www.springframework.org/schema/context
+		                   http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"/>
+
+    <import resource="classpath:com/servicelive/marketplatform/dataSourceContext.xml"/>
+    <import resource="classpath:com/servicelive/marketplatform/service/sqlmapContext.xml"/>
+    <import resource="classpath:com/servicelive/marketplatform/service/marketPlatformContext.xml"/>
+    <import resource="classpath:com/servicelive/marketplatform/service/marketBackendContext.xml"/>
+    <import resource="classpath:com/servicelive/marketplatform/jms/messagingContext.xml" />
+    <import resource="classpath:spring/mainDataSource.xml"/>
+    <import resource="classpath:com/servicelive/common/serviceLiveCommonApplicationContext.xml"/>
+    <import resource="classpath:spring/routingRulesAppContext.xml" />
+
+    <bean id="marketPlatformRestService"
+          class="com.servicelive.marketplatform.notification.service.MarketPlatformRestService" scope="prototype">
+        <property name="marketPlatformProviderBO" ref="mktPlatformProviderBO"/>
+        <property name="marketPlatformBuyerBO" ref="mktPlatformBuyerBO"/>
+        <property name="marketPlatformNotificationBO" ref="notificationService"/>
+        <property name="marketPlatformRoutingRulesBO" ref="mktPlatformRoutingRulesBO"/>
+        <property name="marketPlatformCommonLookupBO" ref="mktPlatformCommonLookupBO"/>
+        <property name="marketPlatformPromoBO" ref="marketPlatformPromoBO"/>
+        <property name="marketPlatformDocumentServiceBO" ref="mktPlatformDocumentBO"/>
+    </bean>
+
+</beans>

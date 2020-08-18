@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="teamProfile">
+
+	<typeAlias alias="teamMemberVO" type="com.newco.marketplace.vo.provider.TeamMemberVO"/>
+	<typeAlias alias="backgroundCheckVO" type="com.newco.marketplace.vo.provider.BackgroundCheckVO"/>
+	<typeAlias alias="serviceProviderRegistrationVO" type="com.newco.marketplace.vo.provider.ServiceProviderRegistrationVO"/>
+	<typeAlias alias="pcontact" type="com.newco.marketplace.vo.provider.Contact"/>
+
+	<select id="teamProfile.queryList" parameterClass="java.lang.String" resultClass="teamMemberVO">
+        SELECT  c.last_name AS lastName,
+                c.first_name AS firstName,
+                c.title AS title,
+                c.phone_no AS phoneNumber
+        FROM    user_profile AS up,
+                vendor_resource AS vr,
+                contact AS c
+        WHERE   up.user_name=#userName#
+        AND     up.vendor_id=vr.vendor_id
+        AND     vr.contact_id=c.contact_id
+    </select>
+    <!-- Backgroundcheck query -->
+	<select id="teamProfile.queryEmail_old" parameterClass="backgroundCheckVO" resultClass="backgroundCheckVO">
+		SELECT c.first_name AS firstName, c.last_name AS lastName, c.email AS email, c.email_alt AS emailAlt
+		FROM contact c
+		WHERE c.contact_id = (SELECT v.contact_id FROM vendor_resource v where v.resource_id=#resourceId#)
+    </select>
+
+    <select id="teamProfile.queryEmail" parameterClass="backgroundCheckVO" resultClass="backgroundCheckVO">
+	    SELECT ct.first_name AS firstName,
+	       	   ct.last_name AS lastName,
+	           vr.user_name AS userName,
+	           vr.resource_id as resourceId,
+				CASE WHEN email IS null
+			     	THEN (select email from contact c1, vendor_resource v1
+						where c1.contact_id = v1.contact_id and v1.user_name = #provUserName#)
+			     	ELSE email
+				END as email,
+				CASE WHEN email_alt IS null
+			     	THEN (select email_alt from contact c2, vendor_resource v2
+						where c2.contact_id = v2.contact_id and v2.user_name = #provUserName#)
+			     	ELSE email_alt
+				END as emailAlt
+		FROM contact ct, vendor_resource vr
+		WHERE ct.contact_id = (SELECT v3.contact_id FROM vendor_resource v3 where v3.resource_id = #resourceId#)
+		AND vr.contact_id = ct.contact_id
+	</select>
+	<!-- Backgroundcheck confirm indicator query given resource ID-->
+	<select id="teamProfile.queryBackgroundConfirmInd" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+			SELECT bkgndchk.bg_confirm_ind AS backgroundConfirmInd FROM vendor_resource resource ,sl_pro_bkgnd_chk  bkgndchk WHERE 
+	resource.bg_check_id=bkgndchk.bg_check_id
+	AND resource.resource_id=#resourceId#
+    </select>
+    
+    
+    <!-- ServicePRovider Registration query MTedder@covansys.com-->
+	<select id="teamProfileServiceProvider.queryEmail" parameterClass="serviceProviderRegistrationVO" resultClass="serviceProviderRegistrationVO">
+		SELECT c.email AS email
+		FROM contact c
+		WHERE c.contact_id = (SELECT v.contact_id FROM vendor_resource v where v.resource_id=#resourceId#)
+    </select>
+
+	<select id="teamProfile.queryListForNonResource" parameterClass="java.lang.Integer" resultClass="teamMemberVO">
+        SELECT  c.last_name AS lastName,
+                c.first_name AS firstName,
+                c.title AS title,
+                c.phone_no AS phoneNumber,
+                'N/A' AS resourceState,
+                'N/A' AS backgroundCheckState,
+				vr.mkt_place_ind AS marketStatus,
+                owner_ind AS owner,
+                vr.resource_id AS resourceId,
+                IFNULL(vr.primary_ind,0) as primariInd,
+                IFNULL(vr.total_so_completed,0) As totalSoCompleted
+        FROM    vendor_resource AS vr,
+                contact AS c
+        WHERE   vr.vendor_id = #vendorId#
+        AND     vr.resource_ind = 0
+        AND     vr.contact_id = c.contact_id
+    </select>
+<!-- SL-19667 included background check recertication indicator -->
+	<select id="teamProfile.queryListForResource" parameterClass="java.lang.Integer" resultClass="teamMemberVO">
+		SELECT  c.last_name AS lastName,
+                c.first_name AS firstName,
+                c.title AS title,
+                c.phone_no AS phoneNumber,
+                IF(vr.resource_ind=0,'N/A',wf1.wf_state) AS resourceState,
+                IF(vr.resource_ind=0,'N/A',wf2.wf_state) AS backgroundCheckState,
+                IFNULL(vr.wf_state_id,0) AS resourceStateId,
+                IFNULL(vr.background_state_id,0) AS backgroundCheckStateId,
+				vr.mkt_place_ind AS marketStatus,
+                owner_ind AS owner,
+                vr.resource_id AS resourceId,
+                IFNULL(vr.primary_ind,0) AS primariInd,
+                IFNULL(vr.total_so_completed,0) AS totalSoCompleted,
+                  IF(a.resource_id IS NULL,0,1) AS backgroundCheckRecertify
+        FROM    contact AS c
+               JOIN vendor_resource AS vr
+               JOIN wf_states AS wf1
+               JOIN  wf_states AS wf2
+               
+               LEFT OUTER JOIN
+                (SELECT DISTINCT vr.resource_id FROM vendor_resource vr 
+                JOIN vendor_hdr vh ON(vr.vendor_id=vh.vendor_id) AND vh.wf_state_id IN (1,2,3,33,34)
+                JOIN spnet_hdr spn ON(spn.is_alias = 0)
+                JOIN spnet_provider_firm_state f ON(vr.vendor_id=f.provider_firm_id AND spn.spn_id=f.spn_id)
+                JOIN spnet_approval_criteria cr ON(cr.spn_id=f.spn_id AND cr.criteria_id=29)
+                JOIN sl_pro_bkgnd_chk bkgnd ON( bkgnd.bg_check_id=vr.bg_check_id
+             AND vr.wf_state_id NOT IN (21,31,32) AND vr.background_state_id =9 AND bkgnd.overall!='P' AND DATEDIFF(bkgnd.reverification_date,NOW())<![CDATA[<=]]>30)
+             AND f.provider_wf_state IN ('PF SPN MEMBER','PF FIRM OUT OF COMPLIANCE','PF SPN APPLICANT','PF SPN MEMBERSHIP UNDER REVIEW')
+             WHERE vr.vendor_id = #vendorId#) a ON(a.resource_id=vr.resource_id) 
+              
+        WHERE   vr.vendor_id = #vendorId#
+        AND     vr.contact_id = c.contact_id
+        AND     vr.resource_id = vr.resource_id
+        AND     vr.wf_state_id = wf1.wf_state_id
+        AND     vr.background_state_id = wf2.wf_state_id
+        AND     vr.delete_ind IS NULL
+        ORDER BY LTRIM(c.last_name) ASC,LTRIM(c.first_name) asc
+    </select>
+
+
+		<select id="teamProfile.getTabStatusForResources" parameterClass="teamMemberVO" resultClass="teamMemberVO">
+			select
+			vr.resource_id as resourceId,
+			c.last_name as lastName,
+			c.first_name as firstName,
+			c.mi as middleInitial,
+			var.General as general,
+			var.Market as market,
+			var.Skills as skills,
+			var.LC as lc,
+			var.Background as background,
+			var.Terms as terms
+			from vendor_resource vr, contact c,
+			(select act_link_key as resource_id,
+			MAX(IF(activity_id=7,act_completed,-1)) as General,
+			MAX(IF(activity_id=8,act_completed,-1)) as Market,
+			MAX(IF(activity_id=9,act_completed,-1)) as Skills,
+			MAX(IF(activity_id=10,act_completed,-1))as LC,
+			MAX(IF(activity_id=11,act_completed,-1))as Background,
+			MAX(IF(activity_id=12,act_completed,-1))as Terms
+			from vendor_activity_registry va, vendor_resource vr
+			where vr.vendor_id = #vendorId# and
+			vr.resource_id = va.act_link_key
+			group by act_link_key) var
+			where   vr.contact_id = c.contact_id
+			and     vr.resource_id = var.resource_id
+			and     vr.vendor_id = #vendorId#
+			and     vr.delete_ind IS NULL
+			order by vr.resource_id
+		</select>
+
+    <!-- MTedder@covansys.com - added for update of email to contact table for backgroundcheck -->
+    	<update id="contact.updateEmail" parameterClass="backgroundCheckVO">
+		UPDATE contact
+		<dynamic prepend="SET">
+			<isNotNull prepend=", " property="email">email = #email#</isNotNull>
+			<isNotNull prepend=", " property="email">email_alt = #emailAlt#</isNotNull>
+		</dynamic>
+		WHERE contact_id = (SELECT v.contact_id FROM vendor_resource v where v.resource_id=#resourceId#)
+	</update>
+    <!-- MTedder@covansys.com - added for update of bg_confirm_ind to vendor_resource table for backgroundcheck page -->
+    	<update id="teamProfile.updateBackgroundConfirmInd" parameterClass="backgroundCheckVO">
+		UPDATE vendor_resource
+		<dynamic prepend="SET">
+			<isNotNull prepend=", " property="backgroundConfirmInd">bg_confirm_ind = #backgroundConfirmInd#</isNotNull>
+		</dynamic>
+		WHERE resource_id=#resourceId#
+	</update>
+
+	<select id="teamProfile.queryForBackgroundState" parameterClass="backgroundCheckVO" resultClass="java.lang.Integer">
+        SELECT background_state_id from vendor_resource
+		where  resource_id =#resourceId#
+    </select>
+    
+   	<sql id="dynamic.where.for.filter">
+        <isNotNull property="flName" prepend="AND">
+				(UPPER(c.last_name) like TRIM(UPPER('%$flName$%')) OR UPPER(c.first_name) like TRIM(UPPER('%$flName$%')))
+		</isNotNull>
+		<isNotNull property="userId" prepend="AND">
+				 vr.resource_id = #userId#
+		</isNotNull> 				
+	</sql>
+    
+    
+    <select id="teamProfile.getFilterCount.query" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 	count(DISTINCT resourceId)	FROM (
+		SELECT  c.last_name AS lastName,
+                c.first_name AS firstName,
+                c.title AS title,
+                c.phone_no AS phoneNumber,
+                IF(vr.resource_ind=0,'N/A',wf1.wf_state) AS resourceState,
+                IF(vr.resource_ind=0,'N/A',wf2.wf_state) AS backgroundCheckState,
+                IFNULL(vr.wf_state_id,0) AS resourceStateId,
+                IFNULL(vr.background_state_id,0) AS backgroundCheckStateId,
+				vr.mkt_place_ind AS marketStatus,
+                owner_ind AS owner,
+                vr.resource_id AS resourceId,
+                IFNULL(vr.primary_ind,0) AS primariInd,
+                IFNULL(vr.total_so_completed,0) AS totalSoCompleted,
+                  IF(a.resource_id IS NULL,0,1) AS backgroundCheckRecertify
+        FROM    contact AS c
+               JOIN vendor_resource AS vr
+               JOIN wf_states AS wf1
+               JOIN  wf_states AS wf2
+               
+               LEFT OUTER JOIN
+                (SELECT DISTINCT vr.resource_id FROM vendor_resource vr 
+                JOIN vendor_hdr vh ON(vr.vendor_id=vh.vendor_id) AND vh.wf_state_id IN (1,2,3,33,34)
+                JOIN spnet_hdr spn ON(spn.is_alias = 0)
+                JOIN spnet_provider_firm_state f ON(vr.vendor_id=f.provider_firm_id AND spn.spn_id=f.spn_id)
+                JOIN spnet_approval_criteria cr ON(cr.spn_id=f.spn_id AND cr.criteria_id=29)
+                JOIN sl_pro_bkgnd_chk bkgnd ON( bkgnd.bg_check_id=vr.bg_check_id
+             AND vr.wf_state_id NOT IN (21,31,32) AND vr.background_state_id =9 AND bkgnd.overall!='P' AND DATEDIFF(bkgnd.reverification_date,NOW())<![CDATA[<=]]>30)
+             AND f.provider_wf_state IN ('PF SPN MEMBER','PF FIRM OUT OF COMPLIANCE','PF SPN APPLICANT','PF SPN MEMBERSHIP UNDER REVIEW')
+             WHERE vr.vendor_id = #vendorId#) a ON(a.resource_id=vr.resource_id) 
+              
+        WHERE   vr.vendor_id = #vendorId#
+        AND     vr.contact_id = c.contact_id
+        AND 	vr.wf_state_id = 6
+        AND     vr.wf_state_id = wf1.wf_state_id
+        AND     vr.background_state_id = wf2.wf_state_id
+        AND     vr.delete_ind IS NULL
+        	
+			<include refid="dynamic.where.for.filter"/>
+				
+		) b
+	</select>
+    
+    <select id="teamProfile.queryListForResourceWithPagination" parameterClass="java.util.HashMap" resultClass="teamMemberVO">
+		SELECT  c.last_name AS lastName,
+                c.first_name AS firstName,
+                c.title AS title,
+                c.phone_no AS phoneNumber,
+                IF(vr.resource_ind=0,'N/A',wf1.wf_state) AS resourceState,
+                IF(vr.resource_ind=0,'N/A',wf2.wf_state) AS backgroundCheckState,
+                IFNULL(vr.wf_state_id,0) AS resourceStateId,
+                IFNULL(vr.background_state_id,0) AS backgroundCheckStateId,
+				vr.mkt_place_ind AS marketStatus,
+                owner_ind AS owner,
+                vr.resource_id AS resourceId,
+                IFNULL(vr.primary_ind,0) AS primariInd,
+                IFNULL(vr.total_so_completed,0) AS totalSoCompleted,
+                  IF(a.resource_id IS NULL,0,1) AS backgroundCheckRecertify
+        FROM    contact AS c
+               JOIN vendor_resource AS vr
+               JOIN wf_states AS wf1
+               JOIN  wf_states AS wf2
+               
+               LEFT OUTER JOIN
+                (SELECT DISTINCT vr.resource_id FROM vendor_resource vr 
+                JOIN vendor_hdr vh ON(vr.vendor_id=vh.vendor_id) AND vh.wf_state_id IN (1,2,3,33,34)
+                JOIN spnet_hdr spn ON(spn.is_alias = 0)
+                JOIN spnet_provider_firm_state f ON(vr.vendor_id=f.provider_firm_id AND spn.spn_id=f.spn_id)
+                JOIN spnet_approval_criteria cr ON(cr.spn_id=f.spn_id AND cr.criteria_id=29)
+                JOIN sl_pro_bkgnd_chk bkgnd ON( bkgnd.bg_check_id=vr.bg_check_id
+             AND vr.wf_state_id NOT IN (21,31,32) AND vr.background_state_id =9 AND bkgnd.overall!='P' AND DATEDIFF(bkgnd.reverification_date,NOW())<![CDATA[<=]]>30)
+             AND f.provider_wf_state IN ('PF SPN MEMBER','PF FIRM OUT OF COMPLIANCE','PF SPN APPLICANT','PF SPN MEMBERSHIP UNDER REVIEW')
+             WHERE vr.vendor_id = #vendorId#) a ON(a.resource_id=vr.resource_id) 
+              
+        WHERE   vr.vendor_id = #vendorId#
+        AND     vr.contact_id = c.contact_id
+        AND 	vr.wf_state_id = 6
+        AND     vr.wf_state_id = wf1.wf_state_id
+        AND     vr.background_state_id = wf2.wf_state_id
+        AND     vr.delete_ind IS NULL
+        	
+			<include refid="dynamic.where.for.filter"/>
+			<isNotEmpty property="sortColumnName">
+				ORDER BY TRIM(c.first_name) $sortOrder$, TRIM(c.last_name) $sortOrder$, vr.resource_id $sortOrder$
+			</isNotEmpty>
+			<isNotNull property="startIndex" prepend="LIMIT ">
+				#startIndex#
+			</isNotNull>
+			<isNotNull property="numberOfRecords" prepend=",  ">
+				#numberOfRecords#
+			</isNotNull>
+    </select>
+    
+</sqlMap>

@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="powerauditor">
+	<typeAlias alias="auditcountsResultVO"
+		type="com.newco.marketplace.vo.provider.PowerAuditorSearchResultVO" />
+	<typeAlias alias="auditcountsReasonCdVO"
+		type="com.newco.marketplace.vo.provider.PowerAuditorSearchResultVO" />
+	<typeAlias alias="auditWorkflowSearchVO"
+		type="com.newco.marketplace.vo.provider.PowerAuditorSearchVO" />
+	<typeAlias alias="auditHistoryVO"
+		type="com.newco.marketplace.dto.vo.audit.AuditHistoryVO" />
+	<typeAlias alias="auditNotesVO"
+		type="com.newco.marketplace.dto.vo.audit.AuditNotesVO" />
+	<typeAlias alias="auditVo" 	type="com.newco.marketplace.vo.audit.AuditVO" />
+	<typeAlias alias="reasonCdAuditVo" type="com.newco.marketplace.vo.audit.AuditVO" />
+	<typeAlias alias="paVendorInfoVO"
+		type="com.newco.marketplace.vo.provider.PowerAuditorVendorInfoVO" />
+	<typeAlias alias="auditTimeVo" 	type="com.newco.marketplace.vo.audit.AuditTimeVO" />
+	 <!-- Start of mappings for the filters  -->
+
+	 <!-- for all counts we need atleast whats the excluded workflow -->
+	<select id="powerauditor.counts.query" parameterClass="auditWorkflowSearchVO"
+		resultClass="auditcountsResultVO">
+		Select count(*) as auditableItems , AVG(DATEDIFF(NOW(),
+		modified_date)) as averageAge, wf_entity as workflowQueueName
+	 	from  vw_provider_audit_tasks
+		where ( reviewed_by is null OR wf_state = 'Pending Approval' ) AND (
+		(review_date is null) OR (review_date  <![CDATA[< ]]>DATE_SUB(NOW(),INTERVAL
+		30 MINUTE ) ) )
+	 	<isNotEmpty property="excludedQueueNames" prepend=" AND " >
+	 	 wf_entity not in
+	 	<iterate property="excludedQueueNames" open="(" close=")"
+			conjunction=",">
+			#excludedQueueNames[]#
+		</iterate>
+		</isNotEmpty>
+	 	<isNotNull property="primaryIndustry" >
+			<isGreaterThan prepend=" AND " property="primaryIndustry"
+				compareValue="-1">vendor_primary_industry = #primaryIndustry#</isGreaterThan>
+			</isNotNull>
+
+		<isNotNull property="roleType" >
+		  <isEqual property="roleType" compareValue="1">
+		  	<isNotNull property="credentialType"  >
+					<isGreaterThan prepend=" AND " property="credentialType"
+						compareValue="-1">
+					(
+						 cred_type_id = #credentialType#
+					<isNotNull property="categoryOfCredential">
+							<isGreaterThan prepend=" AND " property="categoryOfCredential"
+								compareValue="-1">cred_category_id = #categoryOfCredential#</isGreaterThan>
+					</isNotNull>
+					)
+				</isGreaterThan>
+			</isNotNull>
+		  </isEqual>
+		  <isEqual property="roleType" compareValue="2" >
+		  	<isNotNull property="credentialType"  >
+					<isGreaterThan prepend=" AND " property="credentialType"
+						compareValue="-1">
+					(
+						 res_cred_type_id = #credentialType#
+						<isNotNull property="categoryOfCredential">
+							<isGreaterThan prepend=" AND " property="categoryOfCredential"
+								compareValue="-1">res_cred_category_id = #categoryOfCredential#</isGreaterThan>
+						</isNotNull>
+					)
+				</isGreaterThan>
+			</isNotNull>
+		  </isEqual>
+
+		</isNotNull>
+
+		 <isNull property="roleType" >
+			<isNotNull property="credentialType"  >
+				<isGreaterThan prepend=" AND " property="credentialType"
+					compareValue="-1">
+					(
+						 cred_type_id = #credentialType#
+					<isNotNull property="categoryOfCredential">
+						<isGreaterThan prepend=" AND " property="categoryOfCredential"
+							compareValue="-1">cred_category_id = #categoryOfCredential#</isGreaterThan>
+					</isNotNull>
+					)
+				</isGreaterThan>
+			</isNotNull>
+		 </isNull>
+		 
+		 <isNotNull property="firmId" prepend=" AND ">
+						 vendor_id = #firmId#
+		 </isNotNull>
+		group by  workflowQueueName
+	 </select>
+
+	<select id="powerauditor.fetchnext.credential.query"
+		parameterClass="auditWorkflowSearchVO" resultClass="auditVo">
+	 	 Select audit_task_id as auditTaskId,
+	 	 		audit_link_id as auditLinkId,
+				audit_key_id as  auditKeyId,
+		    vendor_id as vendorId,
+		    resource_id  as resourceId,
+		    business_name as auditBusinessName,
+		    review_date as reviewDate,
+		    created_date as createdDate,
+		    modified_date as modifiedDate,
+		    reviewed_by as reviewedBy,
+		    wf_state_id as wfStateId,
+		    wf_entity as wfEntity,
+		    wf_state as wfState,
+		    vendor_primary_industry as vendorPrimaryIndustryId,
+		    cred_type_id as vendorCredentialTypeId,
+		    cred_category_id as vendorCredentialCategoryTypeId,
+		    res_cred_type_id as resourceCredentialTypeId,
+		    res_cred_category_id as resourceCredentialCategoryTypeId
+		 from vw_provider_audit_tasks
+		where ( reviewed_by is null OR wf_state = 'Pending Approval' ) AND (
+		(review_date is null) OR (review_date  <![CDATA[< ]]>DATE_SUB(NOW(),INTERVAL
+		30 MINUTE ) ) )
+		     AND wf_entity = #workFlowQueue#
+			<isNotNull property="primaryIndustry" >
+			<isGreaterThan prepend=" AND " property="primaryIndustry"
+				compareValue="-1">vendor_primary_industry = #primaryIndustry#</isGreaterThan>
+			</isNotNull>
+					<isNotNull property="roleType" >
+		  <isEqual property="roleType" compareValue="1">
+		  	<isNotNull property="credentialType"  >
+					<isGreaterThan prepend=" AND " property="credentialType"
+						compareValue="-1">
+					(
+						 cred_type_id = #credentialType#
+					<isNotNull property="categoryOfCredential">
+							<isGreaterThan prepend=" AND " property="categoryOfCredential"
+								compareValue="-1">cred_category_id = #categoryOfCredential#</isGreaterThan>
+					</isNotNull>
+					)
+				</isGreaterThan>
+			</isNotNull>
+		  </isEqual>
+		  <isEqual property="roleType" compareValue="2">
+		  	<isNotNull property="credentialType"  >
+					<isGreaterThan prepend=" AND " property="credentialType"
+						compareValue="-1">
+					(
+						 res_cred_type_id = #credentialType#
+						<isNotNull property="categoryOfCredential">
+							<isGreaterThan prepend=" AND " property="categoryOfCredential"
+								compareValue="-1">res_cred_category_id = #categoryOfCredential#</isGreaterThan>
+						</isNotNull>
+					)
+				</isGreaterThan>
+			</isNotNull>
+		  </isEqual>
+
+		</isNotNull>
+
+		 <isNull property="roleType" >
+			<isNotNull property="credentialType"  >
+				<isGreaterThan prepend=" AND " property="credentialType"
+					compareValue="-1">
+					(
+						 cred_type_id = #credentialType#
+					<isNotNull property="categoryOfCredential">
+						<isGreaterThan prepend=" AND " property="categoryOfCredential"
+							compareValue="-1">cred_category_id = #categoryOfCredential#</isGreaterThan>
+					</isNotNull>
+					)
+				</isGreaterThan>
+			</isNotNull>
+		 </isNull>
+		 
+		  <isNotNull property="firmId" prepend=" AND ">
+						 vendor_id = #firmId#
+		  </isNotNull>
+		 order by modified_date
+     	 LIMIT 1
+	 </select>
+
+	<select id="vendor_audit_notes.query" parameterClass="auditNotesVO"
+		resultClass="auditNotesVO">
+		 Select note_id as id,
+			vendor_id as vendorId,
+			note as description,
+			modified_by as auditor,
+			modified_date as modifiedDate
+		from vendor_notes
+		<dynamic prepend="WHERE">
+			<isNotNull property="vendorId" prepend="AND">
+						vendor_id = #vendorId#
+			</isNotNull>
+			<isNotNull property="resourceId" prepend="AND">
+				vendor_id = (Select vendor_id from vendor_resource where resource_id =
+				#resourceId#)
+			</isNotNull>
+		</dynamic>
+		order by modified_date desc
+	 </select>
+
+
+	<select id="vendor_audit_history.query" parameterClass="auditHistoryVO"
+		resultClass="auditHistoryVO">
+	 	Select
+			h.vendor_id as vendorId,
+			h.modified_date as modifiedDate,
+			h.review_date as reviewedDate,
+			h.wf_state as status,
+			r.reason_cd,c.reason_name as reasonCode,
+			c.internal_descr as description,
+			h.reviewed_by as auditor,
+			h.wf_entity as type,
+			h.review_comments as reviewComments
+		from audit_task_history h
+		left outer join audit_task_reason_cd_history r on h.audit_task_history_id
+		= r.audit_task_history_id
+			left outer join lu_audit_reason_codes c on c.reason_cd = r.reason_cd
+		where
+		reviewed_by is not null
+			<isNotNull property="vendorId" prepend=" AND " >
+						vendor_id = #vendorId#
+			</isNotNull>
+			<isNotNull property="resourceId" prepend=" AND " >
+						resource_id = #resourceId#
+			</isNotNull>
+		order by modified_date desc
+	 </select>
+
+
+	<select id="vendor_info_for_audit.query" parameterClass="java.lang.Integer"
+		resultClass="paVendorInfoVO">
+	 	select v.vendor_id as vendorId,
+		    v.business_name as businessName,
+		    v.bus_phone_no as businessPhoneNumber,
+		    p_vr.contact_id as primaryCopntactId,
+		    p_contact.last_name as primaryAdminLastName,
+		    p_contact.first_name as primaryAdminFirstName,
+		    p_contact.phone_no as primaryAdminPhoneNumber,
+		    p_vr.resource_id as primaryAdminId,
+		    loc.city as vendorCity,
+		    loc.state_cd as vendorState
+		from vendor_hdr  v
+		join vendor_resource p_vr on (p_vr.vendor_id = v.vendor_id and
+		p_vr.primary_ind = 1 )
+		    join contact p_contact  on ( p_contact.contact_id = p_vr.contact_id)
+		join vendor_location vloc on ( v.vendor_id = vloc.vendor_id ) join
+		location loc on ( loc.locn_id = vloc.locn_id )
+		where v.vendor_id =
+		#vendorId#
+		limit 1
+	 </select>
+
+	<select id="powerauditor.reasoncd.counts.query" parameterClass="auditWorkflowSearchVO"
+		resultClass="auditcountsReasonCdVO">
+		SELECT COUNT(*) AS auditableItems , AVG(DATEDIFF(NOW(),
+		modified_date)) AS averageAge, la.reason_name AS workflowQueueName
+		FROM vw_provider_audit_tasks vw
+		JOIN audit_task_reason_cd atr ON (vw.audit_task_id=atr.audit_task_id)
+		JOIN lu_audit_reason_codes la ON (la.reason_cd=atr.reason_cd)
+		WHERE ( reviewed_by IS NULL OR wf_state = 'Approved')AND la.reason_name IN
+		('10 Day Exception','Endorsement','Cancellation Notice')
+		<isNotEmpty property="excludedQueueNames" prepend=" AND ">
+			wf_entity NOT IN
+			<iterate property="excludedQueueNames" open="(" close=")"
+				conjunction=",">
+				#excludedQueueNames[]#
+			</iterate>
+		</isNotEmpty>
+		<isNotNull property="primaryIndustry">
+			<isGreaterThan prepend=" AND " property="primaryIndustry"
+				compareValue="-1">vendor_primary_industry = #primaryIndustry#</isGreaterThan>
+		</isNotNull>
+
+		<isNotNull property="roleType">
+			<isEqual property="roleType" compareValue="1">
+				<isNotNull property="credentialType">
+					<isGreaterThan prepend=" AND " property="credentialType"
+						compareValue="-1">
+						(
+						cred_type_id = #credentialType#
+						<isNotNull property="categoryOfCredential">
+							<isGreaterThan prepend=" AND " property="categoryOfCredential"
+								compareValue="-1">cred_category_id = #categoryOfCredential#</isGreaterThan>
+						</isNotNull>
+						)
+					</isGreaterThan>
+				</isNotNull>
+			</isEqual>
+			<isEqual property="roleType" compareValue="2">
+				<isNotNull property="credentialType">
+					<isGreaterThan prepend=" AND " property="credentialType"
+						compareValue="-1">
+						(
+						res_cred_type_id = #credentialType#
+						<isNotNull property="categoryOfCredential">
+							<isGreaterThan prepend=" AND " property="categoryOfCredential"
+								compareValue="-1">res_cred_category_id = #categoryOfCredential#</isGreaterThan>
+						</isNotNull>
+						)
+					</isGreaterThan>
+				</isNotNull>
+			</isEqual>
+
+		</isNotNull>
+
+		<isNull property="roleType">
+			<isNotNull property="credentialType">
+				<isGreaterThan prepend=" AND " property="credentialType"
+					compareValue="-1">
+					(
+					cred_type_id = #credentialType#
+					<isNotNull property="categoryOfCredential">
+						<isGreaterThan prepend=" AND " property="categoryOfCredential"
+							compareValue="-1">cred_category_id = #categoryOfCredential#</isGreaterThan>
+					</isNotNull>
+					)
+				</isGreaterThan>
+			</isNotNull>
+		</isNull>
+		<isNotNull property="firmId" prepend=" AND ">
+						 vendor_id = #firmId#
+		 </isNotNull>
+		GROUP BY workflowQueueName
+	</select>
+	
+<select id="powerauditor.reasoncd.fetchnext.credential.query"
+		parameterClass="auditWorkflowSearchVO" resultClass="reasonCdAuditVo">
+		Select v.audit_task_id as auditTaskId,
+		v.audit_link_id as auditLinkId,
+		v.audit_key_id as auditKeyId,
+		v.vendor_id as vendorId,
+		v.resource_id as resourceId,
+		v.business_name as auditBusinessName,
+		v.review_date as reviewDate,
+		v.created_date as createdDate,
+		v.modified_date as modifiedDate,
+		v.reviewed_by as reviewedBy,
+		v.wf_state_id as wfStateId,
+		v.wf_entity as wfEntity,
+		v.wf_state as wfState,
+		v.vendor_primary_industry as vendorPrimaryIndustryId,
+		v.cred_type_id as vendorCredentialTypeId,
+		v.cred_category_id as vendorCredentialCategoryTypeId,
+		v.res_cred_type_id as resourceCredentialTypeId,
+		v.res_cred_category_id as resourceCredentialCategoryTypeId
+		from vw_provider_audit_tasks v
+		JOIN audit_task_reason_cd atr ON (v.audit_task_id=atr.audit_task_id)
+		JOIN lu_audit_reason_codes la ON (la.reason_cd =atr.reason_cd) 
+		where ( v.reviewed_by is null OR v.wf_state = 'Approved' ) 
+		AND la.reason_name  = #workFlowQueue#
+		<isNotNull property="primaryIndustry">
+			<isGreaterThan prepend=" AND " property="primaryIndustry"
+				compareValue="-1">vendor_primary_industry = #primaryIndustry#</isGreaterThan>
+		</isNotNull>
+		<isNotNull property="roleType">
+			<isEqual property="roleType" compareValue="1">
+				<isNotNull property="credentialType">
+					<isGreaterThan prepend=" AND " property="credentialType"
+						compareValue="-1">
+						(
+						cred_type_id = #credentialType#
+						<isNotNull property="categoryOfCredential">
+							<isGreaterThan prepend=" AND " property="categoryOfCredential"
+								compareValue="-1">cred_category_id = #categoryOfCredential#</isGreaterThan>
+						</isNotNull>
+						)
+					</isGreaterThan>
+				</isNotNull>
+			</isEqual>
+			<isEqual property="roleType" compareValue="2">
+				<isNotNull property="credentialType">
+					<isGreaterThan prepend=" AND " property="credentialType"
+						compareValue="-1">
+						(
+						res_cred_type_id = #credentialType#
+						<isNotNull property="categoryOfCredential">
+							<isGreaterThan prepend=" AND " property="categoryOfCredential"
+								compareValue="-1">res_cred_category_id = #categoryOfCredential#</isGreaterThan>
+						</isNotNull>
+						)
+					</isGreaterThan>
+				</isNotNull>
+			</isEqual>
+
+		</isNotNull>
+
+		<isNull property="roleType">
+			<isNotNull property="credentialType">
+				<isGreaterThan prepend=" AND " property="credentialType"
+					compareValue="-1">
+					(
+					cred_type_id = #credentialType#
+					<isNotNull property="categoryOfCredential">
+						<isGreaterThan prepend=" AND " property="categoryOfCredential"
+							compareValue="-1">cred_category_id = #categoryOfCredential#</isGreaterThan>
+					</isNotNull>
+					)
+				</isGreaterThan>
+			</isNotNull>
+		</isNull>
+		 
+		  <isNotNull property="firmId" prepend=" AND ">
+						 vendor_id = #firmId#
+		  </isNotNull>
+		order by modified_date
+		LIMIT 1
+	</select>
+	 <!-- End of mappings for the claim queries  -->
+	 
+	 
+	  <insert id="insertAuditLicInsTime.insert" parameterClass="auditTimeVo">
+	      INSERT INTO audit_license_insurance_logging
+			(agent_id,
+			audited_user_name, 
+			audit_task_id,
+			start_time,
+			end_time,
+			created_date,
+			modified_date,
+			credential_id,
+			start_action,
+			end_action
+			)			
+			values(#agentId#,
+				   #agentName#,
+				   #auditTaskId#,
+				   #startTime#,
+				   #endTime#,
+				   NOW(),
+				   NOW(),
+				   #credId#,
+				   #startAction#,
+				   #endAction#
+				  )	
+				   <selectKey resultClass="int">
+          		  SELECT last_insert_id() as vendorCredId
+       			   </selectKey>  			   
+		   
+	   </insert>
+	   
+	       
+	<update id="updateAuditLicInsTime.update" parameterClass="auditTimeVo">
+			UPDATE audit_license_insurance_logging
+		<dynamic prepend="set">		
+			<isNotNull prepend=", " property="endTime">end_time = #endTime# ,modified_date=NOW(),end_action = #endAction#<isNotNull property="auditTaskId"> <isGreaterThan property="auditTaskId" compareValue="0" >,audit_task_id=#auditTaskId#</isGreaterThan></isNotNull><isNotNull property="credId">,credential_id=#credId#</isNotNull></isNotNull>		
+		</dynamic>
+		where audit_license_insurance_logging_id = #auditTimeLoggingId#
+			</update>
+	
+	<select id="startTime.provider.auditTaskId" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT * FROM audit_task WHERE resource_id=#resourceId# AND audit_key_id=#resourceCredId# AND audit_link_id=#auditLinkId#  limit 1
+	</select>
+	
+	<select id="startTime.vendor.auditTaskId" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT * FROM audit_task WHERE vendor_id=#vendorId# AND audit_key_id=#vendorCredId# AND audit_link_id=#auditLinkId#  limit 1
+	</select>
+	
+	<select id="valid.firmId.auditTask" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(*) FROM vendor_hdr WHERE vendor_id=#firmId#
+	</select>
+	<select id="credential.id.auditTask.vendor" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">		
+		SELECT vc.vendor_cred_id FROM vendor_credentials vc JOIN audit_task ad ON (vc.vendor_cred_id=ad.audit_key_id)
+		WHERE vc.vendor_id = #id# AND vc.cred_type_id =  #credTypeId#  AND vc.cred_category_id = #credCategoryId# AND ad.audit_task_id = #auditTaskId# ;
+	</select>
+	<select id="credential.id.auditTask.resource" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT rc.resource_cred_id FROM resource_credentials rc JOIN audit_task ad ON (rc.resource_cred_id=ad.audit_key_id)
+		WHERE rc.resource_id = #id# AND rc.cred_type_id =  #credTypeId#  AND rc.cred_category_id = #credCategoryId# AND ad.audit_task_id = #auditTaskId# ;
+	</select>
+</sqlMap>

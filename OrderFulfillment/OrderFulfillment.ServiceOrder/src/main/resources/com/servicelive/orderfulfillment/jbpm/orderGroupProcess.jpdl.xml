@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process name="orderGroupProcess" xmlns="http://jbpm.org/4.0/jpdl">
+    <on event="start">
+        <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy" propagation="enabled">
+            <field name="commandList"><string value="TracingCmd(starting)"/></field>
+        </event-listener>
+    </on>
+
+    <on event="end">
+        <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+            <field name="commandList"><string value="GroupProcessEndCmd()"/></field>
+        </event-listener>
+    </on>
+
+	<start g="25,101,48,48">
+	  <transition to="GroupQueue">
+		<event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+               <field name="commandList"><string value="SetAutoRouteForGroupCmd();SetGroupQueueTimerCmd();"/></field>
+           </event-listener>
+	  </transition>
+	</start>
+
+	<state g="200,100,107,52" name="GroupQueue">
+        <on event="start">
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList">
+                    <string value="RemoveFieldsCmd(provider_list,provider_list_size);"/>
+                </field>
+            </event-listener>
+        </on>
+		<transition g="-29,-15" name="ADD_ORDER_TO_GROUP" to="GroupQueue" >
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="GroupPricingCmd()"/></field>
+            </event-listener>
+        </transition>
+        <transition g="-39,-15" name="ADD_ORDERS_TO_GROUP" to="GroupQueue">
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="GroupPricingCmd();"/></field>
+            </event-listener>
+        </transition>
+        <transition g="-29,-15" name="CANCEL_ORDER" to="GroupProcessHasOrdersFromQueue">
+			<event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="CancelOrderGroupCmd(noSpendLimit);"/></field>
+            </event-listener>
+        </transition>
+        <transition g="-29,-15" name="SL_CANCEL_ORDER" to="GroupProcessHasOrdersFromQueue">
+			<event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="CancelOrderGroupCmd(noSpendLimit);"/></field>
+            </event-listener>
+        </transition>
+        <transition g="-29,-15" name="INTEGRATION_CANCEL_ORDER" to="GroupProcessHasOrdersFromQueue">
+			<event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="CancelOrderGroupCmd(noSpendLimit);"/></field>
+            </event-listener>
+        </transition>
+        <transition g="-29,-15" name="POST_ORDER" to="DisableTierRouteTimerActivity"/>
+        <transition g="-29,-15" name="UPDATE_BATCH_ORDER" to="GroupProcessHasOrdersFromQueue">
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="BatchUpdateCmd(noSpendLimit)"/></field>
+            </event-listener>
+        </transition>
+        <transition g="-29,-15" name="EDIT_ORDER" to="GroupProcessHasOrdersToPosted">
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="EditOrderGroupCmd(post,noSpendLimit);"/></field>
+            </event-listener>
+        </transition>
+        <transition g="-25,-56" name="REMOVE_ALL_ORDERS_FROM_GROUP" to="GroupQueue">
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="RemoveOrderGroupCmd(noSpendLimit);"/></field>
+            </event-listener>
+        </transition>
+        <transition g="-25,-56" name="END_FOR_GROUP_ORDERS" to="Deleted"/>
+   		<transition g="-29,-15" name="expireQueue" to="searchFoundProvidersChecks">
+			<timer duedate="#{groupQueueExpirationDate}"/>
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="SetGroupAutoTierRoutingTime();SearchProvidersForAutoRouteCmd()"/></field>
+            </event-listener>
+		</transition>
+	</state>
+
+    <decision g="116,52,48,48" name="GroupProcessHasOrdersFromQueue">
+        <transition g="23,45:-23,50" name="moreThanOneOrder" to="GroupQueue" >
+			<condition expr="#{NumberOfServiceOrder &gt; 1}" />
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="GroupPricingCmd();"/></field>
+            </event-listener>
+        </transition>
+        <transition g="23,45:-23,50" name="OneOrder" to="GroupQueue" >
+			<condition expr="#{NumberOfServiceOrder == 1}" />
+        </transition>
+        <transition g="142,145:-24,-20" name="ZeroOrder" to="Deleted" >
+			<condition expr="#{NumberOfServiceOrder == 0}" />
+        </transition>
+    </decision>
+
+    <decision g="116,52,48,48" name="GroupProcessHasOrdersToPosted">
+        <transition g="23,45:-23,50" name="true" to="DisableTierRouteTimerActivity" >
+			<condition expr="#{NumberOfServiceOrder &gt; 1}" />
+        </transition>
+        <transition g="142,145:-24,-20" name="OneOrder" to="GroupQueue" >
+        	<condition expr="#{NumberOfServiceOrder == 1}" /><!-- because post order will come in separately -->
+        </transition>
+        <transition g="142,145:-24,-20" name="false" to="Deleted" >
+			<condition expr="#{NumberOfServiceOrder == 0}" />
+        </transition>
+    </decision>
+<!-- 
+     <decision g="116,52,48,48" name="searchFoundProvidersChecks">
+        <transition name="HasProviders" to="AlertToProvidersWithPostActivity">
+            <condition expr="#{provider_list_size > 0}"/>
+        </transition>
+        <transition name="NoProviders" to="DisableTierRouteTimerActivity">
+            <condition expr="#{provider_list_size == 0}"/>
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="UpdateSubstatusGroupCmd(NO_PROVIDERS);"/></field>
+            </event-listener>
+        </transition>
+    </decision> --> 
+    
+     <decision g="116,52,48,48" name="searchFoundProvidersChecks">
+        <transition name="HasProviders" to="AlertToProvidersWithPostActivity">
+            <condition expr="#{provider_list_size > 0}"/>
+        </transition>
+        <transition name="NoProviders" to="checkForUpdateInGroup">
+            <condition expr="#{provider_list_size == 0}"/>
+        </transition>
+    </decision>
+      <decision g="116,52,48,48" name="checkForUpdateInGroup">
+        <handler expr="${transitionForGroupUpdateCheck}"></handler>
+        <transition name="true" to="UnGroupDraftOrder">
+         	<event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="RemoveDraftFromGroupCmd(spendLimit);"/></field>
+            </event-listener>
+        </transition>
+        <!-- for single orders and orders getting grouped in group queue and afterwards getting expired from queue -->
+        <transition name="false" to="DisableTierRouteTimerActivityOnNoProviders">
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="UpdateSubstatusGroupCmd(NO_PROVIDERS);RemoveDraftFromGroupCmd(spendLimit);"/></field>
+            </event-listener>
+        </transition>
+    </decision>
+     <custom name="UnGroupDraftOrder" class="com.servicelive.orderfulfillment.node.DefaultCustomActivity">    
+        <transition to="SetGroupExpireTimeActivity">
+            <condition expr="#{orderGroupStatus == 110}"/>
+        </transition>
+        <transition to="DisableTierRouteTimerActivityOnNoProviders">
+            <condition expr="#{orderGroupStatus == 100}"/>
+        </transition>
+    </custom>
+    <custom name="DisableTierRouteTimerActivityOnNoProviders" class="com.servicelive.orderfulfillment.node.DefaultCustomActivity">
+        <transition to="SetGroupExpireTimeActivityOnNoProviders">
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="DisableTierRouteCmd();"/></field>
+            </event-listener>
+        </transition>
+    </custom>
+      <custom name="SetGroupExpireTimeActivityOnNoProviders" class="com.servicelive.orderfulfillment.node.DefaultCustomActivity">
+        <transition to="Draft">
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="SetGroupExpirationTimeCmd();"/></field>
+            </event-listener>
+        </transition>
+    </custom> 
+    
+    <custom name="AlertToProvidersWithPostActivity" continue="async" class="com.servicelive.orderfulfillment.node.DefaultCustomActivity">
+        <transition g="23,45:-23,50" name="true" to="SetGroupExpireTimeActivity">
+			<event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="AutoRouteGroupCmd(post);SOGroupLoggingForTierRoutingCmd(routeToProvidersLogging);GroupAlertCmd(emailForRoutedSO,smsForRoutedSO);"/></field>
+            </event-listener>
+        </transition>
+    </custom>
+
+    <custom name="SetGroupExpireTimeActivity" class="com.servicelive.orderfulfillment.node.DefaultCustomActivity">
+        <transition to="Posted">
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="SetGroupExpirationTimeCmd();"/></field>
+            </event-listener>
+        </transition>
+    </custom>
+
+    <custom name="DisableTierRouteTimerActivity" class="com.servicelive.orderfulfillment.node.DefaultCustomActivity">
+        <transition to="SetGroupExpireTimeActivity">
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="DisableTierRouteCmd();"/></field>
+            </event-listener>
+        </transition>
+    </custom>
+
+    <state g="200,100,51,52" name="Posted">
+        <on event="start">
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList">
+                    <string value="RemoveFieldsCmd(provider_list,provider_list_size);"/>
+                </field>
+            </event-listener>
+        </on>
+		<transition g="-29,-15" name="ACCEPT_GROUP" to="Accept">
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="GroupAlertCmd(emailForAcceptSOForNonAP,emailForAcceptSO);"/></field>
+            </event-listener>
+        </transition>
+        
+        <transition g="-29,-15" name="ACCEPT_GROUP_FOR_FIRM" to="Accept">
+        <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="GroupAlertCmd(emailForAcceptSOForNonAP,emailForAcceptSO);"/></field>
+            </event-listener>
+        </transition>
+        
+		<transition g="-29,-15" name="ACCEPT_GROUP_CONDITIONAL_OFFER" to="Accept">
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="GroupAlertCmd(emailForAcceptSOForNonAP,emailForBuyerCondOffrAccept);"/></field>
+            </event-listener>
+        </transition>
+        <transition g="-29,-15" name="ACCEPT_ORDER" to="Accept"/>
+        <transition g="-29,-15" name="ACCEPT_FOR_FIRM" to="Accept"/>
+        <transition g="-29,-15" name="ACCEPT_CONDITIONAL_OFFER" to="Accept"/>
+        <transition g="627,644:-24,-20" name="LOCK_FOR_EDIT" to="LockedInEditForPost"/>       
+		<transition g="-29,-15" name="REJECT_GROUP" to="Posted" />
+        <transition g="-29,-15" name="UPDATE_BATCH_ORDER" to="GroupProcessHasOrdersFromPosted">
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="BatchUpdateCmd(spendLimit)"/></field>
+            </event-listener>
+        </transition>
+		<transition g="-29,-15" name="CREATE_GROUP_CONDITIONAL_OFFER" to="Posted"/>
+		<transition g="-29,-15" name="WITHDRAW_GROUP_CONDITIONAL_OFFER" to="Posted"/>
+		<!-- <transition g="-29,-15" name="WITHDRAW_GROUP_CONDITIONAL_OFFER_RESOURCE_LIST" to="Posted"/> -->
+		<transition g="-29,-15" name="ADD_ORDER_TO_GROUP" to="addOrderToGroupAsyncState" >
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="GroupPricingCmd();"/></field>
+            </event-listener>
+		</transition>
+        <transition g="-39,-15" name="ADD_ORDERS_TO_GROUP" to="Posted">
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="GroupPricingCmd();"/></field>
+            </event-listener>
+        </transition>
+        <transition g="-39,-15" name="UNPOST_GROUP" to="Draft">
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="UnPostGroupCmd();"/></field>
+            </event-listener>
+        </transition>
+        <transition g="-29,-15" name="expireGroup" to="Expired">
+			<timer duedate="#{serviceDate}"/>
+              <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList">
+                    <string value="SetGroupedOrdersExpiredCmd();"/>
+                </field>
+            </event-listener>
+		</transition>
+        <transition g="-29,-15" name="INTEGRATION_CANCEL_ORDER" to="CancelGroupProcessHasOrdersFromPosted">
+			<event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="CancelOrderGroupCmd(spendLimit);"/></field>
+            </event-listener>
+        </transition>
+        <transition g="-29,-15" name="CANCEL_ORDER" to="CancelGroupProcessHasOrdersFromPosted">
+			<event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="CancelOrderGroupCmd(spendLimit);"/></field>
+            </event-listener>
+        </transition>
+        <transition g="-29,-15" name="SL_CANCEL_ORDER" to="CancelGroupProcessHasOrdersFromPosted">
+			<event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="CancelOrderGroupCmd(spendLimit);"/></field>
+            </event-listener>
+        </transition>
+        <transition g="-25,-56" name="REMOVE_ALL_ORDERS_FROM_GROUP" to="Posted">
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="RemoveOrderGroupCmd(spendLimit);"/></field>
+            </event-listener>
+        </transition>
+        <transition g="-25,-56" name="END_FOR_GROUP_ORDERS" to="Deleted"/>
+        <transition g="-29,-15" name="tierTimeOut" to="Posted">
+        	<timer duedate="#{autoTierRouteDate}"/>
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="SetGroupAutoTierRoutingTime();AutoRouteGroupCmd(noPost);SOGroupLoggingForTierRoutingCmd(routeToProvidersLogging);GroupAlertCmd(emailForRoutedSO,smsForRoutedSO);"/></field>
+            </event-listener>
+        </transition>
+   	</state>
+
+   	<state name="addOrderToGroupAsyncState">
+ 		<transition g="-29,-15" name="moveToPosted" to="UnpostAndRerouteOrders" >
+            <timer duedate="2 seconds"/>
+        </transition>
+   	</state>
+
+    <custom name="calculatePricingAndSendSpendLimitChangedToOrders" continue="async" class="com.servicelive.orderfulfillment.node.DefaultCustomActivity">
+      <transition g="-29,-15" name="calculatingGroupPrice" to="SetGroupExpireTimeActivity" >
+         <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+             <field name="commandList"><string value="GroupPricingCmd();SendPostOrderCmd();"/></field>
+         </event-listener>
+     </transition>
+    </custom>
+
+    <state g="382,673,155,51" name="Draft">
+        <on event="start">
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList">
+                    <string value="RemoveFieldsCmd(provider_list,provider_list_size);"/>
+                </field>
+            </event-listener>
+        </on>
+        <transition g="107,709;102,490:-71,-20" name="EDIT_ORDER" to="DisableTierRouteTimerActivity">
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="EditOrderGroupCmd(post,noSpendLimit);"/></field>
+            </event-listener>
+        </transition>
+        <transition g="-25,-56" name="REMOVE_ALL_ORDERS_FROM_GROUP" to="Draft">
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="RemoveOrderGroupCmd(noSpendLimit);"/></field>
+            </event-listener>
+        </transition>
+		<transition g="627,644:-24,-20" name="SPEND_LIMIT_CHANGED" to="Draft"/>
+    </state>
+
+    <state g="382,683,155,52" name="LockedInEditForPost">
+        <transition g="107,709;102,490:-71,-20" name="EDIT_ORDER" to="DisableTierRouteTimerActivity">
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="EditOrderGroupCmd(noPost,spendLimit);"/></field>
+            </event-listener>
+        </transition>
+        <transition g="-74,-15" name="RELEASE_LOCK_FOR_EDIT" to="DisableTierRouteTimerActivity"/>
+    </state>
+
+    <decision g="116,52,48,48" name="GroupProcessHasOrdersFromPosted">
+        <transition g="23,45:-23,50" name="true" to="calculatePricingAndSendSpendLimitChangedToOrders" >
+			<condition expr="#{NumberOfServiceOrder &gt; 1}" />
+        </transition>
+        <transition g="23,45:-23,50" name="OneOrder" to="SetGroupExpireTimeActivity" >
+			<condition expr="#{NumberOfServiceOrder == 1}" />
+        </transition>
+        <transition g="142,145:-24,-20" name="false" to="Void" >
+			<condition expr="#{NumberOfServiceOrder == 0}" />
+        </transition>
+    </decision>
+    
+    <decision g="116,52,48,48" name="CancelGroupProcessHasOrdersFromPosted">
+        <transition g="23,45:-23,50" name="true" to="UnpostAndRerouteOrders" >
+			<condition expr="#{NumberOfServiceOrder &gt; 1}" />
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="GroupPricingCmd();"/></field>
+            </event-listener>
+        </transition>
+        <transition g="23,45:-23,50" name="OneOrder" to="UnpostAndRerouteOrders" >
+			<condition expr="#{NumberOfServiceOrder == 1}" />
+        </transition>
+        <transition g="142,145:-24,-20" name="false" to="Void" >
+			<condition expr="#{NumberOfServiceOrder == 0}" />
+        </transition>
+    </decision>
+    
+    <custom name="UnpostAndRerouteOrders" continue="async" class="com.servicelive.orderfulfillment.node.DefaultCustomActivity">
+        <transition g="-29,-15" name="calculatingGroupPriceFromCancel" to="searchFoundProvidersChecks" >
+         <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="UnPostGroupCmd();ResetGroupAutoTierRoutingTime();SearchProvidersForAutoRouteCmd();"/></field>
+            </event-listener>
+        </transition>
+    </custom>
+
+	<state g="200,49,51,52" name="Expired" >
+        <on event="start">
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList">
+                    <string value="RemoveFieldsCmd(provider_list,provider_list_size);UpdateGroupSearchabilityCmd(false);"/>
+                </field>
+            </event-listener>
+        </on>        
+        <transition g="-29,-15" name="EDIT_ORDER" to="GroupProcessHasOrdersToPosted">
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="EditOrderGroupCmd(post,noSpendLimit,skipAffectedOrder);UpdateGroupSearchabilityCmd(true);"/></field>
+            </event-listener>
+        </transition>
+        <transition g="-29,-15" name="CANCEL_ORDER" to="GroupProcessHasOrdersFromExpired">
+			<event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="CancelOrderGroupCmd(noSpendLimit);"/></field>
+            </event-listener>
+        </transition>
+        <transition g="-29,-15" name="SL_CANCEL_ORDER" to="GroupProcessHasOrdersFromExpired">
+			<event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="CancelOrderGroupCmd(noSpendLimit);"/></field>
+            </event-listener>
+        </transition>
+        <transition g="-25,-56" name="REMOVE_ALL_ORDERS_FROM_GROUP" to="Expired">
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="RemoveOrderGroupCmd(noSpendLimit);"/></field>
+            </event-listener>
+        </transition>
+        <transition g="-39,-15" name="ADD_ORDERS_TO_GROUP" to="Expired">
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="GroupPricingCmd();"/></field>
+            </event-listener>
+        </transition>
+	</state>
+
+    <decision g="116,52,48,48" name="GroupProcessHasOrdersFromExpired">
+        <transition g="23,45:-23,50" name="moreThanOneOrder" to="Expired" >
+			<condition expr="#{NumberOfServiceOrder &gt; 1}" />
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="GroupPricingCmd();"/></field>
+            </event-listener>
+        </transition>
+        <transition g="23,45:-23,50" name="OneOrder" to="Expired" >
+			<condition expr="#{NumberOfServiceOrder == 1}" />
+        </transition>
+        <transition g="142,145:-24,-20" name="ZeroOrder" to="Deleted" >
+			<condition expr="#{NumberOfServiceOrder == 0}" />
+        </transition>
+    </decision>
+
+	<end g="200,49,51,52" name="Accept" />
+	<end g="200,49,51,52" name="Deleted" />
+	<end g="200,49,51,52" name="Void" />
+</process>

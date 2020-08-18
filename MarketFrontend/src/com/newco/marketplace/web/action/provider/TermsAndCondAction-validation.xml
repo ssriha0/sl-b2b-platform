@@ -1,0 +1,21 @@
+<!DOCTYPE validators PUBLIC
+        "-//Apache Struts//XWork Validator 1.0.2//EN"
+        "http://struts.apache.org/dtds/xwork-validator-1.0.2.dtd">
+        
+<validators>
+	
+	<field name="termsAndCondDto.acceptTermsInd">
+		<field-validator type="int">
+			<param name="min">1</param>
+			<message key="termsAndCondDto.acceptTerms.error"></message>
+		</field-validator>
+	</field>
+	
+	<field name="termsAndCondDto.acceptBucksTermsInd">
+		<field-validator type="int">
+			<param name="min">1</param>
+			<message key="termsAndCondDto.acceptBucksTerms.error"></message>
+		</field-validator>
+	</field>
+		
+</validators>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="../" default="compile-dependencies" name="MarketWebServices-BuildAll" >
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+	<target name="compile-dependencies"> 
+    	<ant antfile="../MarketCommon/wildfly-build/build.xml" dir="../MarketCommon"/>
+    	<ant antfile="../RoutingRulesEngine/wildfly-build/build.xml" dir="../RoutingRulesEngine"/>
+		<ant antfile="../MarketDocument/wildfly-build/build.xml" dir="../MarketDocument"/>
+		<ant antfile="../MarketBusinessInterface/wildfly-build/build.xml" dir="../MarketBusinessInterface"/>
+		<ant antfile="../MarketBackend/wildfly-build/build.xml" dir="../MarketBackend"/>
+		<ant antfile="../ServiceLive.Common/wildfly-build/build.xml" dir="../Wallet/ServiceLive.Common" inheritAll="false"/>
+		<ant antfile="../ServiceLive.Lookup/wildfly-build/build.xml" dir="../Wallet/ServiceLive.Lookup" inheritAll="false"/>
+		<ant antfile="../Wallet.Common/wildfly-build/build.xml" dir="../Wallet/Wallet.Common" inheritAll="false"/>
+        <ant antfile="../Wallet.ServiceInterface/wildfly-build/build.xml" dir="../Wallet/Wallet.ServiceInterface" inheritAll="false"/>
+        <ant antfile="../Wallet.Alert/wildfly-build/build.xml" dir="../Wallet/Wallet.Alert" inheritAll="false"/>
+        <ant antfile="../Wallet.ACH/wildfly-build/build.xml" dir="../Wallet/Wallet.ACH" inheritAll="false"/>
+        <ant antfile="../Wallet.CreditCard/wildfly-build/build.xml" dir="../Wallet/Wallet.CreditCard" inheritAll="false"/>
+        <ant antfile="../Wallet.Ledger/wildfly-build/build.xml" dir="../Wallet/Wallet.Ledger" inheritAll="false"/>
+        <ant antfile="../Wallet.ValueLink/wildfly-build/build.xml" dir="../Wallet/Wallet.ValueLink" inheritAll="false"/>
+        <ant antfile="../Wallet.Service/wildfly-build/build.xml" dir="../Wallet/Wallet.Service" inheritAll="false"/>
+		<ant antfile="../Wallet.Batch/wildfly-build/build.xml" dir="../Wallet/Wallet.Batch" inheritAll="false"/>
+		<ant antfile="../MarketWebServices/wildfly-build/build.xml" dir="../MarketWebServices"/>
+	</target>
+</project>

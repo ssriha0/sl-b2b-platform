@@ -1,0 +1,64 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="buyerAdmin" extends="ServiceLiveBase" >
+        <default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+                
+    	<global-results >
+			<result name="error" type="redirectAction">
+				<param name="actionName">errorAction</param>
+				<param name="errorMessage">${errorMessage}</param>
+				<param name="returnURL">${returnURL}</param>
+			</result>
+		</global-results>		
+	   
+	    <action name="buyerAdminAddEdit_*" class="BAAddEditAction" method="{1}">
+	    	<result name="input">/jsp/buyer_admin/buyer_add_edit_user.jsp</result>
+	        <result name="success_add">/jsp/buyer_admin/buyer_add_edit_user.jsp</result>	    	    
+	        <result name="success_edit">/jsp/buyer_admin/buyer_add_edit_user.jsp</result>
+	       	<result name="save_user" type="redirectAction">
+	        	<param name="actionName">buyerAdminManageUsers_execute</param>
+        	</result>    	    
+	        <result name="remove_user" type="redirectAction">
+	            <param name="actionName">buyerAdminManageUsers_execute</param>
+        	</result>   
+        	<result name="reset_password" type="chain" >
+	            <param name="actionName">buyerAdminManageUsers_execute</param>
+        	</result>
+        	<result name="error" type="redirectAction">
+	            <param name="actionName">buyerAdminManageUsers_execute</param>
+        	</result>	    	        	    	    	        	    	    
+	    </action>
+	    
+	    <action name="buyerAdminCreateReport_*" class="BACreateReportAction" method="{1}">
+	        <result name="success">/jsp/buyer_admin/buyer_create_report.jsp</result>	    	    
+	    </action>
+	    
+	    <action name="buyerAdminDocManager_*" class="BADocManagerAction" method="{1}">
+	        <result name="init">/jsp/buyer_admin/buyer_doc_mgr.jsp</result>
+	        <result name="success">/jsp/buyer_admin/buyer_doc_mgr_iFrame.jsp</result>	
+	        <result name="done">/jsp/buyer_admin/buyer_doc_upload_type_detail.jsp</result>    	    
+	        <result name="wizard_review_tab">/jsp/wizard/body/sections/modules/panels_review/documentsAndPhotos_iFrame.jsp</result>	   	    	    
+	    </action>
+	    
+	    <action name="buyerAdminEdit_*" class="BAAddEditAction" method="{1}">
+	        <result name="success">/jsp/buyer_admin/buyer_edit.jsp</result>	    	    
+	    </action>
+	    
+	    <action name="buyerAdminManageUsers_*" class="BAManageUsersAction" method="{1}">
+	        <result name="success">/jsp/buyer_admin/buyer_manage_users.jsp</result>	    	    
+	    </action>
+	    
+	    <action name="buyerAdminReports_*" class="BAReportsAction" method="{1}">
+	        <result name="success">/jsp/buyer_admin/buyer_reports.jsp</result>	    	    
+	    </action>
+	    
+	    <action name="buyerAdminUserCompleteProfile_*" class="BAUserCompleteProfileAction" method="{1}">
+	        <result name="success">/jsp/buyer_admin/buyer_user_complete_profile.jsp</result>	    	    
+	    </action>
+	    
+
+    </package>
+    
+</struts>

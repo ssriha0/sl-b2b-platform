@@ -1,0 +1,1 @@
+ALTER TABLE `so_location` ADD UNIQUE INDEX `AK_so_loc_so_loc_type`(`so_id`, `so_locn_type_id`);

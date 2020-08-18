@@ -1,0 +1,609 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+
+<sqlMap namespace="vendor_hdr">
+	<typeAlias alias="pVendorHeader" type="com.newco.marketplace.vo.provider.VendorHdr"/>
+	<typeAlias alias="vendorResource2" type="com.newco.marketplace.vo.provider.VendorResource"/>
+	<typeAlias alias="buyer" type="com.newco.marketplace.dto.vo.serviceorder.Buyer"/>
+	<typeAlias alias="credential" type="com.newco.marketplace.vo.provider.CredentialProfile"/>
+	<typeAlias alias="registerVO" type="com.newco.marketplace.vo.provider.ProviderRegistrationVO"/>
+	<typeAlias alias="leadVO" type="com.newco.marketplace.dto.vo.serviceorder.LeadVO"/>
+	<typeAlias alias="approveFirmsVO" type="com.newco.marketplace.vo.hi.provider.ApproveFirmsVO" />
+    <typeAlias alias="auditReasonCodeVO" type="com.newco.marketplace.vo.hi.provider.ReasonCodeVO"/>
+    <typeAlias alias="logAPIVo" type="com.newco.marketplace.vo.hi.provider.APILoggingVO"/>
+    <typeAlias alias="approveProvidersVO" type="com.newco.marketplace.vo.hi.provider.ApproveProvidersVO" />
+    <typeAlias alias="backgroundCheckProviderVO" type="com.newco.marketplace.vo.hi.provider.BackgroundCheckProviderVO" />
+    <typeAlias alias="backgroundCheckHistoryProviderVO" type="com.newco.marketplace.vo.hi.provider.BackgroundCheckHistoryProviderVO" />
+    
+    
+    <resultMap class="approveFirmsVO" id="reasonCodeMap">
+		<result property="wfStatus" column="wf_state_id" />
+	  	<result property="reasonCodeVoList" column="wf_state_id" select="getReasonCodes.query"/>
+    </resultMap>
+    <resultMap class="approveProvidersVO" id="reasonCodeProviderMap">
+		<result property="wfStatus" column="wf_state_id" />
+	  	<result property="reasonCodeVoList" column="wf_state_id" select="getReasonCodes.query"/>
+    </resultMap>
+    <select id="getAdminUserName.query" parameterClass="java.lang.Integer" resultClass="java.lang.String">
+		SELECT user_name FROM admin_resource WHERE resource_id = #resourceId#
+	</select>
+    <select id="getReasonCodes.query" resultClass="auditReasonCodeVO">
+        SELECT rc.reason_cd as reasonCodeId,rc.reason_name as reasonCodeValue FROM lu_audit_reason_codes rc WHERE rc.wf_state_id=#wfStatus#
+    </select>
+    <select id="getEligibleIndicator.query"  parameterClass="java.lang.Integer" resultClass="auditReasonCodeVO">
+        SELECT IF(h.vendor_bucks_ind IS NULL,FALSE,h.vendor_bucks_ind) AS bucksInd,IF(h.terms_cond_ind IS NULL,FALSE,h.terms_cond_ind) AS termsConInd FROM vendor_hdr h WHERE h.vendor_id=#providerId#;
+    </select>
+    <select id="getProviderEligibleIndicator.query"  parameterClass="java.lang.Integer" resultClass="auditReasonCodeVO">
+        SELECT IF(h.terms_cond_ind IS NULL,FALSE,h.terms_cond_ind) AS termsConInd FROM vendor_resource h WHERE h.resource_id=#vendorId#;
+    </select>
+		<select id="pvendor_hdr.query" parameterClass="pVendorHeader" resultClass="pVendorHeader">
+			select vendor_id as vendorId,
+				business_name as businessName,
+				CASE WHEN business_type_id IS NULL THEN 0 ELSE business_type_id END as businessTypeId,
+				dba_name as dbaName,
+				duns_no as dunsNo,
+				ein_no as einNo,
+				CASE WHEN company_size_id IS NULL THEN 0 ELSE company_size_id END as companySizeId,
+				web_address as webAddress,
+				referral_id as referralId,
+				 <!--contact_group as contactGroup -->
+				tax_status as taxStatus,
+				bus_phone_no as businessPhone,
+				bus_fax_no as businessFax,
+				CASE WHEN foreign_owned IS NULL THEN 0 ELSE foreign_owned END as foreignOwnedInd,
+				CASE WHEN foreign_owned_pct_id IS NULL THEN 0 ELSE foreign_owned_pct_id END as foreignOwnedPct,
+				vh.wf_state_id as vendorStatusId,
+			    business_start_date as businessStartDate,
+				business_affiliate_name as businessAffiliateName,
+				business_affiliate_relationship as businessAffiliateRelationship,
+				terms_cond_ind as termsCondInd,
+				terms_cond_date as termsCondDate,
+				terms_cond_version as termsCondVersion,
+				no_cred_ind as noCredInd,
+				audit_claimed_by as auditClaimedBy,
+				vh.wf_state_id as profileState,
+				promo_cd as promotionCode,
+				CASE WHEN primary_industry_id IS NULL THEN 0 ELSE primary_industry_id END as primaryIndustryId,
+				other_primary_service as otherPrimaryService,
+				ins_vehicle_liability_ind as VLI,
+				ins_work_comp_ind as WCI,
+				ins_gen_liability_ind as CBGLI,
+				ins_vehicle_liability_amount as VLIAmount,
+				ins_work_comp_amount as WCIAmount,
+				ins_gen_liability_amount as CBGLIAmount,
+				created_date as createdDate,
+				business_descr as businessDesc,
+				ins_gen_liability_amount as CBGLIAmount,
+				account_contact_id as accountContactId,
+				max_withdrawal_no AS providerMaxWithdrawalNo,
+				max_withdrawal_amount AS providerMaxWithdrawalLimit,
+				ws.wf_state as serviceliveStatus,
+				(select taxpayer_id_number_type from vendor_w9 where vendor_id=#vendorId#) as taxPayerIdType
+				from vendor_hdr vh
+				join wf_states ws on ws.wf_state_id = vh.wf_state_id
+			<dynamic prepend="where">
+				<isNotNull prepend="AND " property="vendorId">vendor_id = #vendorId#</isNotNull>
+			</dynamic>
+
+	</select>
+	
+	<select id="pvendor_hdr_frombackup.query" parameterClass="pVendorHeader" resultClass="pVendorHeader">
+			select vendor_id as vendorId,
+				ein_no as einNo,
+				from vendor_hdr_backup
+			<dynamic prepend="where">
+				<isNotNull prepend="AND " property="vendorId">vendor_id = #vendorId#</isNotNull>
+			</dynamic>
+
+	</select>
+
+	<update id="pvendor_hdr.update" parameterClass="pVendorHeader">
+		update vendor_hdr
+		<dynamic prepend="set">
+			<isGreaterThan prepend=", " property="businessTypeId" compareValue="-1">business_type_id = #businessTypeId#</isGreaterThan>
+			<isNotNull prepend=", " property="businessName">business_name = #businessName#</isNotNull>
+			<isNotNull prepend=", " property="dbaName">dba_name = #dbaName#</isNotNull>
+			<isNotNull prepend=", " property="dunsNo">duns_no = #dunsNo#</isNotNull>
+			<isNotNull prepend=", " property="einNo">ein_no = #einNo#</isNotNull>
+			<isNotNull prepend=", " property="noCredInd">no_cred_ind = #noCredInd#</isNotNull>
+			<isGreaterThan prepend=", " property="companySizeId" compareValue="-1">company_size_id = #companySizeId#</isGreaterThan>
+			<isNotNull prepend=", " property="webAddress">web_address = #webAddress#</isNotNull>
+			<isGreaterThan prepend=", " property="referralId" compareValue="-1">referral_id = #referralId#</isGreaterThan>
+			<isGreaterThan prepend=", " property="contactGroup" compareValue="-1">contact_group = #contactGroup#</isGreaterThan>
+			<isGreaterThan prepend=", " property="taxStatus" compareValue="-1">tax_status = #taxStatus#</isGreaterThan>
+			<isNotNull prepend=", " property="foreignOwnedInd">foreign_owned = #foreignOwnedInd#</isNotNull>
+			<isGreaterThan prepend=", " property="foreignOwnedPct" compareValue="-1">foreign_owned_pct_id = #foreignOwnedPct#</isGreaterThan>
+			<isGreaterThan prepend=", " property="vendorStatusId" compareValue="-1">wf_state_id = #vendorStatusId#</isGreaterThan>
+			<isNotNull prepend=", " property="businessStartDate">business_start_date = #businessStartDate#</isNotNull>
+			<isNotNull prepend=", " property="businessAffiliateName">business_affiliate_name = #businessAffiliateName#</isNotNull>
+			<isNotNull prepend=", " property="termsCondDate">terms_cond_date = #termsCondDate#</isNotNull>
+			<isGreaterThan prepend=", " property="termsCondInd" compareValue="-1">terms_cond_ind = #termsCondInd#</isGreaterThan>
+			<isNotNull prepend=", " property="termsCondVersion">terms_cond_version = #termsCondVersion#</isNotNull>
+			<isGreaterThan prepend=", " property="businessAffiliateRelationship" compareValue="-1">business_affiliate_relationship = #businessAffiliateRelationship#</isGreaterThan>
+			<isNotNull prepend=", " property="auditClaimedBy">audit_claimed_by = #auditClaimedBy#</isNotNull>
+			<isNotNull prepend=", " property="businessPhone">bus_phone_no = #businessPhone#</isNotNull>
+			<isNotNull prepend=", " property="businessFax">bus_fax_no = #businessFax#</isNotNull>
+			<isNotNull prepend=", " property="busPhoneExtn">bus_phone_no_ext = #busPhoneExtn#</isNotNull>
+			<isNotNull prepend=", " property="promotionCode">promo_cd = #promotionCode#</isNotNull>
+			<isGreaterThan prepend=", " property="primaryIndustryId" compareValue="-1">primary_industry_id = #primaryIndustryId#</isGreaterThan>
+			<isNotNull prepend=", " property="otherPrimaryService">other_primary_service = #otherPrimaryService#</isNotNull>
+			<isNotNull prepend=", " property="accountContactId">account_contact_id = #accountContactId#</isNotNull>
+			<isNotNull prepend=", " property="primaryResourceId">primary_resource_id = #primaryResourceId#</isNotNull>
+			<isNotNull prepend=", " property="firmType">vendor_type = #firmType#</isNotNull>
+			<isNotNull prepend=", " property="subContractorId">subcontractor_id = #subContractorId#</isNotNull>	
+			<isNotNull prepend=", " property="businessDesc">business_descr = #businessDesc#</isNotNull>			
+		</dynamic>
+		,max_withdrawal_no = #providerMaxWithdrawalNo#
+		,max_withdrawal_amount = #providerMaxWithdrawalLimit#
+		where vendor_id = #vendorId#
+	</update>
+	
+	<update id="pvendor_hdr_ind.update" parameterClass="pVendorHeader">
+		update vendor_hdr
+         <dynamic prepend="set"> 
+            			<isNotNull prepend=", " property="VLI">ins_vehicle_liability_ind=#VLI#</isNotNull>
+                         <isNotNull prepend=", " property="WCI">ins_work_comp_ind=#WCI#</isNotNull>
+                         <isNotNull prepend=", " property="CBGLI">ins_gen_liability_ind=#CBGLI#</isNotNull>
+                         <isNotNull prepend=", " property="CBGLI">ins_gen_liability_ind=#CBGLI#</isNotNull>
+                         <isNotNull prepend=", " property="noCredInd">no_cred_ind=#noCredInd#</isNotNull>
+                         <isNotNull prepend=", " property="VLIAmount">ins_vehicle_liability_amount=#VLIAmount#</isNotNull>
+                         <isNotNull prepend=", " property="WCIAmount">ins_work_comp_amount=#WCIAmount#</isNotNull>
+                         <isNotNull prepend=", " property="CBGLIAmount">ins_gen_liability_amount=#CBGLIAmount#</isNotNull>
+			</dynamic>
+			where vendor_id=#vendorId#
+	</update>
+
+	<update id="pvendor_hdr.updateEIN" parameterClass="pVendorHeader">
+		update vendor_hdr
+		<dynamic prepend="set">
+			<isNotNull  property="einNo">ein_no = #einNo#</isNotNull>
+		</dynamic>
+		where vendor_id = #vendorId#
+	</update>
+
+	<update id="pvendor_hdr.updateFM" parameterClass="pVendorHeader">
+		update vendor_hdr
+		<dynamic prepend="set">
+			<isNotNull prepend=", " property="einNoEnc">ein_no = #einNoEnc#</isNotNull>
+			<isNotNull prepend=", " property="foreignOwnedInd">foreign_owned = #foreignOwnedInd#</isNotNull>
+			<isNotNull prepend=", " property="accountContactId">account_contact_id = #accountContactId#</isNotNull>
+		</dynamic>
+		,foreign_owned_pct_id = #foreignOwnedPct#
+		where vendor_id = #vendorId#
+	</update>
+		<update id="buyer.updateFM" parameterClass="buyer">
+		update buyer
+		<dynamic prepend="set">
+			<isNotNull prepend=", " property="einNoEnc">ein_no = #einNoEnc#</isNotNull>
+			<isNotNull prepend=", " property="foreignOwnedInd">foreign_owned = #foreignOwnedInd#</isNotNull>
+			<isNotNull prepend=", " property="accountContactId">account_contact_id = #accountContactId#</isNotNull>
+		</dynamic>
+		,foreign_owned_pct_id = #foreignOwnedPct#
+		where buyer_id = #buyerId#
+	</update>
+
+
+	<update id="pvendor_hdr.updateQTnC" parameterClass="pVendorHeader">
+		update vendor_hdr
+		<dynamic prepend="set">
+			<isNotNull prepend=", " property="termsCondDate">terms_cond_date = #termsCondDate#</isNotNull>
+			<isGreaterThan prepend=", " property="termsCondInd" compareValue="-1">terms_cond_ind = #termsCondInd#</isGreaterThan>
+			<isNotNull prepend=", " property="termsCondVersion">terms_cond_version = #termsCondVersion#</isNotNull>
+		</dynamic>
+		where vendor_id = #vendorId#
+	</update>
+
+	<update id="pvendor_hdr.auditClaimedBy" parameterClass="pVendorHeader">
+		update vendor_hdr
+		set audit_claimed_by = #auditClaimedBy#
+		where vendor_id = #vendorId#
+	</update>
+
+    <insert id="pvendor_hdr.insert" parameterClass="pVendorHeader">
+        insert into vendor_hdr (business_name,source_system_id)
+        values(#businessName#,#sourceSystemId#)
+        <selectKey resultClass="int">
+            SELECT last_insert_id() as vendorId
+        </selectKey>
+    </insert>
+
+    <select id="pvendor_hdr.getAuditClaimedBy" parameterClass="pVendorHeader" resultClass="pVendorHeader">
+		SELECT audit_claimed_by as auditClaimedBy
+		from vendor_hdr
+		where vendor_id = #vendorId#
+	</select>
+
+	<update id="pvendor_hdr.updateWFstate" parameterClass="pVendorHeader">
+		UPDATE 	vendor_hdr
+		SET 	wf_state_id = #vendorStatusId#
+		WHERE 	vendor_id = #vendorId#
+	</update>
+
+	<select id="pvendor_hdr.getWFstate" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		SELECT wf_state_id as vendorStatusId
+		from vendor_hdr
+		where vendor_id = #vendorId#
+	</select>
+
+	<select id="pvendor_hdr.getCompaniesReadyForApproval" resultClass="pVendorHeader">
+		SELECT
+			vh.vendor_id as vendorId,
+			vh.business_name as businessName,
+			vh.business_type_id as businessTypeId,
+			vh.dba_name as dbaName,
+			vh.duns_no as dunsNo,
+			vh.ein_no as einNo,
+			vh.company_size_id as companySizeId,
+			vh.web_address as webAddress,
+			vh.referral_id as referralId,
+			vh.tax_status as taxStatus,
+			vh.bus_phone_no as businessPhone,
+			vh.bus_fax_no as businessFax,
+			vh.foreign_owned as foreignOwnedInd,
+			vh.foreign_owned_pct_id as foreignOwnedPct,
+			vh.wf_state_id as vendorStatusId,
+		    vh.business_start_date as businessStartDate,
+			vh.business_affiliate_name as businessAffiliateName,
+			vh.business_affiliate_relationship as businessAffiliateRelationship,
+			vh.terms_cond_ind as termsCondInd,
+			vh.terms_cond_date as termsCondDate,
+			vh.terms_cond_version as termsCondVersion,
+			vh.no_cred_ind as noCredInd,
+			vh.audit_claimed_by as auditClaimedBy,
+			vh.wf_state_id as profileState,
+			vh.promo_cd as promotionCode,
+			vh.primary_industry_id as primaryIndustryId,
+			vh.ins_vehicle_liability_ind as VLI,
+			vh.ins_work_comp_ind as WCI,
+			vh.ins_gen_liability_ind as CBGLI,
+			vh.ins_vehicle_liability_amount as VLIAmount,
+			vh.ins_work_comp_amount as WCIAmount,
+			vh.ins_gen_liability_amount as CBGLIAmount,
+			created_date as createdDate,
+			vh.business_descr as businessDesc,
+			vh.ins_gen_liability_amount as CBGLIAmount,
+			vh.account_contact_id as accountContactId
+		FROM
+			vendor_hdr vh where vh.wf_state_id in (2 ,33)
+		AND
+			(SELECT count(*) from vendor_resource vr where vr.vendor_id = vh.vendor_id and vr.wf_state_id = 6) > 0
+
+	</select>
+
+	<update id="pvendor_hdr.UpdateDbInsuranceSelection" parameterClass="pVendorHeader">
+		update vendor_hdr
+		<dynamic prepend="set">
+			<isNotNull prepend=", " property="VLI">ins_vehicle_liability_ind = #VLI#</isNotNull>
+			<isNotNull prepend=", " property="WCI">ins_work_comp_ind = #WCI#</isNotNull>
+			<isNotNull prepend=", " property="CBGLI">ins_gen_liability_ind = #CBGLI#</isNotNull>
+
+			<isNotNull prepend=", " property="VLIAmount">ins_vehicle_liability_amount  = #VLIAmount#</isNotNull>
+			<isNotNull prepend=", " property="WCIAmount">ins_work_comp_amount = #WCIAmount#</isNotNull>
+			<isNotNull prepend=", " property="CBGLIAmount">ins_gen_liability_amount = #CBGLIAmount#</isNotNull>
+		</dynamic>
+
+		where vendor_id = #vendorId#
+	</update>
+
+	<select id="getSalesAnnualVolume.query" resultClass="java.lang.String">
+	select lus.descr from lu_sales_volume lus, vendor_finance vf where vf.sale_volume=lus.id and vf.vendor_id=#vendorId#
+	</select>
+
+	<select id="getResourceAndStatus.query" parameterClass="java.lang.Integer" resultClass="vendorResource2">
+		select  resource_id as resourceId,
+				wf_state_id as wfStateId
+		from vendor_resource
+		where vendor_id = #vendorId# and mkt_place_ind =1 and resource_ind=1
+	</select>
+
+	<select id="getStatusForResource.query" parameterClass="java.lang.Integer" resultClass="java.lang.String">
+		select  wf_state as wf_state
+		from vendor_resource v
+		join wf_states wf on(v.wf_state_id =wf.wf_state_id )
+		where resource_id = #resourceId#
+	</select>
+	<select id="buyercontact.query" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+	select
+	  account_contact_id as accountContactId
+	from buyer
+	where
+		buyer_id = #buyerId#
+
+	</select>
+	<select id="buyercontact1.query" parameterClass="java.lang.String" resultClass="buyer">
+	select
+	  account_contact_id as accountContactId,
+	  foreign_owned as foreignOwnedInd,
+	  foreign_owned_pct_id as foreignOwnedPct,
+	  ein_no as einNo
+	from buyer
+	where
+		buyer_id = #buyerId#
+
+	</select>
+	<select id="pvendor_hdr.getWCIInd" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+	select ins_work_comp_ind from vendor_hdr where vendor_id=#vendorId#
+	</select>
+	<update id="pvendor_hdr.updateCBGLIndAndAmount" parameterClass="credential">
+		update vendor_hdr set	
+			ins_gen_liability_ind = 1,			
+			ins_gen_liability_amount =  #credAmount#
+		
+		where vendor_id = #vendorId#
+	</update>
+	<update id="pvendor_hdr.updateVLIndAndAmount" parameterClass="credential">
+		update vendor_hdr set		
+			ins_vehicle_liability_ind = 1,
+			ins_vehicle_liability_amount  =  #credAmount#
+			
+		where vendor_id = #vendorId#
+	</update>
+	<update id="pvendor_hdr.updateWCIndAndAmount" parameterClass="credential">
+		update vendor_hdr set	 			
+			ins_work_comp_ind = 1,			
+			ins_work_comp_amount =  #credAmount#			
+		
+		where vendor_id = #vendorId#
+	</update>
+	<select id="pvendor_hdr.getInsuranceIndicators" parameterClass="java.lang.Integer" resultClass="pVendorHeader">
+		select ins_vehicle_liability_ind as VLI, 
+		ins_work_comp_ind as WCI, 
+		ins_gen_liability_ind as CBGLI 
+		from vendor_hdr where vendor_id = #vendorId#
+	</select>
+	<select id="getCompanyName.query" parameterClass="java.lang.Integer" resultClass="java.lang.String">
+	select vhdr.business_name from vendor_hdr vhdr where vhdr.vendor_id = #vendorId#
+	</select>
+	
+	<select id="LeadWfStatesProviderCounts.query" parameterClass="java.lang.Integer" resultClass="wfStatesCounts">
+        SELECT  UPPER(lu.firm_status)as tabType,COUNT(*) as leadCount FROM lead_matched_firm lmf
+   JOIN lu_lead_firm_status lu ON(lmf.lead_firm_status=lu_lead_firm_status_id )
+   WHERE lmf.vendor_id=#vendorId#
+   GROUP BY lu.firm_status
+	</select>
+	
+	<select id="LeadWfStatesBuyerCounts.query" parameterClass="java.lang.Integer" resultClass="wfStatesCounts">
+        SELECT UPPER(lu.lead_status)AS tabType,COUNT(*) AS leadCount FROM  lead_hdr lhr
+	JOIN lu_lead_status lu ON (lhr.lead_wf_status=lu.lu_lead_status_id)
+	INNER JOIN lead_contact_information slci 
+			 ON slci.sl_lead_id=lhr.sl_lead_id
+	WHERE lhr.buyer_id=#buyerId#
+	GROUP BY lu.lead_status
+	</select>
+	
+	
+	<select id="BackgroundCheckStatusCounts.query" parameterClass="java.lang.Integer" resultClass="wfStatesCounts">
+        SELECT wf_state AS tabType,COUNT(*) AS count FROM vendor_resource resource
+	JOIN wf_states wf ON(resource.background_state_id=wf.wf_state_id AND wf.wf_entity='Team Member Background Check')
+	 WHERE resource.vendor_id=#vendorId# AND delete_ind IS NULL GROUP BY resource.background_state_id 
+	UNION
+	SELECT 'RecertificationDueClear'  AS tabType,COUNT(DISTINCT (vr.resource_id))  AS count FROM vendor_resource vr 
+	JOIN vendor_hdr vh ON(vr.vendor_id=vh.vendor_id) AND vh.wf_state_id IN (1,2,3,33,34)
+	JOIN spnet_hdr spn ON(spn.is_alias = 0)
+                   JOIN spnet_provider_firm_state f ON(vr.vendor_id=f.provider_firm_id AND spn.spn_id=f.spn_id)
+	                JOIN spnet_approval_criteria cr ON(cr.spn_id=f.spn_id AND cr.criteria_id=29)
+	                JOIN sl_pro_bkgnd_chk bkgnd ON( bkgnd.bg_check_id=vr.bg_check_id
+	             AND  vr.background_state_id=9 AND  bkgnd.overall!='P' AND vr.wf_state_id NOT IN(21,31,32) AND delete_ind IS NULL AND DATEDIFF(bkgnd.reverification_date,NOW())<![CDATA[<=]]> 30)
+                AND f.provider_wf_state IN ('PF SPN MEMBER','PF FIRM OUT OF COMPLIANCE','PF SPN APPLICANT','PF SPN MEMBERSHIP UNDER REVIEW')
+	             WHERE vr.vendor_id = #vendorId#
+	</select>
+	
+	 
+	<select id="LeadMatchedDate.query" parameterClass="java.lang.Integer" resultClass="leadVO">
+SELECT lmf.sl_lead_id AS leadId,lmf.created_date AS matchedDate,history.created_date AS historyDate,
+(UNIX_TIMESTAMP(history.created_date) - UNIX_TIMESTAMP(lmf.created_date)) AS difference
+FROM  lead_matched_firm lmf
+JOIN vendor_resource resource ON(resource.vendor_id=lmf.vendor_id AND resource.primary_ind=1)
+JOIN lead_history history ON(history.sl_lead_id=lmf.sl_lead_id AND action_id=7 AND role_id=1 AND old_value='new' 
+AND resource.user_name=history.modified_by)
+WHERE lmf.vendor_id=#vendorId#
+	</select>
+	
+	
+	<select id="getStaleInfo.query" parameterClass="leadVO" resultClass="java.lang.Integer">
+		SELECT COUNT(*) FROM lead_hdr lead
+		JOIN lead_matched_firm lmf ON(lead.sl_lead_id=lmf.sl_lead_id)
+		JOIN lu_lead_firm_status lu ON(lmf.lead_firm_status=lu.lu_lead_firm_status_id
+		AND lu.firm_status IN ('new','working'))
+		WHERE lmf.vendor_id=#vendorId#
+		AND DATEDIFF(NOW(),lmf.modified_date) <![CDATA[ > ]]>
+			#staleAfter#
+	</select>
+	
+	<select id="getStaleInfoCount.query" parameterClass="leadVO" resultClass="wfStatesCounts">
+		SELECT UPPER(lu.firm_status)AS tabType,COUNT(*) AS leadCount FROM lead_hdr lead
+		JOIN lead_matched_firm lmf ON(lead.sl_lead_id=lmf.sl_lead_id)
+		JOIN lu_lead_firm_status lu ON(lmf.lead_firm_status=lu.lu_lead_firm_status_id
+		AND lu.firm_status IN ('new','working'))
+		WHERE lmf.vendor_id=#vendorId#
+		AND DATEDIFF(NOW(),lmf.modified_date) <![CDATA[ > ]]>
+			#staleAfter#
+			GROUP BY lu.firm_status
+	</select>
+	
+	
+	<!--  For SHIP Provider Registration	 -->
+	<select id="shipIndustry.query" resultClass="java.lang.Integer" parameterClass="java.lang.String">
+		select sl_industry_id from ship_industry_map where ship_industry = #productDesc#
+	</select>
+	
+	<insert id="shipContractor.insert" parameterClass="registerVO">
+		insert into ship_subcontractor_map(sl_vendor_id,sl_resource_id,sub_contractor_id,sub_contractor_crew_id) 
+		VALUES (#vendorId#,#vendorContactResourceId#,#subContractorId#,#subContractorCrewId#)
+	</insert>
+	<select id="slvendorIdForProviderCrewId.query" parameterClass="registerVO" resultClass="java.lang.Integer">
+	    select sl_vendor_id from ship_subcontractor_map where sub_contractor_id = #subContractorId#
+		and sub_contractor_crew_id = #subContractorCrewId#
+	</select>
+	<select id="slVendorIdForFirm.query" resultClass="java.lang.Integer" parameterClass="java.lang.Integer">
+		select sl_vendor_id from ship_subcontractor_map where sub_contractor_id = #subContractorId#
+		and sub_contractor_crew_id is NULL
+	</select>
+	<select id="getStateCodeForFirm.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+	     SELECT state_cd FROM lu_state_cds WHERE state_cd =#businessState# and blackout_ind=0
+	</select>
+	<!-- For Home Improvements Fetch -->
+	<select id="getVendorType.query" parameterClass="java.util.ArrayList" resultClass="java.lang.Integer" >
+	    SELECT h.vendor_id FROM vendor_hdr h WHERE h.vendor_id IN
+	       <iterate open="(" close=")" conjunction=",">
+				#approveFirmsVOList[].firmId#
+		   </iterate>
+      <!--   AND  h.vendor_type='Home Improvement Firm'	   --> 
+	</select>
+	
+	<select id="getResourceType.query" parameterClass="java.util.ArrayList" resultClass="java.lang.Integer" >
+	    SELECT h.resource_id FROM vendor_resource h WHERE h.resource_id IN
+	       <iterate open="(" close=")" conjunction=",">
+				#approveProvidersVOList[].providerId#
+		   </iterate>
+      <!--   AND  h.vendor_type='Home Improvement Firm'	   --> 
+	</select>
+	<select id="getReasoncodesStatusChange.query" parameterClass="approveFirmsVO" resultMap="reasonCodeMap">
+	     SELECT  ws.wf_state_id  FROM  wf_states ws WHERE ws.wf_entity='Company Profile' 
+	     AND ws.wf_state = #firmStatus#
+	</select>
+	<select id="getProviderReasoncodesStatusChange.query" parameterClass="approveProvidersVO" resultMap="reasonCodeProviderMap">
+	     SELECT  ws.wf_state_id  FROM  wf_states ws WHERE ws.wf_entity='Team Member' 
+	     AND ws.wf_state = #status#
+	</select>
+	<select id="getWfStateId.query" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	     SELECT  ws.wf_state_id AS wfStatus FROM  wf_states ws WHERE ws.wf_entity='Company Profile' 
+	     AND ws.wf_state = #firmStatus#
+	</select>
+	 <insert id="logApiHistoryRequest.insert" parameterClass="logAPIVo">
+		INSERT into sl_api_logging(
+ 			    api_name,
+ 			    request,
+		        created_date,
+		        modified_date,
+			    created_by,
+			    http_method,
+			    logging_type,
+			    response,status
+			    ) 
+		VALUES(
+				#apiName#, 
+				#request#, 
+				NOW(),
+				NOW(),  
+				#createdBy#,
+				#httpMethod#,
+				#loggingType#,
+				#response#,
+				#status#
+				)	
+	</insert>
+	<update id="logApiHistoryResponse.update" parameterClass="logAPIVo">
+		UPDATE sl_api_logging SET response=#response# , status =#status#,
+		modified_date=NOW()
+		WHERE sl_api_logging_id = #loggingId#
+	</update>
+	
+	<select id="apiLoggingSwitch.query"  resultClass="java.lang.String">
+	     SELECT app_value  FROM application_flags WHERE app_key='sl_api_logging_switch';
+	</select>
+	
+	
+	<insert id="insuranceTypesForFirm.insert" parameterClass="credential">
+        insert into vendor_credentials 
+			( vendor_id, 
+			  cred_type_id,
+			  cred_category_id,
+			  cred_source,
+			  cred_no,
+			  cred_expiration_date,
+			 wf_state_id)
+		values(
+			   #vendorId#,
+			   #credentialTypeId#,
+			   #credentialCategoryId#,
+			   #credentialSource#,
+			   #credentialNumber#,
+			   #credentialExpirationDate#,
+			   #wfStateId#)
+     </insert>
+     <update id="updateGeneralLiabilityInd.update" parameterClass="java.lang.Integer">
+             UPDATE vendor_hdr SET ins_gen_liability_ind=1 WHERE vendor_id=#vendorId#
+     </update>
+     <update id="updateAutoLiabilityInd.update"  parameterClass="java.lang.Integer">
+             UPDATE vendor_hdr SET ins_vehicle_liability_ind=1 WHERE vendor_id=#vendorId#
+     </update>
+     <update id="updateWorkmansCompensation.update"  parameterClass="java.lang.Integer">
+              UPDATE vendor_hdr SET ins_work_comp_ind=1 WHERE vendor_id=#vendorId#
+     </update>
+     
+     <select id="pvendor_resource.getWFstate" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		SELECT wf_state_id as vendorStatusId
+		from vendor_resource
+		where resource_id = #providerId#
+	</select>
+	<select id="getProviderWfStateId.query" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	     SELECT  ws.wf_state_id AS wfStatus FROM  wf_states ws WHERE ws.wf_entity='Team Member' 
+	     AND ws.wf_state = #firmStatus#
+	</select>
+	
+	<select id="getVendorIdForResource.query" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+	    SELECT vendor_id FROM vendor_resource WHERE resource_id = #providerId#
+	</select>
+	
+	<select id="getBackgroundCheckForResource.query" parameterClass="java.lang.Integer" resultClass="approveProvidersVO">
+	    SELECT background_state_id as dbBackgroundCheckId,bg_check_id as bgCheckId FROM vendor_resource WHERE resource_id = #providerId#;
+	</select>
+	<select id="getApprovedMarketReadyproviders.query" parameterClass = "java.lang.Integer" resultClass = "java.lang.Integer" >
+	     SELECT COUNT(vr.resource_id) FROM vendor_resource vr WHERE vr.vendor_id = #vendorId# 
+	     AND vr.wf_state_id= 6 AND vr.resource_ind=1 AND vr.mkt_place_ind=1
+	</select>
+	<update id="providerBackGround.update"  parameterClass="backgroundCheckProviderVO">
+	              	 UPDATE sl_pro_bkgnd_chk SET 
+	 				 verification_date=#verificationDate#, 
+					 reverification_date =#reverificationDate#,
+					 bg_request_date =#requestDate#,
+					 bg_state_id=#bgStatus#,
+					 bg_request_type = #bgRequestType#,
+					 bg_original_vendor_id = #firmId#,
+					 modified_date=NOW()
+					WHERE bg_check_id= #bgcheckId#
+     </update>
+     
+     <update id="vendorResourceBackGround.update"  parameterClass="approveProvidersVO">
+	          UPDATE vendor_resource SET background_state_id=#wfStatus#,modified_date = NOW() WHERE resource_id = #providerId#
+     </update>
+     
+     <insert id="providerBackgroundHistory.insert"  parameterClass="backgroundCheckHistoryProviderVO">
+	               INSERT INTO sl_pro_bkgnd_chk_history 
+			( bg_check_id, 
+			  bg_state_id,
+			  verification_date,
+			  reverification_date,
+			  bg_request_date,
+			  chg_comments,
+			  created_date,
+			 modified_date)
+		VALUES(
+			   #bgcheckId#,
+			   9,
+			   #verificationDate#,
+			   #reverificationDate#,
+			   #requestDate#,
+			   #comments#,
+			   NOW(),
+			   NOW())
+     </insert>
+     <!-- Added to get count of primary industry data for D2C provider -->
+     <select id="getBuyerSkuPrimaryIndustryCount.query" parameterClass="java.lang.Integer" resultClass="java.lang.String">
+	    select count(*)
+        from buyer_sku bs 
+	    inner join buyer_so_template bst on bs.template_id = bst.template_id
+		where bs.buyer_id = 3333 and bst.primary_skill_category_id in 
+		(Select vhdr.primary_industry_id from vendor_hdr vhdr where vhdr.vendor_id = #vendorId#);
+	</select>
+    <!-- SLT-2235 -->
+    <select id="getTermsLegalNoticeIndValue.query" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+	    SELECT IFNULL(terms_legal_notice_ind,0) as ind
+		FROM vendor_hdr
+		WHERE vendor_id=#vendorId# AND wf_state_id IN (3,34)
+	</select>
+</sqlMap>

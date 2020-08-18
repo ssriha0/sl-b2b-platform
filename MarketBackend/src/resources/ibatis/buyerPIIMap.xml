@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="spn">
+
+	<typeAlias alias="buyerPIIVO"
+		type="com.newco.marketplace.dto.vo.buyer.BuyerPIIVO" />
+
+
+	<insert id="buyerPII.insert" parameterClass="buyerPIIVO">
+		INSERT INTO buyer_pii_history
+		              (business_name,
+		               id_type,
+		               id_no,
+		               country,
+		               date_of_birth,
+		               created_date,
+		               modified_by,
+		               buyer_id)
+		   VALUES (
+		   				#businessName#, 
+		   				#idType#,
+		   				#idNoEnc#,
+		   				#country#,
+		   				#dob#,
+		   				#createdDate#,
+		   				#modifiedBy#,
+		   				#buyerId#)
+    </insert>
+	
+</sqlMap>

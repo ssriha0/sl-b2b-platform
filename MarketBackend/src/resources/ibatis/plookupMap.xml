@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+    <typeAlias alias="lookup" type="com.newco.marketplace.vo.provider.LookupVO"/>
+
+    <cacheModel type="LRU" id="plookupTermsCondsCache">
+		<flushInterval hours="4" />
+		<property name="size" value="1000" />
+	</cacheModel>
+	
+	<cacheModel type="LRU" id="plookupCache">
+		<flushInterval hours="4" />
+		<property name="size" value="100000" />
+	</cacheModel>
+    
+    <!-- Query to load all records -->
+    <select id="secret_questions_lookup.query" resultClass="lookup"  cacheModel="plookupCache">
+        SELECT  id as id,
+                type as type,
+                question_txt as descr,
+                sort_order as sortOrder
+        FROM    lu_secret_question
+    </select>
+
+    <select id="referral_cds_lookup.query" resultClass="lookup"  cacheModel="plookupCache">
+        SELECT  id as id,
+                type as type,
+                descr as descr,
+                sort_order as sortOrder
+        FROM    lu_referral_cds
+    </select>
+
+
+     <select id="vendor_credential_types.query" resultClass="lookup"  cacheModel="plookupCache">
+        select cred_type_id as id, cred_type_desc as descr from lu_vendor_credential_type ORDER BY LTRIM(descr)
+    </select>
+
+
+      <select id="vendor_credential_categories.query" resultClass="lookup"  cacheModel="plookupCache">
+        select c.cred_category_id as id, c.cred_category as descr, c.cred_type_id as type
+		from lu_vendor_credential_type t , lu_vendor_credential_category c
+		where t.cred_type_id = c.cred_type_id
+    </select>
+
+      <select id="vendor_categories_by_credential.query" parameterClass="java.lang.Integer" resultClass="lookup"  cacheModel="plookupCache">
+       		SELECT cred_category_id AS id, cred_category AS descr ,cred_type_id as type
+   			FROM lu_vendor_credential_category
+   			WHERE cred_type_id=#typeId#
+   			order by LTRIM(descr)
+    </select>
+
+
+     <select id="resource_credential_types.query" resultClass="lookup"  cacheModel="plookupCache">
+        select cred_type_id as id, cred_type_desc as descr from lu_resource_credential_type ORDER BY LTRIM(descr)
+    </select>
+
+
+      <select id="resource_credential_categories.query" resultClass="lookup"  cacheModel="plookupCache">
+        select c.cred_category_id as id, c.cred_category as descr, c.cred_type_id as type
+		from lu_resource_credential_type t , lu_resource_credential_category c
+		where t.cred_type_id = c.cred_type_id
+    </select>
+
+      <select id="resource_categories_by_credential.query" parameterClass="java.lang.Integer" resultClass="lookup"  cacheModel="plookupCache">
+       		SELECT cred_category_id AS id, cred_category AS descr ,cred_type_id as type
+   			FROM lu_resource_credential_category
+   			WHERE cred_type_id=#typeId#
+   			order by LTRIM(descr)
+    </select>
+
+
+    <select id="primary_industry.query" resultClass="lookup">
+		SELECT	node_id as id,
+				node_name as descr,
+				sort_order as sortOrder
+		FROM 	skill_tree
+		WHERE	root = 1
+		ORDER BY LTRIM(node_name) 
+    </select>
+
+     <select id="buyer_primary_industry.query" resultClass="lookup">
+        SELECT  buyer_primary_industry_id as id,
+                type as type,
+                descr as descr,
+                sort_order as sortOrder
+        FROM    lu_buyer_primary_industry
+    </select>
+
+    <select id="company_size_lookup.query" resultClass="lookup"  cacheModel="plookupCache">
+        SELECT  id as id,
+                type as type,
+                descr as descr,
+                sort_order as sortOrder
+        FROM    lu_company_size
+        ORDER BY sort_order
+    </select>
+
+    <select id="business_type_lookup.query" resultClass="lookup"  cacheModel="plookupCache">
+        SELECT  id as id,
+                type as type,
+                descr as descr,
+                sort_order as sortOrder
+        FROM    lu_business_type
+        ORDER BY descr asc
+    </select>
+
+    <select id="state_code_lookup.query" resultClass="lookup"  cacheModel="plookupCache">
+       SELECT state_cd as type, state_name as descr FROM lu_state_cds order by descr 
+    </select>
+
+    <select id="minority_type_lookup.query" resultClass="lookup">
+        SELECT  minority_type_id as id,
+                minority_name as descr
+        FROM    lu_minority_owned_types
+        ORDER BY sort_order
+    </select>
+
+    <select id="service_area_radius_lookup.query" resultClass="lookup"  cacheModel="plookupCache">
+        SELECT  id as id,
+                descr as descr
+        FROM    lu_service_area_radius
+        ORDER BY sort_order
+    </select>
+
+     <select id="contact_method_lookup.query" resultClass="lookup"  cacheModel="plookupCache">
+        SELECT  id as id,
+                descr as descr
+        FROM    lu_contact_method
+        ORDER BY sort_order
+    </select>
+
+    <select id="warranty_periods_lookup.query" resultClass="lookup"  cacheModel="plookupCache">
+    	SELECT	descr as descr,
+    			id as id
+    	FROM	lu_warranty_periods
+    	ORDER BY sort_order
+    </select>
+
+    <select id="sales_volume_lookup.query" resultClass="lookup"  cacheModel="plookupCache">
+    	SELECT	descr as descr,
+    			id as id
+    	FROM	lu_sales_volume
+    	ORDER BY sort_order
+    </select>
+
+    <select id="foreign_owned_percent.query" resultClass="lookup"  cacheModel="plookupCache">
+    	SELECT	descr as descr,
+    			id as id
+    	FROM	lu_foreign_own_pct
+    	ORDER BY sort_order
+    </select>
+
+    <select id="wf_states.query" resultClass="lookup"  cacheModel="plookupCache">
+	    SELECT wf_state as descr,
+	    	   wf_state_id as id
+	   	FROM wf_states where wf_entity = #type#
+	   	order by wf_entity, sort_order
+   </select>
+
+   <select id="is_state_active.query" resultClass="lookup"  cacheModel="plookupCache">
+	    SELECT state_cd as id
+	   	FROM lu_state_cds_active where state_cd = #selectedState#
+   </select>
+
+   <select id="audit_reason_codes_by_click.query" parameterClass="lookup" resultClass="lookup">
+		SELECT arc.reason_cd as id,
+			   arc.reason_name as descr
+		FROM wf_states as wfs, lu_audit_reason_codes arc
+		WHERE wfs.wf_state_id = arc.wf_state_id
+		AND   wfs.wf_entity = #entity#
+		AND wfs.wf_state_id = #id#
+		ORDER BY wfs.wf_state, arc.sort_order
+	</select>
+
+   <select id="audit_reason_codes_load_by_id.query" parameterClass="lookup" resultClass="lookup">
+		SELECT audit_task_id as id,
+			   reason_cd as reasonCd
+		FROM audit_task_reason_cd
+		WHERE audit_task_id = #id#
+	</select>
+
+	<select id="user_permissions_list.query" parameterClass="lookup" resultClass="lookup"  cacheModel="plookupCache">
+		SELECT activity_id as id,
+			   activity_name as descr
+		FROM lu_permissions
+		ORDER BY sort_order
+	</select>
+	<select id="timezone_list.query" parameterClass="lookup" resultClass="lookup"  cacheModel="plookupCache">
+		SELECT id as id,
+			   descr as descr
+		FROM lu_time_zones
+		ORDER BY sort_order
+	</select>
+
+	<select id="language.query" resultClass="lookup"  cacheModel="plookupCache">
+        SELECT  id as id,
+        		type as type,
+                descr as descr
+        FROM    lu_languages_spoken
+    </select>
+
+    <select id="time_interval_list.query" parameterClass="lookup" resultClass="lookup"  cacheModel="plookupCache">
+		SELECT time_interval_id as id,
+			   descr as descr
+		FROM lu_time_interval
+		ORDER BY sort_order
+	</select>
+	<select id ="terms_conditions_query"  resultClass="lookup"  cacheModel="plookupTermsCondsCache">
+		select terms_cond_id as type, terms_cond_content as descr
+		from lu_terms_cond
+		where active_ind = 1
+		and effective_date &lt;= NOW()
+		and type = #type#
+		order by effective_date desc limit 1
+
+	</select>
+
+	<select id ="termsCond.simpleBuyer.query" resultClass="lookup" cacheModel="plookupTermsCondsCache">
+		select terms_cond_id as id, type, terms_cond_content as descr
+		from lu_terms_cond where active_ind = 1 and effective_date &lt;= NOW()
+			and (type = 'Buyer Agreement' or type = 'ServiceLive Bucks')
+		order by effective_date desc
+	</select>
+
+	<select id="getPrimaryIndustry.query" resultClass="java.lang.String" cacheModel="plookupCache">
+		select descr as descr FROM lu_primary_industry where primary_industry_id=#primaryId#
+	</select>
+	<select id="getBusinessType.query" resultClass="java.lang.String" cacheModel="plookupCache">
+		select descr as descr FROM lu_business_type where id=#typeId#
+	</select>
+	<select id="getCompanySize.query" resultClass="java.lang.String" cacheModel="plookupCache">
+		select descr as descr FROM lu_company_size  where id=#typeId#
+	</select>
+	<select id="getForeignOwnPct.query" resultClass="java.lang.String" cacheModel="plookupCache">
+		select descr as descr  FROM lu_foreign_own_pct where id=#typeId#
+	</select>
+	<select id="getCompanyRole.query" resultClass="java.lang.String" cacheModel="plookupCache">
+		select descr as descr  FROM lu_company_role  where company_role_id=#typeId#
+	</select>
+
+	<select id="getWarrantPeriod.query" resultClass="java.lang.String" cacheModel="plookupCache">
+		select descr as descr  FROM lu_warranty_periods where id=#typeId#
+	</select>
+
+	<select id="user_activity_id.query" parameterClass="lookup" resultClass="lookup" cacheModel="plookupCache">
+		SELECT activity_id as id
+		FROM lu_permissions
+		WHERE activity_name = #descr#
+	</select>
+	 <select id="lookup.fetchRootSkillName.query" resultClass="lookup" cacheModel="plookupCache">
+		SELECT	node_id as id,node_name as descr
+		FROM 	skill_tree
+		WHERE	root = 1
+	
+	</select>
+	
+	<select id="lookup.fetchChildSkillName.query" parameterClass="java.lang.Integer" resultClass="lookup" cacheModel="plookupCache">
+		SELECT	node_id as id,node_name as descr
+		FROM 	skill_tree
+		WHERE 	parent_node = #nodeId#
+	</select>
+	
+	<select id="lookup.fetchServiceTypes.query" parameterClass="java.lang.Integer" resultClass="lookup" cacheModel="plookupCache">
+		SELECT 	service_type_template_id as id,descr as descr
+		FROM 	lu_service_type_template
+		WHERE 	node_id = #nodeId#
+	</select>
+</sqlMap>

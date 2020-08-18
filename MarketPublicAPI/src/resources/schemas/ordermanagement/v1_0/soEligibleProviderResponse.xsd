@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/soResponse" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" targetNamespace="http://www.servicelive.com/namespaces/soResponse" elementFormDefault="qualified" jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+	<xs:include schemaLocation="../../common.xsd"/>
+	<xs:include schemaLocation="../../om_common.xsd"/>
+	
+	<!--  This is the new so Eligible Provider Response-->
+	<!-- Root Element -->
+	<xs:element name="soEligibleProviderResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="results"/>
+				<xs:element name="eligibleProviders" type="resourcesListType"></xs:element>
+				<xs:element name="assignedResourceId" type="xs:string" minOccurs="0"></xs:element>
+				<xs:element name="assignedResource" type="xs:string" minOccurs="0"></xs:element>
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:decimal"/>
+			
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="resourcesListType">
+		 <xs:sequence>  
+      <xs:element name="eligibleProvider" type="resourcesType" minOccurs="0"   
+                                            maxOccurs="unbounded"/>  
+     </xs:sequence>  
+	</xs:complexType>
+	<xs:complexType name="resourcesType">
+			<xs:sequence>
+				<xs:element name="resourceId" type="xs:integer"/>
+				<!-- <xs:element name="acceptedResourceId" type="xs:integer"></xs:element>  -->
+				<xs:element name="providerFirstName" type="xs:string"></xs:element>
+				<xs:element name="providerLastName" type="xs:string"></xs:element>
+				<xs:element name="distancefromSOLocation" type="xs:double"></xs:element>
+				<xs:element name="providerRespid" type="xs:integer"/>
+			</xs:sequence>			
+	</xs:complexType>
+	
+</xs:schema>

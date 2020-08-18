@@ -1,0 +1,45 @@
+- this folder contains jBPM 4.0 source files that were patched by Xby2
+- jbpm-4.0.GA.jar is the original jBPM 4.0 distribution file
+- src folder contains modified files
+- build.xml compiles the sources, makes a copy of jbpm-4.0.GA.jar, updates the jar and copies it to lib/deployables
+-------------------------------------------------------------------------------------------------------------------
+------ Modified files ---------------------------------------------------------------------------------------------
+----First file ----------------------------------------------
+- class - org.jbpm.pvm.internal.cmd.ExecuteJobCmd
+- added lines 113 - 119 in handleJobExecutionException method
+- We wanted the Spring transaction context to receive runtime exception so it rollsback.
+- This bug was found since the transaction would commit successfully but part of the transaction would not be executed because of the error.
+- That resulted in inconsistent state.
+------------------------------------------------------------------------------------------------------------------
+----Second file ---------------------------------------------
+- class - org.jbpm.pvm.internal.job.jobImpl
+- Changed line 60
+- Increased the number of retries from 3 to 10
+------------------------------------------------------------------------------------------------------------------
+----Third file ----------------------------------------------
+- class - org.jbpm.pvm.internal.job.TimerImpl
+- added lines 79 to 109
+- when timers are defined jBPM is supposed to support both durations and absolute dates
+- durations are supported by using attribute "duedate" and absolute dates by using "duedatetime"
+- we need to be able to specify absolute dates and we need them to be dynamic (using variables)
+- unfortunately "duedatetime" feature is broken on two fronts:
+--- 1. conversion to date format happens during jPDL parsing and it's way early to be able to use variables
+---  when timer implementation is instantiated there is no check to verify that we want to use absolute date instead of duration
+---  which causes either duration to override our value or if we don't have duration at all it fails
+--- 2. trying to use "duedatetime" requires too many changes to be made and we want to keep changes to a minimum
+---We are using a workaround approach which amounts to the following
+---- a. continue to use "duedate"
+---- b. in the value use prefix "date=" to indicate that we want to use absolute dates
+---- c. for example: <timer duedate="date=1/1/2010" /> or more importantly we now can use
+---      <timer duedate="#{mytimervar}" /> where mytimervar is "date=1/1/2010"
+---We continue to use the same approach to specify date format, which is through environment variable
+--- jbpm.duedatetime.format
+-------------------------------------------------------------------------------
+----Fourth file ----------------------------------------------
+- class - org.jbpm.pvm.internal.jobexecutor.JobExceptionHandler
+- added lines 89 to 98
+-- we want to ignore deadlock exception and retry the job again.
+-- Since we do not know which type of exception is going to be generated we
+-- match on the description and most of the time the exception will contain the 
+-- keywords to retry the transaction.
+-------------------------------------------------------------------------------

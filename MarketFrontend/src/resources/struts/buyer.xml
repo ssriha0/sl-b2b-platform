@@ -1,0 +1,33 @@
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN" "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="buyer" extends="ServiceLiveBase">
+    <default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+  	<action name="buyerRegistrationAction" class="buyerRegistrationAction">
+	        <result name="success">/jsp/buyerRegistration/buyer_registration.jsp</result>	    	    
+	        <result name="error">/jsp/public/error/body/errorBody.jsp</result>	    	    
+	        <result name="input">/jsp/buyerRegistration/buyer_registration.jsp</result>	 
+	        <result name="duplicate">/jsp/buyerRegistration/buyer_registration.jsp</result>
+	        <result name="congrats">/jsp/buyerRegistration/buyer_congrats.jsp</result>
+	        <result name="registrationErrorPage">/jsp/public/registration/registration_error.jsp</result>	 
+	 </action>
+	    
+    <action name="buyerRegistrationAction_*" class="buyerRegistrationAction" method="{1}">
+    		<result name="success">/jsp/buyerRegistration/buyer_registration.jsp</result>	    	    
+	        <result name="error">/jsp/public/error/body/errorBody.jsp</result>	    	    
+	        <result name="input">/jsp/buyerRegistration/buyer_registration.jsp</result>	 
+	        <result name="duplicate">/jsp/buyerRegistration/buyer_registration.jsp</result>
+	        <result name="congrats">/jsp/buyerRegistration/buyer_congrats.jsp</result>
+	        <result name="registrationErrorPage">/jsp/public/registration/registration_error.jsp</result>	 
+    </action>
+    
+	    <action name="buyerEditCompanyProfileAction_*" class="buyerEditCompanyProfileAction" method="{1}">
+	        <result name="input">/jsp/buyerRegistration/edit_buyer_company_profile.jsp</result>	 
+			<result name="error">/jsp/public/error/body/errorBody.jsp</result>
+			<result name="invalidState">/jsp/providerRegistration/provider_congrats_invalid_state.jsp</result>
+		    <result name="edit">/jsp/buyerRegistration/edit_buyer_company_profile.jsp</result>
+		    <result name="success">/jsp/buyerRegistration/edit_buyer_company_profile.jsp</result>
+		</action>
+
+    </package>
+    
+</struts>

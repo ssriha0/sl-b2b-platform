@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/soRequest" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" targetNamespace="http://www.servicelive.com/namespaces/soRequest" elementFormDefault="qualified" jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+	<xs:include schemaLocation="../soCommon.xsd"/>
+	<!-- Root element -->
+	<xs:element name="soRequest">
+		<xs:complexType>
+			<xs:sequence>
+			    <xs:element name="identification" type="IdentificationType"/>
+				<xs:element name="serviceorder" type="ServiceOrderType" minOccurs="0" maxOccurs="50"/>
+				<xs:element name="responsefilter" type="ResponseFilterType" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:decimal"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- ServiceOrder  -->
+	<xs:complexType name="ServiceOrderType">
+		<xs:sequence>
+			<xs:element name="sectionGeneral" type="soSectionGeneralType"/>
+			<xs:element name="scopeOfWork" type="soSectionSOWType"/>
+			<xs:element name="serviceLocation" type="LocationType"/>
+			<xs:element name="schedule" type="ScheduleType"/>
+			<xs:element name="pricing" type="SOPricingType"/>
+			<xs:element name="contacts" type="ContactsType"/>
+			<xs:element name="attachments" type="AttachmentsType" minOccurs="0"/>
+			<xs:element name="parts" type="PartsType" minOccurs="0"/>
+			<xs:element name="customReferences" type="CustomReferencesType" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="version" type="xs:decimal"/>
+		<xs:attribute name="template" type="xs:string" use="optional"/>
+	</xs:complexType>
+	<!-- Response Filter -->
+	<xs:complexType name="ResponseFilterType">
+		<xs:sequence>
+			<xs:element name="showSection" type="filterSectionEnum" maxOccurs="50"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="filterSectionEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="General"/>
+			<xs:enumeration value="Scope Of Work"/>
+			<xs:enumeration value="Service Location"/>
+			<xs:enumeration value="Schedule"/>
+			<xs:enumeration value="Pricing"/>
+			<xs:enumeration value="Contacts"/>
+			<xs:enumeration value="Attachments"/>
+			<xs:enumeration value="Parts"/>
+			<xs:enumeration value="Custom References"/>
+			<xs:enumeration value="Notes"/>
+			<xs:enumeration value="History"/>
+			<xs:enumeration value="Routed Providers"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="IdentificationType">
+		<xs:sequence>		
+			<xs:element name="id" type="xs:integer" />  
+		</xs:sequence>
+		<xs:attribute name="type" type="identificationTypeEnum" use="required"/>
+	</xs:complexType>
+</xs:schema>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+
+<sqlMap namespace="techTalkPortal">
+	
+	<typeAlias alias="depositionCodeDTO" type="com.newco.marketplace.api.beans.so.DepositionCodeDTO" />
+	
+	
+	<select id="fetchDepositionCode.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+		select deposition_code from so_deposition_code where so_id = #orderID#;
+	</select>
+	
+	<select id="fetchAllDepositionCodes.query" resultClass="depositionCodeDTO">
+		select deposition_code AS depositionCode, descr AS descr, client_charged_ind AS clientChargedInd from lu_so_deposition_code;
+	</select>
+	
+	<insert id="depositionCode.insertOrUpdate" parameterClass="java.util.Map">
+	INSERT INTO `supplier_prod`.`so_deposition_code`
+			(so_id,
+			deposition_code,
+			created_date,
+			modified_date)
+			VALUES
+			(#orderID#,
+			#depositionCode#,
+			now(),
+			now())
+		ON DUPLICATE KEY UPDATE
+			so_id = #orderID#,
+			deposition_code = #depositionCode#,
+			modified_date = now();
+		</insert>
+	
+</sqlMap>

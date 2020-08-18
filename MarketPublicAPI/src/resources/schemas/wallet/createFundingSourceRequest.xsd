@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+<xs:include schemaLocation="../common.xsd"/>
+<xs:include schemaLocation="walletCommon.xsd" id="cmn"/>
+  <xs:element name="createfundingSourceRequest">
+    <xs:complexType>
+      <xs:sequence>
+      	<xs:element name="typeOfSource" type="xs:string"/>
+        <xs:element maxOccurs="50" ref="accountSourceType"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="accountSourceType">
+    <xs:complexType>
+      <xs:choice>
+        <xs:sequence>
+        	<xs:element name="accountHolderName" type="xs:string"/>
+  			<xs:element name="cardType" type="xs:string"/>
+  			<xs:element name="cardNumber" type="xs:string"/>
+  			<xs:element name="expirationDate" type="xs:string"/>
+  			<xs:element name="billingAddress1" type="xs:string"/>
+  			<xs:element name="billingAddress2" type="xs:string"/>
+  			<xs:element name="city" type="xs:string"/>
+  			<xs:element name="state" type="xs:string"/>
+  			<xs:element name="zip" type="xs:string"/>
+  			<xs:element name="accountTypeId" type="xs:integer"/>
+        </xs:sequence>
+        <xs:sequence>
+            <xs:element name="bankAccountHolderName" type="xs:string"/>
+  			<xs:element name="bankName" type="xs:string"/>
+  			<xs:element name="accountNumber" type="xs:string"/>
+  			<xs:element name="routingNumber" type="xs:string"/>
+  			<xs:element name="accountTypeId" type="xs:integer"/>
+  			<xs:element name="accountDescription" type="xs:string"/>
+        </xs:sequence>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

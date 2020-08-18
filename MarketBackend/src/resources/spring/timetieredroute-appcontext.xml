@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+     http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd"
+   default-autowire="byName" >
+ 
+<!--
+    Document   : timetieredPoc-appcontext.xml
+    Created on : May 2, 2009, 11:25 PM
+    Author     : himanshu
+    Description:
+        Purpose of the document follows.
+-->
+
+    <bean id="tierroutingschedulermanager"
+          class="com.servicelive.routing.tiered.schedulermanager.TierRoutingSchedulerManager"
+          init-method="initManager" destroy-method="closeManager" autowire="byName">
+        <!-- AUTOWIRED tieredRouteScheduler
+        <property name="tieredRouteScheduler" ref="tieredRouteScheduler"/>
+        -->
+    </bean>
+
+   <!-- 
+  <bean id="schedFactoryBean"
+          class="org.springframework.scheduling.quartz.SchedulerFactoryBean"
+          lazy-init="true">
+            <property name="autoStartup" value="true"/>
+            <property name="waitForJobsToCompleteOnShutdown" value="true"/>
+            <property name="dataSource" ref="${datasource.main.bean.id}" />
+             <property name="quartzProperties">
+              <props> 
+              -->
+                <!--Job Store-->
+                <!--  
+            <prop key="org.quartz.jobStore.driverDelegateClass">
+                    org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+                </prop>
+                <prop key="org.quartz.jobStore.class">
+                    org.quartz.impl.jdbcjobstore.JobStoreTXT
+                </prop>
+                <prop key="org.quartz.jobStore.tablePrefix">QRTZ_</prop>
+               </props>
+               </property>
+           
+    </bean> 
+-->
+<!--  
+  <bean id="dataSource" class="com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource">
+          <property name="url" value="jdbc:mysql://localhost/testquartz"/>
+          <property name="user" value="hoza"/>
+          <property name="password" value="hoza"/>
+   </bean -->
+
+   <bean id="trRouteController" class="com.servicelive.routing.tiered.services.TierRouteController" >
+       <property name="scheduler" ref="tierroutingschedulermanager" />  
+       <property name="spnetworkBO" ref="spnetworkBO"/>
+       <property name="buyerFeatureSetBO" ref="buyerFeatureSetBO"/>
+       <property name="serviceOrderBO" ref="soBOAOP" />
+       <property name="orderGroupBO" ref="soGroupBO" />
+       <property name="tierRoutingHistoryBO" ref="soTierRoutingHistoryBo" />
+       <property name="serviceOrderDAO" ref ="serviceOrderDao" />
+       <property name="routeOrderGroupBO" ref ="routeOrderGroupBO" />
+   </bean>
+	
+	<bean id="soTierRoutingHistoryDao" class="com.newco.marketplace.persistence.daoImpl.routing.tiered.SoTierRoutingHistoryDAOImpl">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	 
+	</bean>
+	
+	<bean id="soTierRoutingHistoryBo" class="com.newco.marketplace.business.businessImpl.routing.tiered.SoTierRoutingHistoryBOImpl">
+	 	<property name="soTierRoutingHistoryDao">
+    		<ref bean="soTierRoutingHistoryDao"/>
+  		</property>	 
+	</bean>
+
+	<!-- 
+	<bean id="incidentBOTarget" class="com.newco.marketplace.business.businessImpl.so.order.IncidentBO" lazy-init="true">
+		<property name="incidentDao">
+			<ref bean="incidentDao" />
+		</property>
+		<property name="serviceOrderBO">
+			<ref bean="soBOAOP" />
+		</property>
+	</bean>
+	 -->
+
+
+
+</beans>

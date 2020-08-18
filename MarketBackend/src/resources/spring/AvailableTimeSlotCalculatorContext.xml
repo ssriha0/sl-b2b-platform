@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+     http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd"
+	default-autowire="byName">
+
+	<bean id="availableTimeSlotCalculatorBO"
+		class="com.newco.marketplace.business.capacity.timeslots.AvailableTimeSlotCalculatorBOImpl" lazy-init="true">
+		<property name="vendorSlCalendarService">
+			<ref bean="vendorSlCalendarService"/>
+		</property>
+		<property name="providerSearchDao">
+			<ref bean="providerSearchDao" />
+		</property>	
+		<property name="d2CProviderPortalDao" ref="d2cProviderPortalDao"></property>
+	</bean>
+</beans>

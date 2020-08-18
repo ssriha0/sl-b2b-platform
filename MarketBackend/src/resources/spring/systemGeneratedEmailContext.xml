@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<bean id="systemGeneratedEmailBO"
+		class="com.newco.marketplace.business.businessImpl.systemgeneratedemail.SystemGeneratedEmailBOImpl"
+		lazy-init="true">
+		<property name="iSystemGeneratedEmailDao">
+			<ref bean="systemGeneratedEmailDao" />
+		</property>
+		<property name="alertDao">
+			<ref bean="alertDao" />
+		</property>
+		<property name="emailTemplateBOImpl">
+			<ref bean="emailTemplateBean" />
+		</property>
+		<property name="surveyCryptographyUtil">
+			<ref bean="surveyCryptographyUtil" />
+		</property>
+		<property name="extendedSurveyDAO">
+			<ref bean="extendedSurveyDAO" />
+		</property>
+	</bean>
+	<bean id="systemGeneratedEmailDao"
+		class="com.newco.marketplace.persistence.daoImpl.systemgeneratedemail.SystemGeneratedEmailDaoImpl"
+		lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+	
+	<bean id="surveyCryptographyUtil"
+		class="com.newco.marketplace.util.SurveyCryptographyUtil">
+		<property name="applicationPropertiesDao">
+			<ref bean="applicationPropertiesDao" />
+		</property>
+	</bean>
+	
+</beans>

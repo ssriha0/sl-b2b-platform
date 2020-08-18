@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
+	default-lazy-init="true">
+
+
+	<bean id="leadManagementDaoFactory"
+		class="com.newco.marketplace.persistence.daoImpl.leadsmanagement.LeadManagementDaoFactory" 
+		scope="singleton">
+		<property name="leadDAOs">
+			<map>
+				<entry key="1" value-ref="lmsDaoImpl"/>
+				<entry key="2" value-ref="crmDaoImpl"/>
+				<entry key="3" value-ref="slDaoImpl"/>
+				<entry key="4" value-ref="slLeadDaoImpl"/>
+				<entry key="5" value-ref="isDaoImpl"/>
+			</map>
+		</property>
+	</bean>
+
+    <!-- Start BO  Loading -->
+	<bean id="leadProfileBO" class="com.newco.marketplace.business.businessImpl.leadprofile.LeadProfileBOImpl">
+		
+		<property name ="leadManagementDaoFactory">
+			<ref bean="leadManagementDaoFactory" />
+		</property>
+	</bean>
+	
+	<bean id="lmsDaoImpl" class="com.newco.marketplace.persistence.daoImpl.leadprofile.LMSProviderProfileDaoImpl" autowire="byName">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>	
+		<property name ="leadManagementDaoFactory">
+			<ref bean="leadManagementDaoFactory" />
+		</property>
+		<property name="lmsApiBaseUrl" 
+			value="${servicelive.lms.api.base.url}" >
+ 		</property>
+ 		<property name="lmsApiKey" 
+			value="${servicelive.lms.api.key}" >
+ 		</property>
+	</bean>
+	
+	<bean id="crmDaoImpl" class="com.newco.marketplace.persistence.daoImpl.leadprofile.CRMProviderProfileDaoImpl" autowire="byName">
+		
+	
+	<property name="crmApiBaseUrl" 
+			value="${servicelive.crm.api.base.url}" >
+ 		</property>
+ 		<property name="crmApiUserName" 
+			value="${servicelive.crm.api.username}" >
+ 		</property>
+ 		<property name="crmApiPassword" 
+			value="${servicelive.crm.api.password}" >
+ 		</property>
+	</bean>
+	
+	
+	<bean id="slDaoImpl" class="com.newco.marketplace.persistence.daoImpl.leadprofile.SLProviderProfileDaoImpl" autowire="byName">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>	
+	</bean>
+	
+	<bean id="slLeadDaoImpl" class="com.newco.marketplace.persistence.daoImpl.leadprofile.SLLeadDaoImpl" autowire="byName">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>	
+	</bean>
+	<bean id="isDaoImpl" class="com.newco.marketplace.persistence.daoImpl.leadprofile.InsideSalesProviderProfileDaoImpl" autowire="byName">
+		<property name="isApiBaseUrl" 
+			value="${servicelive.is.api.base.url}" >
+ 		</property>
+	</bean>
+</beans>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="vendorNotes">
+	<typeAlias alias="vendorNotes" type="com.newco.marketplace.vo.provider.VendorNotesVO"/>	
+	
+		<select id="vendorNotes.queryList"  parameterClass="vendorNotes" resultClass="vendorNotes">
+    			select note_id as noteId, 
+    			vendor_id as vendorId,
+    			note as note,
+    			created_date as createdDate,
+    			modified_date as modifiedDate,
+    			modified_by as modifiedBy
+    		from vendor_notes 
+			where vendor_id=#vendorId#
+    			order by modified_date desc
+								
+		</select>
+		
+		<update id="vendorNotes.update" parameterClass="vendorNotes">
+		update vendor_notes
+		<dynamic prepend="set">
+			<isGreaterThan prepend=", " property="noteId" compareValue="-1">note_id = #noteId#</isGreaterThan>
+			<isGreaterThan prepend=", " property="vendorId" compareValue="-1">vendor_id = #vendorId#</isGreaterThan>
+			<isNotNull prepend=", " property="note">note = #note#</isNotNull>
+			<isNotNull prepend=", " property="modifiedBy">modified_by = #modifiedBy#</isNotNull>
+			</dynamic>
+			where note_id = #noteId#
+		</update>
+	  
+    	<insert id="vendorNotes.insert" parameterClass="vendorNotes">
+        	insert into vendor_notes 
+			(vendor_id, 
+				note,
+				modified_by)
+			values(
+			   #vendorId#,
+			   #note#,
+			   #modifiedBy#)
+        	<selectKey resultClass="int">
+            	SELECT last_insert_id() as note_id
+        	</selectKey>    
+    </insert>
+    
+    <select id="vendorNotes.query" parameterClass="vendorNotes" resultClass="vendorNotes">
+	
+		select note_id as noteId,
+		   vendor_id as vendorId,
+	       note as note
+    	   from vendor_notes 
+		where note_id=#noteId#
+	</select>
+
+</sqlMap>

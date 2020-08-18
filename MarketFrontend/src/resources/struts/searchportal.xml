@@ -1,0 +1,98 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="searchportal" extends="ServiceLiveBase" >
+    	<default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+
+    	<global-results >
+			<result name="admin_search_success" type="redirectAction">
+				adminSearchController_execute
+			</result>
+			<result name="error" type="redirectAction">
+				<param name="actionName">errorAction</param>
+				<param name="errorMessage">${errorMessage}</param>
+				<param name="returnURL">${returnURL}</param>
+			</result>
+        	
+		</global-results>
+
+	    <action name="adminSearch_execute" class="SearchPortalAction"  method="input">
+	        <result name="search">/jsp/admin/member_search.jsp</result>
+	         <result name="success">/jsp/admin/member_search.jsp</result>
+
+	    </action>
+
+ 		<action name="adminSearch_searchBuyer" class="SearchPortalAction" method="searchBuyer">
+ 			 <result name="success">/jsp/admin/member_search_results_buyer.jsp</result>
+ 			 <result name="input">/jsp/admin/member_search_results_buyer.jsp</result>
+ 			 <result name="reset" type="redirectAction">adminSearch_execute</result>
+
+	    </action>
+
+
+	    <action name="adminSearch_searchServiceProvider" class="SearchPortalAction" method="searchServiceProvider">
+ 			 <result name="success">/jsp/admin/member_search_results_service_provider.jsp</result>
+ 			 <result name="reset" type="redirectAction">adminSearch_execute</result>
+ 			 <result name="input">/jsp/admin/member_search_results_service_provider.jsp</result>
+	    </action>
+
+	     <action name="adminSearch_searchProviderFirm" class="SearchPortalAction" method="searchProviderFirm">
+ 			 <result name="success">/jsp/admin/member_search_results_provider_firm.jsp</result>
+ 			 <result name="input">/jsp/admin/member_search_results_provider_firm.jsp</result>
+ 			 <result name="reset" type="redirectAction">adminSearch_execute</result>
+	    </action>
+
+	     <action name="adminSearch_getSecondarySkill1" class="SearchPortalAction" method="getSecondarySkill1">
+ 			  <result name="secondarySkill1">/jsp/admin/member_search_secondarySkill1.jsp</result>
+	    </action>
+
+	    <action name="adminSearch_getSecondarySkill2" class="SearchPortalAction" method="getSecondarySkill2">
+ 			  <result name="secondarySkill2">/jsp/admin/member_search_secondarySkill2.jsp</result>
+	    </action>
+
+
+	    <action name="adminSearch_navigateToBuyerPage" class="SearchPortalAction" method="navigateToBuyerPage" >
+	    	<result name="gotoManageUsers" type="redirectAction">
+	            <param name="actionName">dashboardAction</param>
+        	</result>
+	    </action>
+	    <action name="adminSearch_navigateToProviderPage" class="SearchPortalAction" method="navigateToProviderPage" >
+	    	<result name="gotoEditProfile" type="redirectAction">
+	            <param name="actionName">dashboardAction?spEditProfile=${spEditProfile}&amp;resourceId=${resourceId}</param>
+        	</result>
+        	<result name="gotoEditCompanyProfile" type="redirectAction">
+	            <param name="actionName">dashboardAction?spEditProfile=${spEditProfile}&amp;resourceId=${resourceId}</param>
+        	</result>
+        	<result name="gotoManageUsers" type="redirectAction">
+	            <param name="actionName">dashboardAction</param>
+        	</result>
+	    </action>
+
+
+	      <action name="adminSearch_backToSearchPortal" class="SearchPortalAction" method="backToSearchPortal" >
+	       <result name="success">/jsp/admin/member_search.jsp</result>
+	    	  <result name="input">/jsp/admin/member_search.jsp</result>
+
+	    </action>
+		
+		<action name="adminSearch_resetpassword" class="SearchPortalAction" method="resetPassword">
+    		<result name="redirect" type="redirectAction">
+        		<param name="id">${userId}</param>
+    		</result>
+		</action>
+		
+
+<action name="adminSearch_updateServiceProviderName" class="SearchPortalAction" method="updateServiceProviderName">
+ 	 <result name="success" type="redirectAction">adminSearch_execute</result>
+ 	 <result name="failure">/jsp/admin/member_search.jsp</result>
+ 
+</action>
+
+
+
+
+
+    </package>
+
+</struts>

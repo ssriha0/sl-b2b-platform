@@ -1,0 +1,81 @@
+<!DOCTYPE validators PUBLIC
+        "-//Apache Struts//XWork Validator 1.0.2//EN"
+        "http://struts.apache.org/dtds/xwork-validator-1.0.2.dtd">
+        
+<validators>
+   <field name="buyerRegistrationDTO.sizeOfCompany">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="buyerRegistrationDTO.sizeOfCompany.error.required" />
+      </field-validator>
+    </field>
+    <field name="buyerRegistrationDTO.primaryIndustry">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="buyerRegistrationDTO.primaryIndustry.error.required" />
+      </field-validator>
+  </field>
+   <field name="buyerRegistrationDTO.annualSalesRevenue">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="buyerRegistrationDTO.annualSalesRevenue.error.required" />
+      </field-validator>
+  </field> 
+ <field name="buyerRegistrationDTO.businessStreet1">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="buyerRegistrationDTO.businessStreet1.error.required" />
+      </field-validator>
+  </field>
+   <field name="buyerRegistrationDTO.businessCity">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="buyerRegistrationDTO.businessCity.error.required" />
+      </field-validator>
+  </field>
+
+ <field name="buyerRegistrationDTO.businessState">
+     <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="buyerRegistrationDTO.businessState.error.required" />
+      </field-validator>
+  </field>
+
+     <field name="buyerRegistrationDTO.businessZip">
+	   <field-validator type="requiredstring" short-circuit="true">
+	        <param name="trim">true</param>
+	        <message key="buyerRegistrationDTO.businessZip.error.required" />
+	    </field-validator>
+	    <field-validator type="regex" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="regex">^\d+$</param>
+	        <message key="buyerRegistrationDTO.businessZip.error.required.number"/>
+	    </field-validator>
+	    <field-validator type="stringlength" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="minLength">5</param>
+	        <message key="buyerRegistrationDTO.businessZip.error.required.minlength"/>
+	    </field-validator>
+	</field>
+
+     <field name="buyerRegistrationDTO.mailingZip">
+	  
+	    <field-validator type="regex" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="regex">^\d+$</param>
+	        <message key="buyerRegistrationDTO.mailingZip.error.required.number"/>
+	    </field-validator>
+	    <field-validator type="stringlength" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="minLength">5</param>
+	        <message key="buyerRegistrationDTO.mailingZip.error.required.minlength"/>
+	    </field-validator>
+	</field>
+	<field name="buyerRegistrationDTO.phoneExtn">
+      <field-validator type="regex" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="regex">^\d+$</param>
+	        <message key="buyerRegistrationDTO.phoneExtn.error.required.number"/>
+	    </field-validator>
+	</field>
+ </validators>

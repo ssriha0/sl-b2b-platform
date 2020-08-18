@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="location">
+	<typeAlias alias="plocation" type="com.newco.marketplace.vo.provider.Location"/>	
+	<typeAlias alias="resourceLocationType" type="com.newco.marketplace.vo.provider.ResourceLocationType"/>	
+		<select id="location.queryP" parameterClass="plocation" resultClass="plocation">
+    	select  locn_id as locnId, 
+				locn_name as locnName,
+				street_1 as street1, 
+				street_2 as street2,
+				city as city,
+				state_cd as stateCd, 
+				zip as zip,
+				zip4 as zip4,
+				apt_No as aptNo, 
+				country as country,
+				locn_type_id as locnTypeId,
+				created_date as createdDate, 
+				modified_date as modifiedDate,
+				modified_by as modifiedBy
+			from location
+			<dynamic prepend="where">
+				<isNotNull prepend="AND " property="locnId">locn_id = #locnId#</isNotNull>
+			</dynamic>		
+	</select>
+	
+	<select id="location.queryResourceWorkLocationP" parameterClass="resourceLocationType" resultClass="resourceLocationType">
+    	select  vr.locn_id as locnId, 
+    			vr.resource_id as resourceId,
+    			vr.service_area_radius_id as radius,
+    			vr.hourly_rate as HourlyRate,
+    			l.locn_type_id as locnTypeId,
+				l.locn_name as locnName,
+				l.street_1 as street1, 
+				l.street_2 as street2,
+				l.city as city,
+				l.state_cd as stateCd, 
+				l.zip as zip,
+				l.zip4 as zip4, 
+				l.country as country
+		from 	location l,
+				vendor_resource vr
+		where 	vr.locn_id = l.locn_id
+		and 	resource_id = #resourceId#
+		and 	locn_type_id = 4
+	</select>
+	
+	<select id="location.queryResourceLocationTypeP" parameterClass="resourceLocationType" resultClass="resourceLocationType">
+		select  rl.locn_id as locnId, 
+    			vr.resource_id as resourceId,
+    			vr.service_area_radius_id as radius,
+    			l.locn_type_id as locnTypeId,
+				l.locn_name as locnName,
+				l.street_1 as street1, 
+				l.street_2 as street2,
+				l.city as city,
+				l.state_cd as stateCd, 
+				l.zip as zip,
+				l.zip4 as zip4, 
+				l.country as country
+		from 	vendor_resource vr,		
+				resource_location rl,
+				location l
+		where 	vr.resource_id = rl.resource_id
+		and     rl.locn_id = l.locn_id
+		and 	vr.resource_id = #resourceId#
+		and 	locn_type_id = #locnTypeId#	
+		</select>
+
+	<update id="location.updateP" parameterClass="plocation">
+		update location
+		<dynamic prepend="set">
+			<isNotNull prepend=", " property="locnId">locn_id = #locnId#</isNotNull>
+			<isNotNull prepend=", " property="locnName">locn_name = #locnName#</isNotNull>
+			<isNotNull prepend=", " property="street1">street_1 = #street1#</isNotNull>
+			<isNotNull prepend=", " property="street2">street_2 = #street2#</isNotNull>
+			<isNotNull prepend=", " property="city">city = #city#</isNotNull>
+			<isNotNull prepend=", " property="stateCd">state_cd = #stateCd#</isNotNull>
+			<isNotNull prepend=", " property="zip">zip = #zip#</isNotNull>
+			<isNotNull prepend=", " property="zip4">zip4 = #zip4#</isNotNull>
+			<isNotNull prepend=", " property="country">country = #country#</isNotNull>
+			<isNotNull prepend=", " property="aptNo">apt_no = #aptNo#</isNotNull>
+			<isGreaterThan prepend=", " property="locnTypeId" compareValue="-1">locn_type_id = #locnTypeId#</isGreaterThan>
+		</dynamic>
+		where locn_id = #locnId#
+	</update>
+	
+    <insert id="location.insertP" parameterClass="plocation">
+		INSERT INTO location (locn_name,
+							  <dynamic>
+							  	  <isGreaterThan property="locnTypeId" compareValue="-1">locn_type_id,</isGreaterThan>
+							  </dynamic>
+		                      street_1,
+		                      street_2,
+		                      city,
+		                      <dynamic>
+				              	<isNotNull property="stateCd">state_cd,</isNotNull>
+				              </dynamic>
+				              zip,
+				              zip4,
+							  country,apt_no)
+		VALUES (#locnName#,
+		        <dynamic>
+					<isGreaterThan property="locnTypeId" compareValue="-1">#locnTypeId#,</isGreaterThan>
+				</dynamic>
+				#street1#,
+				#street2#,
+				#city#,
+				<dynamic>
+				    <isNotNull property="stateCd" >#stateCd#,</isNotNull>
+				</dynamic>
+				#zip#,
+				#zip4#,
+				#country#,#aptNo#)
+        <selectKey resultClass="int">
+            SELECT last_insert_id() as locnId
+        </selectKey>    
+	</insert>
+	
+	<insert id="locationId.insertP" parameterClass="plocation">
+        insert into location
+			(locn_id, 
+			locn_name,
+			street_1,
+			street_2,
+			city,
+			state_cd,
+			zip,
+			zip4,
+			country,
+			locn_type_id)			
+		values(#locnId#,
+			   #locnName#,
+			   #street1#,
+			   #street2#,
+			   #city#,
+			   #stateCd#,
+			   #zip#,
+			   #zip4#,
+			   #country#,
+			   #locnTypeId#)
+        <selectKey resultClass="int">
+            SELECT last_insert_id() as locnId
+        </selectKey>    
+    </insert>
+    <select id="vendorlocation.queryP" resultClass="plocation">
+    	select  l.locn_id as locnId, 
+				l.locn_name as locnName,
+				l.street_1 as street1, 
+				l.street_2 as street2,
+				l.city as city,
+				l.state_cd as stateCd, 
+				l.zip as zip,
+				l.zip4 as zip4, 
+				l.country as country,
+				l.locn_type_id as locnTypeId,
+				l.created_date as createdDate, 
+				l.modified_date as modifiedDate,
+				l.modified_by as modifiedBy
+			from location l, vendor_location vl where vl.locn_id=l.locn_id and l.locn_type_id=1 and vl.vendor_id =#vendorId#
+				
+	</select>
+    
+    
+</sqlMap>

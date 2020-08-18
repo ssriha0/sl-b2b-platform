@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
+	default-lazy-init="true">
+	
+	<bean id="leadReminderProcessor" class="com.newco.batch.leadManagement.LeadReminderProcessor">
+		<property name="leadProcessingBO">
+			<ref bean="leadProcessingBO" />
+		</property>
+				<property name="baseUrl"
+	              value="${provider.pic.base.url}">
+	      </property>
+	      <property name="docPath"
+	              value="${provider.pic.doc.path}">
+	      </property>
+	</bean>
+</beans>

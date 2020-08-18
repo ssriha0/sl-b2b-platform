@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-2.0.xsd
+        http://www.springframework.org/schema/jee 
+        http://www.springframework.org/schema/jee/spring-jee-2.0.xsd">
+
+
+	<bean id="sharpGateway" class="com.servicelive.wallet.valuelink.sharp.SharpGateway">		 
+		<property name="jmsTemplate" ref="jmsTemplate" />
+		<property name="replyTo" ref="SLResponseQueue" />
+		<property name="delegate" ref="valueLinkResponseHandler" />
+	</bean>
+	
+	
+	<bean id="jmsTemplate" 
+	      class="org.springframework.jms.core.JmsTemplate102">
+	    <property name="connectionFactory">
+	        <ref bean="jmsQueueConnectionFactory"/>
+	    </property>
+	    <property name="defaultDestination">
+	        <ref bean="SLRequestQueue"/>
+	    </property>
+	</bean>
+	
+	<bean id="sharpSocketBo" class="com.servicelive.wallet.valuelink.sharp.socket.bo.SharpSocketBoImpl">
+		<property name="retryCount" value="${sharp.socket.retry.count}"></property>
+		<property name="socketContainerPool" ref="socketObjectPool"></property>
+	</bean>
+	
+	
+	<bean id="socketConfig" class="com.servicelive.wallet.valuelink.socket.SocketConfig">
+		<property name="connectTimeout" value="${sharp.socket.connect.timeout.in.milliseconds}"/>
+		<property name="receiveTimeout" value="${sharp.socket.receive.timeout.in.milliseconds}"/>
+		<property name="primaryHostName" value="${sharp.primary.hostname}"/>
+		<property name="secondaryHostName" value="${sharp.secondary.hostname}"></property>
+		<property name="primaryPortString" value="${sharp.primary.ports}"></property>
+		<property name="secondaryPortString" value="${sharp.secondary.ports}"></property>	
+	 	<property name="hearbeatInterval" value="${sharp.heartbeatinterval}"></property>
+		<property name="reconnectTimeout" value="${sharp.reconnect.timeout}"></property>
+		<property name="maxConnections" value="${sharp.socket.pool.max.connection}"></property>		
+	</bean>
+	
+	<bean id="socketContainerFactory" class="com.servicelive.wallet.valuelink.socket.SocketContainerFactory">
+		<property name="socketConfig" ref="socketConfig" />		
+	</bean>
+	
+	<bean id="socketObjectPool" class="com.servicelive.wallet.valuelink.socket.SocketContainerPool">
+		<property name="socketConfig" ref="socketConfig" /> 
+		<property name="socketContainerFactory" ref="socketContainerFactory"></property>		
+		<property name="requestHandler" ref="valueLinkRequestHandler" />	
+		<property name="useIPSocket" value="${valuelink.useipsockes}"></property>	
+	</bean>	
+	
+	<bean id="valueLinkRequestHandler" class="com.servicelive.wallet.valuelink.ValueLinkRequestHandlerBO">
+		<property name="isoRequestProcessor" ref="isoRequestProcessorWallet"/>
+		<property name="valueLinkQueueDao" ref="valueLinkQueueDao"/>
+		<property name="sharpGateway" ref="sharpGateway"/>
+		<property name="identifierDao" ref="identifierDaoWallet"/>
+		<property name="applicationProperties" ref="applicationPropertiesWallet"/>
+		<property name="sharpSocketBo" ref="sharpSocketBo"/>
+		<property name="valueLinkResponseHandlerBO" ref="valueLinkResponseHandler"/>
+	</bean>
+
+	<bean id="valueLinkResponseHandler" class="com.servicelive.wallet.valuelink.ValueLinkResponseHandlerBO">
+		<constructor-arg>
+			<ref bean="sharpGateway"/>
+		</constructor-arg>
+		<property name="valueLink" ref="valueLink"/>
+		<property name="valueLinkDao" ref="valueLinkDao"/>
+		<property name="valueLinkQueueDao" ref="valueLinkQueueDao"/>
+		<property name="isoResponseProcessor" ref="isoResponseProcessor"/>
+		<!--  property name="accountDao" ref="accountDao"/ -->
+		<property name="alert" ref="alertBO" />
+		<property name="sendCountLimit" value="5"/>
+	</bean>
+
+	<!-- TRANSACTION SUPPORT -->
+	<bean id="valueLinkRequestHandlerTx"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		lazy-init="true">
+		<property name="proxyInterfaces">
+			<list>
+				<value>
+					com.servicelive.wallet.valuelink.IValueLinkRequestHandlerBO
+				</value>
+			</list>
+		</property>
+		<property name="target">
+			<ref bean="valueLinkRequestHandler" />
+		</property>
+		<property name="transactionManager">
+			<ref bean="transactionManagerFinance" />
+		</property>
+		<property name="transactionAttributeSource">
+			<ref bean="transactionAttributes" />
+		</property>
+	</bean>
+	
+	<bean id="valueLinkResponseHandlerTx"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		lazy-init="true">
+		<property name="proxyInterfaces">
+			<list>
+				<value>
+					com.servicelive.wallet.valuelink.sharp.ISharpCallback
+				</value>
+			</list>
+		</property>
+		<property name="target">
+			<ref bean="valueLinkResponseHandler" />
+		</property>
+		<property name="transactionManager">
+			<ref bean="transactionManagerFinance" />
+		</property>
+		<property name="transactionAttributeSource">
+			<ref bean="transactionAttributes" />
+		</property>
+	</bean>	
+	
+	<bean id="valueLinkQueueSingleton" class="com.servicelive.wallet.valuelink.ejb.ValueLinkQueueSingleton">
+		<property name="requestHandler" ref="valueLinkRequestHandler"/>
+		<property name="valueLinkDao" ref="valueLinkDao"/>
+		<property name="applicationProperties" ref="applicationPropertiesWallet"/>
+	</bean>
+</beans>
+
+

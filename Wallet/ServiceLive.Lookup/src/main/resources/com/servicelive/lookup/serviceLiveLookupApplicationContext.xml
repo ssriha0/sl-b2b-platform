@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-2.0.xsd">
+      
+	<bean id="lookup" class="com.servicelive.lookup.LookupBO">
+		<property name="accountDao" ref="accountDao" />
+		<property name="lookupSupplierDao" ref="lookupSupplierDao" />
+		<property name="cryptography" ref="cryptographyWallet" />
+		<property name="cryptography128" ref="cryptography128Wallet" />
+	</bean>
+        	
+	<bean id="accountDao" class="com.servicelive.lookup.dao.AccountDao">
+  		<property name="sqlMapClient">
+  			<ref bean="serviceLiveLookupFinanceSqlMapClient"/>
+		</property>
+	</bean>
+        	
+	<bean id="lookupSupplierDao" class="com.servicelive.lookup.dao.LookupSupplierDao">
+  		<property name="sqlMapClient">
+  			<ref bean="serviceLiveLookupSupplierSqlMapClient"/>
+		</property>
+	</bean>
+	
+	<bean id="cryptography128Wallet"
+		class="com.servicelive.common.util.Cryptography128"
+		lazy-init="true">
+		<property name="slkSecureDao">
+			<ref bean="slkSecureDaoWallet" />
+		</property>
+	</bean>
+	<bean id="slkSecureDaoWallet"
+		class="com.servicelive.common.properties.SlkSecureDao"
+		lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="serviceLiveSecureSQLMap" />
+		</property>
+	</bean>
+	<bean id="serviceLiveSecureSQLMap" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation">
+			<value>classpath:/com/servicelive/common/serviceLiveCommonSqlMapConfig.xml</value>
+		</property>
+		<property name="dataSource">
+			<ref bean="${datasource.secure.bean.id}" />
+		</property>
+	</bean>
+	<bean id="serviceLiveLookupFinanceSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation">
+			<value>classpath:/com/servicelive/lookup/serviceLiveLookupFinanceSqlMapConfig.xml</value>
+		</property>
+		<!-- property name="dataSource" ref="dataSource"/ -->
+		<property name="dataSource">
+			<ref bean="${datasource.finance.bean.id}" />
+		</property>
+	</bean>
+	
+	<bean id="serviceLiveLookupSupplierSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation">
+			<value>classpath:/com/servicelive/lookup/serviceLiveLookupSupplierSqlMapConfig.xml</value>
+		</property>
+		<!-- property name="dataSource" ref="dataSource"/ -->
+		<property name="dataSource">
+			<ref bean="${datasource.main.bean.id}" />
+		</property>
+	</bean>
+    
+</beans>
+

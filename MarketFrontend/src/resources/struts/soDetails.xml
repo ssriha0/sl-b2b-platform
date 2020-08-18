@@ -1,0 +1,392 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+      <package name="soDetails" extends="ServiceLiveBase" >
+        <default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+     
+    	<global-results >
+    		<result name="gl_monitor_success" type="redirectAction">serviceOrderMonitor.action</result>
+			<result name="gl_details_success" type="redirectAction">soDetailsController?defaultTab=${defaultTab}&amp;soId=${soId}&amp;resId=${resourceId}&amp;groupId=${groupId}</result>
+			<result name="error" type="redirectAction">
+				<param name="actionName">errorAction</param>
+				<param name="errorMessage">${errorMessage}</param>				
+				<param name="returnURL">${returnURL}</param>
+			</result>
+			<result name="Exception" type="redirectAction">
+				<param name="actionName">errorAction</param>
+				<param name="errorMessage">Internal Server Error</param>
+				<param name="returnURL">${returnURL}</param>
+			</result>
+		</global-results>
+
+		<global-exception-mappings>
+			<exception-mapping exception="java.sql.SQLException" result="SQLException"/>
+			<exception-mapping exception="java.lang.Exception" result="Exception"/>
+		</global-exception-mappings>
+			 
+		<action name="errorAction" class="errorAction">
+		   	<result name="success">/jsp/public/common/commonError.jsp</result>
+		</action>    
+
+	    <!--		
+		<action name="addSONote" class="addNoteServiceLiveBean" method="addServiceOrderNote">
+			<result name="success">/jsp/iter_demo/demo.jsp</result>		
+		</action>	
+
+	    <action name="soratesaveresponse" class="serviceOrderRateAction" method="saveResponse">
+	        	<result name="success">/jsp/survey.jsp</result>
+	    </action>
+	    
+	    <action name="sobuyerrating" class="serviceOrderRateAction" method="getbuyerRatings">
+			<result name="buyerdashboard" type="redirectAction">
+				<param name="actionName">dashboardAction</param>
+				<param name="userRole">adminBuyer</param>
+			</result>
+			<result name="providerdashboard" type="redirectAction">
+				<param name="actionName">dashboardAction</param>
+				<param name="userRole">adminProvider</param>
+			</result>				
+	    </action>
+	    -->
+
+	    <action name="soDetailsSupportNote" class="soDetailsNotesAction" method="addDetailSupportNote">	
+	    	<result name="success" type="redirectAction">soDetailsController?defaultTab=${defaultTab}&amp;soId=${soID}&amp;resId=${resourceId}&amp;groupId=${groupId}</result>        
+	    </action>
+	    
+	    <action name="soDetailsQueueNote" class="soDetailsQueueNoteAction" method="addSODetailQueueNote">	
+	    	<result type="stream">
+		    <param name="contentType">text/html</param>
+		    <param name="inputName">inputStream</param>
+		  </result>
+	    </action>
+	    
+	    <action name="soDetailsAddGeneralNote" class="soDetailsNotesAction" method="addDetailGeneralNote">
+	    	<result name="success" type="redirectAction">soDetailsController?defaultTab=${defaultTab}&amp;soId=${soID}&amp;resId=${resourceId}&amp;groupId=${groupId}</result>
+	    </action>
+	    
+	        
+	    <action name="soDetailsNoteClick_markAsRead" class="soDetailsNotesAction" method="markAsRead">
+	    	<result name="success">/jsp/auto_acceptance/get_json.jsp</result>
+	    </action>
+	    
+	     <action name="soDetailsNoteClick_markAsUnRead" class="soDetailsNotesAction" method="markAsUnRead">
+	    	<result name="success">/jsp/auto_acceptance/get_json.jsp</result>
+	    </action>
+	    
+	    <action name="soDetailsController" class="soDetailsControllerAction" >
+	        <result name="login" type="redirectAction">login.action</result>
+	         <result name="soMonitor" type="redirectAction">serviceOrderMonitor?displayTab=Received&amp;somError=${somError}&amp;somErrorMsg=${somErrorMsg}&amp;soDetails=${soDetails}</result>	    
+	        <result type="tiles">base.servicelive.details</result>
+	        <result name="adminDashboard">/jsp/admin/sl_admin_dashboard.jsp</result>	        
+	    </action>
+	    <action name="soDetailsController_loadForCancelServiceOrder" class="soDetailsControllerAction" method="loadForCancelServiceOrder">
+	       <result name="success">/jsp/so_monitor/grid_views/sod_cancellation.jsp</result>        
+	    </action>
+	    
+	    <action name="soDetailsSummary" class="soDetailsSummaryAction" >			
+	        <result name="success">/jsp/details/body/html_sections/modules/tab_summary_accepted.jsp</result>	    	    
+	        <result name="received">/jsp/details/body/html_sections/modules/tab_summary_prov_posted_recd.jsp</result>        
+	    </action>
+	    <!-- Estimation Details -->
+	     <action name="estimateDetails" class="orderManagementControllerAction" method="displayAddEstimateSOPopUp">			
+	        <result name="success">/jsp/details/body/html_sections/modules/estimate_details.jsp</result>	    	    
+	    </action>
+	    <!--  -->
+        <action name="soDetailsWarrantyOrderSummary" class="soDetailsSummaryAction" method="loadForWarrantyOrder">
+	       <result name="success">/jsp/so_monitor/grid_views/sod_warranty_order.jsp</result>        
+	    </action>
+	    <action name="soDetailsBidNotes" class="soDetailsBidNotesAction" >			
+	        <result name="success">/jsp/details/body/html_sections/modules/tab_bid_notes.jsp</result>	    	    
+	    </action>
+
+	    <action name="soDetailsSummarySubStatusChange" class="soDetailsSummaryAction" method="updateSubStatus">
+	    </action>
+	    
+	    <action name="soDetailsSummaryBuyerReferenceChange" class="soDetailsSummaryAction" method="updateBuyerReference">
+	    </action>
+	    
+	    <action name="soDetailsPartsTrackingChange" class="soDetailsPartsAction" method="updatePartsInfo">
+	    </action>
+	    
+	     <!-- Priority 5B changes: Update custom reference-model and serial no -->
+	    
+	    <action name="soDetailsSummaryCustRefChange" class="soDetailsSummaryAction" method="updateCustomReference">
+	    	<result name="success">/jsp/details/body/html_sections/modules/panel_model_serial_number.jsp</result>
+	    </action>
+
+	    <action name="soDetailsNotes" class="soDetailsNotesAction"  method="loadNotes">
+	        <result name="general">/jsp/details/body/html_sections/modules/tab_so_notes.jsp</result>
+	        <result name="support">/jsp/details/body/html_sections/modules/tab_support.jsp</result>	    	    
+	    </action>
+	    	    
+	    <action name="soDetailsResponseHistory" class="soDetailsResponseHistoryAction" >
+	        <result name="success">/jsp/details/body/html_sections/modules/tab_response_status.jsp</result>	    	    
+	    </action>
+	  	<action name="soDetailsResponseStatus" class="soDetailsResponseStatusAction" >
+	        <result name="success">/jsp/details/body/html_sections/modules/tab_response_status.jsp</result>	    	    
+	    </action>	    
+	   
+	    <action name="soDetailsOrderHistory" class="soDetailsOrderHistoryAction" >
+	        <result name="success">/jsp/details/body/html_sections/modules/tab_so_history.jsp</result>	    	    
+	    </action><!--	    	    
+	    <action name="soDetailsSupport" class="soDetailsSupportAction" >
+	        <result name="success">/jsp/details/body/html_sections/modules/tab_support.jsp</result>	    	    
+	    </action>
+	    	    
+	    --><action name="soDetailsReportAProblem" class="soDetailsReportAProblemAction" >
+	        <result name="success">/jsp/details/body/html_sections/modules/tab_report_a_problem.jsp</result>	    	    
+	    </action>
+        <action name="soDetailsSubmitProblem" class="soDetailsReportAProblemAction" method="submitProblem">
+	    </action>
+	    <action name="soDetailsSubmitResolution" class="soDetailsIssueResolutionAction" method="submitResolution">
+	    </action>
+	        	 	    
+	    <action name="soDetailsRateProvider" class="soDetailsRateProviderAction" >
+	        <result name="success">/jsp/details/body/html_sections/modules/tab_rate_provider.jsp</result>	    	    
+	    </action>
+	    
+	    <action name="soDetailsRateProviderSave" class="soDetailsRateProviderAction" method="saveResponse" >	    
+        	<result name="success" type="redirectAction">soDetailsController?role=${detailsRole}&amp;status=${detailsStatus}&amp;soId=${soId}</result>
+        	<result name="error" type="redirectAction">soDetailsController?defaultTab=${defaultTab}&amp;soId=${soId}</result>
+	    </action>	    
+	    <action name="soDetailsViewRatings" class="soDetailsViewRatingsAction" >
+	        <result name="success">/jsp/details/body/html_sections/modules/tab_view_ratings.jsp</result>	    	    
+	    </action>
+	    <action name="soDetailsViewRatingsNew" class="soDetailsViewRatingsNewAction" >
+	        <result name="success">/jsp/details/body/html_sections/modules/tab_view_ratings_new.jsp</result>	    	    
+	    </action>	    
+	    <action name="soDetailsProvCompletionRecord" class="soDetailsCompletionRecordAction" >
+	        <result name="successComplete">/jsp/details/body/html_sections/modules/tab_prov_comp_record.jsp</result>	
+	        <result name="successClose">/jsp/details/body/html_sections/modules/tab_buyer_comp_record.jsp</result>    	    
+	    </action>	    	    	    
+	    <action name="soDetailsBuyerCompletionRecord" class="soDetailsCompletionRecordAction" >
+	        <result name="success">/jsp/details/body/html_sections/modules/tab_buyer_comp_record.jsp</result>	    	    
+	    </action>
+   		<action name="soDetailsDisplayCloseAndPay" class="soDetailsCloseAndPayAction">
+	        <result name="success">/jsp/details/body/html_sections/modules/tab_buyer_comp_docs.jsp</result>
+	    </action>	    
+	    <action name="soDetailsSubmitCloseAndPay" class="soDetailsCloseAndPayAction" method="closeAndPay">
+	    	<result name="spendLimitValidation" type="redirectAction">soDetailsController?defaultTab=${defaultTab}&amp;message=${message}&amp;soId=${soId}</result>
+		</action>
+	    
+	    <action name="soDetailsIssueResolution" class="soDetailsIssueResolutionAction" >
+	        <result name="success">/jsp/details/body/html_sections/modules/tab_issue_resolution.jsp</result>	    	    
+	    </action>
+	    	    
+	   <action name="soDetailsTimeOnSite_*" class="soDetailsTimeOnSiteAction" method="{1}">
+	        <result name="success">/jsp/details/body/html_sections/modules/tab_time_on_site.jsp</result>	    	    
+	    </action>    
+	     
+	    <action name="soDetailsRateBuyer" class="soDetailsRateBuyerAction" >
+	        <result name="success">/jsp/details/body/html_sections/modules/tab_rate_buyer.jsp</result>	    	    
+	    </action>	    
+	    
+	    <action name="soDetailsResponseStatus" class="soDetailsResponseStatusAction">
+	    	<!-- <result>/drops/wizard_and_details/2007_10_12/details/html/posted_sent.jsp</result> -->
+	    	<result>/jsp/details/body/html_sections/modules/tab_response_status.jsp</result>
+	    	    	
+	    </action>
+	    <action name="soDetailsAcceptCondOff" class="soDetailsResponsesAction" method="acceptConditionalOffer">
+	    	<!--  <result name="success">/jsp/details/body/html_sections/modules/tab_response_status.jsp</result>
+	    	<result name="input">/jsp/details/body/html_sections/modules/tab_response_status.jsp</result>-->
+	    	<result name="success" type="redirectAction">soDetailsController?id=${_soId}&amp;role=buyer&amp;status=${detailsStatus}</result>
+	    	<result name="spendLimitError" type="redirectAction">soDetailsController?id=${_soId}&amp;role=buyer&amp;status=${detailsStatus}&amp;defaultTab=${defaultTab}</result>
+	    	<result name="details_success" type="redirectAction">soDetailsController?defaultTab=${defaultTab}&amp;soId=${soID}&amp;resId=${resourceId}&amp;groupId=${groupID}</result>
+	    </action>  
+	    <action name="soDetailsUpdateComments" class="soDetailsResponseStatusAction" method="updateMarketMakerResponse">
+	    	<!--  <result name="success">/jsp/details/body/html_sections/modules/tab_response_status.jsp</result> -->
+	    	<!--   <result name="success" type="redirectAction">soDetailsController?id=${_soId}&amp;role=buyer&amp;status=${detailsStatus}</result> -->
+	    	<result name="success" type="redirectAction">soDetailsController?defaultTab=${defaultTab}&amp;soId=${soID}&amp;groupId=${groupID}&amp;cameFromWorkflowMonitor=${fromWFM}&amp;tabForWFM=${tabForWFM}</result>
+	    </action>   	    
+	    <action name="soDetailsAcceptSO" class="soDetailsSummaryAction" method="acceptServiceOrder">
+			<result name="providersuccess" type="redirectAction">soDetailsController?id=${_soId}&amp;role=provider&amp;status=accepted&amp;soId=${soId}&amp;groupId=${groupId}&amp;resId=${resourceId}</result>
+			<result name="soAcceptError" type="redirectAction">soDetailsController?defaultTab=${defaultTab}&amp;soId=${soId}&amp;groupId=${groupId}&amp;resId=${resourceId}</result>  	    
+	    </action>
+	   	<action name="soDetailsQuickLinks" class="soDetailsQuickLinksAction" >
+	        <result name="success">/jsp/details/body/html_sections/modules/quick_links.jsp</result>
+  	    </action>
+  	    
+	   <action name="soDetailsBid_*" class="soDetailsBidAction" method="{1}">
+	        <result name="success">/jsp/details/body/html_sections/modules/panel_service_order_bid.jsp</result>	    	    
+	    </action>      	    
+  	    
+	     <action name="providerConditionalOffer" class="soProviderConditionalOfferAction" 
+	    	method="createConditionalOffer">
+	      	<result type="redirectAction">soDetailsController?soId=${soID}&amp;groupId=${groupID}&amp;resId=${resId}</result>
+	      	<result name="out">base.servicelive.index</result>
+	      	
+	    </action>
+	     <action name="withdrawConditionalOffer" class="soProviderConditionalOfferAction" 
+	    	method="withDrawCondOffer">
+	        <result type="redirectAction">soDetailsController?soId=${soID}&amp;groupId=${groupID}&amp;resId=${resId}</result>
+	    </action>
+	    <action name="providerCouterOfferReasons" class="soProviderConditionalOfferAction" 
+	    	method="getReasonsForSelectedCounterOffer">	    
+	    	<result name="success">/jsp/details/base/counter_offer_reasons_list.jsp</result>	        
+	    </action>
+	     <action name="soDetailsCompleteForPayment_*" class="soDetailsCompleteForPaymentAction" method="{1}">   
+	        <result name="success">/jsp/details/body/html_sections/modules/tab_prov_comp_docs.jsp</result>	    	    
+	    </action>
+	    
+	    <action name="soDetailsProvCompletionRecordUpdate" class="soDetailsCompletionRecordAction" method="editCompletionRecordForSo">
+	    </action>
+	    		    
+	    <action name="incSpendLimit" class="soDetailsIncreaseSpendLimitAction" method="increaseSpendLimit">
+	    	<result name="success" type="redirectAction">soDetailsController?defaultTab=${defaultTab}&amp;soId=${soID}</result>
+	    </action>
+	    	
+	    <action name="createPDF" class="createPDFAction">
+			<result>/jsp/so_monitor/so_pdf_popup.jsp</result>
+		</action>
+		<action name="requestReschedule_validateRequestReschedule" class="soDetailsRequestRescheduleAction" 
+	    	method="validateRequestReschedule">
+	    	<result name="error">/jsp/details/base/errorBody.jsp</result>
+	    </action>
+		<action name="requestReschedule" class="soDetailsRequestRescheduleAction" 
+	    	method="requestReschedule">
+	    	<result type="redirectAction">soDetailsController?soId=${soId}</result>
+	    	<result name="out">base.servicelive.index</result>
+	    </action>
+	    
+	    <action name="requestReassign" class="soDetailsReassignAction" 
+	    	method="requestReassign">
+	    	<result type="redirectAction">soDetailsController?soId=${soId}</result>
+	    	<result name="out">base.servicelive.index</result>
+	    </action>
+	    
+	    <action name="cancelRequestReschedule" class="soDetailsRequestRescheduleAction" 
+	    	method="cancelRequestReschedule">
+	      	<result type="redirectAction">soDetailsController?soId=${soId}</result>
+	      	<result name="out">base.servicelive.index</result>
+	    </action>
+	    <action name="acceptReschedule" class="soDetailsRequestRescheduleAction" 
+	    	method="acceptReschedule">
+	      	<result type="redirectAction">soDetailsController?soId=${soId}</result>
+	      	<result name="out">base.servicelive.index</result>
+	    </action>
+	    <action name="declineReschedule" class="soDetailsRequestRescheduleAction" 
+	    	method="declineReschedule">
+	      	<result type="redirectAction">soDetailsController?soId=${soId}</result>
+	      	<result name="out">base.servicelive.index</result>
+	    </action>
+		
+		 <action name="serviceOrderCancel" class="serviceOrderCancelAction" 
+	    	method="cancelSO">
+	      	<result type="redirectAction">soDetailsController?soId=${soID}</result>
+	      	<result name="out">base.servicelive.index</result>
+	    </action>
+	    
+	    <action name="serviceOrderPendingCancel_*" class="serviceOrderPendingCancelAction" 
+	    	method="{1}">
+	      	<result type="redirectAction">soDetailsController?soId=${soId}</result>
+	      	<result name="out">base.servicelive.index</result>
+	    </action>
+	    
+	    <action name="somPendingCancel_*" class="serviceOrderPendingCancelAction" 
+	    method="{1}">
+			<result type="tiles">template.base</result>
+		</action>
+		
+	    <action name="serviceOrderPendingCancelHistory_*" class="serviceOrderPendingCancelAction" 
+	    	method="{1}">
+	      	<result name="success">/jsp/details/body/html_sections/modules/pendingCancelHistory.jsp</result>
+	    </action>
+	    
+	    <action name="serviceOrderPendingInfo_*" class="serviceOrderPendingCancelAction" method="{1}"/>
+	    
+	    
+		<action name="soDetailsVoidAction" class="soDetailsVoidAction">
+	     	<result type="redirectAction">soDetailsController</result>
+	    </action>  
+	    
+	    <action name="soDetailsDeleteAction" class="soDetailsDeleteAction">
+	     	<result type="redirectAction">soDetailsController</result>
+	    </action> 
+	    
+	    <action name="releaseSO" class="releaseSericeOrderAction" method="releaseServiceOrder">
+	        <result name="releaseSoError" type="redirectAction">soDetailsController?defaultTab=${defaultTab}&amp;soId=${soId}</result>
+		    <result type="redirectAction">serviceOrderMonitor</result>
+		    <result name="out">base.servicelive.index</result>
+	    </action>
+	    
+	    <action name="getReleaseReasonCodes" class="releaseSericeOrderAction" method="getReleaseReasonCodes">
+	    <result name="success">/jsp/details/base/popup_release_service_order.jsp</result>
+	    </action>
+	    
+	    <action name="responseStatusBidResponsesAjax" class="soDetailsResponsesAction" method="viewResponses">
+	    	<result name="success">/jsp/details/body/html_sections/modules/bidResponses.jsp</result>
+	    </action>
+	    <action name="responseStatusMarkBidReadAjax" class="soDetailsResponsesAction" method="markBidRead">
+	    	<result name="success">/jsp/details/body/html_sections/modules/bidResponses.jsp</result>
+	    </action>
+	    <action name="responseStatusFlagBidForFollowupAjax" class="soDetailsResponsesAction" method="flagForFollowup">
+	    	<result name="success">/jsp/details/body/html_sections/modules/bidResponses.jsp</result>
+	    </action>
+	    <action name="responseStatusViewFollowupBidsAjax" class="soDetailsResponsesAction" method="viewFollowupBids">
+			<result name="success">/jsp/details/body/html_sections/modules/bidResponses.jsp</result>
+		</action>	
+
+		<action name="providerUtilsBidNotesAjax" class="bidNoteAction" method="viewNotes">
+			<result name="success">/jsp/details/body/html_sections/modules/bidNotes.jsp</result>
+		</action>
+		
+		<action name="providerUtilsAddNoteAjax" class="bidNoteAction" method="addNote">
+			<result name="success">/jsp/details/body/html_sections/modules/bidNotes.jsp</result>
+		</action>
+		
+		<action name="providerUtilsAddReplyAjax" class="bidNoteAction" method="addReply">
+			<result name="success">/jsp/details/body/html_sections/modules/bidNotes.jsp</result>
+		</action>
+	    
+		<action name="providerUtilsReportPostAjax" class="bidNoteAction" method="reportPost">
+			<result name="success">/jsp/details/body/html_sections/modules/bidNotes.jsp</result>
+		</action>
+	
+		<action name="providerUtilsMakePostViewableAjax" class="bidNoteAction" method="makePostViewable">
+			<result name="success">/jsp/details/body/html_sections/modules/bidNotes.jsp</result>
+		</action>
+
+		<action name="providerUtilsHidePostAjax" class="bidNoteAction" method="hidePost">
+			<result name="success">/jsp/details/body/html_sections/modules/bidNotes.jsp</result>
+		</action>
+		
+		<action name="providerUtilsMarkPostReadAjax" class="bidNoteAction" method="markPostRead">
+			<result name="success">/jsp/details/body/html_sections/modules/bidNotes.jsp</result>
+		</action>
+		
+		<action name="providerUtilsFlagPostForFollowupAjax" class="bidNoteAction" method="flagForFollowup">
+			<result name="success">/jsp/details/body/html_sections/modules/bidNotes.jsp</result>
+		</action>
+		
+		<action name="providerUtilsViewFollowupPostsAjax" class="bidNoteAction" method="viewFollowupPosts">
+			<result name="success">/jsp/details/body/html_sections/modules/bidNotes.jsp</result>
+		</action>
+		
+		<action name="loadQuickLinksAjax" class="soDetailsQuickLinksAction" method="loadQuickLinks">
+			<result name="success">/jsp/details/body/html_sections/modules/panel_order_express_menu.jsp</result>
+		</action>
+		
+		<action name="loadTimerAjax" class="soDetailsSummaryAction" method="loadTimer">
+			<result name="success">/jsp/details/body/html_sections/modules/panel_accept_order.jsp</result>
+		</action>
+		<action name="SortProviderNameAndDistanceAjax" class="soDetailsSummaryAction" method="setSorting">
+			<result name="success">/jsp/details/body/html_sections/modules/panel_provider_firm_assigned.jsp</result>
+		</action>
+		<action name="loadAssignServiceOrder" class="assignServiceOrder" method="loadAssignServiceOrder">
+	   		<result name="success">/jsp/details/body/html_sections/assign_order_pop_up.jsp</result>
+	    </action>
+	    <action name="saveAssignServiceOrder" class="assignServiceOrder" method="saveAssignServiceOrder">
+	   		<result name="success"  type="redirectAction">soDetailsController?defaultTab=${defaultTab}&amp;soId=${soId}</result>
+	    </action>
+		
+		<action name="soDetailsPriceHistory" class="soDetailsPriceHistoryAction" >
+	        <result name="success">/jsp/details/body/html_sections/modules/tab_so_price_history.jsp</result>	    	    
+	    </action>
+	    
+	    <action name="getRivisitInfo" class="revisitInfoAction" method="revisitInfo">
+	    	<result name="success">/jsp/details/base/popup_revisit_info.jsp</result>
+	    </action>
+    </package>
+    
+</struts>

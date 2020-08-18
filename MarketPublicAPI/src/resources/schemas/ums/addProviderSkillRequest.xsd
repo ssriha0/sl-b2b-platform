@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified">
+	<xs:include schemaLocation="../common.xsd" />
+	<xs:element name="addProviderSkillRequest">
+	
+	<xs:complexType>
+			<xs:sequence>
+			    <xs:element name="provider" type="providerDetails" minOccurs="1" maxOccurs="1"/>
+			</xs:sequence>
+	</xs:complexType>
+	
+	</xs:element>
+	
+	<xs:complexType name="providerDetails">
+		<xs:sequence>
+		    <xs:element name="providerId" type="stringProviderType" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="skills" type="providerSkillType" minOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+	
+    <xs:complexType name="providerSkillType">
+		<xs:sequence>
+			<xs:element name="skill" type="skillType" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+    
+	<xs:complexType name="skillType">
+		<xs:sequence>
+			<xs:element name="rootSkillName" type="stringSkillType" minOccurs="1" maxOccurs="1" />
+			<xs:element name="skillName" type="stringSkillType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="skillCategoryName" type="stringSkillType" minOccurs="0"  maxOccurs="1"/>
+			<xs:element name="skillServiceTypes" type="skillServiceType" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>	
+	
+	<xs:complexType name="skillServiceType">
+		<xs:sequence>
+			<xs:element name="serviceType" type="stringSkillType" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:simpleType name="stringSkillType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="50"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="stringProviderType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="10"></xs:maxLength>
+			<!--  <xs:pattern value=".*[^\s].*" />-->
+			<xs:pattern value="[0-9]+"></xs:pattern>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>
+			

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="qualified">
+<xs:include schemaLocation="../common.xsd"/>
+ 
+	<!-- Root element -->
+	<xs:element name="addNoteRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="note" type="NoteType" />
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:decimal"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="NoteType">
+		<xs:sequence>
+			<xs:element name="subject">
+  			    <xs:simpleType>
+    				<xs:restriction base="xs:string">
+      					<xs:maxLength value="255"/>
+      					<xs:minLength value="1"/>
+    				</xs:restriction>
+  			    </xs:simpleType>
+			</xs:element>
+			<xs:element name="noteBody">
+  			    <xs:simpleType>
+    				<xs:restriction base="xs:string" >
+      					<xs:maxLength value="750"/>
+      					<xs:minLength value="1"/>
+    				</xs:restriction>
+  			    </xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="private"  type="xs:boolean" use="required"/>
+		<xs:attribute name="support" type="xs:boolean" use="optional" default="false"/>
+	</xs:complexType>
+</xs:schema>

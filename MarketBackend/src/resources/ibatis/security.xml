@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<typeAlias alias="security.activity"
+		type="com.newco.marketplace.dto.vo.ActivityVO" />
+	<typeAlias alias="role.activity"
+		type="com.newco.marketplace.dto.vo.RoleActivityPermissionVO" />
+	<typeAlias alias="user.activity"
+		type="com.newco.marketplace.dto.vo.UserActivityPermissionVO" />
+	<typeAlias alias="loginCredentialVO"
+		type="com.newco.marketplace.vo.login.LoginCredentialVO"/>
+	<typeAlias alias="securityUserProfile" type="com.newco.marketplace.vo.provider.UserProfile"/>
+	<typeAlias alias="securityBuyerUserProfile" type="com.newco.marketplace.dto.vo.buyer.BuyerUserProfile"/>
+	<typeAlias alias="usrSecActivity" type="com.newco.marketplace.auth.UserActivityVO"/>
+	<typeAlias alias="usrActionActivity" type="com.newco.marketplace.auth.ActionActivityVO"/>
+	<typeAlias alias="security.alias.AccountProfile" type="com.newco.marketplace.dto.vo.account.AccountProfile"/>
+	<typeAlias alias="proLocation"
+		type="com.newco.marketplace.vo.provider.Location"/>
+
+	<select id="activities.query" parameterClass="java.lang.String"
+		resultClass="security.activity">
+		SELECT ap.activity_id as activityId, ap.activity_name as
+		activityName FROM user_activity_permissions uap,
+		activity_permission ap WHERE uap.user_name=#username# AND
+		ap.activity_id=uap.activity_id;
+	</select>
+
+	<select id="security.getRegComplete" 	parameterClass="java.lang.Integer" >
+		select count(*) from vendor_hdr where vendor_id = #vendorId# and wf_state_id in (2,3,26,33,34);
+	</select>
+
+	<select id="activities_role.query"
+		parameterClass="java.lang.Integer" resultClass="security.activity">
+		SELECT ap.activity_id as activityId, ap.activity_name as
+		activityName FROM role_activity_permissions rap,
+		activity_permission ap where rap.role_id=#role_id# and
+		rap.activity_id=ap.activity_id;
+	</select>
+
+     <select id="activity_security.query"  resultClass="usrSecActivity">
+        SELECT up.user_name as userName , lup.activity_name AS activityName, lup.activity_id AS activityId,
+		 case when upp.role_activity_id is null then 0 else 1
+      		 end as checked
+			FROM lu_permissions AS lup
+			JOIN lu_permission_role AS lur ON (lur.activity_id = lup.activity_id)
+			Join user_profile as up on up.role_id = lur.role_id
+	        JOIN user_profile_permissions AS upp
+      			ON  lur.role_activity_id = upp.role_activity_id
+      			and up.user_name = upp.user_name
+			where up.user_name = #userName#
+    </select>
+	<select id="activity_action.query" resultClass="usrActionActivity">
+	select activity_id as activityId, action_name as actionName , role_id as roleId from lu_permissions_action
+	</select>
+
+	<insert id="user_activity.insert" parameterClass="user.activity">
+		INSERT INTO user_activity_permissions (user_name, activity_id)
+		values(#userName#, #activityId#);
+	</insert>
+
+	<delete id="user_activity.delete" parameterClass="user.activity">
+		DELETE FROM user_activity_permissions where user_name=#userName# AND
+		activity_id=#activityId#;
+	</delete>
+
+	<select id="security.getUserPassword" resultClass="java.lang.String">
+		SELECT password from user_profile where user_name= #username#
+	</select>
+
+	<select id="security.getPassword" resultClass="java.lang.String">
+		SELECT password from user_profile where user_name= #username#
+	</select>
+
+	<select id="security.queryRoleList" resultClass="loginCredentialVO">
+		SELECT ur.role_name as roleName,
+          up.role_id as roleId,
+          up.user_name as username,
+          up.contact_id,
+          c.first_name as firstName,
+          c.last_name as lastName,
+		  c.contact_id as contactId,
+		  c.email as email,
+		  c.phone_no as phoneNo
+		FROM user_roles ur, user_profile up, contact c
+		WHERE up.user_name = #username#
+		AND up.contact_id = c.contact_id
+		AND ur.role_id = up.role_id;
+
+	</select>
+
+	<select id="security.queryLocation" parameterClass="java.lang.String" resultClass="proLocation">
+		SELECT street_1 as street1,
+			 street_2 as street2,
+			 city as city,
+			 state_cd as stateCd,
+			 zip as zip,
+			 zip4 as zip4
+		FROM vendor_resource vr, location loc
+		WHERE vr.user_name = #username#
+		AND loc.locn_id = vr.locn_id;
+	</select>
+
+	<select id="security.queryBuyerId"  parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		select br.buyer_id as buyerId, br.resource_id as buyerResourceId, br.max_spend_limit_per_so as maxSpendLimitPerSo,
+		cba.client_id as clientId, b.contact_id AS buyerAdminContactId
+		from buyer_resource br
+		join buyer b ON b.buyer_id = br.buyer_id
+		left outer join client_buyer_assoc cba on br.buyer_id = cba.buyer_id
+		where br.user_name = #userName#
+	</select>
+
+	<select id="security.verifyBuyerId"  parameterClass="java.lang.Integer" resultClass="java.util.HashMap">
+		select br.buyer_id as buyerId, br.resource_id as buyerResourceId, br.max_spend_limit_per_so as maxSpendLimitPerSo, cba.client_id as clientId
+		from buyer_resource br left outer join client_buyer_assoc cba on br.buyer_id = cba.buyer_id
+		where br.buyer_id = #buyerId#
+	</select>
+
+	<select id="security.verifyVendorId"  parameterClass="java.lang.Integer" resultClass="java.util.HashMap">
+		select vendor_id as vendorId, resource_id as vendorResourceId
+		from vendor_resource
+		where vendor_id = #vendorId#
+	</select>
+
+	<select id="security.checkForBuyerAdmin"  parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		Select count(buyer_id) from buyer where user_name = #userName#
+	</select>
+
+	<select id="security.queryVendorId"  parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		select vendor_id as vendorId, resource_id as vendorResourceId
+		from vendor_resource
+		where user_name = #userName#
+	</select>
+
+	<select id="security.queryBuyerName"  parameterClass="java.lang.Integer" resultClass="java.lang.String">
+		select br.user_name as userName from buyer_resource br where br.resource_id = #buyerResourceId#
+	</select>
+
+	<select id="security.queryBuyerAdminName"  parameterClass="java.lang.Integer" resultClass="java.lang.String">
+		select b.user_name as userName from buyer b where b.buyer_id = #buyerId#
+	</select>
+
+	<select id="security.queryVendorName"  parameterClass="java.lang.Integer" resultClass="java.lang.String">
+		select vr.user_name as userName from vendor_resource vr where resource_id = #resourceId#
+	</select>
+
+	<select id="security.queryVendorAdminName" parameterClass="java.lang.Integer" resultClass="java.lang.String">
+		select vr.user_name as userName from vendor_resource vr where vendor_id =#vendorId# and primary_ind=1
+	</select>
+
+	<select id="security.queryVendorResourceName"  parameterClass="java.lang.Integer" resultClass="java.lang.String">
+	     select vr.user_name as userName from vendor_resource vr where vendor_id in
+		(select vr.vendor_id from vendor_resource vr where resource_id= #resourceId#) and primary_ind=1
+	</select>
+
+	<sql id="security.sqlref.userName">
+		where up.user_name=#userName#
+	</sql>
+
+	<resultMap id="security.resultMap.gb.AccountProfile" class="com.newco.marketplace.dto.vo.account.AccountProfile" groupBy="userName" >
+		<result property="userName"  column="userName" />
+		<result property="roleId" column="roleId"/>
+		<result property="roleName" column="roleName"/>
+		<result property="userProfilePermissions" resultMap="security.resultMap.ActivityVO"/>
+		<result property="userType" select="security.select.getUserType" column="userName"/>
+	</resultMap>
+
+	<resultMap id="security.resultMap.ActivityVO" class="com.newco.marketplace.dto.vo.ActivityVO">
+		<result property="activityId" column="activityId" />
+		<result property="activityName" column="activityName" />
+	</resultMap>
+
+	<select id="security.select.getAccountProfile"  parameterClass="java.lang.String" resultMap="security.resultMap.gb.AccountProfile">
+		SELECT up.user_name as userName,
+		up.role_id as roleId,
+		ur.role_name as roleName,
+		lup.activity_id as activityId,lup.activity_name as activityName,lup.inactive_ind as inActiveInd
+		FROM
+		user_profile up
+		left join user_roles ur on up.role_id=ur.role_id
+		left join user_profile_permissions upp on upp.user_name=up.user_name
+		left join lu_permission_role lpr on lpr.role_activity_id=upp.role_activity_id
+		left join lu_permissions lup on lup.activity_id=lpr.activity_id
+		<include refid="security.sqlref.userName"/>
+	</select>
+
+	<!-- Used for inserting provider admin -->
+	<insert id="user_profile_permissions.admin_insert" parameterClass="securityUserProfile">
+		insert into user_profile_permissions (role_activity_id , user_name )
+		select   role_activity_id  , #userName#
+		from lu_permission_role lpr , lu_permissions lp
+		where lpr.role_id = #roleId#
+		and lpr.activity_id = lp.activity_id
+		and lp.inactive_ind = 0;
+	</insert>
+
+	<!-- CAR Conditional Auto Routing specific -->
+	<!-- TODO this is related to buyer feature sets from getting created -->
+	<!-- This is used for inserting buyer admin and potentially regular buyer -->
+	<insert id="user_profile_buyer_permissions.admin_insert" parameterClass="securityBuyerUserProfile">
+		insert into user_profile_permissions (role_activity_id , user_name )
+		select   role_activity_id  , #userName#
+		from lu_permission_role lpr , lu_permissions lp
+		where lpr.role_id = #roleId#
+		and lpr.activity_id = lp.activity_id
+		and lp.inactive_ind = 0
+		and lp.activity_id not in (43, 44);
+	</insert>
+
+
+	<select id="security.select.getContactInfo" parameterClass="security.alias.AccountProfile" resultClass="security.alias.AccountProfile">
+		select c.first_name as firstName, c.last_name as lastName
+		from user_profile up
+		join contact c on c.contact_id=up.contact_id
+		<include refid="security.sqlref.userName"/>
+	</select>
+
+	<resultMap class="com.newco.marketplace.dto.vo.account.UserType" id="security.resultMap.UserType" >
+		<result property="roleId" column="roleId"/>
+		<result property="vendorResource" column="userName" select="security.select.getVendorType"/>
+		<result property="buyerResource" column="userName" select="security.select.getBuyerType"/>
+	</resultMap>
+
+	<select id="security.select.getUserType" parameterClass="java.lang.String" resultMap="security.resultMap.UserType">
+		select up.role_id as roleId,up.user_name as userName from user_profile up
+		<include refid="security.sqlref.userName"/>
+	</select>
+
+	<select id="security.select.getBuyerType" parameterClass="java.lang.String" resultClass ="com.newco.marketplace.dto.vo.serviceorder.BuyerResource">
+		select r.buyer_id as buyerId, r.resource_id as resourceId from user_profile up
+		join buyer_resource r on up.user_name=r.user_name
+		join buyer b on b.buyer_id=r.buyer_id
+		<include refid="security.sqlref.userName"/>
+	</select>
+
+	<select id="security.select.getVendorType"  parameterClass="java.lang.String" resultClass ="com.newco.marketplace.dto.vo.provider.VendorResource">
+		select r.vendor_id as vendorId,r.resource_id as resourceId from user_profile up
+		join vendor_resource r on up.user_name=r.user_name
+		join vendor_hdr v on v.vendor_id=r.vendor_id
+		<include refid="security.sqlref.userName"/>
+	</select>
+
+	<select id="security.select.getRoleActivityIdList" resultClass="java.util.List">
+		select role_activity_id from user_profile_permissions where user_name=#userName#
+
+	</select>
+
+	<select id="security.select.getProviderRoleIndicators" resultClass="java.util.HashMap">
+		select primary_ind as primaryIndicator, mkt_place_ind as mktPlaceIndicator, dispatch_ind as dispatchIndicator
+		, admin_ind as providerAdminIndicator from vendor_resource where resource_id=#resourceId#
+	</select>
+	<select id="security.select.getAdminUserName" resultClass="java.lang.String">
+		select resource_id from vendor_resource where vendor_id =#vendor_id# and primary_ind=1
+
+	</select>
+	<select id="security.select.hasAdminPermission" resultClass="java.lang.Boolean">
+		Select Case WHEN  count(*) > 0 THEN 'true' ELSE 'false' END as isAvailable  from vendor_resource where  resource_id= #resourceId# and admin_ind = 1
+	</select>
+
+	<!--// Added by Akhil on 05/08 for ofac check. This gets the ofac indicator in our databse and date it was last ran for a buyer  -->
+	<select id="security.select.buyerOfacIndicators" parameterClass="java.lang.Integer" resultClass="com.newco.ofac.vo.BuyerOfacVO">
+		Select buyer_id as buyerID, business_name as businessName, ofac_ind as buyerOfacIndicator, ofac_check_dt as lastOfacCheckDate from buyer where buyer_id =#buyerID#
+	</select>
+	<update id="security.update.buyerOfacChkDt" parameterClass="java.lang.Integer">
+			Update buyer set ofac_check_dt = now() where buyer_id = #buyerId#
+	</update>
+	<update id="security.update.buyerOfacIndicators" parameterClass="com.newco.ofac.vo.BuyerOfacVO" >
+		Update buyer set ofac_ind = #buyerOfacIndicator# where buyer_id = #buyerID#
+	</update>
+
+	<select id="security.select.providerOfacIndicators" parameterClass="java.lang.Integer" resultClass="com.newco.ofac.vo.ProviderOfacVO">
+		Select vendor_id as providerID, business_name as businessName, ofac_ind as providerOfacIndicator, ofac_check_dt as lastOfacCheckDate from vendor_hdr where vendor_id =#providerID#
+	</select>
+	<update id="security.update.providerOfacChkDt" parameterClass="java.lang.Integer">
+		Update vendor_hdr set ofac_check_dt = now() where vendor_id = #vendorId#
+	</update>
+	<update id="security.update.providerOfacIndicators" parameterClass="com.newco.ofac.vo.ProviderOfacVO" >
+	Update vendor_hdr set ofac_ind = #providerOfacIndicator# where vendor_id = #providerID#
+	</update>
+
+	<select id="security.getBuyerContactIdEin" parameterClass="java.lang.Integer" resultClass="com.newco.ofac.vo.ContactOfacVO">
+		Select contact_id as contactID, ein_no as taxID from buyer where buyer_id =#buyerID#
+	</select>
+
+
+	<update id="security.update.contactDOB" parameterClass="com.newco.ofac.vo.ContactOfacVO" >
+	Update contact set dob = #dob# where contact_id = #contactID#;
+	</update>
+
+	<update id="security.update.buyerTaxID" parameterClass="com.newco.ofac.vo.ContactOfacVO" >
+	Update buyer set ein_no = #taxID# where buyer_id = #resourceID#;
+	</update>
+	<update id="security.update.providerTaxID" parameterClass="com.newco.ofac.vo.ContactOfacVO" >
+	Update vendor_hdr set ein_no = #taxID# where vendor_id = #resourceID#;
+	</update>
+
+	<select id="security.getProviderContactIdEin" parameterClass="java.lang.Integer" resultClass="com.newco.ofac.vo.ContactOfacVO">
+		Select account_contact_id as contactID, ein_no as taxID from vendor_hdr where vendor_id =#providerID#
+	</select>
+
+	 <select id="security.companyRole" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		select ccr.company_role_id as roleId
+		  from user_profile up
+	 	  join contact_company_role ccr on up.contact_id = ccr.contact_id
+		  join lu_company_role lcr on ccr.company_role_id = lcr.company_role_id
+		 where up.user_name = #userName# limit 0,1;
+	</select>
+
+	<select id="security.select.hasPermissionForAction" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(*) from user_profile_permissions upp
+	          join lu_permission_role lpr on upp.role_activity_id = lpr.role_activity_id
+	          join  lu_permissions_action lpa on lpa.activity_id = lpr.activity_id
+	    where upp.user_name = #userName#
+	          and lpa.action_name = #actionName#
+	          and lpr.role_id = #roleId#
+	</select>
+	
+	<!-- SL-15642 check for firm id in order_management_permission-->
+	<select id="security.getOmPermission" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		SELECT 1 FROM order_management_permission WHERE vendor_id =#vendorId#
+	</select>
+</sqlMap>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+<xs:include schemaLocation="../../common.xsd"/>
+ 
+	<!-- Root element -->
+	<xs:element name="addSOProviderPartRequest">
+	   <xs:complexType>
+			<xs:sequence>
+			    <xs:element name="currentTripNo" type="xs:integer"	minOccurs="1"/>
+			    <xs:element name="tripStatus" type="xs:string"	minOccurs="0"/>
+			    <xs:element ref="providerPartsList"/>
+			</xs:sequence>
+	   </xs:complexType>
+	</xs:element>
+	<xs:element name="providerPartsList">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="providerPart" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="providerPart">
+	   <xs:complexType>
+			<xs:sequence>
+			   <xs:element name="category" type="stringtwoHundredfiftyfiveType" minOccurs="1"/>
+			   <xs:element name="partNumber" type="partNumType" minOccurs="1" />
+			   <xs:element name="partDescription" type="stringHundredType" minOccurs="1" />
+			   <xs:element name="qty" type="qtyType" minOccurs="1" />
+			   <xs:element name="divisionNumber" type="divSourceNumType" minOccurs="1" />
+			   <xs:element name="sourceNumber" type="divSourceNumType" minOccurs="1" />
+			   <xs:element name="retailPrice" type="price-format" minOccurs="1" />
+			   <xs:element name="isManual" type="isManualType" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:simpleType name="partNumType">
+		<xs:restriction base="xs:string">			
+			<xs:maxLength value="30"></xs:maxLength>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="divSourceNumType">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[a-zA-Z0-9]*"/>
+			<xs:maxLength value="10"></xs:maxLength>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="qtyType">
+		<xs:restriction base="xs:integer">
+			<xs:minInclusive value="1"></xs:minInclusive>
+			<xs:maxInclusive value="999"></xs:maxInclusive>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="stringHundredType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="100"></xs:maxLength>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="stringtwoHundredfiftyfiveType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="255"></xs:maxLength>
+			<xs:minLength value="1"></xs:minLength>
+		</xs:restriction>
+	</xs:simpleType>
+	 <xs:simpleType name="isManualType">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[Yy][Ee][Ss]" />
+			<xs:pattern value="[Nn][Oo]" />
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

@@ -1,0 +1,738 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Sign Up - Servicelive for Providers</title>
+
+    <!-- Framework CSS -->
+    <link rel="stylesheet" href="/ServiceLiveWebUtil/provider/styles/screen.css" type="text/css" media="screen, projection">
+    <link rel="stylesheet" href="/ServiceLiveWebUtil/provider/styles/print.css" type="text/css" media="print">
+    <link rel="stylesheet" href="/ServiceLiveWebUtil/provider/styles/banner.css" type="text/css">
+    <!--[if lt IE 8]><link rel="stylesheet" href="/ServiceLiveWebUtil/provider/styles/ie.css" type="text/css" media="screen, projection"><![endif]-->
+
+
+    <script src="/ServiceLiveWebUtil/javascript/jquery/jquery.min.js" type="text/javascript"></script>
+    <script src="/ServiceLiveWebUtil/javascript/jquery/jquery.simplemodal.1.4.4.min.js" type="text/javascript"></script>
+	
+	<script src="/ServiceLiveWebUtil/provider/scripts/config.js" type="text/javascript"></script>
+	<script src="/ServiceLiveWebUtil/provider/scripts/banner.js" type="text/javascript"></script>
+    <style type="text/css">
+		#yesButton,#noButton{
+			background: url("/ServiceLiveWebUtil/images/common/button-action-bg.png");
+			border:1px solid #b1770b;
+			color:#222;
+			font-family:Arial,Tahoma,sans-serif;
+			font-size:1.1em;
+			font-weight:bold;
+			padding:3px 10px;
+			cursor: pointer;
+			-moz-border-radius:5px 5px 5px 5px;
+			margin-top:  -5px;
+			text-align: center;
+			width: 80px;
+		 }
+		 #modalOverlay {background-color:#000; cursor:wait;}
+		 
+		</style>
+    
+	<script type="text/javascript">
+		$(document).ready(function() {
+			//$(".maddtogl").hide();
+			//$("#maddtogl").click(function(){
+			//	$(".maddtogl").toggle();
+			//});
+
+			
+			var signupUrl = "https://" + window.location.hostname; 
+		       if (window.location.port != null) { 
+		                signupUrl += ":" + port
+		       } 		      
+		       signupUrl += "/MarketFrontend/providerRegSaveAction.action"; 
+		      	//alert(signupUrl); 
+		        $("#providerRegSaveAction").prop("action", signupUrl);
+			
+			$('.positive').click(function(){
+			// Confirm the legal name
+					//confirmLegalName();
+					$("#providerRegSaveAction").submit();
+			
+			});
+			
+			/* $('#yesButton').click(function(){
+				 $("#providerRegSaveAction").submit();
+			}); */
+			
+			$('#providerRegSaveAction_registrationDto_primaryIndustry').change( function() {				
+				if ( $(this).val() == '1400' ) {
+				$('#indother').show();
+				} else {
+				$('#indother').hide();	
+				}
+			});
+		
+			
+		//	if ( $('#maddtogl').prop('checked') == 'checked' ) {
+			
+			
+		//	var testvalue = $('#maddtogl').prop('checked');
+		//	alert(testvalue);
+			
+		//	if ( $('#maddtogl').prop('checked'){
+			
+		//	$('.check_box_class_name').focus(function(){
+		
+		
+			function copyForm() {
+				$("#businessStreet1").keyup(function(){
+					var street1 = $(this).val();
+					$("#mailingStreet1").val(street1)
+				});
+
+				$("#businessStreet2").keyup(function(){
+					var street2 = $(this).val();
+					$("#mailingStreet2").val(street2)
+				});
+
+
+				$("#businessCity").keyup(function(){
+					var city = $(this).val();
+					$("#mailingCity").val(city)
+				});
+
+				$("#businessZip").keyup(function(){
+					var zip = $(this).val();
+					$("#mailingZip").val(zip)
+				});			
+			}	
+		
+			function dupeForm() {
+					var xstreet1 = $("#businessStreet1").val();
+					$("#mailingStreet1").val(xstreet1);
+
+					var xstreet2 = $("#businessStreet2").val();
+					$("#mailingStreet2").val(xstreet2);
+
+					var xcity = $("#businessCity").val();
+					$("#mailingCity").val(xcity);
+
+					var xzip = $("#businessZip").val();
+					$("#mailingZip").val(xzip)
+					
+					var xstate = $("#businessState").val();
+					$("#mailingState").val(xstate)
+			}
+			
+				// $('#providerRegSaveAction_registrationDto_firstName').focus( function() {
+					
+				// if($("#providerRegSaveAction_registrationDto_firstName").val()=='Enter your LEGAL first name'){
+				//	$("#providerRegSaveAction_registrationDto_firstName").css('font-style','normal');
+				//	$("#providerRegSaveAction_registrationDto_firstName").val('');
+				//	$("#providerRegSaveAction_registrationDto_firstName").css('color','#000000');		
+				// }
+				// });
+				
+				// $('#providerRegSaveAction_registrationDto_lastName').focus( function() {
+				//	if($("#providerRegSaveAction_registrationDto_lastName").val()=='Enter your LEGAL last name'){
+				//	$("#providerRegSaveAction_registrationDto_lastName").css('font-style','normal');
+				//	$("#providerRegSaveAction_registrationDto_lastName").val('');
+				//	$("#providerRegSaveAction_registrationDto_lastName").css('color','#000000');		
+				//	}
+				// });
+				
+				// $('#providerRegSaveAction_registrationDto_firstName').blur( function() {
+				//	var fName = $("#providerRegSaveAction_registrationDto_firstName").val();
+				//	if(fName.length == 0){
+				//		$("#providerRegSaveAction_registrationDto_firstName").css('font-style','italic');
+				//		$("#providerRegSaveAction_registrationDto_firstName").val('Enter your LEGAL first name');
+				//		$("#providerRegSaveAction_registrationDto_firstName").css('color','#666666');	
+				//	}
+				// });
+				
+				// $('#providerRegSaveAction_registrationDto_lastName').blur( function() {
+				//	var lName = $("#providerRegSaveAction_registrationDto_lastName").val();
+				//	if(lName.length == 0){
+				//		$("#providerRegSaveAction_registrationDto_lastName").css('font-style','italic');
+				//		$("#providerRegSaveAction_registrationDto_lastName").val('Enter your LEGAL last name');
+				//		$("#providerRegSaveAction_registrationDto_lastName").css('color','#666666');
+				//	}
+				// });	
+				
+		/* function confirmLegalName(){
+		
+	 		var firstname=$("#providerRegSaveAction_registrationDto_firstName").val();
+	 		var middlename=$("#providerRegSaveAction_registrationDto_middleName").val();
+	 	    var lastname=$("#providerRegSaveAction_registrationDto_lastName").val();
+	 	    
+	 	    if(firstname=="Enter your LEGAL first name"){
+	 	    	firstname = "";
+	 	    }
+	 	    
+	 	    if(lastname=="Enter your LEGAL last name"){
+	 	    	lastname = "";
+	 	    }
+	 	    
+	 		var fullName=firstname+" " +middlename+" "+lastname;
+	 		
+	 		$('div#popUpConfirm b#newProviderFullName').text(fullName);
+ 			$("#popUpConfirm").modal({
+                onOpen: modalOpen,
+                onClose: modalOnClose,
+                persist: true,
+                containerCss: ({ display:"block",width: "auto", height: "auto",marginTop: "100px" ,border:"none" })
+            });
+				
+ 			$(".modalCloseImg").hide();
+ 			$("#popUpConfirm").css("width", "520px");
+  			$("#popUpConfirm").css("height", "auto");
+  			$("#popUpConfirm").css("top", "0px");
+  			$("#popUpConfirm").css("zIndex", 1000);
+  			$("#popUpConfirm").css("background-color","#FFFFFF");
+  			$("#popUpConfirm").css("border-left-color","#A8A8A8");
+  			$("#popUpConfirm").css("border-right-color","#A8A8A8");
+  			$("#popUpConfirm").css("border-bottom-color","#A8A8A8");
+  			$("#popUpConfirm").css("border-top-color","#A8A8A8");
+		} */
+		
+		function modalOpen(dialog) {
+            dialog.overlay.fadeIn('fast', function() {
+            	dialog.container.fadeIn('fast', function() {
+            		dialog.data.hide().slideDown('slow');
+            	});
+        	});
+ 		}
+  
+   		function modalOnClose(dialog) {
+       		dialog.data.fadeOut('fast', function() {
+            	dialog.container.slideUp('fast', function() {
+            		dialog.overlay.fadeOut('fast', function() {
+            			jQuery.modal.close(); 
+            		});
+          		});
+       		});
+    	}
+		
+				
+			$('#maddtogl').focus(function(){	
+				if($('#maddtogl').is(':checked')){				
+					$('div.maddtogl input').val('');
+				} else {
+					dupeForm();
+					// copyForm();				
+				}
+			});
+			
+			$('#industrytip').qtip({
+			   content: 'If you provide more than one service, you don’t need to sign up for each one separately. Later, you will specify all services you provide in one profile.',
+			   show: 'mouseover',
+			   hide: 'mouseout',
+			style: { 
+			      name: 'cream' // Inherit from preset style
+			   }
+			
+			});
+			
+
+			
+		});
+	</script>
+   </head>
+  <body>
+  <!--  <body onload="displayBanner();">
+  
+    <div id="bannerDiv" class="bannerDiv" style="display:none;">
+	     <span class="spanText" id="spanText"></span>
+	     <a href="javascript:void(0);" onclick="removeBanner();"> Dismiss </a>
+    </div>-->
+    <div class="container" id="bannerAdjustDiv">
+		<div id="header">
+			<div class="clearfix">
+	      		<h1 id="logo"><a href="index.html" title="ServiceLive Become A Contractor">ServiceLive</a></h1>
+				<div id="utility">
+					<ul>
+						<li class="community"><a title="Provider Forums" href="http://community.servicelive.com">Community</a></li>
+						<!-- <li class="support"><a title="Provider Support" href="http://getsatisfaction.com/servicelive/products/servicelive_servicelive_for_providers">Support</a></li> -->
+						<li class="contact"><a title="Contact ServiceLive" href="contact.html">Contact Us</a></li>
+					</ul>
+				</div>
+			</div>
+			<div id="menu">
+				<ul>
+					<li class="home"><a title="ServiceLive Contractor Home" href="index.html">Home</a></li>
+					<li class="about"><a title="About ServiceLive" href="about.html">About</a></li>
+					<li class="features"><a title="Job Opportunities" href="features.html">Features</a></li>
+					<li class="offers"><a title="Sign up for new Member offers" href="memberOffer.html">Member Offers</a></li>
+					<li class="signup-current"><a title="Become A Contractor" href="signup.html">Signup Now</a></li>
+				</ul>
+				<a class="loginbutton" title="Login to your Account" href="login.html">Login to Your Account</a>
+			</div>
+		</div>
+	</div>
+	<div id="subpage" class="clearfix container">
+		<div id="general-content" class="span-16">
+			<div class="top"></div>
+			<div class="content shortenform">
+				
+					<h2 title="Become A Contractor on ServiceLive" class="signup">Register for ServiceLive</h2>
+					
+					<p> Sign up for a provider account so you can accept work and provide service for members of the ServiceLive community. Enter your primary contact information and we'll email you a temporary password that you can use to build your profile on our secure server. </p>
+					
+		
+					<p class="required_msg">An asterisk (<span class="req">*</span>) indicates a required field.</p>
+					
+				<form id="providerRegSaveAction" name="providerRegSaveAction" action="/MarketFrontend/providerRegSaveAction.action" method="post">
+					<fieldset>
+						<legend>Business Information</legend>
+						<div class="clearfix">
+							<label>Legal Business Name <span class="req">*</span></label>
+							<input id="providerRegSaveAction_registrationDto_legalBusinessName" name="registrationDto.legalBusinessName" type="text" class="text span-7">
+						</div>
+						<div class="clearfix">
+							<label>DBA (Doing Business As) Name</label>
+							<input id="providerRegSaveAction_registrationDto_DBAName" name="registrationDto.DBAName" type="text" class="text span-7">
+						</div>
+						<div class="clearfix">
+							<label>Main Business Phone <span class="req">*</span></label>
+							<input id="providerRegSaveAction_registrationDto_mainBusiPhoneNo1" name="registrationDto.mainBusiPhoneNo1" type="text" class="text span-1 phone" maxlength="3">
+							<input id="providerRegSaveAction_registrationDto_mainBusiPhoneNo2" name="registrationDto.mainBusiPhoneNo2" type="text" class="text span-1 phone" maxlength="3">
+							<input id="providerRegSaveAction_registrationDto_mainBusiPhoneNo3" name="registrationDto.mainBusiPhoneNo3" type="text" class="text span-2" maxlength="4">
+							<label class="inli">Ext.</label>
+							<input id="providerRegSaveAction_registrationDto_mainBusinessExtn" name="registrationDto.mainBusinessExtn" type="text" class="text span-1 phone">
+						</div>
+						<div class="clearfix">
+							<label>Primary Service Industry <span class="req">*</span></label>
+							<select id="providerRegSaveAction_registrationDto_primaryIndustry" name="registrationDto.primaryIndustry" class="text span-5">
+							    <option value="">---------- Please Select ---------</option>
+							    <option value="1">Home Electronics</option>
+							    <option value="100">Computer/Network Services</option>
+							    <option value="800">Handyman Services</option>
+							    <option value="1500">Garage &amp; Shed</option>
+
+							    <option value="200">Home Appliances</option>
+							    <option value="300">Product Assembly</option>
+							    <option value="400">Carpentry &amp; Woodworking</option>
+							    <option value="500">Cabinets &amp; Countertops</option>
+							    <option value="600">Heating &amp; Cooling</option>
+
+							    <option value="700">Lawn &amp; Garden </option>
+							    <option value="900">Walls &amp; Ceilings</option>
+							    <option value="1000">General Plumbing &amp; Bathrooms</option>
+							    <option value="1100">Floors &amp; Patios</option>
+
+							    <option value="1200">Roofing, Gutters, Windows &amp; Siding</option>
+							    <option value="1300">Automotive</option>
+							    <option value="1400">Other Services</option>
+							    <option value="1600">Masonry &amp; Stone</option>
+							    <option value="1700">Electrician</option>
+
+							    <option value="1800">Cleaning Services</option>
+							    <option value="1900">Furniture Restoration</option>
+							    <option value="2000">Health &amp; Beauty</option>
+							    <option value="2100">Decorating</option>
+							    <option value="2200">Pet Care</option>
+
+							    <option value="2300">Photography</option>
+							    <option value="2400">Remodeling &amp; Construction</option>
+							    <option value="2500">Musical Instrument Service</option>
+							    <option value="2509">Litigation Support</option>
+							    <option value="999999">Unclassified</option>
+
+							</select>														
+						</div>
+						<div id="indother" class="clearfix hide">
+							<label>Describe Your Industry <span class="req">*</span></label>
+							<input type="text" style="width: 250px;" class="text" name="registrationDto.otherPrimaryService">
+						</div>
+						<div class="clearfix">
+							<strong class="inlinecheckbox">&nbsp;</strong>
+							<strong id="industrytip" class="inform helptip"><img src="/ServiceLiveWebUtil/provider/images/help.png"> <span>What if I offer more than one?</span></strong>
+						</div>
+					</fieldset>
+					<fieldset><legend>Business Address</legend>
+						<div class="clearfix">
+							<label>Address <span class="req">*</span></label>
+							<input id="businessStreet1" name="registrationDto.businessStreet1" type="text" class="text span-7">
+						</div>
+						<div class="clearfix">
+							<label>&nbsp;</label>
+							<input id="businessStreet2" name="registrationDto.businessStreet2" type="text" class="text span-7">
+						</div>
+						<div class="clearfix">
+							<label>City <span class="req">*</span></label>
+							<input id="businessCity" name="registrationDto.businessCity" type="text" class="text span-3">
+							<label class="inlistate">State <span class="req">*</span></label>
+							<select id="businessState" name="registrationDto.businessState" class="text span-2 selestate">
+								<option value="">--</option>
+
+									<option value="AL">AL</option>
+								    <option value="AK">AK</option>
+								    <option value="AS">AS</option>
+								    <option value="AZ">AZ</option>
+								    <option value="AR">AR</option>
+								    <option value="CA">CA</option>
+								    <option value="CO">CO</option>
+
+								    <option value="CT">CT</option>
+								    <option value="DE">DE</option>
+								    <option value="FM">FM</option>
+								    <option value="FL">FL</option>
+								    <option value="GA">GA</option>
+								    <option value="GU">GU</option>
+
+								    <option value="HI">HI</option>
+								    <option value="ID">ID</option>
+								    <option value="IL">IL</option>
+								    <option value="IN">IN</option>
+								    <option value="IA">IA</option>
+								    <option value="KS">KS</option>
+
+								    <option value="KY">KY</option>
+								    <option value="LA">LA</option>
+								    <option value="ME">ME</option>
+								    <option value="MH">MH</option>
+								    <option value="MD">MD</option>
+								    <option value="MA">MA</option>
+
+								    <option value="MI">MI</option>
+								    <option value="MN">MN</option>
+								    <option value="MS">MS</option>
+								    <option value="MO">MO</option>
+								    <option value="MT">MT</option>
+								    <option value="NE">NE</option>
+
+								    <option value="NV">NV</option>
+								    <option value="NH">NH</option>
+								    <option value="NJ">NJ</option>
+								    <option value="NM">NM</option>
+								    <option value="NY">NY</option>
+								    <option value="NC">NC</option>
+
+								    <option value="ND">ND</option>
+								    <option value="MP">MP</option>
+								    <option value="OH">OH</option>
+								    <option value="OK">OK</option>
+								    <option value="OR">OR</option>
+								    <option value="PW">PW</option>
+
+								    <option value="PA">PA</option>
+								    <option value="PR">PR</option>
+								    <option value="RI">RI</option>
+								    <option value="SC">SC</option>
+								    <option value="SD">SD</option>
+								    <option value="TN">TN</option>
+
+								    <option value="TX">TX</option>
+								    <option value="VI">VI</option>
+								    <option value="UT">UT</option>
+								    <option value="VT">VT</option>
+								    <option value="VA">VA</option>
+								    <option value="WA">WA</option>
+
+								    <option value="DC">DC</option>
+								    <option value="WV">WV</option>
+								    <option value="WI">WI</option>
+								    <option value="WY">WY</option>
+							</select>
+							<label class="inlizip">Zip <span class="req">*</span></label>
+							<input id="businessZip" name="registrationDto.businessZip" type="text" class="text zip">
+						</div>
+						<div class="clearfix">
+						</div>
+						<div class="clearfix">
+						</div>
+					</fieldset>
+					<fieldset><legend>Mailing Address</legend>
+						<div class="clearfix">
+							<strong class="inlinecheckbox"><input id="maddtogl" name="registrationDto.mailAddressChk" type="checkbox" class="checkbox"></strong>
+							<strong class="inform">Mailing Address is the same as the Business Address.</strong>
+						</div>
+						<div class="maddtogl">
+							<div class="clearfix">
+								<label>Address</label>
+								<input id="mailingStreet1" name="registrationDto.mailingStreet1" type="text" class="text span-7">
+							</div>
+							<div class="clearfix">
+								<label>&nbsp;</label>
+								<input id="mailingStreet2" name="registrationDto.mailingStreet2" type="text" class="text span-7">
+							</div>
+							<div class="clearfix">
+								<label>City</label>
+								<input id="mailingCity" name="registrationDto.mailingCity" type="text" class="text span-3">
+								<label class="inlistate">State</label>
+								<select id="mailingState" name="registrationDto.mailingState" class="text span-2 selestate">
+									
+																	<option value="">--</option>
+									
+																	<option value="AL">AL</option>
+																    <option value="AK">AK</option>
+																    <option value="AS">AS</option>
+																    <option value="AZ">AZ</option>
+																    <option value="AR">AR</option>
+																    <option value="CA">CA</option>
+																    <option value="CO">CO</option>
+
+																    <option value="CT">CT</option>
+																    <option value="DE">DE</option>
+																    <option value="FM">FM</option>
+																    <option value="FL">FL</option>
+																    <option value="GA">GA</option>
+																    <option value="GU">GU</option>
+
+																    <option value="HI">HI</option>
+																    <option value="ID">ID</option>
+																    <option value="IL">IL</option>
+																    <option value="IN">IN</option>
+																    <option value="IA">IA</option>
+																    <option value="KS">KS</option>
+
+																    <option value="KY">KY</option>
+																    <option value="LA">LA</option>
+																    <option value="ME">ME</option>
+																    <option value="MH">MH</option>
+																    <option value="MD">MD</option>
+																    <option value="MA">MA</option>
+
+																    <option value="MI">MI</option>
+																    <option value="MN">MN</option>
+																    <option value="MS">MS</option>
+																    <option value="MO">MO</option>
+																    <option value="MT">MT</option>
+																    <option value="NE">NE</option>
+
+																    <option value="NV">NV</option>
+																    <option value="NH">NH</option>
+																    <option value="NJ">NJ</option>
+																    <option value="NM">NM</option>
+																    <option value="NY">NY</option>
+																    <option value="NC">NC</option>
+
+																    <option value="ND">ND</option>
+																    <option value="MP">MP</option>
+																    <option value="OH">OH</option>
+																    <option value="OK">OK</option>
+																    <option value="OR">OR</option>
+																    <option value="PW">PW</option>
+
+																    <option value="PA">PA</option>
+																    <option value="PR">PR</option>
+																    <option value="RI">RI</option>
+																    <option value="SC">SC</option>
+																    <option value="SD">SD</option>
+																    <option value="TN">TN</option>
+
+																    <option value="TX">TX</option>
+																    <option value="VI">VI</option>
+																    <option value="UT">UT</option>
+																    <option value="VT">VT</option>
+																    <option value="VA">VA</option>
+																    <option value="WA">WA</option>
+
+																    <option value="DC">DC</option>
+																    <option value="WV">WV</option>
+																    <option value="WI">WI</option>
+																    <option value="WY">WY</option>
+								</select>
+								<label class="inlizip">Zip</label>
+								<input id="mailingZip" name="registrationDto.mailingZip" type="text" class="text zip">
+							</div>
+						</div>
+					</fieldset>
+					<fieldset id="primarycontact"><legend>Primary Contact (Administrator)</legend>
+						<p> By opening this account, you become the ServiceLive administrator for your company. You’ll be the primary contact for all communications with ServiceLive and you will be authorized to enroll additional service providers and support staff for your provider firm. </p>
+						<div class="clearfix">
+							<label class="inlinam">Role <span class="req">*</span></label>
+																			<select name="registrationDto.roleWithinCom" id="providerRegSaveAction_registrationDto_roleWithinCom" class="text">
+								    <option value=""
+								    selected="selected"
+								    >-- Please Select --</option>
+								    <option value="1">C-Level (CEO, COO, CFO, CIO, CTO, CMO)</option>
+								    <option value="2">President</option>
+								    <option value="3">Managing Director</option>
+								    <option value="4">Senior/Executive Vice President</option>
+
+								    <option value="5">Vice President</option>
+								    <option value="6">General Manager</option>
+								    <option value="7">Owner/Partner</option>
+								    <option value="8">Controller/Treasurer</option>
+								    <option value="9">Technical Staff/Information Systems</option>
+								    <option value="10">Group/Division Director</option>
+
+								    <option value="11">Sales Representative</option>
+								    <option value="12">Department Manager</option>
+								    <option value="13">Consultant</option>
+								    <option value="14">Professional (teacher, doctor, lawyer, etc)</option>
+								    <option value="15">Clerical/Support Staff</option>
+								    <option value="16">Government/Public Official</option>
+
+
+								</select>
+
+								
+						</div>
+						
+						<div class="clearfix">
+							<label class="longlab">Legal Name <span class="sm">(associated with any business credentials or registration)</span>
+							</label>
+						</div>
+						<div class="clearfix">
+							<label class="inlinam" style="width: 107px;">Legal First Name <span class="req">*</span></label>
+							<input id="providerRegSaveAction_registrationDto_firstName" name="registrationDto.firstName" type="text" class="text span-4" value="">
+							 
+							<label class="inlinam">Legal Last Name <span class="req">*</span></label>
+							<input id="providerRegSaveAction_registrationDto_lastName" name="registrationDto.lastName" type="text" class="text span-4" value="">
+						</div>
+						<div class="clearfix">
+							<label class="inlinam" style="width: 107px;">Legal Middle Name </label>
+							<input id="providerRegSaveAction_registrationDto_middleName" name="registrationDto.middleName" type="text" class="text span-4" value="">
+							<label class="inlinam">Suffix <small>(Jr, II, etc.)</small></label>
+							<input id="providerRegSaveAction_registrationDto_nameSuffix" name="registrationDto.nameSuffix" type="text" class="text span-4" value="">
+						</div>
+						<div class="clearfix moveup">
+							<small class="legalreq">Required if part of legal name</small>
+							<small class="legalreq">Required if part of legal name</small>
+						</div>
+						<div class="clearfix">
+							<label class="inlinam">Email <span class="req">*</span></label>
+							<input id="providerRegSaveAction_registrationDto_email" name="registrationDto.email" type="text" class="text span-4">
+							<label class="inlinam">Confirm Email <span class="req">*</span></label>
+							<input id="providerRegSaveAction_registrationDto_confirmEmail" name="registrationDto.confirmEmail" type="text" class="text span-4">
+						</div>
+						<div class="clearfix">
+							<label class="inlinam">Email 2<span class="req">*</span></label>
+							<input id="providerRegSaveAction_registrationDto_altEmail" name="registrationDto.altEmail" type="text" class="text span-4">
+							<label class="inlinam">Confirm Email 2 <span class="req">*</span></label>
+							<input id="providerRegSaveAction_registrationDto_confAltEmail" name="registrationDto.confAltEmail" type="text" class="text span-4">
+						</div>
+						<div class="clearfix">
+							<label class="inlinam">Username <span class="req">*</span></label>
+							<input id="providerRegSaveAction_registrationDto_userName" name="registrationDto.userName" type="text" class="text span-6">
+						</div>
+						<div class="clearfix moveup">
+							<small class="legalreq">Minimum 8 characters</small>
+						</div>
+						<div class="clearfix">
+							<strong class="inlinecheckbox inlinam"><input id="providerRegSaveAction_registrationDto_serviceCallYes" name="registrationDto.serviceCall" type="checkbox" class="checkbox" checked="checked"></strong>
+							<strong class="inform">Yes, I will be performing calls in the Marketplace.</strong>
+						</div>
+					</fieldset>
+					<fieldset><legend>Referral Information</legend>
+						<div class="clearfix">
+							<label>Referred By <span class="req">*</span></label>
+							<select name="registrationDto.howDidYouHear" id="howDidYouHear" class="text span-5">
+								<option value="">-- Please Select --</option>
+								    <option value="1">Direct Mail</option>
+								    <option value="2">Magazine/Newspaper</option>
+
+								    <option value="3">Craig's List</option>
+								    <option value="5">Other website or forum</option>
+								    <option value="6">Friend or Business Associate</option>
+								    <option value="7">TV Commercial</option>
+								    <option value="8">Radio Advertisement</option>
+								    <option value="11">Email</option>
+
+								    <option value="12">ServiceLive 3rd Party</option>
+								    <option value="13">ServiceLive Agent</option>
+								    <option value="14">Rebuilding Together</option>
+
+							</select>
+						</div>
+						<div class="clearfix">
+							<label>Referral Code</label>
+							<input id="promoCode" name="registrationDto.promotionCode" type="text" class="text span-5" value="SL-">
+						</div>
+						<div class="clearfix">
+							<small class="referralmsg">Enter all letters, numbers or special characters as shown.</small>
+						</div>
+						<p></p>
+						<div class="clearfix">
+						<label>&nbsp;</label><a class="button positive" href="#"><img src="/ServiceLiveWebUtil/provider/images/tick.png"> Signup For ServiceLive!</a>
+						</div>
+					</fieldset>
+				</form>				
+			</div>
+			
+			<!-- SL-18360  pop up for confirmation-->
+			<div  id="popUpConfirm" style="display: none;  border: 3px solid #CCCCCC; color: #000000;height: auto;margin-left: 400px;">
+			<div style=" font-family: Arial,Helvetica,sans-serif; font-size: 12px">
+			 <div style="background: none repeat scroll 0% 0% rgb(88, 88, 90); border-bottom: 2px solid black; color:
+			  rgb(255, 255, 255); text-align: left; height: 25px; padding-left: 8px; padding-top: 5px;" id="modalTitleBlack">
+		<span style="font-size: 17px; font-weight: bold;">Legal Name Validation</span> 
+	</div>
+	<br/>
+					<span class="popText" style="padding-left ;position: relative; left: 6px; line-height: 1.5;">Verify the legal information as entered: <br>
+					<ul style="padding-left: 15px;">
+					                  <li><b>Legal Full Name:</b>&nbsp<b  id="newProviderFullName"></b><br>  </li>
+					                    </ul>
+					                     This information will be used to conduct any background screenings. If it is incorrect, you may delay being Approved for Market.</span>
+				</div>
+				<br>
+				
+				<table style="padding-right ;position: relative; left: 8px" width="100%">
+				<tr>
+					<td width="72%">
+						<input id="noButton" class="button modalClose" type="button"  value="Cancel" />
+					</td>
+					<td width="28%">
+						<input id="yesButton"  class="button" type="button" style="width:150px" value="The legal info is correct"/>
+					</td>
+					
+				</tr>
+				</table>
+			</div>
+			<div class="bottom"></div>
+		</div>
+		<div id="promo" class="span-8 last">
+				<div class="span-8 promobox last">
+					<div class="promo1">
+						<h3>Refer a Provider</h3>
+						<p>Know of a great pro that others should work with? We’re looking for pros in various trades and specialties.</p>
+						<a title="Refer A Contractor" target="_new" class="referbutton" href="http://signup.servicelive.com">Refer a Pro</a>
+					</div>
+				</div>
+				<div class="span-8 promobox last">
+					<div class="promo2">
+						<h3>Expand your Workforce</h3>
+						<p>Have too much work already or looking to offer new services?  Use ServiceLive to expand your workforce on-demand.  You can hire pros by the job – without the risk and expense of full-time help.</p>
+					</div>
+				</div>
+				<div class="span-8 promobox last">
+					<div class="promo3">
+						<h3>Community Driven</h3>
+						<p>Discuss your ideas, suggestions and or concerns with other community members.</p>
+						<ul>
+							<li><a href="http://community.servicelive.com/register.php" title="Join our Forums">Become a Member of our Forums</a></li>
+							<li><a href="https://community.servicelive.com/index.php" title="Already a Member?">Already a Member?</a></li>
+							<li><a href="http://community.servicelive.com/faq.php" title="Community FAQ">Community FAQ</a></li>
+						</ul>
+					</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div id="footer" class="clear">
+		<div class="container clearfix">
+			<div class="span-16">
+				<ul id="footermenu">
+					<li class="first"><a href="terms.html">Terms of Use</a></li>
+					<li><a href="https://transformco.com/privacy" target="_blank">Privacy Policy</a></li>
+					<li><a href="https://transformco.com/privacy#_Toc31123888" target="_blank">California Privacy Policy</a></li>
+					<li><a href="provideragreement.html">Provider Agreement</a></li>
+					<li class="last"><a href="buyeragreement.html">Buyer Agreement</a></li>
+				</ul>
+				<p>ServiceLive is a Transform Holdco Company.  &copy; 2019 Transform ServiceLive LLC.</p>
+			</div>
+		</div>
+	
+ <script type="text/javascript">
+ var _gaq = _gaq || [];
+ _gaq.push(['_setAccount', 'UA-2653154-6']);
+ _gaq.push(['_setDomainName', 'servicelive.com']);
+ _gaq.push(['_trackPageview']);
+ (function() { var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })();
+ </script>
+</div>
+  </body>
+</html>
+

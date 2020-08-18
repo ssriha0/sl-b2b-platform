@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+     http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx-3.0.xsd"
+   default-autowire="byName" >
+
+	
+	<bean id="spnBackEndPlaceholderConfig"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+			<value>classpath:resources/bootstrap.${sl_app_lifecycle}.properties</value>
+		</property>
+		<property name="ignoreUnresolvablePlaceholders" value="true"/>
+	</bean>
+
+	<bean id="emailService" class="com.servicelive.spn.services.email.CheetahEmailService"/>
+	
+	
+	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+	
+	<tx:annotation-driven transaction-manager="jpaTransactionManagerMain" proxy-target-class="true"/>
+  
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host"><value>${email.smtp.address}</value></property>
+	</bean>
+	
+	<bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
+		<property name="velocityProperties">
+			<value>
+				resource.loader=class
+				class.resource.loader.class=org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+			</value>
+		</property>
+	</bean>
+
+   	<bean id="sqlMap" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation">
+			<value>classpath:/resources/ibatis/SqlMapConfig.xml</value>
+		</property>
+		<!-- property name="dataSource" ref="dataSource"/ -->
+		<property name="dataSource">
+			<ref bean="${datasource.main.bean.id}" />
+		</property>
+	</bean>
+
+	<bean id="userDao" class="com.servicelive.spn.dao.impl.UserDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<!-- Changes -->
+	<bean id="applicationPropertiesDao"
+		class="com.newco.marketplace.persistence.daoImpl.applicationproperties.ApplicationPropertiesDaoImpl"
+		lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="sqlMap" />
+		</property>
+	</bean>
+		
+	<bean id="cryptography"
+		class="com.servicelive.spn.common.util.Cryptography">
+		<property name="applicationPropertiesDao">
+			<ref bean="applicationPropertiesDao" />
+		</property>
+	</bean>
+	
+
+	<!-- Cheetah Mail -->
+    <bean id="mailQueryStringFormatter" class="com.servicelive.spn.services.email.MailQueryStringFormatter" />
+    <bean id="emailProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+  		 <property name="properties">    
+  		 <props>
+  		 	<prop key="cheetah.host.name">ebm.cheetahmail.com</prop>
+  			<prop key="cheetah.login.uri">/api/login1</prop>
+  			<prop key="cheetah.send.uri">/ebm/ebmtrigger1</prop>
+  			<prop key="cheetah.test.mode">${cheetah.test.mode}</prop>
+  			<prop key="name">glacy_slive</prop>
+  			<prop key="cleartext">Sears08</prop>
+  			<prop key="aid">2068054028</prop>
+  		</props>
+  		</property>
+	</bean>
+
+	<!-- ######################Property management############################ -->
+    <bean id="spnProperties" class="org.springframework.context.support.ResourceBundleMessageSource">
+    	<property name="basenames">
+    		<list>
+    			<value>resources/bootstrap.${sl_app_lifecycle}</value>
+    		</list>
+    	</property>
+    </bean>
+
+	<bean id="propertyManagerUtil" class="com.servicelive.spn.common.util.PropertyManagerUtil" />
+	
+	<bean id="beanMapper" class="org.dozer.DozerBeanMapper"  >
+	  <property name="mappingFiles">
+	    <list>
+	      <value>dozer-bean-mappings.xml</value>
+	    </list>
+	  </property>
+	</bean>
+	
+	
+	<!-- ######################DAO ############################################ -->
+	<bean id="lookupSkillsDao" class="com.servicelive.spn.dao.lookup.impl.LookupSkillsDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="lookupServiceTypeDao" class="com.servicelive.spn.dao.lookup.impl.LookupServiceTypeDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="lookupSPNDocumentTypeDao" class="com.servicelive.spn.dao.lookup.impl.LookupSPNDocumentTypeDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="lookupEmailTemplateDao" class="com.servicelive.spn.dao.lookup.impl.LookupEmailTemplateDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="lookupLanguageDao" class="com.servicelive.spn.dao.lookup.impl.LookupLanguageDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<!-- R10.3 SL-19812 Introduce Primary Industry criteria for Campaign-->
+	<!-- Inject the primaryIndustryDAO-->
+	<bean id="lookupPrimaryIndustryDao" class="com.servicelive.spn.dao.lookup.impl.LookupPrimaryIndustryDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="lookupStatesDao" class="com.servicelive.spn.dao.lookup.impl.LookupStatesDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="spnheaderDao" class="com.servicelive.spn.dao.network.impl.SPNHeaderDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="lookupSPNApprovalCriteriaDao" class="com.servicelive.spn.dao.lookup.impl.LookupSPNApprovalCriteriaDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+
+
+    <bean id="spnApplicationPropertiesDao" class="com.servicelive.spn.dao.common.impl.ApplicationPropertiesDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="buyerDao" class="com.servicelive.spn.dao.buyer.impl.BuyerDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="buyerResourceDao" class="com.servicelive.spn.dao.buyer.impl.BuyerResourceDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="campaignHeaderDao" class="com.servicelive.spn.dao.campaign.impl.CampaignHeaderDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="spnetDocumentDao" class="com.servicelive.spn.dao.common.impl.DocumentDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="lookupCompanySizeDao" class="com.servicelive.spn.dao.lookup.impl.LookupCompanySizeDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="lookupMarketDao" class="com.servicelive.spn.dao.lookup.impl.LookupMarketDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="lookupMinimRatingDao" class="com.servicelive.spn.dao.lookup.impl.LookupMinimumRatingDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="lookupResourceCredentialCategoryDao" class="com.servicelive.spn.dao.lookup.impl.LookupResourceCredentialCategoryDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="lookupResourceCredentialTypeDao" class="com.servicelive.spn.dao.lookup.impl.LookupResourceCredentialTypeDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="lookupSPNDocumentStateDao" class="com.servicelive.spn.dao.lookup.impl.LookupSPNDocumentStateDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="lookupSPNMeetAndGreetStateDao" class="com.servicelive.spn.dao.lookup.impl.LookupSPNMeetAndGreetStateDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="lookupSPNStatusActionMapperDao" class="com.servicelive.spn.dao.lookup.impl.LookupSPNStatusActionMapperDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="lookupSPNStatusActionModifierDao" class="com.servicelive.spn.dao.lookup.impl.LookupSPNStatusActionModifierDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="lookupSPNStatusOverrideReasonDao" class="com.servicelive.spn.dao.lookup.impl.LookupSPNStatusOverrideReasonDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="lookupSPNWorkflowStateDao" class="com.servicelive.spn.dao.lookup.impl.LookupSPNWorkFlowStateDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="lookupSalesVolumeDao" class="com.servicelive.spn.dao.lookup.impl.LookupSalesVolumeDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="lookupVendorCredentialCategoryDao" class="com.servicelive.spn.dao.lookup.impl.LookupVendorCredentialCategoryDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="lookupVendorCredentialTypeDao" class="com.servicelive.spn.dao.lookup.impl.LookupVendorCredentialTypeDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="serviceProviderDao" class="com.servicelive.spn.dao.provider.impl.ServiceProviderDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="spnBuyerDao" class="com.servicelive.spn.dao.network.impl.SPNBuyerDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="spnDocumentDao" class="com.servicelive.spn.dao.network.impl.SPNDocumentDaoImpl">	
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="spnMeetAndGreetStateDao" class="com.servicelive.spn.dao.network.impl.SPNMeetAndGreetStateDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="spnProviderFirmStateDao" class="com.servicelive.spn.dao.network.impl.SPNProviderFirmStateDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="spnProviderFirmStateHistoryDao" class="com.servicelive.spn.dao.network.impl.SPNProviderFirmStateHistoryDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="spnServiceProviderStateDao" class="com.servicelive.spn.dao.network.impl.SPNServiceProviderStateDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="spnServiceProviderStateHistoryDao" class="com.servicelive.spn.dao.network.impl.SPNServiceProviderStateHistoryDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="spnUploadedDocumentStateDao" class="com.servicelive.spn.dao.network.impl.SPNUploadedDocumentStateDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="spnWorkflowDao" class="com.servicelive.spn.dao.common.impl.SPNWorkflowDaoImpl">	
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="providerFirmDao" class="com.servicelive.spn.dao.provider.impl.ProviderFirmDaoImpl">		
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="spnTierMinutesDao" class="com.servicelive.spn.dao.network.impl.SPNTierMinutesDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="spnTierPerformanceLevelDao" class="com.servicelive.spn.dao.network.impl.SPNTierPerformanceLevelDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="lookupPerformanceLevelsDao" class="com.servicelive.spn.dao.lookup.impl.LookupPerformanceLevelDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="buyerProviderFirmNoteDao" class="com.servicelive.spn.dao.buyer.impl.BuyerProviderFirmNoteDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+	<bean id="buyerServiceProviderNoteDao" class="com.servicelive.spn.dao.buyer.impl.BuyerServiceProviderNoteDaoImpl">
+		<property name="entityManager" ref="entityManagerMain" />
+	</bean>
+     <bean id="spnProviderFirmStateUsingIbatisDao" class="com.servicelive.spn.dao.network.SPNProviderFirmStateUsingIbatisDao">
+     		<property name="sqlMapClient" ref="sqlMap"/>
+     </bean>
+	<!-- ######################  Services  ############################################ -->
+	<bean id="authenticationService" class="com.servicelive.spn.services.AuthenticationService" />
+	<bean id="editNetworkService" class="com.servicelive.spn.services.network.EditNetworkService"/>
+	<bean id="meetAndGreetStateService" class="com.servicelive.spn.services.auditor.MeetAndGreetStateService"/>
+	<bean id="providerFirmStateService" class="com.servicelive.spn.services.auditor.ProviderFirmStateService"/>
+	<bean id="serviceProviderService" class="com.servicelive.spn.services.auditor.ServiceProviderService"/>
+	<bean id="serviceProviderStateService" class="com.servicelive.spn.services.auditor.ServiceProviderStateService"/>
+	<bean id="uploadedDocumentStateService" class="com.servicelive.spn.services.auditor.UploadedDocumentStateService"/>
+ 	<bean id="buyerServices" class="com.servicelive.spn.services.buyer.BuyerServices" />
+ 	<bean id="createCampaignServices" class="com.servicelive.spn.services.campaign.CreateCampaignServices" />
+ 	<bean id="createSPNServices" class="com.servicelive.spn.services.network.CreateNetworkServices" />
+ 	<bean id="documentServices" class="com.servicelive.spn.services.DocumentServices" />
+ 	<bean id="emailTask" class="com.servicelive.spn.services.workflow.EmailTask" />
+ 	<bean id="emailTemplateServices" class="com.servicelive.spn.services.email.EmailTemplateService" />
+ 	<bean id="javaMailService" class="com.servicelive.spn.services.email.JavaMailService" />
+ 	<bean id="spnBuyerServices" class="com.servicelive.spn.services.buyer.SPNBuyerServices" />
+ 	<bean id="spnWorkflowSerivce" class="com.servicelive.spn.services.workflow.WorkFlowPersistService" />
+ 	<bean id="stateFlowService" class="com.servicelive.spn.services.workflow.StateFlowService" />
+ 	<bean id="workflowTask" class="com.servicelive.spn.services.workflow.WFTask" />
+ 	<bean id="providerFirmService" class="com.servicelive.spn.services.buyer.ProviderFirmService" />
+ 	<bean id="spnTierService" class="com.servicelive.spn.services.SPNTierServiceImpl" />
+ 	<bean id="buyerNotesService" class="com.servicelive.spn.services.buyer.BuyerNotesService" />
+ 	<bean id="memberManageSearchService" class="com.servicelive.spn.services.membermanage.MemberManageSearchService" />
+ 	
+ 	
+	
+	<!--  ###################### iBatis Daos ###################################### -->
+<!--  <bean id="documentApplicationPropertiesDao"
+		class="com.newco.marketplace.persistence.daoImpl.applicationproperties.ApplicationPropertiesDaoImpl">
+		<property name="sqlMapClient" ref="sqlMap"/>
+	</bean>
+	<bean id="docTransactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource">
+			<ref bean="dataSourceMySQLDev" />
+		</property>
+	</bean>
+	<bean id="sqlMapClient"
+		class="org.springframework.orm.ibatis.SqlMapClientFactoryBean"
+		abstract="false" autowire="byName">
+		<property name="configLocation">
+			<value>classpath:resources/ibatis/SqlMapConfig.xml</value>
+		</property>
+		<property name="useTransactionAwareDataSource">
+			<value>true</value>
+		</property>
+		<property name="dataSource">
+			<ref bean="dataSourceMySQLDev" />
+		</property>
+	</bean>
+	<bean id="documentDaoTemp"
+		class="com.newco.marketplace.persistence.daoImpl.document.DocumentDaoImpl">
+		<property name="transactionManager">
+			<ref bean="docTransactionManager" />
+		</property>
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+	
+	<bean id="baseDocumentDao" class="com.newco.marketplace.persistence.service.impl.document.DocumentServiceImpl">
+		<property name="applicationPropertiesDao" ref="documentApplicationPropertiesDao"/>
+		<property name="documentDao">
+    		<ref bean="documentDaoTemp"/>
+    	</property>	
+	</bean>-->	
+	<!--  ###################### iBatis Services ###################################### -->
+	<bean id="auditorQueueCountService" class="com.servicelive.spn.services.auditor.AuditorQueueCountService"><property name="sqlMapClient" ref="sqlMap"/></bean>
+	<bean id="auditorSearchService" class="com.servicelive.spn.services.auditor.AuditorSearchService"><property name="sqlMapClient" ref="sqlMap"/></bean>
+	<bean id="lookupService" class="com.servicelive.spn.services.LookupService" ><property name="sqlMapClient" ref="sqlMap"/></bean>
+	<bean id="nightlyMemberMaintenanceService" class="com.servicelive.spn.services.network.NightlyMemberMaintenanceService"><property name="sqlMapClient" ref="sqlMap"/></bean>
+ 	<bean id="networkHistoryService" class="com.servicelive.spn.services.network.NetworkHistoryService"><property name="sqlMapClient" ref="sqlMap"/></bean>
+	<bean id="networkMaintenanceService" class="com.servicelive.spn.services.network.NetworkMaintenanceService"><property name="sqlMapClient" ref="sqlMap"/></bean>
+	<bean id="networkSummaryServices" class="com.servicelive.spn.services.network.NetworkSummaryServices"><property name="sqlMapClient" ref="sqlMap"/></bean>
+	<bean id="providerMatchService" class="com.servicelive.spn.services.providermatch.ProviderMatchForApprovalServices"><property name="sqlMapClient" ref="sqlMap"/></bean>
+ 	<bean id="campaignActivationServices" class="com.servicelive.spn.services.campaign.CampaignActivationServices"><property name="sqlMapClient" ref="sqlMap"/></bean>
+ 	<bean id="campaignInvitationServices" class="com.servicelive.spn.services.campaign.CampaignInvitationServices"><property name="sqlMapClient" ref="sqlMap"/></bean>
+ 	<bean id="campaignSummaryServices" class="com.servicelive.spn.services.campaign.CampaignSummaryServices"><property name="sqlMapClient" ref="sqlMap"/></bean>
+ 	<bean id="authorizationService" class="com.servicelive.spn.services.AuthorizationService"><property name="sqlMapClient" ref="sqlMap"/></bean>
+ 	<bean id="onDemandMemberMaintenanceService" class="com.servicelive.spn.services.network.OnDemandMemberMaintenanceService"><property name="sqlMapClient" ref="sqlMap"/></bean>
+ 	<!-- SL-17473 -->
+	<bean id="spnAuditorService" class="com.servicelive.spn.service.impl.auditor.SPNAuditorServiceImpl">
+ 		<property name="spnAuditorDao" ref="spnAuditorDao"/>
+ 	</bean>
+ 	<bean id="spnAuditorDao" class="com.servicelive.spn.dao.auditor.impl.SPNAuditorDaoImpl">
+		<property name="sqlMapClient" ref="sqlMap" />
+	</bean>
+	<!-- SL-18226 -->
+	<bean id="spnRoutingPriorityService" class="com.servicelive.spn.services.network.SPNRoutingPriorityServices">
+ 		<property name="spnRoutingPriorityDao" ref="spnRoutingPriorityDao"/>
+ 	</bean>
+ 	<bean id="spnRoutingPriorityDao" class="com.servicelive.spn.dao.impl.routingPriority.SPNRoutingPriorityDaoImpl">
+		<property name="sqlMapClient" ref="sqlMap" />
+	</bean>
+</beans>

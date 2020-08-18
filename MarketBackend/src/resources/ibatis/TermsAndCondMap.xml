@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="TermsAndCond">
+	<typeAlias alias="termsAndCondVO" type="com.newco.marketplace.vo.provider.TermsAndCondVO"/>	
+			
+		<update id="termsAndCond.update" parameterClass="termsAndCondVO">
+			UPDATE vendor_hdr
+			<dynamic prepend="set">
+				<isGreaterThan prepend=", " property="acceptTerms" compareValue="-1">terms_cond_ind = #acceptTerms#</isGreaterThan>
+				<isGreaterThan prepend=", " property="acceptBucksTerms" compareValue="-1">vendor_bucks_ind = #acceptBucksTerms#</isGreaterThan>
+				<isGreaterThan prepend=", " property="acceptNewBucksTerms" compareValue="-1">terms_legal_notice_ind = #acceptNewBucksTerms#,terms_legal_notice_accepted_date = NOW()</isGreaterThan>
+			</dynamic>
+		      WHERE vendor_id = #vendorId#
+		</update>
+		
+		<select id="termsAndCond.get" parameterClass="termsAndCondVO" resultClass="termsAndCondVO">
+	      select vendor_id as vendorId, IFNULL(terms_cond_ind,-1) as acceptTermsInd, IFNULL(vendor_bucks_ind,-1) as acceptBucksTermsInd,IFNULL(terms_legal_notice_ind,-1) as acceptNewBucksTermsInd,
+	      IFNULL(terms_cond_ind,0) as acceptTerms, IFNULL(vendor_bucks_ind,0) as acceptBucksTerms,IFNULL(terms_legal_notice_ind,0) as acceptNewBucksTerms
+	      from vendor_hdr where vendor_id = #vendorId#
+	   </select>
+	   
+	   <select id="termsAndCond.getInd" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+	      select IFNULL(vendor_bucks_ind,-1) as ind
+	      from vendor_hdr where vendor_id = #id#
+	   </select>
+	    <update id="termsAndCond.insertInd" parameterClass="java.lang.Integer">
+	      UPDATE vendor_hdr
+		  SET vendor_bucks_ind = 1,
+		      vendor_bucks_date_accepted = now()
+		  WHERE vendor_id = #id#
+	   </update>
+</sqlMap>

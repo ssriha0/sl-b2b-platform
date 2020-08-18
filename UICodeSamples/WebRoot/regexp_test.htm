@@ -1,0 +1,14 @@
+<script>
+var testNum = prompt("Please enter a number for testing validity to contain only digits");
+do {
+	var regExPattern = new RegExp("^[0-9]+$");
+	alert(testNum.match(regExPattern) ? 'true' : 'false');
+	testNum = prompt("Please enter a number for valid 11 digit number test");
+} while  (testNum != "");
+</script>
+
+<!--
+      One may also want to use this webside:
+      
+          http://www.regular-expressions.info/javascriptexample.html
+-->

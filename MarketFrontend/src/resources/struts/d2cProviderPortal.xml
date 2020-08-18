@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+
+	<package name="d2c_provider_portal" extends="ServiceLiveBase,json-default">
+		<default-interceptor-ref name="ServiceLiveBaseInterceptorStack" />
+
+		<global-results>
+			<result name="error" type="redirectAction">
+				<param name="actionName">errorAction</param>
+				<param name="errorMessage">${errorMessage}</param>
+				<param name="returnURL">${returnURL}</param>
+			</result>
+		</global-results>
+
+		<action name="providerPortalAction" class="d2cProviderPortalAction" method="initPage">
+			<result name="success">/jsp/d2c_provider/provider_portal.jsp
+			</result>
+			<result name="error">/jsp/public/error/body/errorBody.jsp</result>
+		</action>
+
+		<action name="providerPortalAction_ping" class="d2cProviderPortalAction" method="pingAJAX">
+			<result type="json">
+				<param name="noCache">true</param>
+				<param name="excludeNullProperties">true</param>
+				<param name="root">jsonString</param>
+			</result>
+		</action>
+
+		<action name="providerPortalAction_getFirmDetails" class="d2cProviderPortalAction" method="getProviderProfileDetails">
+			<result type="json">
+				<param name="noCache">true</param>
+				<param name="excludeNullProperties">true</param>
+				<param name="root">jsonString</param>
+			</result>
+		</action>
+		<action name="providerPortalAction_getprimaryIndustry" class="d2cProviderPortalAction" method="getResponseToRetrievePrimaryIndustry">
+			<result type="json">
+				<param name="noCache">true</param>
+				<param name="excludeNullProperties">true</param>
+				<param name="root">jsonString</param>
+			</result>
+		</action>
+		<action name="providerPortalAction_getSkuDetails" class="d2cProviderPortalAction" method="getSkuDetails">
+			<result type="json">
+				<param name="noCache">true</param>
+				<param name="excludeNullProperties">true</param>
+				<param name="root">jsonString</param>
+			</result>
+		</action>
+		<action name="providerPortalAction_getDispatchLocation" class="d2cProviderPortalAction" method="getDispatchLocation">
+			<result type="json">
+				<param name="noCache">true</param>
+				<param name="excludeNullProperties">true</param>
+				<param name="root">jsonString</param>
+			</result>
+		</action>
+		<action name="providerPortalAction_addUpdateDispatchLocation" class="d2cProviderPortalAction" method="addUpdateDispatchLocation">
+			<result type="json">
+				<param name="noCache">true</param>
+				<param name="excludeNullProperties">true</param>
+				<param name="root">jsonString</param>
+			</result>
+		</action>
+		<action name="providerPortalAction_getServiceOfferedDetail" class="d2cProviderPortalAction" method="getServiceOfferedDetail">
+			<result type="json">
+				<param name="noCache">true</param>
+				<param name="excludeNullProperties">true</param>
+				<param name="root">jsonString</param>
+			</result>
+		</action>
+		<action name="providerPortalAction_saveDailyLimitAndPrice" class="d2cProviderPortalAction" method="updateDailyLimitAndPrice">
+			<result type="json">
+				<param name="noCache">true</param>
+				<param name="excludeNullProperties">true</param>
+				<param name="root">jsonString</param>
+			</result>
+		 </action>
+		
+		<action name="providerPortalAction_updateCoverageZipCodes" class="d2cProviderPortalAction" method="updateCoverageZipCodes">
+			<result type="json">
+				<param name="noCache">true</param>
+				<param name="excludeNullProperties">true</param>
+				<param name="root">jsonString</param>
+			</result>
+		</action>
+		
+		<action name="providerPortalAction_findZipCodesInRadius" class="d2cProviderPortalAction" method="findZipCodesInRadius">
+			<result type="json">
+				<param name="noCache">true</param>
+				<param name="excludeNullProperties">true</param>
+				<param name="root">jsonString</param>
+			</result>
+		</action>
+		
+		<action name="providerPortalAction_saveZipCoverageRadius" class="d2cProviderPortalAction" method="saveZipCoverageRadius">
+			<result type="json">
+				<param name="noCache">true</param>
+				<param name="excludeNullProperties">true</param>
+				<param name="root">jsonString</param>
+			</result>
+		</action>
+		<action name="providerPortalAction_uploadFirmLogo" class="d2cProviderPortalAction" method="uploadFirmLogo">
+			<result type="json">
+				<param name="noCache">true</param>
+				<param name="excludeNullProperties">true</param>
+				<param name="root">jsonString</param>
+			</result>
+		</action>
+		
+		<action name="providerPortalAction_updateVendorData" class="d2cProviderPortalAction" method="updateVendorData">
+			<result type="json">
+				<param name="noCache">true</param>
+				<param name="excludeNullProperties">true</param>
+				<param name="root">jsonString</param>
+			</result>
+		</action>
+		
+		<action name="providerPortalAction_getFrimLogo" class="d2cProviderPortalAction" method="getFirmLogo">
+			<result type="json">
+				<param name="noCache">true</param>
+				<param name="excludeNullProperties">true</param>
+				<param name="root">jsonString</param>
+			</result>
+		</action>
+		
+		<action name="providerPortalAction_deleteCoverageArea" class="d2cProviderPortalAction" method="deleteCoverageArea">
+			<result type="json">
+				<param name="noCache">true</param>
+				<param name="excludeNullProperties">true</param>
+				<param name="root">jsonString</param>
+			</result>
+		</action>
+		
+		<action name="providerPortalAction_getCoverageAreas" class="d2cProviderPortalAction" method="getCoverageAreas">
+			<result type="json">
+				<param name="noCache">true</param>
+				<param name="excludeNullProperties">true</param>
+				<param name="root">jsonString</param>
+			</result>
+		</action>
+		<action name="providerPortalAction_getRateCardDetails" class="d2cProviderPortalAction" method="getLookupServiceDays">
+			<result type="json">
+				<param name="noCache">true</param>
+				<param name="excludeNullProperties">true</param>
+				<param name="root">jsonString</param>
+			</result>
+		</action>
+		
+		<action name="providerPortalAction_getNotOptedSKUList" class="d2cProviderPortalAction" method="getNotOptedSKUList">
+			<result type="json">
+				<param name="noCache">true</param>
+				<param name="excludeNullProperties">true</param>
+				<param name="root">jsonString</param>
+			</result>
+		</action>
+		
+		<action name="providerPortalAction_getRateCardPrice" class="d2cProviderPortalAction" method="getRateCardPriceDetails">
+			<result type="json">
+				<param name="noCache">true</param>
+				<param name="excludeNullProperties">true</param>
+				<param name="root">jsonString</param>
+			</result>
+		</action>
+		<action name="providerPortalAction_updateOrDeleteOffersOn" class="d2cProviderPortalAction" method="updateOrDeleteOffersOn">
+			<result type="json">
+				<param name="noCache">true</param>
+				<param name="excludeNullProperties">true</param>
+				<param name="root">jsonString</param>
+			</result>
+		</action>		
+		<action name="providerPortalAction_saveRateCardPrice" class="d2cProviderPortalAction" method="saveRateCardPrice">
+			<result type="json">
+				<param name="noCache">true</param>
+				<param name="excludeNullProperties">true</param>
+				<param name="root">jsonString</param>
+			</result>
+		</action>
+		<action name="providerPortalAction_addressValidation" class="d2cProviderPortalAction" method="addressValidation">
+			<result type="json">
+				<param name="noCache">true</param>
+				<param name="excludeNullProperties">true</param>
+				<param name="root">jsonString</param>
+			</result>
+		</action>
+		
+		<action name="providerPortalAction_deleteFirmLogo" class="d2cProviderPortalAction" method="deleteFirmLogo">
+			<result type="json">
+				<param name="noCache">true</param>
+				<param name="excludeNullProperties">true</param>
+				<param name="root">jsonString</param>
+			</result>
+		</action>
+	</package>
+</struts>

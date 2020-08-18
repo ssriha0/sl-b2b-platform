@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="providerBackgroundCheck">
+<typeAlias alias="providerBackground" type="com.newco.marketplace.vo.provider.ProviderBackgroundCheckVO"/> 
+<typeAlias alias="expiryNotification" type="com.newco.marketplace.vo.provider.ExpiryNotificationVO"/> 
+<typeAlias alias="alertTask" type="com.newco.marketplace.business.businessImpl.alert.AlertTask"/>
+<typeAlias alias="vendorNotes" type="com.newco.marketplace.vo.provider.VendorNotesVO"/>	
+
+
+
+<select id="getProviderInfoNotification.query"  resultClass="providerBackground">
+		SELECT  
+	  	  spfs.spn_id               	  	  AS spnId,
+	  	  spn.spn_name 					  AS spnName,
+	 	  r.vendor_id 			          AS vendorId,
+          r.resource_id                   AS resourceId,
+          admin_con.email                 AS vendorEmail,
+          vcon.first_name                 AS resourceFirstName,
+          vcon.last_name                  AS resourceLastName,
+          v.business_name                 AS vendorFirstName,
+          sl.reverification_date  AS reVerficationDate,
+	      audit.notification_type 	  	  AS notificationType,
+          audit.audit_cred_expiry_notification_id AS notificationId,
+          r.bg_check_id 		  	  AS backgroundCheckId,
+          COUNT(DISTINCT spfs.spn_id) AS spnIdCount,
+          sl.plusone_key AS resourcePlusOneKey,
+          r.ssn_last4					AS ssnLastFour
+          
+          FROM vendor_resource r
+          JOIN vendor_hdr v
+            ON (r.vendor_id = v.vendor_id AND v.wf_state_id IN(1,2,3,33,34)
+		   AND r.background_state_id IN (9)
+                AND r.wf_state_id NOT IN(21,31,32) AND (r.delete_ind !=1 OR r.delete_ind IS NULL)
+                AND r.ssn_last4 IS NOT NULL)
+          JOIN sl_pro_bkgnd_chk sl
+            ON (sl.bg_check_id = r.bg_check_id)
+      	JOIN spnet_provider_firm_state spfs
+		ON (spfs.provider_firm_id = r.vendor_id
+		AND spfs.provider_wf_state IN ('PF SPN MEMBER','PF FIRM OUT OF COMPLIANCE','PF SPN APPLICANT','PF SPN MEMBERSHIP UNDER REVIEW'))
+	  JOIN spnet_approval_criteria spc
+	       ON (spc.spn_id = spfs.spn_id AND spc.criteria_id = 29)
+	  JOIN spnet_hdr spn
+		ON (spn.spn_id = spfs.spn_id)
+	
+          JOIN contact vcon
+            ON (vcon.contact_id = r.contact_id)
+          JOIN vendor_resource admin_resource
+            ON (admin_resource.vendor_id = v.vendor_id
+                AND admin_resource.primary_ind = 1)
+          JOIN contact admin_con
+            ON admin_con.contact_id = admin_resource.contact_id
+           
+          LEFT OUTER JOIN audit_cred_expiry_notification audit ON (audit.resource_id = r.resource_id AND audit.credential_ind = 4) 
+	      WHERE	    	(
+	    	(DAY(sl.reverification_date) = DAY(CURDATE() + INTERVAL 30 DAY) 
+            AND
+            MONTH(sl.reverification_date) = MONTH(CURDATE() + INTERVAL 30 DAY)
+            AND 
+            YEAR(sl.reverification_date) = YEAR(CURDATE() + INTERVAL 30 DAY))
+            OR
+            (DAY(sl.reverification_date) = DAY(CURDATE() + INTERVAL 7 DAY) AND
+            MONTH(sl.reverification_date) = MONTH(CURDATE() + INTERVAL 7 DAY)
+            AND YEAR(sl.reverification_date) = YEAR(CURDATE() + INTERVAL 7 DAY))
+            OR
+            (DAY(sl.reverification_date) = DAY(CURDATE() + INTERVAL 0 DAY) AND
+            MONTH(sl.reverification_date) = MONTH(CURDATE() + INTERVAL 0 DAY)
+            AND YEAR(sl.reverification_date) = YEAR(CURDATE() + INTERVAL 0 DAY))
+            OR
+            (DATEDIFF(sl.reverification_date,NOW())<![CDATA[<]]> 0) 
+            )      
+            GROUP BY resourceId                                      
+      	 ORDER BY vendorId
+</select>
+    
+    <insert id="vendorNotesInfo.insert" parameterClass="vendorNotes">
+        	insert into vendor_notes 
+			(vendor_id, 
+				note,
+				modified_by)
+			values(
+			   #vendorId#,
+			   #note#,
+			   #modifiedBy#)
+    </insert>
+    
+    
+    <insert id="alertInfo.insert" parameterClass="alertTask">
+		INSERT INTO alert_task (
+		alert_task_id,
+ 		alerted_timestamp,
+ 		target_key,
+ 		payload,
+ 		payload_key,
+ 		transaction_id,
+		completion_indicator,
+ 		created_date,
+ 		modified_date,
+ 		modified_by,
+ 		alert_type_id,
+ 		template_id,
+ 		state_transition_id,
+ 		alert_to,
+ 		alert_from,
+ 		alert_cc,
+ 		alert_bcc,
+ 		priority, 
+ 		template_input_value
+		) 
+		values
+		(
+		#alertTaskId#,
+ 		#alertedTimestamp#,
+ 		#targetKey#,
+ 		#payload#,
+ 		#payloadKey#,
+ 		#transactionId#,
+		#completionIndicator#,
+ 		#createdDate#,
+ 		#modifiedDate#,
+ 		#modifiedBy#,
+ 		#alertTypeId#,
+ 		#templateId#,
+ 		#stateTransitionId#,
+ 		#alertTo#,
+ 		#alertFrom#,
+ 		#alertCc#,
+ 		#alertBcc#,
+ 		#priority#,
+ 		#templateInputValue#
+ 		)
+	</insert>
+    
+    <insert id="expiryNotificationInfoThirty.insert" parameterClass="expiryNotification">
+		INSERT INTO audit_cred_expiry_notification 
+		(vendor_id,resource_id,notification_type,
+		expiration_date,notification_date,credential_name,credential_ind,notification_30_sent_date)
+			VALUES
+		(#vendorId#,
+			#resourceId#,
+			#notificationType#,
+			#expirationDate#,
+			NOW(),
+			#credentialName#,
+			#credentialIndicator#,
+			NOW())    
+	</insert>
+	<update id="updateNotificationTypeSeven.query" parameterClass="java.util.List">
+		UPDATE audit_cred_expiry_notification SET notification_type = 7 ,notification_date =now(),notification_7_sent_date = now() WHERE audit_cred_expiry_notification_id IN
+			<iterate open="(" close=")" conjunction=",">
+				#notificationIdsList[]#
+			</iterate>
+	</update>
+	<update id="updateNotificationTypeZero.query" parameterClass="java.util.List">
+		UPDATE audit_cred_expiry_notification SET notification_type = 0 ,notification_date =now(),notification_0_sent_date = now() WHERE audit_cred_expiry_notification_id IN
+			<iterate open="(" close=")" conjunction=",">
+				#notificationIdsList[]#
+			</iterate>
+	</update>
+	 <insert id="expiryNotificationInfoSeven.insert" parameterClass="expiryNotification">
+		INSERT INTO audit_cred_expiry_notification 
+		(vendor_id,resource_id,notification_type,
+		expiration_date,notification_date,credential_name,credential_ind,notification_7_sent_date)
+			VALUES
+		(#vendorId#,
+			#resourceId#,
+			#notificationType#,
+			#expirationDate#,
+			NOW(),
+			#credentialName#,
+			#credentialIndicator#,
+			NOW())    
+	</insert>
+	  <insert id="expiryNotificationInfoZero.insert" parameterClass="expiryNotification">
+		INSERT INTO audit_cred_expiry_notification 
+		(vendor_id,resource_id,notification_type,
+		expiration_date,notification_date,credential_name,credential_ind,notification_0_sent_date)
+			VALUES
+		(#vendorId#,
+			#resourceId#,
+			#notificationType#,
+			#expirationDate#,
+			NOW(),
+			#credentialName#,
+			#credentialIndicator#,
+			NOW())    
+	</insert>
+	
+	<update id="updateNotificationTypeThirty.query" parameterClass="java.util.List">
+		UPDATE audit_cred_expiry_notification SET notification_type = 30 ,notification_date =now(),notification_30_sent_date = now(),notification_7_sent_date = null,notification_0_sent_date = null WHERE audit_cred_expiry_notification_id IN
+			<iterate open="(" close=")" conjunction=",">
+				#notificationIdsList[]#
+			</iterate>
+	</update>
+	
+	<select id="getProvInfoNotification.query"  resultClass="providerBackground">
+		SELECT
+		  r.resource_id                    AS resourceId,
+		  r.vendor_id                      AS vendorId,
+		  sl.reverification_date	   	   AS expirationDate,
+		  admin_con.email                  AS vendorEmail,
+		  vcon.first_name                  AS resourceFirstName,
+		  vcon.last_name                   AS resourceLastName,
+		  v.business_name                  AS vendorFirstName
+		FROM vendor_resource r
+		  JOIN vendor_hdr v
+		    ON (r.vendor_id = v.vendor_id
+		        AND r.background_state_id = 9
+		        AND r.wf_state_id = 6)
+		  JOIN sl_pro_bkgnd_chk sl
+		    ON (sl.bg_check_id = r.bg_check_id)
+		  JOIN contact vcon
+		    ON (vcon.contact_id = r.contact_id)
+		  JOIN vendor_resource admin_resource
+		    ON (admin_resource.vendor_id = v.vendor_id
+		        AND admin_resource.primary_ind = 1)
+		  JOIN contact admin_con
+		    ON admin_con.contact_id = admin_resource.contact_id
+		WHERE v.wf_state_id = 3
+		    AND MONTH(sl.reverification_date) = MONTH(CURDATE() + INTERVAL 1 MONTH)
+		    AND YEAR(sl.reverification_date) = YEAR(CURDATE() + INTERVAL 1 MONTH)
+		    AND NOT EXISTS (
+					    SELECT  DISTINCT
+				  	  r1.resource_id 
+			          FROM vendor_resource r1
+			          JOIN vendor_hdr v
+			            ON (r1.vendor_id = v.vendor_id AND v.wf_state IN(3,34)
+					   AND r1.background_state_id IN (9)
+			                AND r1.wf_state_id = 6 AND (r1.delete_ind !=1 OR r1.delete_ind IS NULL)
+			                AND r1.ssn_last4 IS NOT NULL)
+			          JOIN sl_pro_bkgnd_chk sl
+			            ON (sl.bg_check_id = r1.bg_check_id)
+			        	JOIN spnet_provider_firm_state spfs
+						ON (spfs.provider_firm_id = r1.vendor_id
+						AND spfs.provider_wf_state IN ('PF SPN MEMBER','PF FIRM OUT OF COMPLIANCE','PF SPN APPLICANT'))
+				  JOIN spnet_approval_criteria spc
+				       ON (spc.spn_id = spfs.spn_id AND spc.criteria_id = 29)
+				  JOIN spnet_hdr spn
+					ON (spn.spn_id = spfs.spn_id)
+				
+			          JOIN contact vcon
+			            ON (vcon.contact_id = r1.contact_id)
+			          JOIN vendor_resource admin_resource
+			            ON (admin_resource.vendor_id = v.vendor_id
+			                AND admin_resource.primary_ind = 1)
+			          JOIN contact admin_con
+			            ON admin_con.contact_id = admin_resource.contact_id
+			           
+			          LEFT OUTER JOIN audit_cred_expiry_notification audit ON (audit.resource_id = r1.resource_id AND audit.credential_ind = 4) 
+				      WHERE	    r.resource_id = r1.resource_id
+				      AND ((DAY(sl.reverification_date) = DAY(CURDATE() + INTERVAL 30 DAY) 
+			            AND
+			            MONTH(sl.reverification_date) = MONTH(CURDATE() + INTERVAL 30 DAY)
+			            AND 
+			            YEAR(sl.reverification_date) = YEAR(CURDATE() + INTERVAL 30 DAY))
+			            OR
+			            (DAY(sl.reverification_date) = DAY(CURDATE() + INTERVAL 7 DAY) AND
+			            MONTH(sl.reverification_date) = MONTH(CURDATE() + INTERVAL 7 DAY)
+			            AND YEAR(sl.reverification_date) = YEAR(CURDATE() + INTERVAL 7 DAY))
+			            OR
+			            (DAY(sl.reverification_date) = DAY(CURDATE() + INTERVAL 0 DAY) AND
+			            MONTH(sl.reverification_date) = MONTH(CURDATE() + INTERVAL 0 DAY)
+			            AND YEAR(sl.reverification_date) = YEAR(CURDATE() + INTERVAL 0 DAY))
+			            OR
+			            (DATEDIFF(sl.reverification_date,NOW())<![CDATA[<]]> 0)))
+		ORDER BY vendorId
+	</select>
+	
+	<insert id="expiryNotificationInfo.insert" parameterClass="expiryNotification">
+		INSERT INTO audit_cred_expiry_notification 
+		(vendor_id,resource_id,notification_type,
+		expiration_date,credential_name,credential_ind)
+			VALUES
+		(#vendorId#,
+			#resourceId#,
+			#notificationType#,
+			#expirationDate#,
+			#credentialName#,
+			#credentialIndicator#)    
+	</insert>
+</sqlMap>

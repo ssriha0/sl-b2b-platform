@@ -1,0 +1,751 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd" >
+    
+ 
+ <!--  properties common for all signals are defined here -->   
+    <bean id="baseSignal" abstract="true" class="com.servicelive.orderfulfillment.signal.Signal">
+        <property name="serviceOrderDao" ref="serviceOrderDao" />
+        <property name="stateDependent" value="true" />
+        <property name="quickLookup" ref="quickLookupCollection" />  
+    </bean>
+
+    <bean id="baseGroupSignal" abstract="true" class="com.servicelive.orderfulfillment.signal.GroupSignal" parent="baseSignal">
+        <property name="serviceOrderBO" ref="serviceOrderBO" />
+        <property name="sendSignalToOrders" value="false" />
+    </bean>
+
+<!-- all signal beans are singletons, since they shouldn't hold any conversational state -->    
+
+    <bean id="postSignal" class="com.servicelive.orderfulfillment.signal.PostSignal" parent="baseSignal">
+        <property name="name" value="POST_ORDER" />
+        <property name="serviceOrderAuthorization" ref="buyerOrAdminAuthorization"/>
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+    </bean>
+
+
+    <bean id="groupAcceptSignal" class="com.servicelive.orderfulfillment.group.signal.GroupSignal" parent="baseGroupSignal">
+        <property name="name" value="ACCEPT_GROUP" />
+        <property name="serviceOrderAuthorization" ref="routedProviderAuthorization" />
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+        <property name="sendSignalToOrders" value="true" />
+        <property name="orderSignal" value="ACCEPT_ORDER"/>
+    </bean>
+    
+    <bean id="groupAcceptSignalForFirm" class="com.servicelive.orderfulfillment.group.signal.GroupSignalForFirm" parent="baseGroupSignal">
+        <property name="name" value="ACCEPT_GROUP_FOR_FIRM" />
+        <property name="serviceOrderAuthorization" ref="routedProviderAuthorization" />
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+        <property name="sendSignalToOrders" value="true" />
+        <property name="orderSignal" value="ACCEPT_FOR_FIRM"/>
+    </bean>
+
+    <bean id="acceptSignal" class="com.servicelive.orderfulfillment.signal.AcceptSignal" parent="baseSignal">
+        <property name="name" value="ACCEPT_ORDER" />
+        <property name="serviceOrderAuthorization" ref="routedProviderAuthorization"/>
+        <!-- <property name="serviceOrderLogging" ref="acceptSOLogging" /> -->
+        <property name="serviceOrderLogging">
+            <bean class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+                <constructor-arg value="8"/>
+                <constructor-arg value="Service Order is Assigned to $FULL_NAME"/>
+            </bean>
+        </property>    
+    </bean>
+    
+    <bean id="unMatchedPostSignal" class="com.servicelive.orderfulfillment.signal.UnMatchedPostSignal" parent="baseSignal">
+        <property name="name" value="UNMATCHED_POST" />           
+    </bean>
+    
+    <bean id="matchedPostSignal" class="com.servicelive.orderfulfillment.signal.MatchedPostSignal" parent="baseSignal">
+        <property name="name" value="MATCHED_POST" />           
+    </bean>
+    
+    <bean id="leadCompleteSignal" class="com.servicelive.orderfulfillment.signal.CompleteLeadSignal">
+        <property name="name" value="COMPLETE_LEAD" />
+    </bean>
+    
+    <bean id="leadCancelSignal" class="com.servicelive.orderfulfillment.signal.CancelLeadSignal">
+        <property name="name" value="CANCEL_LEAD" />
+    </bean>
+    
+    <bean id="acceptForFirmSignal" class="com.servicelive.orderfulfillment.signal.AcceptSignalForFirm" parent="baseSignal">
+        <property name="name" value="ACCEPT_FOR_FIRM" />
+         <property name="serviceOrderAuthorization" ref="routedProviderAuthorization"/>
+        <!-- <property name="serviceOrderLogging" ref="acceptSOLogging" /> -->
+        <property name="serviceOrderLogging">
+            <bean class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+                <constructor-arg value="8"/>
+                <constructor-arg value="Service Order is Assigned to $params.PVKey_AcceptedName"/>
+            </bean>
+        </property>    
+    </bean>
+
+    <bean id="groupRejectSignal" class="com.servicelive.orderfulfillment.group.signal.RejectGroupSignal" parent="baseGroupSignal">
+        <property name="name" value="REJECT_GROUP" />
+        <property name="serviceOrderAuthorization" ref="routedProviderAuthorization" />
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+        <property name="sendSignalToOrders" value="true" />
+        <property name="orderSignal" value="REJECT_ORDER"/>
+    </bean>
+
+    <bean id="rejectOrder" class="com.servicelive.orderfulfillment.signal.RejectSignal" parent="baseSignal">
+        <property name="name" value="REJECT_ORDER" />
+        <property name="serviceOrderAuthorization" ref="routedProviderAuthorization"/>
+        <!-- <property name="serviceOrderLogging" ref="rejectSOLogging" /> -->
+        <property name="serviceOrderLogging">
+            <bean class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+                <constructor-arg value="7"/>
+                <constructor-arg value="Service Order is REJECTED"/>
+            </bean>
+        </property> 
+        <property name="quickLookupCollection" ref="quickLookupCollection" />           
+    </bean>
+
+    <bean id="createGroupConditionalOffer" class="com.servicelive.orderfulfillment.group.signal.CreateGroupConditionalOfferSignal" parent="baseGroupSignal">
+        <property name="name" value="CREATE_GROUP_CONDITIONAL_OFFER" />
+        <property name="serviceOrderAuthorization" ref="routedProviderAuthorization" />
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+        <property name="sendSignalToOrders" value="true" />
+        <property name="orderSignal" value="CREATE_CONDITIONAL_OFFER"/>
+    </bean>
+
+    <bean id="createConditionalOffer" class="com.servicelive.orderfulfillment.signal.CreateConditionalOfferSignal" parent="baseSignal">
+        <property name="name" value="CREATE_CONDITIONAL_OFFER" />
+        <property name="serviceOrderAuthorization" ref="routedProviderAuthorization"/>
+        <!-- <property name="serviceOrderLogging" ref="createCondOfferSOLogging" /> -->
+        <property name="serviceOrderLogging">
+            <bean class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+                <constructor-arg value="16"/>
+                <constructor-arg 
+                    value=
+                    "The provider has accepted with the following conditions\n
+                    Increase To $SPEND_LIMIT_TO_LABOR\n
+                    Conditional Change Date1 $SCHEDULE_FROM\n
+                    Condtional Change Date2 $SCHEDULE_TO\n
+                    Conditional Start Time $SCHEDULE_START_TIME\n
+                    Condtional End TIme $SCHEDULE_END_TIME"
+                />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="withdrawGroupConditionalOffer" class="com.servicelive.orderfulfillment.group.signal.WidthdrawGroupConditionalOfferSignal" parent="baseGroupSignal">
+        <property name="name" value="WITHDRAW_GROUP_CONDITIONAL_OFFER" />
+        <property name="serviceOrderAuthorization" ref="routedProviderAuthorization" />
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+        <property name="sendSignalToOrders" value="true" />
+        <property name="orderSignal" value="WITHDRAW_CONDITIONAL_OFFER"/>
+    </bean>
+
+    <bean id="withdrawConditionalOffer" class="com.servicelive.orderfulfillment.signal.WithdrawConditionalOfferSignal" parent="baseSignal">
+        <property name="name" value="WITHDRAW_CONDITIONAL_OFFER" />
+        <property name="serviceOrderAuthorization" ref="routedProviderAuthorization"/>
+        <property name="serviceOrderLogging">
+            <bean class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+                <constructor-arg value="17"/>
+                <constructor-arg value="Provider WithDraws Conditional Offer Log"/>
+            </bean>
+        </property>
+    </bean>
+    
+    <!-- R14.0 Withdraw group Conditional Offer for a list -->
+     <!-- <bean id="withdrawGroupConditionalOfferResourceList" class="com.servicelive.orderfulfillment.group.signal.WidthdrawGroupConditionalOfferResourceListSignal" parent="baseGroupSignal">
+        <property name="name" value="WITHDRAW_GROUP_CONDITIONAL_OFFER_RESOURCE_LIST" />
+        <property name="serviceOrderAuthorization" ref="routedProviderAuthorization" />
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+        <property name="sendSignalToOrders" value="true" />
+        <property name="orderSignal" value="WITHDRAW_CONDITIONAL_OFFER_RESOURCE_LIST"/>
+    </bean> -->
+   <!--  R14.0 Withdraw Conditional Offer for a list -->
+    <bean id="withdrawConditionalOfferResourceList" class="com.servicelive.orderfulfillment.signal.WithdrawConditionalOfferResourceListSignal" parent="baseSignal">
+        <property name="name" value="WITHDRAW_CONDITIONAL_OFFER_RESOURCE_LIST" />
+        <property name="serviceOrderAuthorization" ref="routedProviderAuthorization"/>
+        <property name="serviceOrderLogging">
+            <bean class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+                <constructor-arg value="17"/>
+                <constructor-arg value="Provider WithDraws Conditional Offer Log"/>
+            </bean>
+        </property>
+    </bean> 
+    
+    <bean id="acceptGroupConditionalOffer" class="com.servicelive.orderfulfillment.group.signal.GroupSignal" parent="baseGroupSignal">
+        <property name="name" value="ACCEPT_GROUP_CONDITIONAL_OFFER" />
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization" />
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+        <property name="sendSignalToOrders" value="true" />
+        <property name="orderSignal" value="ACCEPT_CONDITIONAL_OFFER"/>
+    </bean>
+
+    <bean id="acceptConditionalOffer" class="com.servicelive.orderfulfillment.signal.AcceptConditionalOfferSignal" parent="baseSignal">
+        <property name="name" value="ACCEPT_CONDITIONAL_OFFER" />
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization" />
+        <property name="serviceOrderLogging">
+            <bean class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+                <constructor-arg value="18"/>
+                <constructor-arg value="Conditional Offer has been accepted"/>
+            </bean>
+        </property>
+    </bean> 
+    
+    <bean id="editOrderSignal" class="com.servicelive.orderfulfillment.signal.EditSignal" parent="baseSignal">
+        <property name="name" value="EDIT_ORDER" />
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization"/>
+        <property name="serviceOrderLogging">
+            <bean class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+                <constructor-arg value="27"/>
+                <constructor-arg value="Service order is EDITED"/>
+            </bean>
+        </property>
+        <property name="noteUtil" ref="soNoteUtil"/>
+        <property name="soLoggingCmdHelper" ref="soLoggingCmdHelper" />
+    </bean>
+    
+    <bean id="autoPostOrderSignal" class="com.servicelive.orderfulfillment.signal.Signal" parent="baseSignal">
+        <property name="name" value="AUTO_POST_ORDER" />
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization"/>
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+    </bean>
+    
+    <bean id="addFundsSignal" class="com.servicelive.orderfulfillment.signal.AddFundSignal" parent="baseSignal">
+        <property name="name" value="ADD_FUND" />
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization"/>
+        <property name="quickLookupCollection" ref="quickLookupCollection" />
+        <property name="serviceOrderLogging">
+            <bean class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+                <constructor-arg value="6"/>
+                <constructor-arg>
+                <value><![CDATA[Labor Spend Limit Increased to  ====>$ $SPEND_LIMIT_TO_LABOR <br/>
+                     Materials Spend Limit Increased to  ====>$ $SPEND_LIMIT_TO_PARTS <br/>
+                     Total SpendLimit                ====>$ $TOTAL_SPEND_LIMIT<br/>
+                     $params.spendLimitReason]]>
+               </value>
+               </constructor-arg>
+            </bean>
+        </property>
+    </bean>
+     <bean id="updateSignal" class="com.servicelive.orderfulfillment.signal.UpdateSignal" parent="baseSignal">
+        <property name="name" value="UPDATE_ORDER" />
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization"/>
+        <property name="quickLookupCollection" ref="quickLookupCollection" />
+        <property name="soLoggingCmdHelper" ref="soLoggingCmdHelper" />
+        <property name="serviceOrderLogging" ref="disabledLogging"/>
+    </bean>
+    <bean id="cancelPendingWalletTransactionSignal" class="com.servicelive.orderfulfillment.signal.Signal" parent="baseSignal">
+        <property name="name" value="ADMIN_CANCEL_PENDING_TRANSACTION" />
+        <property name="serviceOrderAuthorization" ref="adminAuthorization"/>
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+    </bean>
+
+    <bean id="cancelSignal" class="com.servicelive.orderfulfillment.signal.Signal" parent="baseSignal">
+        <property name="name" value="CANCEL_ORDER" />
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization"/>
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+    </bean>
+    
+    <bean id="slCancelSignal" class="com.servicelive.orderfulfillment.signal.CancelOrderSignal" parent="baseSignal">
+        <property name="name" value="SL_CANCEL_ORDER" />
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization"/>
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+    </bean>
+    
+     <bean id="slCancelSignalAPI" class="com.servicelive.orderfulfillment.signal.CancelOrderSignalAPI" parent="baseSignal">
+        <property name="name" value="CANCEL_ORDER_API" />
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization"/>
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+    </bean>
+    
+    <bean id="buyerWithdrawSignal" class="com.servicelive.orderfulfillment.signal.Signal" parent="baseSignal">
+        <property name="name" value="BUYER_WITHDRAW_REQUEST" />
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization"/>
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+    </bean>
+    
+    <bean id="buyerAgreeSignal" class="com.servicelive.orderfulfillment.signal.Signal" parent="baseSignal">
+        <property name="name" value="BUYER_AGREE_AMOUNT" />
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization"/>
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+    </bean>
+    
+    <bean id="buyerDisagreeSignal" class="com.servicelive.orderfulfillment.signal.Signal" parent="baseSignal">
+        <property name="name" value="BUYER_DISAGREE_AMOUNT" />
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization"/>
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+    </bean>
+    
+    <bean id="providerWithdrawSignal" class="com.servicelive.orderfulfillment.signal.Signal" parent="baseSignal">
+        <property name="name" value="PROVIDER_WITHDRAW_REQUEST" />
+        <property name="serviceOrderAuthorization" ref="routedProviderAuthorization"/>
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+    </bean>
+    
+    <bean id="providerAgreeSignal" class="com.servicelive.orderfulfillment.signal.Signal" parent="baseSignal">
+        <property name="name" value="PROVIDER_AGREE_AMOUNT" />
+        <property name="serviceOrderAuthorization" ref="routedProviderAuthorization"/>
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+    </bean>
+    
+    <bean id="providerDisagreeSignal" class="com.servicelive.orderfulfillment.signal.Signal" parent="baseSignal">
+        <property name="name" value="PROVIDER_DISAGREE_AMOUNT" />
+        <property name="serviceOrderAuthorization" ref="routedProviderAuthorization"/>
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+    </bean>
+    
+    
+    
+
+    <bean id="noFeeCancelSignal" class="com.servicelive.orderfulfillment.signal.Signal" parent="baseSignal">
+        <property name="name" value="NO_FEE_CANCEL_ORDER" />
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization"/>
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+    </bean>
+
+    <bean id="spendLimitChangedSignal" class="com.servicelive.orderfulfillment.signal.Signal" parent="baseSignal">
+        <property name="name" value="SPEND_LIMIT_CHANGED" />
+        <property name="serviceOrderAuthorization" ref="adminAuthorization"/>
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+    </bean>
+    <bean id="expireOrdermanuallySignal" class="com.servicelive.orderfulfillment.signal.Signal" parent="baseSignal">
+        <property name="name" value="EXPIRE_ORDER_MANUALLY" />
+        <property name="serviceOrderAuthorization" ref="adminAuthorization"/>
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+    </bean>
+
+    <bean id="addOrderToGroup" class="com.servicelive.orderfulfillment.group.signal.GroupSignal" parent="baseGroupSignal">
+        <property name="name" value="ADD_ORDER_TO_GROUP" />
+        <property name="serviceOrderAuthorization" ref="BuyerOrRoutedProviderAuthorization"/>
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+    </bean>
+
+    <bean id="addOrdersToGroup" class="com.servicelive.orderfulfillment.group.signal.GroupSignal" parent="baseGroupSignal">
+        <property name="name" value="ADD_ORDERS_TO_GROUP" />
+        <property name="serviceOrderAuthorization" ref="BuyerOrRoutedProviderAuthorization"/>
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+    </bean>
+
+    <bean id="unPostGroup" class="com.servicelive.orderfulfillment.group.signal.GroupSignal" parent="baseGroupSignal">
+        <property name="name" value="UNPOST_GROUP" />
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization"/>
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+    </bean>
+
+    <bean id="closeSignal" class="com.servicelive.orderfulfillment.signal.CloseOrderSignal" parent="baseSignal">
+        <property name="name" value="CLOSE_ORDER" />
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization"/>
+        <property name="marketPlatformBO" ref="marketPlatformRemoteService" />
+        <property name="serviceOrderLogging">
+            <bean class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+                <constructor-arg value="1"/>
+                <constructor-arg value=
+                "#set($fp=$request.FinalPriceLabor+$request.FinalPriceParts)Final Labor Spend Limit is $request.FinalPriceLabor. Final Parts Spend Limit is $request.FinalPriceParts. Total Service Order payment is $fp."
+                />
+            </bean>
+        </property>
+    </bean>
+    
+    
+    
+    <bean id="hsrAutoCloseSignal" class="com.servicelive.orderfulfillment.signal.CloseOrderSignal" parent="baseSignal">
+        <property name="name" value="HSR_AUTO_CLOSE_ORDER" />
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization"/>
+        <property name="marketPlatformBO" ref="marketPlatformRemoteService" />
+        <property name="serviceOrderLogging">
+            <bean class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+                <constructor-arg value="1"/>
+                <constructor-arg value=
+                "#set($fp=$request.FinalPriceLabor+$request.FinalPriceParts)Final Labor Spend Limit is $request.FinalPriceLabor. Final Parts Spend Limit is $request.FinalPriceParts. Total Service Order payment is $fp."
+                />
+            </bean>
+        </property>
+    </bean>
+    
+    
+    
+    
+    <bean id="completeOrder" class="com.servicelive.orderfulfillment.signal.CompleteOrderSignal" parent="baseSignal">
+        <property name="name" value="COMPLETE_ORDER" />
+        <property name="serviceOrderAuthorization" ref="acceptedProviderAuthorization" />
+        <property name="marketPlatformBO" ref="marketPlatformRemoteService" />
+        <property name="serviceOrderLogging">
+            <bean class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+                <constructor-arg value="15"/>
+                <constructor-arg value="Provider COMPLETED the service order with the following resolution: $request.ResolutionDs"/>
+            </bean>
+        </property>
+    </bean>
+    
+    <bean id="recallCompletion" class="com.servicelive.orderfulfillment.signal.Signal" parent="baseSignal">
+        <property name="name" value="RECALL_COMPLETION" />
+        <property name="serviceOrderAuthorization" ref="acceptedProviderAuthorization" />
+        <property name="serviceOrderLogging">
+            <bean class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+                <constructor-arg value="34"/>
+                <constructor-arg value="Provider edited completion record for order $SO_ID"/>
+            </bean>
+        </property>
+    </bean>
+    
+    <bean id="buyerRequestReschedule" class="com.servicelive.orderfulfillment.signal.RequestRescheduleSignal" parent="baseSignal">
+        <property name="name" value="BUYER_REQUEST_RESCHEDULE" />
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization" />
+        <!-- <property name="serviceOrderLogging" ref="rescheduleRequestLogging" /> -->
+        <property name="serviceOrderLogging">
+            <bean class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+                <constructor-arg value="36"/>
+                <constructor-arg value="Buyer $params.edit_Reschedule. $params.reschedule_ReasonCode. Comments: $params.PVKey_Comment $params.edit_reschedule_date_info"/>
+            </bean>
+        </property>
+    </bean>
+    
+    <bean id="editSchedule" class="com.servicelive.orderfulfillment.signal.EditScheduleSignal" parent="baseSignal">
+        <property name="name" value="EDIT_SCHEDULE" />
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization" />
+        <property name="serviceOrderLogging">
+            <bean class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+                <constructor-arg value="36"/>
+                <constructor-arg value="Buyer requested schedule changes."/>
+            </bean>
+        </property>
+    </bean>
+    
+    <!-- Begin Rescheduling bean definitions. -->
+    <bean id="providerRequestReschedule" class="com.servicelive.orderfulfillment.signal.RequestRescheduleSignal" parent="baseSignal">
+        <property name="name" value="PROVIDER_REQUEST_RESCHEDULE" />
+        <property name="serviceOrderAuthorization" ref="acceptedProviderAuthorization" />
+        <!-- <property name="serviceOrderLogging" ref="rescheduleRequestLogging" /> -->
+        <property name="serviceOrderLogging">
+            <bean class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+                <constructor-arg value="36"/>
+                <constructor-arg value="Provider $params.edit_Reschedule. $params.reschedule_ReasonCode. Comments: $!params.PVKey_Comment $params.edit_reschedule_date_info"/>
+            </bean>
+        </property>
+    </bean>
+        
+    <bean id="buyerAcceptReschedule" class="com.servicelive.orderfulfillment.signal.AcceptRescheduleSignal" parent="baseSignal">
+        <property name="name" value="BUYER_ACCEPT_RESCHEDULE" />
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization" />
+        <!-- <property name="serviceOrderLogging" ref="rescheduleRequestLogging" /> -->
+        <property name="serviceOrderLogging">
+            <bean class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+                <constructor-arg value="19"/>
+                <constructor-arg value="Reschedule request was ACCEPTED by the Buyer"/>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="providerAcceptReschedule" class="com.servicelive.orderfulfillment.signal.AcceptRescheduleSignal" parent="baseSignal">
+        <property name="name" value="PROVIDER_ACCEPT_RESCHEDULE" />
+        <property name="serviceOrderAuthorization" ref="acceptedProviderAuthorization" />
+        <property name="serviceOrderLogging">
+            <bean class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+                <constructor-arg value="19"/>
+                <constructor-arg value="Reschedule request was ACCEPTED by the Provider"/>
+            </bean>
+        </property>
+    </bean>
+    
+    <bean id="buyerRejectReschedule" class="com.servicelive.orderfulfillment.signal.RejectRescheduleSignal" parent="baseSignal">
+        <property name="name" value="BUYER_REJECT_RESCHEDULE" />
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization" />
+        <!-- <property name="serviceOrderLogging" ref="rescheduleRequestLogging" /> -->
+        <property name="serviceOrderLogging">
+            <bean class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+                <constructor-arg value="19"/>
+                <constructor-arg value="Reschedule request was REJECTED by the Buyer"/>
+            </bean>
+        </property>
+    </bean>
+    
+    <bean id="providerRejectReschedule" class="com.servicelive.orderfulfillment.signal.RejectRescheduleSignal" parent="baseSignal">
+        <property name="name" value="PROVIDER_REJECT_RESCHEDULE" />
+        <property name="serviceOrderAuthorization" ref="acceptedProviderAuthorization" />
+        <property name="serviceOrderLogging">
+            <bean class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+                <constructor-arg value="19"/>
+                <constructor-arg value="Reschedule request was REJECTED by the Provider"/>
+            </bean>
+        </property>
+    </bean>
+    
+    <bean id="buyerCancelReschedule" class="com.servicelive.orderfulfillment.signal.RejectRescheduleSignal" parent="baseSignal">
+        <property name="name" value="BUYER_CANCEL_RESCHEDULE" />
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization" />
+        <!-- <property name="serviceOrderLogging" ref="rescheduleRequestLogging" /> -->
+        <property name="serviceOrderLogging">
+            <bean class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+                <constructor-arg value="19"/>
+                <constructor-arg value="Reschedule request was CANCELLED by the Buyer"/>
+            </bean>
+        </property>
+    </bean>
+    
+    <bean id="providerCancelReschedule" class="com.servicelive.orderfulfillment.signal.RejectRescheduleSignal" parent="baseSignal">
+        <property name="name" value="PROVIDER_CANCEL_RESCHEDULE" />
+        <property name="serviceOrderAuthorization" ref="acceptedProviderAuthorization" />
+        <property name="serviceOrderLogging">
+            <bean class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+                <constructor-arg value="19"/>
+                <constructor-arg value="Reschedule request was CANCELLED by the Provider"/>
+            </bean>
+        </property>
+    </bean>
+    <!-- End Rescheduling bean definitions. -->
+
+    <bean id="addNote" class="com.servicelive.orderfulfillment.signal.AddNoteSignal" parent="baseSignal">
+        <property name="name" value="ADD_NOTE" />
+        <property name="serviceOrderAuthorization" ref="buyerProviderOrAdminAuthorization" />
+        <property name="stateDependent" value="false"/>
+        <property name="notificationTaskProcessor" ref="notificationTaskProcessor" />
+        <property name="marketPlatformBuyerBO" ref="marketPlatformRemoteService" />
+        <property name="serviceOrderLogging">
+            <bean class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+                <constructor-arg index="0" value="12" />
+                <constructor-arg index="1" value="A Note was created for this service order by $ROLE_TYPE" />
+            </bean>
+        </property>
+    </bean>
+    
+    <bean id="providerReleaseOrder" class="com.servicelive.orderfulfillment.signal.ReleaseSignal" parent="baseSignal">
+        <property name="name" value="PROVIDER_RELEASE_ORDER" />
+        <property name="serviceOrderAuthorization" ref="acceptedProviderAuthorization" />
+        <property name="serviceOrderLogging">
+            <bean class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+                <constructor-arg value="24"/>
+                <constructor-arg>
+                 <value><![CDATA[Released from the provider $params.PVKey_ReleaseName - $params.PVKey_ReleaseId <br/>
+                 		Reason: $params.PVKey_ReleaseReason <br/>
+                 		Comments: $params.PVKey_ReleaseComment $params.ChangedServiceDateInfo]]>
+				</value>
+			</constructor-arg>
+            </bean>
+        </property>
+    </bean>
+    
+     <bean id="providerFirmReleaseOrder" class="com.servicelive.orderfulfillment.signal.FirmReleaseSignal" parent="baseSignal">
+        <property name="name" value="PROVIDER_FIRM_RELEASE_ORDER" />
+        <property name="serviceOrderAuthorization" ref="acceptedProviderAuthorization" />
+        <property name="serviceOrderLogging">
+            <bean class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+                <constructor-arg value="24"/>
+                <constructor-arg>
+                 <value><![CDATA[Released from the firm $params.PVKey_ReleaseName - $params.PVKey_ReleaseId <br/>
+                 		Reason: $params.PVKey_ReleaseReason <br/>
+                 		Comments: $params.PVKey_ReleaseComment $params.ChangedServiceDateInfo]]>
+                 </value>
+                 </constructor-arg>
+            </bean>
+        </property>
+    </bean>
+    
+    <bean id="providerOnSiteVisit" class="com.servicelive.orderfulfillment.signal.OnSiteVisitSignal" parent="baseSignal">
+        <property name="name" value="ON_SITE_VISIT" />
+        <property name="serviceOrderAuthorization" ref="acceptedProviderorAdminAuthorization" />
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+    </bean>
+
+    <bean id="activateOrder" class="com.servicelive.orderfulfillment.signal.Signal" parent="baseSignal">
+        <property name="name" value="ACTIVATE_ORDER" />
+        <property name="serviceOrderAuthorization" ref="adminAuthorization" />
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+    </bean>
+
+    <bean id="acknowledgeBatchUpdate" class="com.servicelive.orderfulfillment.signal.Signal" parent="baseSignal">
+        <property name="name" value="ACKNOWLEDGE_BATCH_UPDATE"/>
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization" />
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+    </bean>
+    
+    <bean id="updateBatchSignal" class="com.servicelive.orderfulfillment.signal.UpdateBatchSignal" parent="editOrderSignal">
+        <property name="name" value="UPDATE_BATCH_ORDER" />
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization" />
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+        <property name="transitionName" value="UPDATE_BATCH_ORDER" />
+        <property name="notificationTaskProcessor" ref="notificationTaskProcessor" />
+    </bean>
+
+    <bean id="updateAssurantBatchSignal" class="com.servicelive.orderfulfillment.signal.UpdateASNBatchSignal" parent="editOrderSignal">
+        <property name="name" value="ASN:UPDATE_BATCH_ORDER" />
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization" />
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+        <property name="transitionName" value="ASN_UPDATE_BATCH_ORDER" />
+        <property name="notificationTaskProcessor" ref="notificationTaskProcessor" />
+    </bean>
+
+    <bean id="updateRIBatchSignal" class="com.servicelive.orderfulfillment.signal.UpdateRIBatchSignal" parent="editOrderSignal">
+        <property name="name" value="SEARSRI:UPDATE_BATCH_ORDER" />
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization" />
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+        <property name="transitionName" value="UPDATE_BATCH_ORDER" />
+        <property name="notificationTaskProcessor" ref="notificationTaskProcessor" />
+    </bean>
+
+    <bean id="scopeChangeSignal" class="com.servicelive.orderfulfillment.signal.Signal" parent="baseSignal">
+        <property name="name" value="UPDATE_BATCH_ORDER_SCOPE_CHANGED" />
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization" />
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+        <property name="transitionName" value="UPDATE_BATCH_ORDER_SCOPE_CHANGED" />
+    </bean>
+
+    <bean id="riScopeChangeSignal" class="com.servicelive.orderfulfillment.signal.RIScopeChangeSignal" parent="editOrderSignal">
+        <property name="name" value="SEARSRI:UPDATE_BATCH_ORDER_SCOPE_CHANGED" />
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization" />
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+        <property name="transitionName" value="UPDATE_BATCH_ORDER_SCOPE_CHANGED" />
+    </bean>
+      
+  <!--==================================================-->
+  <!--==           BEGIN PROBLEM STATE        		  ==-->
+  <!--==================================================-->
+    <bean id="loggerReportProblem" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+                <constructor-arg index="0" value="10"/>
+                <constructor-arg index="1" value="$params.PVKey_Comment"/>
+    </bean>
+    <bean id="loggerResolveProblem" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+                <constructor-arg index="0" value="14"/>
+                <constructor-arg index="1" value="$params.PVKey_Comment"/>
+    </bean>
+    <bean id="buyerReportProblem" class="com.servicelive.orderfulfillment.signal.Signal" parent="baseSignal">
+        <property name="name" value="BUYER_REPORT_PROBLEM" />
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization" />
+        <property name="serviceOrderLogging" ref="loggerReportProblem" />
+    </bean>
+    
+    <bean id="buyerResolveProblem" class="com.servicelive.orderfulfillment.signal.ResolveProblemSignal" parent="baseSignal">
+        <property name="name" value="BUYER_RESOLVE_PROBLEM" />
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization" />
+        <property name="serviceOrderLogging" ref="loggerResolveProblem" />
+    </bean>
+    
+    <bean id="providerReportProblem" class="com.servicelive.orderfulfillment.signal.Signal" parent="baseSignal">
+        <property name="name" value="PROVIDER_REPORT_PROBLEM" />
+        <property name="serviceOrderAuthorization" ref="acceptedProviderAuthorization" />
+        <property name="serviceOrderLogging" ref="loggerReportProblem" />
+    </bean>
+    
+    <bean id="providerResolveProblem" class="com.servicelive.orderfulfillment.signal.ResolveProblemSignal" parent="baseSignal">
+        <property name="name" value="PROVIDER_RESOLVE_PROBLEM" />
+        <property name="serviceOrderAuthorization" ref="acceptedProviderAuthorization" />
+        <property name="serviceOrderLogging" ref="loggerResolveProblem" />
+    </bean>
+    <!--==================================================-->
+    <!--==             END PROBLEM STATE                ==-->
+    <!--==================================================-->
+
+    <bean id="updateSubStatus" class="com.servicelive.orderfulfillment.signal.UpdateSubStatusSignal" parent="baseSignal">
+        <property name="name" value="UPDATE_SUBSTATUS" />
+        <property name="stateDependent" value="false" />
+        <property name="serviceOrderAuthorization" ref="BuyerOrAcceptedProviderAuthorization"/>
+        <property name="serviceOrderLogging" ref="subStatusChangeLogging" />
+        <property name="eventAdapter" ref="eventAdapter" />
+        <property name="subStatusList">
+            <!--These are values needed for Assurant-->
+            <list>
+                <value>11</value> <!--Part Back Ordered-->
+                <value>16</value> <!--Part Shipped-->
+                <!-- This is handled by the UI NotifyBuyer Update  <value>54</value>  --> <!--Customer Delayed Service-->
+                <!--<value></value>-->
+            </list>
+        </property>
+    </bean>
+
+    <bean id="hsrUpdateSubStatus" class="com.servicelive.orderfulfillment.signal.UpdateSubStatusSignal" parent="baseSignal">
+        <property name="name" value="SEARSHSR:UPDATE_SUBSTATUS" />
+        <property name="stateDependent" value="false" />
+        <property name="serviceOrderAuthorization" ref="BuyerOrAcceptedProviderAuthorization"/>
+        <property name="serviceOrderLogging" ref="subStatusChangeLogging" />
+            </bean>
+
+    <bean id="unPostSignal" class="com.servicelive.orderfulfillment.signal.UnPostSignal" parent="baseSignal">
+        <property name="name" value="UNPOST_ORDER" />
+        <property name="serviceOrderAuthorization" ref="buyerOrAdminAuthorization"/>
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+    </bean>
+    
+    <bean id="notifyBuyer" class="com.servicelive.orderfulfillment.signal.NotifyBuyerSignal" parent="baseSignal">
+        <property name="name" value="NOTIFY_BUYER" />
+        <property name="stateDependent" value="false" />
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization"/>
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+        <property name="eventAdapter" ref="eventAdapter" />
+    </bean>
+
+    <bean id="lockOrderForEdit" class="com.servicelive.orderfulfillment.signal.LockForEditSignal" parent="baseSignal">
+        <property name="name" value="LOCK_FOR_EDIT" />
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization" />
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+    </bean>
+
+    <bean id="releaseLockOrderForEdit" class="com.servicelive.orderfulfillment.signal.LockForEditSignal" parent="baseSignal">
+        <property name="name" value="RELEASE_LOCK_FOR_EDIT" />
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization" />
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+    </bean>
+
+    <bean id="integrationCancel" class="com.servicelive.orderfulfillment.signal.Signal" parent="baseSignal">
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization" />
+        <property name="name" value="INTEGRATION_CANCEL" />
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+    </bean>
+
+    <bean id="searsRIIntegrationCancel" class="com.servicelive.orderfulfillment.signal.Signal" parent="baseSignal">
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization" />
+        <property name="name" value="SEARSRI:INTEGRATION_CANCEL" />
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+        <property name="transitionName" value="INTEGRATION_CANCEL_ORDER" />
+    </bean>
+
+    <bean id="endGroupProcessSignal" class="com.servicelive.orderfulfillment.signal.Signal" parent="baseSignal">
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization" />
+        <property name="name" value="END_FOR_GROUP_ORDERS" />
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+    </bean>
+
+    <bean id="removeOrdersFromGroupProcessSignal" class="com.servicelive.orderfulfillment.signal.Signal" parent="baseSignal">
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization" />
+        <property name="name" value="REMOVE_ALL_ORDERS_FROM_GROUP" />
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+    </bean>
+
+    <bean id="searsHSRIntegrationCancel" class="com.servicelive.orderfulfillment.signal.Signal" parent="baseSignal">
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization" />
+        <property name="name" value="SEARSHSR:INTEGRATION_CANCEL" />
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+        <property name="transitionName" value="INTEGRATION_CANCEL_ORDER" />
+    </bean>
+
+    <bean id="startProcess" class="com.servicelive.orderfulfillment.signal.Signal" parent="baseSignal">
+        <property name="name" value="START_PROCESS" />
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization"/>
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+    </bean>
+    
+    <bean id="updatePartsShipmentTrackingDetails" class="com.servicelive.orderfulfillment.signal.UpdatePartsShipmentTrackingDetailsSignal" parent="baseSignal">
+    	<property name="name" value="UPDATE_PARTS_SHIPMENT_TRACKING_DETAILS" />
+        <property name="stateDependent" value="false" />
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization"/>
+        <property name="serviceOrderLogging" ref="disabledLogging" />
+        <property name="eventAdapter" ref="eventAdapter" />
+    </bean>
+    
+      
+      <bean id="manageScopeSignal" class="com.servicelive.orderfulfillment.signal.ManageScopeSignal" parent="baseSignal">
+        <property name="name" value="MANAGE_SCOPE" />
+        <property name="serviceOrderAuthorization" ref="buyerAuthorization"/>
+        <property name="serviceOrderLogging">
+            <bean class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+                <constructor-arg value="204"/> 
+                <constructor-arg 
+                    value="Buyer has added $SKU_LIST to the Service Order $SO_ID . The current SO Maximum price is $  $SO_MAX_PRICE . Reason: $params.REASON_CODE  $params.REASON_COMMENTS."
+                />
+            </bean>
+        </property>
+    </bean>
+    
+
+    <import resource="classpath:/com/servicelive/orderfulfillment/contexts/soAuthorizationContext.xml"/>
+    <import resource="classpath:/com/servicelive/orderfulfillment/contexts/soLoggingContext.xml"/>
+    
+</beans>

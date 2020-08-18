@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+	<typeAlias alias="vendorPerformanceMatricVo" type="com.newco.marketplace.dto.vo.performancematric.VendorPerformanceMatricVo" />
+	<typeAlias alias="vendorSoRankingVo" type="com.newco.marketplace.dto.vo.rank.VendorSoRankingVo" />
+	<typeAlias alias="vendorRankingWeightedScoreVo" type="com.newco.marketplace.dto.vo.rank.VendorRankingWeightedScoreVo" />
+	
+	<insert id="save.generateAndGetCorelationId" parameterClass="java.util.HashMap">
+		INSERT INTO so_corelation_id_generator (created_date) VALUES (NOW())
+		<selectKey resultClass="java.lang.String"> SELECT last_insert_id() as id </selectKey>
+	</insert>
+	
+	<select id="fetch.VendorPerformanceMatricByFirmAndBuyerId" parameterClass="java.util.HashMap" resultClass="vendorPerformanceMatricVo">
+		SELECT 
+		    buyer_id AS buyerId
+		    , vendor_id AS vendorId
+		    , score AS vendorPerformanceMatricTableScore
+		FROM
+		    vendor_performance_matric
+		WHERE
+		    buyer_id = #buyerId# 
+		    AND vendor_id IN 
+			<iterate property="firmDetailsListVo" open="(" close=")" conjunction=",">
+            	#firmDetailsListVo[].firmId#
+        	</iterate>
+		ORDER BY vendor_id;
+    </select>
+    
+	<select id="fetch.VendorBonusScoreMapList" parameterClass="java.util.HashMap" resultClass="vendorPerformanceMatricVo">
+		SELECT 
+		    buyer_id AS buyerId
+		    , vendor_id AS vendorId
+		    , score AS newSignUpBonusScore
+		FROM
+		    vendor_bonus_score
+		WHERE
+		    buyer_id = #buyerId# 
+		    AND vendor_id IN 
+			<iterate property="firmDetailsListVo" open="(" close=")" conjunction=",">
+            	#firmDetailsListVo[].firmId#
+        	</iterate>
+		ORDER BY vendor_id;
+    </select>
+    
+    <insert id="save.VendorSoRankingVo" parameterClass="vendorSoRankingVo">
+		INSERT INTO vendor_so_ranking (vendor_id, score, rank, corelation_id, created_date)
+		VALUES (#vendorId#, #rankingScore#, #rank#, #corelationId#, NOW())
+	</insert>
+	
+    <insert id="save.VendorRankingWeightedScoreVo" parameterClass="vendorRankingWeightedScoreVo">
+		INSERT INTO 
+			vendor_ranking_weighted_score (
+				vendor_ranking_buyer_id
+				, vendor_id
+				, weighted_score
+				, corelation_id
+				, created_date)
+		VALUES (
+			#vendorRankingBuyerId#
+			, #vendorId#
+			, #weightedScore#
+			, #corelationId#
+			, NOW())
+	</insert>
+	
+	<update id="update.CorelationIdWithSoIdInVendorRankingWeightedScore" parameterClass="java.util.HashMap">
+		UPDATE 
+			vendor_ranking_weighted_score
+		SET 
+			so_id = #soId#
+			, modified_by = #modifiedBy#
+			, modified_date = NOW()
+		WHERE 
+			corelation_id = #corelationId#;
+	</update>
+	
+	<update id="update.CorelationIdWithSoIdInVendorSoRanking" parameterClass="java.util.HashMap">
+		UPDATE 
+			vendor_so_ranking
+		SET 
+			so_id = #soId#
+			, modified_by = #modifiedBy#
+			, modified_date = NOW()
+		WHERE 
+			corelation_id = #corelationId#;
+	</update>
+	
+	<update id="update.CorelationIdWithSoIdInSoCorelationIdGenerator" parameterClass="java.util.HashMap">
+		UPDATE 
+			so_corelation_id_generator
+		SET 
+			so_id = #soId#
+			, modified_by = #modifiedBy#
+			, modified_date = NOW()
+		WHERE 
+			id = #corelationId#;
+	</update>
+	
+	<select id="fetch.VendorMatchingList" parameterClass="java.util.HashMap" resultClass="vendorPerformanceMatricVo">
+		SELECT 
+		    buyer_id AS buyerId
+		    , vendor_id AS vendorId
+		    , score AS vendorPerformanceMatricTableScore
+		FROM
+		    vendor_matching_score
+		WHERE
+		    buyer_id = #buyerId# 
+		    AND vendor_id IN 
+			<iterate property="firmDetailsListVo" open="(" close=")" conjunction=",">
+            	#firmDetailsListVo[].firmId#
+        	</iterate>
+		ORDER BY vendor_id;
+    </select>
+
+</sqlMap>

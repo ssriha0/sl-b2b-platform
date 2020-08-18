@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="adminEmail">
+
+	<typeAlias alias="BackgroundTickleVo" type="com.newco.marketplace.persistence.vo.adminEmails.BackgroundTickleVo"/>
+	
+	<select id="adminEmail.sendBackgroundEmailComplete" resultClass="BackgroundTickleVo">
+	select distinct `vh`.`business_name` AS `companyName`,
+		(case when (concat(ucase(`c`.`first_name`),_latin1' ',ucase(`c`.`last_name`)) = 
+					concat(ucase(`c1`.`first_name`),_latin1' ',ucase(`c1`.`last_name`))) 
+		then 
+			concat(`c`.`first_name`,_latin1' ',`c`.`last_name`) 
+		else 
+			concat(`c`.`first_name`,_latin1' ',`c`.`last_name`,_latin1' on behalf of ',`c1`.`first_name`,_latin1' ',`c1`.`last_name`) 
+		end) AS `primaryContact`,
+		`c`.`email` AS `destinationEmail`,
+		`vr`.`contact_id` AS `contactId`,
+		`vr1`.`plusone_key` AS `plusonekey`,
+		`vr1`.`resource_id` AS `resourceid`,
+		`vh`.`modified_date` AS `lastUpdate` 
+		from ((((`vendor_hdr` `vh` join `vendor_resource` `vr`) 
+		join `vendor_resource` `vr1`) join `contact` `c`) 
+		join `contact` `c1`) 
+		where ((`vh`.`vendor_id` = `vr`.`vendor_id`) 
+		and (`c`.`contact_id` = `vr`.`contact_id`) 
+		and (`c1`.`contact_id` = `vr1`.`contact_id`) 
+		and (`vr1`.`vendor_id` = `vh`.`vendor_id`) 
+		and (`vr`.`primary_ind` = 1) 
+		and (`vh`.`wf_state_id` in (34)) 
+		and (`vr1`.`background_state_id` in (7,28)) 
+		and (`vr1`.`plusone_key` is not null) 
+		and (not((`c`.`email` like _latin1'%searshc%'))))
+	</select>
+	
+	<select id="adminEmail.sendBackgroundEmailInComplete" resultClass="BackgroundTickleVo">
+	select distinct `vh`.`business_name` AS `companyName`,
+	(case when (concat(ucase(`c`.`first_name`),_latin1' ',ucase(`c`.`last_name`)) = 
+			concat(ucase(`c1`.`first_name`),_latin1' ',ucase(`c1`.`last_name`))) 
+	then 
+		concat(`c`.`first_name`,_latin1' ',`c`.`last_name`) 
+	else 
+		concat(`c`.`first_name`,_latin1' ',`c`.`last_name`,_latin1' on behalf of ',`c1`.`first_name`,_latin1' ',`c1`.`last_name`) 
+	end) AS `primaryContact`,
+	`c`.`email` AS `destinationEmail`,
+	`vr`.`contact_id` AS `contactId`,
+	`vr1`.`plusone_key` AS `plusonekey`,
+	`vr1`.`resource_id` AS `resourceid`,
+	`vh`.`modified_date` AS `lastUpdate` 
+	from ((((`vendor_hdr` `vh` join `vendor_resource` `vr`) 
+	join `vendor_resource` `vr1`) join `contact` `c`) 
+	join `contact` `c1`) 
+	where ((`vh`.`vendor_id` = `vr`.`vendor_id`) 
+	and (`c`.`contact_id` = `vr`.`contact_id`) 
+	and (`c1`.`contact_id` = `vr1`.`contact_id`) 
+	and (`vr1`.`vendor_id` = `vh`.`vendor_id`) 
+	and (`vr`.`primary_ind` = 1) 
+	and (`vh`.`wf_state_id` = 1) 
+	and (`vr1`.`background_state_id` in (7,28)) 
+	and (`vr1`.`plusone_key` is not null) 
+	and (not((`c`.`email` like _latin1'%searshc%'))))
+	</select>
+	
+	<select id="adminEmail.sendBackgroundEmailPending" resultClass="BackgroundTickleVo">
+	select distinct `vh`.`business_name` AS `companyName`,
+	(case when (concat(ucase(`c`.`first_name`),_latin1' ',ucase(`c`.`last_name`)) = 
+			concat(ucase(`c1`.`first_name`),_latin1' ',ucase(`c1`.`last_name`))) 
+	then 
+		concat(`c`.`first_name`,_latin1' ',`c`.`last_name`) 
+	else 
+		concat(`c`.`first_name`,_latin1' ',`c`.`last_name`,_latin1' on behalf of ',`c1`.`first_name`,_latin1' ',`c1`.`last_name`) 
+	end) AS `primaryContact`,
+	`c`.`email` AS `destinationEmail`,
+	`vr`.`contact_id` AS `contactId`,
+	`vr1`.`plusone_key` AS `plusonekey`,
+	`vr1`.`resource_id` AS `resourceid`,
+	`vh`.`modified_date` AS `lastUpdate` 
+	from ((((`vendor_hdr` `vh` join `vendor_resource` `vr`) 
+	join `vendor_resource` `vr1`) join `contact` `c`) 
+	join `contact` `c1`) 
+	where ((`vh`.`vendor_id` = `vr`.`vendor_id`) 
+	and (`c`.`contact_id` = `vr`.`contact_id`) 
+	and (`c1`.`contact_id` = `vr1`.`contact_id`) 
+	and (`vr1`.`vendor_id` = `vh`.`vendor_id`) 
+	and (`vr`.`primary_ind` = 1) 
+	and (`vh`.`wf_state_id` in (2,33)) 
+	and (`vr1`.`background_state_id` in (7,28)) 
+	and (`vr1`.`plusone_key` is not null) 
+	and (not((`c`.`email` like _latin1'%searshc%'))))
+	</select>
+	
+	
+	
+</sqlMap>

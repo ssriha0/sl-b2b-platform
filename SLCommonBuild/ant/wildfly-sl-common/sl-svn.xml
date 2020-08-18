@@ -1,0 +1,81 @@
+<project name="sl-svn">
+    <description>
+        Targets that interact with subversion
+    </description>
+
+
+    <property name="sl-svn.svnkit-dir" location="${sl-common.ant-dir}/wildfly-opt/svnkit" />
+    <path id="sl-svn.svnkit-classpath">
+        <fileset dir="${sl-svn.svnkit-dir}">
+            <include name="*.jar" />
+        </fileset>
+    </path>
+
+
+<!-- ===================================================================================
+        Common Targets
+        SEE ALSO: depends-getlatest
+     =================================================================================== -->
+
+    <target name="getlatest-branch" depends="-svn-version-check">
+        <java dir="${sl-common.branch-dir}" fork="true" classname="org.tmatesoft.svn.cli.SVN" classpathref="sl-svn.svnkit-classpath">
+            <arg value="up"/>
+        </java>
+    </target>
+
+    <target name="getlatest" depends="-svn-version-check"
+            description="Get the latest from subversion for this project.  (depends-getlatest will do the same for all 'generated' projects).">
+       
+        <java dir="." fork="true" classname="org.tmatesoft.svn.cli.SVN" classpathref="sl-svn.svnkit-classpath">
+            <arg value="up"/>
+        </java>
+    </target>
+
+
+<!-- ===================================================================================
+        Private Helper Targets do NOT include 'description' attr in target element
+          and (per ASL conventions) start with a hyphen.
+     =================================================================================== -->
+
+    <target name="-svn-version-check">
+        <!-- The first line of a .svn/entries file contains the client version number.  
+             8=1.4.2, 9=1.5.x, 10=1.6.x.  Don't allow user to check out using our 1.6 client 
+             into an area created by an older svn client. -->
+        <groovy><![CDATA[
+            reader= new File(".svn/entries").newReader();
+            sVer= reader.readLine();
+            reader.close();
+            ver= Integer.parseInt(sVer);
+
+            if (ver < 10) {
+                task= project.getTaskDefinitions().get("fail").newInstance();
+                task.setMessage ("Ant uses an svn v1.6 compatible client.  You checked out this project using an older svn client.  Completing this request would render the project unusable by your antiquated client.  Time to upgrade, sport.");
+                task.execute();
+            } ]]>
+        </groovy>
+    </target>
+
+
+    <!-- Get svn repository version to stuff into MANIFEST's Implementation-Version. -->
+    <target name="-svn-getrev">
+        <java dir="." fork="true"
+                classname="org.tmatesoft.svn.cli.svnversion.SVNVersion" 
+                classpathref="sl-svn.svnkit-classpath"
+                outputproperty="sl-svn.rev"
+                errorproperty="stderr" />
+
+        <!-- Error msgs from svnversion often contain newlines, which build fine, but hose deployments. -->
+        <groovy><![CDATA[
+            rev= project.getProperty("sl-svn.rev");
+            if (rev.indexOf('\n') >= 0) {
+                project.log ("### -svn-getrev: ERROR GETTING SVN REVISION#: " + rev, project.MSG_WARN);
+                rev= "ERROR - see build output";
+            }
+            project.setProperty("sl-svn.rev", rev);
+            project.setProperty("java-build.jar-version", rev);
+        ]]>
+        </groovy>
+    </target>
+
+</project>
+

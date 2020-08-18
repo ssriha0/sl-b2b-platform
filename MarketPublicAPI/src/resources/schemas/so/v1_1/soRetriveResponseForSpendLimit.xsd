@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/spendLimitHistoryResponse"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+	targetNamespace="http://www.servicelive.com/namespaces/spendLimitHistoryResponse"
+	elementFormDefault="qualified" jaxb:version="1.0"
+	jaxb:extensionBindingPrefixes="xjc">
+       <xs:include schemaLocation="../../common.xsd" />
+       <xs:element name="spendLimitHistoryResponse">
+          <xs:complexType>
+             <xs:sequence>
+              	<xs:element ref="results"/>
+               	<xs:element name="soSpendLimitHistory" type="soSpendLimitHistory"  minOccurs="0" maxOccurs="unbounded"/>
+             </xs:sequence>
+             <xs:attribute name="version" type="xs:decimal"/>
+           </xs:complexType>
+        </xs:element>
+        <xs:complexType name="soSpendLimitHistory">
+           <xs:sequence>
+               <xs:element ref="results"/>
+               <xs:element name="soId" type="xs:string" minOccurs="0"/>
+               <xs:element name="currentPrice" type="xs:string"  minOccurs="0"/>
+               <xs:element name="spendLimitHistory" type="spendLimitHistory" minOccurs="0" maxOccurs="unbounded"/>
+           </xs:sequence>
+        </xs:complexType>
+        <xs:complexType name="spendLimitHistory">
+          <xs:sequence>
+               <xs:element name="date" type="xs:string" minOccurs="0"/>    
+               <xs:element name="newPrice" type="xs:string" minOccurs="0"/>  
+               <xs:element name="oldPrice" type="xs:string" minOccurs="0"/>
+               <xs:element name="reason" type="xs:string" minOccurs="0"/>    
+               <xs:element name="user" type="xs:string" minOccurs="0"/> 
+          </xs:sequence>
+       </xs:complexType>
+</xs:schema>

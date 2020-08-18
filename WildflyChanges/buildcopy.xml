@@ -1,0 +1,246 @@
+<?xml version="1.0"?>
+   <project name="copy wildfly files" default="info">   
+   <target name="info">
+      <echo>Copy/replace new updated files build script</echo>
+      <echo>MarketFrontend Changes</echo>	 
+      <copy file="MarketFrontend/add_serviceProvider.jsp" todir="../MarketFrontend/web/jsp/providerRegistration" overwrite="true"/>
+      <copy file="MarketFrontend/manage_users.jsp" todir="../MarketFrontend/web/jsp/providerRegistration" overwrite="true"/>
+	  <copy file="MarketFrontend/mysql-connector-java-5.1.23-bin.jar" todir="../ServiceLiveWebUtil/lib/deployables" overwrite="true"/>
+      <copy file="MarketFrontend/commons-fileupload-1.3.2.jar" todir="../SLCommonBuild/lib/deployables" overwrite="true"/>
+      <copy file="MarketFrontend/commons-fileupload-1.3.2.jar" todir="../ServiceLiveWebUtil/lib/Struts2Deployables" overwrite="true"/>
+      <copy file="MarketFrontend/freemarker-2.3.22.jar" todir="../SLCommonBuild/lib/deployables" overwrite="true"/>
+      <copy file="MarketFrontend/freemarker-2.3.22.jar" todir="../ServiceLiveWebUtil/lib/Struts2Deployables" overwrite="true"/>
+      <copy file="MarketFrontend/ognl-3.0.19.jar" todir="../SLCommonBuild/lib/deployables" overwrite="true"/>
+      <copy file="MarketFrontend/ognl-3.0.19.jar" todir="../ServiceLiveWebUtil/lib/Struts2Deployables" overwrite="true"/>
+      <copy file="MarketFrontend/struts2-core-2.3.32.jar" todir="../SLCommonBuild/lib/deployables" overwrite="true"/>
+      <copy file="MarketFrontend/struts2-core-2.3.32.jar" todir="../ServiceLiveWebUtil/lib/Struts2Deployables" overwrite="true"/>
+      <copy file="MarketFrontend/xwork-core-2.3.32.jar" todir="../SLCommonBuild/lib/deployables" overwrite="true"/>
+      <copy file="MarketFrontend/xwork-core-2.3.32.jar" todir="../ServiceLiveWebUtil/lib/Struts2Deployables" overwrite="true"/>
+      <copy file="MarketFrontend/jboss-web.xml" todir="../MarketFrontend/web/WEB-INF" overwrite="true"/>
+   	  <copy file="MarketFrontend/jboss-deployment-structure.xml" todir="../MarketFrontend/web/WEB-INF" overwrite="true"/>
+      <copy file="MarketFrontend/web.xml" todir="../MarketFrontend/web/WEB-INF" overwrite="true"/>
+   	  <copy file="MarketFrontend/spring-orm-3.1.0.RELEASE.jar" todir="../ServiceLiveWebUtil/lib/Struts2Deployables" overwrite="true"/>
+   	  <copy file="MarketFrontend/persistence.xml" todir="../MarketFrontend/web/META-INF" overwrite="true"/>
+   	  <copy file="MarketFrontend/hibernate-3.3.2.GA.jar" todir="../ServiceLiveWebUtil/lib/deployables" overwrite="true"/>
+   	  <copy file="MarketFrontend/hibernate-annotations-3.4.0.GA.jar" todir="../ServiceLiveWebUtil/lib/deployables" overwrite="true"/>
+   	  <copy file="MarketFrontend/hibernate-entitymanager-3.4.0.GA.jar" todir="../ServiceLiveWebUtil/lib/deployables" overwrite="true"/>  	  
+   	  <copy file="MarketFrontend/PBWorkflowTabAction.java" todir="../MarketFrontend/src/com/newco/marketplace/web/action/powerbuyer" overwrite="true"/>
+   	  <copy file="MarketFrontend/tab_buyer_financial_profile.jsp" todir="../MarketFrontend/web/jsp/finance_manager/body/tabs" overwrite="true"/>
+      <copy file="MarketFrontend/panel_bank_account.jsp" todir="../MarketFrontend/web/jsp/finance_manager/body/tabs/manage_accounts_panels" overwrite="true"/>
+   	  <copy file="MarketFrontend/tab_buyer_manage_funds.jsp" todir="../MarketFrontend/web/jsp/finance_manager/body/tabs" overwrite="true"/>
+   	  <copy file="MarketFrontend/tab_provider_manage_accounts.jsp" todir="../MarketFrontend/web/jsp/finance_manager/body/tabs" overwrite="true"/>
+   	  <copy file="MarketFrontend/tab_both_financial_profile.jsp" todir="../MarketFrontend/web/jsp/finance_manager/body/tabs" overwrite="true"/>
+   	  <copy file="MarketFrontend/order_management_reject_popup.jsp" todir="../MarketFrontend/web/jsp/orderManagement" overwrite="true"/>
+      <copy file="MarketFrontend/concurrent.jar" todir="../ServiceLiveWebUtil/lib/deployables" overwrite="true"/>
+   	  <copy file="MarketFrontend/tab_sladmin_manage_funds.jsp" todir="../MarketFrontend/web/jsp/finance_manager/body/tabs" overwrite="true"/>
+   	  <copy file="MarketFrontend/tab_sladmin_revenue_pull.jsp" todir="../MarketFrontend/web/jsp/finance_manager/body/tabs" overwrite="true"/>
+   	  <copy file="MarketFrontend/admin_trip_charge.jsp" todir="../MarketFrontend/web/jsp/admin" overwrite="true"/>
+   	  <copy file="MarketFrontend/adminMarketAdj.jsp" todir="../MarketFrontend/web/jsp/admin" overwrite="true"/>
+   	  <copy file="MarketFrontend/buyer_manage_users.jsp" todir="../MarketFrontend/web/jsp/buyer_admin" overwrite="true"/>
+   	  <copy file="MarketFrontend/struts.properties" todir="../MarketFrontend/src" overwrite="true"/>
+      <copy file="MarketFrontend/struts.properties" todir="../MarketFrontend/web/WEB-INF" overwrite="true"/>
+   	  <copy file="MarketFrontend/panel_credit_card_account.jsp" todir="../MarketFrontend/web/jsp/finance_manager/body/tabs/manage_accounts_panels" overwrite="true"/>
+   	  <copy file="MarketFrontend/widgetTransferSLBucks.jsp" todir="../MarketFrontend/web/jsp/so_monitor/menu" overwrite="true"/>
+	  <copy file="MarketFrontend/SOWPricingTabDTO.java" todir="../MarketFrontend/src/com/newco/marketplace/web/dto" overwrite="true"/>
+   	  <echo>MarketCommon Changes</echo>
+   	  <copy file="MarketCommon/mainJpaTransactionContext.xml" todir="../MarketCommon/resources/spring" overwrite="true"/>
+   	  <echo>MarketBackend Changes</echo> 
+   	  <copy file="MarketBackend/CacheManagerBOImpl.java" todir="../MarketBackend/src/com/newco/marketplace/business/businessImpl/cache" overwrite="true"/>
+   	  <copy file="MarketBackend/bootstrap.dev.properties" todir="../MarketBackend/src/resources" overwrite="true"/>
+   	  <copy file="MarketBackend/EmailTemplateBOImpl.java" todir="../MarketBackend/src/com/newco/marketplace/business/businessImpl/provider/" overwrite="true"/>
+	  <copy file="MarketBackend/MaintainSkuDaoImpl.java" todir="../MarketBackend/src/com/servicelive/sku/maintenance/dao/impl/" overwrite="true"/>
+   	  <echo>OrderFulfilment.Client Changes</echo>
+   	  <copy file="OrderFulfillment.Client/persistence.xml" todir="../OrderFulfillment/OrderFulfillment.Client/src/main/resources/META-INF" overwrite="true"/>
+	  <copy file="OrderFulfillment.Client/OFHelper.java" todir="../OrderFulfillment/OrderFulfillment.Client/src/main/java/com/servicelive/orderfulfillment/client" overwrite="true"/>
+	  <echo>MarketBatch Changes</echo>
+   	  <copy file="MarketBatch/jboss-web.xml" todir="../MarketBatch/web/WEB-INF" overwrite="true"/>
+	  <copy file="MarketBatch/jboss-deployment-structure.xml" todir="../MarketBatch/web/META-INF" overwrite="true"/>
+	  <copy file="MarketBatch/struts-tiles-1.3.8.jar" todir="../SLCommonBuild/lib/deployables" overwrite="true"/>	
+	  <copy file="MarketBatch/spring-orm-3.1.0.RELEASE.jar" todir="../SLCommonBuild/lib/deployables" overwrite="true"/>	
+   	  <copy file="MarketBatch/ABaseScheduler.java" todir="../MarketBatch/src/main/java/com/newco/marketplace/util/scheduler/" overwrite="true"/>	
+      <copy file="MarketBatch/CSATIntegrationProcessor.java" todir="../MarketBatch/src/main/java/com/newco/batch/csatmapping/" overwrite="true"/>	
+      <copy file="MarketBatch/WestSurveyErrorHandler.java" todir="../MarketBatch/src/main/java/com/newco/batch/westsurvey/" overwrite="true"/>	
+   	  <copy file="MarketBatch/persistence.xml" todir="../MarketBatch/web/META-INF" overwrite="true"/>
+	  <copy file="MarketBatch/SLPartsOrderFileProcessor.java" todir="../MarketBatch/src/main/java/com/newco/batch/serviceorder/" overwrite="true"/>
+	  <copy file="MarketBatch/DocumentExpirationService.java" todir="../MarketBatch/src/main/java/com/newco/batch/documentExpiration/" overwrite="true"/>
+	  
+   	  <echo>MarketPlatform.RemoteService Changes</echo>
+      <delete file="../MarketPlatformRemoteService/MarketPlatform.RemoteService.BusinessImpl/src/main/resources/META-INF/persistence.xml" failonerror="false"/>
+   	  <delete file="../MarketPlatformRemoteService/MarketPlatform.RemoteService.NotificationMDB/src/main/resources/META-INF/ejb-jar.xml" failonerror="false"/>	
+      <copy file="MarketPlatform.RemoteService/jboss-deployment-structure.xml" todir="../MarketPlatformRemoteService/MarketPlatform.RemoteService/src/main/ear/META-INF" overwrite="true"/>
+	  <copy file="MarketPlatform.RemoteService/application.xml" todir="../MarketPlatformRemoteService/MarketPlatform.RemoteService/src/main/ear/META-INF" overwrite="true"/>
+	  <copy file="MarketPlatform.RemoteService/jboss-ejb3.xml" todir="../MarketPlatformRemoteService/MarketPlatform.RemoteService.NotificationMDB/src/main/resources/META-INF" overwrite="true"/>
+   	  <copy file="MarketPlatform.RemoteService/jboss-local.xml-rename-local" todir="../MarketPlatformRemoteService/MarketPlatform.RemoteService.NotificationMDB/src/main/resources/META-INF" overwrite="true"/>	   	 
+   	  <copy file="MarketPlatform.RemoteService/jpaContext.xml" todir="../MarketPlatformRemoteService/MarketPlatform.RemoteService.BusinessImpl/src/main/resources/com/servicelive/marketplatform/service" overwrite="true"/>
+   	  <!--<copy file="MarketPlatform.RemoteService/marketPlatformContext.xml" todir="../MarketPlatformRemoteService/MarketPlatform.RemoteService.BusinessImpl/src/main/resources/com/servicelive/marketplatform/service" overwrite="true"/>
+   	  <copy file="MarketPlatform.RemoteService/notificationServiceContext.xml" todir="../MarketPlatformRemoteService/MarketPlatform.RemoteService.BusinessImpl/src/main/resources/com/servicelive/marketplatform/service" overwrite="true"/>-->
+      <copy file="MarketPlatform.RemoteService/NotificationTaskConsumerBean.java" todir="../MarketPlatformRemoteService/MarketPlatform.RemoteService.NotificationMDB/src/main/java/com/servicelive/marketplatform/notification/mdb" overwrite="true"/>
+      <copy file="MarketPlatform.RemoteService/BuyerDocumentTaskConsumerBean.java" todir="../MarketPlatformRemoteService/MarketPlatform.RemoteService.NotificationMDB/src/main/java/com/servicelive/marketplatform/notification/mdb" overwrite="true"/>
+      <copy file="MarketPlatform.RemoteService/notifBeanContext.xml" todir="../MarketPlatformRemoteService/MarketPlatform.RemoteService.NotificationMDB/src/main/resources" overwrite="true"/>
+   	  <copy file="MarketPlatform.RemoteService/messagingContext.xml" todir="../MarketPlatformRemoteService/MarketPlatform.RemoteService.MessageListeners/src/main/resources/com/servicelive/marketplatform/jms" overwrite="true"/>
+   	
+   	
+   	  <echo>MarketWebServices Changes</echo>
+   	  <copy file="MarketWebServices/struts-tiles-1.3.8.jar" todir="../ServiceLiveWebUtil/lib/deployables" overwrite="true"/>
+	  <copy file="MarketWebServices/spring-webmvc-3.0.5.RELEASE.jar" todir="../ServiceLiveWebUtil/lib/Struts2InitialDeployables" overwrite="true"/>
+	  <copy file="MarketWebServices/aopalliance-1.0.0.jar" todir="../ServiceLiveWebUtil/lib/Struts2InitialDeployables" overwrite="true"/>
+	  <copy file="MarketWebServices/spring-aop-3.0.5.RELEASE.jar" todir="../ServiceLiveWebUtil/lib/Struts2InitialDeployables" overwrite="true"/>
+	  <copy file="MarketWebServices/spring-asm-3.0.5.RELEASE.jar" todir="../ServiceLiveWebUtil/lib/Struts2InitialDeployables" overwrite="true"/>
+	  <copy file="MarketWebServices/spring-beans-3.0.5.RELEASE.jar" todir="../ServiceLiveWebUtil/lib/Struts2InitialDeployables" overwrite="true"/>
+	  <copy file="MarketWebServices/spring-context-3.0.5.RELEASE.jar" todir="../ServiceLiveWebUtil/lib/Struts2InitialDeployables" overwrite="true"/>
+	  <copy file="MarketWebServices/spring-context-support-3.0.5.RELEASE.jar" todir="../ServiceLiveWebUtil/lib/Struts2InitialDeployables" overwrite="true"/>
+	  <copy file="MarketWebServices/spring-core-3.0.5.RELEASE.jar" todir="../ServiceLiveWebUtil/lib/Struts2InitialDeployables" overwrite="true"/>
+	  <copy file="MarketWebServices/spring-expression-3.0.5.RELEASE.jar" todir="../ServiceLiveWebUtil/lib/Struts2InitialDeployables" overwrite="true"/>
+	  <copy file="MarketWebServices/spring-jdbc-3.0.5.RELEASE.jar" todir="../ServiceLiveWebUtil/lib/Struts2InitialDeployables" overwrite="true"/>
+	  <copy file="MarketWebServices/spring-jms-3.0.5.RELEASE.jar" todir="../ServiceLiveWebUtil/lib/Struts2InitialDeployables" overwrite="true"/>
+	  <copy file="MarketWebServices/spring-orm-3.1.0.RELEASE.jar" todir="../ServiceLiveWebUtil/lib/Struts2InitialDeployables" overwrite="true"/>
+	  <copy file="MarketWebServices/spring-tx-3.0.5.RELEASE.jar" todir="../ServiceLiveWebUtil/lib/Struts2InitialDeployables" overwrite="true"/>
+	  <copy file="MarketWebServices/spring-web-3.0.5.RELEASE.jar" todir="../ServiceLiveWebUtil/lib/Struts2InitialDeployables" overwrite="true"/>
+	  <copy file="MarketWebServices/jboss-web.xml" todir="../MarketWebServices/web/WEB-INF" overwrite="true"/>
+	  <copy file="MarketWebServices/jboss-deployment-structure.xml" todir="../MarketWebServices/web/META-INF" overwrite="true"/>
+	  <copy file="MarketWebServices/persistence.xml" todir="../MarketWebServices/web/META-INF" overwrite="true"/>
+	  <copy file="MarketWebServices/OrderDispatchRequestor.java" todir="../MarketWebServices/src/com/newco/marketplace/webservices/dispatcher/so/order" overwrite="true"/>
+	  <echo>MarketPublicMobileAPI Changes</echo>
+	  <copy file="MarketPublicMobileAPI/struts-tiles-1.3.8.jar" todir="../MarketPublicMobileAPI/lib" overwrite="true"/>
+	  <copy file="MarketPublicMobileAPI/web.xml" todir="../MarketPublicMobileAPI/web/WEB-INF/" overwrite="true"/>
+	  <copy file="MarketPublicMobileAPI/aopalliance-1.0.0.jar" todir="../MarketPublicMobileAPI/lib" overwrite="true"/>
+	  <copy file="MarketPublicMobileAPI/spring-aop-3.0.5.RELEASE.jar" todir="../MarketPublicMobileAPI/lib" overwrite="true"/>
+	  <copy file="MarketPublicMobileAPI/spring-asm-3.0.5.RELEASE.jar" todir="../MarketPublicMobileAPI/lib" overwrite="true"/>
+	  <copy file="MarketPublicMobileAPI/spring-beans-3.0.5.RELEASE.jar" todir="../MarketPublicMobileAPI/lib" overwrite="true"/>
+	  <copy file="MarketPublicMobileAPI/spring-context-3.0.5.RELEASE.jar" todir="../MarketPublicMobileAPI/lib" overwrite="true"/>
+	  <copy file="MarketPublicMobileAPI/spring-context-support-3.0.5.RELEASE.jar" todir="../MarketPublicMobileAPI/lib" overwrite="true"/>
+	  <copy file="MarketPublicMobileAPI/spring-core-3.0.5.RELEASE.jar" todir="../MarketPublicMobileAPI/lib" overwrite="true"/>
+	  <copy file="MarketPublicMobileAPI/spring-expression-3.0.5.RELEASE.jar" todir="../MarketPublicMobileAPI/lib" overwrite="true"/>
+	  <copy file="MarketPublicMobileAPI/spring-jdbc-3.0.5.RELEASE.jar" todir="../MarketPublicMobileAPI/lib" overwrite="true"/>
+	  <copy file="MarketPublicMobileAPI/spring-jms-3.0.5.RELEASE.jar" todir="../MarketPublicMobileAPI/lib" overwrite="true"/>
+	  <copy file="MarketPublicMobileAPI/spring-orm-3.1.0.RELEASE.jar" todir="../MarketPublicMobileAPI/lib" overwrite="true"/>
+	  <copy file="MarketPublicMobileAPI/spring-tx-3.0.5.RELEASE.jar" todir="../MarketPublicMobileAPI/lib" overwrite="true"/>
+	  <copy file="MarketPublicMobileAPI/spring-web-3.0.5.RELEASE.jar" todir="../MarketPublicMobileAPI/lib" overwrite="true"/>
+	  <copy file="MarketPublicMobileAPI/MobileGenericRequestProcessor.java" todir="../MarketPublicMobileAPI/src/com/newco/marketplace/api/mobile/processor/v3_0" overwrite="true"/>
+	  <copy file="MarketPublicMobileAPI/mainApplicationContext.xml" todir="../Wallet.Batch/src/main/resources/com/
+		servicelive/wallet/batch" overwrite="true"/>
+      <copy file="MarketPublicMobileAPI/jboss-web.xml" todir="../MarketPublicMobileAPI/web/WEB-INF" overwrite="true"/>
+	  <copy file="MarketPublicMobileAPI/jboss-deployment-structure.xml" todir="../MarketPublicMobileAPI/web/META-INF" overwrite="true"/>
+   	  <copy file="MarketPublicMobileAPI/gson-2.3.1.jar" todir="../MarketPublicMobileAPI/lib" overwrite="true"/>
+	  <echo>OrderFulfillment.Jobs Changes</echo>
+	  <copy file="OrderFulfillment.Jobs/aopalliance-1.0.0.jar" todir="../SLCommonBuild/lib/deployables" overwrite="true"/>
+	  <copy file="OrderFulfillment.Jobs/dom4j-1.6.1.jar" todir="../SLCommonBuild/lib/deployables" overwrite="true"/>
+	  <copy file="OrderFulfillment.Jobs/spring-jms-3.0.5.RELEASE.jar" todir="../SLCommonBuild/lib/deployables" overwrite="true"/>	  
+	  <copy file="OrderFulfillment.Jobs/jboss-deployment-structure.xml" todir="../OrderFulfillment/OrderFulfillment.Jobs/src/main/webapp/WEB-INF" overwrite="true"/>
+	  <copy file="OrderFulfillment.Jobs/orderfulfillmentContext.xml" todir="../OrderFulfillment/OrderFulfillment.ServiceOrder/src/main/resources/com/servicelive/orderfulfillment/contexts" overwrite="true"/>
+	  <copy file="OrderFulfillment.Jobs/WFProcessDeploymentManager.java" todir="../OrderFulfillment/OrderFulfillment.ServiceOrder/src/main/java/com/servicelive/orderfulfillment/jbpm" overwrite="true"/>
+	  <copy file="OrderFulfillment.Jobs/persistence.xml" todir="../OrderFulfillment/OrderFulfillment.ServiceOrder/src/main/resources/META-INF" overwrite="true"/>
+	  <copy file="OrderFulfillment.Jobs/jmsContext.xml" todir="../MarketPlatformRemoteService/MarketPlatform.RemoteService.BusinessInterface/src/main/resources/com/servicelive/marketplatform/jms" overwrite="true"/>
+	  <copy file="OrderFulfillment.Jobs/WalletBO.java" todir="../Wallet/Wallet.RemoteClient/src/main/java/com/servicelive/wallet/remoteclient" overwrite="true"/>
+	  <copy file="OrderFulfillment.Jobs/walletRemoteClientApplicationContext.xml" todir="../Wallet/Wallet.RemoteClient/src/main/resources/com/servicelive/wallet/remoteclient" overwrite="true"/>
+	  <echo>OrderFulfilmentService Changes</echo>
+	  <copy file="OrderFulfilmentService/jboss-deployment-structure.xml" todir="../OrderFulfillment/OrderFulfillment.Service/src/main/webapp/WEB-INF" overwrite="true"/>
+	  <copy file="OrderFulfilmentService/orderfulfillmentContext.xml" todir="../OrderFulfillment/OrderFulfillment.ServiceOrder/src/main/resources/com/servicelive/orderfulfillment/contexts" overwrite="true"/>
+	  <copy file="OrderFulfilmentService/WFProcessDeploymentManager.java" todir="../OrderFulfillment/OrderFulfillment.ServiceOrder/src/main/java/com/servicelive/orderfulfillment/jbpm" overwrite="true"/>
+	  <copy file="OrderFulfilmentService/persistence.xml" todir="../OrderFulfillment/OrderFulfillment.ServiceOrder/src/main/resources/META-INF" overwrite="true"/>
+	  <copy file="OrderFulfilmentService/jmsContext.xml" todir="../MarketPlatformRemoteService/MarketPlatform.RemoteService.BusinessInterface/src/main/resources/com/servicelive/marketplatform/jms" overwrite="true"/>
+	  <!-- <copy file="OrderFulfilmentService/WalletBO.java" todir="../Wallet/Wallet.RemoteClient/src/main/java/com/servicelive/wallet/remoteclient" overwrite="true"/> -->
+	  <copy file="OrderFulfilmentService/walletRemoteClientApplicationContext.xml" todir="../Wallet/Wallet.RemoteClient/src/main/resources/com/servicelive/wallet/remoteclient" overwrite="true"/>
+	  <echo>MarketPublicAPI Changes</echo>
+	  <copy file="MarketPublicAPI/struts-tiles-1.3.8.jar" todir="../MarketPublicAPI/lib" overwrite="true"/>
+	  <copy file="MarketPublicAPI/web.xml" todir="../MarketPublicAPI/web/WEB-INF" overwrite="true"/>
+	  <copy file="MarketPublicAPI/aopalliance-1.0.0.jar" todir="../MarketPublicAPI/lib" overwrite="true"/>
+	  <copy file="MarketPublicAPI/spring-aop-3.0.5.RELEASE.jar" todir="../MarketPublicAPI/lib" overwrite="true"/>
+	  <copy file="MarketPublicAPI/spring-asm-3.0.5.RELEASE.jar" todir="../MarketPublicAPI/lib" overwrite="true"/>
+	  <copy file="MarketPublicAPI/spring-beans-3.0.5.RELEASE.jar" todir="../MarketPublicAPI/lib" overwrite="true"/>
+	  <copy file="MarketPublicAPI/spring-context-3.0.5.RELEASE.jar" todir="../MarketPublicAPI/lib" overwrite="true"/>
+	  <copy file="MarketPublicAPI/spring-context-support-3.0.5.RELEASE.jar" todir="../MarketPublicAPI/lib" overwrite="true"/>
+	  <copy file="MarketPublicAPI/spring-core-3.0.5.RELEASE.jar" todir="../MarketPublicAPI/lib" overwrite="true"/>
+	  <copy file="MarketPublicAPI/spring-expression-3.0.5.RELEASE.jar" todir="../MarketPublicAPI/lib" overwrite="true"/>
+	  <copy file="MarketPublicAPI/spring-jdbc-3.0.5.RELEASE.jar" todir="../MarketPublicAPI/lib" overwrite="true"/>
+	  <copy file="MarketPublicAPI/spring-jms-3.0.5.RELEASE.jar" todir="../MarketPublicAPI/lib" overwrite="true"/>
+	  <copy file="MarketPublicAPI/spring-orm-3.1.0.RELEASE.jar" todir="../MarketPublicAPI/lib" overwrite="true"/>
+	  <copy file="MarketPublicAPI/spring-tx-3.0.5.RELEASE.jar" todir="../MarketPublicAPI/lib" overwrite="true"/>
+	  <copy file="MarketPublicAPI/spring-web-3.0.5.RELEASE.jar" todir="../MarketPublicAPI/lib" overwrite="true"/>
+	  <copy file="MarketPublicAPI/jboss-deployment-structure.xml" todir="../MarketPublicAPI/web/META-INF" overwrite="true"/>
+   	  <copy file="MarketPublicAPI/jboss-web.xml" todir="../MarketPublicAPI/web/WEB-INF" overwrite="true"/>
+   	  <copy file="MarketPublicAPI/gson-2.3.1.jar" todir="../MarketPublicAPI/lib" overwrite="true"/>
+ 	  <copy file="MarketPublicAPI/persistence.xml" todir="../MarketPublicAPI/web/META-INF" overwrite="true"/>
+	  <copy file="MarketPublicAPI/APISecurityFilter.java" todir="../MarketPublicAPI/src/com/newco/marketplace/api/security" overwrite="true"/>
+	  <copy file="MarketPublicAPI/oauth-core.jar" todir="../MarketPublicAPI/lib" overwrite="true"/>
+	  
+	  
+   	  <echo>SPNWeb Changes</echo>
+	  <copy file="SPNWeb/jboss-web.xml" todir="../SPNWeb/WebRoot/WEB-INF" overwrite="true"/>
+	  <copy file="SPNWeb/tab_reapplicants.jsp" todir="../SPNWeb/WebRoot/jsp/spn/buyer/auditor" overwrite="true"/>
+   	  <copy file="SPNWeb/struts.properties" todir="../SPNWeb/src/main/resources" overwrite="true"/>
+   	  <echo>Wallet.Alert</echo>
+   	  <copy file="Wallet.Alert/EmailTemplateBO.java" todir="../Wallet/Wallet.Alert/src/main/java/com/servicelive/wallet/alert/" overwrite="true"/>
+   	  <echo>Wallet.RemoteService Changes</echo>	 
+   	  <delete file="../Wallet/Wallet.RemoteService/src/main/resources/META-INF/ejb-jar.xml" failonerror="false"/>
+	  <copy file="Wallet.RemoteService/jboss-ejb3.xml" todir="../Wallet/Wallet.RemoteService/src/main/resources/META-INF" overwrite="true"/>
+   	  <copy file="Wallet.RemoteService/jboss-local.xml-rename-local" todir="../Wallet/Wallet.RemoteService/src/main/resources/META-INF" overwrite="true"/>	 
+   	<echo>Wallet.ValueLink.EJB Changes</echo>	  
+	  <copy file="Wallet.ValueLink.EJB/ejb-jar.xml" todir="../Wallet/Wallet.ValueLink.EJB/src/main/resources/META-INF" overwrite="true"/>
+	  <copy file="Wallet.ValueLink.EJB/bootstrap.dev.properties" todir="../Wallet/Wallet.ValueLink.EJB/src/main/resources/com/servicelive/wallet/valuelink/ejb" overwrite="true"/>
+	  <copy file="Wallet.ValueLink.EJB/bootstrap.int.properties" todir="../Wallet/Wallet.ValueLink.EJB/src/main/resources/com/servicelive/wallet/valuelink/ejb" overwrite="true"/>
+	  <copy file="Wallet.ValueLink.EJB/bootstrap.int3.properties" todir="../Wallet/Wallet.ValueLink.EJB/src/main/resources/com/servicelive/wallet/valuelink/ejb" overwrite="true"/>
+	  <copy file="Wallet.ValueLink.EJB/bootstrap.prod.properties" todir="../Wallet/Wallet.ValueLink.EJB/src/main/resources/com/servicelive/wallet/valuelink/ejb" overwrite="true"/>
+	  <copy file="Wallet.ValueLink.EJB/bootstrap.properties" todir="../Wallet/Wallet.ValueLink.EJB/src/main/resources/com/servicelive/wallet/valuelink/ejb" overwrite="true"/>
+	  <copy file="Wallet.ValueLink.EJB/bootstrap.qa.properties" todir="../Wallet/Wallet.ValueLink.EJB/src/main/resources/com/servicelive/wallet/valuelink/ejb" overwrite="true"/>
+	  <copy file="Wallet.ValueLink.EJB/bootstrap.qa3.properties" todir="../Wallet/Wallet.ValueLink.EJB/src/main/resources/com/servicelive/wallet/valuelink/ejb" overwrite="true"/>
+	  <copy file="Wallet.ValueLink.EJB/valueLinkEJBApplicationContext.xml" todir="../Wallet/Wallet.ValueLink.EJB/src/main/resources/com/servicelive/wallet/valuelink/ejb" overwrite="true"/>
+   	  <copy file="Wallet.ValueLink.EJB/application.xml" todir="../Wallet/Wallet.ValueLink.EJB/src/main/ear/META-INF" overwrite="true"/>
+      <echo>WalletBatch Changes</echo>	  
+	  <copy file="WalletBatch/jboss-web.xml" todir="../Wallet/Wallet.Batch/src/main/webapp/WEB-INF" overwrite="true"/>
+	  <copy file="WalletBatch/bootstrap.dev.properties" todir="../Wallet/Wallet.Batch/src/main/resources/com/servicelive/wallet/batch/" overwrite="true"/>
+   	  <copy file="WalletBatch/bootstrap.prod.properties" todir="../Wallet/Wallet.Batch/src/main/resources/com/servicelive/wallet/batch/" overwrite="true"/>  
+   	  <copy file="WalletBatch/wallet.batch.context.xml" todir="../Wallet/Wallet.Batch/src/main/resources/com/servicelive/wallet/batch" overwrite="true"/>
+   	  <copy file="WalletBatch/ScheduledJob.java" todir="../Wallet/Wallet.Batch/src/main/java/com/servicelive/wallet/batch/job/" overwrite="true"/>
+	  <copy file="WalletBatch/TransFileProcessor.java" todir="../Wallet/Wallet.Batch/src/main/java/com/servicelive/wallet/batch/trans/" overwrite="true"/>
+      <copy file="WalletBatch/BalanceInquiryProcessor.java" todir="../Wallet/Wallet.Batch/src/main/java/com/servicelive/wallet/batch/vl/" overwrite="true"/>
+	  <copy file="WalletBatch/jboss-deployment-structure.xml" todir="../Wallet/Wallet.Batch/src/main/webapp/WEB-INF" overwrite="true"/>
+   	  <echo>Wallet.ValueLink</echo>
+   	  <copy file="Wallet.ValueLink/SharpGateway.java" todir="../Wallet/Wallet.ValueLink/src/main/java/com/servicelive/wallet/valuelink/sharp" overwrite="true"/>
+      <copy file="Wallet.ValueLink/ValueLinkRequestHandlerBO.java" todir="../Wallet/Wallet.ValueLink/src/main/java/com/servicelive/wallet/valuelink/" overwrite="true"/>
+	  <echo>Wallet.ServiceLive.Common</echo>
+   	  <copy file="ServiceLive.Common/PGPEncryptor.java" todir="../Wallet/ServiceLive.Common/src/main/java/com/servicelive/common/crypto" overwrite="true"/>
+   	  <echo>Other</echo>
+	  <copy file="Other/MarketCommon/DocumentUtils.java" todir="../MarketCommon/src/com/newco/marketplace/utils" overwrite="true"/>
+      <copy file="Other/MarketDocument/DocumentServiceImpl.java" todir="../MarketDocument/src/com/newco/marketplace/persistence/service/impl/document" overwrite="true"/>
+      <copy file="Other/MarketDocument/FileServiceUtil.java" todir="../MarketDocument/src/com/newco/marketplace/util" overwrite="true"/>
+	  <copy file="Other/MarketBackend/ProviderLeadManagementService.java" todir="../MarketBackend/src/com/servicelive/providerleadmanagement/services" overwrite="true"/>
+      <copy file="Other/MarketBackend/DocumentUtils.java" todir="../MarketBackend/src/com/newco/marketplace/util" overwrite="true"/>
+	  <copy file="Other/dhbcore.jar" todir="../SLCommonBuild/lib/deployables" overwrite="true"/>
+	  <copy file="Other/spring-test-3.0.5.RELEASE.jar" todir="../SLCommonBuild/lib/nondeployables" overwrite="true"/>
+	  <copy file="Other/spring-orm-3.1.0.RELEASE.jar" todir="../SLCommonBuild/lib/deployables" overwrite="true"/>
+	  <copy file="Other/LogablePreparedStatement.java" todir="../ServiceLive1099/src/main/java/com/servicelive/manage1099/db" overwrite="true"/>
+      <copy file="Other/mysql-connector-java-5.1.23-bin.jar" todir="../SLCommonBuild/lib/deployables" overwrite="true"/>
+	  <copy file="Other/SLDataSource.java" todir="../MarketBackend/src/com/newco/marketplace/datasource" overwrite="true"/>
+   	  <copy file="Other/jboss-web.xml" todir="../ServiceLiveWebUtil/web/WEB-INF" overwrite="true"/>
+	  <copy file="Other/OrderFulfillment.Client/persistence.xml" todir="../OrderFulfillment/OrderFulfillment.Client/src/main/resources/META-INF" overwrite="true"/>
+	  <copy file="Other/OrderFulfillment.Client/activitylog.domain.jar" todir="../ServiceLiveWebUtil/lib/deployables" overwrite="true"/>
+	  <echo>ServiceLiveWebUtil</echo>
+	  <delete file="../ServiceLiveWebUtil/lib/deployables/souqframework_0_0_1.jar" failonerror="false"/>
+   	  <copy file="ServiceLiveWebUtil/souqframework_0_0_2.jar" todir="../ServiceLiveWebUtil/lib/deployables" overwrite="true"/>
+      <echo>MarketProviderAPI Changes</echo>
+   	  <copy file="MarketProviderAPI/struts-tiles-1.3.8.jar" todir="../MarketProviderAPI/lib" overwrite="true"/>
+   	  <copy file="MarketProviderAPI/web.xml" todir="../MarketProviderAPI/web/WEB-INF/" overwrite="true"/>
+   	  <copy file="MarketProviderAPI/aopalliance-1.0.0.jar" todir="../MarketProviderAPI/lib" overwrite="true"/>
+   	  <copy file="MarketProviderAPI/spring-aop-3.0.5.RELEASE.jar" todir="../MarketProviderAPI/lib" overwrite="true"/>
+   	  <copy file="MarketProviderAPI/spring-asm-3.0.5.RELEASE.jar" todir="../MarketProviderAPI/lib" overwrite="true"/>
+   	  <copy file="MarketProviderAPI/spring-beans-3.0.5.RELEASE.jar" todir="../MarketProviderAPI/lib" overwrite="true"/>
+   	  <copy file="MarketProviderAPI/spring-context-3.0.5.RELEASE.jar" todir="../MarketProviderAPI/lib" overwrite="true"/>
+   	  <copy file="MarketProviderAPI/spring-context-support-3.0.5.RELEASE.jar" todir="../MarketProviderAPI/lib" overwrite="true"/>
+   	  <copy file="MarketProviderAPI/spring-core-3.0.5.RELEASE.jar" todir="../MarketProviderAPI/lib" overwrite="true"/>
+   	  <copy file="MarketProviderAPI/spring-expression-3.0.5.RELEASE.jar" todir="../MarketProviderAPI/lib" overwrite="true"/>
+   	  <copy file="MarketProviderAPI/spring-jdbc-3.0.5.RELEASE.jar" todir="../MarketProviderAPI/lib" overwrite="true"/>
+   	  <copy file="MarketProviderAPI/spring-jms-3.0.5.RELEASE.jar" todir="../MarketProviderAPI/lib" overwrite="true"/>
+   	  <copy file="MarketProviderAPI/spring-orm-3.1.0.RELEASE.jar" todir="../MarketProviderAPI/lib" overwrite="true"/>
+   	  <copy file="MarketProviderAPI/spring-tx-3.0.5.RELEASE.jar" todir="../MarketProviderAPI/lib" overwrite="true"/>
+   	  <copy file="MarketProviderAPI/spring-web-3.0.5.RELEASE.jar" todir="../MarketProviderAPI/lib" overwrite="true"/>
+   	  <copy file="MarketProviderAPI/ProviderGenericRequestProcessor.java" todir="../MarketProviderAPI/src/com/newco/marketplace/api/provider/processor/v3_0" overwrite="true"/>
+   	  <copy file="MarketProviderAPI/mainApplicationContext.xml" todir="../Wallet.Batch/src/main/resources/com/
+   		servicelive/wallet/batch" overwrite="true"/>
+         <copy file="MarketProviderAPI/jboss-web.xml" todir="../MarketProviderAPI/web/WEB-INF" overwrite="true"/>
+   	  <copy file="MarketProviderAPI/jboss-deployment-structure.xml" todir="../MarketProviderAPI/web/META-INF" overwrite="true"/>
+      	  <copy file="MarketProviderAPI/gson-2.3.1.jar" todir="../MarketProviderAPI/lib" overwrite="true"/>
+	  <echo>Copying Done</echo>  
+   </target>   
+</project>
+

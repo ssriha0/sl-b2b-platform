@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd" xmlns:tx="http://www.springframework.org/schema/tx">
+	
+	<bean id="BuyerSkuService"
+		class="com.newco.marketplace.translator.business.impl.BuyerSkuService">
+		<property name="buyerMarketAdjustmentDAO" ref="BuyerMarketAdjustmentDAO" />
+		<property name="buyerRetailPriceDAO" ref="BuyerRetailPriceDAO" />
+		<property name="buyerSkuDAO" ref="BuyerSkuDAO" />
+		<property name="buyerSkuTaskAssocDAO" ref="BuyerSkuTaskAssocDAO" />
+		<property name="skillTreeDAO" ref="SkillTreeDAO" />
+	</bean>
+	
+	<bean id="BuyerService"
+		class="com.newco.marketplace.translator.business.impl.BuyerService">
+		<property name="buyerDAO" ref="BuyerDAO" />
+		<property name="userProfileDAO" ref="UserProfileDAO" />
+	</bean>
+	
+	<bean id="ApplicationPropertiesService"
+		class="com.newco.marketplace.translator.business.impl.ApplicationPropertiesService">
+		<property name="applicationPropertiesDAO" ref="ApplicationPropertiesDAO" />
+	</bean>
+	
+	<bean id="TranslationService"
+		class="com.newco.marketplace.translator.business.impl.TranslationService">
+		<constructor-arg>
+			<ref bean="omsStagingBridge"/>
+		</constructor-arg>
+		<property name="buyerSOTemplateDAO" ref="BuyerSoTemplateDAO" />
+		<property name="skillTreeDAO" ref="SkillTreeDAO" />
+	</bean>
+	
+	<bean id="PricingServiceOMS"
+		class="com.newco.marketplace.translator.business.impl.PricingServiceOMSImpl">
+	</bean>
+	
+	<bean id="PricingServiceAssurant"
+		class="com.newco.marketplace.translator.business.impl.PricingServiceAssurantImpl">
+	</bean>
+	
+	<bean id="ScheduleServiceOMS"
+		class="com.newco.marketplace.translator.business.impl.ScheduleServiceOMSImpl">
+	</bean>
+	
+	<bean id="ScheduleServiceAssurant"
+		class="com.newco.marketplace.translator.business.impl.ScheduleServiceAssurantImpl">
+	</bean>
+	
+	<bean id="ZipService"
+		class="com.newco.marketplace.translator.business.impl.ZipService">
+		<property name="zipGeocodeDAO" ref="ZipGeocodeDAO" />
+	</bean>
+	
+	<bean id="ClientService"
+		class="com.newco.marketplace.translator.business.impl.ClientServiceImpl">
+		<property name="clientDAO" ref="ClientDAO" />
+		<property name="warrantyDAO" ref="WarrantyContractDAO" />
+	</bean>
+	
+	<bean id="IncidentService"
+		class="com.newco.marketplace.translator.business.impl.IncidentServiceImpl">
+		<property name="incidentDAO" ref="IncidentDAO" />
+		<property name="incidentEventDAO" ref="IncidentEventDAO" />
+		<property name="warrantyDAO" ref="WarrantyContractDAO" />
+		<property name="partDAO" ref="IncidentPartDAO" />
+		<property name="contactDAO" ref="IncidentContactDAO" />
+		<property name="incidentNoteDAO" ref="IncidentNoteDAO" />
+		<property name="incidentAckDAO" ref="IncidentAckDAO" />
+		<property name="clientService" ref="ClientService" />
+		<property name="txManager" ref="jpaTransactionManagerMain" />
+	</bean>
+	
+	<bean id="StagingService"
+		class="com.newco.marketplace.translator.business.impl.StagingService">
+		<constructor-arg>
+			<ref bean="omsStagingBridge"/>
+		</constructor-arg>
+		<property name="buyerRetailPriceDAO" ref="BuyerRetailPriceDAO" />
+		<property name="buyerUpsellService" ref="BuyerUpsellService" />
+		<property name="buyerSKUService" ref="BuyerSkuService"/>
+		<property name="applicationPropertiesService">
+			<ref bean="ApplicationPropertiesService" />
+		</property>
+				
+	</bean>
+	<bean id="BuyerUpsellService"
+		class="com.newco.marketplace.translator.business.impl.BuyerUpsellServiceImpl">
+		<constructor-arg>
+			<ref bean="omsStagingBridge"/>
+		</constructor-arg>
+		<property name="buyerSKUService" ref="BuyerSkuService"/>
+	</bean>
+	
+	
+	<bean id="omsStagingBridge" class="com.newco.marketplace.oms.OMSStagingBridge">
+		<property name="stageDispatch">
+			<ref bean="stageDispatchRequestor" />
+		</property>
+	</bean>
+	
+
+	<!--  HSR Services  -->
+	<bean id="hsrTranslationService" class="com.newco.marketplace.translator.business.impl.HSRTranslationService" scope="prototype" >
+		<property name="applicationPropertiesService">
+			<ref bean="ApplicationPropertiesService" />
+		</property>
+		<property name="buyerSkuDao">
+			<ref bean="BuyerSkuDAO" />
+		</property>
+		<property name="buyerSkuTaskDao">
+			<ref bean="BuyerSkuTaskDAO" />
+		</property>
+		<property name="buyerSkuCategoryDao">
+			<ref bean="BuyerSkuCategoryDAO" />
+		</property>
+		<property name="buyerService">
+			<ref bean="BuyerService" />
+		</property>
+		<property name="skillDao">
+			<ref bean="SkillTreeDAO" />
+		</property>
+		<property name="zipService">
+			<ref bean="ZipService" />
+		</property>
+	</bean>
+	
+	<bean id="hsrStagingService"
+		class="com.newco.marketplace.translator.business.impl.HSRStagingService">
+		<property name="hsrStagingOrderdao" ref="hsrStagingOrderDAO" />
+		
+	</bean>
+
+
+</beans>

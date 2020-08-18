@@ -1,0 +1,48 @@
+<div id="so-action" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-max-width">
+        <div class="modal-content">
+            <!-- <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">{{header}}</h4>
+            </div> -->
+            <div class="modal-body">
+                <button type="button" class="close" (click)="closePopup()" aria-hidden="true">x</button>
+                <div *ngIf="soEvent">
+                    <div class="h4">
+                        {{soEvent.eventName}}
+                    </div>
+                    <div class="h4">
+                        Ref No.: {{soEvent.id}}
+                    </div>
+                    <div class="h5">
+                        Customer: {{soEvent.memberFirstName}} {{soEvent.memberLastName}}
+                    </div>
+                    <div class="h5">
+                        Address: {{soEvent.memberCity}}, {{soEvent.memberState}} {{soEvent.memberZip}}
+                    </div>
+                    <div class="h5">
+                        Priority: NA
+                    </div>
+                    <div class="h5">
+                        Status: {{soEvent.statusString}}
+                    </div>
+                    <div class="h5">
+                        Notes:
+                    </div>
+                    <div class="h6">
+                        Service order notes.
+                    </div>
+
+                    <textarea class="reject-reason-box" *ngIf="rejectSO" [(ngModel)]="rejectReason"></textarea>
+
+                    <div style="min-height:10px;"></div>
+                    <div class="button-style">
+                        <span *ngFor="let button of buttons; let i = index;">
+                            <button [disabled]="!enableActionButtons" [style.opacity]="enableActionButtons ? 1 : 0.5" type="button" class="btn action-button" *ngIf="!rejectSO || (button.type == 9)" (click)="callBackButton(button.type)" [style.width]="((100 / buttons.length) - (1 * (buttons.length - 1 ))) + '%'">{{button.name}}</button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/newservices"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+	targetNamespace="http://www.servicelive.com/namespaces/newservices"
+	elementFormDefault="qualified" jaxb:version="1.0"
+	jaxb:extensionBindingPrefixes="xjc">
+    <xs:include schemaLocation="leadsCommon.xsd" />
+	<!-- This is the new get Match Provider Request -->
+	<!-- Root Element -->
+
+	
+	<xs:element name="MatchProviderRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="CustomerZipCode" type="zipType"
+					minOccurs="1" maxOccurs="1"  />
+				<xs:element name="PrimaryProject" type="projectType"
+					minOccurs="1" maxOccurs="1" />
+				<xs:element name="Skill" type="skillTypeEnum"
+					minOccurs="1" maxOccurs="1" />					
+				<xs:element name="UrgencyOfService"
+					type="urgencyTypeEnum" minOccurs="1" maxOccurs="1" />
+				<xs:element name="NumberOfMatches" minOccurs="0" maxOccurs="1" type="xs:int" default="12"/>
+				<xs:element name= "ClientId" minOccurs="0" type="xs:string" maxOccurs="1" default="SHS"/>
+				<xs:element name= "LeadSource" minOccurs="0" type="xs:string" maxOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

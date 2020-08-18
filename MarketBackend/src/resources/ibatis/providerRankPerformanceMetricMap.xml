@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+	<typeAlias alias="vendorRankingBuyerVo" type="com.newco.marketplace.dto.vo.performancematric.VendorRankingBuyerVo"/>
+	<typeAlias alias="vendorPerformanceMatricVo" type="com.newco.marketplace.dto.vo.performancematric.VendorPerformanceMatricVo"/>
+	<typeAlias alias="buyerSOTemplate"	type="com.newco.marketplace.dto.vo.serviceorder.BuyerSOTemplateVO" />
+
+	<select id="test.firm.getMarketIndex" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		select bma.adjustment from buyer_market_adjustment bma, lu_zip_market luZip
+		where bma.market_id=luZip.market_id and luZip.zip = #zipCode# and bma.buyer_id = #buyerId#;
+	</select>
+
+	<select id="fetch.getBuyerSoTemplateBySkuBuyerId.forSpnId" parameterClass="java.util.HashMap" resultClass="buyerSOTemplate">
+		SELECT 
+			template_id as templateID
+			, template_name as templateName
+			, buyer_id as buyerID
+			, primary_skill_category_id as mainServiceCategory
+			, template_data as templateData
+		FROM 
+			buyer_so_template
+		WHERE 
+			template_data LIKE concat('%',#format#, '%')
+			AND buyer_id = #buyerId#
+			AND template_id IN (SELECT template_id FROM buyer_sku WHERE buyer_id = #buyerId#);
+	</select>
+	
+	<select id="fetch.firm.spnMembers.fromSpnIdList" parameterClass="java.util.HashMap" resultClass="vendorPerformanceMatricVo">
+		SELECT 
+			DISTINCT sp.provider_firm_id AS vendorId 
+		FROM 
+			spnet_buyer sb, spnet_provider_firm_state sp
+		WHERE 
+			sb.spn_id = sp.spn_id
+			AND sp.spn_id IN
+				<iterate property="spnIdList" open="(" close=")" conjunction=",">
+					#spnIdList[]#
+				</iterate>
+			AND sb.buyer_id = #buyerId#
+			AND sp.provider_wf_state = #providerWfState#
+		ORDER BY sp.provider_firm_id;
+	</select>
+	
+	
+	<select id="fetch.vendorRankingBuyerVo" parameterClass="java.util.HashMap" resultClass="vendorRankingBuyerVo">
+		SELECT 
+			id AS id
+			, name AS name
+			, attribute_type AS attributeType
+			, level AS level
+			, buyer_id AS buyerId
+			, weightage AS weightage
+		FROM 
+			supplier_prod.vendor_ranking_buyer vrb
+		WHERE 
+			vrb.attribute_type = #attributeType#
+			AND vrb.level = #level#
+			AND vrb.buyer_id = #buyerId#
+			AND vrb.enable = 1;
+    </select>
+    
+	<select id="fetch.appointmentCommitment" parameterClass="java.util.HashMap" resultClass="vendorPerformanceMatricVo">
+		SELECT 
+		    SUM(a.count) AS totalRescheduleCount
+		    , a.accepted_vendor_id AS vendorId
+		    , a.buyer_id AS buyerId
+		FROM
+		    (SELECT 
+		        COUNT(*) count
+		        , sol.so_id
+		        , soh.accepted_vendor_id
+		        , soh.buyer_id
+		    FROM
+		        so_logging sol, so_hdr soh
+		    WHERE
+		        sol.so_id = soh.so_id
+		        AND soh.buyer_id = #buyerId#
+		        AND action_id = #actionId#
+		        AND role_id = #roleId#
+		    GROUP BY soh.accepted_vendor_id , sol.so_id, soh.buyer_id) a
+		GROUP BY a.accepted_vendor_id, a.buyer_id
+		ORDER BY a.accepted_vendor_id;
+    </select>
+    
+	<select id="fetch.totalClosedOrdersByProviderForParticularBuyer" parameterClass="java.util.HashMap" resultClass="vendorPerformanceMatricVo">
+		SELECT 
+			COUNT(*) AS totalClosedOrdersCount
+			, accepted_vendor_id AS vendorId
+			, buyer_id AS buyerId
+		FROM
+		    so_hdr soh
+		WHERE
+		    soh.wf_state_id = #wfStateId# 
+		    	AND buyer_id = #buyerId# 
+		    	AND accepted_vendor_id IN 
+					<iterate property="vendorPerfMVoRescheduleByProList" open="(" close=")" conjunction=",">
+            			#vendorPerfMVoRescheduleByProList[].vendorId#
+        			</iterate>
+		GROUP BY accepted_vendor_id, buyer_id
+		ORDER BY accepted_vendor_id;
+    </select>
+    
+    
+	<select id="fetch.CustomerRatingCsatAvg" parameterClass="java.util.HashMap" resultClass="vendorPerformanceMatricVo">
+		SELECT 
+		    a.vendorId AS vendorId
+		    , a.buyerId AS buyerId
+		    , AVG(rating) AS avgCsatRating
+		FROM
+		    (SELECT 
+				DISTINCT srs.so_id AS soId, srh.overall_score AS rating, sh.accepted_vendor_id AS vendorId, sh.buyer_id AS buyerId
+		    FROM
+		        survey_response_hdr srh, survey_response_so srs, so_hdr sh
+		    WHERE
+		        sh.buyer_id = #buyerId#
+					AND srh.entity_type_id = #entityTypeId#
+		            AND srs.so_id = sh.so_id
+		            AND srh.response_hdr_id = srs.response_hdr_id) AS a
+		GROUP BY a.vendorId, a.buyerId;
+    </select>
+
+	<select id="fetch.timeOnSiteCountSum" parameterClass="java.util.HashMap" resultClass="vendorPerformanceMatricVo">
+		SELECT 
+		    SUM(a.count) AS timeOnSiteCountSum
+		    , a.buyer_id AS buyerId
+		    , a.accepted_vendor_id AS vendorId
+		FROM
+		    (SELECT 
+		        COUNT(*) count
+		        , soh.so_id
+		        , soh.buyer_id
+		        , soh.accepted_vendor_id
+		    FROM
+		        so_hdr soh, so_onsite_visit soo
+		    WHERE
+		        service_date2 <![CDATA[ >= ]]> arrival_date
+		            AND soh.so_id = soo.so_id
+		            AND soh.wf_state_id = #wfStateId#
+		            AND soh.buyer_id = #buyerId#
+		            AND service_date2 IS NOT NULL
+		            AND arrival_date IS NOT NULL
+		    GROUP BY soh.so_id , soh.buyer_id , soh.accepted_vendor_id
+		    HAVING COUNT(*) = 1) a
+		GROUP BY a.buyer_id , a.accepted_vendor_id
+		ORDER BY a.accepted_vendor_id;
+    </select>
+    
+    <select id="fetch.id.vendorPerformanceMetric" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+			id
+		FROM 
+			vendor_performance_matric
+		WHERE 
+			buyer_id = #buyerId#
+			AND vendor_id = #vendorId#
+		LIMIT 1;
+	</select>
+
+	<insert id="save.VendorPerformanceMetrics" parameterClass="java.util.HashMap">
+		INSERT INTO vendor_performance_matric (buyer_id, vendor_id, score, created_date)
+		values (#buyerId#, #vendorId#, #consolidatedWeightedScore#, NOW())
+		<selectKey resultClass="int">
+			SELECT last_insert_id() as id
+		</selectKey>
+	</insert>
+	
+	<insert id="backup.beforeUpdate.VendorPerformanceMetrics" parameterClass="java.util.HashMap">
+		INSERT INTO vendor_performance_matric_history (
+				vendor_performance_matric_id
+				, buyer_id
+				, vendor_id
+				, score
+				, created_date
+				, created_by)
+			SELECT
+				id AS id
+				, buyer_id AS buyer_id
+				, vendor_id AS vendor_id
+				, score AS score
+				, NOW() AS created_date
+				, #modifiedBy# AS created_by
+		    FROM vendor_performance_matric
+		    WHERE id = #vendorPerformanceMetricId#;
+	</insert>
+	
+	<update id="update.VendorPerformanceMetrics" parameterClass="java.util.HashMap">
+		UPDATE 
+			vendor_performance_matric 
+		SET 
+			score = #consolidatedWeightedScore#
+			, modified_by = #modifiedBy#
+			, modified_date = NOW()
+		WHERE 
+			id = #vendorPerformanceMetricId#;
+	</update>
+	
+	<select id="fetch.id.vendorPerformanceWeightedScore" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 
+			id
+		FROM 
+			vendor_performance_weighted_score
+		WHERE
+			vendor_ranking_buyer_id = #vendorRankingBuyerId#
+			AND vendor_performance_matric_id = #vendorPerformanceMatricId#
+			AND vendor_id = #vendorId#
+		LIMIT 1;
+	</select>
+	
+	<insert id="save.vendorPerformanceWeightedScore" parameterClass="java.util.HashMap">
+		INSERT INTO vendor_performance_weighted_score (
+				vendor_ranking_buyer_id
+				, vendor_performance_matric_id
+				, vendor_id
+				, score
+				, created_date)
+		VALUES (
+			#vendorRankingBuyerId#
+			, #vendorPerformanceMatricId#
+			, #vendorId#
+			, #weightedScore#
+			, NOW());
+	</insert>
+	
+	<insert id="backup.beforeUpdate.vendorPerformanceWeightedScore" parameterClass="java.util.HashMap">
+		INSERT INTO vendor_performance_weighted_score_history (
+				vendor_performance_weighted_score_id
+				, vendor_ranking_buyer_id
+				, vendor_performance_matric_id
+				, vendor_id
+				, score
+				, created_date
+				, created_by)
+			SELECT
+				id AS id
+				, vendor_ranking_buyer_id AS vendor_ranking_buyer_id
+				, vendor_performance_matric_id AS vendor_performance_matric_id
+				, vendor_id AS vendor_id
+				, score AS score
+				, NOW() AS created_date
+				, #modifiedBy# AS created_by
+		    FROM 
+		    	vendor_performance_weighted_score
+		    WHERE 
+		    	id = #vendorPerfWeightedScoreId#;
+	</insert>
+
+	<update id="update.vendorPerformanceWeightedScore" parameterClass="java.util.HashMap">
+		UPDATE 
+			vendor_performance_weighted_score 
+		SET 
+			score = #weightedScore#
+			, modified_by = #modifiedBy#
+			, modified_date = NOW()
+		WHERE 
+			id = #vendorPerfWeightedScoreId#;
+	</update>	
+	
+</sqlMap>

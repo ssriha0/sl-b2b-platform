@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+
+    <package name="manageUsers" extends="ServiceLiveBase">
+    	<default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+       <!-- <action name="manageUserAction*" class="manageUserAction" method="loadUsers" >  -->
+       <action name="manageUserAction*" class="manageUserAction" method="{1}" >
+			<result name="input">/jsp/providerRegistration/manage_users.jsp</result>	
+			<result name="success">/jsp/providerRegistration/manage_users.jsp</result>
+			<result name="error">/jsp/public/error/body/errorBody.jsp</result>
+			<result name="addServicePro" type="redirectAction">addServiceProAction.action</result>
+			<result name="reset_success" type="redirectAction">manageUserActiondoLoadUsers.action</result>
+		</action>
+        <!-- Add actions here -->
+    </package>
+</struts>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="integration">
+	<typeAlias alias="integrationBatch" type="com.newco.marketplace.dto.vo.integration.IntegrationBatchVO"/>	
+	<typeAlias alias="integrationTransaction" type="com.newco.marketplace.dto.vo.integration.IntegrationTransactionVO"/>
+	
+		<select id="queryFileUploadBatches"  resultClass="integrationBatch">
+    			SELECT b.batchId, b.integrationId, b.fileName, b.statusId, b.createdOn AS createdDate, bu.platformBuyerId AS buyerId
+				FROM batches b 
+				INNER JOIN integrations i ON b.integrationid = i.integrationid
+				INNER JOIN buyers bu ON bu.buyerid = i.buyerid
+				WHERE b.integrationId = 7;
+		</select>
+		
+		<select id="queryFileUploadBatchByFilename" parameterClass="java.lang.String"  resultClass="integrationBatch">
+    			SELECT b.batchId, b.integrationId, b.fileName, b.statusId, b.createdOn AS createdDate, bu.platformBuyerId AS buyerId
+				FROM batches b 
+				INNER JOIN integrations i ON b.integrationid = i.integrationid
+				INNER JOIN buyers bu ON bu.buyerid = i.buyerid
+				WHERE b.integrationId = 7
+				AND fileName = #fileName#
+				AND NOT EXISTS (
+					SELECT transactionid FROM transactions t 
+					WHERE t.batchid = b.batchid AND t.statusid IN (3,4,6)
+				) ORDER BY b.createdOn DESC LIMIT 1;
+		</select>
+		
+		<select id="queryTransactions" parameterClass="java.lang.Long"  resultClass="integrationTransaction">
+    			SELECT transactionId, batchId, transactionTypeId, externalOrderNumber, createdOn AS createdDate, 
+    			statusId, serviceLiveOrderId AS soId, buyerResourceId, exception
+    			FROM transactions 
+    			WHERE batchid = #batchId#;
+		</select>
+	
+</sqlMap>

@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="contact">
+	<typeAlias alias="contact" type="com.newco.marketplace.dto.vo.serviceorder.Contact"/>
+	<typeAlias alias="generalInfoContact" type="com.newco.marketplace.vo.provider.GeneralInfoVO"/>	
+		<typeAlias alias="backgroundCheckInfo" type="com.newco.marketplace.vo.provider.BackgroundCheckVO"/>	
+		<typeAlias alias="bkgroundCheckVO" type="com.newco.marketplace.vo.provider.TMBackgroundCheckVO" />
+	
+	<select id="contact.query" parameterClass="java.lang.Integer" resultClass="contact">
+		select c.contact_id as contactId, 
+				c.last_name as lastName, 
+				c.first_name as firstName,
+				c.mi as mi,                     
+				c.suffix,                     
+				c.title,
+				c.phone_no as phoneNo,                     
+				c.fax_no as faxNo,                     
+				c.mobile_no as cellNo,                     
+				c.pager_text as pagerText,                     
+				c.email as email,                                        
+				c.created_date as createdDate,
+				c.modified_date as modifiedDate,                     
+				c.modified_by as modifiedBy,                     
+				c.honorific,                              
+				lcr.company_role_id as companyRoleId,
+				lcr.descr as companyRoleName,
+				br.resource_id as resourceId
+			from contact c
+			left outer join lu_company_role lcr on c.company_role_id = lcr.company_role_id
+			left outer join buyer_resource br on c.contact_id = br.contact_id
+			where c.contact_id = #contactId#
+	</select>
+	
+		<select id="contact.query_by_user_name" parameterClass="java.lang.String" resultClass="contact">
+		select c.contact_id as contactId, 
+				c.last_name as lastName, 
+				c.first_name as firstName,
+				c.mi as mi,                     
+				c.suffix,                     
+				c.title,
+				c.phone_no as phoneNo,                     
+				c.fax_no as faxNo,                     
+				c.mobile_no as cellNo,                     
+				c.pager_text as pagerText,                     
+				c.email,                                        
+				c.created_date as createdDate,
+				c.modified_date as modifiedDate,                     
+				c.modified_by as modifiedBy,                     
+				c.honorific,                              
+				lcr.company_role_id as companyRoleId,
+				lcr.descr as companyRoleName 
+			from contact c
+			join user_profile up on c.contact_id = up.contact_id and up.user_name = #userName#
+			left outer join lu_company_role lcr on c.company_role_id = lcr.company_role_id
+	</select>
+	
+	<select id="contact.query_by_soid" parameterClass="java.lang.String" resultClass="contact">
+		select c.contact_id as contactId, 
+				c.last_name as lastName, 
+				c.first_name as firstName,
+				c.mi as mi,                     
+				c.suffix,                     
+				c.title,
+				c.phone_no as phoneNo,                     
+				c.fax_no as faxNo,                     
+				c.mobile_no as cellNo,                     
+				c.pager_text as pagerText,                     
+				c.email,                                        
+				c.created_date as createdDate,
+				c.modified_date as modifiedDate,                     
+				c.modified_by as modifiedBy,                     
+				c.honorific,
+				c.email_alt as altEmail from contact c, vendor_resource vr,
+			so_routed_providers srp where vr.contact_id = c.contact_id
+			and vr.resource_id = srp.resource_id and srp.provider_resp_id=5
+			and srp.so_id = #soid#
+	</select>
+	
+	<insert id="new_contact.insert" parameterClass="contact">
+		insert into contact	(last_name,
+			first_name,
+			mi,
+			suffix,
+			title,
+			company_role_id,
+			phone_no,
+			phone_no_ext,
+			fax_no,
+			mobile_no,
+			email,
+			email_alt,
+			honorific,
+			created_date,
+			modified_date,
+			modified_by)			
+		values(#lastName#,
+			   #firstName#,
+			   #mi#,
+			   #suffix#,
+			   #title#,
+			   #companyRoleId#,
+			   #phoneNo#,
+			   #phoneNoExt#,
+			   #faxNo#,
+			   #cellNo#,
+			   #email#,
+			   #altEmail#,
+			   #honorific#,
+			   #createdDate#,
+			   #modifiedDate#,
+			   #modifiedBy#)
+        <selectKey resultClass="int">
+            SELECT last_insert_id() as contactId
+        </selectKey>    
+	</insert>
+	
+	<update id="update_simple_buyer_contact.update" parameterClass="contact">
+		update contact 
+			set
+			<isNotNull property="contactId">contact_id = #contactId#</isNotNull> 
+			<isNotNull prepend=", " property="email">email = #email#</isNotNull>
+			<isNotNull prepend=", " property="firstName">first_name = #firstName#</isNotNull>
+			<isNotNull prepend=", " property="lastName">last_name = #lastName#</isNotNull>
+			<isNotNull prepend=", " property="phoneNo">phone_no = #phoneNo#</isNotNull>
+			<isNotNull prepend=", " property="cellNo">mobile_no = #cellNo#</isNotNull>
+		where contact_id=#contactId#
+	</update>
+ 
+    <select id="contactList.query"  resultClass="contact">
+		select 
+		br.resource_id as resourceId,
+		co.first_name as firstName,
+		co.last_name as lastName,
+		co.phone_no as phoneNo,
+		co.fax_no as faxNo,
+		co.mobile_no as cell,
+		co.email as email,
+		co.contact_id as contactId 
+		from buyer_resource br, contact co where buyer_id=#buyerId# and br.contact_id = co.contact_id
+	</select>
+
+	<select id="generalInfo.contact.get" parameterClass="generalInfoContact" resultClass="generalInfoContact">
+	
+		select contact_id as contactId, 
+				last_name as lastName, 
+				first_name as firstName,
+				mi as middleName,
+				suffix as suffix,
+				title as otherJobTitle, 
+				email as email,
+				phone_no as phoneNumber,
+				mobile_no as alternatePhone,
+				phone_no_ext as phoneNumberExt
+			from contact
+			<dynamic prepend="where">
+				<isNotNull prepend="AND " property="contactId">contact_id = #contactId#</isNotNull>
+			</dynamic>		
+	</select>
+	
+	<select id="generalInfo.sameContact.get" parameterClass="generalInfoContact" resultClass="java.lang.Integer">
+	SELECT DISTINCT resource.bg_check_id FROM vendor_resource resource,contact con 
+	WHERE resource.contact_id=con.contact_id
+ 	AND con.last_name=#lastName#
+	AND con.first_name=#firstName#	
+	AND resource.ssn=#ssn#
+		
+	</select>
+	
+	<update id="generalInfo.bcCheck.update" parameterClass="generalInfoContact">
+	UPDATE vendor_resource
+	SET bg_check_id=#bcCheckId#
+<isNotNull property="bcStateId">,background_state_id=#bcStateId#</isNotNull> 
+	WHERE resource_id=#resourceId#
+	</update>
+	
+	
+	
+	<update id="generalInfo.contact.update" parameterClass="generalInfoContact">
+		UPDATE contact
+		set
+			title = #otherJobTitle#
+			<isNotNull prepend=", " property="lastName">last_name = #lastName#</isNotNull>
+			<isNotNull prepend=", " property="firstName">first_name = #firstName#</isNotNull>
+			<isNotNull prepend=", " property="middleName">mi = #middleName#</isNotNull>
+			<isNotNull prepend=", " property="suffix">suffix = #suffix#</isNotNull>			
+		WHERE contact_id = #contactId#
+	</update>
+	
+		<insert id="generalInfo.contact.insert" parameterClass="generalInfoContact">
+		insert into contact	(last_name,
+			first_name,
+			mi,
+			suffix,
+			title)			
+		values(#lastName#,
+			   #firstName#,
+			   #middleName#,
+			   #suffix#,
+			   #otherJobTitle#)
+        <selectKey resultClass="int">
+            SELECT last_insert_id() as contactId
+        </selectKey>    
+	</insert>
+	<insert id="generalInfo.contactDetails.insert" parameterClass="generalInfoContact">
+		INSERT INTO contact	(
+			    last_name,
+				first_name,
+				mi,
+				suffix,
+				title,
+				phone_no,
+				mobile_no,
+				email,
+				email_alt,
+				pri_contact_method_id,
+				alt_contact_method_id,
+				phone_no_ext,
+				sms_no)			
+		values(
+		       #lastName#,
+			   #firstName#,
+			   #middleName#,
+			   #suffix#,
+			   #otherJobTitle#,
+			   #phoneNumber#,
+			   #mobileNumber#,
+			   #email#,
+			   #altemail#,
+			   #primaryContact#,
+			   #secondaryContact1#,
+			   #phoneNumberExt#,
+			   #smsAddress#)
+        <selectKey resultClass="int">
+            SELECT last_insert_id() as contactId
+        </selectKey>    
+	</insert>
+	
+	
+	<insert id="generalInfo.bkgndchk.insert" parameterClass="generalInfoContact">
+		INSERT INTO sl_pro_bkgnd_chk (plusone_key,bg_state_id,created_date,modified_date,original_resource_id)VALUES(#plusOneKey#,7,NOW(),NOW(),#resourceId#)
+        <selectKey resultClass="int">
+            SELECT last_insert_id() as bcCheckId
+        </selectKey>    
+	</insert>
+	<insert id="generalInfo.bkgndchkDetails.insert" parameterClass="generalInfoContact">
+		INSERT INTO sl_pro_bkgnd_chk 
+		           (plusone_key,
+					bg_request_type,
+					bg_state_id,
+					verification_date,
+					reverification_date,
+					bg_request_date,
+					bg_original_vendor_id,
+					created_date,
+					modified_date,
+					original_resource_id)
+		     VALUES(
+		            #plusOneKey#,
+		            #bgRequestType#,
+		            #backgroundCheckStatusId#,
+		            #backgroundVerificationDate#,
+		            #backgroundReVerificationDate#,
+		            #backGroundRequestedDate#,
+		            #vendorId#,
+		            NOW(),
+		            NOW(),
+		            #resourceId#
+		            )
+        <selectKey resultClass="int">
+            SELECT last_insert_id() as bcCheckId
+        </selectKey>    
+	</insert> 
+	<insert id="generalInfo.bkgndchkhistory.insert1" parameterClass="generalInfoContact">
+		INSERT INTO sl_pro_bkgnd_chk_history (plusone_key,bg_state_id,created_date,modified_date,chg_comments,bg_check_id)VALUES(#plusOneKey#,7,
+		NOW(),NOW(),#changedComment#,#bcCheckId#)  
+	</insert>
+	
+	<insert id="generalInfo.bkgndchkhistory.insert" parameterClass="generalInfoContact">
+			INSERT INTO sl_pro_bkgnd_chk_history (bg_check_id,plusone_key,recertification_ind,
+ bg_request_type,bg_state_id,overall,criminal,driving,drug,civil,
+ verification_date,reverification_date,bg_request_date,
+ bg_status_update_date,
+ bg_original_vendor_id,created_date,modified_date,chg_comments,chg_display_ind)
+ (SELECT bkgndchk.bg_check_id,bkgndchk.plusone_key,bkgndchk.recertification_ind,
+ bkgndchk.bg_request_type,bkgndchk.bg_state_id,
+ bkgndchk.overall,bkgndchk.criminal,bkgndchk.driving,bkgndchk.drug,bkgndchk.civil,
+ bkgndchk.verification_date,bkgndchk.reverification_date,bkgndchk.bg_request_date,
+ bkgndchk.bg_status_update_date,
+ bkgndchk.bg_original_vendor_id,NOW(),NOW(),#changedComment#,#displayInd#
+  FROM sl_pro_bkgnd_chk bkgndchk,vendor_resource resource
+		WHERE  bkgndchk.bg_check_id=resource.bg_check_id AND resource.resource_id=#resourceId#)
+	</insert>
+	
+	<select id="generalInfo.bkgndchkId.get" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		 SELECT bkgndchk.bg_check_id AS backgroundCheckId FROM sl_pro_bkgnd_chk bkgndchk,vendor_resource resource
+		WHERE  bkgndchk.bg_check_id=resource.bg_check_id AND resource.resource_id=#resourceId#
+	</select>
+	
+	
+	<select id="getContactIdByUserName.query" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	      SELECT contact_id from user_profile where user_name=#username#
+    </select>
+
+	<select id="generalInfo.contact.query_by_buyer_id" parameterClass="java.lang.Integer" resultClass="com.newco.marketplace.vo.provider.Contact">
+		select c.contact_id as contactId,
+				c.last_name as lastName,
+				c.first_name as firstName,
+				c.suffix,
+				c.title,
+				c.phone_no as phoneNo,
+				c.fax_no as faxNo,
+				c.mobile_no as cellNo,
+				c.pager_text as pagerText,
+				c.email as email,
+				c.created_date as createdDate,
+				c.modified_date as modifiedDate,
+				c.email_alt as altEmail
+			from contact c 
+            	join buyer b on (c.contact_id = b.contact_id)
+            where
+            	b.buyer_id = #buyerId#
+	</select>
+	
+	<select id="generalInfo.contact.query_by_vendor_id" parameterClass="java.lang.Integer" resultClass="com.newco.marketplace.vo.provider.Contact">
+		select c.contact_id as contactId,
+				c.last_name as lastName,
+				c.first_name as firstName,
+				c.suffix,
+				c.title,
+				c.phone_no as phoneNo,
+				c.fax_no as faxNo,
+				c.mobile_no as cellNo,
+				c.pager_text as pagerText,
+				c.email as email,
+				c.created_date as createdDate,
+				c.modified_date as modifiedDate
+			from contact c
+                join vendor_resource vr on (c.contact_id = vr.contact_id)
+            where
+            	vr.vendor_id = #vendorId# 
+            	and vr.primary_ind = 1
+	</select>
+	
+	
+	<select id="getBackgroundCheckInfo.ById.get" parameterClass="java.lang.Integer" resultClass="backgroundCheckInfo">
+		SELECT bkgndchk.bg_state_id AS backgroundCheckStateId FROM sl_pro_bkgnd_chk bkgndchk
+		WHERE  bkgndchk.bg_check_id=#backgroundCheckId#
+	</select>
+	
+	
+		<select id="getBackgroundCheckResourceInfo.Id" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT vr.bg_check_id FROM vendor_resource vr
+		WHERE  vr.resource_id=#resourceId#
+	</select>
+	
+	<select id="getCountWithSameBackgroundCheckId.query" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	      SELECT COUNT(bg_check_id) FROM vendor_resource WHERE bg_check_id=#bgCheckId#
+    </select>
+	
+	
+		<update id="bcCheck.Api.update" parameterClass="bkgroundCheckVO">
+		UPDATE vendor_resource resource,sl_pro_bkgnd_chk  bkgndchk
+	   <dynamic prepend="SET">
+		<isNotNull prepend=", " property="backgroundStateId">resource.background_state_id=#backgroundStateId#</isNotNull>
+		<isNotNull prepend=", " property="backgroundVerificationDate">bkgndchk.verification_date = #backgroundVerificationDate#</isNotNull>
+		<isNotNull  prepend=", " property="backgroundRecertificationDate">bkgndchk.reverification_date = #backgroundRecertificationDate#</isNotNull> 
+		<isNotNull  prepend=", " property="backgroundStateId">bkgndchk.bg_state_id=#backgroundStateId#</isNotNull> 
+		<isNotNull  prepend=", " property="backgroundRequestDate">bkgndchk.bg_request_date=#backgroundRequestDate#</isNotNull> 
+		,bkgndchk.modified_date=NOW()
+		</dynamic>
+		WHERE bkgndchk.bg_check_id=resource.bg_check_id AND 
+		bkgndchk.bg_check_id=#bgCheckId#
+		</update>
+	
+		<select id="getBackgroundCheckInfo.ByResourceId.get" parameterClass="java.lang.String" resultClass="backgroundCheckInfo">
+		SELECT bkgndchk.bg_state_id AS backgroundCheckStateId,bkgndchk.bg_check_id AS bcCheckId FROM sl_pro_bkgnd_chk bkgndchk
+		WHERE  bkgndchk.bg_check_id=(SELECT vr.bg_check_id FROM vendor_resource vr
+		WHERE  vr.resource_id=#resourceId#)
+		</select>
+		
+		<select id="generalInfo.sameBGDetails.get" parameterClass="generalInfoContact" resultClass="java.lang.Integer">
+			SELECT DISTINCT resource.bg_check_id FROM vendor_resource resource,contact con 
+			WHERE resource.contact_id=con.contact_id
+ 			AND con.last_name=#lastName#
+			AND con.first_name=#firstName#	
+			AND resource.ssn=#ssn#
+			AND resource.resource_id!=#resourceId#
+		</select>
+	
+		<select id="generalInfo.sameProvideDetails.get" parameterClass="generalInfoContact" resultClass="generalInfoContact">
+			SELECT DISTINCT resource.bg_check_id as bcCheckId, resource.resource_id as resourceId,resource.background_state_id as backgroundCheckStatusId FROM vendor_resource resource,contact con 
+			WHERE resource.contact_id=con.contact_id
+ 			AND con.last_name=#lastName#
+			AND con.first_name=#firstName#	
+			AND resource.ssn=#ssn#
+			AND resource.resource_id!=#resourceId#
+		</select>
+		
+		<update id="generalInfo.bgStateInfo.update" parameterClass="generalInfoContact">
+			UPDATE sl_pro_bkgnd_chk set bg_state_id = #bcStateId#
+			WHERE  bg_check_id=#bcCheckId#
+		</update>
+</sqlMap>

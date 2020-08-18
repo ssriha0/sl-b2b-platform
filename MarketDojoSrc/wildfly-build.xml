@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="dojo" basedir="." default="compress">
+	<echo level="info">
+	===============================================================================
+	                                ${ant.project.name} 
+	===============================================================================</echo>
+	<property name="dir.base" value="${basedir}" />
+	<property name="dir.target" value="../../../ServiceLiveWebUtil/web/javascript/"/>
+	<property name="dojo.build.path" value="${dir.base}/util/buildscripts"/>
+	<property name="lib" value="${dojo.build.path}/lib"/>
+	
+	<path id="dojo.lib.path">
+		<pathelement location="${lib}" />
+		<fileset dir="${lib}">
+			<include name="*.jar"/>
+		</fileset>		
+	</path>
+	
+	<target name="compress">
+		<echo message="${lib}"/>
+		
+		<java jar="${lib}/custom_rhino.jar" classpathref="dojo.lib.path" fork="true" dir="${dojo.build.path}">
+			<arg line="build.js"/>
+			<arg line="profile=serviceLiveProfile"/>
+			<arg line="action=release"/>
+			<arg line="copyTests=false"/>
+			<arg line="releaseDir=${dir.target}"/>
+		</java>
+	</target>
+</project>

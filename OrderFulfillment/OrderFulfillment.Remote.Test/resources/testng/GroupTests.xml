@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="OrderFulfillment.Remote.GroupTest" thread-count="1">
+    <test name="MainPathTest" >
+        <groups><run><include name="init" /></run></groups>
+        <classes>
+            <class name="com.servicelive.orderfulfillment.remote.test.workflow.GroupOrderTests">
+                <methods>
+                    <include name="createGroupServiceOrderFromFile"/>
+                    <include name="acceptGroupServiceOrder" />
+                    <include name="releaseGroupServiceOrder" />
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>

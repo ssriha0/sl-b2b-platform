@@ -1,0 +1,56 @@
+<!DOCTYPE validators PUBLIC
+        "-//Apache Struts//XWork Validator 1.0.2//EN"
+        "http://struts.apache.org/dtds/xwork-validator-1.0.2.dtd">
+        
+<validators>
+   <field name="insurancePolicyDto.combinedKey">
+     <field-validator type="requiredstring">
+          <param name="trim">true</param>
+          <message key="addInsurancePolicy.combinedKey.error" />
+      </field-validator>
+  </field>  
+  <field name="insurancePolicyDto.carrierName">
+       <field-validator type="requiredstring">
+           <param name="trim">true</param>
+           <message key="addInsurancePolicy.carrierName.error" />
+      </field-validator>
+  </field>
+ 
+
+  <field name="insurancePolicyDto.policyNumber">
+     <field-validator type="requiredstring">
+          <param name="trim">true</param>
+          <message key="addInsurancePolicy.policyNumber.error" />
+      </field-validator>
+  </field>  
+
+  <field name="insurancePolicyDto.agencyName">
+     <field-validator type="requiredstring">
+          <param name="trim">true</param>
+          <message key="addInsurancePolicy.agencyName.error" />
+      </field-validator>
+  </field>  
+ 
+
+  <field name="insurancePolicyDto.agencyState">
+     <field-validator type="requiredstring">
+          <param name="trim">true</param>
+          <message key="addInsurancePolicy.agencyState.error" />
+      </field-validator>
+  </field>  
+
+  <field name="insurancePolicyDto.amount">
+     <field-validator type="requiredstring">
+          <param name="trim">true</param>
+          <message key="addInsurancePolicy.amount.error" />
+      </field-validator>      
+      <field-validator type="double">          
+          <param name="minInclusive">0000000.00</param>
+          <param name="maxInclusive">9999999.99</param>
+          <message key="addInsurancePolicy.amount.range.error" />
+      </field-validator>
+	</field>
+	 
+ 
+
+</validators>

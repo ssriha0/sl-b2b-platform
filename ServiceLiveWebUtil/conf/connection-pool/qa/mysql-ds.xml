@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- $Id: mysql-ds.xml,v 1.3 2008/04/26 00:39:58 glacy Exp $ -->
+<!--  Datasource config for MySQL using 3.0.9 available from:
+http://www.mysql.com/downloads/api-jdbc-stable.html
+-->
+
+<datasources>
+  <local-tx-datasource>
+    <jndi-name>jdbc/ServiceLiveMySqlDS</jndi-name>
+    <use-java-context>false</use-java-context>
+    <connection-url>jdbc:mysql://151.149.116.244:3306/QA_I26_1_SPN_SUPPLIER?jdbcCompliantTruncation=false</connection-url>
+    <driver-class>com.mysql.jdbc.Driver</driver-class>
+    <user-name>supply_usr</user-name>
+    <password>supply</password>
+    <exception-sorter-class-name>org.jboss.resource.adapter.jdbc.vendor.MySQLExceptionSorter</exception-sorter-class-name>
+    <min-pool-size>5</min-pool-size>
+    <max-pool-size>15</max-pool-size>
+    <check-valid-connection-sql>select now()</check-valid-connection-sql>
+    <new-connection-sql>select now()</new-connection-sql>
+    <idle-timeout-minutes>1</idle-timeout-minutes>
+    <metadata>
+       <type-mapping>mySQL</type-mapping>
+    </metadata>
+  </local-tx-datasource>
+    <local-tx-datasource>
+    <jndi-name>jdbc/ServiceLiveMySqlFinanceDS</jndi-name>
+    <use-java-context>false</use-java-context>
+    <connection-url>jdbc:mysql://151.149.116.244:3306/QA_I26_1_SPN_ACCOUNTS?jdbcCompliantTruncation=false</connection-url>
+    <driver-class>com.mysql.jdbc.Driver</driver-class>
+    <user-name>supply_usr</user-name>
+    <password>supply</password>
+    <exception-sorter-class-name>org.jboss.resource.adapter.jdbc.vendor.MySQLExceptionSorter</exception-sorter-class-name>
+    <min-pool-size>2</min-pool-size>
+    <max-pool-size>5</max-pool-size>
+    <check-valid-connection-sql>select now()</check-valid-connection-sql>
+    <new-connection-sql>select now()</new-connection-sql>
+    <idle-timeout-minutes>1</idle-timeout-minutes>
+    <metadata>
+       <type-mapping>mySQL</type-mapping>
+    </metadata>
+  </local-tx-datasource>
+  
+  <local-tx-datasource>
+    <jndi-name>jdbc/ServiceLiveMySqlQuartzDS</jndi-name>
+    <use-java-context>false</use-java-context>
+    <connection-url> jdbc:mysql://151.149.116.244:3306/servicelive_QRTZ_nojobs</connection-url>
+    <driver-class>com.mysql.jdbc.Driver</driver-class>
+    <user-name> supply_usr </user-name>
+    <password>supply</password>
+    <exception-sorter-class-name>org.jboss.resource.adapter.jdbc.vendor.MySQLExceptionSorter</exception-sorter-class-name>
+    <min-pool-size>1</min-pool-size>
+    <max-pool-size>2</max-pool-size>
+    <idle-timeout-minutes>1</idle-timeout-minutes>
+    <metadata>
+       <type-mapping>mySQL</type-mapping>
+    </metadata>
+  </local-tx-datasource>
+  
+    <local-tx-datasource>
+    <jndi-name>jdbc/ServiceLiveMySqlQuartzDS_spn</jndi-name>
+    <use-java-context>false</use-java-context>
+    <connection-url>  jdbc:mysql://151.149.116.244:3306/QA_QRTZ_SPN</connection-url>
+    <driver-class>com.mysql.jdbc.Driver</driver-class>
+    <user-name> supply_usr </user-name>
+    <password>supply</password>
+    <exception-sorter-class-name>org.jboss.resource.adapter.jdbc.vendor.MySQLExceptionSorter</exception-sorter-class-name>
+    <min-pool-size>1</min-pool-size>
+    <max-pool-size>2</max-pool-size>
+    <idle-timeout-minutes>1</idle-timeout-minutes>
+    <metadata>
+       <type-mapping>mySQL</type-mapping>
+    </metadata>
+  </local-tx-datasource>
+  <local-tx-datasource>
+		<jndi-name>jdbc/ServiceLiveMySqlQuartzSPNTRDS</jndi-name>
+		<use-java-context>false</use-java-context>
+		<connection-url>jdbc:mysql://151.149.116.244:3306/servicelive_QRTZ_nojobs?jdbcCompliantTruncation=false</connection-url>
+		<driver-class>com.mysql.jdbc.Driver</driver-class>
+		<user-name>supply_usr</user-name>
+		<password>supply</password>
+		<exception-sorter-class-name>org.jboss.resource.adapter.jdbc.vendor.MySQLExceptionSorter</exception-sorter-class-name>
+		<min-pool-size>1</min-pool-size>
+		<max-pool-size>2</max-pool-size>
+		<valid-connection-checker-class-name>com.mysql.jdbc.integration.jboss.MysqlValidConnectionChecker</valid-connection-checker-class-name>
+		<idle-timeout-minutes>1</idle-timeout-minutes>
+		<metadata>
+			<type-mapping>mySQL</type-mapping>
+		</metadata>
+	</local-tx-datasource>
+  
+</datasources>
+

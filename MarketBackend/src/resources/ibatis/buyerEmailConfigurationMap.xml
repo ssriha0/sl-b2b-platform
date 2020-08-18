@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<typeAlias alias="emailEventTemplateVO" type="com.newco.marketplace.dto.vo.systemgeneratedemail.EventTemplateVO"/>
+	<typeAlias alias="systemGeneratedEmailDataVO" type="com.newco.marketplace.dto.vo.systemgeneratedemail.EmailDataVO"/>
+	<typeAlias alias="emailConfigVO" type="com.newco.marketplace.dto.vo.systemgeneratedemail.EmailConfigVO"/>
+	
+	<select id="getEmailConfig.query" resultClass="emailConfigVO">
+			SELECT event_id as eventId, event_name as eventName, event_type as eventType, 
+			event_descr as eventDescr,sub_event_name as subEventName
+			FROM lu_event_master
+			WHERE event_type IN ('CONSUMER_EMAIL','CONSUMER_SURVEY')			
+	</select>
+	<select id="getEmailConfigForBuyer.query"
+		parameterClass="java.lang.String" resultClass="systemGeneratedEmailDataVO">
+		SELECT em.event_id as eventId,isActive as active,param_key as paramKey,param_value as paramValue
+		FROM buyer_event_mapping em, buyer_event_email_data ed
+		WHERE em.buyer_event_mapping_id = ed.buyer_event_id 
+		AND em.buyer_id=#buyerId#
+	</select>
+	
+	<insert id="saveBuyerEmailData.query"
+		parameterClass="emailConfigVO">
+		INSERT INTO buyer_email_data ( buyer_id,  param_key,  param_value, modified_by) 
+		VALUES ( #buyerId#, #paramKey#, #paramValue#, #modifiedBy# )
+	</insert>
+		
+	<insert id="saveBuyerEventMapping.insert"
+		parameterClass="emailConfigVO">
+		INSERT INTO buyer_event_mapping (buyer_id, event_id, isActive, modified_by ) 
+		VALUES ( #buyerId#, #eventId#, #active#, #modifiedBy# )
+  	</insert>
+  	
+	<insert id="saveBuyerEventEmailData.query"
+		parameterClass="emailConfigVO" >
+		<selectKey resultClass="java.lang.Integer" keyProperty="buyerEventMappingId">
+			SELECT buyer_event_mapping_id as buyerEventMappingId FROM buyer_event_mapping where
+			buyer_id=#buyerId# AND event_id =#eventId#
+		</selectKey>
+		
+		INSERT INTO buyer_event_email_data ( buyer_event_id, param_key,  param_value,  modified_by) 
+		VALUES ( #buyerEventMappingId#, #eventParamKey#, #eventParamValue#, #modifiedBy# )
+	</insert>
+	
+	<insert id="saveBuyerEventTemplate.query"
+		parameterClass="emailConfigVO" >
+		<selectKey resultClass="java.lang.Integer" keyProperty="buyerEventMappingId">
+			SELECT buyer_event_mapping_id as buyerEventMappingId FROM buyer_event_mapping where
+			buyer_id=#buyerId# AND event_id =#eventId#
+		</selectKey>
+		
+		INSERT INTO buyer_event_template_mapping ( template_id,  buyer_event_id, modified_by) 
+		VALUES ( #templateId#, #buyerEventMappingId#, #modifiedBy# )
+	</insert>
+
+	<select id="getBuyerEmailData.query"
+		parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT param_key as paramKey, param_value as paramValue FROM buyer_email_data WHERE buyer_id=#buyerId#
+	</select>
+	
+	<select id="getTemplateDetails.query" resultClass="java.util.HashMap">
+		SELECT template_name as templateName,template_source as templateSource FROM template 
+		WHERE template_name IN (
+			SELECT event_name FROM  lu_event_master
+		)	
+	</select>
+	
+	<select id="getEventTemplateConfig.query" resultClass="java.util.HashMap">
+		SELECT em.event_id as eventId, t.template_id as templateId
+		FROM lu_event_master em, template t
+		WHERE em.event_name = t.template_name 			
+	</select>
+	
+	<select id="getEventIdBySurveyOption.query" parameterClass="emailConfigVO" resultClass="java.lang.Integer" >
+		SELECT event_id as eventId FROM lu_event_survey_mapping WHERE survey_option_id=#surveyOptionId# AND event_status=#eventStatus#			
+	</select>
+	
+	<select id="getEmailTemplateByName.query" parameterClass="java.lang.String" resultClass="java.lang.String" >
+		SELECT t.template_source FROM template t WHERE t.template_name=#eventName#			
+	</select>
+
+	<select id="getSurveyEventMapping.query" resultClass="java.util.HashMap" >
+		SELECT DISTINCT lsm.survey_option_id as surveyOptionId,lum.event_name as eventName FROM lu_event_survey_mapping lsm, lu_event_master lum
+		WHERE lsm.event_id=lum.event_id
+	</select>
+
+	<delete id="deleteBuyerEmailData.query" parameterClass="java.lang.Integer">
+		delete from buyer_email_data where buyer_id=#buyerId#
+	</delete>
+	
+	<delete id="deleteBuyerEventEmailData.query" parameterClass="java.lang.Integer">
+		delete FROM buyer_event_email_data
+			WHERE buyer_event_id IN(
+				SELECT buyer_event_mapping_id FROM buyer_event_mapping WHERE buyer_id=#buyerId#
+			)
+	</delete>
+	
+	<delete id="deleteBuyerEventMapping.query" parameterClass="java.lang.Integer">
+		delete from buyer_event_mapping where buyer_id=#buyerId#
+	</delete>
+	
+	<delete id="deleteBuyerEventTemplate.query" parameterClass="java.lang.Integer">
+		delete FROM buyer_event_template_mapping
+			WHERE buyer_event_id IN(
+				SELECT buyer_event_mapping_id FROM buyer_event_mapping WHERE buyer_id=#buyerId#
+			)
+	</delete>
+	
+	
+		
+</sqlMap>

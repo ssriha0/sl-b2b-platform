@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:include schemaLocation="../../common.xsd" />
+	<!-- Root element -->
+	<xs:element name="submitRescheduleRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="soRescheduleInfo" type="ScheduleType"/>		
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:complexType name="ScheduleType">
+		<xs:sequence>
+			<xs:element name="scheduleType" type="scheduleRangeEnum"/>
+			<xs:element name="serviceDateTime1" type="xs:dateTime"/>
+			<xs:element name="serviceDateTime2" type="xs:dateTime" minOccurs="0"/>
+			<!-- <xs:element name="confirmWithCustomer" type="xs:boolean" default="false" minOccurs="0"/> -->
+		    <!-- <xs:element name="reschedule" type="rescheduleType" minOccurs="0"/> -->
+			<xs:element name="reasonCode" type="xs:integer" minOccurs="1"/>
+		    <xs:element name="comments" type="stringFiftyType" minOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!-- <xs:complexType name="rescheduleType">
+		<xs:sequence>
+			<xs:element name="rescheduleType" type="scheduleRangeEnum" minOccurs="0"/>
+			<xs:element name="rescheduleServiceDateTime1" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="rescheduleServiceDateTime2" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="rescheduledBy" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="role" type="xs:string"/>
+	</xs:complexType> -->
+	
+	<xs:simpleType name="scheduleRangeEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="range"/>
+			<xs:enumeration value="fixed"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+		<xs:simpleType name="stringFiftyType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="255"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

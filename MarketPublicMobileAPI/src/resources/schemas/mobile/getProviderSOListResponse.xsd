@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified">
+	<xs:include schemaLocation="../common.xsd" />
+
+	<!-- Root Element -->
+	<xs:element name="getProviderSOListResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="results" />
+				<xs:element name="serviceOrderList" type="ProviderSOListType"
+					minOccurs="0" maxOccurs="unbounded"></xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="ProviderSOListType">
+	<xs:sequence>
+		<xs:element name="totalSOcount" type="xs:integer"
+			minOccurs="0" maxOccurs="unbounded" />
+		<xs:element name="serviceOrder" type="ProviderSearchSOType"
+			minOccurs="0" maxOccurs="unbounded"></xs:element>
+	</xs:sequence>
+</xs:complexType>
+<xs:complexType name="ProviderSearchSOType">
+		<xs:sequence>
+			<xs:element name="soId" type="xs:string" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xs:element name="soTitle" type="xs:string" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xs:element name="soStatus" type="xs:string" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xs:element name="soSubStatus" type="xs:string" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xs:element name="serviceWindowStartTime" type="xs:string"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="serviceWindowEndTime" type="xs:string"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="serviceStartDate" type="xs:string"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="serviceEndDate" type="xs:string"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="timeZone" type="xs:string"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="customerFirstName" type="xs:string"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="customerLastName" type="xs:string"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="streetAddress1" type="xs:string"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="streetAddress2" type="xs:string"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="city" type="xs:string" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xs:element name="state" type="xs:string" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xs:element name="zip" type="xs:string" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xs:element name="buyerId" type="xs:integer" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xs:element name="buyerName" type="xs:string" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xs:element name="buyerLogo" type="xs:string" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xs:element name="merchStatus" type="xs:string" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xs:element name="scheduleStatus" type="xs:string"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="serverDateTime" type="xs:string"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="serviceTime" type="xs:string" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xs:element name="eta" type="xs:string" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xs:element name="followupFlag" type="xs:boolean" minOccurs="0" />
+			<xs:element name="acceptedResource" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="acceptedVendor" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="assignmentType" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="acceptedVendorId" type="xs:integer" minOccurs="0" maxOccurs="1" />
+			<xs:element name="acceptedResourceId" type="xs:integer" minOccurs="0" maxOccurs="1" />
+		</xs:sequence>
+</xs:complexType>
+</xs:schema>

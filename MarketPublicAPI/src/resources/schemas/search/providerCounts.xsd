@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by Shekhar (Servicelive) -->
+<xs:schema xmlns="http://www.servicelive.com/namespaces/providerCounts" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.servicelive.com/namespaces/providerCounts" elementFormDefault="qualified">
+	<xs:include schemaLocation="searchCommon.xsd" id="xcom"/>
+	<xs:include schemaLocation="../common.xsd" id="xxc"/>
+	<!-- Root element -->
+	<xs:element name="providerCounts">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="results"/>				
+				<xs:element ref="locations" minOccurs="0" />
+				<xs:element ref="categories" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>	
+	<xs:element name="locations">
+		<xs:complexType>
+			<xs:sequence>	
+				<xs:element ref="location" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="location">
+		<xs:complexType>
+			<xs:sequence>				
+				<xs:element name="name" type="xs:string"/>
+				<xs:element name="providerCount" type="xs:int"/>					
+			</xs:sequence>
+			<xs:attribute name="type" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

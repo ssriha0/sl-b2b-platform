@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/soRequest" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" targetNamespace="http://www.servicelive.com/namespaces/soRequest" elementFormDefault="qualified" jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+	<!--  This is the new Edit Appointment Request-->
+	<!-- Root element -->
+	<xs:element name="soEditAppointmentRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="startTime" type="xs:string"/>
+				<xs:element name="endTime" type="xs:string"  minOccurs="0"/>
+				<xs:element name="eta" type="xs:string" minOccurs="0"/>
+				<xs:element name="customerConfirmedInd" type="xs:string" minOccurs="0"/>
+				<xs:element name="custNotAvailReason" type="xs:integer" minOccurs="0"/>				
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:decimal"/>
+		</xs:complexType>
+	</xs:element>
+	
+	
+	
+	
+</xs:schema>
+
+

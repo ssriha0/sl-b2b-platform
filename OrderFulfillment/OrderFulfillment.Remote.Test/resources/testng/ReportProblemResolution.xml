@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="OrderFulfillment.Remote.Problems" parallel="tests" thread-count="1">
+    <test name="BuyerResolveProblem" >
+        <groups><run><include name="init" /></run>
+        </groups>
+        <classes>
+            <class name="com.servicelive.orderfulfillment.remote.test.workflow.ProblemReportTests">
+                <methods>
+                    <include name="createServiceOrder"/>
+                    <include name="editDraftOrder"/>
+                    <include name="postServiceOrder"/>
+                    <include name="acceptServiceOrder"/>
+                    <include name="providerReportProblemInAccept"/>
+                    <include name="buyerResolveProblemBackToAccept" />
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="ProviderResolveProblem" >
+        <groups><run><include name="init" /></run>
+        </groups>
+        <classes>
+            <class name="com.servicelive.orderfulfillment.remote.test.workflow.ProblemReportTests">
+                <methods>
+                    <include name="createServiceOrder"/>
+                    <include name="editDraftOrder"/>
+                    <include name="postServiceOrder"/>
+                    <include name="acceptServiceOrder"/>
+                    <include name="buyerReportProblemInAccept"/>
+                    <include name="providerResolveProblemBackToAccept" />
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="BuyerProblemInComplete" >
+        <groups><run><include name="init" /></run>
+        </groups>
+        <classes>
+            <class name="com.servicelive.orderfulfillment.remote.test.workflow.ProblemReportTests">
+                <methods>
+                    <include name="createServiceOrder"/>
+                    <include name="editDraftOrder"/>
+                    <include name="postServiceOrder"/>
+                    <include name="acceptServiceOrder"/>
+                    <include name="activateOrder"/>
+                    <include name="completeOrder"/>
+                    <include name="buyerReportProblemInComplete" />
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="ProviderProblemInComplete" >
+        <groups><run><include name="init" /></run>
+        </groups>
+        <classes>
+            <class name="com.servicelive.orderfulfillment.remote.test.workflow.ProblemReportTests">
+                <methods>
+                    <include name="createServiceOrder"/>
+                    <include name="editDraftOrder"/>
+                    <include name="postServiceOrder"/>
+                    <include name="acceptServiceOrder"/>
+                    <include name="activateOrder"/>
+                    <include name="completeOrder"/>
+                    <include name="providerReportProblemInComplete" />
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>

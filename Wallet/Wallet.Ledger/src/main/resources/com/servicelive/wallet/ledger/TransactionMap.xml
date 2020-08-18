@@ -1,0 +1,505 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<typeAlias alias="balanceVO"
+		type="com.servicelive.wallet.ledger.vo.WalletBalanceVO" />
+	<typeAlias alias="transactionRule"
+		type="com.servicelive.wallet.ledger.vo.TransactionRuleVO" />
+	<typeAlias alias="transaction"
+		type="com.servicelive.wallet.ledger.vo.TransactionVO" />
+	<typeAlias alias="transactionEntry"
+		type="com.servicelive.wallet.ledger.vo.TransactionEntryVO" />
+	<typeAlias alias="businessTrans"
+		type="com.servicelive.wallet.ledger.vo.LedgerBusinessTransactionVO" />
+	<typeAlias alias="transactionHistory"
+		type="com.servicelive.wallet.ledger.vo.TransactionHistoryVO"/>		
+	<typeAlias alias="account"
+		type="com.servicelive.common.vo.SLAccountVO" />
+	<typeAlias alias="receiptVO"
+		type="com.servicelive.wallet.serviceinterface.vo.ReceiptVO" />
+	<typeAlias alias="providerWithdrawalVO"
+		type="com.servicelive.wallet.serviceinterface.vo.ProviderWithdrawalErrorVO" />
+	<typeAlias alias="ledgerBalanceVO"
+		type="com.servicelive.wallet.ledger.vo.LedgerBalanceVO" />
+
+  <!-- removed transaction id 111 from the below query as reversing the spend limit for buyer in case of cancellation through front end is done through transaction id 111 -->
+	<select id="cancellationCount.query" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT COUNT(*) FROM ledger_entry le
+		WHERE le.so_id = #soId#
+		AND le.bus_trans_id in (110)
+	</select>
+
+	<select id="voidCount.query" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT COUNT(*) FROM ledger_entry le
+		WHERE le.so_id = #soId#
+		AND le.bus_trans_id = 115
+	</select>
+
+	<select id="closeCount.query" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT COUNT(*) FROM ledger_entry le
+		WHERE le.so_id = #soId#
+		AND le.bus_trans_id = 120
+	</select>
+
+	<select id="transaction_rule.query" parameterClass="transactionRule"
+		resultClass="transactionRule">
+			SELECT
+			    ltrf.bus_trans_id AS busTransId
+			    , ltrf.funding_type_id
+			    , lbt.bus_trans_type AS busTransType
+			    , lbt.bus_trans_descr AS busTransDescr
+			    , ltrf.ledger_entry_rule_id AS ledgerEntryRuleId
+			    , ltr.ledger_entity_type_id AS ledgerEntityTypeId
+			    , ltr.transaction_type_id AS transactionTypeId
+			    , ltr.type AS transRuleType
+			    , ltr.descr AS transRuleDescr
+			    , ltr.debit_entity_type_id AS transRuleDebitEntityTypeId
+			    , ltr.debit_t_acct_no AS transRuleDebitTAcctNo
+			    , ltr.credit_entity_type_id AS transRuleCreditEntityTypeId
+			    , ltr.credit_t_acct_no AS transRuleCreditTAcctNo
+			    , ltr.auto_ach_ind AS autoAchInd
+			    , ltr.affects_balance AS affectsBalanceInd
+			    , let.type AS entityType
+			    , let.descr AS entityDescr
+			    , let.default_entity_id AS entityDefaultEntityId
+			    , lra1.t_acct_no AS refAcctsDebitTAcctNo
+			    , lra1.locn AS refAcctsDebitLocn
+			    , lra1.descr1 AS refAcctsDebitDescr1
+			    , lra1.descr2 AS refAcctsDebitDescr2
+			    , lra2.t_acct_no AS refAcctsCreditTAcctNo
+			    , lra2.locn AS refAcctsCreditLocn
+			    , lra2.descr1 AS refAcctsCreditDescr1
+			    , lra2.descr2 AS refAcctsCreditDescr2
+			FROM
+			   ledger_transaction_rule ltr INNER JOIN ledger_transaction_rule_funding ltrf ON ltr.ledger_entry_rule_id= ltrf.ledger_entry_rule_id
+			   INNER JOIN ledger_business_transaction lbt ON (ltrf.bus_trans_id = lbt.bus_trans_id)
+			   INNER JOIN ledger_transaction_types ltt ON (ltr.transaction_type_id = ltt.transaction_type_id)
+			   INNER JOIN ledger_entity_type let ON (ltr.ledger_entity_type_id = let.ledger_entity_type_id)
+			   INNER JOIN ledger_reference_accounts lra2 ON (ltr.credit_t_acct_no = lra2.t_acct_no)    
+			   INNER JOIN ledger_reference_accounts lra1 ON (ltr.debit_t_acct_no = lra1.t_acct_no)
+			WHERE ltrf.bus_trans_id = #busTransId#
+			  AND ltrf.funding_type_id = #fundingTypeId#
+			ORDER BY ltr.sort_order;    
+	</select>  
+
+	<select id="ledger_rule_pricing_expression.query"  resultClass="java.util.HashMap">
+		SELECT Concat(Cast(ledger_entry_rule_id as char),'_',cast(funding_type_id as char)) as ruleId, pricing_expression as expression
+      	FROM ledger_transaction_rule_funding where bus_trans_id=#busTransId# order by ruleId		
+	</select>
+	
+	<insert id="ledger_entry.insert" parameterClass="transaction">
+		INSERT INTO ledger_entry (bus_trans_id,
+		ledger_entry_rule_id, entry_date, reference_no, so_id,
+		entry_remark, reconsiled_ind, authorized_ind, authorized_date,
+		authorization_no, reconsided_date, gl_processed, transfer_reason_code_id,user_name,affects_balance, nonce)
+		VALUES(#businessTransId#, #ledgerEntryRuleId#,
+		#ledgerEntryDate#, #referenceNo#, #soId#, #entryRemark#,
+		#reconsiledInd#, #authorizedInd#, #authorizedDate#,
+		#authorizationNo#, #reconsidedDate#, 0, #transferReasonCode#,#user#,#affectsBalanceInd#,#nonce#)
+		<selectKey resultClass="java.lang.Long">
+	      SELECT last_insert_id() as ledgerEntryId
+		</selectKey> 
+	</insert>
+
+	<insert id="ledger_transaction_entry.insert"
+		parameterClass="transactionEntry">
+		INSERT INTO ledger_transaction_entry (
+		transaction_type_id, ledger_entry_id, ledger_entity_type_id,
+		ledger_entity_id, originating_buyer_id, entry_type_id, trans_amount, t_acct_no,
+		cc_ind, created_date, modified_date, modified_by,account_id)
+		VALUES(#transactionTypeId#, #ledgerEntryId#,
+		#ledgerEntityTypeId#, #ledgerEntityId#, #originatingBuyerId#, #entryTypeId#,
+		#transactionAmount#, #taccountNo#, #CCInd#, #createdDate#,
+		#modifiedDate#, #modifiedBy#,#accountNumber#)
+		<selectKey resultClass="java.lang.Long">
+	      SELECT last_insert_id() as transactionId
+		</selectKey> 
+	</insert>
+
+	<select id="ledger_transaction_entry_byEntityId_for_availablebalance.query" resultClass="java.lang.Double"
+		parameterClass="java.util.HashMap">
+		SELECT ifnull(available_balance,0) as available_balance
+		FROM fullfillment_vlaccounts
+		WHERE ledger_entity_id = #ledgerEntityId#
+			       AND entity_type_id = #ledgerEntityTypeId#;
+	</select>
+	
+		
+	
+	<select id="ledger_transaction_entry_byEntityId_for_availablebalance.fromLedger" resultClass="java.lang.Double"
+		parameterClass="java.util.HashMap">
+		SELECT ifnull(available_balance,0) as available_balance
+		FROM ledger_balance
+	 	WHERE ledger_entity_id = #ledgerEntityId#
+            AND ledger_entity_type_id = #ledgerEntityTypeId#
+        ORDER BY ledger_balance_id DESC
+		LIMIT 1
+		<isEqual property="locked" compareValue="true">
+            FOR UPDATE
+        </isEqual>
+	</select>
+	
+	<!-- SL-21117: Revenue Pull Code change starts -->
+	
+	<select id="revenue_pull_permitted_users.query"
+		resultClass="java.lang.String" parameterClass="java.util.HashMap">
+		select user_name as UserName 
+		FROM revenuepull_permitted_users WHERE active_indicator = #indicator#;
+	</select>
+	
+	<select id="available_balance_for_revenue_pull.fromLedger" resultClass="java.lang.Double"
+		parameterClass="java.util.HashMap">
+		SELECT ifnull(available_balance,0) as available_balance
+		FROM ledger_balance lb INNER JOIN ledger_entry le ON (lb.ledger_entry_id=le.ledger_entry_id)
+	 	WHERE lb.ledger_entity_id = #ledgerEntityId#
+            AND lb.ledger_entity_type_id = #ledgerEntityTypeId#
+        ORDER BY ledger_balance_id DESC
+		LIMIT 1
+	</select>
+	
+	
+	<select id="available_date_check_for_revenue_pull.fromRevenuePull" resultClass="java.lang.Integer"
+		parameterClass="java.util.HashMap">
+		SELECT COUNT(*)
+		FROM revenue_pull_transaction
+	 	WHERE requested_date = #revenuePullDate#
+        ORDER BY transaction_id DESC
+		LIMIT 1
+	</select>
+	
+	<insert id="revenue_pull.insert"
+		parameterClass="java.util.HashMap">
+		INSERT INTO revenue_pull_transaction (
+		revenuepull_amount, requested_date, created_date,
+		modified_date, reason_comment, status, requested_by, completion_indicator)
+		VALUES(#revenuepullamount#, #revenuepulldate#,
+		#revenuepullcreateddate#, #revenuepullmodifieddate#, #revenuepullnote#, #revenuepullstatus#,
+		#revenuepulluser#, #revenuepullindicator#)
+	</insert>
+	
+	<select id="revenue_pull_permitted_users_email.query"
+		resultClass="java.lang.String" parameterClass="java.util.HashMap">
+		select user_email as UserEmail 
+		FROM revenuepull_permitted_users WHERE active_indicator = #indicator#;
+	</select>
+	
+	 <!-- Code change ends -->
+
+	<select id="ledger_transaction_entry_byEntityId_for_totalbalance.query" resultClass="java.lang.Double"
+		parameterClass="java.util.HashMap">
+	   	SELECT ifnull(available_balance,0) + ifnull(project_balance,0) as total_balance
+		FROM fullfillment_vlaccounts
+		WHERE ledger_entity_id = #ledgerEntityId#
+		AND entity_type_id = #ledgerEntityTypeId#;
+	</select>	
+	
+	<select id="ledger_transaction_entry_byEntityId_for_pendingRequests.query"
+		resultClass="transactionEntry" parameterClass="java.lang.Long">
+		select lte.transaction_id as transactionId,
+		lte.transaction_type_id as transactionTypeId,
+		lte.ledger_entry_id as ledgerEntryId, lte.ledger_entity_type_id
+		as ledgerEntityTypeId, lte.ledger_entity_id as ledgerEntityId,
+		lte.entry_type_id as entryTypeId, lte.trans_amount as
+		transactionAmount, t_acct_no as transactionAccountNo 
+		FROM ledger_transaction_entry lte, ledger_entry le 
+		WHERE le.ledger_entry_id = lte.ledger_entry_id
+		and lte.ledger_entity_id = #companyId# 
+		and lte.ledger_entity_type_id = 10
+		and le.bus_trans_id = 10
+		and le.reconsiled_ind = 0;
+	</select>
+
+	<select id="getPostSOLedgerAmount.query" parameterClass="java.util.HashMap" resultClass="java.lang.Double" >
+		SELECT IFNULL(SUM(credits),0) - IFNULL(SUM(debits),0) AS so_project_balance
+		FROM (
+		SELECT 
+		            CASE WHEN lte.entry_type_id = 1 THEN
+		                        IFNULL(lte.trans_amount,0) 
+		            END AS debits,
+		            CASE WHEN lte.entry_type_id = 2 THEN
+		                        IFNULL(lte.trans_amount,0) 
+		            END AS credits
+		FROM ledger_transaction_entry lte INNER JOIN ledger_entry le ON (le.ledger_entry_id = lte.ledger_entry_id)
+		WHERE lte.ledger_entity_type_id = 30 AND le.so_id = #soId#
+		) AS ledgerAmount;
+	</select>
+
+	<select id="ledger_transactions_by_sloperation.query"
+			resultClass="transactionEntry">
+		SELECT lte.transaction_id as transactionId,
+		lte.transaction_type_id as transactionTypeId,
+		lte.ledger_entry_id as ledgerEntryId, lte.ledger_entity_type_id
+		as ledgerEntityTypeId, lte.ledger_entity_id as ledgerEntityId,
+		lte.entry_type_id as entryTypeId, lte.trans_amount as
+		transactionAmount, t_acct_no as transactionAccountNo
+		FROM ledger_transaction_entry lte, ledger_entry le
+		WHERE le.reconsiled_ind=1 AND lte.ledger_entity_type_id= 90 AND lte.ledger_entry_id=le.ledger_entry_id
+	</select>	
+	
+	<select id="ledger_transaction_deposit_sum.query"
+				resultClass="java.lang.Double" parameterClass="java.util.HashMap">
+	 	SELECT SUM(trans_amount) amount  
+	 	FROM ledger_transaction_entry  lte, ledger_entry le
+    	WHERE lte.ledger_entity_id = #ledgerEntityId#
+        AND lte.ledger_entity_type_id = #ledgerEntityTypeId#
+   		AND lte.ledger_entry_id = le.ledger_entry_id AND le.bus_trans_id IN (10,260,270,210,300,310)
+	</select>
+	
+	<select id="ledger_transaction_amount_by_id.query"
+				resultClass="java.lang.Double" parameterClass="java.lang.Long">
+	 	SELECT trans_amount as amount  
+	 	FROM ledger_transaction_entry  lte
+    	WHERE lte.transaction_id = #transactionId#
+	</select>
+	
+	<select id="trans_history.query"
+		resultClass="transactionHistory" parameterClass="transactionHistory">
+		SELECT  
+			lte.transaction_id 	 AS transactionId, 
+			le.entry_date 	  	 AS entryDate, 
+			ltr.descr	  		 AS transactionalType,
+			le.so_id 			 AS soId,
+			apq.reconciled_ind 	 AS achReconciledInd,
+			apq.ach_process_id as achProcessId,
+			apq.reject_reason_id as achRejectId,
+			le.reconsiled_ind as ledgerReconciledInd,
+			lte.trans_amount   	 AS transAmount,
+			lte.entry_type_id    AS credDebInd,
+			lb.available_balance AS availableBalance,
+			arc.reason_code AS rejectReasonCode
+		FROM ledger_transaction_entry lte  
+		   JOIN ledger_entry le ON lte.ledger_entry_id = le.ledger_entry_id
+			LEFT JOIN ledger_balance lb 
+				ON (lb.ledger_entry_id = lte.ledger_entry_id and lb.ledger_entity_type_id=lte.ledger_entity_type_id 
+			and lte.ledger_entity_id AND lb.ledger_entity_id)
+			LEFT JOIN ach_process_queue apq on apq.ledger_entry_id = lte.ledger_entry_id
+			JOIN ledger_transaction_rule ltr ON ltr.ledger_entry_rule_id = le.ledger_entry_rule_id
+			JOIN lu_entity_types let ON let.entity_type_id = lte.ledger_entity_type_id
+			LEFT JOIN lu_ach_reason_codes arc ON arc.reason_id = apq.reject_reason_id
+		WHERE lte.ledger_entity_id = #entityId# AND lte.ledger_entity_type_id = #entityTypeId# 
+		<isNotNull prepend="AND" property="fromDate">
+			date(le.entry_date)  <![CDATA[ >= ]]> date(#fromDate#)
+		</isNotNull>
+		<isNotNull prepend="AND" property="toDate">
+			date(le.entry_date)  <![CDATA[ <= ]]> date(#toDate#)
+		</isNotNull>
+		ORDER BY lte.modified_date desc, lb.ledger_balance_id desc		
+	</select>
+	
+	<select id="trans_history_detail.query"
+		resultClass="transactionHistory" parameterClass="transactionHistory">
+		SELECT  
+			lte.transaction_id 	 AS transactionId, 
+			le.entry_date 	  	 AS entryDate, 
+			ltr.descr	  		 AS transactionalType,
+			le.so_id 			 AS soId,
+			apq.reconciled_ind 	 AS achReconciledInd,
+			apq.ach_process_id as achProcessId,
+			apq.reject_reason_id as achRejectId,
+			le.reconsiled_ind as ledgerReconciledInd,
+			lte.trans_amount   	 AS transAmount,
+			lte.entry_type_id    AS credDebInd,
+			lb.available_balance AS availableBalance,
+			CASE ahr.account_type_id 
+		         WHEN 30 THEN (SELECT card_type FROM lu_card_types where lu_card_types.card_id = ahr.card_type_id)
+			 ELSE bank_name
+			 END  as bankName,
+			arc.reason_code AS rejectReasonCode,
+			ahr.account_id as accountId,
+		    ahr.account_no as accountNumber
+		FROM ledger_transaction_entry lte  JOIN ledger_entry le ON lte.ledger_entry_id = le.ledger_entry_id
+			LEFT JOIN ledger_balance lb 
+				ON (lb.ledger_entry_id = lte.ledger_entry_id and lb.ledger_entity_type_id=lte.ledger_entity_type_id 
+			and lte.ledger_entity_id AND lb.ledger_entity_id)
+			LEFT JOIN ach_process_queue apq on apq.ledger_entry_id = lte.ledger_entry_id
+			JOIN ledger_transaction_rule ltr ON ltr.ledger_entry_rule_id = le.ledger_entry_rule_id
+			JOIN lu_entity_types let ON let.entity_type_id = lte.ledger_entity_type_id
+			LEFT JOIN lu_ach_reason_codes arc ON arc.reason_id = apq.reject_reason_id
+			LEFT JOIN account_hdr ahr ON lte.account_id=ahr.account_id and lte.ledger_entity_type_id=ahr.entity_type_id
+		WHERE lte.ledger_entity_id = #entityId# AND let.descr = #entityType#
+		<isNotNull prepend="AND" property="fromDate">
+			date(le.entry_date)  <![CDATA[ >= ]]> date(#fromDate#)
+		</isNotNull>
+		<isNotNull prepend="AND" property="toDate">
+			date(le.entry_date)  <![CDATA[ <= ]]> date(#toDate#)
+		</isNotNull> 
+		ORDER BY lte.modified_date desc, lb.ledger_balance_id desc
+	</select>
+	
+	<update id="markLedgerEntryReconciled.update" parameterClass="java.lang.Long">
+		UPDATE ledger_entry
+		set reconsiled_ind = true, reconsided_date = now()
+		where ledger_entry_id = #ledgerEntryId#
+		AND reconsided_date IS NULL
+
+	</update>
+
+	<update id="lte_modified_date.update" parameterClass="java.util.HashMap">
+		UPDATE ledger_transaction_entry
+		set modified_date = #modifiedDate#
+		where ledger_entry_id = #ledgerEntryId#
+	</update>
+	
+	<select id="ledger_entry_glprocessed.query"
+		resultClass="transaction" parameterClass="java.util.HashMap">
+		SELECT
+			le.ledger_entry_id as ledgerEntryId, le.bus_trans_id as
+			businessTransId, le.ledger_entry_rule_id as ledgerEntryRuleId,
+			le.entry_date as ledgerEntryDate, le.reference_no as
+			referenceNo, le.so_id as soId, le.entry_remark as entryRemark,
+			le.reconsiled_ind as reconsiledInd, le.reconsided_date as
+			reconsidedDate, le.authorized_ind as authorizedInd,
+			le.authorized_date as authorizedDate, le.authorization_no as
+			authorizationNo, le.gl_processed as glProcessed,
+			le.gl_processed_date glProcessedDate,lte.transaction_id as emailTransactionId
+		FROM 
+			ledger_entry le,ledger_transaction_entry lte
+		WHERE
+			le.ledger_entry_id = #ledgerEntryId#
+		AND	
+			le.ledger_entry_id = lte.ledger_entry_id 
+		AND 
+			lte.ledger_entity_type_id=#ledgerEntityTypeId#
+	</select>
+	
+	<select id="ledger_entry_for_withdraw.query"
+		resultClass="transaction" parameterClass="java.lang.Long">
+		SELECT trans_amount as transactionAmount, created_date as createdDate from
+		ledger_transaction_entry WHERE account_id = #accountId# AND
+		entry_type_id = 2 and date(created_date) = date(NOW())
+	</select>
+	
+	
+    <resultMap id="spVLBCResult" class="balanceVO">
+        <result property="ledgerEntryId" column="ledger_entry_id"/>
+        <result property="transAmount" column="out_balanceAmount"/>
+        <result property="validatedAmount" column="validated_amount"/>
+    </resultMap>
+
+    <parameterMap id="spVLBCBalance" class="java.util.Map">
+        <parameter property="in_ledgerEntryId" mode="IN"/>
+    </parameterMap>
+	
+     <select id="getVLBalanceFromFullfillmentEntry.query" parameterClass="java.lang.Long" resultClass="balanceVO">
+          SELECT fe.vl_balance as validatedAmount, fe.modified_date as startDate
+          FROM fullfillment_entry fe
+          WHERE fe.ledger_entity_id = #entityId#
+                                    AND fe.entity_type_id = 20
+                                    AND fe.reconsiled_ind IN (1, 2, 4, 5, 6)
+                                    AND fe.vl_balance IS NOT NULL
+          ORDER BY fe.reconsiled_date DESC,  fe.fullfillment_entry_id DESC
+          LIMIT 1;
+      </select>
+ 
+       <select id="getVLBalanceFromFullfillmentVLAccnts.query" parameterClass="java.lang.Integer" resultClass="balanceVO">
+           SELECT fvla.v1_account_balance as validatedAmount, fvla.v1_balance_date as startDate
+           FROM fullfillment_vlaccounts fvla
+           WHERE fvla.ledger_entity_id = #entityId#
+                   AND fvla.entity_type_id = 20
+           LIMIT 1;
+       </select>
+       
+       <select id="ledger_entry_record_amount_withdraw.query"
+		resultClass="java.lang.Long" parameterClass="java.util.Map">
+			SELECT count(1) from
+			ledger_transaction_entry WHERE account_id = #accountId# AND
+			entry_type_id = 2 and DATE_SUB(NOW(),INTERVAL #timeInterval# SECOND) <![CDATA[ <= ]]> created_date
+		</select>
+		
+	<select id="select_transaction_receipt.query" resultClass="receiptVO"
+		parameterClass="receiptVO">
+		SELECT
+			lte.transaction_id AS transactionID,
+			lte.ledger_entry_id AS ledgerEntryID,
+			le.so_id AS soID,
+			lte.trans_amount AS transactionAmount,
+			le.ledger_entry_rule_id AS ledgerEntryRuleID,
+			lte.ledger_entity_type_id AS entityTypeID,
+			lte.created_date as createdDate,
+			lte.ledger_entity_id as ledgerEntityID 
+		FROM
+			ledger_transaction_entry lte,
+			ledger_entry le
+		WHERE
+			le.ledger_entry_id = lte.ledger_entry_id
+			AND le.ledger_entry_rule_id = #ledgerEntryRuleID#
+			AND lte.ledger_entity_type_id = #entityTypeID#
+			AND lte.ledger_entity_id = #ledgerEntityID#
+		<isNotNull prepend="AND" property="soID">
+			le.so_id = #soID#
+		</isNotNull>
+		order by lte.created_date desc LIMIT 1			
+			
+	</select>
+	
+	<insert id="provider_withdrawal_error_log.insert" parameterClass="providerWithdrawalVO">
+		INSERT INTO provider_withdrawal_error_log (vendor_id,past_withdrawal_amt,past_withdrawal_count,session_withdrawal_limit,session_withdrawal_count,withdrawal_amt,error_message_id,vl_balance)
+			VALUES(#providerId#,#pastWithdrawalAmt#,#pastWithdrawalCount#,#sessionWithdrawalAmt#,#sessionWithdrawalCount#,#withdrawalAmt#,#errorMessageId#,#vlbcBalance#)
+	</insert>
+	
+	<select id="select_ledger_balance.query" resultClass="ledgerBalanceVO"
+		parameterClass="ledgerBalanceVO">
+		SELECT
+			 IFNULL(ledger_balance_id,0) as ledgerBalanceId, IFNULL(ledger_entry_id,0) as ledgerEntryId, IFNULL(available_balance,0) as availableBalance,IFNULL(project_balance,0) as projectBalance,
+		#ledgerEntityId# as ledgerEntityId, #ledgerEntityTypeId#  as ledgerEntityTypeId
+		FROM ledger_balance 
+		WHERE ledger_entity_id = #ledgerEntityId# and ledger_entity_type_id=#ledgerEntityTypeId# 
+		ORDER BY ledger_balance_id DESC LIMIT 1 FOR UPDATE;
+	</select>
+	
+	<update id="ledger_balance.update" parameterClass="ledgerBalanceVO">
+		UPDATE ledger_balance
+		SET available_balance=#availableBalance#,project_balance=#projectBalance#,balance_affected_ind='both'
+		WHERE ledger_balance_id=#ledgerBalanceId#
+	</update>
+	
+	<insert id="ledger_balance.insert" parameterClass="ledgerBalanceVO">
+		INSERT INTO ledger_balance 
+			(ledger_entry_id,ledger_entity_type_id,ledger_entity_id,available_balance,project_balance,balance_affected_ind)
+		VALUES(#ledgerEntryId#,#ledgerEntityTypeId#,#ledgerEntityId#,#availableBalance#,#projectBalance#,#balanceAffectedInd#)
+	</insert>
+	<insert id="fulfillment_vlaccounts.insert" parameterClass="ledgerBalanceVO">
+		INSERT INTO fullfillment_vlaccounts (ledger_entity_id,entity_type_id,available_balance,project_balance,created_date,modified_date) 
+		VALUES(#ledgerEntityId#,#ledgerEntityTypeId#,#availableBalance#,#projectBalance#,now(),now())
+		ON DUPLICATE KEY UPDATE
+		<isNotNull property="availableBalance">
+			available_balance = #availableBalance#
+		</isNotNull>
+		<isNotNull property="projectBalance"> 
+			project_balance = #projectBalance#
+		</isNotNull>
+	</insert>
+	
+	<select id="ledger_transaction_entries_by_ledger_entry.query"
+		resultClass="transactionEntry" parameterClass="java.lang.Long">
+		SELECT lte.transaction_id as transactionId,
+		lte.transaction_type_id as transactionTypeId,
+		lte.ledger_entry_id as ledgerEntryId, lte.ledger_entity_type_id
+		as ledgerEntityTypeId, lte.ledger_entity_id as ledgerEntityId,
+		lte.entry_type_id as entryTypeId, lte.trans_amount as
+		transactionAmount, t_acct_no as transactionAccountNo FROM
+		ledger_transaction_entry lte WHERE lte.ledger_entry_id =
+		#ledgerEntryId#
+	</select>
+	
+	<select id="ledgerentry_nonce.query" resultClass="java.lang.String">
+	    SELECT nonce FROM ledger_entry 
+        WHERE bus_trans_id = 20 ORDER BY entry_date DESC LIMIT 1
+	</select>
+	
+	<select id="get_creditamt_for_variancecheck.query" parameterClass="java.lang.String"
+		resultClass="java.lang.Double">
+        SELECT SUM(lte.trans_amount) FROM accounts_prod.ledger_transaction_rule ltr 
+			LEFT JOIN accounts_prod.ledger_entry le ON ltr.ledger_entry_rule_id = le.ledger_entry_rule_id 
+			LEFT JOIN accounts_prod.ledger_transaction_entry lte ON lte.ledger_entry_id = le.ledger_entry_id
+    			WHERE  lte.ledger_entity_id=2 AND ltr.credit_entity_type_id = 30 AND ltr.affects_balance=1
+					   AND le.so_id = #soId# 	
+    </select>
+    <select id="get_debitrules_for_variancecheck.query" resultClass="java.lang.Long">
+        SELECT ltr.ledger_entry_rule_id 
+		FROM accounts_prod.ledger_transaction_rule ltr, accounts_prod.ledger_transaction_rule_funding rf
+			WHERE ltr.bus_trans_id =120 AND rf.funding_type_id = 40 AND rf.ledger_entry_rule_id = ltr.ledger_entry_rule_id
+			AND ltr.affects_balance=1 AND debit_entity_type_id = 30 	
+    </select>
+</sqlMap>

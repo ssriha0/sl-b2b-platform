@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<!-- Start Action  Loading -->
+	<bean id="providerRegistrationAction" class="com.newco.marketplace.web.action.provider.ProviderRegistrationAction" scope="prototype" >
+		<constructor-arg index="0" ref="registrationDelegate"/>
+		<constructor-arg index="1" ref="registrationDto"/>
+	</bean>
+	
+	<bean id="providerRegSaveAction" class="com.newco.marketplace.web.action.provider.ProviderRegSaveAction" scope="prototype" >
+		<constructor-arg index="0" ref="registrationDelegate"/>
+		<constructor-arg index="1" ref="registrationDto"/>
+	</bean>
+	<!-- End Delegate  Loading -->
+	
+	<!-- Start DTO  Loading -->
+	<bean id="registrationDto" class="com.newco.marketplace.web.dto.provider.ProviderRegistrationDto" scope="prototype"/>
+	<!-- End DTO  Loading -->
+	
+</beans>

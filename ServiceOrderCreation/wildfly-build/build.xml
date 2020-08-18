@@ -1,0 +1,159 @@
+<project name="ServiceOrderCreation" default="distribute" basedir="../">
+	<echo level="info">
+	===============================================================================
+	                                ${ant.project.name} 
+	===============================================================================</echo>
+	
+	<target name="package" depends="distribute"/>
+	
+	<property name="appname" value="ServiceOrderCreation" />
+	<property name="mainappname" value="ServiceOrderCreationMain" />
+	<property name="dist.root" value="${basedir}/dist" />
+	<property name="dist.root.lib" value="${basedir}/dist/lib" />
+	<property name="src.dir" value="${basedir}/src/main/java" />
+	<property name="src.metainf.dir" value="${basedir}/src/main/java/META-INF" />
+	<property name="src.resources.dir" value="${basedir}/src/main/resources" />
+	<property name="lib.dir" value="${basedir}/lib" />
+	<property name="antbin.dir" value="${basedir}/antbin" />
+	<property name="antbin.classes.dir" value="${antbin.dir}/classes" />
+	<property name="src.test" value="${basedir}/src/test/java" />
+	<property name="test.resources.dir" value="${basedir}/src/test/resources" />
+	<property name="junit-report.dir" value="${basedir}/${ant.project.name}Reports" />
+	<property name="dir.slCommonBuild.nondeployables" value="../SLCommonBuild/lib/nondeployables"/>
+	<property name="dir.service.live.web.util.base" value="../ServiceLiveWebUtil" />
+	<property name="deployables.lib" value="${dir.service.live.web.util.base}/lib/deployables"/>
+	
+	<target name="clean" description="o Cleans up the build artifacts">
+		<delete dir="${antbin.dir}" failonerror="false" />
+		<!-- delete dir="${dist.root}" failonerror="false" /-->
+		<delete dir="${antbin.classes.dir}" failonerror="false" />
+		<delete dir="${junit-report.dir}" failonerror="false"/>
+	</target>
+
+	<target name="init" depends="clean" description="o Creates all directories for building">
+		<mkdir dir="${antbin.dir}" />
+		<mkdir dir="${antbin.classes.dir}" />
+		<mkdir dir="${dist.root}"  />
+		<mkdir dir="${dist.root.lib}"  />
+		<mkdir dir="${junit-report.dir}"/>
+		<copydir src="${lib.dir}" dest="${dist.root.lib}"/>
+		
+		<path id="build.path">
+			<fileset dir="${lib.dir}">
+				<include name="**/*.jar"/>
+			</fileset>
+			<fileset dir="${dir.slCommonBuild.nondeployables}">
+				<include name="junit.jar" />
+			</fileset>	
+		</path>
+		
+		<path id="manifest.class.path.id">
+			<fileset dir="${dist.root.lib}">
+					<include name="**/*.jar"/>
+				</fileset>
+			<fileset dir="${dist.root}">
+					<include name="**/*.jar"/>
+			</fileset>
+		</path>
+		
+		<manifestclasspath jarfile="${dist.root}/${appname}.jar" property="manifest.class.path">
+			<classpath refid="manifest.class.path.id"/>
+		</manifestclasspath>
+		
+		<path id="test.class.path">
+			<pathelement location="${test.resources.dir}" />
+    		<pathelement location="${build.path}" />
+			<pathelement location="${antbin.classes.dir}" />
+    		<fileset dir="${dir.slCommonBuild.nondeployables}">
+	    			<include name="junit.jar" />
+	    			<include name="hamcrest-core-1.1.jar" />
+	    			<include name="hamcrest-library-1.1.jar" />
+	    			<include name="mockito-all-1.8.4.jar"/>
+    		</fileset>
+			<fileset dir="${deployables.lib}">
+			        <include name="log4j-1.2.14.jar"/>
+			</fileset>
+		</path>
+	</target>
+
+	<!-- compilation options -->
+	<target name="compile" depends="init">
+		<javac destdir="${antbin.classes.dir}"
+						target="1.8"
+						source="1.8"
+						debug="true"
+						deprecation="true"
+						optimize="false"
+						excludes="**/package.html"
+						srcdir="${src.dir}"
+						classpathref="build.path" />
+		<copy todir="${dist.root.lib}">
+			<fileset dir="${lib.dir}">
+				<include name="**/*.jar" />
+			</fileset>
+		</copy>		
+	</target>
+
+	<!-- war, jar, ear files -->
+	<target name="jar" depends="compile">
+		<jar jarfile="${dist.root}/${appname}.jar">
+			<fileset dir="${antbin.classes.dir}" />
+			<fileset dir="${src.resources.dir}" />				
+			<manifest>
+				 <attribute name="Built-By" value="${user.name}"/>
+				 <attribute name="Class-Path" value="${manifest.class.path}"/>
+				<attribute name="Main-Class" value="com.servicelive.serviceordercreation.MainApp"/>
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="compile-test" depends="jar">
+		<javac
+			srcdir="${src.test}"
+			destdir="${antbin.classes.dir}"
+			classpathref="test.class.path"
+			target="1.8"
+			source="1.8"
+			debug="on"
+			deprecation="false"
+		/>	
+	</target>
+	
+	<target name="junit-report" description="Runs the JUnit test cases" depends="compile-test">			
+		<junit fork="no" haltonfailure="false" printsummary="withOutAndErr" showoutput="yes">		
+			<classpath>
+					<path refid="test.class.path"/>
+			</classpath>
+	
+			<formatter type="xml" />
+				
+			<batchtest fork="yes" todir="${junit-report.dir}" >	 
+				<fileset dir="${src.test}" >
+					<include name="**/*Test.java" />
+				</fileset>
+			</batchtest>	  
+		</junit>
+		<echo message="build date ">${DSTAMP}${TSTAMP}</echo>
+		<echo message="build.number ">${build.number}</echo>
+		<echo message="full tag ">${app.lastbuild.tag.auto}</echo>
+
+		<echo message="Format the tests report" />
+		<junitreport todir="${junit-report.dir}">
+			<fileset dir="${junit-report.dir}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report todir="${junit-report.dir}" />
+		</junitreport>		
+	</target>
+	
+	<target name="distribute" depends="junit-report">	
+	</target>
+	
+	<!-- Sonar Integration -->
+	<property name="dir.sonar.src" value="${basedir}/src/main/java" />
+	<property name="dir.sonar.ant.task" value="../SLCommonBuild/lib/nondeployables"/>
+	<import file="../../SLCommonBuild/ant/wildfly-opt/ant-script-library/asl-java-sonar.xml"/>
+	<target name="sonar" depends="sonar-init, sonar-run">
+	</target>
+
+</project>

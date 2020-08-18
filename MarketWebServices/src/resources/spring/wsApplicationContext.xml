@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<bean id="sqlMapClient"
+		class="org.springframework.orm.ibatis.SqlMapClientFactoryBean"
+		abstract="false" lazy-init="default" autowire="default"
+		dependency-check="default">
+		<property name="configLocation">
+			<value>classpath:resources/ibatis/SqlMapConfig.xml</value>
+		</property>
+		<property name="useTransactionAwareDataSource">
+			<value>true</value>
+		</property>
+		<property name="dataSource">
+			<ref bean="${datasource.main.bean.id}" />
+		</property>
+	</bean>
+	
+	<bean id="sqlMapSecureClient"
+		class="org.springframework.orm.ibatis.SqlMapClientFactoryBean"
+		abstract="false" lazy-init="default" autowire="default"
+		dependency-check="default">
+		<property name="configLocation">
+			<value>classpath:resources/ibatis/SqlMapConfig.xml</value>
+		</property>
+		<property name="useTransactionAwareDataSource">
+			<value>true</value>
+		</property>
+		<property name="dataSource">
+			<ref bean="${datasource.secure.bean.id}" />
+		</property>
+	</bean>
+
+	<bean id="sqlMapClientFinance"
+		class="org.springframework.orm.ibatis.SqlMapClientFactoryBean"
+		abstract="false" lazy-init="default" autowire="default"
+		dependency-check="default">
+		<property name="configLocation">
+			<value>classpath:resources/ibatis/SqlMapConfig.xml</value>
+		</property>
+		<property name="useTransactionAwareDataSource">
+			<value>true</value>
+		</property>
+		<property name="dataSource">
+			<ref bean="${datasource.finance.bean.id}" />
+		</property>
+	</bean>
+
+	<bean id="serviceOrderDao"
+		class="com.newco.marketplace.persistence.daoImpl.so.order.ServiceOrderDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient"/>
+		</property>
+	</bean>
+
+	<bean id="securityDAO"
+		class="com.newco.marketplace.persistence.daoImpl.security.SecurityDAOImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+
+	<bean id="securityBO"
+		class="com.newco.marketplace.business.businessImpl.security.SecurityBusinessBean">
+		<property name="securityAccess">
+			<ref bean="securityDAO" />
+		</property>
+	</bean>
+
+	<bean id="applicationPropertiesDao"
+		class="com.newco.marketplace.persistence.daoImpl.applicationproperties.ApplicationPropertiesDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+	
+	<bean id="applicationSecurePropertiesDao"
+		class="com.newco.marketplace.persistence.daoImpl.applicationproperties.ApplicationSecurePropertiesDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapSecureClient" />
+		</property>
+	</bean>
+
+	<bean id="cryptography"
+		class="com.newco.marketplace.util.Cryptography">
+		<property name="applicationPropertiesDao">
+			<ref bean="applicationPropertiesDao" />
+		</property>
+	</bean>
+
+	<!-- The transactionMap version 0.1 -->
+    <import resource="wsAopContext.xml"/>
+	<import resource="wsTransactionContext.xml" />
+</beans>

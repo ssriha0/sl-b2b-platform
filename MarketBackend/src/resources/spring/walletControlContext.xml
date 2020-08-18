@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+     http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd"
+	default-autowire="byName">
+
+	<bean id="walletControlBO"
+		class="com.newco.marketplace.business.businessImpl.financeManager.WalletControlBO" lazy-init="true">
+		<property name="walletControlDao">
+			<ref bean="walletControlDao"/>
+		</property>
+			<property name="documentService">
+			<ref bean="documentServiceTarget" />
+		</property>	
+		
+<!-- 		code change for SLT-2323 -->
+		<property name="financeManagerBO">
+			<ref bean="financeManagerBO" />
+		</property>
+		<property name="walletControlAuditNotesBO">
+			<ref bean="walletControlAuditNotesBO" />
+		</property>
+	</bean>
+	
+	<bean id="walletControlDao" class="com.newco.marketplace.persistence.daoImpl.walletControl.WalletControlDaoImpl" lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+	
+	
+</beans>

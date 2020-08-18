@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xs:schema xmlns="http://www.sears.iss.com/UpdateOrder/Request"
+	targetNamespace="http://www.sears.iss.com/UpdateOrder/Request"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:element name="UpdateServiceOrder">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="HEADER" type="MessageHeader" />
+				<xs:element name="ORDERS" type="Orders" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="MessageHeader">
+		<xs:sequence>
+			<xs:element name="noOfOrders" type="xs:string" />
+			<xs:element name="seqNo" type="xs:string" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="Orders">
+		<xs:sequence>
+			<xs:element maxOccurs="unbounded" name="ORDER" type="Order" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="Order">
+		<xs:sequence>
+			<xs:element name="clientId" type="xs:string" />
+			<xs:element name="salescheck" type="xs:string" />			
+			<xs:element name="salesDate" type="xs:string" />
+			<xs:element name="serviceUnitNumber" type="xs:string" />
+			<xs:element name="serviceOrderNumber" type="xs:string" />
+			<xs:element name="serviceScheduleDate" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="serviceScheduleToTime" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="serviceScheduleFromTime" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="serviceOrderSpecialInstruction1" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="serviceOrderSpecialInstruction2" type="xs:string"
+				minOccurs="0" />			
+			<xs:element name="customerRepairAtAddress" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="customerRepairAtCity" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="customerRepairAtState" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="customerRepairAtZipCode" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="customerRepairAtZipCodeSuffix" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="customerPrimaryPhoneNumber" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="customerRepairAtPhoneNumber" type="xs:string"
+				minOccurs="0" />			
+			<xs:element name="merchSerialNumber" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="merchModelNumber" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="merchManufactureBrandName" type="xs:string"
+				minOccurs="0" />			
+			<xs:element name="serviceOrderRescheduledFlag" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="RESCHEDINFORMATION" type="RescheduleInformation"
+				minOccurs="0" />			
+			<xs:element name="MESSAGES" type="Messages" minOccurs="0" />			
+			<xs:element name="JOBCODES" type="JobCodes" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="Messages">
+		<xs:sequence>
+			<xs:element name="MESSAGE" type="Message" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="Message">
+		<xs:all>
+			<xs:element name="serviceOrderTxtDS" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="serviceOrderTxtDSModDate" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="serviceOrderTxtDSModTime" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="serviceOrderTxtDSSeqNo" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="serviceOrderTxtDSEmpId" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="serviceOrderTxtDSInqNo" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="serviceOrderTxtDSCalBakDt" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="serviceOrderTxtDSCalBakTm" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="serviceOrderTxtDSInqTrgCMyCd" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="serviceOrderTxtDSInqCrtCMyCd" type="xs:string"
+				minOccurs="0" />
+		</xs:all>
+	</xs:complexType>
+
+	<xs:complexType name="RescheduleInformation">
+		<xs:sequence>
+			<xs:element name="RESCHEDINFO" type="RescheduleInfo"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="RescheduleInfo">
+		<xs:all>
+			<xs:element name="reschedCancelModificationDate" type="xs:string" minOccurs="0"/>
+			<xs:element name="reschedCancelModificationTime" type="xs:string" minOccurs="0"/>
+			<xs:element name="rescheduleReasonCode" type="xs:string" minOccurs="0"/>
+			<xs:element name="rescheduleModificationID" type="xs:string" minOccurs="0"/>
+			<xs:element name="rescheduleModificationUnitNo" type="xs:string" minOccurs="0"/>
+			<xs:element name="rescheduleRsnCdDescription" type="xs:string" minOccurs="0"/>
+		</xs:all>
+	</xs:complexType>
+
+	<xs:complexType name="JobCodes">
+		<xs:sequence>
+			<xs:element name="JOBCODE" type="JobCode" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="JobCode">
+		<xs:all>
+			<xs:element name="jobCodeSeqNo" type="xs:string" minOccurs="0"/>
+			<xs:element name="jobCode" type="xs:string" minOccurs="0"/>
+			<xs:element name="chargeCode" type="xs:string" minOccurs="0"/>
+			<xs:element name="coverageCode" type="xs:string" minOccurs="0"/>
+			<xs:element name="nonRelatedChargeCode" type="xs:string" minOccurs="0"/>
+			<xs:element name="jobCodeDescription" type="xs:string" minOccurs="0"/>
+			<xs:element name="jobCodePrice" type="xs:string" minOccurs="0"/>
+			<xs:element name="jobCodeStatus" type="xs:string" minOccurs="0"/>
+			
+		</xs:all>
+	</xs:complexType>
+</xs:schema>

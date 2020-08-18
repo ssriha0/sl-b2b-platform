@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap>
+
+	<typeAlias alias="glprocesslog"
+		type="com.servicelive.wallet.batch.gl.vo.GlProcessLogVO" />
+	<typeAlias alias="glSummaryVO"
+		type="com.servicelive.wallet.batch.gl.vo.GLSummaryVO" />
+	<typeAlias alias="glDetailVO"
+		type="com.servicelive.wallet.batch.gl.vo.GLDetailVO" />
+	<typeAlias alias="fiscalCalendar"
+		type="com.servicelive.wallet.batch.gl.vo.FiscalCalendarVO" />
+	<typeAlias alias="shopifyGLRuleVO"
+		type="com.servicelive.wallet.batch.gl.vo.ShopifyGLRuleVO" />
+	<typeAlias alias="shopifyGLProcessLogVO"
+		type="com.servicelive.wallet.batch.gl.vo.ShopifyGLProcessLogVO" />
+
+	<update id="ledger_entry_glprocessed.update" parameterClass="java.util.ArrayList">
+		UPDATE ledger_entry SET gl_processed = 1, gl_processed_date = now(),
+		gl_process_id = #ledgerEntries[0].glProcessId#
+		WHERE ledger_entry_id IN
+		<iterate open="(" close=")" conjunction=",">
+			#ledgerEntries[].ledgerEntryId#
+		</iterate>
+	</update>
+
+	<procedure id="runGLDetails.storeproc" parameterClass="java.lang.Integer">
+		{CALL sp_gl_details(#glProcessLogId#)}
+   </procedure>
+
+
+	<select id="gl_process_log_id.query" resultClass="java.lang.Integer">
+		select
+		max(gl_process_id) from gl_process_log
+	</select>
+
+	<select id="gl_summary.query" resultClass="glSummaryVO"
+		parameterClass="java.util.HashMap">
+			SELECT 
+			      le.ledger_entry_id AS ledgerEntryId,
+			      lte.transaction_id AS transactionId,
+			      le.ledger_entry_rule_id,
+			      lte.transaction_type_id,
+			      lgta.active_ind,
+			      reconsiled_ind,
+			      lte.ledger_entity_type_id AS ledgerEntityTypeId,
+			      lte.ledger_entity_id AS ledgerEntityId,
+			      lte.trans_amount AS transactionAmount,
+			      lgta.gl_t_account_no AS glTAccountNumber,
+			      lte.entry_type_id AS entryTypeId,
+			      lgta.credit_ind AS creditInd,
+			      lte.created_date AS createdDate,
+			      lte.modified_date AS modifiedDate,
+			      lra.gl_division AS glDivision,
+			      le.so_id as soId
+			FROM 
+			      ledger_entry le 
+			            JOIN ledger_transaction_entry lte FORCE INDEX(IDX_ledger_trans_entry_entry_id_entry_type)
+			            ON (le.ledger_entry_id=lte.ledger_entry_id)
+			            JOIN ledger_reference_accounts lra ON (lte.t_acct_no=lra.t_acct_no)
+			            JOIN ledger_gl_t_accounts lgta ON (lra.gl_t_account_no = lgta.gl_t_account_no AND lgta.active_ind = 1)
+   		   WHERE
+		     (
+			       (le.reconsiled_ind = 1 AND 
+			       (le.reconsided_date <![CDATA[ >= ]]> #fromDate# AND le.reconsided_date <![CDATA[ < ]]> #toDate#))
+				OR    
+			      (lte.transaction_type_id = 800 AND 
+			      (le.entry_date <![CDATA[ >= ]]> #fromDate# AND le.entry_date <![CDATA[ < ]]> #toDate#))
+		      )
+		      AND le.gl_process_id IS NULL
+			ORDER BY glTAccountNumber, glDivision ASC;
+	</select>
+
+	<select id="getGLDetails.query" parameterClass="java.lang.Integer"
+		resultClass="glDetailVO">
+		select
+		entry_id as entryId,
+		nps_order as npsOrder,
+		nps_unit as npsUnit,
+		gl_unit as glUnit,
+		gl_division as glDivision,
+		gl_account as glAccount,
+		gl_category as glCategory,
+		ledger_rule as ledgerRule,
+		sell_value as sellValue,
+		so_funding_type as soFundingType,
+		case
+            when ledger_rule = 'CEX' then provider_name
+            else transaction_type
+        end as transactionType,
+        transaction_id as transactionId,
+		transactionAmount,order_number as orderNumber,
+		gl_date_posted as glDatePosted,
+		transaction_date as transactionDate,
+		peoplesoft_file as peopleSoftFile,
+        buyer_id as buyerId,
+        provider_id as providerId
+		from rpt_gl_detail
+		where gl_process_id=#glProcessId#
+		AND (buyer_id <![CDATA[<>]]> 3000
+		OR buyer_id IS NULL)
+	</select>
+	
+	<select id="getGLDetailsHSR.query" parameterClass="java.lang.Integer"
+		resultClass="glDetailVO">
+		select
+		entry_id as entryId,
+		nps_order as npsOrder,
+		nps_unit as npsUnit,
+		gl_unit as glUnit,
+		gl_division as glDivision,
+		gl_account as glAccount,
+		gl_category as glCategory,
+		ledger_rule as ledgerRule,
+		sell_value as sellValue,
+		so_funding_type as soFundingType,
+		case
+            when ledger_rule = 'CEX' then provider_name
+            else transaction_type
+        end as transactionType,
+        transaction_id as transactionId,
+		transactionAmount,order_number as orderNumber,
+		gl_date_posted as glDatePosted,
+		transaction_date as transactionDate,
+		peoplesoft_file as peopleSoftFile,
+        buyer_id as buyerId,
+        provider_id as providerId
+		from rpt_gl_detail
+		where gl_process_id=#glProcessId#
+		AND buyer_id = 3000
+	</select>	
+
+	<insert id="gl_feed_long.insert" parameterClass="glprocesslog">
+		INSERT INTO gl_process_log (process_date,
+		generated_file_name,
+		process_successful, initiated_manually,from_date,to_date)
+		VALUES
+		(#processDate#, #fileName#,
+		#processSuccesfull#,
+		#initiatedManually#,#fromDate#,#toDate#)
+		<selectKey resultClass="int">
+			SELECT last_insert_id() as glProcessId
+	    </selectKey>
+	</insert>
+
+	<select id="fiscal_calendar.query" resultClass="fiscalCalendar"
+		parameterClass="fiscalCalendar">
+		SELECT acct_yr as accountingYear, acct_qtr as
+		accountingQuarter,
+		acct_mo as accountingMonth, cal_wk_start_date as
+		calendarStartWeek, cal_wk_end_date as calendarEndWeek, period_wk
+		as
+		preiodWeek, no_wk_period as numberWorkPeriod, qtr_fiscal_wk
+		as
+		quarterFiscalWeek, yr_fiscal_wk as yearFiscalWeek,
+		acct_mo_descr as
+		accountingMonthDesc FROM ledger_fiscal_calendar
+		WHERE #checkFiscalWeek#
+		BETWEEN cal_wk_start_date AND
+		cal_wk_end_date
+
+	</select>
+	
+	<select id="getShopifyGLDetails.query" 
+		parameterClass="java.lang.Integer" resultClass="glDetailVO">
+		select 
+			entry_id as entryId,
+			nps_order as npsOrder,
+			nps_unit as npsUnit, 
+			gl_unit as glUnit,
+			gl_division as glDivision,
+			gl_account as glAccount, 
+			gl_process_id as glProcessId, 
+			gl_category as glCategory,
+			ledger_rule as ledgerRule,
+			sell_value as sellValue,
+			so_funding_type as soFundingType,
+        	case
+            	when ledger_rule = 'CEX' then provider_name
+            	else transaction_type
+        	end as transactionType,             
+        	transaction_id as transactionId,
+        	transactionAmount as transactionAmount, 
+        	order_number as orderNumber,
+        	gl_date_posted as glDatePosted,
+			transaction_date as transactionDate, 
+        	peoplesoft_file as peopleSoftFile,
+        	buyer_id as buyerId,
+        	provider_id as providerId    
+        from accounts_prod.shopify_gl_detail 
+        where gl_process_id = #glProcessId#;
+        
+	</select>
+	
+	<select id="getCustomGLRules.query" resultClass="shopifyGLRuleVO" parameterClass="java.lang.String">
+		SELECT 
+			shopify_gl_reporting_id AS reportingId,
+			gl_division AS glDivision,
+			gl_unit AS glUnit,
+			gl_t_account_no AS glAccountNo,
+			gl_category AS glCategory,
+			descr AS descr,
+			ledger_rule AS ledgerRule,
+			ledger_entity_id AS ledgerEntityId,
+			multiplier AS multiplier,
+			transaction_type AS transactionType,
+			pricing_expression AS pricingExpression
+		FROM shopify_gl_reporting
+		WHERE ledger_entity_id = #buyerId#
+	</select>	
+	
+	<select id="getShopifyGLRules.query" resultClass="shopifyGLRuleVO" parameterClass="java.lang.String">
+	
+		select 
+			shopify_gl_reporting_id as reportingId,
+			gl_division as glDivision,
+			gl_unit as glUnit,
+			gl_t_account_no as glAccountNo,
+			gl_category as glCategory,
+			descr as descr,
+			ledger_rule as ledgerRule,
+			ledger_entity_id as ledgerEntityId,
+			multiplier as multiplier,
+			transaction_type as transactionType
+		from shopify_gl_reporting
+			
+	</select>
+	
+	<insert id="shopifyGLDetails.insert" parameterClass="glDetailVO">
+		insert into shopify_gl_detail (
+			nps_order,
+			nps_unit,
+			gl_unit,
+			gl_division,
+			gl_account,
+			gl_category,
+			ledger_rule,
+			so_funding_type,
+			transaction_type,
+			transaction_id,
+			transactionAmount,
+			order_number,
+			gl_date_posted,
+			transaction_date,
+			peoplesoft_file,
+			gl_process_id,
+			buyer_id,
+			provider_id,
+			sell_value
+		) 
+		values
+		(
+			#npsOrder#,
+	 		#npsUnit#,
+	 		#glUnit#,
+	 		#glDivision#,
+	 		#glAccount#,
+	 		#glCategory#,
+			#ledgerRule#,
+	 		#soFundingType#,
+	 		#transactionType#,
+	 		#transactionId#,
+	 		#transactionAmount#,
+	 		#orderNumber#,
+	 		#glDatePosted#,
+	 		#transactionDate#,
+	 		#peopleSoftFile#,
+	 		#glProcessId#,
+	 		#buyerId#,
+	 		#providerId#,
+	 		#sellValue#
+ 		)
+	</insert>
+
+	
+	<insert id="shopify_gl_process_log.insert" parameterClass="shopifyGLProcessLogVO" >
+		INSERT INTO shopify_gl_process_log (
+			process_date,
+			generated_file_name,
+			process_successful, 
+			initiated_manually,
+			from_date,
+			to_date,
+			created_date,
+			modified_date
+		)
+		VALUES
+		(
+			now(), 
+			#fileName#,
+			#processSuccesfull#,
+			#initiatedManually#,
+			#fromDate#,
+			#toDate#,
+			now(),
+			now()
+		)
+		<selectKey resultClass="int">
+			SELECT last_insert_id() as glProcessId
+	    </selectKey>
+	</insert>
+	
+</sqlMap>

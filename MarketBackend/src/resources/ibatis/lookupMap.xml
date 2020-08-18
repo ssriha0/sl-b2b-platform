@@ -1,0 +1,620 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="lookup">
+
+	<cacheModel type="LRU" id="lookupCache">
+		<flushInterval hours="4" />
+		<property name="size" value="10000" />
+	</cacheModel>
+	
+	
+	<cacheModel type="LRU" id="lookupTermsCondsCache">
+		<flushInterval hours="4" />
+		<property name="size" value="1000" />
+	</cacheModel>
+	
+	<cacheModel type="LRU" id="skillCache">
+		<flushInterval hours="4" />
+		<property name="size" value="500" />
+	</cacheModel>
+	
+	<cacheModel type="LRU" id="luCache">
+		<flushInterval hours="24" />
+		<flushOnExecute statement="new_buyer_ref.insert"/>
+		<flushOnExecute statement="buyer_ref.update"/>
+		<flushOnExecute statement="buyer_ref_active.update"/>
+		<property name="size" value="10000" />
+	</cacheModel>
+	<resultMap class="so" id="api.so.resultsmap">
+	<result property="soId" column="so_id" />
+	<result property="buyerId" column="buyerId" />
+	<result property="wfStateId" column="wfStateId" />
+	<result property="acceptedResourceId" column="acceptedResourceId" />
+	<result property="assignmentType" column="assignmentType" />
+	<result property="acceptedVendorId" column="acceptedVendorId" />
+	<result property="routedResources" column="so_id"
+			select="routedResourceEligible.query" />
+	</resultMap>
+	<resultMap class="routedProvider" id="api.routed.resultsmap">
+		<result property="resourceId" column="resource_id" />
+		<result property="soId" column="so_id" />
+		<result property="vendorId" column="vendor_id" />
+		<result property="providerRespId" column="provider_resp_id" />
+		<result property="providerRespReasonId" column="resp_reason_id" /> 
+		<result property="providerRespDate" column="provider_resp_date" />
+		<result property="providerRespComment" column="provider_resp_comment" />
+		<result property="createdDate" column="created_date" />
+		<result property="routedDate" column="routed_date" />
+	</resultMap>
+	
+	
+	<typeAlias alias="luProviderRespReasonVO"
+		type="com.newco.marketplace.dto.vo.LuProviderRespReasonVO" />
+	<typeAlias alias="skillNodeVO"
+		type="com.newco.marketplace.dto.vo.skillTree.SkillNodeVO" />
+	<typeAlias alias="serviceTypesVO"
+		type="com.newco.marketplace.dto.vo.skillTree.ServiceTypesVO" />
+	<typeAlias alias="lookupVO"
+		type="com.newco.marketplace.dto.vo.LookupVO" />
+	<typeAlias alias="luBuyerRefVO"
+		type="com.newco.marketplace.dto.vo.LuBuyerRefVO" />
+	<typeAlias alias="termsAndConditionsVO"
+		type="com.newco.marketplace.dto.vo.TermsAndConditionsVO" />
+	<typeAlias alias="lookupTaxPayerIdNumberType"
+		type="com.newco.marketplace.dto.vo.LookupTaxPayerIdNumberType" />
+	<typeAlias alias="buyerSkuCategoryVO" 
+		type="com.newco.marketplace.dto.vo.BuyerSkuCategoryVO" />
+		<typeAlias alias="buyerSkuVO" 
+		type="com.newco.marketplace.dto.vo.BuyerSkuVO" />
+		<typeAlias alias="buyerSkuTaskForSoVO" 
+		type="com.newco.marketplace.dto.vo.BuyerSkuTaskForSoVO" />
+	<typeAlias alias="luServiceTypeTemplateVO" 
+		type="com.newco.marketplace.dto.vo.LuServiceTypeTemplateVO" />
+		<typeAlias alias="skillTreeForSkuVO" 
+		type="com.newco.marketplace.dto.vo.SkillTreeForSkuVO" />
+		<typeAlias alias="buyerSOTemplateForSkuVO" 
+		type="com.newco.marketplace.dto.vo.BuyerSOTemplateForSkuVO" />
+		<typeAlias alias="documentSkuVO" 
+		type="com.newco.marketplace.dto.vo.DocumentVO"/>
+		<typeAlias alias="leadFeesLinkVO" 
+		type="com.newco.marketplace.dto.vo.LeadFeesLinkVO"/>
+			
+	<select id="lookup.buyerSkuCategoryList" resultClass="buyerSkuCategoryVO">
+		select category_id as categoryId, category_name as categoryName,category_descr as  categoryDescr
+		 from buyer_sku_category where buyer_id=#buyerId#
+	</select>
+	<select id="routedResourceEligible.query" resultMap="api.routed.resultsmap">
+		SELECT
+		providers.resource_id, 
+		providers.so_id,
+		 providers.vendor_id, 
+		 providers.provider_resp_id,
+		providers.resp_reason_id,
+		providers.provider_resp_date,
+		 providers.provider_resp_comment,
+		providers.created_date, 
+		providers.routed_date
+		FROM
+		so_routed_providers AS providers
+		WHERE providers.so_id = #soId#
+		AND (providers.provider_resp_id NOT IN(3,5,7) OR providers.provider_resp_id IS NULL)
+	</select>
+	<parameterMap id="findBuyerDocumentByTitle-param" class="java.util.Map">
+        <parameter property="title"/>
+		<parameter property="buyer_id"/>
+    </parameterMap>
+	<select id="lookup.query_buyerdocument_by_title" parameterMap="findBuyerDocumentByTitle-param" resultClass="documentSkuVO">
+		select 	doc.document_id AS documentId,
+				doc.vendor_id AS vendorId,
+				doc.descr as description, 
+				doc.title as title,
+				doc.file_name as fileName,
+				doc.format as format,
+				doc.source as source, 
+				doc.keywords as keywords, 
+				doc.expire_date as expireDate, 
+				doc.purge_date as purgeDate,
+				doc.modified_date as  modifiedDate,
+				doc.role_id as roleId,
+				doc.delete_ind AS deleteInd,
+				doc.doc_path as docPath,
+				doc.doc_size as docSize,
+				doc.created_date as createdDate,
+				doc.entity_id as entityId
+		 from document doc
+		 inner join buyer_document bd on bd.document_id = doc.document_id
+		 where doc.title = ? and bd.buyer_id = ? and doc.delete_ind = 0
+	</select>
+	<select id="lookup.buyerSkuDetailBySkuId" resultClass="buyerSkuTaskForSoVO">
+		select sku_task_id as skuTaskId,sku_id as skuId,category_node_id as  categoryNodeId,service_type_template_id as serviceTypeTemplateId,
+		task_name as taskName,task_comments as taskComments
+		 from buyer_sku_task where sku_id=#skuId#
+	</select>
+	
+	<select id="lookup.buyerFetchTemplateDetail" resultClass="luServiceTypeTemplateVO">
+		select service_type_template_id as serviceTypeTemplateId,node_id as nodeId,descr as descr,sort_order as sortOrder
+		 from lu_service_type_template where service_type_template_id=#serviceTypeTemplateId#
+	</select>
+	
+	<select id="lookup.buyerSkillTreeDetail" resultClass="skillTreeForSkuVO">
+	select node_id as nodeId,level as level,root as root,node_name as nodeName,root_node_id as rootNodeId,parent_node as parentNode
+	from skill_tree where node_id=#nodeId#
+	</select>
+	
+	<select id="lookup.buyerSkuNameList" resultClass="buyerSkuVO">
+		select sku_id as skuId, sku as sku,sku_description as  skuDescription,template_id as templateId
+		 from buyer_sku where sku_category=#categoryId#
+	</select>
+	
+	<select id="lookup.bidPriceBySkuId" resultClass="java.lang.Double">
+		select bid_price as bidPrice from buyer_sku where sku_id=#skuId#
+	</select>
+	
+	<select id="lookup.buyerTemplateDetail" resultClass="buyerSOTemplateForSkuVO">
+	select 	template_id as templateID,
+		template_name as templateName,
+		buyer_id as buyerID,
+		primary_skill_category_id as primarySkillCategoryId,
+		template_data as templateData
+		from buyer_so_template
+		where template_id = #templateID#
+	</select>
+	
+	<select id="lookup.languages" resultClass="lookupVO" cacheModel="lookupCache">
+		select id as id, descr as descr from lu_languages_spoken order by descr
+	</select>
+
+	<select id="lookup.credentials" resultClass="lookupVO" cacheModel="lookupCache" >
+		SELECT cred_type_id as id, LTRIM(cred_type_desc) as descr from lu_resource_credential_type ORDER BY descr
+	</select>
+
+	<select id="lookup.credentialCategory" parameterClass="java.lang.Integer" resultClass="lookupVO" cacheModel="lookupCache" >
+		SELECT cred_category_id as id, LTRIM(cred_category) as descr
+		FROM lu_resource_credential_category where cred_type_id = #credentialType# ORDER BY descr
+	</select>
+
+	<select id="credentialCategoryForBuyer" parameterClass="java.util.Map" resultClass="lookupVO" cacheModel="lookupCache" >
+		SELECT cred_category_id as id, LTRIM(cred_category) as descr
+		FROM lu_resource_credential_category where cred_type_id = #credentialType#
+		and (buyer_id=#buyerId# or buyer_id is null) order by descr
+	</select>
+
+	<select id="lookup.buyerReference" parameterClass="java.lang.String"
+		resultClass="luBuyerRefVO" cacheModel="lookupCache" >
+		SELECT ref_type as refType, buyer_ref_type_id as refTypeId,
+		buyer_input as  buyerInput,
+		required as required,
+		active_ind as activeInd,
+		display_no_value as displayNoValue		
+		FROM
+		buyer_reference_type WHERE buyer_id = #buyerId#
+		AND buyer_input = 1
+	    AND active_ind = 1	
+	</select>
+	
+	<select id="lookup.buyerReference.value" parameterClass="java.util.HashMap"
+		resultClass="luBuyerRefVO" cacheModel="lookupCache" >
+		SELECT ref_type as refType, buyer_ref_type_id as refTypeId,
+		buyer_input as  buyerInput,
+		required as required,
+		active_ind as activeInd,
+		editable as editable
+		FROM
+		buyer_reference_type WHERE buyer_id = #buyerId#
+		AND ref_type = #refType#
+		AND buyer_input = 1
+	    AND active_ind = 1	
+	</select>
+	
+ 		<select id="lookup.reason" parameterClass="luProviderRespReasonVO"
+		resultClass="luProviderRespReasonVO" cacheModel="lookupCache" >
+		SELECT resp_reason_id as respReasonId, provider_resp_id as
+		providerRespId, descr as descr, sort_order as sortOrder FROM
+		lu_so_provider_resp_reason
+		<dynamic prepend="WHERE">
+			<isNotNull property="searchByResponse" prepend="AND">
+				provider_resp_id = #searchByResponse#
+			</isNotNull>
+		</dynamic>
+		ORDER BY provider_resp_id, sort_order
+	</select>
+	
+	<select id="lookup.autocloseRules" resultClass="lookupVO" >
+	SELECT auto_close_rule_id AS id ,
+	rule_name AS descr 
+	FROM auto_close_rules
+	</select>
+
+	<resultMap id="lookup.skillsmap" class="skillNodeVO" >
+		<result property="nodeName" column="node_name" />
+		<result property="parentNodeId" column="parent_node" />
+		<result property="nodeId" column="node_id" />
+		<result property="level" column="level" />
+		<result property="serviceTypes" column="node_id"
+			select="servicetypes.query" />
+	</resultMap>
+
+	<resultMap id="servicetypes.resultmap" class="serviceTypesVO"  >
+		<result property="description" column="descr" />
+		<result property="serviceTypeId"
+			column="service_type_template_id" />
+	</resultMap>
+
+	<select id="lookup.skillTreeMainCategories"
+		resultMap="lookup.skillsmap" cacheModel="skillCache">
+		SELECT * FROM skill_tree WHERE level=1 ORDER BY LTRIM(node_name)
+	</select>
+
+	<select id="servicetypes.query"
+		resultMap="servicetypes.resultmap" cacheModel="skillCache" >
+			SELECT * FROM lu_service_type_template WHERE node_id=#node_id# ORDER BY LTRIM(descr)
+	</select>
+
+	<resultMap id="lookup.blackedoutskillsmap" class="skillNodeVO"  >
+		<result property="nodeName" column="node_name" />
+		<result property="parentNodeId" column="parent_node" />
+		<result property="nodeId" column="node_id" />
+		<result property="level" column="level" />
+		<result property="buyerId" column="buyerId" />
+		<result property="stateCd" column="stateCd" />
+		<result property="decriptionContent" column="decriptionContent" />
+
+		<result property="serviceTypes" column="{node_id=node_id,buyerId=buyerId,stateCd=stateCd}"
+			select="servicetypesblackedout.query" />
+
+	</resultMap>
+
+	<resultMap id="lookup.blackedoutCatSubCatskillsmap" class="skillNodeVO" >
+		<result property="nodeName" column="node_name" />
+		<result property="parentNodeId" column="parent_node" />
+		<result property="nodeId" column="node_id" />
+		<result property="level" column="level" />
+		<result property="rootNode" column="root_node_id" />
+		<result property="buyerId" column="buyerId" />
+		<result property="stateCd" column="stateCd" />
+		<result property="serviceTypes" column="{node_id=node_id,buyerId=buyerId,stateCd=stateCd,rootNode=root_node_id}"
+			select="catSubCatServiceTypesBlackedOut.query" />
+	</resultMap>
+
+	<resultMap id="servicetypesblackedout.resultmap" class="serviceTypesVO" >
+		<result property="description" column="descr" />
+		<result property="serviceTypeId"
+			column="service_type_template_id" />
+	</resultMap>
+
+	<select id="lookup.blackedoutskillTreeMainCategories" parameterClass="java.util.HashMap"
+		resultMap="lookup.blackedoutskillsmap" cacheModel="skillCache" >
+		SELECT node_name,parent_node,node_id,level,#buyerId# as buyerId,#stateCd# as stateCd,description_content as decriptionContent FROM skill_tree WHERE level=1 and node_id not in
+		(select node_id from lu_category_service_blackout where state_cd=#stateCd# and service_type_template_id is null and rule_id not in
+		(select rule_id from lu_blackout_exempt where buyer_id=#buyerId#))
+		Order by node_name
+	</select>
+
+	<select id="servicetypesblackedout.query"
+		resultClass="serviceTypesVO" cacheModel="skillCache"  >
+		select service_type_template_id as serviceTypeId , descr as description from lu_service_type_template where node_id=#node_id# and service_type_template_id not in (
+		select service_type_template_id from lu_category_service_blackout where state_cd=#stateCd# and service_type_template_id is not null and rule_id not in
+		(select rule_id from lu_blackout_exempt where buyer_id=#buyerId#))
+	</select>
+
+	<select id="catSubCatServiceTypesBlackedOut.query"
+		resultMap="servicetypesblackedout.resultmap" cacheModel="skillCache">
+		select * from lu_service_type_template where node_id=#rootNode# and service_type_template_id not in (
+		select service_type_template_id from lu_category_service_blackout where state_cd=#stateCd# and node_id=#node_id# and service_type_template_id is not null and rule_id not in
+		(select rule_id from lu_blackout_exempt where buyer_id=#buyerId#))
+	</select>
+
+	<select id="lookup.skillTreeCategoriesOrSubCategories"
+		parameterClass="java.lang.Integer" resultClass="skillNodeVO" cacheModel="skillCache" >
+		SELECT node_name as nodeName, parent_node as parentNodeId,
+		node_id as nodeId, level as level FROM skill_tree st WHERE
+		st.parent_node=#selectedId#
+		Order by LTRIM(node_name)
+	</select>
+
+	<select id="lookup.blackedoutskillTreeCategoriesOrSubCategories"
+		parameterClass="java.util.HashMap" resultMap="lookup.blackedoutCatSubCatskillsmap" cacheModel="skillCache" >
+		SELECT node_name, parent_node,
+		node_id, level,root_node_id,#buyerId# as buyerId,#stateCd# as stateCd  FROM skill_tree st WHERE
+		st.parent_node=#selectedId# and node_id not in
+		(select node_id from lu_category_service_blackout where state_cd=#stateCd# and service_type_template_id is null and rule_id not in
+		(select rule_id from lu_blackout_exempt where buyer_id=#buyerId#))
+		Order by LTRIM(node_name)
+	</select>
+
+	<select id="lookup.statecodes" parameterClass="lookupVO"
+		resultClass="lookupVO" cacheModel="lookupCache" >
+		SELECT state_cd as type, state_name as descr FROM lu_state_cds order by descr asc
+	</select>
+
+	<select id="lookup.percentowned" parameterClass="lookupVO"
+		resultClass="lookupVO" cacheModel="lookupCache" >
+		SELECT id as id, descr as descr FROM lu_foreign_own_pct order by sort_order asc
+	</select>
+
+	<select id="lookup.accounttype" parameterClass="lookupVO"
+		resultClass="lookupVO" cacheModel="lookupCache" >
+		SELECT id as id, descr as descr FROM lu_account_type order by sort_order asc
+	</select>
+
+	<select id="lookup.creditcardtype" parameterClass="lookupVO"
+		resultClass="lookupVO" cacheModel="lookupCache" >
+		SELECT card_id as id, card_type as type FROM lu_card_types order by sort_order asc
+	</select>
+
+	<select id="lookup.phonetypes" parameterClass="lookupVO"
+		resultClass="lookupVO" cacheModel="lookupCache"  >
+		SELECT so_phone_class_id as id, type as type, descr as descr,
+		sort_order as sortOrder FROM lu_so_phone_class ORDER BY
+		sortorder
+	</select>
+
+	<select id="lookup.shippingCarrier" resultClass="lookupVO" cacheModel="lookupCache"  >
+		SELECT shipping_carrier_id as id, descr as descr FROM
+		lu_shipping_carrier ORDER BY sort_order
+	</select>
+
+	<select id="lookup.serviceBlackout" parameterClass="java.util.HashMap" resultClass="java.util.HashMap" cacheModel="lookupCache"  >
+		SELECT node_id as nodeId, zip as zip
+		FROM lu_service_blackout
+		WHERE node_id=#nodeId# and zip=#zip#
+	</select>
+
+	  <select id="lookup.TermsAndConditions" resultClass="termsAndConditionsVO" >
+	    select terms_cond_id as  termsCondId, terms_cond_content as termsCondContent
+	    from lu_terms_cond where active_ind = 1
+	   <isLessEqual prepend="AND" compareValue="NOW()">
+			effective_date
+		</isLessEqual>
+	    and type = 'Buyer Agreement'
+	    order by effective_date desc limit 1
+      </select>
+       <select id="lookup.AcceptTermsAndConditions" parameterClass="java.lang.String"  resultClass="termsAndConditionsVO" cacheModel="lookupTermsCondsCache">
+	  select terms_cond_id as  termsCondId, terms_cond_content as termsCondContent
+	    from lu_terms_cond where active_ind = 1
+	   <isLessEqual prepend="AND" compareValue="NOW()">
+			effective_date
+		</isLessEqual>
+	    and type = #value#
+	    order by effective_date desc limit 1
+      </select>
+
+	<select id="lookup.timeIntervals" resultClass="lookupVO" cacheModel="lookupCache" >
+		select time_interval_id as id, descr as descr from lu_time_interval order by sort_order
+	</select>
+
+	<select id="lookup.regions" parameterClass="lookupVO"
+		resultClass="lookupVO" cacheModel="lookupCache"  >
+		SELECT region as type, region as descr FROM vw_lu_regions order by descr asc
+	</select>
+
+	<select id="lookup.districts" parameterClass="lookupVO"
+		resultClass="lookupVO" cacheModel="lookupCache"  >
+		SELECT ri_district as type, ri_district as descr FROM vw_lu_ri_districts order by descr asc
+	</select>
+
+	<select id="lookup.primary_skills" parameterClass="lookupVO"
+		resultClass="lookupVO" cacheModel="lookupCache"  >
+		SELECT node_id as type, node_name as descr FROM vw_lu_level_1_skills order by descr asc
+	</select>
+
+	<select id="lookup.select_provider_networks" parameterClass="lookupVO"
+		resultClass="lookupVO" >
+		SELECT cred_category_id as type, cred_category as descr FROM lu_resource_credential_category where cred_type_id = 6 order by descr asc
+	</select>
+
+	<select id="lookup.background_check_statuses" parameterClass="lookupVO"
+		resultClass="lookupVO" cacheModel="lookupCache"  >
+		SELECT wf_state_id as type, wf_state as descr FROM wf_states where wf_entity = 'Team Member Background Check' order by sort_order asc
+	</select>
+
+	<select id="lookup.provider_firm_statuses" parameterClass="lookupVO"
+		resultClass="lookupVO" cacheModel="lookupCache" >
+		SELECT wf_state_id as type, wf_state as descr FROM wf_states where wf_entity = 'Company Profile' order by sort_order asc
+	</select>
+
+	<select id="lookup.markets" parameterClass="lookupVO"
+		resultClass="lookupVO" cacheModel="lookupCache" >
+		SELECT market_id as type, market_name as descr FROM lu_market order by market_name asc
+	</select>
+
+	<select id="callstatuslist.query" parameterClass="lookupVO" resultClass="lookupVO" cacheModel="lookupCache" >
+		select
+		call_status_id as type, call_status_descr as descr
+		from lu_mkt_maker_call_status order by type asc
+	</select>
+<!--
+	<insert id="nextIdentifier.update" parameterClass="java.lang.String">
+			INSERT   INTO id_generator (id_category)
+			   VALUES (#identifier#)
+        <selectKey resultClass="int">
+            SELECT last_insert_id() as nextId
+        </selectKey>    
+	</insert> 
+-->	
+	<select id="getStatusesForCompanyProfile.query" parameterClass="java.lang.String" resultClass="lookupVO">
+	 	SELECT  wf_state_id AS type,
+				wf_state AS descr
+		FROM 	wf_states
+		WHERE 	wf_entity = #entityType#
+		ORDER BY sort_order
+	</select>
+
+	   <select id="company_role.query" parameterClass="java.lang.Integer" resultClass="lookupVO">
+        SELECT  company_role_id as id,
+                descr as descr,
+                sort_order as sortOrder
+        FROM    lu_company_role
+        WHERE   role_id = #roleId#
+    </select>
+    
+	<select id="spn_status_all.query" resultClass="lookupVO">
+		select spn_status_id as id,
+	       spn_status as type,
+	       spn_status_descr as descr,
+	       sort_order as sortOrder
+		from lu_spn_status
+		order by sort_order
+	</select>
+
+	<select id="spn_performance_levels.query" resultClass="lookupVO">
+		select performance_id as id,
+	       descr as descr
+		from lu_spnet_performance_level
+	</select>
+
+	<select id="language_by_id.query" parameterClass="java.lang.Integer" resultClass="lookupVO" cacheModel="lookupCache" >
+		select id, type, descr, sort_order
+		from lu_languages_spoken
+		where id = #languageId#
+	</select>
+
+	<select id="lookup.reasoncodes" parameterClass="lookupVO" resultClass="lookupVO" cacheModel="lookupCache" >
+		SELECT reason_code_id as id, description as descr FROM lu_transfer_reason_codes order by sort_order asc
+	</select>
+	
+	<select id="lookup.minimumrating" resultClass="lookupVO" cacheModel="lookupCache">
+		select rating as dId, descr as descr 
+		from   lu_minimum_rating 
+		order by rating
+	</select>
+	
+	<select id="lookup.resourcedistance" resultClass="lookupVO" cacheModel="lookupCache">
+		select distance as id, descr as descr
+		from   lu_resource_distance
+		order by distance
+	</select>
+	
+	<select id="lookup.provider_top_select" resultClass="lookupVO" cacheModel="lookupCache">
+		select id as id, descr as descr
+		from   lu_resource_top_select
+		order by id
+	</select>
+
+	<select id="lookup.getTaxPayerTypeIdList" resultClass="lookupVO">
+		select 
+		id as id, 
+		descr as descr
+		from
+		lu_taxpayer_id_number_type order by id
+	</select>
+	
+	<select id="lookup.partStatus" resultClass="lookupVO" cacheModel="lookupCache"  >
+		SELECT part_status_id as id, part_status_name as type FROM
+		lu_part_status ORDER BY sort_order
+	</select>
+	
+	<select id="getParentNodeFromSkillTree.query" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		select parent_node from skill_tree where node_id = #subCategoryId#
+	</select>
+	<select id="lookup.serviceTypeTemplate" resultClass="lookupVO">
+		select 
+		service_type_template_id as id, 
+		descr as descr
+		from
+		lu_service_type_template group by descr
+	</select>
+	<select id="lookup.markets.byIndex" parameterClass="java.util.HashMap"
+			resultClass="lookupVO" cacheModel="lookupCache" >
+			SELECT market_id as type, market_name as descr FROM lu_market 
+				where market_name between #startIndex# and #endIndex#
+			 	or market_name like concat(#endIndex#,'%') order by market_name asc
+	</select>
+	
+	<select id="subStatusList.query" parameterClass="java.lang.Integer" 
+		resultClass="lookupVO">
+		select lo_substatus.so_substatus_id as id,
+		lo_substatus.descr as descr from lu_so_substatus lo_substatus, so_wf_substatus
+		wf_substatus where
+		lo_substatus.so_substatus_id=wf_substatus.so_substatus_id and
+		wf_substatus.wf_state_id = #statusId# order by
+		lo_substatus.sort_order
+	</select>
+	<select id="lookup.getnotblackoutstatecodes" parameterClass="lookupVO"
+		resultClass="lookupVO" cacheModel="lookupCache" >
+		SELECT state_cd as type, state_name as descr FROM lu_state_cds 
+		where blackout_ind = 0 order by descr asc
+	</select>
+	
+	<select id="lookup.insuranceRating" resultClass="lookupVO" cacheModel="lookupCache">
+		select id as id, descr as descr, type as type, limit_value as limitValue
+		from   lu_insurance_ratings 
+		order by id
+	</select>
+	<select id="getPostedStatus.query" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT COUNT(*) FROM fullfillment_entry WHERE so_id = #soId# and bus_trans_id = 100;
+	</select>	
+			
+	<select id="getCountryList.query" resultClass="java.lang.String" >
+		SELECT descr FROM lu_country WHERE descr NOT LIKE 'United States%'
+	</select>
+	
+	<select id="lookup.getLeadGenFeesLink.query" parameterClass="java.lang.Integer" resultClass="leadFeesLinkVO" >
+		SELECT 	lf.state_cd AS stateCode,
+				lf.pdf_link AS pdfLink 
+		FROM vendor_location vl
+		INNER JOIN location l ON (vl.locn_id=l.locn_id AND l.locn_type_id=1)
+		LEFT OUTER JOIN lu_lead_fees_pdfs lf ON (l.state_cd=lf.state_cd OR lf.state_cd='OTHER')
+		WHERE vendor_id = #vendorId#
+	</select>
+	
+	<select id="lookup.LookUpDocument" resultClass="lookupVO">
+	select doc_upload_source_id as id ,doc_upload_source as descr from lu_doc_upload_source 
+	</select>
+	
+	<select id="lookup.buyerViewDocPermission" resultClass="java.lang.Integer">
+	 	select count(lup.activity_id) from lu_permissions lup
+		join lu_permission_role lur on (lur.activity_id = lup.activity_id)
+	    join user_profile_permissions upp on lur.role_activity_id = upp.role_activity_id
+		where upp.user_name = #userName# and lup.activity_id = 52
+	</select>
+	
+	<select id="lookup.fetchSODetails.query" resultMap="api.so.resultsmap">
+	 	SELECT 
+	 	so_id,
+	 	buyer_id AS buyerId,
+	 	wf_state_id AS wfStateId,
+	 	accepted_resource_id AS acceptedResourceId,
+	 	accepted_vendor_id AS acceptedVendorId,
+	 	assignment_type AS assignmentType
+	 	FROM so_hdr s where s.so_id = #soId#
+	</select>
+
+	<select id="lookup.getStateRegulationNote.query" parameterClass="java.lang.Integer" resultClass="java.lang.String">
+		SELECT
+		transfer_reason_note
+		FROM
+		accounts_prod.lu_transfer_reason_codes
+		WHERE
+		reason_code_id = #stateRegulationReasonCodeId#
+	</select>
+	
+	<select id="lookup.getIRSlevyNote.query" parameterClass="java.lang.Integer" resultClass="java.lang.String">
+		SELECT
+		transfer_reason_note
+		FROM
+		accounts_prod.lu_transfer_reason_codes
+		WHERE
+		reason_code_id = #IRSlevyReasonCodeId#
+	</select>
+	
+	<select id="lookup.getLegalHoldNote.query" parameterClass="java.lang.Integer" resultClass="java.lang.String">
+		SELECT
+		transfer_reason_note
+		FROM
+		accounts_prod.lu_transfer_reason_codes
+		WHERE
+		reason_code_id = #legalHoldReasonCodeId#
+	</select>
+
+	<select id="lookup.checkLegalHoldPermission.query"
+		parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT role_activity_id FROM user_profile_permissions
+		WHERE user_name = #adminUserName# AND
+		role_activity_id = 
+			(SELECT role_activity_id FROM lu_permission_role WHERE role_id = 2
+			AND permission_set_id = 32 AND 
+			activity_id = (SELECT activity_id FROM lu_permissions WHERE activity_name = "Legal Hold : Disable Wallet Funds Withdrawals"))					
+	</select>
+	
+</sqlMap>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="buyerHoldTime" >
+	<typeAlias alias="buyerHoldTimeVO"	type="com.newco.marketplace.vo.buyer.BuyerHoldTimeVO" />
+  
+  <select id="buyerHoldTime.getBuyerHoldTimeByDayDiffAndBuyerID" parameterClass="buyerHoldTimeVO" resultClass="buyerHoldTimeVO">
+		SELECT bht.hold_time_id as holdTimeId, 
+				bht.day_diff as dayDiff, 
+				bht.hold_time as holdTime,
+				bht.buyer_id as buyerId                     
+		FROM buyer_hold_time bht
+		<dynamic prepend="WHERE">
+			<isNotNull property="buyerId" prepend="AND"> 
+	 			bht.buyer_id = #buyerId#
+	 		</isNotNull>
+	 		<isNotNull property="dayDiff" prepend="AND"> 
+	 			bht.day_diff = #dayDiff#
+	 		</isNotNull>
+		</dynamic>
+	</select>
+	
+	<insert id="buyerHoldTime.insert"
+		parameterClass="buyerHoldTimeVO">
+		INSERT INTO buyer_hold_time (
+				buyer_id,
+				day_diff,
+				hold_time
+		) 
+		VALUES (
+				#buyerId#,
+				#dayDiff#,
+				#holdTime#
+		)
+		<selectKey resultClass="int">
+            SELECT last_insert_id() as holdTimeId
+        </selectKey> 
+	</insert>
+	
+	<select id="buyerHoldTime.getMaxDayDiff" parameterClass="buyerHoldTimeVO" resultClass="java.lang.Integer">
+		SELECT max(bht.day_diff)
+		FROM buyer_hold_time bht
+		WHERE bht.buyer_id = #buyerId#
+	</select>
+</sqlMap>

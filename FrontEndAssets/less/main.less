@@ -1,0 +1,266 @@
+@import "bootstrap.less";
+
+// Global
+// ====================================================================== 
+body {
+	@media only screen and (min-width : 768px) {
+		background: @bg-gray;
+		//padding-top: 20px;
+	}
+	color: #666;
+}
+
+select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"] 
+{ font-size: 16px; }
+
+.container {
+	position: relative;
+	background: #fff;
+// TEMPORARY!
+	max-width: 1005px;
+// TEMPORARY!
+}
+
+// Font Sizes in ems (relative to 14px)
+// ======================================================================
+@basefont: 14; // in pixels
+@baseline: 20; // in pixels
+
+// Font size converter namespace
+// Ex: #pxtoem > .font-size( 12, 14 ); // 12px font with 14px basefont size
+#pxtoem {
+    .font-size( @target: @basefont, @context: @basefont ) {
+        font-size: (@target / @context) + 0em;
+    }
+}
+
+// Colors
+// ======================================================================
+@servicelive-blue: #00A0D2;
+@link-hover: #2A6496;
+@bg-gray: #58585A;
+
+@leadStatus-1: #2AA754; // new
+@leadStatus-2: #FF8300; // working
+@leadStatus-3: #293EA3; // scheduled
+
+@urgent: #9B2F1B; // 'Urgent' flag
+
+// Navigation
+// ======================================================================
+@grid-float-breakpoint: 56em; // navigation collapses on screens below this width
+@navbar-height :0px;
+@navbar-margin-bottom: 0px;
+
+// Media queries breakpoints
+// ======================================================================
+// Extra small screen / phone
+@screen-xs:                  36em;
+//@screen-xs:                  480px;
+
+// Small screen / tablet
+@screen-sm:                  768px;
+
+// Medium screen / desktop
+@screen-md:                  56em;
+//@screen-md:                  900px;
+
+// Large screen / wide desktop
+@screen-lg:                  1200px;
+
+// Header
+// ======================================================================
+.header {
+	border-bottom: 10px solid @servicelive-blue;
+	//overflow: auto;
+	margin: 0 -15px;
+}
+
+.header img {
+	padding:10px 30px 15px;
+
+	@media only screen and (min-width : @screen-md) {
+		padding-top:15px;
+		//width: 
+	}
+}
+
+// Header Secondary Nav
+.header .secondary-nav {
+	float: right;
+	padding: 10px 15px
+}
+
+.header .secondary-nav h6 {
+	margin-bottom: 5px;
+}
+
+.secondary-nav ul {
+	list-style-type: none;
+	padding: 0;
+}
+
+.secondary-nav li {
+	font-size: 12px;
+	@media only screen and (min-width : @screen-xs) {
+		display: inline-block;
+		float: left;
+	}
+}
+
+.secondary-nav li a {
+	padding: 5px 0;
+	display: block;
+	@media only screen and (min-width : @screen-xs) {
+		padding: 0 5px;
+		border-left: 1px solid;
+	}
+}
+
+.secondary-nav li:first-child a {
+	border-left: none;
+	padding-left: 0;
+}
+
+// Main Nav
+
+.navbar-header {
+    position: absolute;
+    right: 0;
+    top: 10px;
+}
+
+.navbar-toggle {
+	margin-top: 0;
+}
+
+.navbar {
+	background: #ffffff; /* Old browsers */
+	border: none;
+	border-radius: 0;
+	margin-bottom: none;
+	position: inherit;
+
+	@media only screen and (min-width : @screen-md) {
+		background: -moz-linear-gradient(top, #ffffff 50%, #EDEDED 50%); /* FF3.6+ */
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(50%,#ffffff), color-stop(50%,#EDEDED)); /* Chrome,Safari4+ */
+		background: -webkit-linear-gradient(top, #ffffff 50%,#EDEDED 50%); /* Chrome10+,Safari5.1+ */
+		background: -o-linear-gradient(top, #ffffff 50%,#EDEDED 50%); /* Opera 11.10+ */
+		background: -ms-linear-gradient(top, #ffffff 50%,#EDEDED 50%); /* IE10+ */
+		background: linear-gradient(to bottom, #ffffff 50%,#EDEDED 50%); /* W3C */
+		border-top: 1px solid #C0C0C0;
+		padding-top: 4px;
+		padding-left: 15px;
+	}
+}
+
+.navbar-nav {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+.navbar-collapse {
+	max-height: none;
+}
+
+.navbar-default .navbar-nav > li > a {
+	padding: 10px;
+	background: #dadada;
+	color: @bg-gray;
+	text-shadow: 0 1px #fff;
+
+	@media only screen and (min-width : @screen-md) {
+		padding: 5px 10px;
+		margin-right: 4px;
+		border-radius: 5px 5px 0 0;
+	}
+
+}
+
+.navbar-default .navbar-nav > li > a:hover, 
+.navbar-default .navbar-nav > li > a:focus {
+	background: #ccc;
+	color: #000;
+	text-shadow: none;
+}
+
+nav .nav > li > a.active, 
+nav .nav > li > a.active:hover {
+	background: @servicelive-blue;
+	color:#fff;
+	text-shadow: none;
+	cursor: default;
+}
+
+// Right Dropdown Menu
+.navbar-right .dropdown-menu {
+	border-top: none;
+	border-radius: 0px;
+
+	@media only screen and (min-width : @screen-md) {
+		right: 4px;
+		border-radius: 0 0 4px 4px;
+	}
+
+}
+
+.navbar-default .navbar-right > li > a,
+.navbar-default .navbar-right > .open > a, 
+.navbar-default .navbar-right > .open > a:hover, 
+.navbar-default .navbar-right > .open > a:focus,
+.navbar-default .navbar-right .dropdown-menu,
+.navbar-default .navbar-right .dropdown-menu > li > a,
+.navbar-default .navbar-right .open .dropdown-menu > li > a {
+	background: @bg-gray;
+	color: #fff;
+	text-shadow: 0 1px #222;
+	border-color: @bg-gray;
+}
+
+.navbar-default .navbar-right > li > a:hover, 
+.navbar-default .navbar-right > li > a:focus,
+.navbar-default .navbar-right .dropdown-menu > li > a:hover,
+.navbar-default .navbar-right .dropdown-menu > li > a:focus,
+.navbar-default .navbar-right .open .dropdown-menu > li > a:hover,
+.navbar-default .navbar-right .open .dropdown-menu > li > a:focus {
+	background-color: #222;
+	color:#fff;
+}
+
+.navbar-default .navbar-right > .dropdown > a .caret,
+.navbar-default .navbar-right > .dropdown > a:hover .caret,
+.navbar-default .navbar-right > .dropdown > a:focus .caret {
+	border-bottom-color: #fff;
+	border-top-color: #fff;
+}
+
+// Footer
+// ======================================================================
+
+.footer {
+	margin-top: 30px;
+	border-top: 1px solid #ccc;
+	padding-top: 5px;
+	font-size: 10px;
+	position: relative;
+}
+
+@media only screen and (min-width : @screen-md) {
+	.footericons {
+		position: absolute;
+		top: 5px;
+		right: 0;
+	}
+}
+
+.footer .secondary-nav {
+	margin-bottom: 10px;
+}
+
+.footer .secondary-nav li a {
+	color: #666;
+}
+
+// Compile with Leads Dashboard Page
+// ====================================================================== 
+@import 'leads-dashboard.less';

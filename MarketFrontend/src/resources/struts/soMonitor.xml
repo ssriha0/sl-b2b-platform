@@ -1,0 +1,127 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="monitor" extends="ServiceLiveBase">
+        <default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+    
+	    
+		<action name="serviceOrderMonitor" class="serviceOrderMonitorAction">
+			<result>/jsp/so_monitor/new_monitor.jsp?displayTab=${displayTab}&amp;pendingReschedule=${pendingReschedule}&amp;dateNum=${dateNum}</result>	
+	        <result name="adminDashboard">/jsp/admin/sl_admin_dashboard.jsp</result>
+		</action>
+
+		<action name="createPDF" class="createPDFAction">
+			<result>/jsp/so_monitor/so_pdf_popup.jsp</result>
+		</action>
+		
+		<!--  <action name="sortServiceOrders" class="serviceOrderAddNoteWidget" method="getSortedServiceOrders">
+        	<result name="showSortedData">/jsp/so_monitor/grid/soMonitorDataGrid.jsp</result>
+        </action>        -->
+    
+    	<action name="soAddNoteWidget" class="soMonitorWidgetAddNote" method="addNote">
+		</action>
+		
+		<action name="updateTab" class="serviceOrderMonitorAction"
+			method="updateTab">
+			<result>/jsp/so_monitor/grid/soMonitorTab.jsp</result>
+		</action>
+   
+		<action name="updateDataGrid" class="serviceOrderMonitorAction"
+			method="updateDataGrid">
+			<result>/jsp/so_monitor/grid/soMonitorDataGrid.jsp</result>
+		</action>
+		
+		<!-- SC- remove it
+		<action name="rGridLoader" class="serviceOrderMonitorAction" method="loadRDataGrid">
+			<result name = "toRealtimeGrid">/jsp/r_grid_view.jsp</result>
+		</action>
+     	-->
+     
+		<action name="serviceOrderDetailsView" class="serviceOrderMonitorAction" method="goToSOMDetails">
+			<result type="redirectAction" name="soDetailsView">soDetailsController</result>	
+		</action>
+		
+    	<action name="refreshTabs" class="ajaxActionBean" method="soMonitorRefresh">
+			<result name="redirect">base.servicelive.index</result>		
+		</action>
+
+    	<action name="refreshTabsTester" class="ajaxActionTester" method="soMonitorRefresh">
+			<result name="redirect">base.servicelive.index</result>		
+		</action>
+		
+		<action name="gridHolder" class="serviceOrderMonitorAction"	method="goToGridHolder">
+			<result name="toCommonGrid">${redirectURL}?tab=${tab}&amp;wfFlag=${wfFlag}&amp;pbFilterId=${pbFilterId}&amp;pbFilterName=${pbFilterName}&amp;pbFilterOpt=${pbFilterOpt}&amp;refType=${buyerRefTypeId}&amp;refVal=${buyerRefValue}&amp;msg=${message}&amp;fromWFM=${fromWFM}&amp;pendingReschedule=${pendingReschedule}&amp;dateNum=${dateNum}</result>
+		</action>
+		
+		<action name="gridLoader" class="serviceOrderMonitorAction"	method="loadDataGrid">
+			<result name="toCGrid">/jsp/so_monitor/grid_views/c_grid_view.jsp</result>
+			<result name="toSGrid">/jsp/so_monitor/grid_views/s_grid_view.jsp</result>
+			<result name="toRGrid">/jsp/so_monitor/grid_views/r_grid_view.jsp</result>
+			<result name="toP7Grid">/jsp/so_monitor/grid_views/p_grid7_view.jsp</result>			
+			<result name="toBidRequestsGrid">/jsp/so_monitor/grid_views/panel_bid_requests_view.jsp</result>
+			<result name="toBulletinBoardGrid">/jsp/so_monitor/grid_views/panel_bulletinBoard_view.jsp</result>
+		</action>
+
+		<action name="serviceOrderMonitorAction_loadDataForIncSL" class="serviceOrderMonitorAction"	method="loadDataForIncSL">
+			<result name="som">/jsp/so_monitor/grid_views/som_IncreaseSpendLimit_popup.jsp</result>
+			<result name="wfm">/jsp/so_monitor/grid_views/wfm_IncreaseSpendLimit_popup.jsp</result>
+		</action>
+		<action name="serviceOrderMonitorAction_loadDataForCancellation" class="serviceOrderMonitorAction"	method="loadDataForCancellation">
+			<result name="success">/jsp/so_monitor/grid_views/som_cancellation.jsp</result>
+			
+		</action>
+		<action name="searchGridLoader" class="soSearchActionBean" method="soSearchPaginationLoad">
+			<result name="out">base.servicelive.index</result>
+			<result>/jsp/so_monitor/grid_views/s_grid_view.jsp?wfFlag=${wfFlag}</result>
+		</action>
+					
+		<action name="filterDataGrid" class="filterActionBean" method="filterStatus">
+			<result>/jsp/so_monitor/grid/soMonitorDataGrid.jsp</result>	
+		</action>
+					
+		<action name="soSearch" class="soSearchActionBean" method="soSearch">
+			<result name="out">base.servicelive.index</result>
+			<result>/jsp/so_monitor/grid_views/s_grid_view.jsp</result>	
+		</action>
+		
+		<action name="PBWorkflowSearch" class="soSearchActionBean" method="pbWorkflowSearch">
+			<result name="out">base.servicelive.index</result>
+			<result>/jsp/so_monitor/grid_views/s_grid_view.jsp</result>	
+		</action>
+
+		<action name="googleMap" class="googleMapActionBean" method="serviceConnection">	 
+			<result>/jsp/so_monitor/grid/soMonitorDataGrid.jsp</result>	 
+		</action>
+		<action name="soLoadState_getStatesAjax" class="soSearchActionBean" method="getStatesAjax">
+			<result name="success">/jsp/so_monitor/stateVals.jsp</result>
+		</action>
+		<action name="soLoadSkill_getSkillsAjax" class="soSearchActionBean" method="getSkillsAjax">
+			<result name="success">/jsp/so_monitor/skillVals.jsp</result>
+		</action>
+		<action name="searchMarketLoader" class="soSearchActionBean" method="getMarketList">
+ 			 <result name="success">/jsp/so_monitor/listMarket.jsp</result> 
+ 		</action>
+  		<action name="soSearch_loadMainCategories" class="soSearchActionBean" method="loadMainCategories">
+				<result>/jsp/so_monitor/service_type_main_category.jsp</result>	
+		</action>
+		<action name="soSearch_loadCategoryAndSubCategories" class="soSearchActionBean" method="loadCategoryAndSubCategories">
+				<result>/jsp/so_monitor/service_type_category.jsp</result>	
+		</action>
+  		<action name="soSearch_loadSubStatuses" class="soSearchActionBean" method="loadSubStatuses">
+				<result>/jsp/so_monitor/subStatusVals.jsp</result>	
+		</action>
+		<action name="soSearch_loadCategoryAndSubCategories2" class="soSearchActionBean" method="loadCategoryAndSubCategories">
+				<result>/jsp/so_monitor/service_type_sub-category.jsp</result>	
+		</action>	
+  		<action name="soSearch_saveSearchFilters" class="soSearchActionBean" method="saveSearchFilter">
+			<result name="out">base.servicelive.index</result>
+			<result>/jsp/so_monitor/grid_views/s_grid_view.jsp</result>	
+		</action>
+		<action name="soSearch_deleteSearchFilters" class="soSearchActionBean" method="deleteSearchFilter">
+			<result name="out">base.servicelive.index</result>
+			<result>/jsp/so_monitor/grid_views/s_grid_view.jsp</result>	
+		</action>
+    </package>
+    
+</struts>

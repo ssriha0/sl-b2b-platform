@@ -1,0 +1,704 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<!-- logging beans configured for specific signals -->
+   	<bean id="disabledLogging" class="com.servicelive.orderfulfillment.logging.DisabledLogging" />
+
+    <bean id="subStatusChangeLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg index="0" value="35" />
+   		<constructor-arg index="1" value="Service Order Sub Status Changed to $request.wfSubStatus"/>
+	</bean>
+
+    <bean id="createDraftSOLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg value="21" index="0" />
+   		<constructor-arg index="1" value="Service Order has been created in draft mode"/>
+	</bean>
+	<!-- Inhome warranty Order Creation in Draft Mode -->
+	<bean id="createWarrantyDraftSOLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg value="279" index="0" />
+   		<constructor-arg index="1" value="Warranty Service Order has been created in draft mode.Original ServiceOrder # is $ORIGINAL_SO_ID"/>
+	</bean>
+
+   	<bean id="buyerAcceptRescheduleLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg value="19" index="0" />
+   		<constructor-arg index="1" value="Reschedule request was ACCEPTED by the Buyer"/>
+	</bean>
+
+   	<bean id="buyerRejectRescheduleLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg value="19" index="0" />
+   		<constructor-arg index="1" value="Reschedule request was REJECTED by the Buyer"/>
+	</bean>
+
+    <bean id="rescheduleRequestLogging" class="com.servicelive.orderfulfillment.logging.TemplateLogging">
+		<property name="templateResolver">
+			<bean class="com.servicelive.orderfulfillment.logging.DBTemplateResolver">
+				<property name="templateId" value="225" />
+				<property name="templateDao" ref="templateDao" />
+			</bean>
+		</property>
+		<property name="actionId" value="36" />
+	</bean>
+
+   <!--   <bean id="expireSOLogging" class="com.servicelive.orderfulfillment.logging.TemplateLogging">
+		<property name="templateResolver">
+            <bean class="com.servicelive.orderfulfillment.logging.DirectTemplateResolver">
+				<constructor-arg value="Service Order Expired" />
+			</bean>
+		</property>
+		<property name="actionId" value="32" />
+		<property name="roleId" value="2" />
+		<property name="fullName" value="SYSTEM" />
+	</bean>-->
+	
+    <bean id="expireSOLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg value="32" index="0" />
+   		<constructor-arg index="1" value="Service Order Expired"/>
+	</bean>
+
+    <bean id="activateSOLogging" class="com.servicelive.orderfulfillment.logging.TemplateLogging">
+		<property name="templateResolver">
+            <bean class="com.servicelive.orderfulfillment.logging.DirectTemplateResolver">
+				<constructor-arg value="Service Order Activated" />
+			</bean>
+		</property>
+		<property name="actionId" value="31" />
+		<property name="roleId" value="2" />
+		<property name="fullName" value="SYSTEM" />
+	</bean>
+
+    <bean id="counterOfferLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg index="0" value="16" />
+		<constructor-arg index="1">
+			<value><![CDATA[The provider has accepted with the following conditions
+
+Increase To  $SPEND_LIMIT_TO_LABOR
+Conditional Change Date1 $SCHEDULE_FROM
+Condtional Change Date2 $SCHEDULE_TO
+Conditional Start Time $SCHEDULE_START_TIME
+Condtional End TIme $SCHEDULE_END_TIME]]>
+			</value>
+		</constructor-arg>
+	</bean>
+
+    <bean id="releaseAcceptedOrderLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg index="0" value="24" />
+		<constructor-arg index="1" value="Comments: $PROVIDER_COMMENT" />
+	</bean>
+
+    <bean id="releaseActiveOrderLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg index="0" value="26" />
+		<constructor-arg index="1" value="Comments: $PROVIDER_COMMENT" />
+	</bean>
+
+    <bean id="releaseProblemOrderLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg index="0" value="52" />
+		<constructor-arg index="1" value="Comments: $PROVIDER_COMMENT" />
+	</bean>
+
+    <bean id="voidOrderLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg index="0" value="23" />
+        <constructor-arg index="1" value="Buyer has voided the Service Order $SO_ID" />
+	</bean>
+
+    <bean id="cancelOrderLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg index="0" value="2" />
+        <constructor-arg index="1" value="Buyer is requesting cancellation of Service Order $SO_ID Reason: $PVKey_Comment" />
+	</bean>
+
+    <bean id="requestCancellationLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg index="0" value="22" />
+        <constructor-arg index="1" value="Buyer is requesting cancellation of Service Order $SO_ID for amount $PVKey_RequestedActiveCancellationAmount" />
+	</bean>
+
+    <bean id="batchUpdateLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg index="0" value="242" />
+        <constructor-arg index="1" value="Batch update has been processed" />
+	</bean>
+
+    <bean id="spendLimitUpdateLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg index="0" value="241" />
+        <constructor-arg index="1" value="Service Order spend limit is updated" />
+	</bean>
+
+    <bean id="repostedWithUpdateLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg index="0" value="243" />
+        <constructor-arg index="1" value="Service Order is reposted with updated scope" />
+	</bean>
+
+    <bean id="problemScopeChangeLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg index="0" value="204" />
+        <constructor-arg index="1" value="Service Order status is set as problem-scope change" />
+	</bean>
+
+    <bean id="locationChangeLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg index="0" value="200" />
+        <constructor-arg index="1" value="Service Location changed for the service order." />
+	</bean>
+
+    <bean id="contactChangeLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg index="0" value="201" />
+        <constructor-arg index="1" value="Service Contact changed for the service order." />
+	</bean>
+
+    <bean id="spendLimitUpdateAPILogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg index="0" value="270" />
+		<constructor-arg index="1" value="$UPDATE_API_SPEND_LOG_COMMENT" />
+	</bean>
+	
+	<bean id="spendLimitDecreaseAPILogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg index="0" value="286" />
+		<constructor-arg index="1" value="$UPDATE_API_SPEND_LOG_COMMENT" />
+	</bean>
+	
+	
+     <!-- Priority 1 changes -->
+	<bean id="updateServiceOrderLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg index="0" value="280" />
+		<constructor-arg index="1" value="$UPDATE_API_SERVICE_LOC_CONTACT_LOG_COMMENT" />
+	</bean>
+	
+	 <!-- SL-21086 -->
+	<bean id="updateSubstatusLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg index="0" value="35" />
+		<constructor-arg index="1" value="$UPDATE_API_SO_SUBSTATUS_LOG_COMMENT" />
+	</bean>
+    
+    <bean id="custRefAPIUpdateLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg index="0" value="271" />
+		<constructor-arg index="1" value="$UPDATE_API_CUST_LOG_COMMENT" />
+	</bean>
+    <bean id="customRefChangeLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+        <constructor-arg index="0" value="202" />
+        <constructor-arg index="1" value="Custom references changed for the service order." />
+    </bean>
+
+    <bean id="descriptionChangeLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+        <constructor-arg index="0" value="214" />
+        <constructor-arg index="1" value="Description changed for the service order." />
+    </bean>
+    <bean id="providerInstructionChangeLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+        <constructor-arg index="0" value="203" />
+        <constructor-arg index="1" value="Provider instruction changed for the service order." />
+    </bean>
+
+    <bean id="routeToProvidersLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+        <constructor-arg index="0" value="3" />
+        <constructor-arg index="1">
+            <value>Service Order is ROUTED to $PROVIDER_LIST_COUNT providers $!TIER_LINE_BREAK
+                    $!TIER_SPN_TITLE $!TIER_SEP $!SPN_NAME $!TIER_LINE_BREAK
+                    $!TIER_PRIORITY_TITLE $!TIER_SEP $!TIER_ID $!TIER_LINE_BREAK
+                    $!TIER_REASON_TITLE $!TIER_SEP $!TIER_ROUTING_REASON_DESC
+            </value>
+        </constructor-arg>
+    </bean> 
+    
+    <!-- SL 15642 Start Changes to have logging for auto acceptance of service order by a provider under a provider firm -->
+    <bean id="autoAcceptUpdateLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+     <constructor-arg index="0" value="272" />
+     <constructor-arg index="1" value="Service Order Auto Accepted for firm $AUTO_ACCEPT_LOGGING_FIRM_NAME $AUTO_ACCEPT_LOGGING_FIRM_ID with the rule  $AUTO_ACCEPT_LOGGING_RULE_NAME ( $AUTO_ACCEPT_LOGGING_RULE_ID )." />
+    </bean>
+    <!-- SL 15642 End Changes to have logging for auto acceptance of service order by a provider under a provider firm -->
+    <bean id="inHomeAutoAcceptUpdateLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+       <constructor-arg index="0" value="272" />
+       <constructor-arg index="1" value="Service Order Auto Accepted for firm $AUTO_ACCEPT_LOGGING_FIRM_NAME $AUTO_ACCEPT_LOGGING_FIRM_ID." />
+    </bean>
+    <bean id="autoCloseSucessLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+        <constructor-arg index="0" value="253" />
+        <constructor-arg index="1" value="Service Order is auto-closed. The following rules were evaluated: $AUTO_CLOSE_SUCESS_RULES." />
+    </bean>
+    
+    
+    <bean id="autoCloseFailureLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+        <constructor-arg index="0" value="254" />
+        <constructor-arg index="1" value="Service Order is not auto-closed and requires a manual review. The rules below were the reason(s) for not auto-closing the order: $AUTO_CLOSE_FAILURE_RULES." />
+	</bean>
+
+    <bean id="serviceIncompleteLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg index="0" value="255" />
+        <constructor-arg index="1" value="The Service order is cancelled upon provider completion. The final price of the Service Order is $$CANCELLED_FIXED_PRICE." />
+	</bean>
+
+	<bean id="processAutoCloseSO" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg index="0" value="256" />
+        <constructor-arg index="1" value="Final Labor Spend Limit is $FinalPriceLabor. Final Parts Spend Limit is $FinalPriceParts. Total Service Order payment is $FinalPrice." />
+	</bean>
+
+	<bean id="deleteDraftSOLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg index="0" value="25" />
+        <constructor-arg index="1" value="Buyer has deleted the Service Order $SO_ID. Reason:$CANCEL_REASON. $PVKey_Comment." />
+	</bean>
+
+	<bean id="CancelSOWithoutPenaltyLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg index="0" value="258" />
+        <constructor-arg index="1" value="Buyer has cancelled the Service Order $SO_ID without fee. Reason: $CANCEL_REASON. $PVKey_Comment." />
+	</bean>
+
+	<bean id="CancelSOWithPenaltyLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg index="0" value="259" />
+        <constructor-arg index="1" value="Buyer has cancelled the Service Order $SO_ID for $$PVKey_RequestedActiveCancellationAmount. Reason: $CANCEL_REASON. $PVKey_Comment." />
+	</bean>
+
+	<bean id="pendingCancelLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg index="0" value="260" />
+        <constructor-arg index="1" value="Buyer has requested cancellation of the Service Order $SO_ID for $$PVKey_RequestedActiveCancellationAmount. Reason: $CANCEL_REASON. $PVKey_Comment." />
+	</bean>
+
+    <bean id="scopeChangeCancelLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg index="0" value="204" />
+        <constructor-arg index="1" value="Buyer has added $SKU_LIST to the Service Order $SO_ID. The current SO Maximum price is $$SO_MAX_PRICE. Reason: $REASON_CODE. $REASON_COMMENTS." />
+	</bean>
+
+    <bean id="pendingCancelScopeChangeLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg index="0" value="257" />
+        <constructor-arg index="1" value="Service Order status is set as problem-scope change." />
+	</bean>
+
+    <bean id="providerAgreePayment" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg index="0" value="263" />
+        <constructor-arg index="1" value="Provider has agreed to the cancellation request of the Service Order $SOID submitted for $$PVKey_PreviousCancellationAmount. The service order is cancelled." />
+	</bean>
+
+	<bean id="providerDisagreePayment" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg index="0" value="264" />
+        <constructor-arg index="1" value="Provider has disagreed to the cancellation request of the Service Order $SOID submitted for $$PVKey_ProviderAmount. The substatus is updated as Pending Review. The new amount quoted by provider is $$PVKey_RequestedActiveCancellationAmount. Comments: $PVKey_Comment." />
+	</bean>
+
+	<bean id="buyerAgreePayment" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg index="0" value="265" />
+        <constructor-arg index="1" value="Buyer has agreed to the cancellation request of the Service Order  $SOID  submitted for $$PVKey_PreviousCancellationAmount. The service order is cancelled." />
+	</bean>
+
+	<bean id="buyerDisgreePayment" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg index="0" value="266" />
+        <constructor-arg index="1" value="Buyer has disagreed to the cancellation request of the Service Order  $SOID  submitted for $$PVKey_BuyerAmount. The sub status is updated as Pending Response. The new amount quoted by Buyer is $$PVKey_RequestedActiveCancellationAmount. Comments: $PVKey_Comment." />
+	</bean>
+
+
+     <bean id="voidOrderFromCancelOrderSignalLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg index="0" value="23" />
+        <constructor-arg index="1" value="Buyer has voided the Service Order $SO_ID. Reason: $CANCEL_REASON. $PVKey_Comment." />
+	</bean>
+
+    <bean id="cancellingOrderLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg index="0" value="267" />
+        <constructor-arg index="1" value="Service order status is changed from $OLD_STATUS to $NEW_STATUS for $SO_ID. Reason: Buyer is requesting cancellation of Service order." />
+	</bean>
+
+	<bean id="requestCancelLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg index="0" value="267" />
+        <constructor-arg index="1" value="The current Service order status $OLD_STATUS for $SO_ID is un-changed. Reason: Cancellation request cannot be processed in the current status. Please take appropriate action." />
+	</bean>
+
+    <bean id="withdrawPendingCancel" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg index="0" value="269" />
+        <constructor-arg index="1" value="Price withdrawn $$withdrawAmount." />
+	</bean>
+	
+	
+    
+    <bean id="hsrAutoCloseSucessLogging" class="com.servicelive.orderfulfillment.logging.TemplateLogging">
+		<property name="templateResolver">
+            <bean class="com.servicelive.orderfulfillment.logging.DirectTemplateResolver">
+				<constructor-arg value="Service Order is Auto Closed." />
+			</bean>
+		</property>
+		<property name="actionId" value="276" />
+		<property name="roleId" value="2" />
+		<property name="fullName" value="SYSTEM" />
+	</bean>
+	
+	 <!-- Priority 4 changes : add order history if no matching CAR rule is found for In-home order -->
+	 <bean id="noMatchingRuleLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+        <constructor-arg index="0" value="277" />
+        <constructor-arg index="1" value="No CAR Rule matched for this injected order. Placed in 'Draft' status." />
+    </bean>
+    
+	
+	<!-- SL-21126 : add order history for In-home order in case of price reduction -->
+	 <bean id="priceReductionLogging" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+        <constructor-arg index="0" value="283" />
+        <constructor-arg index="1" value="$PRICE_REDUCTION_LOG_COMMENT" />
+    </bean>
+	
+	<bean id="buyerRescheduleAutoAcceptLogging" class="com.servicelive.orderfulfillment.logging.TemplateLogging">
+		<property name="templateResolver">
+            <bean class="com.servicelive.orderfulfillment.logging.DirectTemplateResolver">
+				<constructor-arg value="Reschedule request was accepted by system." />
+			</bean>
+		</property>
+		<property name="actionId" value="284" />
+		<property name="roleId" value="2" />
+		<property name="fullName" value="SYSTEM" />
+	</bean>
+	
+	<bean id="updateSOServiceDates" class="com.servicelive.orderfulfillment.logging.DirectTemplateLogging">
+		<constructor-arg value="285" index="0" />
+   		<constructor-arg index="1" value="Buyer edited the schedule."/>
+	</bean>
+	
+	
+    
+    <bean id="soNoteUtil" class="com.servicelive.orderfulfillment.common.ServiceOrderNoteUtil">
+		<property name="noteTypes">
+			<map>
+				<entry key="GeneralBuyerNote">
+					<bean class="com.servicelive.orderfulfillment.domain.SONote">
+						<property name="createdByName" value="System" />
+						<property name="subject" value="general note" />
+						<property name="private" value="false" />
+						<property name="roleId" value="3" />
+						<property name="noteTypeId" value="2" />
+						<property name="entityId" value="14" />
+						<property name="modifiedBy" value="System" />
+						<property name="note" value="$content" />
+					</bean>
+				</entry>
+				<entry key="SpendLimitChange">
+					<bean class="com.servicelive.orderfulfillment.domain.SONote">
+						<property name="createdByName" value="System" />
+						<property name="subject" value="Service Order Spend Limit Changed" />
+						<property name="private" value="false" />
+						<property name="roleId" value="3" />
+						<property name="noteTypeId" value="2" />
+						<property name="entityId" value="14" />
+						<property name="modifiedBy" value="System" />
+    					<property name="note"><value><![CDATA[Old Maximum spend limit $OLD_AMOUNT<br/>
+    							New Maximum spend limit $NEW_AMOUNT<br/>
+    							The Labor spend limit of $$DIFFERENCE has been $TYPE.]]></value></property>
+					</bean>
+				</entry>
+				<entry key="TemplateRemapped">
+					<bean class="com.servicelive.orderfulfillment.domain.SONote">
+						<property name="createdByName" value="System" />
+						<property name="subject" value="Service Order Update - Template Remapped" />
+						<property name="private" value="false" />
+						<property name="roleId" value="3" />
+						<property name="noteTypeId" value="2" />
+						<property name="entityId" value="14" />
+						<property name="modifiedBy" value="System" />
+    					<property name="note" value="The Skill Categories $OLD_CATEGORIES are replaced by new Skill Categories $NEW_CATEGORIES."/>
+					</bean>
+				</entry>
+				<entry key="SOUpdateButNoChange">
+					<bean class="com.servicelive.orderfulfillment.domain.SONote">
+						<property name="createdByName" value="System" />
+						<property name="subject" value="Service Order Update Received" />
+						<property name="private" value="false" />
+						<property name="roleId" value="3" />
+						<property name="noteTypeId" value="2" />
+						<property name="entityId" value="14" />
+						<property name="modifiedBy" value="System" />
+    					<property name="note" value="Service Order update received but no update has been made to Service Order.\n Information sent with update $!customReference."/>
+					</bean>
+				</entry>
+				<entry key="UpdateDescription">
+					<bean class="com.servicelive.orderfulfillment.domain.SONote">
+						<property name="createdByName" value="System" />
+						<property name="subject" value="Service Order Update" />
+						<property name="private" value="true" />
+						<property name="roleId" value="3" />
+						<property name="noteTypeId" value="3" />
+						<property name="entityId" value="14" />
+						<property name="modifiedBy" value="System" />
+    					<property name="note" value="Service order description changed. Please validate and take appropriate action."/>
+					</bean>
+				</entry>
+				<entry key="UpdateLocation">
+					<bean class="com.servicelive.orderfulfillment.domain.SONote">
+						<property name="createdByName" value="System" />
+						<property name="subject" value="Service Contact/location Update" />
+						<property name="private" value="true" />
+						<property name="roleId" value="3" />
+						<property name="noteTypeId" value="3" />
+						<property name="entityId" value="14" />
+						<property name="modifiedBy" value="System" />
+                        <property name="note" value="Contact the provider, the service Location has changed please verify that provider can still complete service."/>
+					</bean>
+				</entry>
+				<entry key="UnableToGroup">
+					<bean class="com.servicelive.orderfulfillment.domain.SONote">
+						<property name="createdByName" value="System" />
+						<property name="subject" value="Unable to Group" />
+						<property name="private" value="true" />
+						<property name="roleId" value="3" />
+						<property name="noteTypeId" value="3" />
+						<property name="entityId" value="14" />
+						<property name="modifiedBy" value="System" />
+                        <property name="note" value="This order was not grouped with $SO_IDS as the order discount amount is greater than the total order price."/>
+					</bean>
+				</entry>
+				<entry key="UpdateZipCode">
+					<bean class="com.servicelive.orderfulfillment.domain.SONote">
+						<property name="createdByName" value="System" />
+						<property name="subject" value="Service Order Update" />
+						<property name="private" value="true" />
+						<property name="roleId" value="3" />
+						<property name="noteTypeId" value="3" />
+						<property name="entityId" value="14" />
+						<property name="modifiedBy" value="System" />
+                        <property name="note" value="Contact the provider, the service zip code has changed please verify that provider can still complete service."/>
+					</bean>
+				</entry>
+				<entry key="WSCancel">
+					<bean class="com.servicelive.orderfulfillment.domain.SONote">
+						<property name="createdByName" value="System" />
+						<property name="subject" value="WS Cancel" />
+						<property name="private" value="true" />
+						<property name="roleId" value="3" />
+						<property name="noteTypeId" value="3" />
+						<property name="entityId" value="14" />
+						<property name="modifiedBy" value="System" />
+                        <property name="note" value="Service status has been changed to CANCELLED via web service. Please validate and take appropriate action."/>
+					</bean>
+				</entry>
+				<entry key="WSCancelled">
+					<bean class="com.servicelive.orderfulfillment.domain.SONote">
+						<property name="createdByName" value="System" />
+						<property name="subject" value="WS Cancel" />
+						<property name="private" value="true" />
+						<property name="roleId" value="3" />
+						<property name="noteTypeId" value="3" />
+						<property name="entityId" value="14" />
+						<property name="modifiedBy" value="System" />
+                        <property name="note" value="Service order status is changed from $OLD_STATUS to $NEW_STATUS for $SO_ID. Reason: Buyer is requesting cancellation of Service order."/>
+					</bean>
+				</entry>
+				<entry key="SOUpdateNoChange">
+					<bean class="com.servicelive.orderfulfillment.domain.SONote">
+						<property name="createdByName" value="System" />
+						<property name="subject" value="Service Order Update Received" />
+						<property name="private" value="false" />
+						<property name="roleId" value="3" />
+						<property name="noteTypeId" value="2" />
+						<property name="entityId" value="14" />
+						<property name="modifiedBy" value="System" />
+    					<property name="note" value="The current Service order status $NEW_STATUS for $SO_ID is un-changed. Reason: Cancellation request cannot be processed in the current status. Please take appropriate action"/>
+					</bean>
+				</entry>
+				<entry key="HSRUpdate">
+					<bean class="com.servicelive.orderfulfillment.domain.SONote">
+						<property name="createdByName" value="System" />
+						<property name="subject" value="Update Received" />
+						<property name="private" value="false" />
+						<property name="roleId" value="3" />
+						<property name="noteTypeId" value="3" />
+						<property name="entityId" value="14" />
+						<property name="modifiedBy" value="System" />
+                        <property name="note"><value><![CDATA[Modified By Employee Id:$customReference.MODIFIED_BY_EMPLOYEE_ID<br/>
+                                External Status:$customReference.EXTERNAL_STATUS<br/>
+                                The Service Order is not in a valid state to process the update. The SO Sub status has been changed to â€˜NEED ATTENTIONâ€™ Please take appropriate action.]]></value></property>
+					</bean>
+				</entry>
+				<entry key="WSUpdate">
+					<bean class="com.servicelive.orderfulfillment.domain.SONote">
+						<property name="createdByName" value="System" />
+						<property name="subject" value=" WS Update" />
+						<property name="private" value="false" />
+						<property name="roleId" value="3" />
+						<property name="noteTypeId" value="3" />
+						<property name="entityId" value="14" />
+						<property name="modifiedBy" value="System" />
+                        <property name="note" value="Service order has changed via web service. Please validate and take appropriate action" />
+					</bean>
+				</entry>
+				<entry key="HSRCancel">
+					<bean class="com.servicelive.orderfulfillment.domain.SONote">
+						<property name="createdByName" value="System" />
+						<property name="subject" value="Update Received" />
+						<property name="private" value="false" />
+						<property name="roleId" value="3" />
+						<property name="noteTypeId" value="3" />
+						<property name="entityId" value="14" />
+						<property name="modifiedBy" value="System" />
+                        <property name="note"><value><![CDATA[Modified By Employee Id:$customReference.MODIFIED_BY_EMPLOYEE_ID<br/>
+                                External Status:$customReference.EXTERNAL_STATUS<br/>
+                                The Service Order status has been changed to $NEW_STATUS.]]></value></property>
+					</bean>
+				</entry>
+				<entry key="StayInDraftReviewNeeded">
+					<bean class="com.servicelive.orderfulfillment.domain.SONote">
+						<property name="createdByName" value="System" />
+						<property name="subject" value="Manual review required" />
+						<property name="private" value="false" />
+						<property name="roleId" value="3" />
+						<property name="noteTypeId" value="2" />
+						<property name="entityId" value="17549" />
+						<property name="modifiedBy" value="System" />
+                        <property name="note" value="Not posted due to manual review.  See 'Manual_Review' custom reference field for details. "/>
+					</bean>
+				</entry>
+				<entry key="NoTemplate">
+					<bean class="com.servicelive.orderfulfillment.domain.SONote">
+						<property name="createdByName" value="System" />
+						<property name="subject" value="No template identified" />
+						<property name="private" value="false" />
+						<property name="roleId" value="3" />
+						<property name="noteTypeId" value="2" />
+						<property name="entityId" value="17549" />
+						<property name="modifiedBy" value="System" />
+                        <property name="note" value="There is no order template identified for this Service Order.  Service Order has been created in draft mode. "/>
+					</bean>
+				</entry>
+				<entry key="NoSPN">
+					<bean class="com.servicelive.orderfulfillment.domain.SONote">
+						<property name="createdByName" value="System" />
+						<property name="subject" value="No SPN identified" />
+						<property name="private" value="false" />
+						<property name="roleId" value="3" />
+						<property name="noteTypeId" value="2" />
+						<property name="entityId" value="17549" />
+						<property name="modifiedBy" value="System" />
+                        <property name="note" value=" There is no Select Provider Network (SPN) identified for this Service Order.  Service Order has been created in draft mode. "/>
+					</bean>
+				</entry>
+
+				<entry key="NoProviders">
+					<bean class="com.servicelive.orderfulfillment.domain.SONote">
+						<property name="createdByName" value="System" />
+						<property name="subject" value="No Provider" />
+						<property name="private" value="false" />
+						<property name="roleId" value="3" />
+						<property name="noteTypeId" value="2" />
+						<property name="entityId" value="17549" />
+						<property name="modifiedBy" value="System" />
+                        <property name="note" value="There is no Provider identified for this Service Order.  Service Order has been created in draft mode. "/>
+					</bean>
+				</entry>
+
+				<entry key="RepeatRepair">
+					<bean class="com.servicelive.orderfulfillment.domain.SONote">
+						<property name="createdByName" value="System" />
+						<property name="subject" value="Repeat Repair" />
+						<property name="private" value="false" />
+						<property name="roleId" value="3" />
+						<property name="noteTypeId" value="2" />
+						<property name="entityId" value="10389" />
+						<property name="modifiedBy" value="System" />
+                        <property name="note" value="Not posted due to repeat repair.  See 'Repeat Repair' custom reference field for details. "/>
+					</bean>
+				</entry>
+				<!-- CR-16667 changes -->
+				<entry key="NonExistantJobcodes">
+					<bean class="com.servicelive.orderfulfillment.domain.SONote">
+						<property name="createdByName" value="System" />
+						<property name="subject"
+							value="Service Order Creation - JobCode Mismatch" />
+						<property name="private" value="true" />
+						<property name="roleId" value="3" />
+						<property name="noteTypeId" value="2" />
+						<property name="entityId" value="14" />
+						<property name="modifiedBy" value="System" />
+						<property name="note"
+							value="The jobcode(s) $INVALID_SKUS does not exist in ServiceLive. Please follow the work instructions provided to you. This order must not be posted without correcting the issue." />
+					</bean>
+				</entry>
+				<!-- priority 4 changes -->
+				<!-- Add note if no matching rule is found for Inhome order -->
+				<entry key="NoMatchingRule">
+					<bean class="com.servicelive.orderfulfillment.domain.SONote">
+						<property name="createdByName" value="System" />
+						<property name="subject" value="No CAR Rule Match Found" />
+						<property name="private" value="true" />
+						<property name="roleId" value="3" />
+						<property name="noteTypeId" value="2" />
+						<property name="entityId" value="14" />
+						<property name="modifiedBy" value="System" />
+						<property name="note"
+							value="No CAR Rule matched for this injected order. Placed in 'Draft' status." />
+					</bean>
+				</entry>
+                <!-- Non w2 priority 2  Notes Start -->
+                <entry key="ProviderFirmNotAssociated">
+					<bean class="com.servicelive.orderfulfillment.domain.SONote">
+						<property name="createdByName" value="System" />
+						<property name="subject" value="Recall Provider Not Available" />
+						<property name="private" value="true" />
+						<property name="roleId" value="3" />
+						<property name="noteTypeId" value="2" />
+						<property name="entityId" value="14" />
+						<property name="modifiedBy" value="System" />
+                        <property name="note" value="Service Order is not associated with a Recall Provider Firm. Order has been created in Draft Mode."/>
+					</bean>
+				</entry>
+				<entry key="originalOrderNotExist">
+					<bean class="com.servicelive.orderfulfillment.domain.SONote">
+						<property name="createdByName" value="System" />
+						<property name="subject" value="Recall Provider Not Available" />
+						<property name="private" value="true" />
+						<property name="roleId" value="3" />
+						<property name="noteTypeId" value="2" />
+						<property name="entityId" value="14" />
+						<property name="modifiedBy" value="System" />
+                        <property name="note" value="Service Order is not associated with a warranty Order. Order has been created in Draft Mode."/>
+					</bean>
+				</entry>
+				<entry key="providerFirmNotComplianceSL">
+					<bean class="com.servicelive.orderfulfillment.domain.SONote">
+						<property name="createdByName" value="System" />
+						<property name="subject" value="Recall Provider Not Available" />
+						<property name="private" value="true" />
+						<property name="roleId" value="3" />
+						<property name="noteTypeId" value="2" />
+						<property name="entityId" value="14" />
+						<property name="modifiedBy" value="System" />
+                        <property name="note" value="The Provider Firm associated with warranty Order is Out of Compliance in ServiceLive.Order will be routed through CAR."/>
+					</bean>
+				</entry>
+				<entry key="providerFirmNotComplianceSPN">
+					<bean class="com.servicelive.orderfulfillment.domain.SONote">
+						<property name="createdByName" value="System" />
+						<property name="subject" value="Recall Provider Not Available" />
+						<property name="private" value="true" />
+						<property name="roleId" value="3" />
+						<property name="noteTypeId" value="2" />
+						<property name="entityId" value="14" />
+						<property name="modifiedBy" value="System" />
+                        <property name="note" value="The Provider Firm associated with warranty Order is out of compliance with SPN.Order has been created in Draft Mode."/>
+					</bean>
+				</entry>
+				<entry key="providerFirmNotCompliance">
+					<bean class="com.servicelive.orderfulfillment.domain.SONote">
+						<property name="createdByName" value="System" />
+						<property name="subject" value="Recall Provider Not Available" />
+						<property name="private" value="true" />
+						<property name="roleId" value="3" />
+						<property name="noteTypeId" value="2" />
+						<property name="entityId" value="14" />
+						<property name="modifiedBy" value="System" />
+                        <property name="note" value="The Provider Firm associted with warranty Order is out of compliance with ServiceLive and SPN.Order will be routed through CAR."/>
+					</bean>
+				</entry>
+				<entry key="noEligibleProviderFound">
+					<bean class="com.servicelive.orderfulfillment.domain.SONote">
+						<property name="createdByName" value="System" />
+						<property name="subject" value="Recall Provider Not Available" />
+						<property name="private" value="true" />
+						<property name="roleId" value="3" />
+						<property name="noteTypeId" value="2" />
+						<property name="entityId" value="14" />
+						<property name="modifiedBy" value="System" />
+                        <property name="note" value="There is no eligible provider found for this warranty Order.Order has been created in draft mode. "/>
+					</bean>
+				</entry>
+                <entry key="noSpnFoundForOrder">
+					<bean class="com.servicelive.orderfulfillment.domain.SONote">
+						<property name="createdByName" value="System" />
+						<property name="subject" value="Recall Provider Not Available" />
+						<property name="private" value="true" />
+						<property name="roleId" value="3" />
+						<property name="noteTypeId" value="2" />
+						<property name="entityId" value="14" />
+						<property name="modifiedBy" value="System" />
+                        <property name="note" value="There is no Select Provider Network (SPN) identified for this Service Order.  Service Order has been created in draft mode. "/>
+					</bean>
+				</entry>
+                <!-- Non w2 priority 2  Notes End -->
+			</map>
+		</property>
+	</bean>
+</beans>

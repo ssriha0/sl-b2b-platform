@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="RespondServiceOrder">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="HEADER" type="MessageHeader"/>
+				<xs:element name="ORDERS" type="Orders"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:complexType name="MessageHeader">
+		<xs:sequence>
+			<xs:element name="noOfOrders" type="xs:integer"/>
+			<xs:element name="seqNo" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="Orders">
+		<xs:sequence>
+			<xs:element maxOccurs="unbounded" name="ORDER" type="Order"/>
+		</xs:sequence>
+	</xs:complexType>
+					
+	<xs:complexType name="Order">
+		<xs:sequence>
+			<xs:element name="salescheck" type="xs:string"/>
+			<xs:element name="salesDate" type="xs:date"/>						
+			<xs:element name="serviceUnitNumber" type="xs:string"/>
+			<xs:element name="serviceOrderNumber" type="xs:string"/>			
+			<xs:element name="ERRORCODES" type="ErrorCodes"/>			
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="ErrorCodes">
+		<xs:sequence>			
+			<xs:element maxOccurs="unbounded" name="ERRORCODE" type="ErrorCode"/>
+		</xs:sequence>
+	</xs:complexType>	
+	
+	<xs:complexType name="ErrorCode">
+		<xs:sequence>
+			<xs:element name="errorCode" type="xs:integer"/>
+			<xs:element name="errorMessage" type="xs:string"/>			
+		</xs:sequence>
+	</xs:complexType>
+	
+</xs:schema>

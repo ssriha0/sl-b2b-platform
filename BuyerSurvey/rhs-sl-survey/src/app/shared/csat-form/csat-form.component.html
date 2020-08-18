@@ -1,0 +1,41 @@
+<div [formGroup]="parentForm">
+  <div formGroupName="CSAT">
+    <div class="form-group">
+      <h3>{{ surveyDetails.questions.general }}</h3>
+      <app-csat-rating
+        [currentRating]="selectedRatings ? selectedRatings : ratings"
+      ></app-csat-rating>
+      <input type="hidden" value="ratings" formControlName="rating" />
+    </div>
+    <div class="form-group" *ngIf="ratings > 0">
+      <h3>
+        {{
+          ratings > 3
+            ? surveyDetails.questions.aboveAverage
+            : surveyDetails.questions.belowAverage
+        }}
+        (check all that apply)
+      </h3>
+      <app-survey-options
+        [options]="surveyDetails.options"
+      ></app-survey-options>
+      <!-- <input
+        type="hidden"
+        value="optionsSelected"
+        formControlName="options"
+      /> -->
+    </div>
+    <div class="form-group" *ngIf="ratings > 0">
+      <h3>Comments (Optional):</h3>
+      <textarea
+        class="form-control"
+        id="csatComments"
+        rows="3"
+        formControlName="comments"
+        maxlength="255"
+        #csatComments
+      ></textarea>
+      <p class="hints">{{255 - csatComments.value.length}} characters left.</p>
+    </div>
+  </div>
+</div>

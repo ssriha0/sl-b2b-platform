@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified">
+
+  <xs:element name="getSoRequest">
+      <xs:complexType>
+          <xs:sequence>
+            <xs:element name="serviceDate" type="serviceDateType" minOccurs="0"/> 
+            <xs:element name="startDate" type="xs:date" minOccurs="0"/>  
+            <xs:element name="endDate" type="xs:date" minOccurs="0"/>     
+            <xs:element name="orderStatus" type="orderStatusType" minOccurs="0"/>
+            <xs:element name="city" type="nonEmptyCity" minOccurs="0"/>
+            <xs:element name="assignedProvider" type="xs:integer" minOccurs="0"/>
+            <xs:element name="pendingAssignment" type="YesNoType" minOccurs="0" default="No"/>
+            <xs:element name="scheduledToday" type="YesNoType" minOccurs="0" default="No"/>
+            <xs:element name="revisitNeeded" type="YesNoType" minOccurs="0" default="No"/>
+          </xs:sequence>
+      </xs:complexType>
+  </xs:element>
+    <xs:simpleType name="nonEmptyCity">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="30"/>
+		</xs:restriction>
+	</xs:simpleType>	
+	<xs:simpleType name="serviceDateType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Today" />
+			<xs:enumeration value="Tomorrow" />
+			<xs:enumeration value="Next 2 Days" />
+			<xs:enumeration value="Next 3 Days" />
+			<xs:enumeration value="Enter Range" />
+		</xs:restriction>
+	</xs:simpleType>
+	 <xs:simpleType name="orderStatusType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Received"/>
+			<xs:enumeration value="Accepted"/>
+			<xs:enumeration value="Active"/>
+			<xs:enumeration value="Problem"/>
+			<xs:enumeration value="Completed"/>
+		</xs:restriction>
+	</xs:simpleType>	
+	<xs:simpleType name="YesNoType">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[Yy][Ee][Ss]" />
+			<xs:pattern value="[Nn][Oo]" />
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>
+	

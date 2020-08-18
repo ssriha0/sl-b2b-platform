@@ -1,0 +1,1 @@
+ALTER TABLE vendor_credentials_document ADD active_ind INT(1) AFTER document_id;

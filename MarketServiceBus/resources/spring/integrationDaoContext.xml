@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd" xmlns:tx="http://www.springframework.org/schema/tx">
+	
+  	<tx:annotation-driven transaction-manager="transactionManagerIntegration" />
+  	
+  	<bean id="transactionManagerIntegration" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="integrationDataSource"/>
+	</bean>
+
+<!--
+   - To enable use of automatic retries of transactions when deadlocks are
+   - experienced, uncomment the configuration of the following two beans:
+   - 1. integrationServiceCoordinator
+   - 2. integrationServiceCoordinatorTarget.
+   -
+   - Also, comment out the configuration of the existing configuration for
+   - the integrationServiceCoordinator bean; it's immediately after this
+   - comment block
+   - ========================================================================
+  		 
+	<bean id="integrationServiceCoordinator" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="proxyInterfaces" value="com.servicelive.esb.integration.IIntegrationServiceCoordinator" />
+		<property name="target" ref="integrationServiceCoordinatorTarget" />
+		<property name="interceptorNames">
+			<list>
+				<value>retryableOperationAdvisor</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="integrationServiceCoordinatorTarget" class="com.servicelive.esb.integration.IntegrationServiceCoordinator">
+		<property name="integrationBO" ref="integrationBO" />
+    </bean>
+   - ========================================================================
+-->
+	<bean id="integrationServiceCoordinator" class="com.servicelive.esb.integration.IntegrationServiceCoordinator">
+		<property name="integrationBO" ref="integrationBO" />
+		<property name="hsTokenServiceCreditCardBo" ref="hsTokenServiceCreditCardBo"/>
+    </bean>
+
+	<bean id="integrationBO" class="com.servicelive.esb.integration.bo.IntegrationBO">
+        <property name="integrationDao" ref="integrationDao" />
+        <property name="dataSource" ref="integrationDataSource" />
+    </bean>
+    
+    <bean id="integrationDao" class="com.servicelive.esb.integration.dao.IntegrationDao">
+		<property name="jdbcTemplate" ref="integrationJdbcTemplate" />
+	</bean>
+	
+	<bean class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate" id="integrationJdbcTemplate">
+        <constructor-arg index="0" ref="integrationDataSource" />
+    </bean>
+    
+    <bean id="integrationDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName" value="jdbc/ServiceLiveIntegrationDS" />
+	</bean>
+
+</beans>

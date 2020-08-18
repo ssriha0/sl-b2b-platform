@@ -1,0 +1,231 @@
+@import url("ui.tabs.css");
+@import url("buttons.css");
+
+.hidden { display: none; }
+input.hide { display: none; }
+
+#primary .content {
+	padding: 10px;
+}
+
+a.release {
+	font-weight: bold;
+	padding:  5px 5px 5px 25px;
+	background: url("../../images/s_icons/lock.png") 3px 5px no-repeat;
+	border:  1px solid #FFF;
+	margin-bottom: 5px;
+}
+
+a.release:hover {
+	background: #FFF6BF url("../../images/s_icons/lock.png") 3px 5px no-repeat;
+	color: #514721;
+	border-color: #FFD324;
+}
+
+span.locked {
+	background: url("../../images/s_icons/lock.png") 3px 0px no-repeat;
+	display: block;
+	padding-left: 25px;
+}
+
+.titlebar {
+	background: #33393C;
+	color: #FFF;
+	padding: 5px 10px;
+}
+
+#auditPanel {
+	float: left;
+	width: 100%;
+}
+
+.tableWrap {
+	border:  1px solid #CCC;
+	background: #FFF6BF;
+}
+
+.tableWrap .ui-tabs-panel {
+	background: #CCC;
+	padding: 0;
+}
+
+div.requirements {
+	background: #FFF;
+	}
+
+span.suspended {
+	color: #8a1f11;
+}
+
+span.approved {
+	color: #264409;
+}
+
+div.scrollit {
+	overflow: auto;
+	height: 100px;
+}
+
+table#information {
+	margin-bottom: 0px;
+}
+
+table#information td {
+	vertical-align: top;
+}
+
+
+.tableInner {
+	width: 450px;
+	float: left;
+}
+
+.tableInner  td {
+	background: #FFF;
+	border-bottom: 1px solid #CCC;
+}
+
+div.comment {
+	font-size:  0.9em;
+	background: #FFF url("../../images/s_icons/comment.png") 0 1px no-repeat;
+	padding-left:  20px;
+	clear:  left;
+}
+
+td.nb {
+	border:  0px;
+}
+
+
+tr.selected td.carr {
+	background: #FFF url("../../images/leftcarr.gif") right center no-repeat;
+}
+
+input.default, input.action {
+	margin-top:  0px;
+}
+
+.buttonarea input {
+	margin-left: 5px;
+}
+
+.spncol {
+	width: 180px;
+	_width: 200px;
+	overflow: hidden;
+}
+
+.searchpanel {
+	background: #EEE;
+	padding: 10px;
+	border: 1px solid #CCC;
+}
+
+#filterpanel, .searchpanel table {
+	margin-bottom: 0px;
+	width: auto;
+}
+
+#filterpanel {
+	margin: 10px 0 0 10px;
+}
+
+#filterpanel td, .searchpanel td {
+	padding: 0px;
+}
+
+#filterpanel td.paddr, .searchpanel td.paddr {
+	padding-right: 10px;
+}
+
+.tableWrapper {
+	border: 1px solid #CCC;
+	border-bottom: 0px;
+}
+
+.tableWrapper td {
+	border-bottom: 1px solid #CCC;
+}
+
+#filterpanel select {
+	font-size: 12px;
+}
+
+a.viewall {
+	border: 1px solid #CCC;
+	display: block;
+	width: 80px;
+	padding: 5px 20px;
+	background: #EEE;
+	font-weight: bold;
+	text-align: center;
+	border-bottom: 0px;
+}
+
+a.viewall:hover {
+	background: #CCC;
+	color: #000;
+}
+
+	.view
+	{
+		text-transform: none;
+		margin-left: 10px;
+		width:100px;
+		height:30px;
+		-moz-border-radius:5px 5px 5px 5px;
+		font-size: 12px;
+	}
+	.spn
+	{
+		border: 1px solid black;
+		background-color: #D8D8D8;
+		text-align: center;
+		word-wrap:break-word;
+		width: 448px;
+	}
+	.exTable
+	{
+		border: 1px solid #CCCCCC;
+		background-color: white;
+		margin-left: 10px;
+		width:98%;
+		table-layout: fixed;
+	}
+	.extd
+	{
+		text-align: center;
+		border-left:1px solid black;
+		word-wrap:break-word;
+	}
+	.scroll{
+		overflow-y:auto; 
+		overflow-x:hidden;
+		min-height: 50px; 
+		max-height: 300px;
+		width: 99%;
+	}
+	.load{
+		display: none;
+		padding-left:350px;
+		background-color: white;
+	}
+	.ex_plus_minus
+	{
+		-webkit-border-radius: 10px;
+   		border-radius: 10px;
+    	-webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    	box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+   	 	border: 2px solid #FFF;
+    	color: #FFFFFF;
+    	display: inline-block;
+    	width: 0.8em;
+    	height: 0.8em;
+    	line-height: 0.8em;
+    	padding: 1px;
+    	text-align: center;
+	}
+	.expand_expiration
+	{
+		cursor: pointer;
+	}

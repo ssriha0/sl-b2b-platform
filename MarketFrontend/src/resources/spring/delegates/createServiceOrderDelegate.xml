@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
+	default-lazy-init="true">
+
+	<bean id="createServiceOrderCreateAccountMapper" class="com.newco.marketplace.web.utils.CreateServiceOrderCreateAccountMapper" scope="prototype"/>
+	
+	<bean name="createServiceOrderDelegate" class="com.newco.marketplace.web.delegatesImpl.CreateServiceOrderDelegateImpl">
+		<constructor-arg index="0" ref="documentBO"/>
+		<constructor-arg index="1" ref="buyerRegistrationBOImplTarget"/>
+		<constructor-arg index="2" ref="createServiceOrderCreateAccountMapper"/>
+		<constructor-arg index="3" ref="buyerRegistrationMapper"/>
+		<constructor-arg index="4" ref="buyerBo"/>
+		<property name="creditCardBO">
+			<ref bean="creditCardTransactionManagedBO" />
+		</property>
+		<property name="simpleBuyerLocationBO">
+			<ref bean="simpleBuyerLocationBO" />
+		</property>
+		<property name="ledgerTransactionBO">
+			<ref bean="ledgerTransactionBO" />
+		</property>	
+		<property name="isoWizardPersistDelegate">
+			<ref bean="SOWizardPersistBean" />
+		</property>			
+		<property name="financeManagerDelegate">
+			<ref bean="FMDelegateBean" />
+		</property>
+		<property name="buyerRegistrationBO">
+             <ref bean="buyerRegBOAOP"/>
+        </property>		
+        <property name="fetchDelegate">
+			<ref bean="SOWizardFetchBean" />
+		</property>
+		<property name="buyerPIIBo">
+			<ref bean="buyerPIIBo" />
+		</property>
+	</bean>	
+</beans>

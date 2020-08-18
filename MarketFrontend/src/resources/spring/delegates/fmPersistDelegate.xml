@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
+	default-lazy-init="true">
+	
+	<bean id="FMPersistBean" 
+				class="com.newco.marketplace.web.delegatesImpl.FMPersistDelegateImpl">
+		<property name="financeManagerBO">
+                <ref bean="fmBOAOP"/>
+        </property>
+        <property name="creditCardBO">
+                <ref bean="creditCardBO"/>
+        </property>
+		
+	<property name="walletBO" ref="walletTx" />
+
+	<property name="lookup" ref="lookup" />		
+	
+	<!-- SL-20987 starts here-->
+	<property name="walletClient" ref="walletClient" />
+	<property name="notificationService" ref ="notificationService" />
+	
+	
+	</bean>
+	<bean id="walletClient" class="com.newco.marketplace.remoteclient.WalletClient">
+				<property name="walletRestUrl" value="${wallet.restservice.url}" />
+	</bean>
+	<!-- SL-20987 ends here -->
+</beans>

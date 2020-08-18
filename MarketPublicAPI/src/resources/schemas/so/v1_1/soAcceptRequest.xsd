@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/soRequest" 
+   xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+   xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
+   xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+   targetNamespace="http://www.servicelive.com/namespaces/soRequest"
+   elementFormDefault="qualified" jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+   <xs:include schemaLocation="../../common.xsd"/>
+	<!-- Root element -->
+	<xs:element name="soAcceptProviderRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="identification" type="IdentificationType"/>
+				<xs:element name="acceptedResource" type="xs:string" minOccurs="0" maxOccurs="1"></xs:element>
+				<xs:element name="acceptByFirmInd" type="xs:boolean" maxOccurs="1"></xs:element>
+				<xs:element name="preferenceInd" type="xs:string" minOccurs="0" maxOccurs="1"></xs:element>
+				
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:decimal"/>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="IdentificationType">
+		<xs:sequence>		
+			<xs:element name="id" type="xs:integer" />  
+		</xs:sequence>
+		<xs:attribute name="type" type="identificationTypeEnum" use="required"/>
+	</xs:complexType>
+</xs:schema>

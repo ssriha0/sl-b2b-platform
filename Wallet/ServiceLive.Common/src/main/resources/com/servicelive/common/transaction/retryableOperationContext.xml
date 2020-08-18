@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+	">
+
+<!--
+   - Using AOP Config is currently not possible in MarketServiceBus due to
+   - issues with Bean Post Processors not firing in the correct order. The
+   - result is beans that need to be proxied are injected in their naked form
+   - before the proxy is generated.
+   -
+   - As a work around, currently the AOP advice is provided through
+   - configuration of a MethodInterceptor for the bean that needs the advice.
+   -
+   - Once the issues in MarketServiceBus spring configuration are resolved,
+   - this section should be uncommented, and the following two bean
+   - configurations (found immediately after this commnet block) should be
+   - removed:
+   -   1. retryableOperationAdvisor
+   -   2. retryableOperationAdvisorByMethodName
+   - ========================================================================
+	<aop:config>
+		<aop:aspect id="retryableOperationAspect" ref="retryableOperationExecutor">
+			<aop:pointcut id="transactionalOperation"
+				expression="@annotation(org.springframework.transaction.annotation.Transactional)" />
+				
+			<aop:pointcut id="retryableOperation"
+				expression="@annotation(com.servicelive.common.transaction.Retryable)" />
+				
+			<aop:pointcut id="retryableTransactionalOperation"
+				expression="@annotation(org.springframework.transaction.annotation.Transactional) and @annotation(com.servicelive.common.transaction.Retryable)" />
+			
+			<aop:around pointcut-ref="retryableTransactionalOperation"
+				method="executeRetryableTransactionalOperation" />
+			
+			<aop:around pointcut-ref="retryableOperation"
+				method="executeRetryableOperation" />
+		</aop:aspect>
+	</aop:config>
+   - ========================================================================
+-->
+	<bean id="retryableOperationAdvisor"
+		class="org.springframework.aop.aspectj.AspectJExpressionPointcutAdvisor">
+		<property name="expression" value="@annotation(org.springframework.transaction.annotation.Transactional) and @annotation(com.servicelive.common.transaction.Retryable)" />
+		<property name="advice" ref="retryableOperationExecutor" />
+	</bean>
+
+	<bean id="retryableOperationAdvisorByMethodName"
+		class="org.springframework.aop.support.NameMatchMethodPointcutAdvisor">
+		<property name="mappedNames">
+			<list>
+				<value>executeRetryableTransaction*</value>
+			</list>
+		</property>
+		<property name="advice" ref="retryableOperationExecutor" />
+	</bean>			
+
+	<bean id="retryableOperationExecutor" class="com.servicelive.common.transaction.RetryableOperationExecutor">
+		<property name="order" value="100" />
+	</bean>
+	
+	<bean id="transactionalNature" class="com.servicelive.common.transaction.TransactionalNature" />
+	
+</beans>

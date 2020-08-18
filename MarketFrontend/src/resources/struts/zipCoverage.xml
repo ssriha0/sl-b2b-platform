@@ -1,0 +1,46 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="zipcoverage" extends="ServiceLiveBase,json-default" >
+        <default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+        
+    	<global-results >
+			<!-- <result name="gl_power_buyer_success" type="redirectAction">
+				pbController_execute?showErrors=${showErrors}&amp;PB_WF_MESSAGE=${pbwfMessage}
+			</result> -->
+			<result name="error" type="redirectAction">
+				<param name="actionName">errorAction</param>
+				<param name="errorMessage">${errorMessage}</param>
+				<param name="returnURL">${returnURL}</param>
+			</result>
+		</global-results>	  
+		<action name="zipcoverage_displayPage" class="zipCoveragerAction" method="displayPage">
+	        <result name="success">/jsp/zipcoverage/CompanyZipcodeCoverage.jsp</result>
+	       	
+	    </action> 
+	    <action name="zipcoverage_getSelectedZipCodeValues" class="zipCoveragerAction" method="getSelectedZipCodeValues">
+			 <result name="json" type="json">
+	        	<param name="noCache">true</param>
+				<param name="excludeNullProperties">true</param>
+				<param name="root">jsonString</param>
+	        </result>
+		</action>	
+		 <action name="zipcoverage_loadFiltersWithMetaData" class="zipCoveragerAction" method="loadFiltersWithMetaData">
+			 <result name="filter" type="json">
+	        	<param name="noCache">true</param>
+				<param name="excludeNullProperties">true</param>
+				<param name="root">zipCoverageFiltersDTO</param>
+	        </result>
+		</action>	
+		 <action name="zipcoverage_loadSpnFiltersWithMetaData" class="zipCoveragerAction" method="loadSpnFiltersWithMetaData">
+			 <result name="filter" type="json">
+	        	<param name="noCache">true</param>
+				<param name="excludeNullProperties">true</param>
+				<param name="root">zipCoverageFiltersDTO</param>
+	        </result>
+		</action>	
+        
+	</package>
+    
+</struts>

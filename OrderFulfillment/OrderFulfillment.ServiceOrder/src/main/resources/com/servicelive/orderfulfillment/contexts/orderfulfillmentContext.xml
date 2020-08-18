@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd"
+   	default-autowire="no">
+
+    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+    
+    <bean id="entityManagerFactory"
+        class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource">
+            <ref bean="dataSourceMySQL" />
+        </property>
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <property name="database" value="MYSQL" />
+                <property name="showSql" value="false" />
+                <property name="generateDdl" value="false" />
+                <property name="databasePlatform" value="org.hibernate.dialect.MySQLInnoDBDialect" />
+            </bean>
+        </property>
+        <property name="persistenceUnitName" value="OrderFulfillment.Domain" />
+        <!-- the following section is for JTA transaction manager --> 
+        <!-- for JPA transaction manager comment out the property below -->
+        <!-- -->
+        <property name="jpaPropertyMap">
+			<map>
+				<entry key="javax.persistence.transactionType" value="JTA" />
+				<entry key="hibernate.current_session_context_class" value="jta"/>
+ 				<entry key="hibernate.transaction.manager_lookup_class"
+						value="org.hibernate.transaction.JBossTransactionManagerLookup"/>
+				<entry key="hibernate.transaction.flush_before_completion"
+						value="true"/>
+				<!-- should the auto_close property be set to true? -->
+				<entry key="hibernate.transaction.auto_close_session"
+						value="false"/>
+				<entry key="hibernate.connection.release_mode"
+						value="auto"/>
+			</map>
+		</property>
+		<!--  -->
+    </bean>
+    
+    <!-- use the following declaration for JPA transaction manager -->
+    <!--
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory" />
+        <property name="dataSource">
+            <ref bean="dataSourceMySQL" />
+        </property>
+    </bean>
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+    -->
+        
+    <!-- use the following declaration for JTA transaction manager -->
+    <!-- -->  
+    <bean id="txManager" class="org.springframework.transaction.jta.JtaTransactionManager">
+        <property name="transactionManagerName" value="java:/TransactionManager"/>
+        <property name="userTransactionName" value="UserTransaction"/>
+        <property name="allowCustomIsolationLevels" value="true" />
+    </bean>
+    <tx:annotation-driven transaction-manager="txManager" proxy-target-class="true"/>
+    <!-- -->
+    
+<!-- jBPM bootstrapping -->  
+    <import resource="classpath:/com/servicelive/orderfulfillment/contexts/jBPMContext.xml"/>
+
+
+ <!-- DAO objects --> 	
+    <bean id="carAssociationDao" class="com.servicelive.orderfulfillment.dao.CARAssociationDao" />	
+    <bean id="serviceOrderDao" class="com.servicelive.orderfulfillment.dao.ServiceOrderDao" />
+    <bean id="leadDao" class="com.servicelive.orderfulfillment.dao.LeadDao" />
+ 	<bean id="templateDao" class="com.servicelive.orderfulfillment.dao.TemplateDao" />
+    <bean id="serviceOrderProcessDao" class="com.servicelive.orderfulfillment.dao.ServiceOrderProcessDao" />
+    <bean id="leadProcessDao" class="com.servicelive.orderfulfillment.dao.LeadProcessDao" />
+ 
+  <!-- Service Order processing BO -->
+	<bean id="serviceOrderBO" class="com.servicelive.orderfulfillment.ServiceOrderBO" scope="prototype" >
+    	<property name="serviceOrderDao" ref="serviceOrderDao" />
+  	 	<property name="serviceOrderProcessDao" ref="serviceOrderProcessDao"/>
+  	 	<property name="soLoggingMap">
+			<map>
+                <entry key="batchUpdateLogging" value-ref="batchUpdateLogging" />
+                <entry key="createDraftSOLogging" value-ref="createDraftSOLogging" />
+			</map>
+		</property>
+    	<property name="workflowManager" ref="soWorkflowManager" />
+    	<property name="noteUtil" ref="soNoteUtil"/>
+    	<property name="quickLookupCollection" ref="quickLookupCollection" /> 
+     </bean>
+     <!--lead processing BO -->
+     <bean id="leadBO" class="com.servicelive.orderfulfillment.LeadBO" scope="prototype" >
+    	<property name="workflowManager" ref="leadWorkflowManager" />
+    	<property name="leadDao" ref="leadDao" />
+    	<property name="leadProcessDao" ref="leadProcessDao" />
+     </bean>
+
+    <bean id="groupPricingUtil" class="com.servicelive.orderfulfillment.group.GroupPricingUtil">
+        <property name="marketPlatformBuyerBO" ref="marketPlatformRemoteService" />
+        <property name="serviceOrderDao" ref="serviceOrderDao" />
+        <property name="serviceOrderNoteUtil" ref="soNoteUtil" /> 
+    </bean>
+
+	<bean id="serviceOrderGroupBO" class="com.servicelive.orderfulfillment.ServiceOrderGroupBO" scope="prototype" >
+		<property name="serviceOrderDao" ref="serviceOrderDao" />
+  	 	<property name="serviceOrderProcessDao" ref="serviceOrderProcessDao"/>
+        <property name="groupPricingUtil" ref="groupPricingUtil" />
+    	<property name="workflowManager" ref="soWorkflowManager" />
+    	<property name="quickLookupCollection" ref="quickLookupCollection" />
+    	<property name="groupSignals">
+    		<list>
+    			<value>EDIT_ORDER</value>
+    			<value>PROVIDER_RELEASE_ORDER</value>
+    			<value>POST_ORDER</value>
+    			<value>CANCEL_ORDER</value>
+    			<value>SL_CANCEL_ORDER</value>
+    			<value>ACCEPT_CONDITIONAL_OFFER</value>
+    			<value>ACCEPT_ORDER</value>
+    			<value>ADD_ORDER_TO_GROUP</value>
+    			<value>CREATE_GROUP_CONDITIONAL_OFFER</value>
+    			<value>ACCEPT_GROUP_CONDITIONAL_OFFER</value>
+    			<value>WITHDRAW_GROUP_CONDITIONAL_OFFER</value>
+    			<value>ACCEPT_GROUP</value>
+    			<value>REJECT_GROUP</value>
+    			<value>LOCK_FOR_EDIT</value>
+    			<value>RELEASE_LOCK_FOR_EDIT</value>
+    			<value>UPDATE_BATCH_ORDER</value>
+    			<value>INTEGRATION_CANCEL</value>
+                <value>END_FOR_GROUP_ORDERS</value>
+                <value>ADD_ORDERS_TO_GROUP</value>
+                <value>UNPOST_GROUP</value>
+                <value>REMOVE_ALL_ORDERS_FROM_GROUP</value>
+                <value>CANCEL_ORDER_API</value>
+                <value>ACCEPT_FOR_FIRM</value>
+                <value>ACCEPT_GROUP_FOR_FIRM</value>
+                <!-- <value>WITHDRAW_GROUP_CONDITIONAL_OFFER_RESOURCE_LIST</value> -->
+    		</list>
+    	</property>
+	</bean>
+  	
+  	<bean id="processingBO" class="com.servicelive.orderfulfillment.ProcessingBO" scope="prototype">
+        <property name="serviceOrderBO" ref="serviceOrderBO" />
+        <property name="serviceOrderGroupBO" ref="serviceOrderGroupBO" />
+        <property name="orderEnhancementServiceResolver" ref="orderEnhancementServiceResolver" />
+        <property name="quickLookupCollection" ref="quickLookupCollection" />
+        <property name="validationUtil" ref="defaultValidationUtil" />
+        <property name="commonPricingScheme" ref="commonPricingScheme"/>
+        <property name="leadBO" ref="leadBO" />
+  	</bean> 	
+	
+<!-- Service Order Types -->
+   <import resource="classpath:/com/servicelive/orderfulfillment/contexts/soTypeContext.xml"/>
+	
+<!-- Service Order Notification -->
+   <import resource="classpath:/com/servicelive/orderfulfillment/contexts/soNotificationContext.xml"/>
+	
+<!-- so commands  -->
+    <import resource="classpath:/com/servicelive/orderfulfillment/contexts/soCommandContext.xml"/>
+
+<!-- WalletGateway  -->
+    <import resource="classpath:/com/servicelive/orderfulfillment/contexts/gateWayContext.xml"/>
+
+<!-- signal beans -->    
+    <import resource="classpath:/com/servicelive/orderfulfillment/contexts/signalDefinitionContext.xml"/>
+
+<!-- Wallet Remote client -->
+	<import resource="classpath:/com/servicelive/wallet/remoteclient/walletRemoteClientApplicationContext.xml"/>
+
+<!-- order enhancement context -->
+	<import resource="classpath:/com/servicelive/orderfulfillment/contexts/orderEnhancementContext.xml"/>
+
+<!-- common lookup context -->
+    <import resource="classpath:/com/servicelive/orderfulfillment/contexts/lookupContext.xml"/>
+
+<!-- common validation context -->
+    <import resource="classpath:/com/servicelive/orderfulfillment/contexts/commonOrderValidationContext.xml"/>
+ 
+    <!--ServiceLive Event notifications-->
+    <import resource="eventsContext.xml" />
+
+</beans>

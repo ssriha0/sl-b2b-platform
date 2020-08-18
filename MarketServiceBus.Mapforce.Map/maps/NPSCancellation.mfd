@@ -1,0 +1,932 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="16">
+	<component name="defaultmap1" blackbox="0" editable="1">
+		<properties AppName="NPSCancellation" JavaBasePackage="com.servicelive.esb.mapforce.npscancellation" SelectedLanguage="java"/>
+		<structure>
+			<children>
+				<component name="constant" library="core" uid="10" kind="2">
+					<properties/>
+					<targets>
+						<datapoint pos="0" key="85"/>
+					</targets>
+					<view ltx="416" lty="-22" rbx="-21" rby="-522"/>
+					<data>
+						<constant value="UPDATE_FROM_SERVICELIVE" datatype="string"/>
+						<wsdl/>
+					</data>
+				</component>
+				<component name="transactions" library="db" uid="4" kind="21">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="31"/>
+						<datapoint pos="1" key="28"/>
+						<datapoint pos="2" key="29"/>
+						<datapoint pos="3" key="30"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="27"/>
+					</targets>
+					<view ltx="483" lty="17" rbx="-147" rby="-297"/>
+					<data>
+						<where condition="batchId = :batchId and transactionTypeId = :transactionTypeId and statusId = :processingStatusId">
+							<parameters>
+								<parameter name="batchId" type="long" auto-detect="0"/>
+								<parameter name="transactionTypeId" type="short" auto-detect="0"/>
+								<parameter name="processingStatusId" type="short" auto-detect="0"/>
+							</parameters>
+						</where>
+						<wsdl/>
+					</data>
+				</component>
+				<component name="constant" library="core" uid="568" kind="2">
+					<properties/>
+					<targets>
+						<datapoint pos="0" key="204"/>
+					</targets>
+					<view ltx="506" lty="483" rbx="-126" rby="61"/>
+					<data>
+						<constant value="CA" datatype="string"/>
+						<wsdl/>
+					</data>
+				</component>
+				<component name="constant" library="core" uid="6" kind="2">
+					<properties/>
+					<targets>
+						<datapoint pos="0" key="33"/>
+					</targets>
+					<view ltx="388" lty="94" rbx="-118" rby="-16"/>
+					<data>
+						<constant value="6" datatype="decimal"/>
+						<wsdl/>
+					</data>
+				</component>
+				<component name="batchId" library="core" uid="5" kind="6">
+					<properties/>
+					<sources>
+						<datapoint/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="32"/>
+					</targets>
+					<view ltx="366" lty="37" rbx="236" rby="4"/>
+					<data>
+						<input datatype="long" previewvalue="360819" usepreviewvalue="1"/>
+						<wsdl/>
+						<parameter usageKind="input" name="batchId"/>
+					</data>
+				</component>
+				<component name="constant" library="core" uid="570" kind="2">
+					<properties/>
+					<targets>
+						<datapoint pos="0" key="405"/>
+					</targets>
+					<view ltx="565" lty="210"/>
+					<data>
+						<constant datatype="string"/>
+						<wsdl/>
+					</data>
+				</component>
+				<component name="document" library="xml" uid="3" kind="14">
+					<properties XSLTTargetEncoding="UTF-8" XSLTDefaultOutput="1" AddSchemaLocation="0" SaveRelativePaths="0"/>
+					<view ltx="698" lty="-83" rbx="929" rby="653"/>
+					<data>
+						<root scrollposition="1007">
+							<header>
+								<namespaces>
+									<namespace/>
+									<namespace uid="http://www.altova.com/mapforce"/>
+								</namespaces>
+							</header>
+							<entry name="FileInstance" ns="1" expanded="1">
+								<entry name="document" ns="1" expanded="1" casttotargettypemode="suppress-cast-in-subtree">
+									<entry name="InstallationServiceOrders" expanded="1">
+										<entry name="InstallationServiceOrder" inpkey="34" expanded="1">
+											<entry name="TransactionType" inpkey="88"/>
+											<entry name="ServiceUnitNumber" inpkey="89"/>
+											<entry name="ServiceOrderNumber" inpkey="90"/>
+											<entry name="OrderTakenTime" inpkey="231"/>
+											<entry name="OrderTakenDate" inpkey="232"/>
+											<entry name="PromisedDate" inpkey="233"/>
+											<entry name="PromisedTimeFrom" inpkey="234"/>
+											<entry name="PromisedTimeTo" inpkey="235"/>
+											<entry name="TechID" inpkey="236"/>
+											<entry name="OriginalScheduledDate" inpkey="243"/>
+											<entry name="OriginalTimeFrom" inpkey="244"/>
+											<entry name="OriginalTimeTo" inpkey="245"/>
+											<entry name="Customer" expanded="1">
+												<entry name="Number" inpkey="174"/>
+												<entry name="Type" inpkey="249"/>
+												<entry name="FirstName" inpkey="250"/>
+												<entry name="LastName" inpkey="251"/>
+												<entry name="Phone" inpkey="252"/>
+												<entry name="AltPhone" inpkey="257"/>
+												<entry name="PreferredLanguage" inpkey="258"/>
+												<entry name="CellPhoneNumber" inpkey="259"/>
+												<entry name="SupplementalCustomerInformation" inpkey="260"/>
+												<entry name="Address" expanded="1">
+													<entry name="StreetAddress1" inpkey="261"/>
+													<entry name="StreetAddress2" inpkey="262"/>
+													<entry name="City" inpkey="263"/>
+													<entry name="State" inpkey="264"/>
+													<entry name="ZipCode" inpkey="265"/>
+												</entry>
+											</entry>
+											<entry name="RepairAt" expanded="1">
+												<entry name="Phone" inpkey="266"/>
+												<entry name="AltPhone" inpkey="267"/>
+												<entry name="Address" expanded="1">
+													<entry name="StreetAddress1" inpkey="268"/>
+													<entry name="StreetAddress2" inpkey="269"/>
+													<entry name="City" inpkey="270"/>
+													<entry name="State" inpkey="271"/>
+													<entry name="ZipCode" inpkey="272"/>
+												</entry>
+											</entry>
+											<entry name="ServiceRequested" inpkey="273"/>
+											<entry name="ServiceOrderStatusCode" inpkey="203"/>
+											<entry name="ServiceOrderType" inpkey="274"/>
+											<entry name="SpecialInstructions1" inpkey="275"/>
+											<entry name="SpecialInstructions2" inpkey="276"/>
+											<entry name="PermanentInstructions" inpkey="277"/>
+											<entry name="Merchandise" expanded="1">
+												<entry name="Code" inpkey="278"/>
+												<entry name="Description" inpkey="279"/>
+												<entry name="PurchaseDate" inpkey="280"/>
+												<entry name="Specialty" inpkey="281"/>
+												<entry name="Brand" inpkey="282"/>
+												<entry name="Model" inpkey="283"/>
+												<entry name="SerialNumber" inpkey="284"/>
+												<entry name="Division" inpkey="285"/>
+												<entry name="ItemNumber" inpkey="286"/>
+												<entry name="SearsSoldCode" inpkey="287"/>
+												<entry name="SystemItemSuffix" inpkey="288"/>
+												<entry name="SearsStoreNumber" inpkey="289"/>
+												<entry name="ResidentialOrCommercialUsage" inpkey="290"/>
+											</entry>
+											<entry name="SalesCheck" expanded="1">
+												<entry name="Number" inpkey="291"/>
+												<entry name="Date" inpkey="292"/>
+												<entry name="Time" inpkey="293"/>
+												<entry name="SellingAssociate" inpkey="294"/>
+												<entry name="SalesCheckItems" expanded="1">
+													<entry name="Item" expanded="1">
+														<entry name="LineNumber" inpkey="295"/>
+														<entry name="Division" inpkey="296"/>
+														<entry name="ItemNumber" inpkey="297"/>
+														<entry name="SKU" inpkey="298"/>
+														<entry name="Description" inpkey="299"/>
+														<entry name="Quantity" inpkey="300"/>
+														<entry name="GiftFlag" inpkey="301"/>
+														<entry name="GiftDate" inpkey="302"/>
+													</entry>
+												</entry>
+											</entry>
+											<entry name="JobCodes" expanded="1">
+												<entry name="JobCode" inpkey="66" expanded="1">
+													<entry name="SequenceNumber" inpkey="67"/>
+													<entry name="Number" inpkey="68"/>
+													<entry name="ChargeCode" inpkey="69"/>
+													<entry name="Type" inpkey="70"/>
+													<entry name="Coverage" inpkey="71"/>
+													<entry name="Description" inpkey="72"/>
+													<entry name="Amount" inpkey="73"/>
+												</entry>
+											</entry>
+											<entry name="Messages" inpkey="303"/>
+											<entry name="Logistics" expanded="1">
+												<entry name="Order" expanded="1">
+													<entry name="Number" inpkey="304"/>
+													<entry name="WarehouseNumber" inpkey="305"/>
+													<entry name="LastMaintenanceDate" inpkey="306"/>
+													<entry name="DeliveryStatus" inpkey="307"/>
+													<entry name="DeliveryDescription" inpkey="308"/>
+													<entry name="HoldCode" inpkey="309"/>
+													<entry name="HoldDescription" inpkey="310"/>
+													<entry name="PendCode" inpkey="311"/>
+													<entry name="PendDescription" inpkey="312"/>
+													<entry name="SpecialInstructions" inpkey="313"/>
+													<entry name="ItemInstructions" inpkey="314"/>
+													<entry name="DeliveryDate" inpkey="315"/>
+													<entry name="PickupLocationCode" inpkey="316"/>
+													<entry name="ShipmentMethodCode" inpkey="317"/>
+													<entry name="ShipmentMethodDescription" inpkey="318"/>
+													<entry name="DeliveryTimeCode" inpkey="319"/>
+													<entry name="DeliveryTimeDescription" inpkey="320"/>
+													<entry name="Address" inpkey="409" expanded="1">
+														<entry name="StreetAddress1" inpkey="321"/>
+														<entry name="StreetAddress2" inpkey="322"/>
+														<entry name="City" inpkey="323"/>
+														<entry name="State" inpkey="324"/>
+														<entry name="ZipCode" inpkey="325"/>
+													</entry>
+												</entry>
+												<entry name="LogisticsMerchandise" expanded="1">
+													<entry name="PendCode" inpkey="326"/>
+													<entry name="PendDescription" inpkey="327"/>
+													<entry name="SCIMHandlingCode" inpkey="328"/>
+													<entry name="SCIMHandlingDescription" inpkey="329"/>
+													<entry name="LastMaintenanceDate" inpkey="330"/>
+												</entry>
+											</entry>
+										</entry>
+									</entry>
+								</entry>
+							</entry>
+						</root>
+						<document schema="..\file-formats\RI-Input.xsd" inputinstance="..\sample-files\RI-Sample.startProcessGW.xml" outputinstance="..\sample-files\RI-Sample.startProcessGW.xml" instanceroot="{}InstallationServiceOrders"/>
+						<wsdl/>
+					</data>
+				</component>
+				<component name="structure" library="db" uid="567" kind="15">
+					<properties JDBCDriver="sun.jdbc.odbc.JdbcOdbcDriver" JDBCDatabaseURL="jdbc:odbc:SLIntegration" DBUser="supply_usr" DBPassword="supply" DBDataSource="localhost" DBCatalog="servicelive_integration" OLEDBOptions="Port=3306;Option=0;"/>
+					<view ltx="35" lty="-74" rbx="284" rby="751"/>
+					<data>
+						<root scrollposition="507">
+							<header>
+								<namespaces/>
+							</header>
+							<entry name="document" expanded="1">
+								<entry name="buyers" type="table" expanded="1">
+									<entry name="buyerId" valuekeygeneration="databasegenerated"/>
+									<entry name="integrations|buyerId" type="table" expanded="1">
+										<entry name="integrationId" valuekeygeneration="databasegenerated"/>
+										<entry name="vw_batches|integrationId" type="table" expanded="1">
+											<entry name="transactions|batchId" type="table" outkey="206" expanded="1">
+												<entry name="transactionId" valuekeygeneration="databasegenerated"/>
+												<entry name="buyer_notifications|transactionId" type="table">
+													<entry name="buyerNotificationId" valuekeygeneration="databasegenerated"/>
+													<entry name="serviceorders|relatedServiceOrderId" type="table">
+														<entry name="serviceOrderId" valuekeygeneration="databasegenerated"/>
+														<entry name="customrefs_oms|serviceOrderId" type="table">
+															<entry name="customRefId" valuekeygeneration="databasegenerated"/>
+															<entry name="unitNumber" outkey="207"/>
+															<entry name="orderNumber" outkey="208"/>
+															<entry name="customerNumber" outkey="209"/>
+														</entry>
+														<entry name="tasks|serviceOrderId" type="table">
+															<entry name="taskId" valuekeygeneration="databasegenerated"/>
+															<entry name="tasks_oms|taskId" type="table">
+																<entry name="taskOmsId" valuekeygeneration="databasegenerated"/>
+															</entry>
+														</entry>
+													</entry>
+												</entry>
+												<entry name="serviceorders|transactionId" type="table" expanded="1">
+													<entry name="serviceOrderId" valuekeygeneration="databasegenerated"/>
+													<entry name="buyer_notifications|relatedServiceOrderId" type="table">
+														<entry name="buyerNotificationId" valuekeygeneration="databasegenerated"/>
+													</entry>
+													<entry name="customrefs_oms|serviceOrderId" type="table">
+														<entry name="customRefId" valuekeygeneration="databasegenerated"/>
+													</entry>
+													<entry name="tasks|serviceOrderId" type="table" outkey="210" expanded="1">
+														<entry name="taskId" valuekeygeneration="databasegenerated"/>
+														<entry name="externalSku" outkey="211"/>
+														<entry name="amount" outkey="212"/>
+														<entry name="sequence_number" outkey="213"/>
+														<entry name="tasks_oms|taskId" type="table" expanded="1">
+															<entry name="taskOmsId" valuekeygeneration="databasegenerated"/>
+															<entry name="chargeCode" outkey="214"/>
+															<entry name="coverage" outkey="215"/>
+															<entry name="type" outkey="216"/>
+															<entry name="description" outkey="217"/>
+														</entry>
+													</entry>
+												</entry>
+											</entry>
+										</entry>
+									</entry>
+								</entry>
+								<entry name="vw_batches" type="table">
+									<entry name="integrations|integrationId" type="table">
+										<entry name="integrationId" valuekeygeneration="databasegenerated"/>
+										<entry name="buyers|buyerId" type="table">
+											<entry name="buyerId" valuekeygeneration="databasegenerated"/>
+										</entry>
+									</entry>
+									<entry name="transactions|batchId" type="table">
+										<entry name="transactionId" valuekeygeneration="databasegenerated"/>
+										<entry name="buyer_notifications|transactionId" type="table">
+											<entry name="buyerNotificationId" valuekeygeneration="databasegenerated"/>
+											<entry name="serviceorders|relatedServiceOrderId" type="table">
+												<entry name="serviceOrderId" valuekeygeneration="databasegenerated"/>
+												<entry name="customrefs_oms|serviceOrderId" type="table">
+													<entry name="customRefId" valuekeygeneration="databasegenerated"/>
+												</entry>
+												<entry name="tasks|serviceOrderId" type="table">
+													<entry name="taskId" valuekeygeneration="databasegenerated"/>
+												</entry>
+											</entry>
+										</entry>
+										<entry name="serviceorders|transactionId" type="table">
+											<entry name="serviceOrderId" valuekeygeneration="databasegenerated"/>
+											<entry name="buyer_notifications|relatedServiceOrderId" type="table">
+												<entry name="buyerNotificationId" valuekeygeneration="databasegenerated"/>
+											</entry>
+											<entry name="customrefs_oms|serviceOrderId" type="table">
+												<entry name="customRefId" valuekeygeneration="databasegenerated"/>
+											</entry>
+											<entry name="tasks|serviceOrderId" type="table">
+												<entry name="taskId" valuekeygeneration="databasegenerated"/>
+												<entry name="tasks_oms|taskId" type="table">
+													<entry name="taskOmsId" valuekeygeneration="databasegenerated"/>
+												</entry>
+											</entry>
+										</entry>
+									</entry>
+								</entry>
+							</entry>
+						</root>
+						<wsdl/>
+						<database>
+							<database_connection database_kind="MySQL" import_kind="ODBC" version="5.1.51-community" name="servicelive_integration" path="servicelive_integration">
+								<properties>
+									<property name="Database Kind" value="MySQL"/>
+									<property name="Import Kind" value="ODBC"/>
+									<property name="Root Object" value="servicelive_integration"/>
+									<property name="FileDsn"/>
+									<property name="Dsn" value="SLIntegration"/>
+									<property name="Driver"/>
+									<property name="Trusted_Connection"/>
+									<property name="App"/>
+									<property name="Server" value="localhost"/>
+									<property name="Database" value="servicelive_integration"/>
+									<property name="Regional"/>
+									<property name="Languages"/>
+									<property name="Wsid"/>
+									<property name="Uid" value="supply_usr"/>
+									<property name="Pwd" value="92eTBG-NM0am0"/>
+									<property name="Port" value="3306"/>
+									<property name="Option" value="0"/>
+									<property name="Stmt"/>
+									<property name="Driver Name" value="MySQL ODBC 3.51 Driver"/>
+									<property name="Driver Version" value="3.51.17.0"/>
+									<property name="Driver Company" value="MySQL AB"/>
+									<property name="Driver File Name" value="myodbc3.dll"/>
+									<property name="Driver Full Path" value="C:\WINDOWS\system32\myodbc3.dll"/>
+									<property name="Driver Date" value="7/14/2007"/>
+									<property name="Socket"/>
+									<property name="Desc"/>
+								</properties>
+								<LocalViewStorage/>
+								<LocalRelationsStorage>
+									<LocalRelationElement name="Untitled_1">
+										<SourceTable>
+											<PathElement Name="servicelive_integration" Kind="DataSource"/>
+											<PathElement Name="servicelive_integration" Kind="Database"/>
+											<PathElement Name="integrations" Kind="Table"/>
+										</SourceTable>
+										<SourceColumns>
+											<Column name="integrationId"/>
+										</SourceColumns>
+										<DestinationTable>
+											<PathElement Name="servicelive_integration" Kind="DataSource"/>
+											<PathElement Name="servicelive_integration" Kind="Database"/>
+											<PathElement Name="vw_batches" Kind="View"/>
+										</DestinationTable>
+										<DestinationColumns>
+											<Column name="integrationId"/>
+										</DestinationColumns>
+									</LocalRelationElement>
+									<LocalRelationElement name="Untitled_2">
+										<SourceTable>
+											<PathElement Name="servicelive_integration" Kind="DataSource"/>
+											<PathElement Name="servicelive_integration" Kind="Database"/>
+											<PathElement Name="vw_batches" Kind="View"/>
+										</SourceTable>
+										<SourceColumns>
+											<Column name="batchId"/>
+										</SourceColumns>
+										<DestinationTable>
+											<PathElement Name="servicelive_integration" Kind="DataSource"/>
+											<PathElement Name="servicelive_integration" Kind="Database"/>
+											<PathElement Name="transactions" Kind="Table"/>
+										</DestinationTable>
+										<DestinationColumns>
+											<Column name="batchId"/>
+										</DestinationColumns>
+									</LocalRelationElement>
+								</LocalRelationsStorage>
+								<selections>
+									<selection>
+										<PathElement Name="servicelive_integration" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="buyer_notifications" Kind="Table"/>
+									</selection>
+									<selection>
+										<PathElement Name="servicelive_integration" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="buyers" Kind="Table"/>
+									</selection>
+									<selection>
+										<PathElement Name="servicelive_integration" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="customrefs_oms" Kind="Table"/>
+									</selection>
+									<selection>
+										<PathElement Name="servicelive_integration" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="integrations" Kind="Table"/>
+									</selection>
+									<selection>
+										<PathElement Name="servicelive_integration" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="serviceorders" Kind="Table"/>
+									</selection>
+									<selection>
+										<PathElement Name="servicelive_integration" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="tasks" Kind="Table"/>
+									</selection>
+									<selection>
+										<PathElement Name="servicelive_integration" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="tasks_oms" Kind="Table"/>
+									</selection>
+									<selection>
+										<PathElement Name="servicelive_integration" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="transactions" Kind="Table"/>
+									</selection>
+									<selection>
+										<PathElement Name="servicelive_integration" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="vw_batches" Kind="View"/>
+									</selection>
+								</selections>
+							</database_connection>
+							<recordset/>
+						</database>
+					</data>
+				</component>
+				<component name="format-string-as-decimal" library="user" blackbox="0" uid="588" kind="19" visible="0">
+					<view ltx="382" lty="404" rbx="542" rby="421"/>
+					<data>
+						<root scrollposition="1">
+							<header>
+								<namespaces>
+									<namespace/>
+								</namespaces>
+							</header>
+							<entry name="amountString" inpkey="498" componentid="574"/>
+						</root>
+						<root rootindex="1">
+							<header>
+								<namespaces>
+									<namespace/>
+								</namespaces>
+							</header>
+							<entry name="result" outkey="497" componentid="577"/>
+						</root>
+					</data>
+				</component>
+			</children>
+			<graph directed="1">
+				<edges/>
+				<vertices>
+					<vertex vertexkey="27">
+						<edges>
+							<edge vertexkey="34" edgekey="36"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="32">
+						<edges>
+							<edge vertexkey="28" edgekey="37"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="33">
+						<edges>
+							<edge vertexkey="29" edgekey="38"/>
+							<edge vertexkey="30" edgekey="39"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="85">
+						<edges>
+							<edge vertexkey="88" edgekey="94"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="204">
+						<edges>
+							<edge vertexkey="203" edgekey="205"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="206">
+						<edges>
+							<edge vertexkey="31" edgekey="218"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="207">
+						<edges>
+							<edge vertexkey="89" edgekey="219"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="208">
+						<edges>
+							<edge vertexkey="90" edgekey="220"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="209">
+						<edges>
+							<edge vertexkey="174" edgekey="221"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="210">
+						<edges>
+							<edge vertexkey="66" edgekey="222"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="211">
+						<edges>
+							<edge vertexkey="68" edgekey="223"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="212">
+						<edges>
+							<edge vertexkey="498" edgekey="499"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="213">
+						<edges>
+							<edge vertexkey="67" edgekey="225"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="214">
+						<edges>
+							<edge vertexkey="69" edgekey="226"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="215">
+						<edges>
+							<edge vertexkey="71" edgekey="227"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="216">
+						<edges>
+							<edge vertexkey="70" edgekey="228"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="217">
+						<edges>
+							<edge vertexkey="72" edgekey="229"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="405">
+						<edges>
+							<edge vertexkey="236" edgekey="406"/>
+							<edge vertexkey="245" edgekey="407"/>
+							<edge vertexkey="244" edgekey="408"/>
+							<edge vertexkey="249" edgekey="410"/>
+							<edge vertexkey="250" edgekey="411"/>
+							<edge vertexkey="251" edgekey="412"/>
+							<edge vertexkey="257" edgekey="413"/>
+							<edge vertexkey="252" edgekey="414"/>
+							<edge vertexkey="258" edgekey="415"/>
+							<edge vertexkey="259" edgekey="416"/>
+							<edge vertexkey="260" edgekey="417"/>
+							<edge vertexkey="261" edgekey="418"/>
+							<edge vertexkey="262" edgekey="419"/>
+							<edge vertexkey="263" edgekey="420"/>
+							<edge vertexkey="265" edgekey="421"/>
+							<edge vertexkey="264" edgekey="422"/>
+							<edge vertexkey="266" edgekey="423"/>
+							<edge vertexkey="267" edgekey="424"/>
+							<edge vertexkey="268" edgekey="425"/>
+							<edge vertexkey="269" edgekey="426"/>
+							<edge vertexkey="270" edgekey="427"/>
+							<edge vertexkey="271" edgekey="428"/>
+							<edge vertexkey="272" edgekey="429"/>
+							<edge vertexkey="273" edgekey="430"/>
+							<edge vertexkey="274" edgekey="431"/>
+							<edge vertexkey="275" edgekey="432"/>
+							<edge vertexkey="276" edgekey="433"/>
+							<edge vertexkey="277" edgekey="434"/>
+							<edge vertexkey="278" edgekey="435"/>
+							<edge vertexkey="279" edgekey="436"/>
+							<edge vertexkey="281" edgekey="437"/>
+							<edge vertexkey="282" edgekey="438"/>
+							<edge vertexkey="283" edgekey="439"/>
+							<edge vertexkey="284" edgekey="440"/>
+							<edge vertexkey="285" edgekey="441"/>
+							<edge vertexkey="286" edgekey="442"/>
+							<edge vertexkey="287" edgekey="443"/>
+							<edge vertexkey="288" edgekey="444"/>
+							<edge vertexkey="289" edgekey="445"/>
+							<edge vertexkey="290" edgekey="446"/>
+							<edge vertexkey="291" edgekey="447"/>
+							<edge vertexkey="293" edgekey="448"/>
+							<edge vertexkey="294" edgekey="449"/>
+							<edge vertexkey="295" edgekey="450"/>
+							<edge vertexkey="296" edgekey="451"/>
+							<edge vertexkey="297" edgekey="452"/>
+							<edge vertexkey="298" edgekey="453"/>
+							<edge vertexkey="299" edgekey="454"/>
+							<edge vertexkey="300" edgekey="455"/>
+							<edge vertexkey="301" edgekey="456"/>
+							<edge vertexkey="304" edgekey="457"/>
+							<edge vertexkey="305" edgekey="458"/>
+							<edge vertexkey="306" edgekey="459"/>
+							<edge vertexkey="307" edgekey="460"/>
+							<edge vertexkey="308" edgekey="461"/>
+							<edge vertexkey="309" edgekey="462"/>
+							<edge vertexkey="310" edgekey="463"/>
+							<edge vertexkey="311" edgekey="464"/>
+							<edge vertexkey="312" edgekey="465"/>
+							<edge vertexkey="313" edgekey="466"/>
+							<edge vertexkey="315" edgekey="467"/>
+							<edge vertexkey="317" edgekey="468"/>
+							<edge vertexkey="316" edgekey="469"/>
+							<edge vertexkey="318" edgekey="470"/>
+							<edge vertexkey="319" edgekey="471"/>
+							<edge vertexkey="320" edgekey="472"/>
+							<edge vertexkey="409" edgekey="473"/>
+							<edge vertexkey="321" edgekey="474"/>
+							<edge vertexkey="322" edgekey="475"/>
+							<edge vertexkey="323" edgekey="476"/>
+							<edge vertexkey="324" edgekey="477"/>
+							<edge vertexkey="325" edgekey="478"/>
+							<edge vertexkey="326" edgekey="479"/>
+							<edge vertexkey="327" edgekey="480"/>
+							<edge vertexkey="328" edgekey="481"/>
+							<edge vertexkey="329" edgekey="482"/>
+							<edge vertexkey="330" edgekey="483"/>
+							<edge vertexkey="303" edgekey="484"/>
+							<edge vertexkey="231" edgekey="485"/>
+							<edge vertexkey="232" edgekey="486"/>
+							<edge vertexkey="233" edgekey="487"/>
+							<edge vertexkey="234" edgekey="488"/>
+							<edge vertexkey="235" edgekey="489"/>
+							<edge vertexkey="243" edgekey="490"/>
+							<edge vertexkey="280" edgekey="491"/>
+							<edge vertexkey="292" edgekey="492"/>
+							<edge vertexkey="302" edgekey="493"/>
+							<edge vertexkey="314" edgekey="494"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="497">
+						<edges>
+							<edge vertexkey="73" edgekey="500"/>
+						</edges>
+					</vertex>
+				</vertices>
+			</graph>
+		</structure>
+	</component>
+	<component name="format-string-as-decimal" library="user" blackbox="0" editable="1" inline="1">
+		<properties/>
+		<description/>
+		<structure>
+			<children>
+				<component name="contains" library="core" uid="573" kind="5">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="31"/>
+						<datapoint pos="1" key="24"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="21"/>
+					</targets>
+					<view ltx="333" lty="-8" rbx="225" rby="-65"/>
+				</component>
+				<component name="amountString" library="core" uid="574" kind="6">
+					<properties/>
+					<sources>
+						<datapoint/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="25"/>
+					</targets>
+					<view ltx="70" lty="143" rbx="-15" rby="-53"/>
+					<data>
+						<input datatype="string"/>
+						<wsdl/>
+						<parameter usageKind="input" name="amountString"/>
+					</data>
+				</component>
+				<component name="constant" library="core" uid="575" kind="2">
+					<properties/>
+					<targets>
+						<datapoint pos="0" key="23"/>
+					</targets>
+					<view ltx="241" lty="46" rbx="175" rby="-49"/>
+					<data>
+						<constant value="." datatype="string"/>
+						<wsdl/>
+					</data>
+				</component>
+				<component name="if-else" library="core" uid="576" kind="4">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="22"/>
+						<datapoint pos="1" key="18"/>
+						<datapoint pos="2" key="14"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="29"/>
+					</targets>
+					<view ltx="795" lty="102" rbx="165" rby="-69"/>
+				</component>
+				<component name="substring-after" library="core" uid="578" kind="5">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="32"/>
+						<datapoint pos="1" key="16"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="3"/>
+					</targets>
+					<view ltx="284" lty="85" rbx="24" rby="-30"/>
+				</component>
+				<component name="constant" library="core" uid="579" kind="2">
+					<properties/>
+					<targets>
+						<datapoint pos="0" key="15"/>
+					</targets>
+					<view ltx="219" lty="138" rbx="153" rby="43"/>
+					<data>
+						<constant value="." datatype="string"/>
+						<wsdl/>
+					</data>
+				</component>
+				<component name="string-length" library="core" uid="580" kind="5">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="4"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="5"/>
+					</targets>
+					<view ltx="403" lty="92" rbx="-19" rby="-32"/>
+				</component>
+				<component name="constant" library="core" uid="581" kind="2">
+					<properties/>
+					<targets>
+						<datapoint pos="0" key="19"/>
+					</targets>
+					<view ltx="223" lty="282" rbx="113" rby="60"/>
+					<data>
+						<constant value=".00" datatype="string"/>
+						<wsdl/>
+					</data>
+				</component>
+				<component name="constant" library="core" uid="582" kind="2">
+					<properties/>
+					<targets>
+						<datapoint pos="0" key="7"/>
+					</targets>
+					<view ltx="460" lty="140" rbx="-34" rby="31"/>
+					<data>
+						<constant value="1" datatype="decimal"/>
+						<wsdl/>
+					</data>
+				</component>
+				<component name="equal" library="core" uid="583" kind="5">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="6"/>
+						<datapoint pos="1" key="8"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="9"/>
+					</targets>
+					<view ltx="528" lty="88" rbx="-4" rby="-8"/>
+				</component>
+				<component name="concat" library="core" uid="584" kind="5" growable="1" growablebasename="value">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="26"/>
+						<datapoint pos="1" key="20"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="13"/>
+					</targets>
+					<view ltx="345" lty="240" rbx="104" rby="51"/>
+				</component>
+				<component name="constant" library="core" uid="585" kind="2">
+					<properties/>
+					<targets>
+						<datapoint pos="0" key="11"/>
+					</targets>
+					<view ltx="207" lty="223" rbx="-287" rby="114"/>
+					<data>
+						<constant value="0" datatype="string"/>
+						<wsdl/>
+					</data>
+				</component>
+				<component name="concat" library="core" uid="586" kind="5" growable="1" growablebasename="value">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="28"/>
+						<datapoint pos="1" key="12"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="1"/>
+					</targets>
+					<view ltx="303" lty="173" rbx="62" rby="-16"/>
+				</component>
+				<component name="if-else" library="core" uid="587" kind="4">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="10"/>
+						<datapoint pos="1" key="2"/>
+						<datapoint pos="2" key="27"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="17"/>
+					</targets>
+					<view ltx="603" lty="118" rbx="-27" rby="-53"/>
+				</component>
+				<component name="result" library="core" uid="577" kind="7">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="30"/>
+					</sources>
+					<view ltx="954" lty="125" rbx="309" rby="25"/>
+					<data>
+						<output datatype="string"/>
+						<wsdl/>
+						<parameter usageKind="output" name="result"/>
+					</data>
+				</component>
+			</children>
+			<graph directed="1">
+				<edges/>
+				<vertices>
+					<vertex vertexkey="1">
+						<edges>
+							<edge vertexkey="2" edgekey="33"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="3">
+						<edges>
+							<edge vertexkey="4" edgekey="34"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="5">
+						<edges>
+							<edge vertexkey="6" edgekey="35"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="7">
+						<edges>
+							<edge vertexkey="8" edgekey="36"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="9">
+						<edges>
+							<edge vertexkey="10" edgekey="37"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="11">
+						<edges>
+							<edge vertexkey="12" edgekey="38"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="13">
+						<edges>
+							<edge vertexkey="14" edgekey="39"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="15">
+						<edges>
+							<edge vertexkey="16" edgekey="40"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="17">
+						<edges>
+							<edge vertexkey="18" edgekey="41"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="19">
+						<edges>
+							<edge vertexkey="20" edgekey="42"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="21">
+						<edges>
+							<edge vertexkey="22" edgekey="43"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="23">
+						<edges>
+							<edge vertexkey="24" edgekey="44"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="25">
+						<edges>
+							<edge vertexkey="26" edgekey="45"/>
+							<edge vertexkey="27" edgekey="46"/>
+							<edge vertexkey="28" edgekey="47"/>
+							<edge vertexkey="31" edgekey="48"/>
+							<edge vertexkey="32" edgekey="49"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="29">
+						<edges>
+							<edge vertexkey="30" edgekey="50"/>
+						</edges>
+					</vertex>
+				</vertices>
+			</graph>
+		</structure>
+	</component>
+</mapping>

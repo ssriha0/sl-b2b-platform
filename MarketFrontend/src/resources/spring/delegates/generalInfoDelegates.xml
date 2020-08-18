@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
+	default-lazy-init="true">
+	
+	<bean id="generalInfoDto" class="com.newco.marketplace.web.dto.provider.GeneralInfoDto" scope="prototype"/>
+	
+	<bean id="generalInfoMapper" class="com.newco.marketplace.web.utils.GeneralInfoMapper" scope="prototype"/>
+	
+	<bean name="generalInfoDelegates" class="com.newco.marketplace.web.delegatesImpl.provider.GeneralInfoDelegateImpl">
+		<constructor-arg index="0" ref="generalInfoBOImpl"/>
+		<constructor-arg index="1" ref="generalInfoMapper"/>
+		<property name="zipCodeCoverageBO">
+                	<ref bean="zipCodeCoverageBO"/>
+        </property>
+	</bean>
+	</beans>

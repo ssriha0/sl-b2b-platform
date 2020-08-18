@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created  by Shekhar (Servicelive) -->
+<xs:schema xmlns:c="http://www.servicelive.com/namespaces/common" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" elementFormDefault="qualified" jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+	<xs:simpleType name="money" >
+            <xs:restriction base='xs:decimal'>
+              <xs:totalDigits value='11' />
+              <xs:fractionDigits value='2' />
+              <xs:pattern value='[0-9][.][0-9]*' />
+              <xs:pattern value='[1-9][0-9]*[.][0-9]*' />
+              <xs:pattern value='[1-9][0-9]*' />
+            </xs:restriction>
+    </xs:simpleType>
+    	<xs:simpleType name="moneyType" >
+            <xs:restriction base='xs:decimal'>
+              <xs:totalDigits value='11' />
+              <xs:fractionDigits value='2' />
+              <xs:pattern value='[+\-]?[0-9][.][0-9]*' />
+              <xs:pattern value='[+\-]?[1-9][0-9]*[.][0-9]*' />
+              <xs:pattern value='[+\-]?[1-9][0-9]*' />
+            </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="accountTypeEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CreditCard"/> 
+			<xs:enumeration value="Bank"/>
+			<xs:enumeration value="Both"/>
+			<xs:enumeration value="None"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="promotion">
+		<xs:complexType>
+			<xs:sequence>
+			    <xs:element name="promocode" type="xs:string" minOccurs="0"/>
+				<xs:element name="promotype" type="xs:string" minOccurs="1"/>
+				<xs:element name="value" type="xs:decimal" minOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+<!-- Used in response -->
+  <xs:element name="apiResponse">
+		<xs:complexType>
+			<xs:sequence>
+			<xs:element ref="results"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="results">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="result" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="error" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="result">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="code" type="resultCodeEnum" default="0"/>
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="error">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="code" type="resultCodeEnum" default="0"/>
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:simpleType name="identificationTypeEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ProviderResourceId"/> 
+			<xs:enumeration value="BuyerResourceId"/>
+		</xs:restriction>
+	</xs:simpleType>		
+	<!-- Used in response -->	
+	<xs:simpleType name="resultCodeEnum">
+		<xs:restriction base="xs:int">
+			<xs:enumeration value="0000"/>  <!-- SUCCESS -->
+			<xs:enumeration value="0001"/>  <!-- INVALIDXML_ERROR_CODE -->
+			<xs:enumeration value="0002"/>  <!-- AUTHENTICATION_ERROR_CODE -->
+			<xs:enumeration value="0003"/>  <!-- AUTHORIZATION_ERROR_CODE -->
+			<xs:enumeration value="0004"/>  <!-- INTERNAL_SERVER_ERROR -->
+			<xs:enumeration value="0005"/>  <!-- GENERIC_ERROR -->
+			<xs:enumeration value="0006"/>  <!-- Reserve -->
+			<xs:enumeration value="0007"/>  <!-- INVALID_REQUIRED_PARAMS_FORGET  -->
+			<xs:enumeration value="0008"/>  <!-- INVALID_OPTIONAL_PARAMS_FORGET -->
+			<xs:enumeration value="0009"/>  <!-- WARNING -->
+			<xs:enumeration value="0010"/>  <!-- PROVIDER_SEARCH_MULTIPLE_MATCH -->
+			<xs:enumeration value="0011"/>  <!-- PROVIDER_SEARCH_SPELLING_MISTAKE -->
+			<xs:enumeration value="0012"/>  <!-- CREATE_BUYER_ACCOUNT_USER_ALREADY_EXISTS-->
+			<xs:enumeration value="0013"/>  <!-- CREATE_FUNDING_SOURCE_FAILED -->
+			<xs:enumeration value="0014"/>  <!-- GET_FUNDING_SOURCE_EMPTY -->
+			<xs:enumeration value="0015"/>  <!-- FAILURE -->
+			<xs:enumeration value="0709"/>  <!-- NOT AUTHORISED TO VIEW THE SO DETAILS -->
+			<xs:enumeration value="0208"/>  <!-- Problem with SO -->
+			<xs:enumeration value="0212"/>  <!-- SO Close Error -->
+			<xs:enumeration value="0016"/>  <!-- SEARCH SO ZIP VALIDATION Error -->
+			<xs:enumeration value="0017"/>  <!-- SEARCH SO MAX RESULT SET VALIDATION Error -->
+			<xs:enumeration value="1302"/>	<!-- EDIT FAILURE -->
+			<xs:enumeration value="1306"/>	<!-- NO PROVIDERS TO ROUTE Error -->
+			<xs:enumeration value="0018"/>  <!-- INVALID/MISSING PARAMETER -->
+			<xs:enumeration value="0510"/>  <!-- FEW INVALID PROVIDERS FOR POSTING -->
+			<xs:enumeration value="0511"/>  <!-- NO VALID PROVIDERS -->
+			
+			<xs:enumeration value="0213"/>  <!-- SO_RELEASE_ERROR -->
+			<xs:enumeration value="0214"/>  <!-- SO_RELEASE_ERROR_PROBLEMSTATUS -->
+			<xs:enumeration value="0215"/>  <!-- SO_RELEASE_ERROR_ACCEPTEDSTATUS -->
+			<xs:enumeration value="0216"/>  <!-- SO_RELEASE_ERROR_ACTIVESTATUS -->
+			<xs:enumeration value="0921"/>  <!-- WALLET_CREDIT_PROMO_ERROR -->
+			
+			<xs:enumeration value="1000"/>  <!-- LOGIN - USER NOT VERIFIED -->
+			<xs:enumeration value="1001"/>  <!-- LOGIN - USER ACCOUNT IS LOCKED -->
+			<xs:enumeration value="1002"/>  <!-- LOGIN - INCORRECT USERNAME\PASSOWRD -->
+			<xs:enumeration value="1004"/>  <!-- LOGIN - NO BUYER ASSOCIATED WITH THE USER -->
+			<xs:enumeration value="9999"/>  <!-- Masked Value -->
+			
+			<xs:enumeration value="1604"/>  <!-- POST FIRM SO -->
+			<xs:enumeration value="1605"/>
+			<xs:enumeration value="1606"/>
+			<xs:enumeration value="1608"/>
+			<xs:enumeration value="1607"/>
+			<xs:enumeration value="1612"/>
+
+			<xs:enumeration value="3000"/> 	<!--CREATE_FIRM_SUCCESS -->
+		    <xs:enumeration value="3001"/> 	<!-- INVALID_PRIMARY_INDUSTRY_FIRM-->
+			<xs:enumeration value="3002"/> 	<!--INVALID_CREDENTIAL_TYPE_FIRM-->
+			<xs:enumeration value="3003"/>	<!-- INVALID_BUSINESS_STATE_FIRM -->
+			<xs:enumeration value="3004"/> 	<!-- INVALID_MAILING_STATE_FIRM -->
+			<xs:enumeration value="3005"/> 	<!-- INVALID_CREDENTIAL_ISSUE_DATE_FIRM -->
+			<xs:enumeration value="3006"/>	<!-- INVALID_GENERAL_INSURANCE_EXPIRATION_DATE_FIRM -->
+			<xs:enumeration value="3007"/>	<!-- INVALID_W9_DATE_OF_BIRTH_FIRM -->
+			<xs:enumeration value="3008"/>	<!-- USERNAME_EXISTS_FIRM -->
+			<xs:enumeration value="3009"/>	<!-- MISMATCH_CREDENTIAL_TYPE_CATEGORY_FIRM -->
+			<xs:enumeration value="3010"/>	<!-- UDPATE_FIRM_SUCCESS -->
+			<xs:enumeration value="3011"/>	<!-- INVALID_FIRMID -->
+			<xs:enumeration value="3012"/>	<!-- INVALID_BUSINESS_DATE_FIRM -->
+			<xs:enumeration value="3013"/>	<!--  INVALID_BUSINESSZIP_FIRM-->
+			<xs:enumeration value="3014"/>	<!--  INVALID_MAILINGZIP_FIRM-->
+			<xs:enumeration value="3015"/>	<!-- INVALID_W9_TAX_PAYER_ID_EIN_FIRM -->
+			<xs:enumeration value="3016"/>	<!-- INVALID_W9_TAX_PAYER_ID_SSN_FIRM -->
+			<xs:enumeration value="3017"/>	<!-- INVALID_LICENSE_STATE_FIRM -->
+			<xs:enumeration value="3018"/>	<!-- INVALID_GENERAL_LIABILITY_STATE_FIRM -->
+			<xs:enumeration value="3019"/>	<!-- INVALID_VEHICLE_LIABILITY_STATE_FIRM -->
+			<xs:enumeration value="3020"/>	<!-- INVALID_WORKMANS_COMPENSATION_STATE_FIRM -->
+			<xs:enumeration value="3021"/>	<!--  INVALID_STATEZIP_W9_FIRM-->
+			<xs:enumeration value="3022"/>	<!-- INVALID_STATE_W9_FIRM -->
+			<xs:enumeration value="3023"/>	<!-- INVALID_STATE_WARRANTY_DRUG_FIRM -->
+			<xs:enumeration value="3024"/>	<!-- INVALID_STATE_WARRANTY_ETHICS_FIRM -->
+			<xs:enumeration value="3025"/>	<!--  INVALID_STATE_WARRANTY_CITIZEN_FIRM-->
+			<xs:enumeration value="3026"/>	<!-- INVALID_STATE_WARRANTY_BADGES_FIRM -->
+			<xs:enumeration value="3027"/>	<!--  INVALID_TAXPAYER_ID_FIRM-->
+			<xs:enumeration value="3028"/>	<!-- MANDATORY_W9_DATE_OF_BIRTH_FIRM -->
+			<xs:enumeration value="3029"/>	<!-- INVALID_LICENSE_VENDOR_CREDENTIAL_ID_FIRM -->
+			<xs:enumeration value="3030"/>	<!-- INVALID_GENERAL_INSURANCE_EXPIRATION_DATE_PAST_FIRM -->		
+			<xs:enumeration value="3031"/>	<!-- INVALID_VEHICLE_INSURANCE_EXPIRATION_DATE_FIRM -->	
+			<xs:enumeration value="3032"/>	<!-- INVALID_WORKMANS_INSURANCE_EXPIRATION_DATE_FIRM -->	
+			<xs:enumeration value="3033"/>	<!-- INVALID_VEHICLE_INSURANCE_EXPIRATION_DATE_PAST_FIRM -->	
+			<xs:enumeration value="3034"/>	<!-- INVALID_WORKMANS_INSURANCE_EXPIRATION_DATE_PAST_FIRM -->	
+			<xs:enumeration value="3035"/>  <!-- INVALID_GENERAL_LIABILITY_AMT -->
+			<xs:enumeration value="3036"/>  <!-- INVALID_VEHICEL_LIABILITY_AMT -->
+			<xs:enumeration value="3037"/>  <!-- INVALID_WORKMAN_LIABILITY_AMT -->
+			<xs:enumeration value="3038"/>   <!-- INVALID_USER_NAME -->
+			<xs:enumeration value="3039"/>   <!-- INVALIDE_FIRM_LICENSE -->
+			<xs:enumeration value="3250"/>   <!-- PROVIDER SKILL ADD SUCCESS -->
+			<xs:enumeration value="3251"/>   <!-- INVALID PROVIDER ID -->
+			<xs:enumeration value="3252"/>   <!-- INVALID ROOT SKILL NAME,SKILL NAME OR SKILL CATEGORY NAME -->
+			<xs:enumeration value="3253"/>   <!-- INVALID PROVIDER SKILL SERVICE TYPE  -->
+			<xs:enumeration value="3254"/>   <!-- SKILLS_ALREADY_IN_TABLE -->
+			<xs:enumeration value="3270"/>   <!-- PROVIDER SKILL REMOVE SUCCESS -->
+			<xs:enumeration value="3271"/>   <!-- GIVEN SKILLS/SERVICES IS NOT ASSOCIATED WITH THIS PROVIDER -->
+				
+			<xs:enumeration value="3200"/>  <!-- FOR PARTIAL SUCCESS -->	
+			<xs:enumeration value="3201"/>  <!-- ALL THE FIRM ID INVALID -->
+			<xs:enumeration value="3202"/>  <!-- INVALID FIRM ID-->
+			<xs:enumeration value="3203"/>  <!-- INVALID REG STATUS -->
+			<xs:enumeration value="3204"/>  <!-- ALL FIRM STATUS SUCCESS -->
+			<xs:enumeration value="3205"/>  <!-- FIRM STATUS SUCCESS --> 
+			<xs:enumeration value="3206"/>  <!-- FIRM IN REQUESTED STATUS -->
+			<xs:enumeration value="3207"/>  <!-- REASON CODE REQUIRED -->
+			<xs:enumeration value="3208"/>  <!-- INVALID_REASON CODE -->
+			<xs:enumeration value="3209"/>  <!-- INVALID_ADMIN_RESOURCE -->
+			
+			<xs:enumeration value="3100"/> <!-- PROVIDER_SUCCESS -->
+			<xs:enumeration value="3150"/> <!-- SUCCESS_UPDATE_PROVIDER -->
+			<xs:enumeration value="3101"/> <!-- INVALID_DISPATCH_STATE_ZIP -->
+			<xs:enumeration value="3102"/> <!-- USER_NAME_EXISTS -->
+			<xs:enumeration value="3103"/> <!-- INVALID_SSN -->
+			<xs:enumeration value="3104"/> <!-- INVALID_SECONDARY_CONTACT -->
+			<xs:enumeration value="3105"/> <!-- INVALID_DISPATCH_STATE -->
+			<xs:enumeration value="3106"/> <!-- INVALID_LICENSE_RESOURCE_CREDENTIAL_NUMBER_PROVIDER -->
+			<xs:enumeration value="3107"/> <!-- INVALID_START_END_TIME -->
+			<xs:enumeration value="3108"/> <!-- INVALID_LICENSE_RESOURCE_CREDENTIAL_ID_PROVIDER -->
+			<xs:enumeration value="3109"/> <!-- INCOMPLETE_UPDATE_PROVIDER_REQUEST -->
+			<xs:enumeration value="3110"/> <!-- INVALID_USER_NAME_LENGTH -->
+			<xs:enumeration value="3111"/> <!-- DUPLICATE_WEEKDAYS -->
+			<xs:enumeration value="3112 "/> <!-- INVALID LICENSE CREDENTIALS -->
+			<xs:enumeration value="3113 "/> <!-- INVALID_START_TIME_GREATER_END_TIME -->
+			
+			<xs:enumeration value="3402"/>  <!-- INVALID PROVIDER ID-->
+	        <xs:enumeration value="3403"/>  <!-- INVALID PROVIDER STATUS-->
+	        <xs:enumeration value="3406"/>  <!-- PROVIDER IN REQUESTED STATUS-->
+	        <xs:enumeration value="3407"/>  <!-- REASON CODE REQUIRED -->
+	        <xs:enumeration value="3408"/>  <!-- INVALID_REASON CODE -->
+	        <xs:enumeration value="3405"/>  <!-- PROVIDER STATUS SUCCESS --> 
+	        <xs:enumeration value="3400"/>  <!-- FOR PARTIAL SUCCESS -->
+	        <xs:enumeration value="3404"/>  <!-- ALL PROVIDER STATUS SUCCESS -->
+	        <xs:enumeration value="3401"/>  <!-- ALL THE PROVIDER ID INVALID -->
+	        <xs:enumeration value="3409"/>  <!-- INVALID_ADMIN_RESOURCE -->
+	        <xs:enumeration value="3901"/>  <!-- Get availability -->
+	        <xs:enumeration value="3902"/>  <!-- Get availability -->
+	        <xs:enumeration value="3903"/>  <!-- Get availability -->
+	        <xs:enumeration value="4501"/>  <!-- INVALID_ESTIMATE_ID -->
+	        <xs:enumeration value="4502"/>  <!-- INVALID_COMPLETED_IN -->
+	        <xs:enumeration value="4503"/>  <!-- INVALID_NO_OF_ORDERS -->
+	        
+	        <xs:enumeration value="4507"/>  <!-- INVALID_SO_PRICE -->
+	        <xs:enumeration value="4508"/>  <!-- ADDON_ISSUE -->
+	        <xs:enumeration value="4509"/>  <!-- INVALID_WF_STATE -->
+	        <xs:enumeration value="4510"/>  <!-- SEARCH_FIRMS_SUCCESS -->
+	        <xs:enumeration value="4511"/>  <!-- SEARCH_FIRMS_DATE_ERROR -->
+	        <xs:enumeration value="4512"/>  <!-- SEARCH_FIRMS_DATE_ERROR -->
+	        <xs:enumeration value="4513"/>  <!-- SEARCH_FIRMS_DATE_ERROR -->
+	        <xs:enumeration value="4021"/>  <!-- NO_SKUS_AVAILABLE_FOR_BUYER -->
+	        <xs:enumeration value="4514"/>  <!-- SEARCH_FIRMS_CATEG_ID_ERROR -->
+	        <xs:enumeration value="4515"/>  <!-- SEARCH_FIRMS_SERVICE_TYPE_ERROR -->
+	        <xs:enumeration value="4516"/>  <!-- SEARCH_FIRMS_MAX_DISTANCE_ERROR -->
+	        <xs:enumeration value="4517"/>  <!-- SEARCH_FIRMS_PAGE_SIZE_ERROR -->
+	        <xs:enumeration value="4518"/>  <!-- SEARCH_FIRMS_PAGE_NUM_ERROR -->
+	        <xs:enumeration value="4519"/>  <!-- SEARCH_FIRMS_MIN_RATING_ERROR -->
+	        <xs:enumeration value="4520"/>  <!-- SEARCH_FIRMS_MAX_RATING_ERROR -->
+	        
+	        <xs:enumeration value="4521"/>  <!-- SEARCH_PROVIDERS_SKU_ERROR -->
+	        <xs:enumeration value="4522"/>  <!-- SEARCH_FIRMS_MAX_RATING_ERROR -->
+	        
+	        
+	        
+	        <xs:enumeration value="0800"/>  <!-- DOCUMENT_UPLOAD_ERROR -->
+	        <xs:enumeration value="0801"/>  <!-- DOCUMENT_UPLOAD_ERROR -->
+	        <xs:enumeration value="0802"/>  <!-- DOCUMENT_UPLOAD_ERROR -->
+	        <xs:enumeration value="0803"/>  <!-- DOCUMENT_UPLOAD_ERROR -->
+	        <xs:enumeration value="0804"/>  <!-- DOCUMENT_UPLOAD_ERROR -->
+	        <xs:enumeration value="0805"/>  <!-- DOCUMENT_UPLOAD_ERROR -->
+	        <xs:enumeration value="0806"/>  <!-- DOCUMENT_UPLOAD_ERROR -->
+	        <xs:enumeration value="0807"/>  <!-- DOCUMENT_UPLOAD_ERROR -->
+	        <xs:enumeration value="0808"/>  <!-- DOCUMENT_UPLOAD_ERROR -->
+	        <xs:enumeration value="0809"/>  <!-- DOCUMENT_UPLOAD_ERROR -->
+	        <xs:enumeration value="0810"/>  <!-- DOCUMENT_UPLOAD_ERROR -->
+	        <xs:enumeration value="0811"/>  <!-- DOCUMENT_UPLOAD_ERROR -->
+	        <xs:enumeration value="0812"/>  <!-- DOCUMENT_UPLOAD_ERROR -->
+	        <xs:enumeration value="0813"/>  <!-- DOCUMENT_UPLOAD_ERROR -->
+	        <xs:enumeration value="4013"/>  <!-- INVALID_ESTIMATE_ID -->	        
+	        <xs:enumeration value="4014"/>  <!-- INVALID_ESTIMATE_PRICE -->
+	        <xs:enumeration value="4015"/>  <!-- NO_ESTIMATE_CHANGE -->
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- Identification  -->
+	
+	
+	<xs:simpleType name="emailType">
+		<xs:restriction base="xs:string">
+	 		<xs:pattern value=".+@.+[.]+.+"/>
+		</xs:restriction>
+    </xs:simpleType>    
+	<xs:simpleType name="soType">
+		<xs:restriction base="xs:string">
+	 		<xs:pattern value="[0-9]{3}-[0-9]{4}-[0-9]{4}-[0-9]{2}"/>
+		</xs:restriction>
+    </xs:simpleType>    
+	<xs:simpleType name="buyerType">
+		<xs:restriction base="xs:int">
+			<xs:enumeration value="3"/><!-- Enterprise buyer -->
+			<xs:enumeration value="5"/><!-- Simple buyer -->
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="booleanIndicatorType">
+		<xs:restriction base="xs:int">
+			<xs:enumeration value="1"/><!-- Yes -->
+			<xs:enumeration value="0"/><!-- No, default -->
+		</xs:restriction>
+	</xs:simpleType> 
+	<xs:simpleType name="buyerRoleType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Pro"/><!-- Enterprise buyer -->
+			<xs:enumeration value="Simple"/><!-- Simple buyer -->
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="PhoneType">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="\d{3}-\d{3}-\d{4}"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

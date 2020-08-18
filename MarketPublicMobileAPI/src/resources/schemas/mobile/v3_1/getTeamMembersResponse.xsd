@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified">
+  <xs:include schemaLocation="../../common.xsd"/>
+  <xs:include schemaLocation="../../soMobileCommon.xsd" />
+  <xs:element name="getTeamMembersResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="results"/>
+        <xs:element name="teamMemberDetails" type="teamMemberDetailsType" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  	
+  <xs:complexType name="teamMemberDetailsType">
+  	<xs:sequence>
+  		<xs:element name="totalUsers" type="xs:integer" minOccurs="0"/>
+  		<xs:element name="teamMemberDetail" type="teamMemberDetailType" minOccurs="0" maxOccurs="unbounded"/>
+  	</xs:sequence>
+  </xs:complexType> 
+  
+   <xs:complexType name="teamMemberDetailType">
+  	<xs:sequence>
+  		<xs:element name="resourceId" type="xs:integer" minOccurs="0"/>
+  		<xs:element name="firstName" type="xs:string" minOccurs="0"/>
+  		<xs:element name="lastName" type="xs:string" minOccurs="0"/>
+  		<xs:element name="title" type="xs:string" minOccurs="0"/>
+  		<xs:element name="phoneNumber" type="xs:string" minOccurs="0"/>
+  		<xs:element name="memberStatus" type="xs:string" minOccurs="0"/>
+  		<xs:element name="backgroundCheckStatus" type="xs:string" minOccurs="0"/>
+  		<xs:element name="backgroundcheckRecertifyInd" type="xs:boolean" minOccurs="0"/>
+  		<xs:element name="marketStatus" type="marketStatusType" minOccurs="0"/>
+  		<xs:element name="documentId" type="xs:integer" minOccurs="0"/>
+  	</xs:sequence>
+  </xs:complexType> 
+  
+  <xs:simpleType name="marketStatusType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Active" />
+			<xs:enumeration value="InActive" />
+		</xs:restriction>
+  </xs:simpleType>
+  
+</xs:schema>

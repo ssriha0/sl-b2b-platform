@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+    default-autowire="byName">
+ 
+ 	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"/>
+	
+	<bean id="dataSourceMySQL" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName" value="jdbc/ServiceLiveMySqlDS" />
+	</bean>
+
+    <bean id="orderFulfillmentDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName" value="jdbc/ServiceLiveMySqlDS" />
+	</bean>
+
+    <bean id="integrationDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName" value="jdbc/ServiceLiveIntegrationDS" />
+	</bean>
+
+
+	<bean id="jbpm-config-name" class="java.lang.String">
+		<constructor-arg value="of.jbpm.jobs.cfg.xml" />
+	</bean>
+
+	<bean id="ofJobExecutor" class="com.servicelive.orderfulfillment.jobs.OFJobExecutor" >
+        <property name="environmentFactory" ref="jbpmConfiguration"/>
+	</bean>
+	
+	<bean id="jobsService" class="com.servicelive.orderfulfillment.jobs.JobsService" scope="prototype">
+		<property name="qckLkup" ref="quickLookupCollection" />
+		<property name="remoteServiceStartupInitializer" ref="remoteServiceDependentStartupTrigger" />
+		<property name="orderBuyers" ref="orderBuyerCollection" />
+	</bean>
+    
+    <!--ServiceOrder spring contexts-->
+    <import resource="classpath:/com/servicelive/orderfulfillment/contexts/orderfulfillmentContext.xml"/>
+
+    <!--Integration srpring context-->
+    <import resource="classpath:com/servicelive/orderfulfillment/integration/context/integrationContext.xml"/>
+
+    <bean id="remoteServiceDependentStartupTrigger" class="com.servicelive.orderfulfillment.common.ControllerForRemoteServiceStartupDependentInitializer">
+        <constructor-arg index="0" ref="remoteServicesStartupChecker" />
+        <constructor-arg index="1">
+            <list>
+                <ref bean="remoteServiceDependentOrderBuyerInitializerForSears" />
+                <ref bean="remoteServiceDependentOrderBuyerInitializerForAssurant" />
+                <ref bean="remoteServiceDependentOrderBuyerInitializerForHsr" />
+                <ref bean="quickLookupCollection" />
+                <ref bean="ofJobExecutor" />
+                <ref bean="integrationContextInitializer" />
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="remoteServicesStartupChecker" class="com.servicelive.orderfulfillment.common.RemoteServicesStartupChecker">
+        <property name="remoteServiceCheckers">
+            <list>
+                <ref bean="marketPlatformRemoteServiceChecker" />
+                <ref bean="walletRemoteServiceChecker" />
+            </list>
+        </property>
+    </bean>
+
+</beans>

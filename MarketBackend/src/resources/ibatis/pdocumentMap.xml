@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="pdocument">
+	<typeAlias alias="pdocument" type="com.newco.marketplace.vo.provider.DocumentVO"/>
+	
+		
+		<select id="pdocument.query_by_document_id" parameterClass="pdocument" resultClass="pdocument">
+		
+		select doc_category_id as docCategoryId, 
+				document_id AS documentId,
+				vendor_id AS vendorId,
+				descr as description, 
+				title as title,
+				file_name as fileName,
+				format as format,
+				source as createdDate, 
+				keywords as keywords, 
+				expire_date as expireDate, 
+				purge_date as purgeDate,
+				modified_date as  lastUpdateTimestamp
+		from document 
+		where document_id = #documentId#
+	</select>
+	
+		<select id="pdocument.query_metadata_by_document_id" parameterClass="pdocument" resultClass="pdocument">
+		
+		select doc_category_id as docCategoryId, 
+				document_id AS documentId,
+				vendor_id AS vendorId,
+				descr as description, 
+				title as title,
+				file_name as fileName,
+				format as format,
+				source as createdDate, 
+				keywords as keywords, 
+				expire_date as expireDate, 
+				purge_date as purgeDate,
+				modified_date as  lastUpdateTimestamp
+		from document 
+		where document_id = #documentId#
+	</select>
+	
+	<insert id="pdocument.insert" parameterClass="pdocument">
+		insert into document
+			(doc_category_id, 
+			vendor_id,
+			descr,
+			title,
+			file_name,
+			format,
+			source,
+			keywords,
+			expire_date,
+			purge_date)			
+		values(#docCategoryId#,
+			   #vendorId#,
+			   #description#,
+			   #title#,
+			   #fileName#,
+			   #format#,
+			   #source#,
+			   #keywords#,
+			   #expireDate#,
+			   #purgeDate#)
+       <selectKey resultClass="int">
+            SELECT last_insert_id() as documentId
+        </selectKey>    
+	</insert>
+	
+	<update id="pdocument.updateBlob" parameterClass="pdocument">
+		update document
+			set document = #blobBytes#
+		where document_id = #documentId#
+	</update>
+	<update id="pdocument.updateAll" parameterClass="pdocument">
+		update document
+				<dynamic prepend="	set">
+				<isNotNull prepend=", " property="description">descr = #description#</isNotNull>
+				<isNotNull prepend=", " property="docCategoryId">doc_category_id = #docCategoryId#</isNotNull>
+				<isNotNull prepend=", " property="vendorId">vendor_id = #vendorId#</isNotNull>
+				<isNotNull prepend=", " property="description">descr = #description#</isNotNull>
+				<isNotNull prepend=", " property="title">title = #title#</isNotNull>
+				<isNotNull prepend=", " property="fileName">file_name = #fileName#</isNotNull>
+				<isNotNull prepend=", " property="format">format = #format#</isNotNull>
+				<isNotNull prepend=", " property="source">source = #source#</isNotNull>
+				<isNotNull prepend=", " property="keywords">keywords = #keywords#</isNotNull>
+				<isNotNull prepend=", " property="expireDate">expire_date = #expireDate#</isNotNull>
+				<isNotNull prepend=", " property="purgeDate">purge_date = #purgeDate#</isNotNull>
+    		</dynamic>		
+		where document_id = #documentId#
+	</update>
+	
+</sqlMap>

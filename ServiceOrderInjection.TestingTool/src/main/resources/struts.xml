@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+
+<!DOCTYPE struts PUBLIC  
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN" 
+    "http://struts.apache.org/dtds/struts-2.0.dtd">   
+
+<struts>
+	<package name="integrationTest" extends="struts-default">
+	
+		<interceptors>
+			<interceptor name="redirectMessage"
+				class="com.servicelive.integrationtest.util.RedirectMessageInterceptor" />
+			<interceptor-stack name="myStack">
+				<interceptor-ref name="redirectMessage" />
+				<interceptor-ref name="paramsPrepareParamsStack" />
+			</interceptor-stack>
+		</interceptors>
+		
+		<default-interceptor-ref name="myStack" />
+		<default-class-ref class="defaultAction" />
+	
+		<action name="selectFiles" class="com.servicelive.integrationtest.action.SelectFilesAction">  
+			<result name="success">/jsp/selectFiles.jsp</result>
+			<result name="input">/jsp/selectFiles.jsp</result>
+		</action>
+		
+		<action name="sendToEsb" class="com.servicelive.integrationtest.action.SendToEsbAction">  
+			<result name="success">/jsp/sendToEsb.jsp</result>
+			<result name="input">/jsp/sendToEsb.jsp</result>
+			<result name="error" type="redirect-action">
+				<param name="actionName">selectFiles</param>
+			</result>  
+		</action>
+		
+		<action name="outputReport" class="com.servicelive.integrationtest.action.OutputReportAction">  
+			<result name="success">/jsp/outputReport.jsp</result>
+			<result name="error" type="redirect-action">
+				<param name="actionName">selectFiles</param>
+			</result>  
+		</action>
+		
+	</package>  
+</struts>

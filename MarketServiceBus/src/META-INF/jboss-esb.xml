@@ -1,0 +1,1033 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<jbossesb
+	xmlns="http://anonsvn.labs.jboss.com/labs/jbossesb/trunk/product/etc/schemas/xml/jbossesb-1.0.1.xsd"
+	parameterReloadSecs="5">
+	<!--
+		A This is a container for the providers referenced in the jboss-esb
+		configration file
+	-->
+	<providers>
+		<jms-provider name="ServiceLiveEventsProvider"
+			connection-factory="ConnectionFactory">
+			<!-- connection-factory = JNDI name for JMS Connection Factory -->
+			
+		<!-- ################################################################
+		   - # This provider configuration needs to subscribe to the
+		   - # ServiceLiveEvent topic, hosted by the WebSphere MQ (WMQ)
+		   - # infrastructure. JBoss ESB does not have support for using
+		   - # a WMQ Resource Adapter (RA) in versions prior to 4.3. For more
+		   - # details, see <https://jira.jboss.org/jira/browse/JBESB-1563>
+		   - # and the second paragraph in
+		   - # <http://community.jboss.org/wiki/HowtoconfiguretheIBMMQadapterforusewithJBossESB>.
+		   - #
+		   - # Further, JBoss 4.2.1 and prior have an issue with the JMS
+		   - # Gateway Listener not looking up Topic names in JNDI, and
+		   - # instead attempting to create a new topic every time (see
+		   - # <http://community.jboss.org/message/506456> and
+		   - # <https://jira.jboss.org/jira/browse/JBESB-1583> for more
+		   - # details).
+		   - #  
+		   - # Since ServiceLive is currently using JBoss ESB 4.2.1, the
+		   - # JMS Gateway Listeners have been disabled in the configuration
+		   - # below. In addition, the JMS ESB Listeners are pointing to
+		   - # topics hosted by JBoss MQ, the definition for which is in the
+		   - # following file within this project: jbmq-topic-service.xml.
+		   - #
+		   - # Since the JMS Gateway Listeners are disabled, the services
+		   - # relying on JMS providers aren't really operational - no one's
+		   - # delivering messages to the ESB queues. Since the purpose of
+		   - # these services is to react to ServiceLiveEvents, we've bridged
+		   - # the gap by leveraging capabilities from the ServiceLiveBus
+		   - # project. That project provides an EventAdapter that is capable
+		   - # of subscribing to the ServiceLiveEvents topic, and delivering
+		   - # filtered messages to listeners that implement the
+		   - # ServiceLiveEventListener interface, and register with the
+		   - # EventAdapter. All of this is managed through Spring
+		   - # configuration, which for this projects is supplied in the
+		   - # eventsContext.xml file.
+		   - # 
+		   - # Once ServiceLive upgrades to JBoss ESB 4.3 or later, the
+		   - # following configuration changes will need to be made:
+		   - #    1. Remove the EventAdapter based subscription to the
+		   - #       ServiceLiveEvent topic. This boils down to removing
+		   - #       the slBusEventsContext.xml file.
+		   - #    2. Enable the JMS Gateway Listeners in the various
+		   - #       <service> configurations
+		   - #    3. Update the destination names in the various topics
+		   - #    4. Consider converting this jms-provider to a
+		   - #       jms-jca-provider. Either way, the connection-factory
+		   - #       should point to a WMQ RA connection factory instead
+		   - #       of a JBoss MQ connection factory. (Remember that the
+		   - #       connection-factory needs the JNDI name!)
+		   - #    5. Consider converting the ESB Listeners to be topic-based
+		   - #       instead of queue-based, to take advantage of:
+		   - #       a. Potentially fewer destinations to maintain - you might
+		   - #          might be able to get away with a single topic with
+		   - #          appropriate message selectors
+		   - #       b. Fault-tolerance through durable subscriptions
+		   - #
+		   - ################################################################
+		 -->
+			<jms-bus busid="AssurantServiceOrderEventGatewayChannel">
+				<!-- dest-name = JNDI name of the queue or topic -->
+				<jms-message-filter dest-name="topic/ServiceLiveEvent"
+					dest-type="TOPIC"
+					selector="EVENT_TYPE= 'com.servicelive.bus.event.order.ServiceOrderEvent' AND BUYER_COMPANY_ID = 1085 AND ORDER_EVENT IN ('CREATED', 'POSTED', 'ACCEPTED', 'COMPLETED', 'SUBSTATUS_CHANGE')"
+					persistent="true" />
+			</jms-bus>
+			
+			<jms-bus busid="AssurantServiceOrderEventEsbChannel">
+				<!-- dest-name = JNDI name of the queue or topic -->
+				<jms-message-filter dest-name="queue/assurantServiceOrderEventEsb"
+					dest-type="QUEUE" persistent="true" />
+			</jms-bus>
+			
+			<jms-bus busid="SearsRIOrderClosedEventGatewayChannel">
+				<!-- dest-name = JNDI name of the queue or topic -->
+				<jms-message-filter dest-name="topic/ServiceLiveEvent"
+					dest-type="TOPIC"
+					selector="EVENT_TYPE= 'com.servicelive.bus.event.order.ServiceOrderEvent' AND BUYER_COMPANY_ID = 1000 AND ORDER_EVENT = 'CLOSED'"
+					persistent="true" />
+			</jms-bus>
+
+			<jms-bus busid="SearsRIOrderClosedEventEsbChannel">
+				<!-- dest-name = JNDI name of the queue or topic -->
+				<jms-message-filter dest-name="queue/searsRiServiceOrderEventEsb"
+					dest-type="QUEUE" persistent="true" />
+			</jms-bus>
+
+			<jms-bus busid="SearsHSROrderAcceptedEventGatewayChannel">
+				<!-- dest-name = JNDI name of the queue or topic -->
+				<jms-message-filter dest-name="topic/ServiceLiveEvent"
+					dest-type="TOPIC"
+					selector="EVENT_TYPE= 'com.servicelive.bus.event.order.ServiceOrderEvent' AND BUYER_COMPANY_ID = 3000 AND ORDER_EVENT = 'ACCEPTED'"
+					persistent="true" />
+			</jms-bus>
+			
+			<jms-bus busid="SearsHSROrderAcceptedEventEsbChannel">
+				<!-- dest-name = JNDI name of the queue or topic -->
+				<jms-message-filter dest-name="queue/searsHsrServiceOrderEventEsb"
+					dest-type="QUEUE" persistent="true" />
+			</jms-bus>
+		</jms-provider>
+		
+		<bus-provider name="CustomProvider">
+			<property name="provider-property" value="buprovider-prop-value" />
+			<bus busid="custom-bus">
+				<property name="bus-property" value="bus-prop-value" />
+			</bus>
+		</bus-provider>
+
+		<fs-provider name="FSprovider1">
+			<fs-bus busid="startOMSGwChannel">
+				<fs-message-filter directory="/appl/sl/iss/indata"
+					input-suffix=".startProcessGW" work-suffix=".startProcessGWWorking"
+					post-delete="true" error-delete="true" />
+			</fs-bus>
+
+			<fs-bus busid="startOMSIntegrationGwChannel">
+				<fs-message-filter directory="/appl/sl/iss/new/indata"
+					input-suffix=".startProcessGW" work-suffix=".startProcessGWWorking"
+					post-delete="true" error-delete="true" />
+			</fs-bus>
+
+			<fs-bus busid="startASSURANTGwChannel">
+				<fs-message-filter directory="/appl/sl/assurant/indata"
+					input-suffix=".done" work-suffix=".doneWorking" post-delete="true"
+					error-delete="true" />
+			</fs-bus>
+
+			<fs-bus busid="startASSURANTIntegrationGwChannel">
+				<fs-message-filter directory="/appl/sl/assurant/new/indata"
+					input-suffix=".done" work-suffix=".doneWorking" post-delete="true"
+					error-delete="true" />
+			</fs-bus>
+
+
+			<fs-bus busid="startNPSCallCloseGwChannel">
+				<fs-message-filter directory="/appl/sl/iss/callclose"
+					input-suffix=".npscallclose" work-suffix=".npscallcloseWorking"
+					post-delete="true" error-delete="true" />
+			</fs-bus>
+			
+			<fs-bus busid="startNPSCloseAuditGwChannel">
+				<fs-message-filter directory="/appl/sl/iss/new/callcloseaudit"
+					input-suffix=".npsCallCloseAudit" work-suffix=".npsCallCloseAuditWorking"
+					post-delete="true" error-delete="true" />
+			</fs-bus>
+			
+            <fs-bus busid="startNPSCancelAuditGwChannel">
+				<fs-message-filter directory="/appl/sl/iss/new/cancelaudit"
+					input-suffix=".npsCancelAudit" work-suffix=".npsCancelAuditWorking"
+					post-delete="true" error-delete="true" />
+			</fs-bus>
+			
+			<fs-bus busid="startHSRGwChannel">
+				<fs-message-filter directory="/appl/sl/hsr/indata"
+					input-suffix=".startProcessHSR" work-suffix=".startProcessHSRWorking"
+					post-delete="true" error-delete="true" />
+			</fs-bus>
+			
+			<fs-bus busid="startHSRIntegrationGwChannel">
+				<fs-message-filter directory="/appl/sl/hsr/new/indata"
+					input-suffix=".startProcessHSR" work-suffix=".startProcessHSRWorking"
+					post-delete="true" error-delete="false"
+					error-directory="/appl/sl/hsr/new/errors" error-suffix=".esbERROR" />
+			</fs-bus>
+			
+			<fs-bus busid="startFileUploadGwChannel">
+				<fs-message-filter directory="/appl/sl/fileUpload/indata"
+					input-suffix=".xls" work-suffix=".xlsWorking"
+					post-delete="true" error-delete="false"
+					error-directory="/appl/sl/fileUpload/errors"
+					error-suffix=".esbERROR" />
+			</fs-bus>
+
+			<fs-bus busid="startNPSCallCloseAuditGwChannel">			 
+
+				<fs-message-filter directory="/appl/sl/iss/callcloseaudit"
+					input-suffix=".npsCallCloseAudit"
+					work-suffix=".npsCallCloseAuditWorking"
+					post-delete="true" error-delete="true" />		
+			</fs-bus> 
+				
+			<fs-bus busid="startOMSEsbChannel">
+				<fs-message-filter directory="/appl/sl/iss/indata"
+					input-suffix=".startProcessESB" post-delete="true"
+					error-delete="true" />
+			</fs-bus>
+			
+			<fs-bus busid="startOMSIntegrationEsbChannel">
+				<fs-message-filter directory="/appl/sl/iss/new/indata"
+					input-suffix=".startProcessESB" post-delete="true"
+					error-delete="true" />
+			</fs-bus>
+			
+			<!-- THIS CODE IS GOING DARK IN R4_1 WILL BE IN LIGHT in R4_1_1
+			<fs-bus busid="startOMSEsbChannel1">
+				<fs-message-filter directory="/appl/sl/iss/indata"
+					input-suffix=".startProcessESBQUEUE" post-delete="false"
+					error-delete="false" />
+			</fs-bus>
+ -->
+
+			<fs-bus busid="startASSURANTEsbChannel">
+				<fs-message-filter directory="/appl/sl/assurant/indata"
+					input-suffix=".startProcessESB" post-delete="true" error-delete="true" />
+			</fs-bus>
+
+			<fs-bus busid="startASSURANTIntegrationEsbChannel">
+				<fs-message-filter directory="/appl/sl/assurant/new/indata"
+					input-suffix=".startProcessESB" post-delete="true" error-delete="true" />
+			</fs-bus>
+
+			<fs-bus busid="startNPSCallCloseEsbChannel">
+				<fs-message-filter directory="/appl/sl/iss/callclose"
+					input-suffix=".startProcessESB" post-delete="true" error-delete="true" />
+			</fs-bus>
+			
+			<fs-bus busid="startNPSCloseAuditEsbChannel">
+				<fs-message-filter directory="/appl/sl/iss/new/callcloseaudit"
+					input-suffix=".startProcessESB" 
+					post-delete="true" error-delete="true" />
+			</fs-bus>
+			
+			<fs-bus busid="startNPSCancelAuditEsbChannel">
+				<fs-message-filter directory="/appl/sl/iss/new/cancelaudit"
+					input-suffix=".startProcessESB" 
+					post-delete="true" error-delete="true" />
+			</fs-bus>
+			
+			<fs-bus busid="startHSREsbChannel">
+				<fs-message-filter directory="/appl/sl/hsr/indata"
+					input-suffix=".startProcessESB" post-delete="true" error-delete="true" />
+			</fs-bus>
+			
+			<fs-bus busid="startHSRIntegrationEsbChannel">
+				<fs-message-filter directory="/appl/sl/hsr/new/indata"
+					input-suffix=".startProcessESB" work-suffix=".startProcessHSRWorking"
+					post-delete="true" error-delete="false"
+					error-directory="/appl/sl/hsr/new/errors" error-suffix=".esbERROR" />
+			</fs-bus>
+			
+			<fs-bus busid="startFileUploadEsbChannel">
+				<fs-message-filter directory="/appl/sl/fileUpload/indata"
+					input-suffix=".xlsESB" work-suffix=".xlsESBWorking"
+					post-delete="true" error-delete="false"
+					error-directory="/appl/sl/fileUpload/errors" error-suffix=".esbERROR" />
+			</fs-bus>
+
+			<fs-bus busid="startNPSCallCloseAuditEsbChannel">
+				<fs-message-filter directory="/appl/sl/iss/callcloseaudit"
+					input-suffix=".startProcessESB" post-delete="true"
+					error-delete="true" />
+			</fs-bus>
+			
+		</fs-provider>
+
+		<jms-provider name="WSMQJMSProvider" 
+ 			connection-factory="jms/qcf/MQQueueConnectionFactory" >
+               <jms-bus busid="startOmsMqGwChannel">
+                   <jms-message-filter
+                       dest-type="QUEUE"
+                       dest-name="wsmq/ServiceOrderQueue"
+                       acknowledge-mode ="AUTO_ACKNOWLEDGE"
+                       selector="JMSCorrelationID='1'"  />
+
+               </jms-bus>
+         </jms-provider>
+         
+         <jms-provider name="JBossMQ" connection-factory="ConnectionFactory">
+              <jms-bus busid="startOmsMqEsbChannel">
+                  <jms-message-filter
+                      dest-type="QUEUE"
+                      dest-name="queue/searsRiServiceOrderEsb1" />
+
+              </jms-bus>
+          </jms-provider>
+  
+		<schedule-provider name="ScheduledMessagesProvider" >
+			<simple-schedule scheduleid="every-1-second-schedule"
+				startDate="2010-01-01T00:00:00-05:00" endDate="2050-12-31T23:59:59-05:00"
+				execCount="-1" frequency="1"  />
+				
+			<simple-schedule scheduleid="every-1-minute-schedule"
+				startDate="2010-01-01T00:00:00-05:00" endDate="2050-12-31T23:59:59-05:00"
+				execCount="-1" frequency="60"  />
+				
+			<simple-schedule scheduleid="every-5-minutes-schedule"
+				startDate="2010-01-01T00:00:00-05:00" endDate="2050-12-31T23:59:59-05:00"
+				execCount="-1" frequency="300"  />
+				
+			<simple-schedule scheduleid="every-15-minutes-schedule"
+				startDate="2010-01-01T00:00:00-05:00" endDate="2050-12-31T23:59:59-05:00"
+				execCount="-1" frequency="900"  />
+				
+			<simple-schedule scheduleid="every-1-hour-schedule"
+				startDate="2010-01-01T00:00:00-05:00" endDate="2050-12-31T23:59:59-05:00"
+				execCount="-1" frequency="3600"  />
+
+			<simple-schedule scheduleid="every-2-hours-schedule"
+				startDate="2010-01-01T00:00:00-05:00" endDate="2050-12-31T23:59:59-05:00"
+				execCount="-1" frequency="7200"  />
+
+			<simple-schedule scheduleid="every-4-hours-schedule"
+				startDate="2010-01-01T00:00:00-05:00" endDate="2050-12-31T23:59:59-05:00"
+				execCount="-1" frequency="14400"  />
+
+			<simple-schedule scheduleid="every-6-hours-schedule"
+				startDate="2010-01-01T00:00:00-05:00" endDate="2050-12-31T23:59:59-05:00"
+				execCount="-1" frequency="21600"  />
+		</schedule-provider>
+	</providers>
+
+	<!--services: A container for services-->
+	<!--service: A service has listener or gateways and a list of action-->
+	<!--
+		service category:The service category will be used to store a
+		reference to this service in the registry
+	-->
+	<!--
+		name: The service name will be used to store a reference to this
+		service in the registry
+	-->
+	<!--
+		description: The service description which stored with this service in
+		the registry, so that the purpose of this service can be understood
+	-->
+	<!-- listeners :A container for all listener for a service -->
+	<!--
+		A listener is a listener or a gateway. The listener defines to which
+		bus the service is listening. The service can simultaniously listen to
+		multiple buses
+	-->
+	<!--
+		busidref:: A reference to an existing bus, as defined in the 'buses'
+		section of this jbossesb config
+	-->
+	<!--actions: A container for actions belonging to this service -->
+	<!--
+		action: An action which will act on the message when it is received by
+		the service. Actions can be chained
+	-->
+	<!--
+		action name: The name of the method on the action that needs to be
+		called when the message is received
+	-->
+	<!--
+		action class: The full classname of the java class in which this
+		action is defined in class attribute
+	-->
+	<services>
+		<service category="ServiceLive_OMS_MQ_Service"
+			name="OMS_MQ_Service"
+			description="OMS Staging and Injection via MQ">
+
+			<listeners>
+				<jms-listener name="MQ-Gateway"
+					busidref="startOmsMqGwChannel" is-gateway="true"
+					maxThreads="1" />
+
+    			  <jms-listener name="esbMQListener"
+	                  busidref="startOmsMqEsbChannel" maxThreads="1" />
+
+			</listeners>
+
+			<actions mep="OneWay" >
+			<!--
+			   - TEMPORARILY REMOVING. Queue-based injection should not 
+			   - redirect to file-based injection
+			   -=============================================================
+			 	<action name="writeForGateway"
+					class="com.servicelive.esb.actions.ServiceOrderMessageWriteFileForGatewayAction"
+					process="writeFileForGateway">
+               		<property name="gatewayDir" value="/appl/sl/iss/indata" />
+               		<property name="input-suffix" value=".startProcessGW" />
+               	</action>
+			-->
+			 	<action name="serviceOrderMarshaller"
+					class="com.servicelive.esb.actions.ServiceOrderMessageUnMarshallerAction"
+					process="unmarshalPayload" />
+					
+				<action name="serviceOrderBranchAction"
+					class="com.servicelive.esb.actions.RIBranchAction"
+					process="branch" >
+					<property name="inputSuffix" value=".startProcessGW" />
+				</action>
+
+               	<action name="serviceOrderStaging"
+					class="com.servicelive.esb.actions.ServiceOrdersStagingAction"
+					process="stageServiceOrders" />
+               	
+				<action name="marginAndLeadTimeRetriever"
+					class="com.servicelive.esb.actions.MarginAndLeadTimeRetrieverAction"
+					process="retrieveJobCodeInfo" />
+
+				<action name="createDraftRequestMapper"
+					class="com.servicelive.esb.actions.CreateDraftRequestMapperAction"
+					process="mapData" />
+
+				<action name="omsCreateDraftRequestTranslator"
+					class="com.servicelive.esb.actions.OMSCreateDraftRequestTranslatorAction"
+					process="translateData" />
+					
+				<action name="omsRemoveLegacyOrders"
+					class="com.servicelive.esb.actions.RemoveLegacyOrdersAction"
+					process="removeLegacyOrders" />
+
+				<action name="createDraftRequestProcessor"
+					class="com.servicelive.esb.actions.CreateDraftRequestProcessorAction"
+					process="dispatchRequest" />
+
+			</actions>
+		</service>
+		
+ 		<service category="ServiceLive_OMS_Service"
+			name="OMS_Service"
+			description="OMS Staging and Injection">
+
+			<listeners>
+				<listener name="Gateway" busidref="custom-bus" maxThreads="1"
+					is-gateway="true">
+					<property name="gatewayClass"
+						value="com.servicelive.esb.listener.OrderInjectCustomGateway" />
+					<property name="frequency" value="10" />
+					<property name="directory" value="/appl/sl/iss/indata" />
+					<property name="input-suffix" value=".startProcessGW" />
+					<property name="maxFiles" value="6" />
+				</listener>
+				
+				<fs-listener name="ESB-Listener" busidref="startOMSEsbChannel"
+					maxThreads="6" />
+			</listeners>
+			<!--
+				<listeners> <fs-listener name="Gateway" busidref="startOMSGwChannel"
+				maxThreads="4" is-gateway="true" /> <fs-listener name="ESB-Listener"
+				busidref="startOMSEsbChannel" maxThreads="1" /> </listeners>
+			-->
+			
+			<actions mep="OneWay">
+			 	<action name="serviceOrderMarshaller"
+					class="com.servicelive.esb.actions.ServiceOrdersUnMarshallerAction"
+					process="unmarshalCustomPayload" />
+
+				<action name="marginAndLeadTimeRetriever"
+					class="com.servicelive.esb.actions.MarginAndLeadTimeRetrieverAction" 
+					process="retrieveJobCodeInfo" />
+					
+				<action name="createDraftRequestMapper"
+					class="com.servicelive.esb.actions.CreateDraftRequestMapperAction" 
+					process="mapData" />
+					
+				<action name="omsCreateDraftRequestTranslator"
+					class="com.servicelive.esb.actions.OMSCreateDraftRequestTranslatorAction" 
+					process="translateData" />
+					
+				<action name="omsRemoveLegacyOrders"
+					class="com.servicelive.esb.actions.RemoveLegacyOrdersAction"
+					process="removeLegacyOrders" />
+
+				<action name="createDraftRequestProcessor"
+					class="com.servicelive.esb.actions.CreateDraftRequestProcessorAction" 
+					process="dispatchRequest" />
+			</actions>
+		</service>
+
+		<service category="ServiceLive_OMS_Service" name="OMS_Integration_Service"
+			description="New OMS Staging and Injection using MapForce">
+
+			<listeners>
+				<fs-listener name="Gateway-Listener" busidref="startOMSIntegrationGwChannel"
+					maxThreads="1" is-gateway="true" schedule-frequency="10">
+				</fs-listener>
+
+				<fs-listener name="ESB-Listener" busidref="startOMSIntegrationEsbChannel"
+					maxThreads="1" />
+			</listeners>
+
+			<actions mep="OneWay">
+				<!--
+				<action name="PreMap"
+					class="com.servicelive.esb.actions.IntegrationPreMapAction"
+					process="preMap" />
+				-->
+				<action name="RIMapInput" class="com.servicelive.esb.actions.RIMapInputAction"
+					process="mapInput">
+					<property name="inputDir" value="/appl/sl/iss/new/indata" />
+					<property name="archiveDir" value="/appl/sl/iss/new/archive" />
+					<property name="errorDir" value="/appl/sl/iss/new/errors" />
+					<property name="inputSuffix" value=".startProcessGW" />
+					<property name="workSuffix" value=".inProcess" />
+					<property name="exceptionMethod" value="exceptionHandler" />
+				</action>
+				
+				<action name="RICustomRefs"
+					class="com.servicelive.esb.actions.IntegrationCustomRefAction"
+					process="mapCustomRefs">
+					<property name="exceptionMethod" value="exceptionHandler" />
+					<property name="integrationId" value="1" />
+				</action>
+				
+				<action name="RIUniqueNewTransactionsValidator"
+					class="com.servicelive.esb.actions.IntegrationUniqueNewTransactionsValidatorAction"
+					process="validateNewTransactionsAreUnique">
+					<property name="exceptionMethod" value="exceptionHandler" />
+					<property name="integrationId" value="1" />
+				</action>
+				
+				<action name="RIMarkTransactionsComplete"
+					class="com.servicelive.esb.actions.IntegrationMarkTransactionsCompleteAction"
+					process="markTransactionsComplete">
+					<property name="exceptionMethod" value="exceptionHandler" />
+					<property name="integrationId" value="1" />
+				</action>
+			</actions>
+		</service>
+
+		<service category="ServiceLive_ASSURANT_Service"
+			name="ASSURANT_Service"
+			description="ASSURNANT Staging and Injection">
+			
+			<listeners>
+				<fs-listener name="Gateway" busidref="startASSURANTGwChannel"
+					maxThreads="4" is-gateway="true" />
+				<fs-listener name="ESB-Listener"
+					busidref="startASSURANTEsbChannel" maxThreads="1" />
+			</listeners>
+			<actions mep="OneWay">
+				<action name="assurantIncidentUnMarshaller"	
+					class="com.servicelive.esb.actions.AssurantIncidentUnMarshallerAction" process="unmarshalPayload">
+					<property name="incidentMapper" value="assurantIncidentEventMapper" />
+               		<property name="springContextXml" value="spring/incidentContext.xml"/>
+               	</action>				
+					
+				<action name="assurantCreateDraftRequestMapper"
+					class="com.servicelive.esb.actions.AssurantCreateDraftRequestMapperAction" 
+					process="mapData" />
+					
+				<action name="assurantWSRequestTranslator"
+					class="com.servicelive.esb.actions.AssurantWSRequestTranslatorAction" 
+					process="translateData" />
+					
+				<action name="assurantRemoveLegacyOrders"
+					class="com.servicelive.esb.actions.AssurantRemoveLegacyOrdersAction"
+					process="removeLegacyOrders" />
+
+				<action name="createDraftRequestProcessor"
+					class="com.servicelive.esb.actions.CreateDraftRequestProcessorAction" 
+					process="dispatchRequest" />
+               	
+               	<action name="clietNoteProcessor"
+					class="com.servicelive.esb.actions.ClientNoteProcessorAction" 
+					process="dispatchRequest" />
+               	
+               	<action name="assurantAckProcessor"
+					class="com.servicelive.esb.actions.AssurantAckProcessorAction" 
+					process="dispatchRequest" />
+			</actions>
+		</service>   
+
+		<service category="ServiceLive_ASSURANT_Service" name="ASSURANT_Integration_Service"
+			description="New ASSURANT Staging and Injection using MapForce">
+
+			<listeners>
+				<listener name="Gateway" busidref="custom-bus" maxThreads="1"
+					is-gateway="true">
+					<property name="gatewayClass"
+						value="com.servicelive.esb.listener.OrderInputRIGateway" />
+					<property name="frequency" value="10" />
+					<property name="directory" value="/appl/sl/assurant/new/indata" />
+					<property name="errorDir" value="/appl/sl/assurant/new/errors" />
+					<property name="input-suffix" value=".done" />
+					<property name="work-suffix" value=".doneWorking" />
+					<property name="maxFiles" value="8" />
+				</listener>
+
+				<fs-listener name="ESB-Listener" busidref="startASSURANTIntegrationEsbChannel"
+					maxThreads="1" />
+			</listeners>
+
+			<actions mep="OneWay">
+				<action name="assurantMapInput"
+					class="com.servicelive.esb.actions.AssurantMapInputAction" process="mapInput">
+					<property name="inputDir" value="/appl/sl/assurant/new/indata" />
+					<property name="archiveDir" value="/appl/sl/assurant/new/archive" />
+					<property name="errorDir" value="/appl/sl/assurant/new/errors" />
+					<property name="inputSuffix" value=".done" />
+					<property name="workSuffix" value=".inProcess" />
+					<property name="exceptionMethod" value="exceptionHandler" />
+					<property name="buyerResourceId" value="0" />
+				</action>
+				
+				<action name="assurantCustomRefs"
+					class="com.servicelive.esb.actions.IntegrationCustomRefAction"
+					process="mapCustomRefs">
+					<property name="exceptionMethod" value="exceptionHandler" />
+					<property name="integrationId" value="3" />
+				</action>
+				
+				<action name="assurantUniqueNewTransactionsValidator"
+					class="com.servicelive.esb.actions.IntegrationUniqueNewTransactionsValidatorAction"
+					process="validateNewTransactionsAreUnique">
+					<property name="exceptionMethod" value="exceptionHandler" />
+					<property name="integrationId" value="3" />
+				</action>
+				
+				<action name="assurantMarkTransactionsComplete"
+					class="com.servicelive.esb.actions.IntegrationMarkTransactionsCompleteAction"
+					process="markTransactionsComplete">
+					<property name="exceptionMethod" value="exceptionHandler" />
+					<property name="integrationId" value="3" />
+				</action>
+			</actions>
+		</service>
+
+		<service category="ServiceLive_NPS_Service" name="NPS_Service"
+			description="NPS Call Close">
+			<listeners>
+				<fs-listener name="Gateway" busidref="startNPSCallCloseGwChannel"
+					maxThreads="1" is-gateway="true" />
+					
+				<fs-listener name="ESB-Listener" busidref="startNPSCallCloseEsbChannel"
+					maxThreads="1" />
+			</listeners>
+			<actions mep="OneWay">
+				<action name="npsCallCloseSchedulerAction"
+					class="com.servicelive.esb.actions.NPSCallCloseSchedulerAction"
+					process="retrieveClosedOrders">
+					<property name="exceptionMethod" value="exceptionHandler" />
+				</action>
+				
+				<action name="npsXMLGeneratorAction"
+					class="com.servicelive.esb.actions.NPSXMLGeneratorAction" process="generateXML">
+					<property name="exceptionMethod" value="exceptionHandler" />
+				</action>
+				
+				<action name="npsProcessorAction" class="com.servicelive.esb.actions.NPSProcessorAction"
+					process="processClosedOrders">
+					<property name="exceptionMethod" value="exceptionHandler" />
+				</action>
+			</actions>
+		</service>
+		
+		<service category="ServiceLive_NPS_Close_Audit_Service" name="NPS_Close_Audit_Service"
+			description="NPS Close Audit">
+			<listeners>
+				<fs-listener name="Gateway" busidref="startNPSCloseAuditGwChannel"
+					maxThreads="1" is-gateway="true" />
+					
+				<fs-listener name="ESB-Listener" busidref="startNPSCloseAuditEsbChannel"
+					maxThreads="1" />
+			</listeners>
+			<actions mep="OneWay">
+				<action name="npsCloseAuditMapInputAction"
+					class="com.servicelive.esb.actions.NPSCloseAuditMapInputAction" process="mapInput">
+					<property name="inputDir" value="/appl/sl/iss/new/callcloseaudit" />
+					<property name="archiveDir" value="/appl/sl/iss/new/archive" />
+					<property name="errorDir" value="/appl/sl/iss/new/errors" />
+					<property name="inputSuffix" value=".npsCallCloseAudit" />
+					<property name="workSuffix" value=".npsCallCloseAudit.Working" />
+					<property name="exceptionMethod" value="exceptionHandler" />
+				</action>
+				<action name="npsCloseAuditNotificationAction" class="com.servicelive.esb.actions.NPSCloseAuditNotificationAction"
+					process="sendNotifications">
+					<property name="exceptionMethod" value="exceptionHandler" />
+				</action>
+			</actions>
+		</service>
+		
+		<service category="ServiceLive_NPS_Cancel_Audit_Service" name="NPS_Cancel_Audit_Service"
+			description="NPS Cancel Audit">
+			<listeners>
+				<fs-listener name="Gateway" busidref="startNPSCancelAuditGwChannel"
+					maxThreads="1" is-gateway="true" />
+					
+				<fs-listener name="ESB-Listener" busidref="startNPSCancelAuditEsbChannel"
+					maxThreads="1" />
+			</listeners>
+			<actions mep="OneWay">
+				<action name="npsCancelAuditMapInputAction"
+					class="com.servicelive.esb.actions.NPSCancelAuditMapInputAction" process="mapInput">
+					<property name="inputDir" value="/appl/sl/iss/new/cancelaudit" />
+					<property name="archiveDir" value="/appl/sl/iss/new/archive" />
+					<property name="errorDir" value="/appl/sl/iss/new/errors" />
+					<property name="inputSuffix" value=".npsCancelAudit" />
+					<property name="workSuffix" value=".npsCancelAudit.Working" />
+					<property name="exceptionMethod" value="exceptionHandler" />
+				</action>
+				<action name="npsCancelAuditNotificationAction" class="com.servicelive.esb.actions.NPSCancelAuditNotificationAction"
+					process="sendNotifications">
+					<property name="exceptionMethod" value="exceptionHandler" />
+				</action>
+			</actions>
+		</service>
+
+		<service category="ServiceLive_HSR_Service"
+			name="HSR_Service"
+			description="HSR Staging and Injection">
+			
+     	<listeners>
+				<fs-listener name="Gateway" busidref="startHSRGwChannel"
+					maxThreads="4" is-gateway="true" />
+				<fs-listener name="ESB-Listener"
+					busidref="startHSREsbChannel" maxThreads="1" />
+			</listeners>
+						
+	        <actions mep="OneWay">
+	        	<action name="hsrServiceOrderUnMarshaller"
+					class="com.servicelive.esb.actions.HSRServiceOrdersUnMarshallerAction"
+					process="unmarshalPayload">
+					<property name="exceptionMethod" value="exceptionHandler"/>
+               	</action>
+					
+			  	<action name="hsrStageDataAction"
+					class="com.servicelive.esb.actions.HSRStagingAction" 
+					process="stageData" />
+               	
+               	<action name="hsrCreateDraftRequestMapperAction"
+					class="com.servicelive.esb.actions.HSRCreateDraftRequestMapperAction" 
+					process="mapData" />
+					
+				<action name="hsrCreateDraftRequestTranslatorAction"
+					class="com.servicelive.esb.actions.HSRCreateDraftRequestTranslationAction" 
+					process="translateData" />
+					
+				<action name="hsrRemoveLegacyOrders"
+					class="com.servicelive.esb.actions.RemoveLegacyOrdersAction"
+					process="removeLegacyOrders" />
+
+				<action name="hsrCreateDraftRequestProcessorAction"
+					class="com.servicelive.esb.actions.HSRCreateDraftRequestProcessorAction" 
+					process="dispatchRequest" />
+		 </actions>
+	 </service>  
+		<service category="ServiceLive_HSR_Service" name="HSR_Integration_Service"
+			description="New HSR Staging and Injection using MapForce">
+
+			<listeners>
+				<fs-listener name="Gateway-Listener" busidref="startHSRIntegrationGwChannel"
+					maxThreads="4" is-gateway="true">
+				</fs-listener>
+
+				<fs-listener name="ESB-Listener" busidref="startHSRIntegrationEsbChannel"
+					maxThreads="1" />
+			</listeners>
+
+			<actions mep="OneWay">
+				<action name="hsrMapInput"
+					class="com.servicelive.esb.actions.HSRMapInputAction" process="mapInput">
+					<property name="inputDir" value="/appl/sl/hsr/new/indata" />
+					<property name="archiveDir" value="/appl/sl/hsr/new/archive" />
+					<property name="errorDir" value="/appl/sl/hsr/new/errors" />
+					<property name="inputSuffix" value=".startProcessHSR" />
+					<property name="workSuffix" value=".inProcess" />
+					<property name="exceptionMethod" value="exceptionHandler" />
+				</action>
+				
+				<action name="hsrCustomRefs"
+					class="com.servicelive.esb.actions.IntegrationCustomRefAction"
+					process="mapCustomRefs">
+					<property name="exceptionMethod" value="exceptionHandler" />
+					<property name="integrationId" value="5" />
+				</action>
+				
+				<action name="hsrUniqueNewTransactionsValidator"
+					class="com.servicelive.esb.actions.IntegrationUniqueNewTransactionsValidatorAction"
+					process="validateNewTransactionsAreUnique">
+					<property name="exceptionMethod" value="exceptionHandler" />
+					<property name="integrationId" value="5" />
+				</action>
+				
+				<action name="hsrMarkTransactionsComplete"
+					class="com.servicelive.esb.actions.IntegrationMarkTransactionsCompleteAction"
+					process="markTransactionsComplete">
+					<property name="exceptionMethod" value="exceptionHandler" />
+					<property name="integrationId" value="5" />
+				</action>
+			</actions>
+		</service>
+		<service category="ServiceLive_FileUpload_Service" name="FileUpload_Integration_Service"
+			description="FileUpload Service to load orders from Excel files">
+
+			<listeners>
+				<fs-listener name="Gateway-Listener" busidref="startFileUploadGwChannel"
+					maxThreads="4" is-gateway="true">
+				</fs-listener>
+				<fs-listener name="ESB-Listener" busidref="startFileUploadEsbChannel"
+					maxThreads="1" />
+			</listeners>
+
+			<actions mep="OneWay">
+				<action name="fileUploadParseInput" 
+					class="com.servicelive.esb.actions.FileUploadParseInputAction" process="parseInput" >
+					<property name="exceptionMethod" value="exceptionHandler" />
+				</action>
+				<action name="fileUploadMarkTransactionsComplete"
+					class="com.servicelive.esb.actions.IntegrationMarkTransactionsCompleteAction"
+					process="markTransactionsComplete">
+					<property name="exceptionMethod" value="exceptionHandler" />
+					<property name="integrationId" value="7" />
+				</action>
+			</actions>
+		</service>
+
+		<service name="AssurantServiceOrderEventHandlerService"
+			category="JMSListener"
+			description="Service to handle Service Order Events for Assurant's orders">
+			<listeners>
+				<!-- ########################################################
+				   - # Enable the following listener once support for topics
+				   - # is available in the JBoss ESB JmsGatewayListener. See
+				   - # comment at the head of this file for more details.
+				   -->
+<!--				<jms-listener name="AssurantServiceOrderEventGatewayListener"-->
+<!--					busidref="AssurantServiceOrderEventGatewayChannel" is-gateway="true"-->
+<!--					maxThreads="1" />-->
+					
+				<jms-listener name="AssurantServiceOrderEventEsbListener"
+					busidref="AssurantServiceOrderEventEsbChannel" is-gateway="false"
+					maxThreads="1" />
+			</listeners>
+			<actions mep="OneWay">
+				<action name="AssurantServiceOrderEventHandler"
+					class="com.servicelive.esb.actions.AssurantServiceOrderEventHandler"
+					process="processMessage">
+					<property name="exceptionMethod" value="exceptionHandler" />
+				</action>
+			</actions>
+		</service>
+		
+		<service name="SearsRIOrderClosedEventHandlerService"
+			category="JMSListener"
+			description="Service to handle Order Closed events for Sears RI's orders">
+
+			<listeners>
+				<!-- ########################################################
+				   - # Enable the following listener once support for topics
+				   - # is available in the JBoss ESB JmsGatewayListener. See
+				   - # comment at the head of this file for more details.
+				   -->
+<!--				<jms-listener name="SearsRIOrderClosedEventsGatewayListener"-->
+<!--					busidref="SearsRIOrderClosedEventGatewayChannel" is-gateway="true"-->
+<!--					maxThreads="1" />-->
+					
+				<jms-listener name="SearsRIOrderClosedEventsEsbListener"
+					busidref="SearsRIOrderClosedEventEsbChannel" is-gateway="false"
+					maxThreads="1" />
+			</listeners>
+			
+			<actions mep="OneWay">
+				<action name="SearsRIOrderClosedEventHandler"
+					class="com.servicelive.esb.actions.SearsRIOrderClosedEventHandler"
+					process="processMessage">
+					<property name="exceptionMethod" value="exceptionHandler" />
+				</action>
+			</actions>
+		</service>
+		
+
+		<service name="SearsRICallCloseFileGenerationService"
+			category="ServiceLive_NPS_Service"
+			description="Service to handle NPS Call Close file generation"
+		>
+			<listeners>
+				<scheduled-listener name="callCloseScheduler"
+					scheduleidref="every-1-hour-schedule"
+					event-processor="com.servicelive.esb.listeners.DefaultScheduledEventMessageComposer" />
+			</listeners>
+			
+			<actions mep="OneWay">
+			
+				<action name="AcquireLock"
+					class="com.servicelive.esb.actions.AcquireLockAction"
+					process="acquireLock" >
+					<property name="integrationId" value="2" />
+					<property name="lockName" value="SearsRICallCloseFileGenerationService" />
+					<property name="lockExpirationInMinutes" value="60" />
+				</action>
+			
+				<action name="NPSCallCloseAddRetriesToBatch"
+					class="com.servicelive.esb.actions.NPSCallCloseAddRetriesToBatchAction"
+					process="addRetriesToBatch" >
+					<property name="exceptionMethod" value="exceptionHandler" />
+					<property name="RETRY_HOURS" value="4.0" />
+				</action>
+			
+				<action name="NPSCallCloseIntegrationFileGenerator"
+					class="com.servicelive.esb.actions.NPSCallCloseIntegrationFileGeneratorAction"
+					process="processMessage" >
+					<property name="inputDir" value="/appl/sl/iss/new/callclose" />
+					<property name="exceptionMethod" value="exceptionHandler" />
+				</action>
+				
+				<action name="ReleaseLock"
+					class="com.servicelive.esb.actions.ReleaseLockAction"
+					process="releaseLock" >
+					<property name="integrationId" value="2" />
+					<property name="lockName" value="SearsRICallCloseFileGenerationService" />
+				</action>
+			</actions>
+		</service>
+		
+		<service name="SearsRICancellationFileGenerationService"
+			category="ServiceLive_NPS_Service"
+			description="Service to handle NPS Cancellation file generation"
+		>
+			<listeners>
+				<scheduled-listener name="cancelScheduler"
+					scheduleidref="every-15-minutes-schedule"
+					event-processor="com.servicelive.esb.listeners.DefaultScheduledEventMessageComposer" />
+			</listeners>
+			
+			<actions mep="OneWay">
+			
+				<action name="AcquireLock"
+					class="com.servicelive.esb.actions.AcquireLockAction"
+					process="acquireLock" >
+					<property name="integrationId" value="10" />
+					<property name="lockName" value="SearsRICancellationFileGenerationService" />
+					<property name="lockExpirationInMinutes" value="60" />
+				</action>
+			
+				<action name="NPSCancellationAddRetriesToBatch"
+					class="com.servicelive.esb.actions.NPSCancellationAddRetriesToBatchAction"
+					process="addRetriesToBatch" >
+					<property name="exceptionMethod" value="exceptionHandler" />
+					<property name="RETRY_HOURS" value="4.0" />
+				</action>
+			
+				<action name="NPSCancellationIntegrationFileGenerator"
+					class="com.servicelive.esb.actions.NPSCancellationIntegrationFileGeneratorAction"
+					process="processMessage" >
+					<property name="inputDir" value="/appl/sl/iss/new/cancel" />
+					<property name="exceptionMethod" value="exceptionHandler" />
+				</action>
+				
+				<action name="ReleaseLock"
+					class="com.servicelive.esb.actions.ReleaseLockAction"
+					process="releaseLock" >
+					<property name="integrationId" value="10" />
+					<property name="lockName" value="SearsRICancellationFileGenerationService" />
+				</action>
+			</actions>
+		</service>
+
+		<service name="SearsHSRServiceOrderEventHandlerService"
+			category="JMSListener"
+			description="Service to handle Service Order Events for Sears HSR's orders">
+			<listeners>
+				<!-- ########################################################
+				   - # Enable the following listener once support for topics
+				   - # is available in the JBoss ESB JmsGatewayListener. See
+				   - # comment at the head of this file for more details.
+				   -->
+<!--				<jms-listener name="SearsHSRServiceOrderEventGatewayListener"-->
+<!--					busidref="SearsHSROrderAcceptedEventGatewayChannel" is-gateway="true"-->
+<!--					maxThreads="1" />-->
+					
+				<jms-listener name="SearsHSROrderAcceptedEventEsbListener"
+					busidref="SearsHSROrderAcceptedEventEsbChannel" is-gateway="false"
+					maxThreads="1" />
+			</listeners>
+			
+			<actions mep="OneWay">
+				<action name="SearsHSROrderAcceptedEventHandler"
+					class="com.servicelive.esb.actions.SearsHSROrderAcceptedEventHandler"
+					process="processMessage">
+					<property name="exceptionMethod" value="exceptionHandler" />
+				</action>
+				<action name="SearsHSROutgoingFileWriterAction"
+					class="com.servicelive.esb.actions.SearsHSROutgoingFileWriterAction"
+					process="processMessage">
+					<property name="exceptionMethod" value="exceptionHandler" />
+				</action>
+			</actions>
+		</service>
+		
+		<service category="ServiceLive_NPS_Audit_Service"
+			name="NPS_Audit_Service" description="NPS Call Close Audit">
+			<listeners>
+				<fs-listener name="Gateway"
+					busidref="startNPSCallCloseAuditGwChannel"
+					maxThreads="1" is-gateway="true" />
+					
+				<fs-listener name="ESB-Listener"
+					busidref="startNPSCallCloseAuditEsbChannel"
+					maxThreads="1" />
+			</listeners>
+			
+			<actions mep="OneWay">
+				<action name="auditResponseRIUnmarshallerAction"
+					class="com.servicelive.esb.actions.NPSAuditResponseRIUnmarshallerAction"
+					process="getOrdersForAudit">
+					<property name="exceptionMethod" value="exceptionHandler"/>
+				</action>
+				
+				<action name="auditResponseMapperAction"
+					class="com.servicelive.esb.actions.NPSAuditResponseMapperAction"
+					process="mapAuditFields">
+					<property name="exceptionMethod" value="exceptionHandler"/>
+				</action>
+				
+				<action name="auditResponseTranslationAction"
+					class="com.servicelive.esb.actions.NPSAuditResponseTranslationAction"
+					process="translateOrders">
+					<property name="exceptionMethod" value="exceptionHandler"/>
+				</action>
+				
+				<action name="auditResponseRemoveLegacyOrders"
+					class="com.servicelive.esb.actions.RemoveLegacyAuditResponsesAction"
+					process="removeLegacyAudits" />
+				
+				<action name="auditResponseProcessorAction"
+					class="com.servicelive.esb.actions.NPSAuditResponseProcessorAction"
+					process="processAuditOrders">
+					<property name="exceptionMethod" value="exceptionHandler"/>
+				</action>
+			</actions>		
+
+		</service>
+		
+	</services>	
+</jbossesb>
+

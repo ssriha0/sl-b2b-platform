@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by Shekhar (Servicelive) -->
+<xs:schema xmlns="http://www.servicelive.com/namespaces/wallet/funds" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.servicelive.com/namespaces/wallet/funds" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" elementFormDefault="qualified">
+	<xs:include schemaLocation="../common.xsd" id="xxc"/>
+	<xs:include schemaLocation="walletCommon.xsd" id="xwc"/>
+	<!-- Root element -->
+	<xs:element name="addFundsToWalletResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="results"/>
+				<xs:element name="projectBalance" type="money" />
+				<xs:element name="pendingBalance" type="money" />
+				<xs:element name="availableBalance" type="money" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>	
+</xs:schema>

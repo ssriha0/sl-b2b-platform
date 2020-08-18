@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="WalletMessage">
+
+	<typeAlias alias="walletMessage"
+		type="com.servicelive.wallet.remoteservice.vo.MessageResultVO" />
+		
+	<insert id="walletmessage.insert" parameterClass="walletMessage">
+			INSERT   INTO Wallet_Message (message_id, result, error_message, transaction_id)
+			   VALUES (#messageId#, #result#, #errorMessage#, #transactionId#)
+	</insert> 
+
+	<select id="walletmessage.read" parameterClass="java.lang.String" resultClass="walletMessage">
+			select message_id as messageId,
+			result, error_message as errorMessage,
+			transaction_id as transactionId
+			from Wallet_Message
+			where message_id = #messageId#
+	</select> 
+
+</sqlMap>

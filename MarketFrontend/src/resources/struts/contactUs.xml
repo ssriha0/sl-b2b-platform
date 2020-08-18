@@ -1,0 +1,19 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="contactUs" extends="ServiceLiveBase">
+        <default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+    
+		<action name="contactUsAction" class="contactUsAction">
+			<result name="success">/jsp/public/contact_us/body/contactUsBody.jsp</result>		
+		</action>		
+		
+	    <action name="contactUsAction_*" class="contactUsAction" method="{1}">
+	    	<result name="failure">/jsp/public/contact_us/body/contactUsBody.jsp</result>
+	        <result name="success" >/jsp/public/contact_us/body/contact_thank_you.jsp</result>
+	   </action>    	    
+
+    </package>
+    
+</struts>

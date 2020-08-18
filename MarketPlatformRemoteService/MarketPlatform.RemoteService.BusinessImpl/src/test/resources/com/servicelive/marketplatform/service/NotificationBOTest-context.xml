@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+        xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:jee="http://www.springframework.org/schema/jee"
+        xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-2.0.xsd
+        http://www.springframework.org/schema/jee
+        http://www.springframework.org/schema/jee/spring-jee-2.0.xsd">
+
+    <bean id="notificationBO" class="com.servicelive.marketplatform.service.MarketPlatformNotificationBO">
+        <property name="notificationTaskDao" ref="notificationTaskDao" />
+        <property name="mapper" ref="dozerMapper" />
+    </bean>
+    
+    <bean id="serviceOrderBO" class="com.servicelive.marketplatform.service.MarketPlatformServiceOrderBO">
+    </bean>
+
+    <bean id="dozerMapper" class="org.dozer.DozerBeanMapper">
+        <property name="mappingFiles">
+            <list>
+                <value>com/servicelive/marketplatform/service/mappings/dozerMapping.xml</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="notificationTaskDao" class="com.servicelive.marketplatform.dao.InMemoryNotificationTaskDao" />
+<!-- 
+    <import resource="classpath:/com/servicelive/marketplatform/service/notificationServiceContext.xml"/>
+ -->
+</beans>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="Logger">
+
+	<typeAlias alias="loggingVO" type="com.newco.marketplace.vo.security.LoggingVO"/>	
+
+		<insert id="query.insertapilogging" parameterClass="loggingVO"  >
+			INSERT INTO api_logging (app_id, client_ip, ws_request) VALUES (#appId#,#clientIp#,#requestXml#)
+        <selectKey resultClass="int" keyProperty="logId">
+            SELECT last_insert_id() as logId
+        </selectKey>    
+	</insert>
+
+   <update id="query.updateapilogging" parameterClass="loggingVO">
+		UPDATE api_logging SET ws_response = #responseXml#, response_date=NOW() WHERE ws_log_id = #logId#
+	</update>
+	
+	
+	
+	
+
+</sqlMap>

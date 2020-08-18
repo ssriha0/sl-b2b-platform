@@ -1,0 +1,42 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="dashboard" extends="ServiceLiveBase">
+        <default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+    
+		<action name="dashboardAction" class="baseDashboardAction">
+			<result name="failure" type="tiles">base.servicelive.dashboard</result>		
+			<result name="redirectIncompleteProvider" type="redirectAction">regDashboard</result>
+			<result name="redirectAdmin" type="redirectAction">adminDashboard</result>
+			<result name="redirectSB" type="redirectAction">
+				<param name="actionName">serviceOrderMonitor</param>
+				<param name="namespace">/monitor</param>
+				<param name="displayTab">${displayTab}</param>
+			</result>
+			<result name="redirectSimpleBuyerProviderSearch" type="redirectAction">ssoController_execute?appMode=create_mode&amp;view=csoFindProviders</result>
+			<result name="success">/jsp/buyer_admin/buyer_admin_dashboard.jsp</result>
+			<result name="gotoEditProfile" type="redirectAction">
+	            <param name="actionName">serviceProAllTab?resourceId=${resourceId}</param>
+        	</result>
+        	<result name="gotoEditCompanyProfile" type="redirectAction">
+	            <param name="actionName">allTabView</param>
+        	</result>
+        	
+        	<result name="simpleBuyerDashboard">/jsp/simple_buyer/simple_buyer_dashboard.jsp</result>
+					
+		</action>		
+
+		<action name="dashboardAjaxAction" class="baseDashboardAction">
+			<result name="success" >/jsp/dashboard/dashboardAjax.jsp</result>		
+		</action>
+		
+    	<action name="dashboardPeriodicRefresh" class="dashboardActionAjax" method="periodicRefresh">
+			<result name="redirect">base.servicelive.index</result>		
+		</action>
+		<!-- SL-19293:New T&C-->
+		<action name="updateNewTandC" class="baseDashboardAction" method="updateNewTandC">
+	    </action>
+    </package>
+    
+</struts>

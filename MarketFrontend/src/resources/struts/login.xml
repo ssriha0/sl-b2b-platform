@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+
+    <package name="login" extends="ServiceLiveBase">
+    	<default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+	   <action name="loginAction" class="loginAction" method="display">
+			<result name="input">/jsp/sl_login/base/login.jsp</result>
+			<result name="displayPage">/jsp/sl_login/base/login.jsp</result>
+			<result name="success" type="redirectAction">dashboardAction</result>
+			<result name="changePassword" type="redirectAction">changePasswordAction</result>			
+			<result name="accountLockedPage">jsp/dashboard/accountLocked.jsp</result>
+			<result name="b2c">jsp/sl_login/common/redirectToB2C.jsp</result>
+		</action>
+		<action name="externalloginAction" class="loginAction" >
+			<result name="success" type="redirectAction">/jsp/sl_login/base/login.jsp</result>
+		</action>
+		
+		 <action name="changePasswordStrutsAction" class="changePasswordAction" method="load" >
+			<result name="input">/jsp/providerRegistration/provider_new_password.jsp?tempPassword='true'</result>	
+			<result name="successprovider" type="chain">dashboardAction</result>			
+			<result name="successbuyer" type="chain">dashboardAction</result>			
+			<result name="successSimple" type="redirectAction">dashboardAction</result>
+			<result name="success" type="redirectAction">dashboardAction</result>
+			<result name="errorredirect">/jsp/providerRegistration/reset_password_email.jsp</result>
+		 </action>
+		
+		 <action name="savePasswordAction" class="changePasswordAction">
+			<result name="input">/jsp/providerRegistration/provider_new_password.jsp?tempPassword='true'</result>	
+			<result name="successSimple" type="redirectAction">dashboardAction</result>
+			<result name="success" type="chain">dashboardAction</result>
+		</action>
+		
+		<action name="regDashboard*" class="regDashboardAction" method="{1}">
+			<result name="success">/jsp/providerRegistration/registration_dashboard.jsp</result>
+			<result name="congrats">/jsp/providerRegistration/registration_congrats.jsp</result>
+			<result name="pendingapproval" type="redirectAction">
+           		<param name="actionName">manageUserActionloadUsers</param>
+	            <param name="namespace">/jsp/providerRegistration</param>
+           		
+      		</result>	
+		</action>
+		
+	    <action name="forgotPasswordAction" class="forgotPasswordAction">
+			<result name="input">/jsp/providerRegistration/provider_reset_password1.jsp</result>
+			<result name="question">/jsp/providerRegistration/provider_reset_password2.jsp</result>				
+		</action>
+		
+		<action name="regDashboardAction*" class="regDashboardAction" method="{1}">
+			
+			<result name="success" type="redirectAction">
+           		<param name="actionName">dashboardAction</param>
+           		
+      		</result>	
+      		<result name="congrats">/jsp/providerRegistration/registration_congrats.jsp</result>
+			<result name="pendingapproval" type="redirectAction">
+           		<param name="actionName">manageUserActionloadUsers</param>
+	            <param name="namespace">/jsp/providerRegistration</param>
+           		
+      		</result>
+      						
+		</action>
+
+		<action name="loginAdditionalInfo_*" class="loginAdditionalInfoAction" method="{1}">
+			<result name="additionalInfo">/jsp/dashboard/additionalInfo.jsp</result>
+			<result name="accountLockedPage">/jsp/dashboard/accountLocked.jsp</result>
+			<result name="success">/jsp/dashboard/accountLocked.jsp</result>
+			<result name="accountLocked">/jsp/dashboard/accountLocked.jsp</result>
+		</action>
+		
+    </package>
+</struts>

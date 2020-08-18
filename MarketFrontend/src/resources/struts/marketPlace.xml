@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+    <package name="marketPlace" extends="ServiceLiveBase">
+    	<default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+	   <action name="marketPlaceAction*" class="loadMarketPlaceAction" method="{1}">	
+			
+			<result name="load">/jsp/providerRegistration/modules/tab_marketplace.jsp</result>
+			
+			<result name="input" type="redirectAction">
+	             <param name="actionName">serviceProAllTab?tabView=tab2</param>
+	             <param name="namespace">/jsp/providerRegistration</param>
+	             <param name="nexturl">jsp/providerRegistration/marketPlaceActiondoInput.action</param>
+        	</result>
+        	
+			<result name="GInfoPage" type="redirectAction">
+             	<param name="actionName">serviceProAllTab?tabView=tab1</param>
+            	<param name="namespace">/jsp/providerRegistration</param>
+       		</result>
+			
+			<result name="success" type="redirectAction">
+	             <param name="actionName">serviceProAllTab?tabView=tab2</param>
+	            <param name="namespace">/jsp/providerRegistration</param>
+        	</result>
+        	
+        	<result name="previous" type="redirectAction">
+	           <param name="actionName">serviceProAllTab?tabView=tab1</param>
+	            <param name="namespace">/jsp/providerRegistration</param>
+        	</result>
+        	
+        	<result name="next" type="redirectAction">
+	           <param name="actionName">serviceProAllTab?tabView=tab3</param>
+	            <param name="namespace">/jsp/providerRegistration</param>
+        	</result>
+        	
+        	<result name="updateProfile" type="redirectAction">
+	           <param name="actionName">regDashboarddoSubmitRegistration</param>
+	            <param name="namespace">/jsp/providerRegistration</param>
+        	</result>
+        	
+        	<result name="cancel" type="redirectAction">
+	             <param name="actionName">manageUserActionloadUsers</param>
+	            <param name="namespace">/jsp/providerRegistration</param>
+        	</result>
+        	
+        	<result name="error">/jsp/providerRegistration/Error.jsp</result>
+		</action>
+	</package>
+</struts>

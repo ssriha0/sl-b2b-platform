@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="../" default="compile-dependencies" name="MarketAlertsManager-BuildAll" >
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+	<target name="compile-dependencies"> 
+		<ant antfile="../MarketCommon/build/build.xml"   dir="../MarketCommon" />
+		<ant antfile="../ResponsysClient/build/build.xml"   dir="../ResponsysClient"/>
+		<ant antfile="../ResponsysInteractClient/build/build.xml"   dir="../ResponsysInteractClient"/>
+		<ant antfile="../MarketAlertsManager/build/build.xml" dir="../MarketAlertsManager"/>
+    </target>
+</project>

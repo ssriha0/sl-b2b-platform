@@ -1,0 +1,32 @@
+<div class="week-view">
+    <div class="row technician-select-view" *ngIf="!isCompanyView">
+        <div class="col-all-12">
+            Technician
+            <select name="selectedProvider" [(ngModel)]="selectedProvider" (change)="filterProviderEvents()">
+                <option *ngFor="let provider of providerList" [ngValue]="provider">{{provider.name}}</option>
+            </select>
+        </div>
+        <div class="col-all-12">
+            Pending Jobs :
+        </div>
+    </div>
+    <div class="row week-view-events">
+        <div *ngFor="let week of weekEventsUI; let weekIndex = index" class="week-columns column-box-margin border-cell">
+            <div class="row column-box-margin default-tile">
+                {{week.date | date : 'EEE'}} <strong>{{week.dateString}}</strong>
+            </div>
+            <div *ngIf="hideWeekDaysInput.indexOf(week.dayOfWeek) == -1">
+                <div *ngFor="let event of week.events; let eventIndex = index" class="row column-box column-box-margin">
+                    <div (click)="openSOAction(event)" [ngClass]="event.cssClass" class="event-decoration">
+                        {{event.eventName}}
+                        <br/>{{event.id}}
+                        <br/> {{event.memberFirstName}} {{event.memberLastName}}
+                    </div>
+                </div>
+            </div>
+            <div class="row column-box column-box-margin">
+                <div class="event-decoration blank-event"></div>
+            </div>
+        </div>
+    </div>
+</div>

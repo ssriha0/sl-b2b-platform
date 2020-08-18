@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="soIncident">
+
+	<typeAlias alias="incidentVO" type="com.newco.marketplace.dto.vo.incident.IncidentVO" />
+	<typeAlias alias="incidentTrackingVO" type="com.newco.marketplace.dto.vo.incident.IncidentTrackingVO" />
+	<typeAlias alias="incidentEventVO" type="com.newco.marketplace.dto.vo.incident.IncidentEventVO" />
+	<typeAlias alias="incidentPartVO" type="com.newco.marketplace.dto.vo.incident.IncidentPartVO" />
+	<typeAlias alias="slPartsOrderFileVO" type="com.newco.marketplace.dto.vo.so.order.SLPartsOrderFileVO" />
+
+	<select id="soIncidentTracking.query" parameterClass="incidentTrackingVO" resultClass="incidentTrackingVO">
+		select sit.so_id as soId, sit.incident_id as incidentId, sit.buyer_substatus_assoc_id as buyerSubstatusAssocId, sit.output_file as outputFile,
+			sit.response_sent_date responseSentDate, sit.incident_ack_id
+		from so_incident_tracking sit
+		<dynamic>
+			WHERE true
+		    <isNotNull property="soId" prepend="AND">
+				sit.so_id = #soId#
+			</isNotNull>
+		    <isNotNull property="incidentId" prepend="AND">
+				sit.incident_id = #incidentId#
+			</isNotNull>
+		    <isNotNull property="buyerSubstatusAssocId" prepend="AND">
+				sit.buyer_substatus_assoc_id = #buyerSubstatusAssocId#
+			</isNotNull>
+		</dynamic>
+	</select>
+
+	<select id="soIncident.query" parameterClass="incidentVO" resultClass="incidentVO">
+		select i.incident_id as incidentId, i.client_incident_id as clientIncidentId, client_id as clientId, warranty_contract_id as warrantyContractId
+		from incident i where true
+		<dynamic>
+			<isNotNull property="incidentId" prepend="AND">
+				i.incident_id = #incidentId#
+			</isNotNull>
+			<isNotNull property="clientIncidentId" prepend="AND">
+				i.client_incident_id = #clientIncidentId#
+			</isNotNull>
+			<isNotNull property="clientId" prepend="AND">
+				i.client_id = #clientId#
+			</isNotNull>
+		</dynamic>
+	</select>
+	
+	<insert id="soIncidentTracking.insert" parameterClass="incidentTrackingVO">
+		insert into so_incident_tracking
+				(so_id, incident_id, buyer_substatus_assoc_id, buyer_substatus_desc, output_file, response_sent_date, created_date)
+		values
+				(#soId#, #incidentId#, #buyerSubstatusAssocId#, #buyerSubstatusDesc#, #outputFile#, #responseSentDate#, NOW())
+	</insert>
+
+	<update id="soIncidentTracking.updateAck" parameterClass="incidentTrackingVO">
+		update so_incident_tracking
+			<dynamic prepend="SET">
+				<isNotNull prepend=", " property="incidentAckId">
+			    	incident_ack_id = #incidentAckId#
+			    </isNotNull>
+			</dynamic>		
+		where id = #id#
+	</update>
+	
+	<select id="soIncidentTracking.queryLastResponseSentToBuyer" parameterClass="incidentTrackingVO" resultClass="incidentTrackingVO">
+			select sit.id as id, sit.so_id as soId, sit.incident_id as incidentId, 
+				sit.buyer_substatus_assoc_id as buyerSubstatusAssocId, sit.buyer_substatus_desc as buyerSubstatusDesc, 
+				sit.output_file as outputFile, sit.response_sent_date as responseSentDate, sit.incident_ack_id as incidentAckId
+			from so_incident_tracking sit
+			<dynamic prepend="where">
+				<isNotNull property="id" prepend="AND">
+					sit.id = #id#
+				</isNotNull>
+				<isNotNull property="soId" prepend="AND">
+					sit.so_id = #soId#
+				</isNotNull>
+				<isNotNull property="incidentId" prepend="AND">
+					sit.incident_id = #incidentId#
+				</isNotNull>
+				<isNotNull property="buyerSubstatusAssocId" prepend="AND">
+					sit.buyer_substatus_assoc_id = #buyerSubstatusAssocId#
+				</isNotNull>
+				<isNotNull property="buyerSubstatusDesc" prepend="AND">
+					sit.buyer_substatus_desc = #buyerSubstatusDesc#
+				</isNotNull>
+				<isNotNull property="incidentAckId" prepend="AND">
+					sit.incident_ack_id = #incidentAckId#
+				</isNotNull>
+				<isNotNull property="outputFile" prepend="AND">
+					sit.output_file = #outputFile#
+				</isNotNull>
+			</dynamic>
+			order by response_sent_date desc limit 1
+	</select>
+	
+	<select id="incidentevent.query" parameterClass="java.lang.String" resultClass="incidentEventVO">
+		SELECT	
+			incident.incident_id as incidentID,
+			incident.client_incident_id as clientIncidentID,
+			incident.warranty_contract_id as warrantyContractID,
+
+			incident_event.client_status as clientStatus,
+			incident_event.comment as comment,
+			incident_event.part_labor_indicator as partLaborInd,
+			incident_event.incident_contact_id as incidentContactID,
+			incident_event.product_line as productLine,
+			incident_event.number_of_parts as numberOfParts,
+			incident_event.manufacturer as manufacturer,
+			incident_event.model_number as modelNumber,
+			incident_event.serial_number as serialNumber,
+			incident_event.associated_incident_number as associatedIncidentNumber,
+			incident_event.parts_warrenty_sku as partsWarrentySKU,
+			incident_event.spcl_coverage_flg as specialCoverageFlag,
+			incident_event.warrenty_status as warrantyStatus,
+			incident_event.shipping_method as shippingMethod,
+			incident_event.service_provider_location as serviceProviderLocation,
+			incident_event.vendor_claim_number as vendorClaimNumber,
+			incident_event.authorized_amount as authorizedAmount,
+			incident_event.support_group as supportGroup,
+			incident_event.servicer_id as servicerID,
+			incident_event.authorizing_code as authorizingCode,
+			incident_event.retailer as retailer,
+			incident_event.update_accepted as updateAccepted,
+			incident_event.created_date as createdDate,
+
+			incident_contact.first_name as firstName,
+			incident_contact.last_name as lastName,
+			incident_contact.street1 as street1,
+			incident_contact.street2 as street2,
+			incident_contact.city as city,
+			incident_contact.state as state,
+			incident_contact.zip as zipCode,
+			incident_contact.zip_ext as zipCodeExt,
+			incident_contact.phone1 as phone1,
+			incident_contact.phone1_ext as phone1Ext,
+			incident_contact.phone2 as phone2,
+			incident_contact.phone2_ext as phone2Ext,
+						
+			warranty_contract.warranty_notes as warrantyNotes,
+			warranty_contract.contract_number as contractNumber,
+			warranty_contract.contract_type_code as contractTypeCode,
+			warranty_contract.contract_date as contractDate,
+			warranty_contract.expirationDate as expirationDate
+
+			FROM incident_event
+
+			LEFT OUTER JOIN incident_contact ON incident_event.incident_contact_id = incident_contact.incident_contact_id
+			INNER JOIN incident ON incident_event.incident_id = incident.incident_id
+			INNER JOIN warranty_contract ON warranty_contract.warranty_contract_id = incident.warranty_contract_id			
+
+			WHERE
+				incident.client_incident_id = #clientIncidentID# 
+	</select>
+
+	<select id="incidentnotes.query" parameterClass="java.lang.String" resultClass="incidentEventVO">
+		SELECT
+			incident.incident_id as incidentID,
+			incident.client_incident_id as clientIncidentID,
+			incident_note.note as comment,
+			incident_note.created_date as createdDate
+		FROM
+			incident
+			INNER JOIN incident_note on incident.incident_id = incident_note.incident_id
+		WHERE
+			incident.client_incident_id = #clientIncidentID#
+	</select>
+	<select id="incidentparts.query" parameterClass="java.lang.Integer" resultClass="incidentPartVO">
+		SELECT
+			incident_part_id as incidentPartID,
+			class_code as classCode,
+			class_comments as classComments,
+			oem_number as oemNumber,
+			part_comments as partComments,
+			part_number as partNumber
+
+		FROM
+			incident_part
+		
+		WHERE
+			incident_id =(select max(incident_event_id) 
+				from incident_event where incident_id = #incidentId# and client_status in ('NEW','UPDATE'))
+	</select>	
+	<select id="soPartsOrderFile.query" parameterClass="java.lang.Integer" resultClass="slPartsOrderFileVO">
+		select
+		sohdr.buyer_id as buyerId,
+		sop.part_id as slPartOrderId,
+		sop.so_id as soId,
+		soCustRef.buyer_ref_value as incidentId,
+		sohdr.provider_instr as incidentComments, 'NEW' as status, soContact.first_name firstName,
+		soContact.last_name lastName, soloc.street_1 address1, soloc.street_2 address2, soloc.city city,
+		soloc.state_cd state, soloc.zip as zipCode, soloc.zip4 as zipCodeExt, soContactPhone1.phone_no as phone,
+		soContactPhone1.phone_no_ext as phoneExt, soContactPhone2.phone_no as altPhone, soContactPhone2.phone_no_ext as altPhoneExt, NULL as productLine, 			sop.quantity as quantity,
+		NULL as partCategoryId, NULL as partCategoryName, sop.vendor_part_number as partNumber, sop.manufacturer_part_number as oemNumber, sop.part_descr as partDesc,
+		sop.alt_part_ref1 as classCode, sop.additional_part_info as classComments,
+		sop.manufacturer as manufacturer, sop.model_no modelNumber, sop.serial_number as serialNumber from so_hdr sohdr INNER JOIN so_parts sop ON 			    (sop.so_id=sohdr.so_id) INNER JOIN so_custom_reference soCustRef ON (soCustRef.so_id=sohdr.so_id)
+		LEFT OUTER JOIN so_contact_locn soContactLocn ON (soContactLocn.so_id=sohdr.so_id)
+		LEFT OUTER JOIN so_location soloc ON (soloc.so_id=soContactLocn.so_id and soloc.so_locn_id=soContactLocn.so_locn_id)
+		LEFT OUTER JOIN so_contact soContact ON (soContact.so_id=soContactLocn.so_id and soContact.so_contact_id=soContactLocn.so_contact_id)
+		LEFT OUTER JOIN so_contact_phones soContactPhone1 ON (soContactPhone1.so_id=soContactLocn.so_id and soContactPhone1.so_contact_id=soContactLocn.so_contact_id and soContactPhone1.phone_type_id=1)
+		LEFT OUTER JOIN so_contact_phones soContactPhone2 ON (soContactPhone2.so_id=soContactLocn.so_id and soContactPhone2.so_contact_id=soContactLocn.so_contact_id and soContactPhone2.phone_type_id=2)
+		WHERE
+		(soContactLocn.so_contact_locn_type_id=10 ) AND (sop.so_id = sohdr.so_id) AND
+		(soCustRef.buyer_ref_type_id=40) AND sohdr.buyer_id=#buyerId# AND sohdr.wf_state_id in (100,110) and parts_file_generated_date is null and sop.model_no is not null
+	</select>
+	
+	<update id="soPartsOrderFile.update">
+		update so_parts set parts_file_generated_date = now() where parts_file_generated_date is null 
+	</update>
+</sqlMap>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/newservices"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+	targetNamespace="http://www.servicelive.com/namespaces/newservices"
+	elementFormDefault="qualified" jaxb:version="1.0"
+	jaxb:extensionBindingPrefixes="xjc">
+	<xs:include schemaLocation="leadsCommon.xsd" />
+    <!-- Root Element -->
+    <xs:element name="GetEligibleProvidersResponse">
+		<xs:complexType>
+                <xs:sequence>
+                   <xs:element ref="results"/>
+                   <xs:element name="FirmId" type="xs:integer" minOccurs="0"/>
+                   <xs:element name="LeadId" type="xs:string" minOccurs="0"/>
+                   <xs:element ref="EligibleProviders" minOccurs="0"/>
+                </xs:sequence>
+       </xs:complexType>
+	</xs:element>
+	<xs:element name="EligibleProviders">
+	   <xs:complexType>
+                  <xs:sequence>
+                        <xs:element ref="EligibleProvider" minOccurs="0" maxOccurs="unbounded"/>
+                  </xs:sequence>
+            </xs:complexType>
+	</xs:element>
+	<xs:element name="EligibleProvider">
+	   <xs:complexType>
+                  <xs:sequence>
+                        <xs:element name="ResourceId" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="ProviderDistance" type="xs:double" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="ResourceFirstName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="ResourceLastName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                  </xs:sequence>
+            </xs:complexType>
+	</xs:element>
+</xs:schema>

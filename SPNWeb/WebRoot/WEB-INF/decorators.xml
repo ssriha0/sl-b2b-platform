@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<decorators defaultdir="/decorators">
+    <!-- Any urls that are excluded will never be decorated by Sitemesh -->
+    <excludes>
+        <pattern>/*Ajax.action*</pattern>
+        <pattern>/*ajax.action*</pattern>
+    </excludes>
+
+    <decorator name="mainspndecorator" page="mainSpnDecorator.jsp">
+        <pattern>/*.action*</pattern>
+    </decorator>
+    
+    <decorator name="routingspndecorator" page="routingSpnDecorator.jsp">
+        <pattern>/*spnReleaseTiers_display.action*</pattern>
+    </decorator>
+
+    <decorator name="panel" page="panel.jsp"/>
+    <decorator name="printable" page="printable.jsp"/>
+    <decorator name="black" page="black.jsp"/>
+    <decorator name="nopanelsource" page="nopanelsource.jsp"/>
+    <decorator name="badpanelsource" page="badpanelsource.jsp"/>
+
+   
+</decorators>

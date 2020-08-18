@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="inhomeautocloseProcess">
+
+<typeAlias alias="inhomeAutoCloseProcessVO" type="com.newco.marketplace.inhomeautoclose.vo.InHomeAutoCloseProcessVO"/>
+<typeAlias alias="sonotes" type="com.newco.marketplace.dto.vo.serviceorder.ServiceOrderNote" />
+
+
+	<!-- get the list of orders to be autoclosed -->
+	<select id="getListOfServiceOrdersToAutoClose.query"  resultClass="inhomeAutoCloseProcessVO">
+	SELECT so.so_id AS soId, inhome.so_inhome_auto_close_id AS autoCloseId, inhome.no_of_retries AS noOfRetries,
+	inhome.status AS status FROM so_hdr
+	so, so_inhome_auto_close inhome WHERE so.so_id=inhome.so_id AND
+	so.buyer_id=3000 AND so.wf_state_id=160 AND active_ind=1
+	AND inhome.status IN ('WAITING','RETRY') AND NOW() <![CDATA[ >]]> process_after_date
+	ORDER BY process_after_date
+   </select>
+   
+   
+   <!-- update the list of service orders to be autoclosed -->
+   <update id="updateAsInprogress.update"   parameterClass="java.util.List">
+	UPDATE  so_inhome_auto_close inhome SET inhome.status='IN PROGRESS',modified_date=NOW() WHERE
+	 inhome.so_inhome_auto_close_id IN 
+	<iterate open="(" close=")" conjunction=",">	
+		#[]#
+	</iterate>
+   </update>
+	
+	<!-- get the number of retries value from application properties -->
+	<select id="getAutoCloseConstants.query"  resultClass="java.util.HashMap">
+	SELECT app_constant_key,app_constant_value FROM application_constants WHERE app_constant_key IN('inhome_autoclose_no_of_retries')
+   </select>
+   
+   <!-- update the no of reties and status in so_inhome_autoclose  table -->
+   <update id="updateAutoCloseInfo.query" parameterClass="inhomeAutoCloseProcessVO">
+	UPDATE so_inhome_auto_close
+	SET STATUS=#status#,
+	no_of_retries=#noOfRetries#,
+	<isNotNull  property="soSubstatus">
+	so_substatus=#soSubstatus#,
+	</isNotNull>
+	modified_date=NOW()
+	WHERE so_id=#soId# AND active_ind=1
+   </update>
+   
+   <!-- check whether any of the finance transaction is pending -->
+   	<select id="countOfFullfillmentRecords.query"
+		parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		select count(1) from
+		accounts_prod.fullfillment_entry where so_id = #soId# and ((bus_trans_id in (100,150)
+		and (reconsiled_ind is null or reconsiled_ind not in (0,1,4,5)))
+        or bus_trans_id = 120);
+	</select>
+	
+	<!-- add so note for failure in autoclose -->
+	<insert id="soNoteFailure.insert" parameterClass="sonotes">
+		insert into so_notes(
+				so_id,
+				created_date,
+				note_subject, 
+				role_id, 
+				note, 
+				created_by_name, 
+				modified_date,
+				modified_by, 
+				note_type_id,
+				private_ind,
+			  	entity_id) 
+		values(
+				#soId#,
+				#createdDate#, 
+				#subject#, 
+				#roleId#, 
+				#note#, 
+				#createdByName#,
+				#modifiedDate#,  
+				#modifiedBy#, 
+				#noteTypeId#,
+				#privateId#,
+				#entityId#
+				)
+	</insert>
+
+</sqlMap>

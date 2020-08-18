@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/soRescheduleReasonResponse" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" targetNamespace="http://www.servicelive.com/namespaces/soRescheduleReasonResponse" elementFormDefault="qualified" jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+	<xs:include schemaLocation="soCommon.xsd"/>
+	<xs:include schemaLocation="../common.xsd"/>
+	<xs:element name="soRescheduleReasonResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="results"/>
+				<xs:element ref="rescheduleReasons" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:decimal"/>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="rescheduleReasons">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="rescheduleReason" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+		<xs:element name="rescheduleReason">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="code" type="xs:int"/>
+				<xs:element name="reason" type="xs:string"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+</xs:schema>

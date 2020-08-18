@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="searchFirmsRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="zip">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:pattern value="\d{5}"/>
+					</xs:restriction>
+				</xs:simpleType>
+			 </xs:element>
+			<xs:element name="mainCategory" type="xs:integer" />
+			<xs:element name="serviceDate1" type="xs:date" minOccurs="0"/>
+			<xs:element name="serviceDate2" type="xs:date" minOccurs="0"/>
+			<xs:element name="serviceTimeWindow" type="serviceTimeWindowType" minOccurs="0" />
+			<xs:element name="radius" type="xs:decimal" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:simpleType name="serviceTimeWindowType">
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="All"/>
+					<xs:enumeration value="Early Morning (before 8 AM)"/>	
+					<xs:enumeration value="Morning 8-12"/>	
+					<xs:enumeration value="Afternoon 12-4"/>	
+					<xs:enumeration value="Evening 4-8"/>				
+				</xs:restriction>
+  		</xs:simpleType>
+</xs:schema>

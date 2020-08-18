@@ -1,0 +1,33 @@
+{ items: [
+	{
+	  "large":"../../../images/support/tut3_step1.gif"
+	},
+	{
+	  "large":"../../../images/support/tut3_step2.gif"
+	},
+	{
+	  "large":"../../../images/support/tut3_step3.gif"
+	},
+	{	 
+	  "large":"../../../images/support/tut3_step4.gif"
+	},
+	{
+	  "large":"../../../images/support/tut3_step5.gif"
+	},
+	{
+	  "large":"../../../images/support/tut3_step6.gif"
+	},
+	{
+	  "large":"../../../images/support/tut3_step7.gif"
+	},
+	{
+	  "large":"../../../images/support/tut3_step8.gif"
+	},
+	{
+	  "large":"../../../images/support/tut3_step9.gif"
+	},
+	{
+	  "large":"../../../images/support/tut3_step10.gif"
+	}
+	//
+]}

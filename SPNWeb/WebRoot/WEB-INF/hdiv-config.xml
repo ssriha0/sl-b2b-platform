@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+    <!--  CONFIDENTIALITY  -->
+   	<bean id="confidentiality" class="java.lang.Boolean">
+         <constructor-arg>
+               <value>false</value>
+          </constructor-arg>
+    </bean>
+
+    <!--  COOKIES INTEGRITY  -->
+   	<bean id="avoidCookiesIntegrity" class="java.lang.Boolean">
+         <constructor-arg>
+               <value>false</value>
+          </constructor-arg>
+    </bean>
+
+    <!--  COOKIES CONFIDENTIALITY  -->    
+   	<bean id="avoidCookiesConfidentiality" class="java.lang.Boolean">
+         <constructor-arg>
+               <value>false</value>
+          </constructor-arg>
+    </bean>     
+
+    <!--  STRATEGY  -->
+   	<bean id="strategy" class="java.lang.String">
+         <constructor-arg>
+               <value>memory</value>
+          </constructor-arg>
+    </bean>
+    
+    <!--  RANDOM NAME FOR HDIV PARAMETER -->
+   	<bean id="randomName" class="java.lang.Boolean">
+         <constructor-arg>
+               <value>false</value>
+          </constructor-arg>
+    </bean>
+
+	<!--  HDIV Configuration Bean  -->
+	<bean id="config" class="org.hdiv.config.SLHDIVConfig">
+	
+		<property name="userStartParameters">			
+			<list> 
+			</list>
+		</property>
+		
+		<!-- <property name="userStartPages">
+			<list>			
+				<value>/</value>
+				<value>(create.*\.action)|(.*rrw.*\.action)|(.*routingRule.*\.action)|(.*assurant.*\.action)|(.*adminTripCharge.*\.action)|(.*examples.*\.action)|(.*buyerRegistration.*\.action)|(.*spnBuyer.*\.action)|(.*etm.*\.action)|(.*soWhatIsSL.*\.action)|(.*contactUsAction.*\.action)|(.*loginAction\.action)|(.*homepage\.action)|(.*homepage.*\.action)|(.*ssoController.*\.action)|(.*csoFindProviders.*\.action)|(.*csoDescribeAndSchedule.*\.action)|(.*csoCreateAccount.*\.action)|(.*csoDocumentsAndPhotos.*\.action)|(.*joinNowAction\.action)|(.*resetPasswordAction\!loadResetPasswordPage\.action)|(.*resetPasswordAction\!validateEmail\.action)|(.*resetPasswordAction\!validateAns\.action)|(.*resetPasswordAction\!cancelAnswer\.action)|(.*resetPasswordAction\!doCancel\.action)|(.*forgetUsernameAction\!doCancel\.action)|(.*forgetUsernameAction\!sendEmail\.action)|(.*forgetUsernameAction\!doValidatePhoneAndZip\.action)|(.*forgetUsernameAction\!doValidateSecretQuestion\.action)|(.*forgetUsernameAction\!validateEmail\.action)|(.*forgetUsernameAction\!loadForgetUserPage\.action)|(.*providerRegistrationAction\.action)|(.*providerRegSaveAction\.action)|(.*doLogin\.action)|(.*doLogout\.action)|(.*/public/.*)|(.*termsAndConditions.*\.action)|(.*profileTabAction.*\.action)|(.*publicProfileAction.*\.action)|(.*loginAdditionalInfo.*\.action)|(.*joinNowGeneralAction.*\.action)|(.*joinNowSimpleAction.*\.action)|(.*joinNowBuyerSimpleAction.*\.action)|(.*joinNowBuyerAction.*\.action)|(.*providerProfileInfoAction.*\.action)|(.*soProviderSelect.*\.action)|(.*google_maps.*\.jsp)|(.*orderGroup.*\.action)|(.*spnMonitorAction_getCompanyRequirementsList.*\.action)|(.*spnMonitorAction_getProviderRequirementsList.*\.action) |(.*buyerlogo_getBuyerLogo.*\.action)|(.*providerUtils.*\.action)</value>						
+			</list>			
+		</property> -->
+
+		<property name="userStartPages">
+			<list>
+			
+			</list>			
+		</property>
+		
+		<property name="errorPage">
+			<value>/jsp/spn/common/default_error.jsp</value>
+		</property>
+		
+		<property name="confidentiality">
+			<ref bean="confidentiality" />
+		</property>
+		
+		<property name="paramsWithoutValidation">
+			<map>												
+			</map>
+		</property>		
+		
+		<property name="validations">
+			<ref bean="editableParemetersValidations" />
+		</property>
+		
+		<property name="cookiesIntegrity">
+			<ref bean="avoidCookiesIntegrity" />
+		</property>
+		
+		<property name="cookiesConfidentiality">
+			<ref bean="avoidCookiesConfidentiality" />
+		</property>
+	</bean>
+    
+</beans>
+

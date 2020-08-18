@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<bean id="incidentDao" class="com.newco.marketplace.persistence.iDao.so.order.IncidentDao">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	 
+	</bean>
+
+	<bean id="incidentBOTarget" class="com.newco.marketplace.business.businessImpl.so.order.IncidentBO" lazy-init="true">
+		<property name="incidentDao">
+			<ref bean="incidentDao" />
+		</property>
+		<property name="serviceOrderBO">
+			<ref bean="soBOAOP" />
+		</property>
+	</bean>
+</beans>

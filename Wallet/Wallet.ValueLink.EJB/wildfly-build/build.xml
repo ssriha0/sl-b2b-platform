@@ -1,0 +1,72 @@
+<project name="Wallet.ValueLink.EJB" default="ear" basedir="..">
+
+	<target name="package" depends="ear"/>
+
+	<import file="../../../SLCommonBuild/ant/wildfly-sl-common/sl-common.xml" />
+
+	<target name="-init-jar-classpath" depends="-init-classpath" unless="java-build.jar-classpath">
+		<pathconvert property="java-build.jar-lib-classpath"  
+                refid="java-build.classpath" pathsep=" ">
+			<chainedmapper>
+				<flattenmapper/>
+			</chainedmapper>
+		</pathconvert>
+		<property name="java-build.jar-classpath" value="${java-build.jar-lib-classpath}"/>
+	</target>
+
+	<target name="war" depends="dist" description="Build a WAR for this project">
+		<war destfile="${java-war.dist-file}" webxml="src/main/webapp/WEB-INF/web.xml" />
+	</target>
+
+	<target name="ear" depends="dist, war" description="Build an EAR for this project">
+
+		<ear destfile="${common.dist-dir}/${java-ear.dist-filename}" filesonly="true"
+
+            appxml="src/main/ear/META-INF/application.xml">
+
+			<fileset dir="${common.dist-dir}">
+				<include name="Wallet.ValueLink.EJB.war"/>
+			</fileset>
+
+			<!-- zipfilesets courtesy initJavaBuildClasspath.groovy -->
+			<zipfileset refid="java-build.ear-lib-fileset.generated" />
+			<zipfileset refid="java-build.ear-lib-fileset.deployables" />
+
+			<zipfileset dir="${common.dist-dir}" prefix="lib">
+				<include name="${java-build.dist-filename}"/>
+				<include name="${java-war.dist-filename}"/>
+				<exclude name="Wallet.ValueLink.EJB.war"/>
+			</zipfileset>
+
+			<manifest>
+				<attribute name="Build-Id" value="${java-ear.build-id}"/>
+				<attribute name="Implementation-Vendor"	 value="${java-build.jar-vendor}"/>
+				<attribute name="Implementation-Title"   value="${ant.project.name}"/>
+				<attribute name="Implementation-Version" value="${java-build.jar-version}"/>
+				<attribute name="Build-Date" value="${common.timestamp-long}" />
+				<attribute name="Build-Username" value="${shell.USERNAME}"/>
+				<attribute name="Build-Hostname" value="${hostname}"/>
+				<attribute name="Build-java-version" value="${java.version}" />
+				<attribute name="Build-java-class-version" value="${java.class.version}" />
+				<attribute name="Build-java-home" value="${java.home}" />
+				<attribute name="Build-os-arch" value="${os.arch}" />
+				<attribute name="Build-os-name" value="${os.name}" />
+				<attribute name="Build-os-version" value="${os.version}" />
+				<attribute name="Class-Path" value="${java-build.jar-classpath} ${java-build.dist-filename}"/>
+			</manifest>
+		</ear>
+	</target>
+	<target name="-ear-prepare-libs" depends="-init">
+		<mkdir dir="${common.dist-dir}/ear-libs"/>
+
+		<copy todir="${ear.libs-dir}" overwrite="true"
+              flatten="true" failonerror="true" verbose="true">
+			<fileset refid="java-build.deployables-classpath.fileset" />
+			<fileset refid="java-build.generated-classpath.fileset" />
+		</copy>
+
+	</target>
+
+
+</project>
+

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:include schemaLocation="../common.xsd"/>	
+	<!-- Root element -->
+	<xs:element name="releaseSORequest">
+		<xs:complexType>
+			<xs:sequence>				
+			    <xs:element name="statusId" type="xs:int"/>
+				<xs:element name="comment" type="xs:string"/>
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:decimal"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

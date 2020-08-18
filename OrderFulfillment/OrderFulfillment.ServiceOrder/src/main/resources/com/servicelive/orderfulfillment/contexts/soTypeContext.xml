@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd"
+   	>
+    
+<!-- Service Order Types -->
+    <bean id="defaultServiceOrder" class="com.servicelive.orderfulfillment.ordertype.ServiceOrderType">
+        <property name="soTypeName" value="CB" />
+        <property name="buyerRoleId" value="5" />
+        <property name="buyerId" value="-1" /> <!-- this is how we get the default bean -->
+        <property name="WFProcessDefinitionName" value="SB_ServiceOrderBPM" />
+    </bean>
+
+    <bean id="profBuyerServiceOrder" class="com.servicelive.orderfulfillment.ordertype.ServiceOrderType">
+        <property name="soTypeName" value="PB" />
+        <property name="buyerRoleId" value="3" />
+        <property name="WFProcessDefinitionName" value="SB_ServiceOrderBPM" />
+    </bean>
+
+	<bean id="riServiceOrder" class="com.servicelive.orderfulfillment.ordertype.ServiceOrderType">
+		<property name="soTypeName" value="SEARSRI" />
+		<property name="buyerId" value="1000" />	
+		<property name="WFProcessDefinitionName" value="SB_ServiceOrderBPM" />
+	</bean>
+
+	<bean id="hsrServiceOrder" class="com.servicelive.orderfulfillment.ordertype.ServiceOrderType">
+		<property name="soTypeName" value="SEARSHSR" />
+		<property name="buyerId" value="3000" />	
+		<property name="WFProcessDefinitionName" value="SB_ServiceOrderBPM" />
+	</bean>
+
+	<bean id="officeMaxServiceOrder" class="com.servicelive.orderfulfillment.ordertype.ServiceOrderType">
+		<property name="soTypeName" value="OMAX" />
+		<property name="buyerId" value="1953" />	
+		<property name="WFProcessDefinitionName" value="SB_ServiceOrderBPM" />
+	</bean>
+
+	<bean id="connsServiceOrder" class="com.servicelive.orderfulfillment.ordertype.ServiceOrderType">
+		<property name="soTypeName" value="CONNS" />
+		<property name="buyerId" value="507128" />	
+		<property name="WFProcessDefinitionName" value="SB_ServiceOrderBPM" />
+	</bean>
+
+	<bean id="assurantServiceOrder" class="com.servicelive.orderfulfillment.ordertype.ServiceOrderType">
+		<property name="soTypeName" value="ASN" />
+		<property name="buyerId" value="1085" />	
+		<property name="WFProcessDefinitionName" value="SB_ServiceOrderBPM" />
+	</bean>
+</beans>

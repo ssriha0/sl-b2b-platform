@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:include schemaLocation="../common.xsd"/>
+	<xs:include schemaLocation="../om_common.xsd"/>
+	
+	<!--  This is the new so Edit Appointment Response-->
+	<!-- Root Element -->
+	<xs:element name="soEditAppointmentResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="soId" type="soType" minOccurs="0" />
+				<xs:element ref="results"/>
+			</xs:sequence>		
+		</xs:complexType>
+	</xs:element>
+	
+</xs:schema>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd
+http://cxf.apache.org/jaxrs
+http://cxf.apache.org/schemas/jaxrs.xsd">
+
+	<bean id="providerBaseService" abstract="true" 
+		class="com.newco.marketplace.api.services.BaseService" scope="prototype">
+		<property name="securityProcess">
+			<ref bean="SecurityProcess" />
+		</property>
+		<property name="validationBO">
+			<ref bean="validationBO" />
+		</property>
+		<property name="xmlValidator">
+			<ref bean="reqResValidator" />
+		</property>
+		<property name="mobileSOLoggingBO">
+			<ref bean="mobileSOLoggingBO"/>
+		</property>
+	</bean>
+	
+	<bean id="timeOnSiteService_v3_0"
+		class="com.newco.marketplace.api.provider.services.v3_0.ProviderTimeOnSiteService"
+		scope="prototype" parent="providerBaseService">
+		<property name="manageScheduleBO">
+			<ref bean="manageScheduleBO" />
+		</property>
+		<property name="timeOnSiteMapper">
+			<ref bean="timeOnSiteMapper_v3_0" />
+		</property>
+		<property name="timeOnSiteValidator">
+			<ref bean="timeOnSiteValidator_v3_0" />
+		</property>
+		<property name="ofHelper" ref="ofHelper" />
+		<property name="mobileSOActionsBO">
+			<ref bean="mobileSOActionsBO" />
+		</property>
+		<property name="notificationService">
+			<ref bean="notificationService" />
+		</property>		
+		<property name="relayNotificationService">
+			<ref bean="relayNotificationService" />
+		</property>	
+	</bean>
+	
+	<bean id="SecurityProcess"
+		class="com.newco.marketplace.api.security.SecurityProcess" scope="prototype">
+		<property name="accessSecurity">
+			<ref bean="securityBO" />
+		</property>
+	</bean>
+	
+</beans>

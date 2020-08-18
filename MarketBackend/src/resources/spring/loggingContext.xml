@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	
+	<bean id="loggingDao"
+		class="com.newco.marketplace.persistence.daoImpl.logging.LoggingDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+
+
+	<bean id="loggingAdvisor"
+		class="org.springframework.aop.support.NameMatchMethodPointcutAdvisor">
+		<property name="mappedName">
+			<value>updateSO*</value>
+		</property>
+		<property name="advice">
+			<ref bean="loggingAdvice" />
+		</property>
+	</bean>
+
+
+	<bean id="loggingAdvice"
+		class="com.newco.marketplace.aop.LoggingAdvice">
+		<property name="loggingDao">
+			<ref bean="loggingDao" />
+		</property>
+		<!-- For Alert/Email -->
+		<property name="templateDao">
+			<ref bean="templateDao" />
+		</property>
+		<property name="velocityEngine">
+         	<ref bean="velocityEngine"/> 
+        </property> 
+		<property name="contactDao">
+         	<ref bean="contactDao"/> 
+        </property>		
+		<property name="buyerDao">
+         	<ref bean="buyerDao"/> 
+        </property>	   
+		<property name="vendorResourceDao">
+         	<ref bean="vendorResourceDao"/> 
+        </property>	                
+	</bean>
+
+
+   <bean id="soRescheduleTemplate" class="com.newco.marketplace.webservices.base.Template">
+       <property name="templateName" value="Service Order Rescheduled"/>
+       <property name="templateTypeId" value="1"/>
+    </bean>
+    
+    <bean id="soIncreaseSpendLimit" class="com.newco.marketplace.webservices.base.Template">
+       <property name="templateName" value="Maximum Price Increased"/>
+       <property name="templateTypeId" value="1"/>
+    </bean>
+</beans>

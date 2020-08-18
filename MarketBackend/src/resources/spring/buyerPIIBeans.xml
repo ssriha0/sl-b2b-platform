@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
+	default-lazy-init="true">
+	
+	<bean id="buyerPIIBo" class="com.newco.marketplace.business.businessImpl.buyer.BuyerPersIdentificationBOImpl">
+		<property name="cryptography">
+	    	<ref bean="cryptography"/>
+	    </property>
+	 	<property name="buyerPIIDao">
+	    	<ref bean="buyerPIIDao"/>
+	    </property>  
+	    <property name="buyerDao">
+	    	<ref bean="buyerDao"/>
+	    </property> 
+	</bean>
+	<bean id="buyerPIIDao" class="com.newco.marketplace.persistence.daoImpl.so.buyerPII.BuyerPIIDaoImpl">
+		<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	
+	</bean>
+	<bean id="buyerDao" class="com.newco.marketplace.persistence.daoImpl.so.buyer.BuyerDaoImpl">
+		<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	
+	</bean>
+</beans>

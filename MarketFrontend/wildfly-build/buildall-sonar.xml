@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="MarketFrontend-Sonar-BuildAll" basedir="../" default="sonar">   
+	<target name="sonar">
+		<ant antfile="../CSRF/wildfly-build/build.xml" dir="../CSRF" target="sonar"/>
+		<ant antfile="../iBatisSqlChecker/wildfly-build/build.xml" dir="../iBatisSqlChecker" target="sonar"/>
+		<ant antfile="../MarketAlertsManager/wildfly-build/build.xml" dir="../MarketAlertsManager" target="sonar"/>
+		<ant antfile="../MarketBackend/wildfly-build/build.xml" dir="../MarketBackend" target="sonar"/>
+		<ant antfile="../MarketBatch/wildfly-build/build.xml" dir="../MarketBatch" target="sonar"/>
+		<ant antfile="../MarketBusinessInterface/wildfly-build/build.xml" dir="../MarketBusinessInterface" target="sonar"/>
+		<ant antfile="../MarketCommon/wildfly-build/build.xml"   dir="../MarketCommon" target="sonar"/>
+		<ant antfile="../MarketDocument/wildfly-build/build.xml"   dir="../MarketDocument" target="sonar"/>			
+        <ant antfile="../MarketFrontend/wildfly-build/build.xml" dir="../MarketFrontend" target="sonar"/>
+		<ant antfile="../MarketGWTProviderSearch/wildfly-build.xml" dir="../MarketGWTProviderSearch" target="sonar"/>
+		<ant antfile="../MarketPlatform.RemoteService/wildfly-build/build.xml" dir="../MarketPlatformRemoteService/MarketPlatform.RemoteService" target="sonar"/>
+		<ant antfile="../MarketPlatform.RemoteService.BusinessImpl/wildfly-build/build.xml" dir="../MarketPlatformRemoteService/MarketPlatform.RemoteService.BusinessImpl" target="sonar"/>
+		<ant antfile="../MarketPlatform.RemoteService.BusinessInterface/wildfly-build/build.xml" dir="../MarketPlatformRemoteService/MarketPlatform.RemoteService.BusinessInterface" target="sonar"/>
+		<ant antfile="../MarketPlatform.RemoteService.Client/wildfly-build/build.xml" dir="../MarketPlatformRemoteService/MarketPlatform.RemoteService.Client" target="sonar"/>
+		<ant antfile="../MarketPlatform.RemoteService.Common/wildfly-build/build.xml" dir="../MarketPlatformRemoteService/MarketPlatform.RemoteService.Common" target="sonar"/>
+		<ant antfile="../MarketPlatform.RemoteService.Domain/wildfly-build/build.xml" dir="../MarketPlatformRemoteService/MarketPlatform.RemoteService.Domain" target="sonar"/>
+		<ant antfile="../MarketPlatform.RemoteService.MessageListeners/wildfly-build/build.xml" dir="../MarketPlatformRemoteService/MarketPlatform.RemoteService.MessageListeners" target="sonar"/>
+		<ant antfile="../MarketPlatform.RemoteService.Notification/wildfly-build/build.xml" dir="../MarketPlatformRemoteService/MarketPlatform.RemoteService.Notification" target="sonar"/>
+		<ant antfile="../MarketPlatform.RemoteService.NotificationMDB/wildfly-build/build.xml" dir="../MarketPlatformRemoteService/MarketPlatform.RemoteService.NotificationMDB" target="sonar"/>
+		<ant antfile="../MarketPlatform.RemoteService.WebServices/wildfly-build/build.xml" dir="../MarketPlatformRemoteService/MarketPlatform.RemoteService.WebServices" target="sonar"/>
+		<ant antfile="../MarketProviderSearch/wildfly-build/build.xml" dir="../MarketProviderSearch" target="sonar"/>
+		<ant antfile="../MarketPublicAPI/wildfly-build/build.xml" dir="../MarketPublicAPI" target="sonar"/>
+		<ant antfile="../MarketPublicMobileAPI/wildfly-build/build.xml" dir="../MarketPublicMobileAPI" target="sonar"/>	
+		<ant antfile="../MarketServiceBus/wildfly-build.xml" dir="../MarketServiceBus" target="sonar"/>
+		<ant antfile="../MarketServiceBus.Mapforce.Code/wildfly-build/build.xml" dir="../MarketServiceBus.Mapforce.Code" target="sonar"/>
+		<ant antfile="../MarketTranslator/wildfly-build/build.xml" dir="../MarketTranslator" target="sonar"/>
+		<ant antfile="../MarketWebServices/wildfly-build/build.xml" dir="../MarketWebServices" target="sonar"/>
+		<ant antfile="../OAuth/wildfly-build/build.xml" dir="../OAuth" target="sonar"/>
+		<ant antfile="../OFACSDN/wildfly-build.xml" dir="../OFACSDN" target="sonar"/>
+		<ant antfile="../OMSStaging/wildfly-build/build.xml" dir="../OMSStaging" target="sonar"/>
+		<ant antfile="../OrderFulfillment.Client/wildfly-build/build.xml" dir="../OrderFulfillment/OrderFulfillment.Client" target="sonar"/>
+		<ant antfile="../OrderFulfillment.Domain/wildfly-build/build.xml" dir="../OrderFulfillment/OrderFulfillment.Domain" target="sonar"/>
+		<ant antfile="../OrderFulfillment.Integration/wildfly-build/build.xml" dir="../OrderFulfillment/OrderFulfillment.Integration" target="sonar"/>
+		<ant antfile="../OrderFulfillment.Jobs/wildfly-build/build.xml" dir="../OrderFulfillment/OrderFulfillment.Jobs" target="sonar"/>
+		<ant antfile="../OrderFulfillment.Service/wildfly-build/build.xml" dir="../OrderFulfillment/OrderFulfillment.Service" target="sonar"/>
+		<ant antfile="../OrderFulfillment.ServiceInterface/wildfly-build/build.xml" dir="../OrderFulfillment/OrderFulfillment.ServiceInterface" target="sonar"/>
+		<ant antfile="../OrderFulfillment.ServiceOrder/wildfly-build/build.xml" dir="../OrderFulfillment/OrderFulfillment.ServiceOrder" target="sonar"/>
+		<ant antfile="../ResponsysClient/wildfly-build/build.xml" dir="../ResponsysClient" target="sonar"/>
+		<ant antfile="../ResponsysInteractClient/wildfly-build/build.xml"   dir="../ResponsysInteractClient"/>
+		<ant antfile="../RoutingRulesEngine/wildfly-build/build.xml" dir="../RoutingRulesEngine" target="sonar"/>		    	
+		<ant antfile="../RoutingRulesWeb/wildfly-build/build.xml" dir="../RoutingRulesWeb" target="sonar"/>
+		<ant antfile="../SCMAudit/wildfly-build/build.xml" dir="../SCMAudit" target="sonar"/>
+        <ant antfile="../ServiceLive.Common/wildfly-build/build.xml" dir="../Wallet/ServiceLive.Common" target="sonar"/>
+		<ant antfile="../ServiceLive.Lookup/wildfly-build/build.xml" dir="../Wallet/ServiceLive.Lookup" target="sonar"/>
+		<ant antfile="../ServiceLive1099/wildfly-build/build.xml" dir="../ServiceLive1099" target="sonar"/>
+		<ant antfile="../ServiceLiveBus/wildfly-build/build.xml" dir="../ServiceLiveBus" target="sonar"/>
+		<ant antfile="../ServiceLiveCommonDomain/wildfly-build/build.xml" dir="../ServiceLiveCommonDomain" target="sonar"/>
+		<ant antfile="../ServiceLiveKeyRotation/wildfly-build/build.xml" dir="../ServiceLiveKeyRotation" target="sonar"/>
+		<ant antfile="../ServiceOrderCreation/wildfly-build/build.xml" dir="../ServiceOrderCreation" target="sonar"/>
+		<ant antfile="../ServiceOrderFileProcess/wildfly-build/build.xml" dir="../ServiceOrderFileProcess" target="sonar"/>
+		<ant antfile="../ServiceOrderInjection.TestingTool/wildfly-build/build.xml" dir="../ServiceOrderInjection.TestingTool" target="sonar"/>
+		<ant antfile="../ServiceOrderQueueing/wildfly-build/build.xml" dir="../ServiceOrderQueueing" target="sonar"/>
+		<ant antfile="../SolrReport/wildfly-build/build.xml" dir="../SolrReport" target="sonar"/>
+		<ant antfile="../SpellService/wildfly-build/build.xml" dir="../SpellService" target="sonar"/>
+		<ant antfile="../SPNBackend/wildfly-build/build.xml" dir="../SPNBackend" target="sonar"/>
+		<ant antfile="../SPNWeb/wildfly-build/build.xml" dir="../SPNWeb" target="sonar"/>
+		<ant antfile="../StaticWeb/wildfly-build/build.xml" dir="../StaticWeb" target="sonar"/>
+		<ant antfile="../Wallet.ACH/wildfly-build/build.xml" dir="../Wallet/Wallet.ACH" target="sonar"/>	
+		<ant antfile="../Wallet.Alert/wildfly-build/build.xml" dir="../Wallet/Wallet.Alert" target="sonar"/>
+		<ant antfile="../Wallet.Batch/wildfly-build/build.xml" dir="../Wallet/Wallet.Batch" target="sonar"/>
+        <ant antfile="../Wallet.Common/wildfly-build/build.xml" dir="../Wallet/Wallet.Common" target="sonar"/>
+		<ant antfile="../Wallet.CreditCard/wildfly-build/build.xml" dir="../Wallet/Wallet.CreditCard" target="sonar"/>
+		<ant antfile="../Wallet.Ledger/wildfly-build/build.xml" dir="../Wallet/Wallet.Ledger" target="sonar"/>
+		<ant antfile="../Wallet.RemoteClient/wildfly-build/build.xml" dir="../Wallet/Wallet.RemoteClient" target="sonar"/>
+		<ant antfile="../Wallet.RemoteService/wildfly-build/build.xml" dir="../Wallet/Wallet.RemoteService" target="sonar"/>
+		<ant antfile="../Wallet.Service/wildfly-build/build.xml" dir="../Wallet/Wallet.Service" target="sonar"/>
+        <ant antfile="../Wallet.ServiceInterface/wildfly-build/build.xml" dir="../Wallet/Wallet.ServiceInterface" target="sonar"/>
+		<ant antfile="../Wallet.ValueLink/wildfly-build/build.xml" dir="../Wallet/Wallet.ValueLink" target="sonar"/>
+		<ant antfile="../Wallet.ValueLink.EJB/wildfly-build/build.xml" dir="../Wallet/Wallet.ValueLink.EJB" target="sonar"/>
+     </target>       
+</project>

@@ -1,0 +1,1 @@
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%><fmt:formatDate value="${agreeDate}" pattern="MM-dd-yyyy hh:mm a" /> CST

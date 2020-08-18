@@ -1,0 +1,77 @@
+<!DOCTYPE validators PUBLIC
+        "-//Apache Struts//XWork Validator 1.0.2//EN"
+        "http://struts.apache.org/dtds/xwork-validator-1.0.2.dtd">
+<validators>
+<!-- Personal Information -->
+  <field name="generalInfoDto.firstName">
+     <field-validator type="requiredstring">
+          <param name="trim">true</param>
+  		  <message key="generalInfoAction.generalInfoDto.firstName"></message>
+      </field-validator>
+  </field>
+  <field name="generalInfoDto.lastName">
+     <field-validator type="requiredstring">
+          <param name="trim">true</param>
+  		  <message key="generalInfoAction.generalInfoDto.lastName"></message>
+      </field-validator>
+  </field>  	
+  <!-- SSN -->
+  <field name="generalInfoDto.ssnRight">
+     <field-validator type="requiredstring">
+          <param name="trim">true</param>
+  		  <message key="generalInfoAction.generalInfoDto.ssn"></message>
+      </field-validator>
+  </field> 
+  
+<!-- Dispatch Address & Coverage Area -->
+   
+  <field name="generalInfoDto.dispAddStreet1">
+     <field-validator type="requiredstring">
+          <param name="trim">true</param>
+  		  <message key="generalInfoAction.generalInfoDto.dispAddStreet1"></message>
+      </field-validator>
+  </field>
+  <field name="generalInfoDto.dispAddCity">
+     <field-validator type="requiredstring">
+          <param name="trim">true</param>
+  		  <message key="generalInfoAction.generalInfoDto.dispAddCity"></message>
+      </field-validator>
+  </field>
+  <field name="generalInfoDto.dispAddState">
+     <field-validator type="requiredstring">
+          <param name="trim">true</param>
+  		  <message key="generalInfoAction.generalInfoDto.dispAddState"></message>
+      </field-validator>
+  </field>
+
+   <field name="generalInfoDto.dispAddZip">
+	   <field-validator type="requiredstring" short-circuit="true">
+	        <param name="trim">true</param>
+	        <message key="generalInfoAction.generalInfoDto.dispAddZip" />
+	    </field-validator>
+	    <field-validator type="regex" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="regex">^\d+$</param>
+	        <message key="generalInfoAction.generalInfoDto.dispAddZip.number"/>
+	    </field-validator>
+	    <field-validator type="stringlength" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="minLength">5</param>
+	        <message key="generalInfoAction.generalInfoDto.dispAddZip.minlength"/>
+	    </field-validator>
+	</field>
+   <field name="generalInfoDto.dispAddGeographicRange">
+     <field-validator type="requiredstring">
+          <param name="trim">true</param>
+  		  <message key="generalInfoAction.generalInfoDto.dispAddGeographicRange"></message>
+      </field-validator>
+  </field>
+ 
+ <field name="generalInfoDto.hourlyRate">
+     <field-validator type="requiredstring">
+          <param name="trim">true</param>
+  		  <message key="generalInfoAction.generalInfoDto.hourlyRate"></message>
+      </field-validator>
+  </field>
+ 
+</validators>

@@ -1,0 +1,9 @@
+<button
+  type="button"
+  class="border-box"
+  [class.selected]="isSelected"
+  (click)="selectOpt(option)"
+>
+<span [hidden]="!isSelected">&#10004;</span>
+  {{ option.text }}
+</button>

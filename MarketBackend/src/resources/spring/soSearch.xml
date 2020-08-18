@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+
+	<bean id="soSearchBO" class="com.newco.marketplace.business.businessImpl.so.order.ServiceOrderSearchBO">
+		<property name="soSearchDAO">
+			<ref bean="soSearchDAO" />
+		</property>
+		<property name="serviceOrderDao">
+			<ref bean="serviceOrderDao" />
+		</property>	
+		<property name="orderGroupDAO">
+			<ref bean="orderGroupDAO" />
+		</property>
+		<property name="paginationDao">
+			<ref bean="paginationDao" />
+		</property>	
+		
+		<property name="powerBuyerDAO">
+		     <ref bean="powerBuyerDAO"/>
+		</property>
+	</bean>
+	
+	<bean id="powerBuyerDAO"  class="com.newco.marketplace.persistence.daoImpl.powerbuyer.PowerBuyerFilterDao"
+		lazy-init="true">
+       <property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	 
+     </bean>
+	
+    <bean id="soSearchDAO" class="com.newco.marketplace.persistence.daoImpl.so.order.ServiceOrderSearchDAOImpl"
+    	lazy-init="true">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	 
+	 	<property name="powerBuyerDAO">
+    		<ref bean="powerBuyerDAO"/>
+  		</property>	 
+  		<property name="buyerFeatureSetDao">
+    		<ref bean="buyerFeatureSetDAO"/>
+    	</property>	
+    	
+    </bean>	
+           
+          
+    
+                           
+                           
+                           
+</beans>

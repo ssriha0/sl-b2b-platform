@@ -1,0 +1,105 @@
+.a9multiselect {
+	width: 185px;
+	position: relative;
+	margin: 8px 0 5px 0;
+	border: 0;
+}
+
+.a9multiselect .expcol-click, .a9multiselect .expcol-click-open {
+	background-color: #fff;
+	border: 1px solid #999;
+	padding: 0;
+	margin: 0;
+	cursor: default;
+	width: 185px;
+	padding:  1px 0 2px 0;
+}
+
+._a9checkbox {
+	float: left;
+	padding: 0;
+	margin: 0 0 3px 0;
+}
+
+label {
+	padding: 2px;
+}
+
+.a9multiselect div.expcol-click {
+	position: absolute;
+	z-index: 104;
+	border:1px solid #BBBBBB;
+	padding:  1px 0 2px 0;
+}
+
+.a9multiselect div.expcol-click-open {
+	border:1px solid #666666;
+}
+
+.a9multiselect .title {
+	height: 1.3em;
+	line-height: 1.2em;
+	overflow: hidden;
+	padding: .3em 1.1em .1em .5em;
+	background: white url(../../images/common/multiselect.gif) no-repeat 163px 2px;
+	cursor: pointer;
+	font-weight: normal;
+}
+
+.a9multiselect .title:hover, div.expcol-click-open .title {
+	background: white url(../../images/common/multiselect-hover.gif) no-repeat 163px 2px;
+	cursor: pointer;
+}
+
+.expcol-body {
+	position: absolute;
+	z-index: 106;
+	min-height: 1em;
+	background: #33393c;
+	padding: .1em;
+	display: block;
+	font-size: 75%;
+	display: none;
+	margin-top: -1px;
+	border: 1px solid #33393c;
+	-moz-border-radius: 5px;
+	width:  400px;
+}
+
+.expcol-body ul {
+	overflow: auto;
+	min-height: 1em;
+	margin: 10px;
+	padding: 0;
+	color: #FFF;
+}
+
+.expcol-body li {
+	margin: 0 0 .2em 0;
+	list-style: none;
+	padding: 5px;
+	-moz-border-radius: 5px;
+	font-weight: bold;
+	width:  175px;
+	float: left
+}
+
+.expcol-body li:hover {
+	background: #00A0D2;
+}
+
+.arc90_multiselect {
+	width: 12.5em;
+	height: 1.35em;
+	visibility: hidden;
+}
+
+.a9selectall {
+	background: #000;
+}
+
+.a9selectall input {
+	float: left;
+	padding: 0;
+	margin: 0 0 3px 0;
+}

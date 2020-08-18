@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<bean id="providerBO" class=" com.newco.marketplace.business.businessImpl.hi.ProviderBOImpl" scope="prototype">
+		<property name="iContactDao">
+            <ref bean="contactDaoImpl"/>
+        </property>
+        <property name="iContactMethodPrefDao">
+            <ref bean="contactMethodPrefImpl"/>
+        </property>
+        <property name="iLocationDao">
+            <ref bean="locationDaoImpl"/>
+        </property>
+        <property name="iResourceLocationDao">
+            <ref bean="resourceLocationDaoImpl"/>
+        </property>
+        <property name="iLookupDAO">
+            <ref bean="lookupDAOImpl"/>
+        </property>
+        <property name="iUserProfileDao">
+            <ref bean="userProfileDaoImpl"/>
+        </property>
+        <property name="iVendorContactDao">
+            <ref bean="vendorContactDaoImpl"/>
+        </property>
+        <property name="iVendorHdrDao">
+            <ref bean="vendorHdrDaoImpl"/>
+        </property>
+        <property name="iVendorLocationDao">
+            <ref bean="vendorLocationDaoImpl"/>
+        </property>
+        <property name="iVendorResourceDao">
+            <ref bean="vendorResourceDaoImpl"/>
+        </property>
+        <property name="iProviderEmailBO">
+            <ref bean="providerEmailBOImpl"/>
+        </property>
+        <property name="iVendorFinanceDao">
+            <ref bean="vendorFinanceImpl"/>
+        </property>
+        <property name="iVendorPolicyDao">
+            <ref bean="vendorPolicyImpl"/>
+        </property>
+        <property name="activityRegistryDao">
+            <ref bean="activityDaoImpl"/>
+        </property>
+         <property name="auditBO">
+            <ref bean="auditBoImpl"/>
+        </property>
+        <property name="securityDao">
+            <ref bean="securityDAO"/>
+        </property>
+        <property name="providerRegistrationBO">
+    		<ref bean="registrationBOImpl"/>
+    	</property>
+    	<property name="zipDao">
+    		<ref bean="zipDaoImpl"/>
+    	</property>
+    	<property name="commonLookkupDAO">
+    		<ref bean="lookupDao"/>
+    	</property> 
+    	<property name="iWarrantyDao">
+    		<ref bean="warrantyDaoImpl"/>
+    	</property>  
+    	<property name="credentialDao">
+    	    <ref bean="credentialDaoImpl"/>
+    	</property> 
+    	<property name="iInsurancePolicyBO">
+    	    <ref bean="insuranceTypePolicyBOImplTarget"/>
+    	</property>  
+    	<property name="iLicensesAndCertDao">
+    	    <ref bean="licensesAndCertDaoImpl"/>
+    	</property>	  
+        <!-- Added For Approve Firm API Start -->
+        <property name="auditDao">
+			<ref bean="auditDaoImpl" />
+		</property>
+		<property name="vendorNotesDao">
+			<ref bean="vendorNotesDao" />
+		</property>
+		<property name="auditEmailDao">
+			<ref bean="auditEmailDao" />
+		</property>
+		<property name="templateDao">
+			<ref bean="pTemplateDao" />
+		</property>
+		<property name="alertDao">
+			<ref bean="alertDao" />
+		</property>
+		<property name="velocityEngine">
+			<ref bean="velocityEngine" />
+		</property>
+		<property name="mailSender">
+			<ref bean="jmsIMailSender" />
+		</property>
+		<property name="templateDaoImpl">
+			<ref bean="templateDao" />
+		</property>
+		<property name="cryptography">
+			<ref bean="cryptography" />
+		</property>
+		<!-- Added For Approve Firm API End -->
+        <property name="iBusinessinfoDao">
+            <ref bean="businessinfoDaoImpl"/>
+        </property>
+        <property name="w9RegistrationDao">
+            <ref bean="w9RegistrationDaoImpl"/>
+        </property>
+         <property name="auditEmailBean">
+			<ref bean="auditEmailBO" />
+		</property>
+		<property name="workflowDao">
+			<ref bean="workflowDao" />
+		  </property>
+		  
+		  <property name="iauditDao">
+			<ref bean="auditDao" />
+		  </property>
+		
+      </bean>
+       <bean id="providerResourceBO" class="com.newco.marketplace.business.businessImpl.hi.ProviderResourceBOImpl" scope="prototype">
+          <property name="iVendorHdrDao">
+            <ref bean="vendorHdrDaoImpl"/>
+          </property>
+          <property name="iLookupDAO">
+            <ref bean="lookupDAOImpl"/>
+          </property>
+          <property name="lookupDao">
+            <ref bean="lookupDao"/>
+          </property>
+          <property name="zipDao">
+            <ref bean="zipDaoImpl"/>
+          </property>
+           <property name="iContactDao">
+            <ref bean="contactDaoImpl"/>
+          </property>
+          <property name="iVendorResourceDao">
+			<ref bean="vendorResourceDaoImpl" />
+		  </property>
+          <property name="iResourceScheduleDao">
+            <ref bean="resourceScheduleDao"/>
+          </property>
+           <property name="iLocationDao">
+            <ref bean="locationDaoImpl"/>
+          </property>
+           <property name="iUserProfileDao">
+            <ref bean="userProfileDaoImpl"/>
+          </property>
+          <property name="activityRegistryDao">
+            <ref bean="activityDaoImpl"/>
+          </property>
+          <property name="auditDao">
+			<ref bean="auditDao" />
+		  </property>
+		  <property name="workflowDao">
+			<ref bean="workflowDao" />
+		  </property>
+		  <property name="iTeamCredentialsDao">
+            <ref bean="iTeamCredentialsDao"/>
+          </property>
+          <property name="iSkillAssignDao">
+            <ref bean="skillAssignDAOImpl"/>
+          </property>
+          <property name="iMarketPlaceDao">
+            <ref bean="marketPlaceDaoImpl"/>
+          </property>
+          <property name="resourceLocationDaoImpl">
+             <ref bean="resourceLocationDaoImpl"/>
+          </property>
+          <property name="activityRegistryBO">
+             <ref bean="activityRegistryBOImpl"/>
+          </property>
+        	
+       </bean>	
+      <!-- Added for API Logging -->
+      <bean id="apiLoggingBO"  class="com.newco.marketplace.business.businessImpl.hi.APILoggingBOImpl" scope="prototype">
+          <property name="APILogginDao">
+             <ref bean="APILogginDao"/>
+        </property>
+      </bean>
+      <bean id="APILogginDao" class="com.newco.marketplace.persistence.daoImpl.hi.APILoggingDaoImpl" lazy-init="true">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	 
+    </bean>				
+	</beans>

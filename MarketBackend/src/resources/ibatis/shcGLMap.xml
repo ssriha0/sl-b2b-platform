@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<typeAlias alias="glSummary"
+		type="com.newco.marketplace.dto.vo.ledger.GLSummaryVO"/>
+
+	<select id="shc_gl.query" resultClass="glSummary" parameterClass="java.lang.Integer">
+		select gl_account as gl_t_account_no, location, sum(transactionAmount) as transactionAmount
+		from
+		(
+			select 
+				case when skuType='N' and coverage='PT' then (
+					select vw2.gl_account from vw_shc_glskus vw2 
+						where ( vw2.shc_order_id = vw1.shc_order_id 
+							or vw2.shc_order_sku_id = vw1.shc_order_sku_id )
+						order by skuType desc limit 1)
+				else vw1.gl_account
+				end as gl_account,
+				case when skuType='N' and coverage='PT' then (
+					select vw2.location from vw_shc_glskus vw2 
+						where ( vw2.shc_order_id = vw1.shc_order_id 
+							or vw2.shc_order_sku_id = vw1.shc_order_sku_id )
+						order by skuType desc limit 1)
+				else vw1.location
+				end as location,
+				vw1.final_price - vw1.service_fee as transactionAmount
+			from vw_shc_glskus vw1
+		) as detail_gl
+		group by gl_account, location
+    </select>
+	
+	<select id="shc_gl_trans_amount.query" resultClass="glSummary" parameterClass="java.util.List">
+		SELECT apq.entity_id AS ledgerEntityId
+		       ,sum(apq.trans_amount) AS transactionAmount
+		  FROM ach_process_queue apq JOIN ledger_entry le
+		          ON apq.ledger_entry_id = le.ledger_entry_id
+		 WHERE (transaction_type_id = 1900)
+		       AND gl_process_id IS NULL
+		       AND apq.entity_id IN
+		<iterate open="(" close=")" conjunction=",">
+			#[]#
+		</iterate>
+		 GROUP BY apq.entity_id
+	</select>
+
+	<select id="shc_gl_commission.query" resultClass="glSummary"  parameterClass="java.lang.Integer">
+		select '50611' as gl_t_account_no, location, sum(transactionAmount) as transactionAmount
+		from
+		(
+			select 
+				case when skuType='N' and coverage='PT' then (
+					select vw2.gl_account from vw_shc_glskus vw2 
+						where (vw2.shc_order_id = vw1.shc_order_id 
+							or vw2.shc_order_sku_id = vw1.shc_order_sku_id)
+						 order by skuType desc limit 1)
+				else vw1.gl_account
+				end as gl_account,
+				case when skuType='N' and coverage='PT' then (
+					select vw2.location from vw_shc_glskus vw2 
+						where (vw2.shc_order_id = vw1.shc_order_id 
+							or vw2.shc_order_sku_id = vw1.shc_order_sku_id)
+						order by skuType desc limit 1)
+				else vw1.location
+				end as location,
+				vw1.service_fee as transactionAmount
+			from vw_shc_glskus vw1
+		) as detail_gl
+		group by gl_account, location
+    </select>
+	
+	
+	
+	<select id="shc_gl_commission.query.backup" resultClass="glSummary"  parameterClass="java.util.List">
+		SELECT ledger_transaction_entry.trans_amount AS transactionAmount
+		       ,ledger_entry.so_id AS descr
+		       ,ledger_entry.gl_processed
+		       ,ledger_entry.ledger_entry_rule_id
+		       ,ledger_transaction_entry.ledger_entity_id
+		  FROM    ledger_entry ledger_entry
+		       INNER JOIN
+		          ledger_transaction_entry ledger_transaction_entry
+		       ON (ledger_entry.ledger_entry_id =
+		              ledger_transaction_entry.ledger_entry_id)
+		 WHERE (ledger_transaction_entry.entry_type_id = 2)
+		       AND (ledger_entry.so_id IS NOT NULL)
+		       AND (ledger_entry.gl_processed = 0
+		            OR ledger_entry.gl_processed IS NULL)
+		       AND (ledger_entry.ledger_entry_rule_id = 10002)
+		       AND ledger_entry.so_id IN (
+					 SELECT DISTINCT  so_id
+                      FROM    ledger_entry le
+                           INNER JOIN
+                              ledger_transaction_entry lte
+                           ON (le.ledger_entry_id =
+                                  lte.ledger_entry_id)
+                     WHERE (lte.entry_type_id = 1)
+                           AND (le.so_id IS NOT NULL)
+                           AND (le.ledger_entry_rule_id = 1120)
+                           AND lte.ledger_entity_id IN 
+			       <iterate open="(" close=")"
+						conjunction=",">
+						#[]#
+				   </iterate>
+				   )
+    </select>
+    
+    <select id="shc_gl_commission_loc.query" resultClass="glSummary"  parameterClass="java.util.List">
+		SELECT so_id AS descr
+		       ,right(unit_no, 5) AS location
+		  FROM shc_order
+		 WHERE so_id IN
+	       <iterate open="(" close=")"
+				conjunction=",">
+				#[]#
+		   </iterate>
+		ORDER BY unit_no
+    </select>
+    
+    <update id="shc_gl.update.query" parameterClass="java.util.HashMap">
+		update 
+			shc_order inner join so_hdr on shc_order.so_id = so_hdr.so_id
+		set shc_order.processed_ind = 1, shc_order.gl_process_id = #glProcessId# 
+		where
+			so_hdr.wf_state_id = #statusId#
+		and	shc_order.so_id IN
+	       <iterate property="soIdList" open="(" close=")"
+				conjunction=",">
+				#soIdList[]#
+		   </iterate>
+	</update>
+</sqlMap>

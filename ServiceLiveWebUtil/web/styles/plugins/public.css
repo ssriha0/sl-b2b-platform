@@ -1,0 +1,231 @@
+@import url("buttons.css");
+
+/* @group Password Admin & Login  - login.jsp */
+  
+	body#login div#content {
+	 /* commented by June & shekhar, as it was showing a black back ground */
+	 /*	background: #FFF url("../../images/public/login-bg.png") top right repeat-y; */
+	}
+
+	.content {
+		padding: 10px;
+	}
+
+	.page-title {
+		padding:  20px 0 0 20px;
+	}
+
+	.page-title h2 {
+		margin-bottom: 0px;
+		font-weight: bold;
+	}
+	
+	.page-title h3 {
+		color: #666;
+	}
+
+
+	#login-form label {
+		display: block;
+		width: 130px;
+		text-align: right;
+		float: left;
+		padding:5px;
+		margin:  5px 5px 5px 0;
+	}
+	
+	#login-form label span.dim {
+		color: #666;
+		font-size: 0.9em;
+	}
+	
+	#login-form input.text {
+		width: 200px;
+	}
+
+	#login-form span.context {
+		display: block;	
+		margin-left:  145px;
+		color: #666;
+		font-size: 0.9em;
+	}
+
+	#login-form select.select {
+		padding: 5px;
+	}
+	
+	#login-form span.security-question {
+		display: block;	
+		padding: 10px 0 5px;
+		margin:  0 0 5px 145px;
+		font-style: italic;
+	}
+	
+	#login-form input.squestion {
+		margin-left:  145px;
+	}
+	
+	#login-form .forgot {
+		padding-left: 20px;
+		background: url("../../images/s_icons/help.png") left center no-repeat;
+		font-weight: bold;
+		padding:  2px 0 2px 20px;
+		_padding: 0 0 0 20px;
+	}
+	
+	#login-form .forgot a {
+		color: #709ac3;
+	}
+	
+	#login-form input.action {
+		margin-left:  145px;
+	}
+/* for changing the margin of the input by june*/	
+	#login-form-forget input.action {
+		margin-left:  80px;
+		margin-top: -20px;
+	}
+	#login-form-forget  {
+	width:100%;  
+	float:left; 
+	padding-left:150px;
+	padding-bottom:10px;
+	
+	}
+
+	#supportmsg {
+		text-align: left;
+		color: #222;
+		margin: 20px 0 0 0;
+		border-left: 10px solid #EEE;
+		-moz-border-radius-topright: 10px;
+		-moz-border-radius-bottomright: 10px;
+		-webkit-border-top-right-radius: 10px;
+		-webkit-border-bottom-right-radius: 10px;
+		padding: 10px 10px 10px 120px;
+		background: #FFF url("../../images/public/support-bg.png") left center no-repeat;
+	}
+
+	#supportmsg h3 {
+		font-weight: bold;
+		margin-bottom: 0px;
+		color: #7dbe0c;
+	}
+	
+	#supportmsg a {
+		color: #222;
+	}
+	
+	#diymsg {
+		margin: 20px 0 0 0;
+		padding: 10px;
+		-moz-border-radius-topright: 10px;
+		-moz-border-radius-bottomright: 10px;
+		-webkit-border-top-right-radius: 10px;
+		-webkit-border-bottom-right-radius: 10px;
+		background: #FFF;
+		color: #27406d;
+		border-left: 10px solid #4c6595;
+	}
+	
+	#diymsg h3 {
+		font-weight: bold;
+		color: #27406d;
+		font-size: 1.2em;
+		padding-left: 25px;
+		background: url("../../images/s_icons/information.png") left center no-repeat;
+	}
+
+	#contactmsg {
+		margin: 20px 0 0 0;
+		padding: 10px;
+		-moz-border-radius-topright: 10px;
+		-moz-border-radius-bottomright: 10px;
+		-webkit-border-top-right-radius: 10px;
+		-webkit-border-bottom-right-radius: 10px;
+		background: #EEE;
+		color: #222;
+		border-left: 10px solid #CCC;
+	}
+	
+	#contactmsg a {
+		color: #222;
+	}
+	
+	#contactmsg h3 {
+		font-weight: bold;
+		color: #222;
+		font-size: 1.2em;
+		padding-left: 25px;
+		background: url("../../images/s_icons/email.png") left center no-repeat;
+	}
+	
+	#login-form div.cntxt {
+		float: right;
+		width: 200px;
+	}
+	
+	p#remember-me {
+		margin-left:  120px;
+	}
+	
+	#login-form fieldset {
+		-moz-border-radius:10px;
+		-webkit-border-radius: 10px;
+	}
+
+	#promoimg {
+		margin: 30px 0 10px 10px;
+	}
+	
+	.passwordmessage {
+		font-size: 0.9em;
+		padding-left:150px;
+	}
+
+	#errorMessages ul, #errorMessages li {
+		margin: 0px;
+		padding: 0px;
+		list-style-type: none;
+	}
+	
+	#errorMessages {
+		padding: 1em;
+	}
+	
+	#noticeMessages ul, #noticeMessages li {
+		margin: 0px;
+		padding: 0px;
+		list-style-type: none;
+	}
+	
+	#noticeMessages {
+		padding: 1em;
+	}
+	
+	#successMessages ul, #successMessages li {
+		margin: 0px;
+		padding: 0px;
+		list-style-type: none;
+	}
+	
+	#successMessages {
+		padding: 1em;
+	}
+	
+	#login-form a.cancel {
+		margin-bottom: -5px;
+		display: block;
+		clear: left;
+	}
+
+	#passwordStrength { 
+		height:10px; display:block; float:left; 
+	} 
+	.strength0 { width:250px; background:#FBE3E4; } 
+	.strength1 { width:50px; background:#FBE3E4; } 
+	.strength2 { width:100px; background:#FFF6BF; } 
+	.strength3 { width:150px; background:#E6EFC2; } 
+	.strength4 { background:#E6EFC2; width:200px; } 
+	.strength5 { background:#E6EFC2; width:250px; }
+/* @end */

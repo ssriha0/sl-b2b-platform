@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified">
+	<xs:include schemaLocation="../../common.xsd" />
+
+	<xs:element name="viewDashboardResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="results" />
+				<xs:element name="tabs" type="tabsType"/>
+				<xs:element name="leadOrderStatistics" type="leadOrderStatisticsType" minOccurs="0"/>
+				<xs:element name="availableWalletBalance" type="xs:string" minOccurs="0"/>
+				<xs:element name="performanceStatistics" type="performanceStatisticsType" minOccurs="0"/>
+				<xs:element name="serviceLiveStatusMonitor" type="serviceLiveStatusMonitorType" minOccurs="0"/>
+				<xs:element name="spnMonitor" type="spnMonitorType" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+    <xs:complexType name="tabsType">
+		<xs:sequence>
+			<xs:element name="tab" type="tabType" minOccurs="3" maxOccurs="5"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="tabType">
+		<xs:sequence>
+			<xs:element name="tabName" type="tabTypeEnum" />
+			<xs:element name="tabCount" type="xs:integer"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="tabTypeEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Received" />
+			<xs:enumeration value="Accepted" />
+			<xs:enumeration value="Active" />
+			<xs:enumeration value="Problem" />
+			<xs:enumeration value="Bid Requests" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="leadOrderStatisticsType">
+		<xs:sequence>
+			<xs:element name="leadDetails" type="leadDetailsType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="leadDetailsType">
+		<xs:sequence>
+			<xs:element name="leadDetail" type="leadDetailType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="leadDetailType">
+		<xs:sequence>
+			<xs:element name="leadOrderStatus" type="xs:string"/>
+			<xs:element name="leadOrderCount" type="xs:integer"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="performanceStatisticsType">
+		<xs:sequence>
+			<xs:element name="numberOfRatingsReceived" type="xs:integer"/>
+			<xs:element name="lifetimeRating" type="xs:double"/>
+			<xs:element name="currentRating" type="xs:double"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!--serviceLiveStatusMonitor -->
+	
+	<xs:complexType name="serviceLiveStatusMonitorType">
+		<xs:sequence>
+			<xs:element name="firmRegistrationStatus" type="xs:string"/>
+			<xs:element name="providerRegistrationStatus" type="providerRegistrationStatusType"/>
+			<xs:element name="providerBackgroundCheck" type="providerBackgroundCheckType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="providerRegistrationStatusType">
+		<xs:sequence>
+			<xs:element name="providerRegistrationDetails" type="providerRegistrationDetailsType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="providerRegistrationDetailsType">
+		<xs:sequence>
+			<xs:element name="providerRegistrationDetail" type="providerRegistrationDetailType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="providerRegistrationDetailType">
+		<xs:sequence>
+			<xs:element name="registrationStatus" type="xs:string" />
+			<xs:element name="registrationStatusCount" type="xs:integer" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="providerBackgroundCheckType">
+		<xs:sequence>
+			<xs:element name="providerBackgroundDetails" type="providerBackgroundDetailsType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="providerBackgroundDetailsType">
+		<xs:sequence>
+			<xs:element name="providerBackgroundDetail" type="providerBackgroundDetailType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="providerBackgroundDetailType">
+		<xs:sequence>
+			<xs:element name="backgroundStatus" type="xs:string"/>
+			<xs:element name="backgroundStatusCount" type="xs:integer"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!-- spn monitor -->
+	
+	<xs:complexType name="spnMonitorType">
+		<xs:sequence>
+			<xs:element name="spnBuyerDetailsList" type="spnBuyerDetailsListType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="spnBuyerDetailsListType">
+		<xs:sequence>
+			<xs:element name="spnBuyerDetail" type="spnBuyerDetailType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="spnBuyerDetailType">
+		<xs:sequence>
+			<xs:element name="buyerId" type="xs:integer"/>
+			<xs:element name="buyerName" type="xs:string"/>
+			<xs:element name="spnDetails" type="spnDetailsType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="spnDetailsType">
+		<xs:sequence>
+			<xs:element name="spnDetail" type="spnDetailType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="spnDetailType">
+		<xs:sequence>
+			<xs:element name="spnId" type="xs:integer"/>
+			<xs:element name="spnName" type="xs:string"/>
+			<xs:element name="spnMembershipStatus" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

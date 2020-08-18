@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="ap">
+
+	<cacheModel type="LRU" id="AppPropertiesCache">
+		<flushInterval hours="24" />
+		<flushOnExecute statement="application_properties.update"/>
+		<flushOnExecute statement="application_properties.insert"/>
+		<property name="size" value="500" />
+	</cacheModel>
+	
+	<typeAlias alias="ap" type="com.newco.marketplace.dto.vo.ApplicationPropertiesVO"/>	
+		<select id="application_properties.query" parameterClass="ap" resultClass="ap"  >
+		select app_key as appKey, 
+				app_value as appValue
+			from application_properties
+			<dynamic prepend="where">
+				<isNotNull prepend="AND " property="appKey">app_key = #appKey#</isNotNull>
+			</dynamic>		
+	</select>
+	
+	<select id="application_secure_properties.query" parameterClass="ap" resultClass="ap" >
+		select app_key as appKey, 
+				aes_decrypt(app_value, 'servicelive123') as appValue,
+				app_file as appFile
+			from encryption_key
+			<dynamic prepend="where">
+				<isNotNull prepend="AND " property="appKey">app_key = #appKey#</isNotNull>
+			</dynamic>		
+	</select>
+	
+	<update id="application_properties.update" parameterClass="ap">
+		update application_properties
+		<dynamic prepend="set">
+			<isNotNull prepend=", " property="appKey">app_key = #appKey#</isNotNull>
+			<isNotNull prepend=", " property="appValue">app_value = #appValue#</isNotNull>
+		</dynamic>
+		where app_key = #appKey#
+	</update>
+	
+		<insert id="application_properties.insert" parameterClass="ap">
+		insert into application_properties
+			(app_key, 
+			app_value)
+		values(#appKey#,
+			   #appValue# )
+	</insert>
+	<select id="application_propertiesbykey.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+		select app_value from application_properties where app_key = #appKey#
+	</select>
+	
+	<select id="application_secure_propertiesbykey.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+		select app_key as appKey, 
+				aes_decrypt(app_value, 'servicelive123') as appValue,
+				app_file as appFile
+			from encryption_key  where app_key = #appKey#
+	</select>
+</sqlMap>

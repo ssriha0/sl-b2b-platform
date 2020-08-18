@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/wallet" targetNamespace="http://www.servicelive.com/namespaces/wallet" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" elementFormDefault="qualified">
+  <xs:include schemaLocation="../common.xsd" id="cmn"/>
+  <xs:element name="getFundingSourceResponse">
+    <xs:complexType>
+      <xs:sequence>
+      	<xs:element ref="results"/>
+        <xs:element minOccurs="0" ref="bankAccounts" />
+        <xs:element minOccurs="0" ref="creditCards" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="bankAccounts">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element  minOccurs="0" maxOccurs="unbounded" ref="bankAccount" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+    <xs:element name="creditCards">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="creditCard" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="bankAccount">
+    <xs:complexType>
+        <xs:sequence>
+        	<!-- Bank -->
+        	<xs:element ref="accountHolderName"/>
+          	<xs:element ref="bankName"/>
+        	<xs:element ref="accountNumber"/>
+        	<xs:element ref="routingNumber"/>
+        	<xs:element ref="bankAccountType"/>
+        	<xs:element ref="fundingSourceId"/>
+        </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="bankName" type="xs:string"/>
+  <xs:element name="accountNumber" type="xs:string"/>
+  <xs:element name="routingNumber" type="xs:string"/>
+  <xs:element name="bankAccountType" type="xs:integer"/>
+  <xs:element name="fundingSourceId" type="xs:integer"/>
+  
+  <xs:element name="creditCard">
+    <xs:complexType>
+        <xs:all>
+        	<!-- Credit Card -->
+        	<xs:element ref="accountHolderName"/>
+  			<xs:element ref="cardType"/>
+  			<xs:element ref="cardNumber" />
+  			<xs:element ref="billingAddress1"/>
+  			<xs:element minOccurs="0"  ref="billingAddress2"/>
+  			<xs:element ref="billingCity"/>
+  			<xs:element ref="billingState"/>
+  			<xs:element ref="billingZip"/>
+  			<xs:element ref="fundingSourceId"/>
+  			<xs:element ref="expirationDate"/>
+  			<xs:element ref="defaultCard"/>
+</xs:all>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="accountHolderName" type="xs:string" />
+  <xs:element name="cardType" type="xs:string"/>
+  <xs:element name="cardNumber" type="xs:string"/>
+  <xs:element name="billingAddress1" type="xs:string"/>
+  <xs:element name="billingAddress2" type="xs:string"/>
+  <xs:element name="billingCity" type="xs:string"/>
+  <xs:element name="billingState" type="xs:string"/>
+  <xs:element name="billingZip" type="xs:integer"/>
+  <xs:element name="expirationDate" type="xs:string"/>
+  <xs:element name="defaultCard" type="xs:string"/>
+  
+</xs:schema>

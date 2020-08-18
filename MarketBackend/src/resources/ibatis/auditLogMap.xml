@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="auditLog">
+
+	<typeAlias alias="loginAuditVO" type="com.newco.marketplace.vo.audit.LoginAuditVO" />
+	<typeAlias alias="auditUserProfileVO" type="com.newco.marketplace.dto.vo.audit.AuditUserProfileVO" />
+	
+	<insert id="login_audit.insert" parameterClass="loginAuditVO">
+		INSERT INTO login_audit
+			(resource_id, company_id, role_id, login_time)
+		VALUES
+			(#resourceId#, #companyId#, #roleId#, now())
+		<selectKey resultClass="int">
+			SELECT last_insert_id() as loginAuditId
+	    </selectKey>
+	</insert>
+	
+	<update id="login_audit.update" parameterClass="java.util.HashMap">
+		UPDATE login_audit
+			SET logout_time = now(), session_timeout_ind = #timeoutInd#
+			WHERE login_audit_id = #loginAuditId# AND logout_time IS NULL
+	</update>
+	
+	<select id="activeSessionCount.query" parameterClass="loginAuditVO" resultClass="java.lang.Integer">
+		SELECT count(1)
+			FROM active_session_audit
+			WHERE resource_id = #resourceId#
+				AND company_id = #companyId#
+				AND role_id = #roleId#
+	</select>
+	
+	<select id="login_audit.select_latest_by_resource_company_role" parameterClass="loginAuditVO" resultClass="java.lang.Integer">
+		SELECT login_audit_id
+		FROM login_audit
+		WHERE resource_id = #resourceId#
+				AND company_id = #companyId#
+				AND role_id = #roleId#
+		ORDER BY login_time DESC
+		LIMIT 1
+	</select>
+
+	<insert id="active_session_audit.insert" parameterClass="loginAuditVO">
+		INSERT INTO active_session_audit
+			(resource_id, company_id, role_id, login_time)
+		VALUES
+			(#resourceId#, #companyId#, #roleId#, now())
+		<selectKey resultClass="int">
+			SELECT last_insert_id() as active_session_audit_id
+	    </selectKey>
+	</insert>
+	
+	<delete id="active_session_audit.delete" parameterClass="java.lang.Integer">
+		DELETE FROM active_session_audit
+		WHERE active_session_audit_id = #activeSessionAuditId#
+	</delete>
+	
+	<insert id="audit_user_profile.insert" parameterClass="auditUserProfileVO">
+		INSERT INTO audit_user_profile
+			(login_resource_id, login_company_id, role_id, isSLAdminInd, action_performed, user_profile_data, modified_time, modified_by)
+		VALUES
+			(#loginResourceId#, #loginCompanyId#, #roleId#, #isSLAdminInd#, #actionPerformed#, #userProfileData#, now(), #modifiedBy#)
+		<selectKey resultClass="int">
+			SELECT last_insert_id() as audit_user_profile_id
+	    </selectKey>
+	</insert>
+	
+	<select id="active_session_audit.query_unclosedExpiredSessions" parameterClass="loginAuditVO" resultClass="java.lang.Integer">
+		SELECT count(*) FROM active_session_audit
+		WHERE resource_id = #resourceId#
+			AND company_id = #companyId#
+			AND role_id = #roleId#
+			AND login_time &lt; CONCAT(DATE(CURDATE()), ' 00:00:00')
+	</select>
+	
+	<delete id="active_session_audit.delete_unclosedExpiredSessions" parameterClass="loginAuditVO">
+		DELETE FROM active_session_audit
+		WHERE resource_id = #resourceId#
+			AND company_id = #companyId#
+			AND role_id = #roleId#
+			AND login_time &lt; CONCAT(DATE(CURDATE()), ' 00:00:00')
+	</delete>
+	
+	<update id="login_audit.update_unclosedExpiredAuditRecord" parameterClass="java.lang.Integer">
+		UPDATE login_audit
+		SET logout_time = CONCAT(DATE(login_time), ' 23:59:59'), session_timeout_ind = 1
+		WHERE login_audit_id = #loginAuditId# AND logout_time IS NULL
+	</update>
+
+</sqlMap>

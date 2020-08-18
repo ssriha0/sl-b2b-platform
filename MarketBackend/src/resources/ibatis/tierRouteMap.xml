@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="tierRoute">
+  
+    <typeAlias alias="spnetTierReleaseVO" type="com.newco.marketplace.dto.vo.spn.SPNetTierReleaseVO"/>	
+    <typeAlias alias="spnetTierVO" type="com.servicelive.routing.tiered.vo.SPNTieredVO"/>
+    <typeAlias alias="tierOrderVO" type="com.servicelive.routing.tiered.vo.TierRouteServiceOrderVO"/>	
+    <typeAlias alias="spnTierEventInfoVO" type="com.servicelive.routing.tiered.vo.SPNTierEventInfoVO"/>
+		
+	<select id="select_spnet_release_tier.query" parameterClass="java.lang.Integer" resultClass="spnetTierReleaseVO" >
+	 select spn_id as spnId,
+	        tier_id as tierId,
+	        advanced_minutes as tierWaitMinutes,
+	        advanced_hours as tierWaitHours,
+	        advanced_days as tierWaitDays
+	  from  spnet_release_tier_minutes 
+	  where spn_id = #spnId#      
+	</select>
+	
+	<select id="select_spnet_release_next_tier.query" parameterClass="tierOrderVO" resultClass="spnetTierVO" >
+	 select spn_id as spnId,
+	        tier_id as tierId,
+	        advanced_minutes as tierWaitMinutes,
+	        advanced_hours as tierWaitHours,
+	        advanced_days as tierWaitDays
+	  from  spnet_release_tier_minutes 
+	  where spn_id = #spnId#  
+	  <isNotNull property="currentTierId">
+	  and tier_id > #currentTierId# 
+	  </isNotNull>
+	  order by tier_id asc 
+	</select>
+	
+	<select id="select_spnet_so_tier_event.query" parameterClass="tierOrderVO" resultClass="spnTierEventInfoVO" >
+	select 
+	      so_id as soId, 
+          curr_tier_id as currentTierId,
+  		  next_tier_id as nextTierId,
+  		  last_execution_time as currentFireTime,
+  		  next_execution_time as nextFireTime
+    from  spnet_so_tier_event sste
+    where sste.so_id = #orderId#   
+   </select>
+   
+   	<select id="select_spnet_so_group_tier_event.query" parameterClass="tierOrderVO" resultClass="spnTierEventInfoVO" >
+	select 
+	      so_group_id as groupOrderId, 
+          curr_tier_id as currentTierId,
+  		  next_tier_id as nextTierId,
+  		  last_execution_time as currentFireTime,
+  		  next_execution_time as nextFireTime
+    from  spnet_so_group_tier_event ssgte
+    where ssgte.so_group_id = #orderId#   
+   </select>
+   
+   <insert id="insert_spnet_so_tier_event" parameterClass="spnTierEventInfoVO">
+        insert into spnet_so_tier_event 
+              (so_id , curr_tier_id ,next_tier_id ,last_execution_time,
+		       next_execution_time , created_date )
+	    values (#soId#, #currentTierId#, 
+	          #nextTierId#, #currentFireTime#,
+	          #nextFireTime#, now())
+   </insert>
+   
+   <update id="update_spnet_so_tier_event" parameterClass="spnTierEventInfoVO">
+		UPDATE spnet_so_tier_event  SET 
+		       curr_tier_id = #currentTierId#,
+		       next_tier_id = #nextTierId#,
+		       last_execution_time = #currentFireTime#,
+		       next_execution_time = #nextFireTime#,
+		       modified_date = now()
+		WHERE so_id = #soId#
+	</update>
+	
+	<insert id="insert_spnet_group_tier_event" parameterClass="spnTierEventInfoVO">
+          insert into spnet_so_group_tier_event
+              (so_group_id , curr_tier_id ,next_tier_id ,last_execution_time,
+		       next_execution_time , created_date )
+	      values (#groupOrderId#, #currentTierId#, 
+	          #nextTierId#, #currentFireTime#,
+	          #nextFireTime#, now())
+   </insert>
+   
+    <update id="update_spnet_group_tier_event" parameterClass="spnTierEventInfoVO">
+		UPDATE spnet_so_group_tier_event SET 
+		       curr_tier_id = #currentTierId#,
+		       next_tier_id = #nextTierId#,
+		       last_execution_time = #currentFireTime#,
+		       next_execution_time = #nextFireTime#,
+		       modified_date = now()
+		WHERE so_group_id = #groupOrderId#
+	</update>
+	
+	<delete id="delete_spnet_so_tier_event" parameterClass="java.lang.String"> 
+		delete from spnet_so_tier_event  where so_id = #orderId#
+	</delete>
+	
+	<delete id="delete_spnet_group_tier_event" parameterClass="java.lang.String"> 
+		delete from spnet_so_group_tier_event  where so_group_id = #orderId#
+	</delete>
+   
+   
+	
+</sqlMap>

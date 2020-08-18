@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="transFileMap">
+	<typeAlias alias="transRecordVO"
+		type="com.newco.marketplace.dto.vo.trans.TransactionRecordVO" />
+	<typeAlias alias="transProcessLogVO"
+		type="com.newco.marketplace.dto.vo.trans.TransactionProcessLogVO" />
+	<typeAlias alias="transactionBatchVO"
+		type="com.newco.marketplace.dto.vo.ach.TransactionBatchVO" />
+
+	<select id="transCreditTransactions.select" resultClass="transRecordVO">
+		SELECT ach_process_id AS achProcessId
+		       ,apq.ledger_entry_id AS ledgerEntryId
+		       ,trans_amount AS amount
+		       ,apq.transaction_type_id AS transactionType
+		       ,trans_type_code AS cardTypeCode
+		       ,ah.account_no AS creditCardNumber
+		       ,card_expire_date cardExpireDate
+		       ,ach_transcode_acc_id AS achTransCodeId
+		       ,authorization_no AS authorizationCode
+		  FROM ach_process_queue apq
+		       ,account_hdr ah
+		       ,lu_card_types ct
+		       ,ledger_entry le
+		 WHERE ach_transcode_acc_id IN (9, 10)
+		       AND apq.account_id = ah.account_id
+		       AND le.ledger_entry_id = apq.ledger_entry_id
+		       AND ct.card_id = ah.card_type_id
+		       AND account_type_id IN (30)
+		       AND authorization_no IS NOT NULL
+		       AND apq.process_status_id = 80
+	</select>
+
+	<update id="transCCRollupRecord.update" parameterClass="transactionBatchVO">
+		update ach_process_queue apq
+		set apq.process_status_id = 25, modified_date = now()
+		where apq.transaction_type_id in (1500, 1600) and apq.process_status_id = 20
+	</update>
+
+	<update id="transRecord.update" parameterClass="transactionBatchVO">
+		update ach_process_queue set process_status_id=90 ,trans_log_id = #processLogId# , modified_date =now() where ach_process_id in 
+		<iterate property="achProcessIds" open="(" close=")"
+			conjunction=",">
+			#achProcessIds[]#
+		</iterate>
+	</update>
+
+	<select id="achProcessQueueCreditCardDepositRollUp.select" resultClass="java.lang.Double">
+		select IFNULL(sum(trans_amount),0)
+		from ach_process_queue apq 
+		where apq.transaction_type_id = 1500 and apq.process_status_id=20
+	</select>
+
+	<select id="achProcessQueueCreditCardRefundRollUp.select" resultClass="java.lang.Double">
+		select IFNULL(sum(trans_amount),0)
+		from ach_process_queue apq 
+		where apq.transaction_type_id = 1600 and apq.process_status_id=20
+	</select>
+	
+	<insert id="transprocessLog.insert" parameterClass="transProcessLogVO">
+		insert into trans_process_log (generated_file_name, generated_server, trans_record_count,trans_deposit_total,trans_refund_total,  
+		created_date, modified_date )
+	    values (#generatedFileName#, #generatedServer#,#transRecordCount#,#transDepositTotal#,#transRefundTotal#,
+	    #createdDate#,#modifiedDate#)
+	    <selectKey resultClass="java.lang.Long">
+			SELECT max(trans_log_id) FROM trans_process_log where
+			generated_file_name=#generatedFileName#
+		</selectKey>
+	</insert>
+	
+</sqlMap>

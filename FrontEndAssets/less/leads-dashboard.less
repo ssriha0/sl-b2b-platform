@@ -1,0 +1,278 @@
+// Leads Dashboard Landing Page
+// ====================================================================== 
+
+#leads-list .list-heading {
+	background-color: #F5F5F5;
+    color: #333333;
+    z-index: 100;
+}
+
+#leads-list .affix {
+	position: fixed;
+	top: 0;
+	margin-right: 0;
+}
+
+#leads-list .list-title {
+	padding: 15px;
+}
+
+#leads-list .list-title h1 {
+	#pxtoem > .font-size( 22, 14 );
+	display: inline;
+}
+
+#leads-list .list-title .glyphicon-search {
+	#pxtoem > .font-size( 20, 14 );	
+	float: right;
+	color: @servicelive-blue;
+}
+
+#leads-list .list-title .glyphicon-search:hover,
+#leads-list .list-title .glyphicon-search:focus {
+	color: @link-hover;
+}
+
+// Search Bar
+// ======================================================================
+
+#search-wrap {
+	position: relative;
+	padding: 0 15px 15px;
+	@media only screen and (min-width : @screen-sm) {
+		display: block;
+		padding-top: 15px;
+	}
+	@media only screen and (min-width : @screen-md) {
+		float: right;
+	}
+}
+
+input[type="search"].search {
+	padding-right: 30px;
+	border-radius: 25px;
+	font-size: 1em;
+	@media only screen and (min-width : @screen-sm) {
+		height: 29px;
+		padding-top: 0;
+		padding-bottom: 0;
+	}
+}
+
+.search + .glyphicon {
+	position: absolute;
+	right: 0;
+	padding: 8px 27px;
+	@media only screen and (min-width : @screen-sm) {
+		top: 13px;
+	}
+}
+
+// Filter Bar
+// ======================================================================
+.list-heading .filter-wrap {
+	@media only screen and (max-width : @screen-md) {
+		clear: both;
+		padding-left: 0;
+		padding-right: 0; 
+	}
+	@media only screen and (min-width : @screen-md) {
+		padding-top: 10px;
+	}
+}
+
+.filter .glyphicon {
+	@media only screen and (max-width : @screen-md) {
+		display: block;
+		#pxtoem > .font-size( 20, 14 );
+		padding-bottom: 5px;
+	}
+}
+.filter .active		     { color: @link-hover;   } // all
+.filter #filter-2.active { color: @leadStatus-1; } // new, completed
+.filter #filter-3.active { color: @leadStatus-2; } // working, cancelled
+.filter #filter-4.active { color: @leadStatus-3; } // scheduled, stale
+
+.filter .btn span {
+	#pxtoem > .font-size( 11, 14 );
+}
+
+@media only screen and (max-width : @screen-md) {
+	.filter .btn,
+	.list-footer .btn {
+		border-radius: 0;
+		border-bottom: none;
+		border-right: none;
+	}
+	.filter .btn:first-child {
+		border-left: none;
+	}		
+}
+
+.list-footer {
+	margin-left: -15px;
+	margin-right: -15px;
+	@media only screen and (min-width : @screen-md) {
+		margin: 10px auto;
+		width: 300px;
+	}
+}
+
+// List of Leads
+// ======================================================================
+
+#leads-list .list-group { 
+	margin-bottom: 0;
+	border-bottom: 1px solid #DDD; 
+}
+
+#leads-list li.list-group-item {
+	border-radius: 0; 
+	border: 0; 
+	border-top: 1px solid #ddd;
+	overflow: hidden;
+}
+
+#leads-list li.list-group-item:hover { 
+	background-color: rgba(0,0,0,.04); 
+}
+
+#leads-list li.list-group-item:focus { 
+	background-color: rgba(0,0,0,.1); 
+}
+
+#leads-list #emptyView {
+	min-height: 250px;
+
+	@media only screen and (min-width : @screen-md) {
+		min-height: 600px;
+	}
+}
+
+// Lead List Item
+// ======================================================================
+
+#leads-list li.list-group-item .leadStatus {
+	text-transform: capitalize;
+}
+
+#leads-list li.list-group-item .secondary-info {
+	#pxtoem > .font-size( 10, 14 );
+	padding: 0 15px;
+	clear: both;
+	color: #aaa;
+}
+
+#leads-list li.leadStatus-1 .secondary-info .glyphicon { color: @leadStatus-1; } // new
+#leads-list li.leadStatus-2 .secondary-info .glyphicon { color: @leadStatus-2; } // working
+#leads-list li.leadStatus-3 .secondary-info .glyphicon { color: @leadStatus-3; } // scheduled
+
+#leads-list li.list-group-item .urgency {
+	-webkit-transform: rotate(45deg); 
+	 -moz-transform: rotate(45deg); 
+	  -ms-transform: rotate(45deg); 
+	   -o-transform: rotate(45deg); 
+	      transform: rotate(45deg);
+	background: @urgent;
+	color: #fff;
+	position: absolute;
+	right: -20px;
+    top: -5px;
+	#pxtoem > .font-size( 8, 14 );
+	padding: 17px 15px 3px;
+	text-transform: uppercase;
+}
+
+#leads-list li.list-group-item .glyphicon-chevron-right {
+	position: absolute;
+	top: 50%;
+	margin-top: -9px;
+	right: 15px;
+	color: #aaa;
+}
+
+#leads-list .lead-heading {
+	margin: 0;
+	font-weight: bold;
+	#pxtoem > .font-size( 16, 14 );
+}
+
+#leads-list .cust-info,
+#leads-list .lead-info {
+	color: #999;
+	#pxtoem > .font-size( 13, 14 );
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+	margin: 3px 0;
+}
+
+#leads-list .cust-info .label {
+	#pxtoem > .font-size( 13, 14 );
+	display: inline-block;
+	margin-bottom: 3px;
+}
+
+#leads-list .cust-info .label a:link {
+	color: #fff;
+	padding: 3px 7px;
+	margin: -3px -7px;
+	display: inline-block;
+	border-radius: 0.25em;
+}
+
+#leads-list .cust-info .label a:hover,
+#leads-list .cust-info .label a:focus {
+	background: @link-hover;
+	text-decoration: none;
+}
+
+@media only screen and (min-width : @screen-md) {
+
+	#leads-list .service-details h3 {
+		#pxtoem > .font-size( 14, 14 );
+		margin: 0 0 3px;
+		font-weight: bold;
+	}
+
+	#leads-list .service-details p {
+		#pxtoem > .font-size( 13, 14 );
+	}
+
+	#leads-list .service-details .no-details {
+		color: #999;
+	}
+
+	#leads-list li.list-group-item .col-md-2 {
+		display: -webkit-flex;
+	   	display: flex !important;
+	    -webkit-flex-direction: row; //works with row or column
+	    flex-direction: row;
+	    -webkit-align-items: center;
+	    align-items: center;
+	    -webkit-justify-content: center;
+	    justify-content: center;
+	    min-height: 100px;
+   	}
+
+   	#leads-list li.list-group-item .col-md-2 .btn {
+   		background-color: #F0AD4E;
+    	border-color: #EEA236;
+    	color: #FFFFFF;
+   	}
+
+   	#leads-list li.list-group-item .col-md-2 .btn:hover,
+   	#leads-list li.list-group-item .col-md-2 .btn:focus,
+   	#leads-list li.list-group-item .col-md-2 .btn:active {
+   		background-color: #ED9C28;
+    	border-color: #D58512;
+    	color: #FFFFFF;
+   	}
+}
+
+//#leads-list .mic-info { color: #666666;font-size: 11px; }
+//#leads-list .action { margin-top:5px; }
+//#leads-list .comment-text { font-size: 12px; }
+//#leads-list .btn-block { border-top-left-radius:0px;border-top-right-radius:0px; }
+
+

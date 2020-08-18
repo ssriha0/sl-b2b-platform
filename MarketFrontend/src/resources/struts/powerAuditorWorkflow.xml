@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+    <package name="powerAuditorWorkflow" extends="ServiceLiveBase" >
+    	<default-interceptor-ref name="ServiceLiveBaseInterceptorStack" />
+       	<action name="powerAuditorWorkflowAction_*" class="powerAuditorWorkflowAction" method="{1}">
+				<result name="success">/jsp/admin/audit_workflow_landing.jsp</result>
+				<result name="categories">/jsp/admin/audit_workflow_category_list.jsp</result>
+				<result name="credentials">/jsp/admin/audit_workflow_credential_list.jsp</result>
+				<result name="queueGrid">/jsp/admin/audit_workflow_queue_grid.jsp</result>
+				<result name="historyNotes">/jsp/admin/audit_workflow_history_notes.jsp</result>
+		</action>
+	</package>
+</struts>

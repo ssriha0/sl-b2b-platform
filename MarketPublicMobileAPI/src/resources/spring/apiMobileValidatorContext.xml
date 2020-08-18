@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd
+http://cxf.apache.org/jaxrs
+http://cxf.apache.org/schemas/jaxrs.xsd">
+	<bean id="RequestValidator" 
+		class="com.newco.marketplace.mobile.api.utils.validators.RequestValidator">
+ 		<property name="loggingProcess">
+			<ref bean="LoggingProcess"/>
+	  	</property>	
+	 	<property name="authenticationProcess">
+			<ref bean="AuthenticationProcess"/>
+		</property>
+		<property name="authorizationProcess">
+			<ref bean="AuthorizationProcess"/>
+		</property>
+    </bean>
+
+	<bean id="ResponseValidator" 
+		class="com.newco.marketplace.mobile.api.utils.validators.ResponseValidator">
+		<property name="loggingProcess">
+			<ref bean="LoggingProcess"/>
+	  	</property>	
+	  	
+		<property name="conversionUtility">
+			<ref bean="ConversionUtility"/>
+	  	</property>
+ 	</bean>  
+ 	
+ 	<bean id="timeOnSiteValidator" 
+		class="com.newco.marketplace.mobile.api.utils.validators.MobileTimeOnSiteValidator">
+ 		<property name="manageScheduleBO">
+			<ref bean="manageScheduleBO" />
+		</property>	
+    </bean>
+ 	
+ 	<bean id="updateSOCompletionValidator" 
+		class="com.newco.marketplace.mobile.api.utils.validators.UpdateSOCompletionValidator" scope="prototype">
+ 		<property name="mobileSOActionsBO">
+			<ref bean="mobileSOActionsBO" />
+		</property>
+		<property name="mobileSOManagementBO">
+			<ref bean="mobileSOManagementBO" />
+		</property>
+		<property name="w9RegistrationBO" ref="w9RegistrationBOImpl" />
+		
+    </bean>
+    
+  	
+	<bean id="reqResValidator"
+		class="com.newco.marketplace.mobile.api.utils.validators.ReqResValidator">
+	</bean>
+	
+	<bean id="estimateValidator" class ="com.newco.marketplace.mobile.api.utils.validators.EstimateValidator">
+ 	   <property name="mobileGenericBO">
+			<ref bean="mobileGenericBO" />
+		</property>	
+	</bean>
+	<bean id="mobilePlaceBidValidator" class ="com.newco.marketplace.mobile.api.utils.validators.MobilePlaceBidValidator">
+ 	   <property name="mobileGenericBO">
+			<ref bean="mobileGenericBO" />
+		</property>	
+	</bean>
+	
+	<!-- Version 2.0 validator beans starts here-->
+	<bean id="timeOnSiteValidator_v2_0" 
+		class="com.newco.marketplace.mobile.api.utils.validators.v2_0.MobileTimeOnSiteValidator">
+ 		<property name="manageScheduleBO">
+			<ref bean="manageScheduleBO" />
+		</property>	
+    </bean>
+  
+    
+    <!-- SLT-4658 -->
+    
+    <bean id="updateSOCompletionValidator_v3_0" 
+		class="com.newco.marketplace.mobile.api.utils.validators.v3_0.UpdateSOCompletionValidator" scope="prototype">
+ 		<property name="mobileSOActionsBO">
+			<ref bean="mobileSOActionsBO" />
+		</property>
+		<property name="mobileSOManagementBO">
+			<ref bean="mobileSOManagementBO" />
+		</property>
+		<property name="authenticateUserBO" ref="authenticateUserBO" />
+		<property name="mobileGenericBO" ref="mobileGenericBO" />
+		<property name="w9RegistrationBO" ref="w9RegistrationBOImpl" />
+    </bean>
+    
+    <bean id="soRevisitNeededValidator_v2_0" 
+		class="com.newco.marketplace.mobile.api.utils.validators.v2_0.SORevisitNeededValidator">
+		<property name="mobileSOActionsBO">
+			<ref bean="mobileSOActionsBO" />
+		</property>	
+    </bean>
+ 	<!-- Version 2.0 validator beans ends here-->
+ 	<!-- Version 2.0 Phase 2 validator beans starts here-->
+ 	<bean id="mobileGenericValidator" class ="com.newco.marketplace.mobile.api.utils.validators.v3_0.MobileGenericValidator">
+ 	   <property name="mobileGenericBO">
+			<ref bean="mobileGenericBO" />
+		</property>	
+	</bean>
+	<bean id="timeOnSiteValidator_v3_0" 
+		class="com.newco.marketplace.mobile.api.utils.validators.v3_0.MobileTimeOnSiteValidator">
+ 		<property name="manageScheduleBO">
+			<ref bean="manageScheduleBO" />
+		</property>	
+    </bean>
+	<!-- Version 2.0 Phase 2 validator beans ends here-->
+	
+	<!-- v3.1 Validator bean START -->
+	<bean id="mobileGenericValidator_v3_1" class ="com.newco.marketplace.mobile.api.utils.validators.v3_1.NewMobileGenericValidator">
+ 	   <property name="newMobileGenericBO" ref ="newMobileGenericBO" />
+ 	   <property name="mobileGenericBO" ref ="mobileGenericBO" />
+	</bean>
+	<!-- v3.1 Validator bean END -->
+</beans>
+

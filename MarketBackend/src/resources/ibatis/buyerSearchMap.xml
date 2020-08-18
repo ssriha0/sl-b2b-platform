@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="skillAssign">
+	<typeAlias alias="buyerSearchForAdminParameters" type="com.newco.marketplace.dto.vo.buyersearch.BuyerResultForAdminVO"/>
+	<typeAlias alias="buyerSearchForAgentParameters" type="com.newco.marketplace.dto.vo.buyersearch.AgentVisibilityWidgetVO"/>
+	
+	<!-- 20461 starts -->
+		<typeAlias alias="BuyerResourceAdminVO" type="com.newco.marketplace.vo.buyer.BuyerResourceVO"/>
+	<typeAlias alias="BuyerUserListVO" type="com.newco.marketplace.vo.buyer.BuyerUserListVO"/>
+	
+	<resultMap class="BuyerResourceAdminVO" id="buyerResource.resultMap">
+	    <result property="lastName" column="last_name" />
+	    <result property="firstName" column="first_name" />
+	    <result property="resourceId" column="resource_id" />
+	    <result property="userName" column="user_name" />	    
+    </resultMap>
+	
+	 <resultMap class="BuyerUserListVO" id="buyerUserList.resultMap">
+	    <result property="resources" column="resources" />
+	    <result property="user_name" column="user_name" />
+	        
+    </resultMap>
+    <!-- 20461 changes ends -->
+	
+	<select id="buyerSearchForAdmin.query" parameterClass="buyerSearchForAdminParameters" resultClass="buyerSearchForAdminParameters">
+		select distinct bh.buyer_id as buyer_id,
+		brs.resource_id as resourceId,
+		brs.user_name as username,
+		up.role_id as roleId,
+		lftp.type as fundingType,
+		bh.business_name as businessName,
+		lpi.descr as primaryIndustry,
+		ct.phone_no as phone,
+		ct.email as email,
+		ct.first_name as contactfirstName,
+		ct.last_name as contactLastName,
+		locn.city as city,
+		lzip.zip as zip,
+		locn.state_cd as state,
+		mkt.market_name as marketName,
+		bh.modified_date as lastActivityDate
+		from buyer bh
+		join lu_funding_type lftp on ( lftp.funding_type_id =  bh.funding_type_id )
+		left outer join lu_buyer_primary_industry lpi on ( lpi.buyer_primary_industry_id = bh.primary_industry_id)
+		left outer join location locn on (locn.locn_id = bh.pri_locn_id)
+		left outer join lu_zip_market lzip on (locn.zip = lzip.zip)
+		left outer join lu_market mkt on (lzip.market_id = mkt.market_id )
+		join contact ct on(ct.contact_id = bh.contact_id)
+		left outer join so_hdr so on ( so.buyer_id = bh.buyer_id)
+		join buyer_resource brs on ( brs.buyer_id = bh.buyer_id and brs.user_name = bh.user_name)
+		join user_profile up on (brs.user_name = up.user_name)
+		<dynamic prepend="WHERE">
+			<isNotNull property="buyer_id" prepend="AND"> 
+	 			bh.buyer_id = #buyer_id#
+	 		</isNotNull>
+	 	 
+	 		<isNotNull property="username" prepend="AND"> 
+				brs.user_name LIKE #username#
+			</isNotNull>
+		
+			<isNotNull property="city" prepend="AND"> 
+				locn.city = #city#
+			</isNotNull>
+			<isNotNull property="state" prepend="AND"> 
+				locn.state_cd = #state#
+			</isNotNull>
+			<isNotNull property="zip" prepend="AND"> 
+				lzip.zip = #zip#
+			</isNotNull>
+			<isNotNull property="soId" prepend="AND"> 			
+				so.so_id = #soId#
+			</isNotNull>
+			<isNotNull property="phone" prepend="AND"> 			
+				(ct.phone_no = #phone# or ct.mobile_no = #phone#)
+			</isNotNull>
+			<isNotNull property="email" prepend="AND"> 			
+				ct.email = #email#
+			</isNotNull>
+			<isNotNull property="businessName" prepend="AND"> 
+				bh.business_name LIKE #businessName#
+			</isNotNull>
+			order by $sortColumnName$ $sortOrder$ 
+			
+		</dynamic>
+		
+	</select>
+	
+	<select id="AdminWidgetdetails.query" parameterClass="java.lang.String" resultClass="buyerSearchForAdminParameters">
+		select distinct 
+			bh.buyer_id as buyer_id,
+			brs.resource_id as resourceId,
+			brs.user_name as username,
+			up.role_id as roleId,
+			lftp.type as fundingType,
+			bh.business_name as businessName,
+			lpi.descr as primaryIndustry,
+			ct.phone_no as phone,
+			ct.email as email,
+			ct.first_name as contactfirstName,
+			ct.last_name as contactLastName,
+			locn.city as city,
+			lzip.zip as zip,
+			locn.state_cd as state,
+			mkt.market_name as marketName,
+			bh.modified_date as lastActivityDate
+		from so_hdr so
+			left join buyer bh on bh.buyer_id = so.buyer_id
+			join lu_funding_type lftp on ( lftp.funding_type_id =  bh.funding_type_id )
+			left outer join lu_buyer_primary_industry lpi on ( lpi.buyer_primary_industry_id = bh.primary_industry_id)
+			left outer join location locn on (locn.locn_id = bh.pri_locn_id)
+			left outer join lu_zip_market lzip on (locn.zip = lzip.zip)
+			left outer join lu_market mkt on (lzip.market_id = mkt.market_id )
+			join contact ct on(ct.contact_id = bh.contact_id)
+			join buyer_resource brs on ( brs.buyer_id = bh.buyer_id and brs.user_name = bh.user_name)
+			join user_profile up on (brs.user_name = up.user_name)
+		where
+			so.so_id = #soId#
+	</select>
+	
+	<select id="AgentVisibilityProviderCount.query" parameterClass="buyerSearchForAgentParameters" resultClass="java.lang.String">
+		SELECT COUNT(s1.so_id)
+			FROM   so_hdr s1 
+       		INNER JOIN so_hdr s2 
+         	ON s1.accepted_resource_id = s2.accepted_resource_id 
+			<isEqual property="buyerInd" compareValue="true">
+				<isNotNull property="buyerId" prepend="AND"> 
+					s1.buyer_id = s2.buyer_id 
+				</isNotNull>
+			</isEqual>
+			WHERE  CASE 
+      	    WHEN ( ( s1.service_date2 IS NULL ) OR ( s1.service_date1 = s1.service_date2 ) ) 
+			THEN DATE(CONVERT_TZ(UTC_TIMESTAMP(), 'GMT', s1.service_locn_time_zone)) 
+			= DATE(CONVERT_TZ(DATE_ADD(s1.service_date1, INTERVAL STR_TO_DATE(s1.service_time_start,'%l:%i %p') HOUR_SECOND), 'GMT', s1.service_locn_time_zone)) 
+			ELSE DATE(CONVERT_TZ(UTC_TIMESTAMP(), 'GMT', s1.service_locn_time_zone)) 
+			BETWEEN DATE (CONVERT_TZ(DATE_ADD(s1.service_date1, INTERVAL STR_TO_DATE(s1.service_time_start,'%l:%i %p') HOUR_SECOND), 'GMT', s1.service_locn_time_zone)) 
+			AND DATE (CONVERT_TZ(DATE_ADD(s1.service_date2, INTERVAL STR_TO_DATE(s1.service_time_end,'%l:%i %p') HOUR_SECOND), 'GMT', s1.service_locn_time_zone)) 
+			END 
+  		    AND s1.wf_state_id IN ( 150, 155 )
+            AND IFNULL(s1.so_substatus_id,0) != 20
+   		    AND s2.so_id = #strSoId#
+			<isEqual property="buyerInd" compareValue="true">
+				<isNotNull property="buyerId" prepend="AND"> 
+					s1.buyer_id = #buyerId#
+				</isNotNull>
+			</isEqual>
+	</select>
+	
+	<select id="AgentVisibilityProviderFirmCount.query" parameterClass="buyerSearchForAgentParameters" resultClass="java.lang.String">
+		SELECT COUNT(DISTINCT s1.so_id)
+			FROM   so_hdr s1
+      	    INNER JOIN so_hdr s2
+     	    ON s1.accepted_vendor_id = s2.accepted_vendor_id
+			<isEqual property="buyerInd" compareValue="true">
+				<isNotNull property="buyerId" prepend="AND"> 
+					s1.buyer_id = s2.buyer_id 
+				</isNotNull>
+			</isEqual>
+            INNER JOIN vendor_resource v1
+            ON s1.accepted_vendor_id = v1.vendor_id
+  			WHERE  CASE 
+     	    WHEN ( ( s1.service_date2 IS NULL ) OR ( s1.service_date1 = s1.service_date2 ) ) 
+			THEN DATE(CONVERT_TZ(UTC_TIMESTAMP(), 'GMT', s1.service_locn_time_zone)) 
+			= DATE(CONVERT_TZ(DATE_ADD(s1.service_date1, INTERVAL STR_TO_DATE(s1.service_time_start,'%l:%i %p') HOUR_SECOND), 'GMT', s1.service_locn_time_zone)) 
+			ELSE DATE(CONVERT_TZ(UTC_TIMESTAMP(), 'GMT', s1.service_locn_time_zone)) 
+			BETWEEN DATE (CONVERT_TZ(DATE_ADD(s1.service_date1, INTERVAL STR_TO_DATE(s1.service_time_start,'%l:%i %p') HOUR_SECOND), 'GMT', s1.service_locn_time_zone)) 
+			AND DATE (CONVERT_TZ(DATE_ADD(s1.service_date2, INTERVAL STR_TO_DATE(s1.service_time_end,'%l:%i %p') HOUR_SECOND), 'GMT', s1.service_locn_time_zone)) 
+			END 
+     		AND s1.wf_state_id IN ( 150, 155 )
+    	    AND IFNULL(s1.so_substatus_id,0) != 20
+            AND s2.so_id = #strSoId#
+			<isEqual property="buyerInd" compareValue="true">
+				<isNotNull property="buyerId" prepend="AND"> 
+					s1.buyer_id = #buyerId#
+				</isNotNull>
+			</isEqual>
+	</select>
+	
+	<select id="AgentVisibilityProgressBar.query" parameterClass="java.lang.String" resultClass="buyerSearchForAgentParameters">
+		SELECT 	alias2.serviceStartDate,alias2.serviceLocationTimezone,alias2.serviceEndDate,alias2.serviceTimeStart, alias2.serviceTimeEnd,
+		CASE 
+			WHEN percent <![CDATA[>]]> 75 THEN "Red"
+			WHEN percent <![CDATA[>]]> 50 THEN "Orange"
+			WHEN percent <![CDATA[>]]> 0  THEN "Green"
+			ELSE "White"
+		END AS color,
+		CASE 
+			WHEN percent <![CDATA[>]]> 100 THEN 100
+			WHEN percent <![CDATA[<]]> 0 THEN 0
+			ELSE percent
+		END AS percentage
+	 	FROM
+		(SELECT s.service_date1 AS serviceStartDate,s.service_locn_time_zone AS serviceLocationTimezone,
+				s.service_date2 AS serviceEndDate,s.service_time_start AS serviceTimeStart, s.service_time_end AS serviceTimeEnd,
+	   	ROUND((	TIMESTAMPDIFF(SECOND,UTC_TIMESTAMP(),DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%l:%i %p') 
+		HOUR_SECOND)) / 
+		(IF(s.service_date2 IS NULL,-1,
+			TIMESTAMPDIFF(SECOND,DATE_ADD(s.service_date2, INTERVAL STR_TO_DATE(s.service_time_end,'%l:%i %p') HOUR_SECOND),
+			DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%l:%i %p') HOUR_SECOND))))
+	   )*100) AS percent
+	   FROM so_hdr s
+	   LEFT JOIN so_onsite_visit ov
+	   ON s.so_id = ov.so_id
+	   WHERE CASE 
+	         WHEN ( ( s.service_date2 IS NULL ) OR ( s.service_date1 = s.service_date2 ) ) 
+			THEN DATE(CONVERT_TZ(UTC_TIMESTAMP(), 'GMT', s.service_locn_time_zone)) 
+				= DATE(CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%l:%i %p') HOUR_SECOND), 'GMT', s.service_locn_time_zone)) 
+			ELSE DATE(CONVERT_TZ(UTC_TIMESTAMP(), 'GMT', s.service_locn_time_zone)) 
+				BETWEEN DATE (CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%l:%i %p') HOUR_SECOND), 'GMT', s.service_locn_time_zone)) 
+				AND DATE (CONVERT_TZ(DATE_ADD(s.service_date2, INTERVAL STR_TO_DATE(s.service_time_end,'%l:%i %p') HOUR_SECOND), 'GMT', s.service_locn_time_zone)) 
+		END    
+	   AND s.so_id = #strSoID#
+	   AND ov.departure_date IS NULL
+	   AND s.wf_state_id IN (150,155)) AS alias2
+	</select>
+<!-- Changes Starts for Buyer Admin Name Change SL-20461 -->
+	<select id="business_buyer_list.query" resultMap="buyerUserList.resultMap"
+		parameterClass="java.lang.Integer">
+		SELECT CONCAT(c.last_name,",", c.first_name, "(", res.resource_id,")") AS resources ,
+		res.user_name
+			FROM buyer_resource res 
+			JOIN contact c 
+			ON c.contact_id=res.contact_id 
+			AND res.resource_id 
+			IN(SELECT rr.resource_id 
+			FROM buyer_resource rr 
+			JOIN user_profile u 
+			ON rr.user_name=u.user_name 
+			AND rr.buyer_id= #buyerId# 
+			AND u.active_ind IS TRUE 
+			AND rr.resource_id NOT IN 
+			(SELECT r.resource_id 
+			FROM buyer_resource r 
+			JOIN buyer b 
+			ON b.contact_id=r.contact_id 
+			WHERE b.buyer_id= #buyerId#));
+    </select>
+    
+    
+    <select id="buyer_old_admin_details.query" parameterClass="java.lang.Integer" resultMap="buyerResource.resultMap">
+		SELECT c.last_name AS last_name, 
+		c.first_name AS first_name, 
+		res.resource_id  AS resource_id,
+		res.user_name AS user_name
+      FROM buyer_resource res 
+      JOIN contact c 
+      ON c.contact_id=res.contact_id 
+      AND res.resource_id 
+      IN(SELECT rr.resource_id 
+      FROM buyer_resource rr 
+      JOIN user_profile u 
+      ON rr.user_name=u.user_name 
+      AND rr.buyer_id= #buyerId# 
+      AND u.active_ind IS TRUE 
+      AND rr.user_name IN 
+      (SELECT r.user_name
+      FROM buyer_resource r 
+      JOIN buyer b 
+      ON b.contact_id=r.contact_id 
+      WHERE b.buyer_id= #buyerId#));
+	</select>
+    
+    <procedure id="updateBuyerAdminName.procedure" parameterClass="java.util.Map">
+              { call sp_buyerAdminNameChange(#in_newAdminUser_name#,#in_oldAdminUser_name#,#in_buyer_id# )} 
+		</procedure>
+		
+		<insert id="auditBuyerAdminNameChange.insert" parameterClass="java.util.Map">
+		        
+		        INSERT INTO audit_buyer_record (
+		        old_name,
+		        new_name,
+		        associated_id,
+		        associated_entity,
+		        modified_by,
+		        modified_date
+		        )
+		        
+		        VALUES(
+		        #OldAdminName#,
+		        #NewAdminName#,
+		        #Buyer_Id#,
+		        #associated_entity#,
+		        #modified_by#,
+		        NOW()
+		        )
+		 
+		</insert>
+    
+   
+    
+<!-- Changes Ends for Buyer Admin Name Change SL-20461 -->
+</sqlMap>

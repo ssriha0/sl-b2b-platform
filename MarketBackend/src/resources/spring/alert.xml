@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+
+
+    <bean id="alertDao" class="com.newco.marketplace.persistence.daoImpl.alert.AlertDaoImpl"
+    	lazy-init="true">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	 
+    </bean>	
+    <bean id="alertDispositionProcessor" class="com.newco.marketplace.business.businessImpl.alert.AlertDispositionProcessor">
+	 	<property name="alertDao">
+    		<ref bean="alertDao"/>
+  		</property>	 
+	 	<property name="serviceOrderDao">
+    		<ref bean="serviceOrderDao"/>
+  		</property>	 
+ 	 	<property name="buyerDao">
+    		<ref bean="buyerDao"/>
+  		</property>	 
+ 	 	<property name="contactDao">
+    		<ref bean="contactDao"/>
+  		</property>	  		
+    </bean>	
+    <bean id="alertProcessor" class="com.newco.marketplace.business.businessImpl.alert.AlertProcessor">
+	 	<property name="alertDao">
+    		<ref bean="alertDao"/>
+  		</property>	 
+		<property name="emailService">
+    		<ref bean="emailService"/>
+  		</property>	 
+    </bean>
+	 <bean id="vibeSMSAlertProcessor" class="com.newco.marketplace.business.businessImpl.vibePostAPI.VibeSMSAlertProcessor">
+			<property name="alertDao">
+	    		<ref bean="alertDao"/>
+	  		</property>	
+	  		<property name="lookupBO">
+				<ref bean="lookupBO" />
+			</property>
+	 </bean>
+	 <bean id="notificationAlertProcessor" class="com.newco.marketplace.business.businessImpl.vibePostAPI.NotificationAlertProcessor">
+			<property name="alertDao">
+	    		<ref bean="alertDao"/>
+	  		</property>	
+	  		<property name="lookupBO">
+				<ref bean="lookupBO" />
+			</property>
+			<property name="authenticateUserBO">
+				<ref bean="authenticateUserBO" />
+			</property>
+	</bean> 
+	<bean id="buyerCallbackNotificationProcessor" class="com.newco.marketplace.business.businessImpl.buyerCallbackNotification.BuyerCallbackNotificationProcessor">
+			<property name="alertDao">
+	    		<ref bean="alertDao"/>
+	  		</property>	
+	  		<property name="lookupBO">
+				<ref bean="lookupBO" />
+			</property>
+			<!-- SLT-3836 -->
+			<property name="buyerCallbackEventBO">
+				<ref bean="buyerCallbackEventBOImpl" />
+			</property>
+	</bean> 
+</beans>

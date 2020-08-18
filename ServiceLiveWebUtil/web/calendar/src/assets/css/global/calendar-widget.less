@@ -1,0 +1,208 @@
+.datepicker {
+    position: relative;
+    display: inline-block;
+    color: #2b2b2b;
+    font-family: 'Helvetica Neue', 'Helvetica', 'Arial', 'Calibri', 'Roboto';
+}
+
+.calendar_widget {
+    text-align: center;
+    height: 100%;
+    width: 205px;
+    font-size: 14px;
+    background-color: @left-nav-color;
+    cursor: default;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.calendar_widget__cancel {
+    position: absolute;
+    bottom: 1em;
+    left: 1.8em;
+    color: #d8d8d8;
+    cursor: pointer;
+    -webkit-transition: 0.37s;
+    transition: 0.37s;
+}
+
+.calendar_widget__cancel:hover {
+    color: #b1b1b1;
+}
+
+.calendar_widget__content {
+    margin-top: 0.4em;
+}
+
+.calendar_widget__labels {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: #d3d3d3;
+    width: 96%;
+}
+
+.calendar_widget__label {
+    display: inline-block;
+    width: 96%;
+    height: 2.2em;
+    margin: 0px;
+    line-height: 2.2em;
+    text-align: center;
+    color: #000000;
+}
+
+.calendar_widget__month {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-flow: wrap;
+    flex-flow: wrap;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+}
+
+.calendar_widget__month__day {
+    display: inline-block;
+    background-color: inherit;
+    width: 1.6em;
+    height: 1.6em;
+    margin: 0 0.2em 0.4em;
+    border-radius: 1.6em;
+    line-height: 1.6em;
+    text-align: center;
+}
+
+.calendar_widget__nav {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    height: 3em;
+    color: @light-color;
+    //background-color: #fff;
+    border-bottom: 1px solid #e8e8e8;
+}
+
+.calendar_widget__nav__arrow {
+    width: 1.5em;
+    height: 1.5em;
+    cursor: pointer;
+    margin: 10px 0px 0px 0px;
+}
+
+.calendar_widget__nav__arrow:hover {
+    -webkit-transform: scale(1.05);
+    transform: scale(1.05);
+}
+
+.calendar_widget__nav__chevron {
+    fill: #bbbbbb;
+    -webkit-transition: 0.37s;
+    transition: 0.37s;
+}
+
+.calendar_widget__nav__chevron:hover {
+    fill: #2b2b2b;
+}
+
+.calendar_widget__nav__header {
+    width: 11em;
+    margin: 0 1em;
+    text-align: center;
+}
+
+.calendar_widget__nav__header__form {
+    display: inline-block;
+    margin: 0;
+}
+
+.calendar_widget__nav__header__year {
+    display: inline-block;
+    width: 3em;
+    padding: 2px 4px;
+    border: 1px solid #ffffff;
+    border-radius: 2px;
+    font-size: 1em;
+    transition: 0.32s;
+}
+
+.calendar_widget__nav__header__year:focus.ng-invalid {
+    border: 1px solid #e82525;
+}
+
+.calendar_widget__nav__header__year:focus.ng-valid {
+    border: 1px solid #13ad13;
+}
+
+.calendar_widget__nav__header__year:focus {
+    outline: none;
+}
+
+.datepicker__input {
+    outline: none;
+    border-radius: 0.1rem;
+    padding: .2em .6em;
+    font-size: 14px;
+}
+
+.filter-day-result{
+    // padding: 15px;
+    color: @light-color;
+    text-align: left;
+    align-items: left;
+    
+    .select-hours{
+        background: inherit;
+        height: 30px;
+    }
+
+    div{
+        margin-top: 10px;
+        margin-bottom: 5px;
+    }
+
+    label{
+        font-weight: normal;
+        margin-left: 10px;
+    }    
+
+}
+
+.filter-weeks-result{
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-flow: wrap;
+    flex-flow: wrap;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    color: @light-color;
+    margin-top: 20px;
+}
+
+.filter-week-day{
+    display: inline-block;
+    background-color: inherit;
+    width: 1.5em;
+    height: 1.5em;
+    margin: 0 0.2em 0.4em;
+    border-radius: 1.5em;
+    line-height: 1.5em;
+    text-align: center;
+    -webkit-transition: 0s;
+    transition: 0s;
+}

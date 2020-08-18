@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="credential">
+	<typeAlias alias="credential" type="com.newco.marketplace.vo.provider.CredentialProfile"/>	
+	
+		<select id="insuranceType.queryList"  parameterClass="credential" resultClass="credential">
+    			select a.cred_type_id as credentialTypeId, 
+    			b.cred_category as credCategory,
+    			b.cred_category_id as credentialCategoryId
+    			from lu_vendor_credential_type as a
+				JOIN lu_vendor_credential_category as b ON (b.cred_type_id = a.cred_type_id)
+				where a.cred_type_desc = 'Insurance' order by b.sort_order
+		</select>
+		
+		<update id="credentialProfile.update" parameterClass="credential">
+		update vendor_hdr
+		<dynamic prepend="set">
+			<isGreaterThan prepend=", " property="vendorId" compareValue="-1">vendor_id = #vendorId#</isGreaterThan>
+			<isGreaterThan prepend=", " property="credentialTypeId" compareValue="-1">cred_type_id = #credentialTypeId#</isGreaterThan>
+			<isGreaterThan prepend=", " property="credentialCategoryId" compareValue="-1">cred_category_id = #credentialCategoryId#</isGreaterThan>
+			<isNotNull prepend=", " property="credentialSource">cred_source = #credentialSource#</isNotNull>
+			<isNotNull prepend=", " property="credentialName">cred_name = #credentialName#</isNotNull>
+			<isNotNull prepend=", " property="credentialIssueDate">cred_issue_date = #credentialIssueDate#</isNotNull>
+			<isNotNull prepend=", " property="credentialExpirationDate">cred_expiration_date = #credentialExpirationDate#</isNotNull>
+			<isNotNull prepend=", " property="credentialNumber">cred_no = #credentialNumber#</isNotNull>
+			<isNotNull prepend=", " property="credentialCounty">cred_county = #credentialCounty#</isNotNull>
+			<isNotNull prepend=", " property="credentialCity">cred_city = #credentialCity#</isNotNull>
+			<isNotNull prepend=", " property="credentialState">cred_state = #credentialState#</isNotNull>
+			<isGreaterThan prepend=", " property="credAmount" compareValue="0.0">cred_amount = #credAmount#</isGreaterThan>
+			
+			
+		</dynamic>
+		where vendor_id = #vendorId#
+	</update>
+	  
+    <insert id="insuranceTypes.insert" parameterClass="credential">
+        insert into vendor_credentials 
+			(vendor_id, 
+			cred_type_id,
+			cred_category_id,
+			cred_source,
+			cred_name,
+			cred_issue_date,
+			cred_expiration_date,
+			cred_no,
+			cred_county,
+			cred_state,
+			cred_amount,
+			insurance_description)
+		values(
+			   #vendorId#,
+			   #credentialTypeId#,
+			   #credentialCategoryId#,
+			   #credentialSource#,
+			   #credentialName#,
+			   #credentialIssueDate#,
+			   #credentialExpirationDate#,
+			   #credentialNumber#,
+			   #credentialCounty#,
+			   #credentialState#,
+			   #credAmount#,
+			   #credentialCategoryDesc#)
+        <selectKey resultClass="int">
+            SELECT last_insert_id() as VendorCredID
+        </selectKey>    
+    </insert>
+    
+    <select id="credentialProfile.queryInsurance" parameterClass="credential" resultClass="credential">
+	
+	select vc.cred_type_id as credentialTypeId,
+		   vc.cred_category_id as credentialCategoryId,
+	       vc.cred_source as credentialSource,
+	       vc.cred_name as credentialName,
+	       vc.cred_issue_date as credentialIssueDate,
+	       vc.cred_expiration_date as credentialExpirationDate,
+  		   vc.cred_no as credentialNumber,
+		   vc.cred_county as credentialCounty,
+		   vc.cred_state as credentialState,
+		   cred_amount as credAmount
+		from vendor_credentials as vc,
+		 lu_vendor_credential_category as cc, lu_vendor_credential_type as ct 
+		where vc.vendor_cred_id=#credentialId# and 
+		 ct.cred_type_id=vc.cred_type_id 
+		 and vc.cred_category_id=cc.cred_category_id
+		 and ct.cred_type_id=cc.cred_type_id and
+		 ct.cred_type_desc='insurance'
+	
+	
+</select>
+
+<update id="insuranceProfile.update" parameterClass="credential">
+		update vendor_credentials 
+		set cred_type_id = #credentialTypeId#,
+		cred_category_id = #credentialCategoryId#,
+		cred_source=#credentialSource#,
+		cred_name=#credentialName#,
+		cred_no=#credentialNumber#,
+		cred_county=#credentialCounty#,
+		cred_state=#credentialState#,
+		cred_issue_date=#credentialIssueDate#,
+		cred_expiration_date=#credentialExpirationDate#,
+		cred_amount=#credAmount#,
+		insurance_description=#credentialCategoryDesc#
+		where vendor_cred_id=#credentialId# ;
+	</update>
+	
+    <select id="credentialProfile.queryInsuranceSec" parameterClass="credential" resultClass="credential">
+	
+	select vc.cred_type_id as credentialTypeId,
+		   vc.cred_category_id as credentialCategoryId,
+		   cc.cred_category as credCategory,
+	       vc.cred_source as credentialSource,
+	       vc.cred_name as credentialName,
+	       vc.cred_issue_date as credentialIssueDate,
+	       vc.cred_expiration_date as credentialExpirationDate,
+  		   vc.cred_no as credentialNumber,
+		   vc.cred_county as credentialCounty,
+		   vc.cred_state as credentialState,
+		   vc.cred_issue_date as credentialIssueDate,
+		   vc.cred_expiration_date as credentialExpirationDate,
+		   vc.insurance_description as credentialCategoryDesc,
+		   cred_amount as credAmount,
+		   vc.created_date as createdDate,
+		   wf.wf_state as status
+		from vendor_credentials as vc,
+		 lu_vendor_credential_category as cc, lu_vendor_credential_type as ct, wf_states wf 
+		where vc.vendor_cred_id=#credentialId# and 
+		 ct.cred_type_id=vc.cred_type_id and vc.wf_state_id = wf.wf_state_id
+		 and vc.cred_category_id=cc.cred_category_id
+		 and ct.cred_type_id=cc.cred_type_id and
+		 ct.cred_type_desc='insurance' and
+		 vc.vendor_id = #vendorId#;		
+</select>
+
+<!-- SL-21233: Document Retrieval Code Starts -->
+
+<select id="credentialProfile.documentInfo.queryList"  parameterClass="credential" resultClass="credential">
+    	select vc.cred_type_id as credentialTypeId,
+    		d.document_id as currentDocumentID,
+		   vc.cred_category_id as credentialCategoryId,
+		   cc.cred_category as credCategory,
+	       vc.cred_source as credentialSource,
+	       vc.cred_name as credentialName,
+	       vc.cred_issue_date as credentialIssueDate,
+	       vc.cred_expiration_date as credentialExpirationDate,
+  		   vc.cred_no as credentialNumber,
+		   vc.cred_county as credentialCounty,
+		   vc.cred_state as credentialState,
+		   vc.insurance_description as credentialCategoryDesc,
+		   cred_amount as credAmount,
+		   vc.created_date as createdDate,
+		   wf.wf_state as status
+		from vendor_credentials as vc, document d, vendor_credential_document_history vh,
+		 lu_vendor_credential_category as cc, lu_vendor_credential_type as ct, wf_states wf 
+		where ct.cred_type_id=vc.cred_type_id and d.document_id = vh.document_id
+		 and vc.cred_category_id=cc.cred_category_id
+		 and ct.cred_type_id=cc.cred_type_id and
+		 vh.vendor_cred_id = vc.vendor_cred_id and vc.wf_state_id = wf.wf_state_id and
+		 vc.cred_category_id= #credentialCategoryId#  AND vc.cred_type_id=6 and
+		 ct.cred_type_desc='insurance' and
+		 vc.vendor_id = #vendorId# ORDER BY d.document_id DESC;
+		</select>
+		
+<!-- SL-21233: Document Retrieval Code Ends -->
+
+	<delete id="insuranceProfile.delete" parameterClass="credential">
+		delete from vendor_credentials 
+		where vendor_cred_id=#credentialId# ;
+	</delete>	
+	
+	<select id="credentialProfile.queryInsuranceDetailsForSelectedDocument" parameterClass="java.lang.Integer" resultClass="credential">
+		select 	vc.cred_type_id as credentialTypeId, 
+		vc.cred_category_id as credentialCategoryId,
+	    vc.cred_source as credentialSource,
+	    vc.cred_name as credentialName,
+	    vc.cred_issue_date as credentialIssueDate,
+	    vc.cred_expiration_date as credentialExpirationDate,
+  		vc.cred_no as credentialNumber,
+		vc.cred_county as credentialCounty,
+		vc.cred_state as credentialState,
+		cred_amount as credAmount,
+		vc.vendor_cred_id as credentialId,
+		vc.vendor_id as vendorId
+		from vendor_credentials as vc where vc.vendor_cred_id=(select max(vendor_cred_id) from vendor_credentials_document where document_id=#docId#);
+	</select>
+	
+	<select id="credentialProfile.queryAdditonalInsuranceDetailsForSelectedDocument" parameterClass="java.lang.Integer" resultClass="credential">
+		select 	vc.cred_type_id as credentialTypeId, 
+		vc.cred_category_id as credentialCategoryId,
+	    vc.cred_source as credentialSource,
+	    vc.cred_name as credentialName,
+	    vc.cred_issue_date as credentialIssueDate,
+	    vc.cred_expiration_date as credentialExpirationDate,
+  		vc.cred_no as credentialNumber,
+		vc.cred_county as credentialCounty,
+		vc.cred_state as credentialState,
+		cred_amount as credAmount,
+		vc.vendor_cred_id as credentialId,
+		vc.vendor_id as vendorId
+		from vendor_credentials as vc where vc.vendor_cred_id=(select max(vendor_cred_id) from vendor_credentials_document where document_id=#docId#);
+	</select>
+	
+	<select id="getInsuranceList.query" parameterClass="java.lang.Integer" resultClass="credential">
+	       SELECT vc.vendor_cred_id AS vendorCredId,
+			vc.vendor_id AS vendorId,
+			vc.cred_type_id AS credentialTypeId,
+			vc.cred_category_id AS credentialCategoryId,
+			IF(cc.cred_category='Other',CONCAT(cc.cred_category,' - ',vc.insurance_description),cc.cred_category) 
+			AS credCategory,
+			ct.cred_type_desc AS credentialTypeDesc,
+			vc.cred_source AS credentialSource,
+			vc.cred_name AS credentialName,
+			vc.cred_amount AS credAmount,
+			vc.cred_expiration_date AS expirationDate,
+			vc.insurance_description AS credentialCategoryDesc,
+			wf1.wf_state AS marketplaceInd
+			FROM lu_vendor_credential_category AS cc,
+					 lu_vendor_credential_type AS ct,
+					 vendor_credentials AS vc,
+					 wf_states AS wf1
+				WHERE vc.vendor_id=#vendorId# AND
+					  vc.cred_type_id=6 AND
+					  vc.cred_category_id NOT IN(41,42,43) AND
+					  vc.cred_type_id=ct.cred_type_id AND
+					  vc.wf_state_id = wf1.wf_state_id AND
+					  vc.cred_category_id=cc.cred_category_id
+</select>
+
+	<select id="insurance.isAvailable"  parameterClass="credential" resultClass="credential">
+ 		SELECT 
+ 		vendor_cred_id AS vendorCredId,
+ 		cred_type_id AS credentialTypeId,
+		cred_category_id AS credentialCategoryId 
+ 		FROM
+ 		vendor_credentials
+ 		WHERE 
+ 		vendor_id = #vendorId# and cred_type_id = 6 and cred_category_id = #credentialCategoryId# 
+ 	</select>
+</sqlMap>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/newservices"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" targetNamespace="http://www.servicelive.com/namespaces/newservices"
+	elementFormDefault="qualified" jaxb:version="1.0"
+	jaxb:extensionBindingPrefixes="xjc">
+	<xs:include schemaLocation="leadsCommon.xsd" />
+	<!-- This is the update Ratings and review Info Response -->
+	<!-- Root Element -->
+
+	<xs:element name="AddRatingsAndReviewRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="LeadId" type="xs:string" minOccurs="1"
+					maxOccurs="1"></xs:element>
+				<xs:element name="Ratings" minOccurs="1" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Quality" minOccurs="1" maxOccurs="1">
+								<xs:simpleType>
+									<xs:restriction base="xs:integer">
+										<xs:minInclusive value="1" />
+										<xs:maxInclusive value="5" />
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="Communication" 
+								minOccurs="1" maxOccurs="1">
+								<xs:simpleType>
+									<xs:restriction base="xs:integer">
+										<xs:minInclusive value="1" />
+										<xs:maxInclusive value="5" />
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="Timeliness" minOccurs="1"
+								maxOccurs="1">
+								<xs:simpleType>
+									<xs:restriction base="xs:integer">
+										<xs:minInclusive value="1" />
+										<xs:maxInclusive value="5" />
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="Professionalism" 
+								minOccurs="1" maxOccurs="1">
+								<xs:simpleType>
+									<xs:restriction base="xs:integer">
+										<xs:minInclusive value="1" />
+										<xs:maxInclusive value="5" />
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="Value"  minOccurs="1"
+								maxOccurs="1">
+								<xs:simpleType>
+									<xs:restriction base="xs:integer">
+										<xs:minInclusive value="1" />
+										<xs:maxInclusive value="5" />
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="Cleanliness" 
+								minOccurs="1" maxOccurs="1">
+								<xs:simpleType>
+									<xs:restriction base="xs:integer">
+										<xs:minInclusive value="1" />
+										<xs:maxInclusive value="5" />
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="comments" 
+								minOccurs="0" maxOccurs="1">
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

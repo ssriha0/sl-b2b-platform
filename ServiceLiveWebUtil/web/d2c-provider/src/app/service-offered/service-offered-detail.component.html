@@ -1,0 +1,101 @@
+<main>
+    <wait-loader [showLoader]="showLoader"></wait-loader>
+
+    <div class="bootstrap-scope page-color">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 remove-padding-left-right">
+                <sl-consumer-header></sl-consumer-header>
+            </div>
+        </div>
+        <div class="row add-margin-left-right add-margin-top-bottom">
+            <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 remove-padding-left-right">
+                <div class="subpage-header-text">Select Services Offered</div>
+            </div>
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 text-right remove-padding-left">
+                <button routerLink="/profile" routerLinkActive="active" type="button" class="btn btn-default top-nav-button corner-border"
+                    skipLocationChange>BACK</button>
+                <button routerLink="/profile" routerLinkActive="active" type="button" class="btn btn-primary top-nav-button corner-border"
+                    skipLocationChange>DONE</button>
+            </div>
+        </div>
+        <div class="row add-margin-left-right" *ngFor="let serviceOffered of serviceOfferedDetail.serviceOfferedList">
+            <div class="row tile-header-text"> {{serviceOffered.primaryIndustryName}} </div>
+            <div class="well well-lg tile-color">
+                <div class="row padding-top-bottom">
+                    <!--<div>
+                           Rate card added 
+                        <a  data-toggle="modal" data-target="#rateCard">
+                        <div class="glyphicon glyphicon-edit" (click)="rateCard.getPriceOfRateCard(serviceOffered.primaryIndustryId,serviceOffered.primaryIndustryName)"></div>
+                        </a>
+                    </div>-->
+                    <div class="col-xs-6" style="padding-top: 6px;">
+                        <div *ngIf="serviceOffered.servicesOptedCount == 0 && !serviceOffered.tempServiceMessage">
+                            <a href="#" (click)="selectService.loadData(serviceOffered.primaryIndustryId,serviceOffered.primaryIndustryName)" data-toggle="modal"
+                                data-target="#selectService">
+                            + Select services
+                        </a>
+                        </div>
+                        <div *ngIf="serviceOffered.servicesOptedCount > 0 && !serviceOffered.tempServiceMessage">
+                            <div class="glyphicon glyphicon-ok"></div>
+                            {{serviceOffered.servicesOptedCount}} of {{serviceOffered.servicesOfferedCount}} services selected
+                            <a href="#" (click)="selectService.loadData(serviceOffered.primaryIndustryId,serviceOffered.primaryIndustryName)" data-toggle="modal"
+                                data-target="#selectService">
+                                <div class="glyphicon glyphicon-edit"></div>
+                            </a>
+                        </div>
+                        <div *ngIf="serviceOffered.tempServiceMessage">
+                            {{serviceOffered.tempServiceMessage}}
+                        </div>
+                    </div>
+                    <div class="col-xs-6" style="padding-top: 6px;">
+                        <div *ngIf="serviceOffered.displayMessage">
+                            {{rateCardtext}}</div>
+                        <div *ngIf="!serviceOffered.rateCardAdded && !serviceOffered.displayMessage">
+                            <a data-toggle="modal" data-target="#rateCard" class="clickable-hand-cursor" (click)="rateCard.getPriceOfRateCard(serviceOffered)">
+                                             + Add rate card
+                                         </a>
+
+                        </div>
+                        <div *ngIf="serviceOffered.rateCardAdded && !serviceOffered.displayMessage">
+                            <div class="glyphicon glyphicon-ok" style="margin-right: 4px;">
+                            </div> Rate card added
+                            <a data-toggle="modal" data-target="#rateCard" (click)="rateCard.getPriceOfRateCard(serviceOffered)">
+                                <div class="glyphicon glyphicon-edit clickable-hand-cursor"></div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="selectService" role="dialog">
+        <select-service (errormessage)="displayError($event)" (selectedSkuCount)="getSelectedSkuCount($event)" #selectService></select-service>
+    </div>
+    <div class="modal fade" id="rateCard" role="dialog" data-backdrop="static" data-keyboard="false">
+        <rate-card (reLoadDetailPage)="reLoadPageData($event)" (rateCardAdded)="setRateCardAdded($event)" #rateCard></rate-card>
+    </div>
+    <!-- Error Modal -->
+    <div class="modal fade modal-popup-custom" id="errorModal" role="dialog" #errorModal>
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <a href="#" class="close-button" data-dismiss="modal">
+                        <div class="glyphicon glyphicon-remove" style="float: right"></div>
+                    </a>
+                    <div class="modal-title text-center modal-header-text">{{errorpopUpModal.errorHeadingMessage}}</div>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div *ngFor="let error of errorpopUpModal.errors"># {{error}}</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="text-center">
+                        <button type="button" class="btn btn-primary save-button-width corner-border" data-dismiss="modal">Ok</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

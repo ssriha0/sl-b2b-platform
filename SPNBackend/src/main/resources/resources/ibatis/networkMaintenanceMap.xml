@@ -1,0 +1,21 @@
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="network.networkmaintenance">
+	
+	
+
+	<update id="updateNetworkSPNCOMPLETE" >
+		update spnet_workflow_status sws , spnet_serviceprovider_state sps, spnet_hdr sh
+			set sws.wf_entity_state =  'SPN COMPLETE'
+		where sws.wf_entity_id = 'NETWORK' and sws.wf_entity_state != 'SPN COMPLETE'
+			and sps.spn_id = sws.entity_id and sps.provider_wf_state = 'SP SPN APPROVED'
+			and sh.spn_id = sws.entity_id and sh.is_alias = false
+	</update>
+	<update id="updateNetworkSPN_INCOMPLETE" >
+		update spnet_workflow_status sws, spnet_hdr sh
+			set sws.wf_entity_state =  'SPN INCOMPLETE'
+		where sws.wf_entity_id = 'NETWORK' and sws.wf_entity_state != 'SPN INCOMPLETE'
+			and sh.spn_id = sws.entity_id and sh.is_alias = false
+            and not exists (Select 1  from spnet_serviceprovider_state sps where  sps.spn_id = sws.entity_id and sps.provider_wf_state = 'SP SPN APPROVED')
+     </update>
+</sqlMap>

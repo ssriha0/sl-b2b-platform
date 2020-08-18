@@ -1,0 +1,10 @@
+<div class="add-margin-top-bottom" class="skuCarouselContainer">
+    <div class="multiple-items" role="toolbar" *ngIf="skuDetails">
+        <div class="padding-top-bottom padding-left-right" *ngFor="let sku of skuDetails.skus">
+            <a routerLink="/profile" routerLinkActive="active" skipLocationChange>
+                <img src="../../../assets/images/no-image.png" class="img-responsive" />
+                <div class="sku-img-overlay"> {{sku.sku}} {{sku.categoryName}} {{sku.skuName}} </div>
+            </a>
+        </div>
+    </div>
+</div>

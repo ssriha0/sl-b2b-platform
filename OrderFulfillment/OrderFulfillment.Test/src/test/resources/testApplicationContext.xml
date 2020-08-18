@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="com.servicelive.wallet.tests.placeholderConfig"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+			<value>classpath:/bootstrap.dev.properties</value>
+		</property>
+	</bean>
+ 
+	<bean id="dataSourceMySQL" class="com.mysql.jdbc.jdbc2.optional.MysqlDataSource" lazy-init="true">
+		<property name="url">
+			<value>${datasource.jdbc.main.url}</value>
+		</property>
+		<property name="user">
+			<value>${datasource.jdbc.main.user}</value>
+		</property>
+		<property name="password">
+			<value>${datasource.jdbc.main.password}</value>
+		</property>
+	</bean>	
+ 	
+</beans>

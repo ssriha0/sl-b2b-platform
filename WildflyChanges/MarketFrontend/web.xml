@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee 
+      http://java.sun.com/xml/ns/j2ee/web-app_2_5.xsd">
+
+	<!-- <distributable /> -->
+	<!-- Service Life Filters -->
+
+	<filter>
+		<filter-name>securityfilter</filter-name> 
+		<filter-class>com.newco.marketplace.web.filter.SLSecurityFilter</filter-class>
+		<init-param>
+			<param-name>sessionPatternURL</param-name>
+			<param-value>(.*dashboardPeriodicRefresh\.action)|(.*refreshTabs\.action)</param-value>
+		</init-param>
+		<init-param>
+			<param-name>protectedURL</param-name>
+			<param-value>(.*/.*\.action)|(.*/jsp/.*\.jsp)</param-value>
+		</init-param>
+		<init-param>
+			<param-name>loginPage</param-name>
+			<param-value>/MarketFrontend/</param-value>
+		</init-param>
+		<init-param> 
+			<param-name>openURL</param-name>
+			<!--
+				This need futher review The commented out is from Ball Of Fire and
+				exsting is from SPN1B
+			-->
+			<!--
+				param-value>(.*assurant.*\.action)|(.*adminTripCharge.*\.action)|(.*examples.*\.action)|(.*buyerRegistration.*\.action)|(.*spnBuyer.*\.action)|(.*etm.*\.action)|(.*soWhatIsSL.*\.action)|(.*contactUsAction.*\.action)|(.*login\.action)|(.*homepage\.action)|(.*homepage.*\.action)|(.*ssoController.*\.action)|(.*csoFindProviders.*\.action)|(.*csoDescribeAndSchedule.*\.action)|(.*csoCreateAccount.*\.action)|(.*csoDocumentsAndPhotos.*\.action)|(.*joinNowAction\.action)|(.*resetPasswordAction\!loadResetPasswordPage\.action)|(.*resetPasswordAction\!validateEmail\.action)|(.*resetPasswordAction\!validateAns\.action)|(.*resetPasswordAction\!cancelAnswer\.action)|(.*resetPasswordAction\!doCancel\.action)|(.*forgetUsernameAction\!doCancel\.action)|(.*forgetUsernameAction\!sendEmail\.action)|(.*forgetUsernameAction\!doValidatePhoneAndZip\.action)|(.*forgetUsernameAction\!doValidateSecretQuestion\.action)|(.*forgetUsernameAction\!validateEmail\.action)|(.*forgetUsernameAction\!loadForgetUserPage\.action)|(.*providerRegistrationAction\.action)|(.*providerRegSaveAction\.action)|(.*doLogin\.action)|(.*doLogout\.action)|(.*/public/.*)|(.*termsAndConditions.*\.action)|(.*profileTabAction.*\.action)|(.*publicProfileAction.*\.action)|(.*loginAdditionalInfo.*\.action)|(.*joinNowGeneralAction.*\.action)|(.*joinNowSimpleAction.*\.action)|(.*joinNowBuyerSimpleAction.*\.action)|(.*joinNowBuyerAction.*\.action)|(.*providerProfileInfoAction.*\.action)|(.*soProviderSelect.*\.action)|(.*google_maps.*\.jsp)|(.*orderGroup.*\.action)</param-value
+			-->
+			<param-value>(create.*\.action)|(.*rrw.*\.action)|(.*routingRule.*\.action)|(.*assurant.*\.action)|(.*adminTripCharge.*\.action)|(.*examples.*\.action)|(.*buyerRegistration.*\.action)|(.*spnBuyer.*\.action)|(.*etm.*\.action)|(.*soWhatIsSL.*\.action)|(.*contactUsAction.*\.action)|(.*login\.action)|(.*homepage\.action)|(.*homepage.*\.action)|(.*ssoController.*\.action)|(.*csoFindProviders.*\.action)|(.*csoDescribeAndSchedule.*\.action)|(.*csoCreateAccount.*\.action)|(.*csoDocumentsAndPhotos.*\.action)|(.*joinNowAction\.action)|(.*resetPasswordAction\!loadResetPasswordPage\.action)|(.*resetPasswordAction\!validateEmail\.action)|(.*resetPasswordAction\!validateAns\.action)|(.*resetPasswordAction\!cancelAnswer\.action)|(.*resetPasswordAction\!doCancel\.action)|(.*forgetUsernameAction\!doCancel\.action)|(.*forgetUsernameAction\!sendEmail\.action)|(.*forgetUsernameAction\!doValidatePhoneAndZip\.action)|(.*forgetUsernameAction\!doValidateSecretQuestion\.action)|(.*forgetUsernameAction\!validateEmail\.action)|(.*forgetUsernameAction\!loadForgetUserPage\.action)|(.*providerRegistrationAction\.action)|(.*providerRegSaveAction\.action)|(.*providerDoSaveAction\.action)|(.*doLogin\.action)|(.*doLogout\.action)|(.*/public/.*)|(.*termsAndConditions.*\.action)|(.*profileTabAction.*\.action)|(.*publicProfileAction.*\.action)|(.*loginAdditionalInfo.*\.action)|(.*joinNowGeneralAction.*\.action)|(.*joinNowSimpleAction.*\.action)|(.*joinNowBuyerSimpleAction.*\.action)|(.*joinNowBuyerAction.*\.action)|(.*providerProfileInfoAction.*\.action)|(.*soProviderSelect.*\.action)|(.*google_maps.*\.jsp)|(.*orderGroup.*\.action)|(.*spnMonitorAction_getCompanyRequirementsList.*\.action)|(.*spnMonitorAction_getProviderRequirementsList.*\.action) |(.*buyerlogo_getBuyerLogo.*\.action)|(.*providerUtils.*\.action)</param-value>
+		</init-param>
+		<init-param>
+			<param-name>editURL</param-name>
+			<param-value>(.*login\.action)|(.*doLogin\.action)</param-value>
+		</init-param>
+	</filter>
+	<!--
+		<filter-mapping> <filter-name>httpsredirector</filter-name>
+		<url-pattern>*.action</url-pattern> </filter-mapping> <filter-mapping>
+		<filter-name>httpsredirector</filter-name>
+		<url-pattern>*.jsp</url-pattern> </filter-mapping>
+	-->
+	<filter-mapping>
+		<filter-name>securityfilter</filter-name>
+		<url-pattern>*.action</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>securityfilter</filter-name>
+		<url-pattern>*.jsp</url-pattern>
+	</filter-mapping>
+
+
+	<!--
+		Added for RoutingRules JPA/Hibernate support, to fix
+		PersistenceException / SessionException
+	-->
+	<filter>
+		<filter-name>Spring OpenEntityManagerInViewFilter</filter-name>
+		<filter-class>
+			org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter</filter-class>
+		<init-param>
+			<param-name>entityManagerFactoryBeanName</param-name>
+			<param-value>entityManagerFactoryMain</param-value>
+		</init-param>
+	</filter>
+
+	<!-- Added for HDIV -->
+	<!-- <filter>
+		<filter-name>ValidatorFilter</filter-name>
+		<filter-class>org.hdiv.filter.ValidatorFilter</filter-class>
+	</filter>
+	<filter-mapping>  
+		<filter-name>ValidatorFilter</filter-name>
+		<url-pattern>*.action</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>ValidatorFilter</filter-name>
+		<url-pattern>*.jsp</url-pattern>
+	</filter-mapping> -->
+	
+	<!-- added for struts 2 support -->
+	<filter>
+		<filter-name>struts2</filter-name>
+		<filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
+		<init-param>
+			<param-name>config</param-name>
+			<param-value>
+				<!-- hdiv-default.xml, -->struts-default.xml, struts-plugin.xml, struts.xml
+			</param-value>
+		</init-param>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>Spring OpenEntityManagerInViewFilter</filter-name>
+		<url-pattern>*.action</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>struts2</filter-name>
+		<url-pattern>*.action</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>struts2</filter-name>
+		<url-pattern>*.jsp</url-pattern>
+	</filter-mapping>
+
+
+
+
+	<filter-mapping>
+		<filter-name>struts2</filter-name>
+		<url-pattern>/SODocumentView</url-pattern>
+	</filter-mapping>
+
+
+
+
+
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+
+	<!-- added for spring support -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<!-- added for session listener -->
+	<listener>
+		<listener-class>
+			com.newco.marketplace.web.utils.ServiceLiveSessionListener</listener-class>
+	</listener>
+	<!-- Added for HDIV -->
+	<!-- <listener>
+		<listener-class>org.hdiv.listener.InitListener</listener-class>
+	</listener>  -->
+ 	
+
+
+	<context-param>
+		<param-name>tilesDefinitions</param-name>
+		<param-value>/WEB-INF/tiles.xml</param-value>
+	</context-param>
+
+	<!-- added for Tiles support -->
+	<listener>
+		<listener-class>org.apache.struts2.tiles.StrutsTilesListener</listener-class>
+	</listener>
+
+	<!-- session interval -->
+  <session-config>
+	<cookie-config>
+		<path>/</path>
+		<http-only>true</http-only>
+		<secure>true</secure>
+	</cookie-config>
+	<tracking-mode>COOKIE</tracking-mode>
+	<session-timeout>60</session-timeout>
+  </session-config>
+
+	<!-- Added for HDIV -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath:resources/spring/mainApplicationContext.xml<!-- /WEB-INF/hdiv-applicationContext.xml,/WEB-INF/hdiv-config.xml,/WEB-INF/hdiv-validations.xml --></param-value>
+	</context-param>
+
+	<!--
+		<context-param> <param-name>parentContextKey</param-name>
+		<param-value>classPathApplicationContext</param-value>
+		</context-param> <context-param>
+		<param-name>locatorFactorySelector</param-name>
+		<param-value>classpath*:resources/spring/beanRefContext.xml</param-value>
+		</context-param>
+	-->
+
+
+
+	<servlet>
+		<servlet-name>Initialization Servlet</servlet-name>
+		<servlet-class>
+			com.newco.marketplace.web.servlet.ServiceLiveInitServlet</servlet-class>
+		<load-on-startup>3</load-on-startup>
+	</servlet>
+
+	<servlet>
+		<servlet-name>SODocumentViewServlet</servlet-name>
+		<servlet-class>
+			com.newco.marketplace.web.servlet.SODocumentViewServlet</servlet-class>
+	</servlet>
+
+
+
+
+	<servlet>
+		<servlet-name>BuyerDocumentViewServlet</servlet-name>
+		<servlet-class>
+			com.newco.marketplace.web.servlet.BuyerDocumentViewServlet</servlet-class>
+	</servlet>
+
+
+
+
+	<servlet>
+		<servlet-name>ImageViewServlet</servlet-name>
+		<servlet-class>com.newco.marketplace.web.servlet.ImageViewServlet</servlet-class>
+	</servlet>
+
+
+
+
+	<servlet-mapping>
+		<servlet-name>BuyerDocumentViewServlet</servlet-name>
+		<url-pattern>/BuyerDocumentView</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>SODocumentViewServlet</servlet-name>
+		<url-pattern>/SODocumentView</url-pattern>
+	</servlet-mapping>
+
+
+
+
+	<servlet-mapping>
+		<servlet-name>ImageViewServlet</servlet-name>
+		<url-pattern>/ImageView</url-pattern>
+	</servlet-mapping>
+
+	<!-- Report an error using a JSP page -->
+	<error-page>
+		<exception-type>java.lang.Exception</exception-type>
+		<location>/jsp/public/error/body/errorBody.jsp</location>
+	</error-page>
+
+	<servlet>
+		<servlet-name>
+			com.newco.marketplace.gwt.providersearch.server.ProviderSearchCriteriaServiceImpl</servlet-name>
+		<servlet-class>
+			com.newco.marketplace.gwt.providersearch.server.ProviderSearchCriteriaServiceImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>
+			com.newco.marketplace.gwt.providersearch.server.ProviderSearchCriteriaServiceImpl</servlet-name>
+		<url-pattern>/ProviderSearchCriteriaService</url-pattern>
+		<!--
+			url-pattern>/gwt/com.newco.marketplace.gwt.providersearch.server/ProviderSearchCriteriaService</url-pattern
+		-->
+	</servlet-mapping>
+
+</web-app>

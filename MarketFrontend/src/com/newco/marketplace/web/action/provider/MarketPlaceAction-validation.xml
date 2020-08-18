@@ -1,0 +1,188 @@
+<!DOCTYPE validators PUBLIC
+        "-//Apache Struts//XWork Validator 1.0.2//EN"
+        "http://struts.apache.org/dtds/xwork-validator-1.0.2.dtd">
+        
+<validators>
+	  
+	<field name="marketPlaceDTO.businessPhone1">
+	   <field-validator type="requiredstring" short-circuit="true">
+	        <param name="trim">true</param>
+	        <message key="provider.marketPlace.areaCode.required" />
+	    </field-validator>
+	    <field-validator type="regex" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="regex">^\d+$</param>
+	        <message key="provider.marketPlace.areaCode.numberError"/>
+	    </field-validator>
+	    <field-validator type="stringlength" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="minLength">3</param>
+	        <message key="provider.marketPlace.areaCode.lengthError"/>
+	    </field-validator>
+	</field>
+	
+	<field name="marketPlaceDTO.businessPhone2">
+	   <field-validator type="requiredstring">
+	        <param name="trim">true</param>
+	        <message key="provider.marketPlace.phoneNumber2.required" />
+	    </field-validator>
+	    <field-validator type="regex" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="regex">^\d+$</param>
+	        <message key="provider.marketPlace.phoneNumber2.numberError"/>
+	    </field-validator>
+	    <field-validator type="stringlength" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="minLength">3</param>
+	        <message key="provider.marketPlace.phoneNumber2.lengthError"/>
+	    </field-validator>
+	</field>
+	
+ 	<field name="marketPlaceDTO.businessPhone3">
+	   <field-validator type="requiredstring">
+	        <param name="trim">true</param>
+	        <message key="provider.marketPlace.phoneNumber3.required" />
+	    </field-validator>
+	    <field-validator type="regex" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="regex">^\d+$</param>
+	        <message key="provider.marketPlace.phoneNumber3.numberError"/>
+	    </field-validator>
+	    <field-validator type="stringlength" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="minLength">4</param>
+	        <message key="provider.marketPlace.phoneNumber3.lengthError"/>
+	    </field-validator>
+	</field>
+	
+	
+	<field name="marketPlaceDTO.businessExtn">
+	   <!--  <field-validator type="requiredstring">
+	        <param name="trim">true</param>
+	        <message key="provider.marketPlace.extn.required" />
+	    </field-validator>-->
+	    <field-validator type="regex" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="regex">^\d+$</param>
+	        <message key="provider.marketPlace.extension.numberError"/>
+	    </field-validator>
+	    <field-validator type="stringlength" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="minLength">4</param>
+	        <message key="provider.marketPlace.extension.lengthError"/>
+	    </field-validator>
+	</field>
+	 <!--
+ 	<field name="marketPlaceDTO.mobilePhone1">
+	   <field-validator type="requiredstring" short-circuit="true">
+	        <param name="trim">true</param>
+	        <message key="" />
+	    </field-validator>
+	    <field-validator type="regex" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="expression">^\d+$</param>
+	        <message key=""/>
+	    </field-validator>
+	    <field-validator type="stringlength" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="minLength">3</param>
+	        <message key=""/>
+	    </field-validator>
+	</field>
+	
+	<field name="marketPlaceDTO.mobilePhone2">
+	   <field-validator type="requiredstring" short-circuit="true">
+	        <param name="trim">true</param>
+	        <message key="" />
+	    </field-validator>
+	    <field-validator type="regex" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="expression">^\d+$</param>
+	        <message key=""/>
+	    </field-validator>
+	    <field-validator type="stringlength" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="minLength">3</param>
+	        <message key=""/>
+	    </field-validator>
+	</field>
+	
+	<field name="marketPlaceDTO.mobilePhone3">
+	   <field-validator type="requiredstring" short-circuit="true">
+	        <param name="trim">true</param>
+	        <message key="" />
+	    </field-validator>
+	    <field-validator type="regex" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="expression">^\d+$</param>
+	        <message key=""/>
+	    </field-validator>
+	    <field-validator type="stringlength" short-circuit="true">
+	    	<param name="trim">true</param>
+	    	<param name="minLength">3</param>
+	        <message key=""/>
+	    </field-validator>
+	</field>
+ 	 -->
+ 	<!-- 	 
+ 	<field name="marketPlaceDTO.primaryContact">
+	   <field-validator type="required">
+			<message key="provider.marketPlace.primaryCont.required"/>	
+	    </field-validator>
+	</field> -->
+	
+	<field name="marketPlaceDTO.email">
+	   <field-validator type="requiredstring" short-circuit="true">
+	        <param name="trim">true</param>
+	        <message key="provider.marketPlace.email.required" />
+	    </field-validator>
+	    <!-- Changes fr SL-20671 starts -->
+	    <!--field-validator type="email">
+	        <param name="trim">true</param>
+	        <message key="provider.marketPlace.email.error" />
+	    </field-validator-->
+	      <!-- Changes fr SL-20671 ends -->
+	</field>
+	
+	<field name="marketPlaceDTO.confirmEmail">
+	   <field-validator type="requiredstring" short-circuit="true">
+	        <param name="trim">true</param>
+	        <message key="provider.marketPlace.confirmEmail.required" />
+	    </field-validator>
+	      <!-- Changes fr SL-20671 starts -->
+	    <!--field-validator type="email">
+	        <param name="trim">true</param>
+	        <message key="provider.marketPlace.confirmEmail.error" />
+	    </field-validator-->
+	      <!-- Changes fr SL-20671 ends -->
+	</field>
+	
+	<validator type="expression">
+      	<param name="expression">marketPlaceDTO.email.equals(marketPlaceDTO.confirmEmail)</param>
+      	<message key="provider.marketPlace.mail.NotSame"></message>
+  	</validator>
+	
+	<field name="marketPlaceDTO.altEmail">
+	  <!-- Changes fr SL-20671 starts -->
+	    <!--field-validator type="email">
+	        <param name="trim">true</param>
+	        <message key="provider.marketPlace.altEmail.error" />
+	    </field-validator-->
+	      <!-- Changes fr SL-20671 ends -->
+	</field>
+	
+	<field name="marketPlaceDTO.confirmAltEmail">
+	  <!-- Changes fr SL-20671 starts -->
+	    <!--field-validator type="email">
+	        <param name="trim">true</param>
+	        <message key="provider.marketPlace.confirmAltEmail.error" />
+	    </field-validator-->
+	      <!-- Changes fr SL-20671 ends -->
+	</field>
+	
+	<validator type="expression">
+      	<param name="expression">marketPlaceDTO.altEmail.equals(marketPlaceDTO.confirmAltEmail)</param>
+      	<message key="provider.marketPlace.altMail.NotSame"></message>
+  	</validator>
+ 	 
+</validators>

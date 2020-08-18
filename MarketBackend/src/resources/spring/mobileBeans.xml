@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<bean id="validationBO" class="com.newco.marketplace.business.businessImpl.mobile.MobileSOValidationBOImpl">
+		<property name="mobileSOManagementDao">
+			<ref bean="mobileSOManagementDao" />
+		</property>	
+		<property name="applicationProperties">
+			<ref bean="applicationPropertiesWallet" />
+		</property>		
+       <property name="lookupDao">
+			<ref bean="lookupDao"/>
+		</property>
+    </bean> 
+	
+	
+	<bean id="mobileSOLoggingBO" class="com.newco.marketplace.business.businessImpl.mobile.MobileSOLoggingBOImpl">
+		<property name="mobileSOManagementDao">
+			<ref bean="mobileSOManagementDao" />
+		</property>	
+	</bean>
+	
+	<bean id="mobileSOManagementBO" class="com.newco.marketplace.business.businessImpl.mobile.MobileSOManagementBOImpl">
+		<property name="mobileSOManagementDao">
+			<ref bean="mobileSOManagementDao" />
+		</property>	
+		<property name="applicationProperties">
+			<ref bean="applicationPropertiesWallet" />
+		</property>		
+       <property name="lookupDao">
+			<ref bean="lookupDao"/>
+		</property>
+		  <property name="cryptography">
+			<ref bean="cryptography" />
+		</property>
+		<property name="cryptography128">
+			<ref bean="cryptography128" />
+		</property>
+		
+    </bean> 
+    
+    <bean id="mobileSOManagementDao" class="com.newco.marketplace.persistence.daoImpl.mobile.MobileSOManagementDAOImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+    </bean>
+    
+    <bean id="manageScheduleBO" class="com.newco.marketplace.business.businessImpl.mobile.ManageScheduleBOImpl">
+		<property name="manageScheduleDao">
+			<ref bean="manageScheduleDao" />
+		</property>
+    </bean>
+    
+    <bean id="manageScheduleDao" class="com.newco.marketplace.persistence.daoImpl.mobile.ManageScheduleDAOImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+    </bean>
+	<bean id="authenticateUserBO" class="com.newco.marketplace.business.businessImpl.mobile.AuthenticateBOImpl">
+
+		<property name="authenticateUserDao">
+			<ref bean="authenticateUserDao" />
+		</property>
+		
+		  <property name="cryptography">
+			<ref bean="cryptography" />
+		</property>
+
+		<property name="applicationProperties">
+			<ref bean="applicationPropertiesWallet"/>
+	  	</property>  
+	  	
+	  		<constructor-arg ref="loginDaoImpl"/>
+
+	</bean>
+	<bean id="authenticateUserDao" class="com.newco.marketplace.persistence.daoImpl.mobile.AuthenticateUserDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+	
+	<bean id="loginDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.LoginDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	<bean id="mobileSOActionsBO" class="com.newco.marketplace.business.businessImpl.mobile.MobileSOActionsBOImpl">
+		<property name="mobileSOActionsDao">
+			<ref bean="mobileSOActionsDao" />
+		</property>
+		<property name="accountActionsDao">
+			<ref bean="accountActionsDao" />
+		</property>
+		<property name="cryptography">
+			<ref bean="cryptography"/>
+		</property>
+		<property name="cryptography128">
+			<ref bean="cryptography128" />
+		</property>
+		<property name="notificationService">
+			<ref bean="notificationService" />
+		</property>
+		<property name="hsTokenServiceCreditCardBo">
+			<ref bean="hsTokenServiceCreditCardBo" />
+		</property>
+		<property name="creditCardDao">
+			<ref bean="creditCardDao" />
+		</property>
+	</bean>
+	<bean id="mobileSOActionsDao" class="com.newco.marketplace.persistence.daoImpl.mobile.MobileSOActionsDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+	  <bean id="buyerFeatureSetBO" class="com.newco.marketplace.business.businessImpl.buyer.BuyerFeatureSetBOImpl">
+    	<property name="buyerFeatureSetDAO">
+    		<ref bean="buyerFeatureSetDAO"/>
+  		</property>
+    </bean>
+    <bean id="accountActionsDao" class="com.newco.marketplace.persistence.daoImpl.mobile.MobileSOAccountActionsDaoImpl">
+    	<property name="sqlMapClient">
+			<ref bean="sqlMapClientFinance" />
+		</property>
+    </bean>
+	<bean id="w9RegistrationBOImpl" class="com.newco.marketplace.business.businessImpl.provider.W9RegistrationBOImpl">
+
+		<property name="w9RegistrationDao">
+			<ref bean="w9RegistrationDaoImpl" />
+		</property>
+		<property name="cryptography">
+			<ref bean="cryptography" />
+		</property>
+		<property name="wallet" ref="walletTx" /> 
+
+	</bean>
+	<!--service class for MobileSoPdfGenerationBatch  -->
+	<bean id="mobileSoPdfGenerationService" class="com.servicelive.mobileSoPdfGenerationBatch.services.impl.MobileSoPdfGenerationService">
+    	<property name="mobileSOActionsDao">
+			<ref bean="mobileSOActionsDao" />
+		</property>
+		<property name="documentBO">
+			<ref bean="documentBO" />
+		</property>
+		<property name="serviceOrderBOTarget">
+			<ref bean="serviceOrderBOTarget" />
+		</property>				
+		<property name="mobileSOManagementBO">
+			<ref bean="mobileSOManagementBO" />
+		</property>		
+    </bean>
+	<bean id="mobileGenericBO" class="com.newco.marketplace.business.businessImpl.mobile.MobileGenericBOImpl">
+		<property name="serviceOrderBo">
+			<ref bean="serviceOrderBOTarget" />
+		</property>
+		<property name="orderGroupBo">
+			<ref bean="soGroupBO" />
+		</property>
+		<property name="resourceBO">
+			<ref bean="resourceBOImpl"/>
+		</property>
+		<property name="lookupBO">
+			<ref bean="lookupBO" />
+		</property>
+		<property name="managementService">
+			<ref bean="managementService" />
+		</property>
+		<property name="mobileGenericDao">
+			<ref bean="mobileGenericDao" />
+		</property>
+		<property name="serviceOrderDao">
+			<ref bean="serviceOrderDao" />
+		</property>
+		
+		<!-- SL-21848 -->
+		<property name="relayNotificationService">
+			<ref bean="relayNotificationService" />
+		</property>
+		<property name="mobileSOActionsBO">
+			<ref bean="mobileSOActionsBO" />
+		</property>
+		<!-- <property name="ofHelper">
+			<ref bean="ofHelper" />
+		</property>
+		<property name="ofMapper">
+			<ref bean="ofMapper" />
+		</property> -->
+		<property name="buyerOutBoundNotificationService">
+			<ref bean="buyerOutBoundNotificationService"/>
+		</property>	
+			<property name="buyerOutBoundNotificationJMSService">
+			<ref bean="buyerOutBoundNotificationJMSService"/>
+		</property>	
+		<property name="notificationService">
+			<ref bean="notificationService"/>
+		</property>	 
+		<property name="mobileSOManagementBO">
+			<ref bean="mobileSOManagementBO" />
+		</property>	
+		<property name="forgotUsernameBO">
+			<ref bean="forgotUsernameBOAOP"/>
+		</property>	 
+		<property name="userManagementBO">
+			<ref bean="iUserManagementBOTarget"/>
+		</property>	
+			<property name="mobileSOManagementDao">
+			<ref bean="mobileSOManagementDao"/>
+		</property>	
+		<!-- <property name="surveyBO">
+			<ref bean="surveyBO"/>
+		</property>	
+		<property name="dashboardDisplay">
+			<ref bean="dashboardImpl"/>
+		</property>	 -->
+	</bean>
+	
+	<bean id="mobileGenericDao" class="com.newco.marketplace.persistence.daoImpl.mobile.MobileGenericDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+	<!-- <bean id="ofMapper" class="com.newco.marketplace.api.utils.mappers.mobile.v2_0.OFMapper"/> -->
+	<!-- v3.1 Business & Dao layer START -->
+	<bean id="newMobileGenericBO" class="com.newco.marketplace.business.businessImpl.mobile.NewMobileGenericBOImpl">
+		<property name="newMobileGenericDao" ref ="newMobileGenericDao"/>
+		<property name="managementDao" ref ="managementDao"/>
+		<property name="companyProfileBO" ref ="companyProfileBOImpl"/>
+		<property name="teamProfileBO" ref ="teamProfileBOImpl"/>
+		<property name="manageScheduleBO" ref ="manageScheduleBO"/>
+		<property name="managementService" ref ="managementService"/>
+		<property name="dashboardDisplay" ref ="dashboardImpl" />
+		<property name="spnMonitorBO" ref ="spnMonitorBO"/>
+		<property name="authenticateUserDao" ref ="authenticateUserDao" />
+		<property name="serviceOrderBo" ref="serviceOrderBOTarget"/>
+ 	 	<property name="lookupBO" ref="lookupBO"/>
+	</bean>
+	
+	<bean id="newMobileGenericDao" class="com.newco.marketplace.persistence.daoImpl.mobile.NewMobileGenericDaoImpl">
+		<property name="sqlMapClient" ref ="sqlMapClient"/>
+	</bean>
+	<!-- v3.1 Business & Dao layer END -->
+</beans>

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="contact">
+	<typeAlias alias="pcontact" type="com.newco.marketplace.vo.provider.Contact"/>	
+		<select id="contact.queryP" parameterClass="pcontact" resultClass="pcontact">
+		select contact_id as contactId, 
+				last_name as lastName, 
+				first_name as firstName,
+				mi as mi,
+				suffix as suffix, 
+				title as title,
+				phone_no as phoneNo, 
+				phone_no_ext as ext,
+				fax_no as faxNo,
+				mobile_no as cellNo,
+				pager_text as pagerText,
+				email as email,
+				email_alt as altEmail,
+				honorific AS honorific,
+				CASE WHEN company_role_id IS NULL THEN 0 ELSE company_role_id END as role,
+				<!--contact_group as contactGroup,-->
+				<!--contact_method_id as contactMethodId,-->
+				created_date as createdDate,
+				modified_date as modifiedDate
+			from contact
+			<dynamic prepend="where">
+				<isNotNull prepend="AND " property="contactId">contact_id = #contactId#</isNotNull>
+			</dynamic>		
+	</select>
+	
+	<update id="contact.updateP" parameterClass="pcontact">
+		UPDATE contact
+		<dynamic prepend="SET">
+			<isNotNull prepend=", " property="lastName">last_name = #lastName#</isNotNull>
+			<isNotNull prepend=", " property="firstName">first_name = #firstName#</isNotNull>
+			<isNotNull prepend=", " property="mi">mi = #mi#</isNotNull>
+			<isNotNull prepend=", " property="suffix">suffix = #suffix#</isNotNull>
+			<isNotNull prepend=", " property="title">title = #title#</isNotNull>
+			<isNotNull prepend=", " property="phoneNo">phone_no = #phoneNo#</isNotNull>
+			<isNotNull prepend=", " property="ext">phone_no_ext = #ext#</isNotNull>
+			<isNotNull prepend=", " property="faxNo">fax_no = #faxNo#</isNotNull>
+			<isNotNull prepend=", " property="cellNo">mobile_no = #cellNo#</isNotNull>
+			<isNotNull prepend=", " property="email">email = #email#</isNotNull>
+			<isNotNull prepend=", " property="pagerText">pager_text = #pagerText#</isNotNull>
+			<isGreaterThan prepend=", " property="contactGroup" compareValue="-1">contact_group = #contactGroup#</isGreaterThan>
+			<isGreaterThan prepend=", " property="contactMethodId" compareValue="-1">contact_method_id = #contactMethodId#</isGreaterThan>
+			<isNotNull prepend=", " property="honorific">honorific = #honorific#</isNotNull>
+		</dynamic>
+		WHERE contact_id = #contactId#
+	</update>
+	
+		<insert id="contact.insertP" parameterClass="pcontact">
+		insert into contact	(last_name,
+			first_name,
+			mi,
+			suffix,
+			title,
+			company_role_id,
+			phone_no,
+			phone_no_ext,
+			fax_no,
+			mobile_no,
+			pager_text,
+			email,
+			email_alt,
+			honorific)			
+		values(#lastName#,
+			   #firstName#,
+			   #mi#,
+			   #suffix#,
+			   #title#,
+			   #role#,
+			   #phoneNo#,
+			   #ext#,
+			   #faxNo#,
+			   #cellNo#,
+			   #pagerText#,
+			   #email#,
+			   #altEmail#,
+			   #honorific#)
+        <selectKey resultClass="int">
+            SELECT last_insert_id() as contactId
+        </selectKey>    
+	</insert>
+
+        <insert id="registrationContact.insertP" parameterClass="pcontact">
+        insert into contact (last_name,
+            first_name,
+            mi,
+            suffix,
+            title,
+            phone_no,
+            phone_no_ext,
+            fax_no,
+            mobile_no,
+            pager_text,
+            email)          
+        values(#lastName#,
+               #firstName#,
+               #mi#,
+               #suffix#,
+               #title#,
+               #phoneNo#,
+               #ext#,
+               #faxNo#,
+               #cellNo#,
+               #pagerText#,
+               #email#)
+        <selectKey resultClass="int">
+            SELECT last_insert_id() as contactId
+        </selectKey>    
+    </insert>
+    
+    
+    <select id="contact.queryPvalidateEmail" parameterClass="pcontact" resultClass="pcontact">
+    		select c.contact_id as contactId, 
+    			c.last_name as lastName, 
+    			c.first_name as firstName
+		from contact c,user_profile u
+	WHERE
+		u.role_id = 1
+		AND c.contact_id = u.contact_id 
+		AND c.email = #email#
+			
+    </select>
+    
+    <select id="contact.queryPvalidateEmailId" parameterClass="pcontact" resultClass="pcontact">
+    		select c.contact_id as contactId, 
+    			c.last_name as lastName, 
+    			c.first_name as firstName,
+    			u.user_name as userName
+		from contact c,user_profile u
+		WHERE u.role_id = 1
+		AND c.contact_id = u.contact_id 
+		and c.contact_id != #contactId#
+		AND (c.email = #email# or u.user_name  = #userName# ) 
+					
+    </select>
+	
+</sqlMap>

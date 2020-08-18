@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/completeSORequest" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" 
+	targetNamespace="http://www.servicelive.com/namespaces/completeSORequest" 
+	elementFormDefault="qualified" jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+	
+	<xs:include schemaLocation="../../so/wsSecurity.xsd"/>
+	<xs:include schemaLocation="../../so/soCommon.xsd"/>
+	<!-- Root element -->
+	<xs:element name="completeSoRequest">
+		<xs:complexType>
+			<xs:sequence>
+			<xs:element name="resolutionDesc" type="xs:string"/>
+			<xs:element name="partsFinalPrice" type="xs:string"/>
+			<xs:element name="laborFinalPrice" type="xs:string"/>
+			<xs:element name="parts" type="partsType" minOccurs="0"  maxOccurs="unbounded"/>
+			<xs:element name="buyerRefs" type="buyerRefsType" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:decimal"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- ServiceOrderDoc  -->
+	<xs:complexType name="partsType">
+	<xs:sequence>
+			<xs:element name="part" type="partType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>	
+	<xs:complexType name="partType">
+		<xs:sequence>
+			<xs:element name="manufacturer" type="xs:string" minOccurs="0"/>
+			<xs:element name="partsId" type="xs:string" minOccurs="0"/>
+			<xs:element name="returnCarrier" type="xs:string" minOccurs="0"/>
+			<xs:element name="returnTrackingNumber" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="buyerRefsType">
+	<xs:sequence>
+			<xs:element name="buyerRef" type="buyerRefType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+		<xs:complexType name="buyerRefType">
+		<xs:sequence>
+			<xs:element name="referenceType" type="xs:string" minOccurs="0"/>
+			<xs:element name="referenceValue" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- Response Filter -->
+
+</xs:schema>

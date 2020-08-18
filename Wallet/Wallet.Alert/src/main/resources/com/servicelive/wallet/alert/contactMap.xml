@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="contact">
+
+	<typeAlias alias="contact" type="com.servicelive.wallet.alert.vo.ContactVO"/> 
+
+	<select id="vendorContactInfoFromVendorId.select" parameterClass="java.lang.Long" resultClass="contact">
+		select c.first_name as firstName, c.last_name as lastName,c.email as emailAddress,vr.primary_ind as primaryInd 
+		from vendor_resource vr inner join contact c on (c.contact_id=vr.contact_id)
+		where vr.primary_ind=1 and vr.vendor_id=#vendorId#
+		Union
+		Select c.first_name as firstName, c.last_name as lastName,c.email as emailAddress,0 as primaryInd 
+		from vendor_hdr vh, contact c
+		where vh.account_contact_id = c.contact_id 
+		and  vh.vendor_id = #vendorId# 
+	</select>
+  
+  	<select id="buyerContactInfoFromBuyerId.select" 
+		resultClass="contact">
+			Select c.first_name as firstName, c.last_name as lastName, c.email as emailAddress 
+			from buyer b inner join contact c on (b.contact_id = c.contact_id) 
+			where b.buyer_id = #buyerId#
+			Union
+			Select c.first_name as firstName, c.last_name as lastName, c.email as emailAddress 
+			from buyer b inner join contact c on (b.account_contact_id = c.contact_id)
+			where b.buyer_id = #buyerId#
+			
+	</select>
+	
+</sqlMap>

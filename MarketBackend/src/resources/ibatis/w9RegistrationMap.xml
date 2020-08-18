@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="w9registration">
+ 	<typeAlias alias="w9registrationVO" type="com.newco.marketplace.vo.provider.W9RegistrationVO" />
+
+	<resultMap id="w9registrationResultMap" class="w9registrationVO">
+		<result property="legalBusinessName" column="business_name" />
+		<result property="doingBusinessAsName" column="dba_name" />
+		<result property="taxStatus.id" column="tax_status_id" />
+		<result property="taxStatus.descr" column="tax_status" />
+		<result property="address.aptNo" column="apt_no" />
+		<result property="address.street1" column="street_1" />
+		<result property="address.street2" column="street_2" />
+		<result property="address.city" column="city" />
+		<result property="address.state" column="state_cd" />
+		<result property="address.zip" column="zip" />
+		<result property="address.zip4" column="zip4" />
+		<result property="version" column="version_no" />
+		<result property="ein" column="ein_no" />
+		<result property="isTaxExempt" column="tax_exempt_ind" />
+		<result property="isPenaltyIndicatiorCertified" column="cert_penalty_ind" />
+		<result property="modifiedDate" column="modified_date" />
+		<result property="createdDate" column="created_date" />
+		<result property="archivedDate" column="archived_date"  nullValue=""/>
+		<result property="vendorId" column="vendor_id" />
+		<result property="modifiedBy" column="modified_by" />
+		<result property="taxPayerTypeId" column="tax_payer_type_id" />
+		<result property="dateOfBirth" column="date_of_birth" />
+	</resultMap>
+
+ 	<select id="w9.isAvailable"  resultClass="java.lang.Boolean">
+ 		SELECT 
+ 		count(*) > 0 as isAvailable  
+ 		FROM
+ 		vendor_w9 
+ 		WHERE 
+ 		vendor_id = #vendorId# 
+ 	</select>
+ 	
+ 	 <select id="w9.isAvailableWithSSNInd"  resultClass="java.lang.Boolean">
+ 		SELECT 
+ 		count(*) > 0 as isAvailable  
+ 		FROM
+ 		vendor_w9 
+ 		WHERE 
+ 		vendor_id = #vendorId# and taxpayer_id_number_type is not null
+ 	</select>
+ 	
+ 	<select id="w9.getEinNumber" parameterClass="java.lang.Integer"  resultClass="java.lang.String">
+ 		SELECT 
+ 		ein_no
+ 		FROM
+ 		vendor_w9 
+ 		WHERE 
+ 		vendor_id = #vendorId# 
+ 	</select>
+ 	
+	<select id="w9.isAvailableForResource"  resultClass="java.lang.Boolean">
+ 		SELECT 
+ 		count(w.vendor_id) > 0 as isAvailable  
+ 		FROM
+ 		vendor_w9 w
+ 		JOIN vendor_resource r on (w.vendor_id = r.vendor_id) 
+ 		WHERE 
+ 		r.resource_id = #resourceId#
+ 	</select>
+
+	<select id="w9.getAmount" parameterClass="java.lang.Integer" resultClass="java.lang.Double">
+		SELECT ROUND(0.9*(SELECT COALESCE(SUM(sh.final_price_labor)+SUM(sh.final_price_parts),0)
+		FROM supplier_prod.so_hdr sh
+		WHERE sh.accepted_vendor_id = #vendorId#
+		AND sh.wf_state_id = 160)
+		+
+		(SELECT COALESCE(SUM(sa.retail_price*sa.qty*(1-sa.margin)),0) 
+		FROM supplier_prod.so_hdr sh, supplier_prod.so_addon sa
+		WHERE sh.so_id = sa.so_id
+		AND sh.accepted_vendor_id = #vendorId# 
+		AND sh.wf_state_id = 160
+		AND sa.sku != 99888)
+		+
+		(SELECT COALESCE(SUM(sa.retail_price*sa.qty*(1-sa.margin)),0) 
+		FROM supplier_prod.so_hdr sh , supplier_prod.so_addon sa
+		WHERE sh.so_id = sa.so_id
+		AND sh.accepted_vendor_id = #vendorId# 
+		AND sh.wf_state_id = 160
+		AND sa.sku = 99888)
+		+
+		(SELECT COALESCE(SUM(st.final_price),0) 
+		FROM supplier_prod.so_hdr sh ,supplier_prod.so_tasks st
+		WHERE sh.so_id=st.so_id
+		AND sh.accepted_vendor_id = #vendorId# 
+		AND sh.wf_state_id = 160
+		AND st.sku = 99888),2)	AS thresholdValue
+	</select>
+	
+	<select id="w9.getOrginalEin" parameterClass="java.lang.Integer" resultClass="java.lang.String">
+		SELECT ein_no FROM vendor_w9 WHERE vendor_id=#vendor_id#	
+	</select>
+	
+	<select id="w9.getThreshold" resultClass="java.lang.Double">
+		SELECT
+		threshold
+		FROM
+		pii_threshold
+		WHERE
+		role='provider'
+		AND
+		threshold_ind=1
+	</select>
+	
+	<sql id="selectW9AndBusinessType">
+		SELECT
+ 		w.vendor_id,
+ 		w.business_name,
+ 		w.apt_no,
+ 		w.street_1,
+ 		w.street_2,
+ 		w.zip,
+ 		w.zip4,
+ 		w.city,
+ 		w.state_cd,
+ 		w.cert_penalty_ind,
+ 		w.tax_exempt_ind,
+ 		w.created_date,
+ 		w.modified_date,
+ 		w.modified_date as archived_date,
+ 		w.modified_by,tax_status_id,
+ 		w.ein_no,
+ 		w.dba_name,
+ 		w.version_no,
+ 		w.date_of_birth,
+ 		coalesce(w.taxpayer_id_number_type,0) as tax_payer_type_id,
+ 		l.descr as tax_payer_type_descr,
+ 		l.descr as tax_status
+		FROM
+		vendor_w9 w
+		JOIN lu_business_type l on (l.id = w.tax_status_id)
+	</sql>
+	
+	
+	<sql id="selectW9HistoryAndBusinessType">
+		SELECT
+ 		w.vendor_id,
+ 		w.business_name,
+ 		w.apt_no,
+ 		w.street_1,
+ 		w.street_2,
+ 		w.zip,
+ 		w.zip4,
+ 		w.city,
+ 		w.state_cd,
+ 		w.cert_penalty_ind,
+ 		w.tax_exempt_ind,
+ 		w.created_date,
+ 		w.modified_date,
+ 		w.modified_date as archived_date,
+ 		w.modified_by,tax_status_id,
+ 		w.ein_no,
+ 		w.dba_name,
+ 		w.version_no,
+ 		w.date_of_birth,
+ 		coalesce(w.taxpayer_id_number_type,0) as tax_payer_type_id,
+ 		l.descr as tax_payer_type_descr,
+ 		l.descr as tax_status
+		FROM
+		vendor_w9_history w
+		JOIN lu_business_type l on (l.id = w.tax_status_id)
+	</sql>
+
+ 	<select id="w9.get"  resultClass="w9registrationVO"  resultMap="w9registrationResultMap">
+		<include refid="selectW9AndBusinessType"/>
+		WHERE 
+		w.vendor_id = #vendorId#
+ 	</select>
+
+ 	<select id="w9.getAll"  resultClass="w9registrationVO"  resultMap="w9registrationResultMap">
+ 		<include refid="selectW9AndBusinessType"/>
+ 	</select>
+
+ 	<select id="w9.getHistory"  resultClass="w9registrationVO"  resultMap="w9registrationResultMap">
+		<include refid="selectW9HistoryAndBusinessType"/>
+		WHERE
+		w.vendor_id = #vendorId#
+		ORDER BY modified_date DESC
+	</select>
+
+ 	<select id="w9.getForResource"  resultClass="w9registrationVO"  resultMap="w9registrationResultMap">
+ 		<include refid="selectW9AndBusinessType"/> 
+		JOIN vendor_resource r on (w.vendor_id  = r.vendor_id and resource_id = #resourceId#) 
+ 	</select>
+
+	<sql id="selectW9Prefill">
+		SELECT
+ 		v.vendor_id,
+ 		v.business_name as business_name,
+ 		loc.apt_no,
+ 		loc.street_1,
+ 		loc.street_2,
+ 		loc.zip,
+ 		loc.zip4,
+ 		loc.city,
+ 		loc.state_cd,
+ 		0 as cert_penalty_ind,
+ 		0 as tax_exempt_ind,
+ 		v.created_date,
+		v.modified_date,
+		v.modified_date as archived_date,
+		v.modified_by,
+		v.business_type_id as tax_status_id,
+		v.ein_no,
+		v.dba_name as dba_name,
+		0 as version_no,
+		v.date_of_birth,
+		coalesce(null,0) as tax_payer_type_id,
+		l.descr as tax_status
+		FROM
+		vendor_hdr v
+		JOIN vendor_location vloc on (vloc.vendor_id = v.vendor_id)
+		JOIN location loc on (loc.locn_id = vloc.locn_id and loc.locn_type_id = 1)
+		LEFT OUTER JOIN lu_business_type l on (l.id = v.business_type_id)
+	</sql>
+
+ 	<select id="w9.getPrefillForResource"  resultClass="w9registrationVO"  resultMap="w9registrationResultMap">
+		<include refid="selectW9Prefill"/> 
+		WHERE 
+		v.vendor_id = (select distinct vendor_id from vendor_resource where resource_id =  #resourceId#)
+ 	</select>
+
+ 	<select id="w9.getPrefill"  resultClass="w9registrationVO"  resultMap="w9registrationResultMap">
+ 		<include refid="selectW9Prefill"/>
+		WHERE 
+		v.vendor_id = #vendorId#
+ 	</select>
+ 	
+ 	<select id="w9.isDobNotAvailableWithSSN"  resultClass="java.lang.Boolean">
+ 		SELECT 
+ 		COUNT(*) > 0 AS isAvailable  
+ 		FROM
+ 		vendor_w9 
+ 		WHERE 
+ 		vendor_id = #vendorId# AND taxpayer_id_number_type = 2 AND date_of_birth IS  NULL
+ 	</select>
+ 	
+
+ 	<insert id="w9.insert" parameterClass="w9registrationVO" >
+ 		INSERT INTO vendor_w9 (
+ 		vendor_id,
+ 		business_name, 
+ 		street_1, 
+ 		street_2, 
+ 		zip, 
+ 		zip4, 
+ 		city, 
+ 		state_cd,
+ 		apt_no,
+ 		tax_exempt_ind,
+		cert_penalty_ind,
+		modified_by,
+		ein_no,
+		dba_name,
+		version_no,
+		tax_status_id,
+		taxpayer_id_number_type,
+		 created_date,
+  		modified_date,
+  		date_of_birth
+		) VALUES (
+		#vendorId#,
+		#legalBusinessName#,
+		#address.street1#,
+		#address.street2#,
+		#address.zip#,
+		#address.zip4#,
+		#address.city#,
+		#address.state#,
+		#address.aptNo#,
+		#isTaxExempt#,
+		#isPenaltyIndicatiorCertified#,
+		#modifiedBy#,
+		#ein#,
+		#doingBusinessAsName#,
+		#version#,
+		#taxStatus.id#,
+		#taxPayerTypeId#,
+		#createdDate#,
+		#modifiedDate#,
+		#dateOfBirth#
+		)
+ 	</insert>
+
+ 	<update id="w9.update" parameterClass="w9registrationVO">
+ 		UPDATE vendor_w9
+ 		<dynamic prepend="SET">
+			<isNotNull prepend=", " property="legalBusinessName">
+				business_name = #legalBusinessName#
+			</isNotNull>
+			<isNotNull prepend=", " property="address.street1">
+				street_1 = #address.street1#
+			</isNotNull>
+			<isNotNull prepend=", " property="address.street2">
+				street_2 = #address.street2#
+			</isNotNull>
+			<isNotNull prepend=", " property="address.zip">
+				zip = #address.zip#
+			</isNotNull>
+			<isNotNull prepend=", " property="address.zip4">
+				zip4 = #address.zip4#
+			</isNotNull>
+			<isNotNull prepend=", " property="address.city">
+				city = #address.city#
+			</isNotNull>
+			<isNotNull prepend=", " property="address.state">
+				state_cd = #address.state#
+			</isNotNull>
+			<isNotNull prepend=", " property="address.aptNo">
+				apt_no = #address.aptNo#
+			</isNotNull>
+			<isNotNull prepend=", " property="isTaxExempt">
+				tax_exempt_ind = #isTaxExempt#
+			</isNotNull>
+			<isNotNull prepend=", " property="isPenaltyIndicatiorCertified">
+				cert_penalty_ind = #isPenaltyIndicatiorCertified#
+			</isNotNull>
+			<isNotNull prepend=", " property="modifiedBy">
+				modified_by = #modifiedBy#
+			</isNotNull>
+			<isNotNull prepend=", " property="ein">
+				ein_no = #ein#
+			</isNotNull>
+			<isNotNull prepend=", " property="doingBusinessAsName">
+				dba_name = #doingBusinessAsName#
+			</isNotNull>
+			<isNotNull prepend=", " property="version">
+				version_no = #version#
+			</isNotNull>
+			<isNotNull prepend=", " property="taxStatus.id">
+				tax_status_id = #taxStatus.id#
+			</isNotNull>
+			<isNotNull prepend=", " property="taxPayerTypeId">
+				taxpayer_id_number_type = #taxPayerTypeId#
+			</isNotNull>
+			<isNotNull prepend=", " property="modifiedDate">
+				modified_date = #modifiedDate#
+			</isNotNull>
+				,date_of_birth = #dateOfBirth#
+		</dynamic>
+		WHERE 
+		vendor_id = #vendorId#
+ 	</update>
+
+		
+</sqlMap>

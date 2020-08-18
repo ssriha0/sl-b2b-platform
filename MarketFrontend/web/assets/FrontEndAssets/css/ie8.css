@@ -1,0 +1,100 @@
+/* IE8 Specific Styles
+====================================================================== */
+
+/* Global
+// ------------------------------------------------------------------- */
+
+.ie8 body {
+	font-size: 16px;
+}
+
+
+/* Leads Dashboard
+// ------------------------------------------------------------------- */
+
+/* Filter Tabs
+// ================================ */
+.ie8 .filter-wrap .btn-group-justified .btn { 
+	width: 25%;
+}
+
+.ie8 .filter .btn {
+	padding-left:  30px;
+	padding-right: 30px;
+}
+
+/* Urgency Flags 
+// ================================ */
+.ie8 #leads-list li.list-group-item,
+.ie8 .content header.details-hero {
+	overflow: visible;
+}
+.ie8 .urgency {
+    top: 5px;
+    right: -5px;
+	font-size: 11px;
+	padding: 2px 20px 2px 15px;
+}
+.ie8 .content header.details-hero .urgency {
+    bottom: 15px;
+    right: -5px;
+	padding: 2px 20px 2px 15px;
+	height: auto;
+}
+.ie8 .urgency:after {
+    border-style: solid;
+    content: "";
+    display: block;
+    position: absolute;
+    border-color: #541004 transparent transparent #541004;
+    border-width: 3px;
+    bottom: -4px;
+    right: 0;
+}
+
+/* 'View Full Details' Button 
+// ================================ */
+.ie8 #leads-list li.list-group-item .col-md-2 .btn {
+	margin: auto;
+	position: absolute;
+	top: 0; 
+	bottom: 0; 
+	right: 15px;
+	height: 35px;
+}
+
+
+/* Leads Details
+// ------------------------------------------------------------------- */
+
+/* CTA Buttons
+// ================================ */
+.ie8 .btn-group-justified {
+	display: block;
+}
+.ie8 .btn-group-justified .btn {
+	width: 50%;
+	float:left;
+	display: block;
+}
+.ie8 .btn-group-justified .full {
+	width: 100%;
+}
+
+/* Media Objects-"Assigned Provider" img
+// ================================ */
+.ie8 .media a.pull-left {
+	width: 75px;
+}
+
+
+/* Attachments 
+// ================================ */
+
+.ie8 #fileSelect {
+    padding: 7px;
+    width: 50%;
+    background-color: #fff;
+    border-style: solid;
+}
+

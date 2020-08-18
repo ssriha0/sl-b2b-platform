@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/surveyRequest" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" targetNamespace="http://www.servicelive.com/namespaces/surveyRequest" elementFormDefault="qualified" jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+  <xs:element name="surveyRequest">
+    <xs:complexType>
+      <xs:sequence>
+		<xs:element name="key" type="xs:string" minOccurs="1"/>
+    	<xs:choice>
+        	<xs:sequence>
+	            <xs:element ref="CSAT" />
+	            <xs:element ref="NPS" minOccurs="0"/>
+	        </xs:sequence>
+	        <xs:element ref="NPS" />
+	    </xs:choice>
+        <xs:element name="agreed" type="xs:boolean" minOccurs="0"/>
+        <xs:element name="completed" type="xs:boolean" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="version" type="xs:decimal"/>
+    </xs:complexType>
+  </xs:element>
+	<xs:element name="CSAT">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="rating" type="CSATRatingType" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="options" type="optionList" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="comments" type="LimitedString" minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element> 
+	<xs:element name="NPS">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="rating" type="NPSRatingType" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="comments" type="LimitedString" minOccurs="0" maxOccurs="1"/>				
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="optionList">
+		<xs:sequence>
+		 	<xs:element name="optionID" type="xs:integer" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:simpleType name="CSATRatingType">
+      <xs:restriction base="xs:double">
+         <xs:minInclusive value="1"/>
+         <xs:maxInclusive value="5"/>
+      </xs:restriction>
+   </xs:simpleType>
+   <xs:simpleType name="NPSRatingType">
+      <xs:restriction base="xs:integer">
+         <xs:minInclusive value="0"/>
+         <xs:maxInclusive value="10"/>
+      </xs:restriction>
+   </xs:simpleType>
+   <xs:simpleType name="LimitedString">
+    <xs:restriction base="xs:string">
+      <xs:maxLength value="255" />
+    </xs:restriction>
+  </xs:simpleType>
+
+</xs:schema>

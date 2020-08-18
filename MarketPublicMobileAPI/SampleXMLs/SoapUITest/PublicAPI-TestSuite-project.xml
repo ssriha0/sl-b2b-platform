@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project name="PublicAPI-TestSuite-Trunk" resourceRoot="" soapui-version="2.5.1" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="ProjectSettings@projectRoot">C:\Projects\docs</con:setting><con:setting id="com.eviware.soapui.impl.wsdl.actions.iface.tools.soapui.TestRunnerAction@values-local"><![CDATA[<xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  <con:entry key="TestRunner Path" value=""/>
+  <con:entry key="Domain" value=""/>
+  <con:entry key="WSS Password Type" value=""/>
+  <con:entry key="Tool Args" value=""/>
+  <con:entry key="Host:Port" value=""/>
+  <con:entry key="Add Settings" value="false"/>
+  <con:entry key="Save Project" value="false"/>
+  <con:entry key="Root Folder" value=""/>
+  <con:entry key="Coverage Report" value="false"/>
+  <con:entry key="Export All" value="false"/>
+  <con:entry key="Enable UI" value="false"/>
+  <con:entry key="TestSuite" value="TestSuite-1"/>
+  <con:entry key="Password" value=""/>
+  <con:entry key="TestCase" value="&lt;all>"/>
+  <con:entry key="Endpoint" value=""/>
+  <con:entry key="Export JUnit Results" value="false"/>
+  <con:entry key="Print Report" value="false"/>
+  <con:entry key="Open Report" value="false"/>
+  <con:entry key="Username" value=""/>
+</xml-fragment>]]></con:setting></con:settings><con:interface xsi:type="con:RestService" name="PublicAPI" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints><con:endpoint>http://172.22.16.85:8080</con:endpoint></con:endpoints><con:resource name="Test" path="/public/buyer/account"><con:settings/><con:parameters/><con:request name="Test" method="POST" mediaType="text/xml" accept=""><con:settings/><con:endpoint>http://172.22.16.84:8080</con:endpoint><con:request><![CDATA[<addFundsToWalletRequest accountType="Bank">
+<fundingSourceail>11111111</fundingSourceail>
+<amount>100.00</amount>
+<field1>X1</field1>
+<field2>X2</field2>
+</addFundsToWalletRequest>]]></con:request><con:parameters/><con:representation type="RESPONSE"><con:mediaType>*/*</con:mediaType><con:status>200</con:status><con:params/></con:representation><con:representation type="REQUEST"><con:mediaType>text/xml</con:mediaType><con:params/></con:representation></con:request></con:resource><con:resource name="AddFundsToWalletBank" path="/public/buyers/500254/wallet/funds/1948363488"><con:settings/><con:parameters/><con:request name="AddFundsToWallet-Bank" method="PUT" mediaType="text/xml" accept=""><con:settings/><con:endpoint>http://172.22.16.85:8080</con:endpoint><con:request><![CDATA[<addFundsToWalletRequest accountType="Bank">
+   <identification>
+      <resourceId>3075</resourceId>
+   </identification>
+   <amount>1999.00</amount>
+   <cvv>111</cvv>
+</addFundsToWalletRequest>]]></con:request><con:parameters/><con:representation type="RESPONSE"><con:mediaType>*/*</con:mediaType><con:status>200</con:status><con:params/></con:representation><con:representation type="REQUEST"><con:mediaType>text/xml</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/xml</con:mediaType><con:status>500</con:status><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/html</con:mediaType><con:status>403</con:status><con:params/></con:representation></con:request></con:resource><con:resource name="GeWalletHistory" path="/public/buyers/500254/wallet/history?startDate=07272008&amp;endDate=11052009"><con:settings/><con:parameters/><con:request name="GeWalletHistory" method="GET" accept=""><con:settings/><con:endpoint>http://localhost</con:endpoint><con:request/><con:parameters/><con:representation type="FAULT"><con:mediaType>text/xml</con:mediaType><con:status>500</con:status><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>*/*</con:mediaType><con:status>200</con:status><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/html</con:mediaType><con:status>404</con:status><con:params/></con:representation></con:request></con:resource><con:resource name="GetBalance" path="/public/buyers/500254/wallet/balance"><con:settings/><con:parameters/><con:request name="GetBalance" method="GET" accept=""><con:settings/><con:endpoint>http://172.22.16.65:8080</con:endpoint><con:request/><con:parameters/><con:representation type="FAULT"><con:mediaType>text/xml</con:mediaType><con:status>500</con:status><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/html</con:mediaType><con:status>500 404</con:status><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>*/*</con:mediaType><con:status>200</con:status><con:params/></con:representation></con:request></con:resource><con:resource name="GetFundingSources" path="/public/buyer/1/fundingsources"><con:settings/><con:parameters><con:parameter><con:name>buyerId</con:name><con:style>QUERY</con:style></con:parameter></con:parameters><con:request name="GetFundingSourcesSingleAccounts" method="GET" accept=""><con:settings/><con:endpoint>http://localhost</con:endpoint><con:request><![CDATA[<?xml version="1.0" encoding="UTF-8"?>  
+<createfundingSourceRequest version="1.0" xsi:schemaLocation="http://www.servicelive.com/namespaces/createFundingSourceRequest createFundingSourceRequest.xsd" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  	<accountSourceType>
+		<accountHolderName>Test1</accountHolderName>
+		<cardType>100440717</cardType>
+		<cardNumber>100440717</cardNumber>
+		<expiryMonth>02</expiryMonth>
+		<expiryYear>03</expiryYear>
+		<billingAddress1>100 test ave</billingAddress1>
+		<billingAddress2>110</billingAddress2>
+		<city>redwood</city>
+		<state>CA</state>
+		<zip>97686</zip>
+		<bankName>BOA</bankName>
+		<accountNumber>2334166266182</accountNumber>
+		<routingNumber>6773662772677</routingNumber>
+		<accountType>checking</accountType>
+		<typeOfSource>Bank</typeOfSource>
+	</accountSourceType>
+</createfundingSourceRequest>
+
+]]></con:request><con:parameters/><con:representation type="RESPONSE"><con:mediaType>*/*</con:mediaType><con:status>200</con:status><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/xml</con:mediaType><con:status>500</con:status><con:params/></con:representation></con:request><con:request name="GetFundingSource-Bank" method="GET" accept=""><con:settings/><con:endpoint>http://localhost</con:endpoint><con:request/><con:parameters><con:parameter><con:name>buyerId</con:name><con:style>QUERY</con:style></con:parameter></con:parameters><con:representation type="RESPONSE"><con:mediaType>*/*</con:mediaType><con:status>200</con:status><con:params/></con:representation></con:request><con:request name="GetFundingSourceMultiAccounts" method="GET"><con:settings/><con:endpoint>http://localhost</con:endpoint><con:request/><con:parameters><con:parameter><con:name>buyerId</con:name><con:style>QUERY</con:style></con:parameter></con:parameters></con:request></con:resource><con:resource name="CreateFundingSource" path="/public/buyer/2/wallet/fundingsources"><con:settings/><con:parameters/><con:request name="CreateFundingSource-Bank" method="POST" mediaType="text/xml" accept=""><con:settings/><con:endpoint>http://localhost</con:endpoint><con:request><![CDATA[<createfundingSourceRequest>
+   <typeOfSource>Bank</typeOfSource>
+   <accountSourceType>
+      <bankName>BOA</bankName>
+      <accountNumber>1948363488</accountNumber>
+      <routingNumber>1948363488</routingNumber>
+      <accountTypeId>10</accountTypeId>
+      <accountDescription>Test</accountDescription>
+   </accountSourceType>
+</createfundingSourceRequest>]]></con:request><con:parameters/><con:representation type="FAULT"><con:mediaType>text/xml</con:mediaType><con:status>500</con:status><con:params/></con:representation><con:representation type="REQUEST"><con:mediaType>text/xml</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>*/*</con:mediaType><con:status>200</con:status><con:params/></con:representation></con:request><con:request name="CreateFundingSource-CC" method="POST" mediaType="text/xml" accept=""><con:settings/><con:endpoint>http://localhost</con:endpoint><con:request><![CDATA[<createfundingSourceRequest>
+   <typeOfSource>CreditCard</typeOfSource>
+   <accountSourceType>
+      <accountHolderName>Test1</accountHolderName>
+      <cardType>1</cardType>
+      <cardNumber>1948363488</cardNumber>
+      <expirationDate>09022010</expirationDate>
+      <billingAddress1>564 Fairoaks Ave</billingAddress1>
+      <billingAddress2>234</billingAddress2>
+      <city>Sunnyvale</city>
+      <state>CA</state>
+      <zip>94086</zip>
+      <accountTypeId>30</accountTypeId>
+   </accountSourceType>
+</createfundingSourceRequest>]]></con:request><con:parameters/><con:representation type="FAULT"><con:mediaType>text/xml</con:mediaType><con:status>500</con:status><con:params/></con:representation><con:representation type="REQUEST"><con:mediaType>text/xml</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>*/*</con:mediaType><con:status>200</con:status><con:params/></con:representation></con:request></con:resource><con:resource name="AddFundsToWalletCC" path="/public/buyers/500254/wallet/funds/1798563349"><con:settings/><con:parameters/><con:request name="AddBankFundsToWallet-CC" method="PUT" mediaType="text/xml" accept=""><con:settings/><con:endpoint>http://172.22.16.65:8080</con:endpoint><con:request><![CDATA[<addFundsToWalletRequest accountType="CreditCard">
+   <identification>
+      <resourceId>3075</resourceId>
+   </identification>
+   <amount>1999.00</amount>
+   <cvv>111</cvv>
+</addFundsToWalletRequest>]]></con:request><con:parameters/><con:representation type="RESPONSE"><con:mediaType>*/*</con:mediaType><con:status>200</con:status><con:params/></con:representation><con:representation type="REQUEST"><con:mediaType>text/xml</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/xml</con:mediaType><con:status>500</con:status><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/html</con:mediaType><con:status>403</con:status><con:params/></con:representation></con:request></con:resource><con:resource name="CreateBuyerAccount" path="/public/buyers"><con:settings/><con:parameters/><con:request name="CreateBuyerAccount" method="POST" mediaType="text/xml"><con:settings/><con:endpoint>http://172.22.16.18</con:endpoint><con:request><![CDATA[<createBuyerAccountRequest>
+   <userName>testUser58</userName>
+   <email>test@test.com</email>
+   <buyerType>5</buyerType>
+   <firstName>Test test 12</firstName>
+   <lastName>test test</lastName>
+   <isHomeAddress>0</isHomeAddress>
+   <addressLabel>home</addressLabel>
+   <address1>Test address1</address1>
+   <address2>Test address2</address2>
+   <city>test city</city>
+   <stateCode>CA</stateCode>
+   <zip>94065</zip>
+   <primaryPhone>8008888888</primaryPhone>
+   <alternatePhone>9009999999</alternatePhone>
+   <sendSpecialOffer>0</sendSpecialOffer>
+</createBuyerAccountRequest>]]></con:request><con:parameters/><con:representation type="REQUEST"><con:mediaType>text/xml</con:mediaType><con:params/></con:representation></con:request></con:resource><con:resource name="ModifyBuyerAccount" path="/public/buyers/100/buyerresources/4040"><con:settings/><con:parameters/><con:request name="ModifyBuyerAccount" method="PUT" mediaType="text/xml"><con:settings/><con:endpoint>http://172.22.16.18</con:endpoint><con:request><![CDATA[<modifyBuyerAccountRequest>
+   <email>chandra@test.com</email>
+   <firstName>Chandra</firstName>
+   <lastName>Nirkhe</lastName>
+   <address1>900 island dr</address1>
+   <address2>suite 180</address2>
+   <city>Redwood City</city>
+   <stateCode>CA</stateCode>
+   <zip>94065</zip>
+   <primaryPhone>8008888105</primaryPhone>
+   <alternatePhone>9009999106</alternatePhone>
+</modifyBuyerAccountRequest>]]></con:request><con:parameters/></con:request></con:resource><con:resource name="getProviderByZipCode" path="/public/providers/zip?zip=95050&amp;maxdistance=100&amp;PageSize=20&amp;pageNumber=1&amp;resultMode=medium&amp;sortby=rating&amp;sortorder=distance"><con:settings/><con:parameters/><con:request name="getProviderByZipCode" method="GET" accept=""><con:settings/><con:endpoint>http://localhost</con:endpoint><con:request/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>*/*</con:mediaType><con:status>200</con:status><con:params/></con:representation></con:request></con:resource><con:resource name="AddProviderReview" path="/public/buyerresources/1/reviews"><con:settings/><con:parameters/><con:request name="AddProviderReview" method="POST" mediaType="text/xml" accept=""><con:settings/><con:endpoint>http://172.22.16.85:8080</con:endpoint><con:request><![CDATA[<addProviderReviewRequest>
+   <soId>554-1002-6160-13</soId>
+   <timeliness>2</timeliness>
+   <communication>2</communication>
+   <professionalism>3</professionalism>
+   <quality>3</quality>
+   <value>4</value>
+   <cleanliness>2</cleanliness>
+   <comment>TEST-REVIEW</comment>
+</addProviderReviewRequest>]]></con:request><con:parameters/><con:representation type="REQUEST"><con:mediaType>text/xml</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>*/*</con:mediaType><con:status>200</con:status><con:params/></con:representation></con:request></con:resource><con:resource name="ReportProblem" path="/public/buyers/999/buyerResourceId/1929/serviceorders/551-2980-8427-10/reportProblem"><con:settings/><con:parameters/><con:request name="ReportProblem" method="PUT" mediaType="text/xml"><con:settings/><con:endpoint>http://172.22.16.85:8080</con:endpoint><con:request><![CDATA[<reportProblemRequest>
+   <problemCode>10</problemCode>
+   <problemDescription>Priti testing</problemDescription>
+</reportProblemRequest>]]></con:request><con:parameters/></con:request></con:resource></con:interface><con:testSuite name="TestSuite-1"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="TestCase-1" searchProperties="true" id="4a7574b2-2862-4aae-b9ba-daf32259cd3b"><con:settings/><con:testStep type="restrequest" name="GetBalance - GetBalance"><con:settings/><con:config service="PublicAPI" resourcePath="/public/buyers/500254/wallet/balance" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="GetBalance - GetBalance" method="GET" accept=""><con:settings/><con:endpoint>http://172.22.16.65:8080</con:endpoint><con:request/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>*/*</con:mediaType><con:status>200</con:status><con:params/></con:representation></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="AddFundsToWalletCC - AddBankFundsToWallet-CC"><con:settings/><con:config service="PublicAPI" resourcePath="/public/buyers/500254/wallet/funds/1798563349" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="AddFundsToWalletCC - AddBankFundsToWallet-CC" method="PUT" mediaType="text/xml" accept=""><con:settings/><con:endpoint>http://172.22.16.65:8080</con:endpoint><con:request><![CDATA[<addFundsToWalletRequest accountType="CreditCard">
+   <identification>
+      <resourceId>3075</resourceId>
+   </identification>
+   <amount>1999.00</amount>
+   <cvv>111</cvv>
+</addFundsToWalletRequest>]]></con:request><con:parameters/><con:representation type="RESPONSE"><con:mediaType>*/*</con:mediaType><con:status>200</con:status><con:params/></con:representation><con:representation type="REQUEST"><con:mediaType>text/xml</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/xml</con:mediaType><con:status>500</con:status><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/html</con:mediaType><con:status>403</con:status><con:params/></con:representation></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="AddFundsToWalletBank - AddFundsToWallet-Bank"><con:settings/><con:config service="PublicAPI" resourcePath="/public/buyers/500254/wallet/funds/1948363488" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="AddFundsToWalletBank - AddFundsToWallet-Bank" method="PUT" mediaType="text/xml" accept=""><con:settings/><con:endpoint>http://172.22.16.65:8080</con:endpoint><con:request><![CDATA[<addFundsToWalletRequest accountType="Bank">
+   <identification>
+      <resourceId>3075</resourceId>
+   </identification>
+   <amount>1999.00</amount>
+   <cvv>111</cvv>
+</addFundsToWalletRequest>]]></con:request><con:parameters/><con:representation type="RESPONSE"><con:mediaType>*/*</con:mediaType><con:status>200</con:status><con:params/></con:representation><con:representation type="REQUEST"><con:mediaType>text/xml</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/xml</con:mediaType><con:status>500</con:status><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/html</con:mediaType><con:status>403</con:status><con:params/></con:representation></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="GetBalance - After Add - GetBalance"><con:settings/><con:config service="PublicAPI" resourcePath="/public/buyers/500254/wallet/balance" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="GetBalance - After Add - GetBalance" method="GET"><con:settings/><con:endpoint>http://172.22.16.65:8080</con:endpoint><con:request/><con:parameters/><con:representation type="FAULT"><con:mediaType>text/html</con:mediaType><con:status>404</con:status><con:params/></con:representation></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="GeWalletHistory - GeWalletHistory"><con:settings/><con:config service="PublicAPI" resourcePath="/public/buyers/500254/wallet/history?startDate=07272008&amp;endDate=11052009" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="GeWalletHistory - GeWalletHistory" method="GET"><con:settings/><con:endpoint>http://172.22.16.65:8080</con:endpoint><con:request/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="CreateBuyerAccount - CreateBuyerAccount"><con:settings/><con:config service="PublicAPI" resourcePath="/public/buyers" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="CreateBuyerAccount - CreateBuyerAccount" method="POST" mediaType="text/xml"><con:settings/><con:endpoint>http://172.22.16.18</con:endpoint><con:request><![CDATA[<createBuyerAccountRequest>
+   <userName>testUser41</userName>
+   <email>test@test.com</email>
+   <buyerType>5</buyerType>
+   <firstName>Test test 12</firstName>
+   <lastName>test test</lastName>
+   <isHomeAddress>0</isHomeAddress>
+   <addressLabel>home</addressLabel>
+   <address1>Test address1</address1>
+   <address2>Test address2</address2>
+   <city>test city</city>
+   <stateCode>CA</stateCode>
+   <zip>94065</zip>
+   <primaryPhone>8008888888</primaryPhone>
+   <alternatePhone>9009999999</alternatePhone>
+   <sendSpecialOffer>0</sendSpecialOffer>
+</createBuyerAccountRequest>]]></con:request><con:parameters/><con:representation type="REQUEST"><con:mediaType>text/xml</con:mediaType><con:params/></con:representation></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="ModifyBuyerAccount - ModifyBuyerAccount"><con:settings/><con:config service="PublicAPI" resourcePath="/public/buyers/100/buyerresources/4040" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="ModifyBuyerAccount - ModifyBuyerAccount" method="PUT" mediaType="text/xml"><con:settings/><con:endpoint>http://172.22.16.18</con:endpoint><con:request><![CDATA[<modifyBuyerAccountRequest>
+   <email>chandra@test.com</email>
+   <firstName>Chandra</firstName>
+   <lastName>Nirkhe</lastName>
+   <address1>900 island dr</address1>
+   <address2>suite 180</address2>
+   <city>Redwood City</city>
+   <stateCode>CA</stateCode>
+   <zip>94065</zip>
+   <primaryPhone>8008888105</primaryPhone>
+   <alternatePhone>9009999106</alternatePhone>
+</modifyBuyerAccountRequest>]]></con:request><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="getProviderByZipCode - getProviderByZipCode"><con:settings/><con:config service="PublicAPI" resourcePath="/public/providers/zip?zip=95050&amp;maxdistance=100&amp;PageSize=20&amp;pageNumber=1&amp;resultMode=medium&amp;sortby=rating&amp;sortorder=distance" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="getProviderByZipCode - getProviderByZipCode" method="GET" accept=""><con:settings/><con:endpoint>http://localhost</con:endpoint><con:request/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>*/*</con:mediaType><con:status>200</con:status><con:params/></con:representation></con:restRequest></con:config></con:testStep><con:properties/></con:testCase><con:properties/></con:testSuite><con:properties/><con:wssContainer/></con:soapui-project>

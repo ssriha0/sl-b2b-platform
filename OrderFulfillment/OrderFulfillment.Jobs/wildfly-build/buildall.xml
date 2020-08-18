@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="../" default="compile-dependencies" name="Orderfulfillment.Jobs-Buildall" >
+	<target name="compile-dependencies" >
+<!-- depending on OrderFulfillment.Service to run first 
+		<ant antfile="../../Wallet/ServiceLive.Common/build/build.xml" dir="../../Wallet/ServiceLive.Common" target="clean"/>
+		<ant antfile="../../Wallet/Wallet.ServiceInterface/build/build.xml" dir="../../Wallet/Wallet.ServiceInterface" target="clean"/>
+		<ant antfile="../../Wallet/Wallet.RemoteClient/build/build.xml" dir="../../Wallet/Wallet.RemoteClient" target="clean"/>
+		<ant antfile="../OrderFulfillment.Domain/build/build.xml" dir="../../OrderFulfillment/OrderFulfillment.Domain" target="clean"/>
+		<ant antfile="../OrderFulfillment.ServiceInterface/build/build.xml" dir="../../OrderFulfillment/OrderFulfillment.ServiceInterface" target="clean"/>
+		<ant antfile="../OrderFulfillment.ServiceOrder/build/build.xml" dir="../../OrderFulfillment/OrderFulfillment.ServiceOrder" target="clean"/>		
+        <ant antfile="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.Common/build/build.xml" dir="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.Common" target="clean"/>
+        <ant antfile="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.Client/build/build.xml" dir="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.Client" target="clean"/>
+        <ant antfile="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.BusinessInterface/build/build.xml" dir="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.BusinessInterface" target="clean"/>
+        <ant antfile="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.Domain/build/build.xml" dir="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.Domain" target="clean"/>
+-->
+        <ant antfile="../OrderFulfillment.Integration/wildfly-build/build.xml" dir="../../OrderFulfillment/OrderFulfillment.Integration" target="clean"/>
+		<ant antfile="../OrderFulfillment.Jobs/wildfly-build/build.xml" dir="../../OrderFulfillment/OrderFulfillment.Jobs" target="clean"/>
+
+<!-- depending on OrderFulfillment.Service to run first 
+		<ant antfile="../../Wallet/ServiceLive.Common/build/build.xml" dir="../../Wallet/ServiceLive.Common"/>
+		<ant antfile="../../Wallet/Wallet.ServiceInterface/build/build.xml" dir="../../Wallet/Wallet.ServiceInterface"/>
+		<ant antfile="../../Wallet/Wallet.RemoteClient/build/build.xml" dir="../../Wallet/Wallet.RemoteClient"/>
+		<ant antfile="../OrderFulfillment.Domain/build/build.xml" dir="../../OrderFulfillment/OrderFulfillment.Domain"/>
+		<ant antfile="../OrderFulfillment.ServiceInterface/build/build.xml" dir="../../OrderFulfillment/OrderFulfillment.ServiceInterface"/>
+        <ant antfile="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.Common/build/build.xml" dir="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.Common"/>
+        <ant antfile="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.Client/build/build.xml" dir="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.Client"/>
+        <ant antfile="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.BusinessInterface/build/build.xml" dir="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.BusinessInterface"/>
+        <ant antfile="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.Domain/build/build.xml" dir="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.Domain"/>
+		<ant antfile="../OrderFulfillment.ServiceOrder/build/build.xml" dir="../../OrderFulfillment/OrderFulfillment.ServiceOrder"/>		
+-->
+        <ant antfile="../OrderFulfillment.Integration/wildfly-build/build.xml" dir="../../OrderFulfillment/OrderFulfillment.Integration"/>
+		<ant antfile="../OrderFulfillment.Jobs/wildfly-build/build.xml" dir="../../OrderFulfillment/OrderFulfillment.Jobs"/>
+	</target>
+</project>
+	

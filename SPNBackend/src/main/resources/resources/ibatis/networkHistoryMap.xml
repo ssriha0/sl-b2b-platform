@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="network.history">
+	<typeAlias alias="networkHistoryVO" type="com.servicelive.spn.common.detached.NetworkHistoryVO"/>
+
+	<select id="getListOfNetworkHistory"  resultClass="networkHistoryVO" parameterClass="java.lang.Integer">
+		SELECT 
+		swfsh.entity_id AS spnId, 
+		sh.spn_name AS spnName,
+		swfsh.created_date AS createdDate, 
+		swfsh.modified_date AS modifiedDate,
+		swfsh.modified_by AS modifiedBy,
+		swfsh.wf_entity_state AS STATUS,
+		lswfs.descr AS statusDescription,
+		swfsh.comments AS comments,
+		swfsh.archive_date AS archiveDate,
+		co.first_name AS firstName,
+		co.mi AS middleName,
+		co.last_name AS lastName,
+		br.resource_id AS buyerResourceId,
+        swfsh.effective_date AS effectiveDate
+		FROM 
+		spnet_workflow_status_history swfsh JOIN 
+		lu_spnet_workflow_state lswfs ON swfsh.wf_entity_id = 'NETWORK'
+		AND lswfs.id = swfsh.wf_entity_state
+		JOIN spnet_hdr sh ON sh.spn_id = swfsh.entity_id
+		LEFT OUTER JOIN buyer_resource br ON swfsh.modified_by = br.user_name
+		LEFT OUTER JOIN user_profile up ON swfsh.modified_by = up.user_name
+		JOIN
+		contact co ON br.contact_id = co.contact_id OR up.contact_id = co.contact_id
+		WHERE
+		swfsh.entity_id = #spnId#
+		ORDER BY swfsh.archive_date desc
+	</select>
+</sqlMap>

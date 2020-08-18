@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+		elementFormDefault="qualified">
+  <xs:include schemaLocation="../common.xsd"/>
+  <xs:element name="updateFirmAccountResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="results"/>
+       <xs:element name="firmId" type="xs:string" minOccurs="0"/>
+       <xs:element name="providerId" type="xs:string" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

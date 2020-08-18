@@ -1,0 +1,14 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="assurant" extends="ServiceLiveBase" >
+        <default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+		
+	    <action name="assurantEditIncident_*" class="assurantEditIncidentBean" method="{1}">
+	        <result name="success">/jsp/assurant/incidentEventTracker.jsp</result>	    	    
+	    </action>
+
+    </package>
+    
+</struts>

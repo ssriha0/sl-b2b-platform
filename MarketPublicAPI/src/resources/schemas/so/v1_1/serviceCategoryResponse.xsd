@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:include schemaLocation="../../common.xsd"/>
+	<xs:include schemaLocation="../soCommon.xsd"/>
+	
+	<!--  This is the Response for buyerSkuCategory web service-->
+	<!-- Root Element -->
+	<xs:element name="serviceCategoryResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="results"/>
+				<xs:element ref="serviceCategories"  maxOccurs="1" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="serviceCategories">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="serviceCategory" maxOccurs="unbounded" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="serviceCategory">
+		<xs:complexType>
+			<xs:sequence>
+			    <xs:element name="categoryName" type="stringTwoFiftyFiveType" minOccurs="0"/>
+			    <xs:element ref="services" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="services">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="service" type ="serviceType" maxOccurs="unbounded" minOccurs="0"/>	 
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="serviceType">
+		<xs:sequence>
+		    <xs:element name="mainServiceCategory" type="stringFiftyType" minOccurs="0"/>
+		    <xs:element name="mainServiceCategoryId" type="xs:integer" minOccurs="0"/>
+			<xs:element name="sku" type="stringSkuType"/>
+			<xs:element name="description" type="stringTwoFiftyFiveType"/>
+			<xs:element name="template" type="stringTwoFiftyFiveType" minOccurs="0"/>
+			<xs:element name="orderType" type="orderTypeEnum"/>
+			<xs:element name="retailPrice" type="xs:decimal"/>
+			<xs:element name="retailMargin" type="xs:decimal"/>
+			<xs:element name="maximumPrice" type="xs:decimal" />
+			<xs:element name="billingMargin" type="xs:decimal"/>
+			<xs:element name="billingPrice" type="xs:decimal" />
+			<xs:element name="tasks" type="tasksType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>	
+	<xs:complexType name="tasksType">
+		<xs:sequence>
+			<xs:element name="taskName" type="stringTwoFiftyFiveType"/>
+			<xs:element name="category" type="stringFiftyType"/>
+			<xs:element name="categoryId" type="xs:integer"/>
+			<xs:element name="subCategory" type="stringFiftyType" minOccurs="0"/>
+			<xs:element name="subCategoryId" type="xs:string" minOccurs="0"/>
+			<xs:element name="skill" type="stringFiftyType"/>
+			<xs:element name="comments" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="stringTwoFiftyFiveType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="255"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stringSkuType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="18"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>	
+	<xs:simpleType name="stringTwentyFiveType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="25"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stringThirtyType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="30"></xs:maxLength>
+			<xs:pattern value=".*[^\s].*" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stringHundredType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="100"></xs:maxLength>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stringFiftyType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="50"></xs:maxLength>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="orderTypeEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="LABOR"/>
+			<xs:enumeration value="PART"/>	
+			<xs:enumeration value="PERMIT"/>
+			<xs:enumeration value="ADD_ON_PARTS_AND_MATERIAL"/>					
+		</xs:restriction>
+  	</xs:simpleType>
+</xs:schema>

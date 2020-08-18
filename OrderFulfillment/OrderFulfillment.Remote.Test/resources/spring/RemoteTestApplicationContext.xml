@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans  xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd" >
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" />
+    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+    
+    <bean id="dataSourceMySQL" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="${db.url}" />
+        <property name="username" value="${db.username}" />
+        <property name="password" value="${db.password}" />
+    </bean>
+
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSourceMySQL" />
+        <property name="persistenceUnitName" value="OrderFulfillment.Remote.Test" />
+        <property name="persistenceXmlLocation" value="/persistence.xml" />
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <property name="database" value="MYSQL" />
+                <property name="showSql" value="false" />
+            </bean>
+<!--            <bean class="org.springframework.orm.jpa.vendor.OpenJpaVendorAdapter">-->
+<!--                <property name="database" value="MYSQL" />-->
+<!--                <property name="showSql" value="true" />-->
+<!--            </bean>-->
+        </property>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory" />
+        <property name="dataSource" ref="dataSourceMySQL" />
+    </bean>
+    <tx:annotation-driven transaction-manager="transactionManager" />
+
+    <bean id="ofHelper" class="com.servicelive.orderfulfillment.client.OFHelper" />
+    <bean id="dataFactory" class="com.servicelive.orderfulfillment.remote.test.DataFactory"  scope="singleton">
+        <property name="testHelper" ref="testHelper" />
+        <property name="buyerResourceId" value="${buyer.resource.id}" />
+        <property name="buyerAccountId" value="${buyer.account.id}" />
+    </bean>
+    <bean id="serviceOrderDao" class="com.servicelive.orderfulfillment.dao.ServiceOrderDao" />
+    <bean id="jbpmDao" class="com.servicelive.orderfulfillment.test.helper.jbpm.JbpmDao" />
+    <bean id="serviceLiveDao" class="com.servicelive.orderfulfillment.test.helper.dao.ServiceLiveDao" />
+    <bean id="testHelper" class="com.servicelive.orderfulfillment.test.helper.TestHelper">
+        <property name="jbpmDao" ref="jbpmDao"/>
+        <property name="serviceOrderDao" ref="serviceOrderDao"/>
+        <property name="walletBO" ref="walletRemoteClient" />
+        <property name="serviceLiveDao" ref="serviceLiveDao" />
+        <property name="mpBuyerBO" ref="marketPlatformRemoteServiceClient" />
+        <property name="mpProviderBO" ref="marketPlatformRemoteServiceClient" />
+        <property name="marketPlatformRemoteServiceClient" ref="marketPlatformRemoteServiceClient" />
+    </bean>
+    <bean id="orderFulfillmentAssertions" class="com.servicelive.orderfulfillment.remote.test.assertions.OrderFulfillmentAssertions">
+        <property name="assertionValuesResolver" ref="assertionValuesResolver"/>
+        <property name="testHelper" ref="testHelper"/>
+    </bean>
+    <bean id="assertionValuesResolver" class="com.servicelive.orderfulfillment.remote.test.assertions.AssertionValuesResolver" />
+
+    <bean id="marketPlatformRemoteServiceClient" class="com.servicelive.marketplatform.client.MarketPlatformRemoteServiceClient">
+        <property name="baseUrl" value="${marketplatform.restservice.url}"/>
+    </bean>
+
+    <import resource="messageListenerContext.xml"/>
+    <import resource="commandAssertionContext.xml"/>
+    <import resource="classpath:/com/servicelive/wallet/remoteclient/walletRemoteClientApplicationContext.xml"/>
+
+</beans>

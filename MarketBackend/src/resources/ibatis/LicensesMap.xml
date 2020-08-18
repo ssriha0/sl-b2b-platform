@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+	<!-- ibatis mapping for DB sql statements -->
+	<sqlMap namespace="licenses">
+	
+	<typeAlias alias="licensesVO" type="com.newco.marketplace.vo.provider.LicensesVO"/>	
+	<typeAlias alias="licensesAndCertVO" type="com.newco.marketplace.vo.provider.LicensesAndCertVO"/>	
+			
+		<insert id="licenses.insertAddLicenseToFileData" parameterClass="licensesVO">
+	      INSERT INTO test_licenses (`vendor_id`,	`licenses_to_file`) VALUES 	      							  
+ 									(#vendorID#,	,#addCredentialToFile#)
+	   </insert>
+
+	   <update id="licenses.updateAddLicenseToFileData" parameterClass="licensesAndCertVO">
+			UPDATE vendor_hdr
+			SET no_cred_ind = #addCredentialToFile#
+			WHERE vendor_id = #vendorId#			
+		</update>
+	   
+		<select id="licenses.getAddLicenseToFileData" parameterClass="licensesVO" resultClass="licensesVO">
+				SELECT
+				MAX(vendor_id) as maxVendorID,
+				vendor_id as vendorID,
+				licenses_to_file as addCredentialToFile		
+				FROM test_licenses
+				WHERE vendor_id = #vendorID#
+				GROUP BY vendorID	     
+	   </select>	   	  	
+	   
+	   	<select id="licenses.loadAddLicenseToFileData" parameterClass="licensesAndCertVO" resultClass="licensesAndCertVO">
+				SELECT
+				vendor_id as vendorId,
+				IFNULL(no_cred_ind,0) as addCredentialToFile		
+				FROM vendor_hdr	where vendor_id=#vendorId#						    
+	   </select>
+	   
+	   <delete id="licenses.deletegeAddLicenseToFileData" parameterClass="licensesVO">
+			DELETE FROM test_licenses WHERE vendor_id=#vendorID#
+		</delete>
+
+	</sqlMap>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<bean id="orderManagementControllerAction" 
+		  class="com.newco.marketplace.web.action.OrderManagement.OrderManagementControllerAction" 
+		  scope="prototype">
+		  <constructor-arg ref="serviceOrderManager"/>
+		  <property name="restClient">
+		 	<ref bean="restClient"/>
+		 </property>
+		 <property name="luDelegate">
+			<ref bean="lookupManager"/>
+		</property>
+		 <property name="managementService">
+			<ref bean="managementService"/>
+		</property>
+		<property name="applicationProperties">
+			<ref bean="applicationPropertiesWallet"/>
+	  	</property>	
+	  	<property name="soDetailsManager">
+			<ref bean="soDetailsManager" />
+		</property>	
+		<!-- SL-21645 -->
+		<property name="mobileGenericBO">
+			<ref bean="mobileGenericBO" />
+		</property>
+		<property name="relayNotificationService">
+			<ref bean="relayNotificationService" />
+		</property>
+		<property name="mobileSOActionsBO">
+			<ref bean="mobileSOActionsBO" />
+		</property>
+		
+		<property name="buyerFeatureSetBO">
+			<ref bean="buyerFeatureSetBO" />
+		</property>
+ 	</bean>
+ 	
+ 	<bean id="restClient" class="com.newco.marketplace.web.ordermanagement.api.services.OrderManagementRestClient" scope="prototype">
+	 		<property name="apiBaseUrl" 
+					value="${servicelive.api.base.url}" >
+	 		</property>
+	 		<property name="omBaseUrl" 
+	 		        value="${ordermanagement.service.url}">
+	 		</property>
+			<property name="oAuthEnabled"
+				   value="${oauth.authentication}" >
+			</property>
+			<property name="consumerKey"
+				   value="${sl.public.oauth.ckey}" >
+			</property>
+			<property name="consumerSecret"
+				   value="${sl.public.oauth.csecret}" >
+			</property>
+ 	</bean>
+ 	
+ 	 <bean id="managementService"  class="com.servicelive.ordermanagement.services.OrderManagementService">
+        <property name="managementDao" ref="managementDao" />
+               <property name="relayNotificationService">
+			<ref bean="relayNotificationService" />
+		</property>
+		<property name="pushNotificationAlertTask">
+			<ref bean="pushNotificationAlertTask" />
+		</property>
+		<property name="serviceOrderDao">
+    		<ref bean="serviceOrderDao"/>
+  		</property>	
+    </bean>
+    
+     <bean id="managementDao"  class="com.newco.marketplace.persistence.daoImpl.ordermanagement.OrderManagementDaoImpl"
+    	lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient"/>
+		</property>
+	</bean>
+ 	
+</beans>

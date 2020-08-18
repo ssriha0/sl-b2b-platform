@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="workflow">
+	<typeAlias alias="wfStatesVO" type="com.newco.marketplace.vo.provider.WorkflowStateVO" />
+	<typeAlias alias="EmailTemplateVo" type="com.newco.marketplace.vo.provider.EmailTemplateVo"/>
+		
+	<select id="pworkflow.statesTableMap" resultClass="wfStatesVO">
+		select 
+			we.wf_state_id as wfStateId,
+			we.wf_entity as wfEntity,
+			we.wf_state as wfState,    
+			we.wf_descr as wfDescr,
+			we.audit_link_id as auditLinkId,
+			al.table_name as tableName,    
+			al.key_name as auditKeyId
+		from 
+			wf_states we, lu_audit_link al where 
+			we.audit_link_id=al.audit_link_id
+			order by wfStateId asc
+	</select>
+	
+	
+</sqlMap>

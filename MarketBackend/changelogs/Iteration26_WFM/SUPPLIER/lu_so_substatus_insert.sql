@@ -1,0 +1,1 @@
+insert into `lu_so_substatus` (`so_substatus_id`, `descr`, `sort_order`, `created_date`, `modified_date`, `modified_by`) values('56','Validate POS Cancellation','56','2009-03-23 00:00:00',NULL,'glacy');

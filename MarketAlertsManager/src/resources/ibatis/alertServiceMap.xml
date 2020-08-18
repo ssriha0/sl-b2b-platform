@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="emailalert">
+
+	<typeAlias alias="alert" type="com.newco.marketplace.business.businessImpl.alert.AlertTask"/>
+	<typeAlias alias="alertTaskUpdate" type="com.newco.marketplace.beans.AlertTaskUpdate"/>
+	<typeAlias alias="emailDataSource" type="com.newco.marketplace.beans.EmailDataSource"/>
+
+			
+	<insert id="emailalert.insert" parameterClass="alert">
+		INSERT INTO alert_task (
+		alert_task_id,
+ 		alerted_timestamp,
+ 		target_key,
+ 		payload,
+ 		payload_key,
+ 		transaction_id,
+		completion_indicator,
+ 		created_date,
+ 		modified_date,
+ 		modified_by,
+ 		alert_type_id,
+ 		template_id,
+ 		state_transition_id,
+ 		alert_to,
+ 		alert_from,
+ 		alert_cc,
+ 		alert_bcc,
+ 		priority, 
+ 		template_input_value
+		) 
+		values
+		(
+		#alertTaskId#,
+ 		#alertedTimestamp#,
+ 		#targetKey#,
+ 		#payload#,
+ 		#payloadKey#,
+ 		#transactionId#,
+		#completionIndicator#,
+ 		#createdDate#,
+ 		#modifiedDate#,
+ 		#modifiedBy#,
+ 		#alertTypeId#,
+ 		#templateId#,
+ 		#stateTransitionId#,
+ 		#alertTo#,
+ 		#alertFrom#,
+ 		#alertCc#,
+ 		#alertBcc#,
+ 		#priority#,
+ 		#templateInputValue#
+ 		)
+	</insert>
+	
+	<select id="emailalert.selectalert" parameterClass="alert" resultClass="alert">
+		SELECT a.alert_task_id AS alertTaskId, a.alerted_timestamp AS alertedTimestamp, a.target_key AS targetKey, a.payload AS payload
+			, a.payload_key AS payloadKey, a.transaction_id AS transactionId, a.completion_indicator AS completionIndicator, a.created_date AS createdDate
+			, a.modified_date AS modifiedDate, a.modified_by AS modifiedBy, a.alert_type_id AS alertTypeId, a.template_id AS templateId
+			, a.state_transition_id AS stateTransitionId, COALESCE(a.alert_to ,'') AS alertTo, a.alert_from AS alertFrom, COALESCE(a.alert_cc,'') AS alertCc, 	COALESCE(a.alert_bcc,'') AS alertBcc, a.priority AS priority, a.template_input_value AS templateInputValue, t.template_source AS templateSource
+			, t.template_subject AS templateSubject, t.eid AS eid, t.responsys_folder_name AS responsysFolderName
+		FROM alert_task a
+			join template t on a.template_id = t.template_id
+		WHERE t.priority = #priority#
+			and a.completion_indicator = 1  and t.email_provider_type= #providerType#
+				ORDER BY a.created_date asc limit 400
+	</select>
+	
+	<select id="emailalert.selectAdobeAlert" parameterClass="alert" resultClass="alert">
+		SELECT a.alert_task_id AS alertTaskId, a.alerted_timestamp AS alertedTimestamp, a.target_key AS targetKey, a.payload AS payload
+			, a.payload_key AS payloadKey, a.transaction_id AS transactionId, a.completion_indicator AS completionIndicator, a.created_date AS createdDate
+			, a.modified_date AS modifiedDate, a.modified_by AS modifiedBy, a.alert_type_id AS alertTypeId, a.template_id AS templateId
+			, a.state_transition_id AS stateTransitionId, COALESCE(a.alert_to ,'') AS alertTo, a.alert_from AS alertFrom, COALESCE(a.alert_cc,'') AS alertCc, 	COALESCE(a.alert_bcc,'') AS alertBcc, a.priority AS priority, a.template_input_value AS templateInputValue, t.template_source AS templateSource
+			, t.template_subject AS templateSubject, t.eid AS eid, t.responsys_folder_name AS responsysFolderName
+		FROM alert_task a
+			join template t on a.template_id = t.template_id
+		WHERE t.priority = #priority#
+			and a.completion_indicator = 1  and t.email_provider_type= #providerType#
+				ORDER BY a.created_date desc limit 200
+	</select>
+	
+	<update id="emailalert.setCompletion" parameterClass="alertTaskUpdate">
+	update alert_task set completion_indicator = 2, alerted_timestamp=sysdate() where
+	alert_task_id IN
+		<iterate property="alertTaskIds" open="(" close=")" conjunction=",">
+				#alertTaskIds[]#
+		</iterate>
+ 	</update>
+ 	<select id="emailalert.getQueries" parameterClass="java.lang.String" resultClass="emailDataSource">
+ 	select dataSourceSQL as dataSourceSQL,postProcessorSQL as postProcessorSQL,dataSource as dataSource,
+ 	folder as folder,parameters as parameters,schedulerName as schedulerName,priority as priority from email_datasource
+ 	where schedulerName=#schedulerName# order by priority
+ 	</select>
+ 	<select id="emailalert.executePreQuery"
+		parameterClass="java.lang.String" resultClass="java.util.HashMap" remapResults="true">
+		<dynamic>
+		$preQuery$
+		</dynamic>
+	</select>
+	<update id="emailalert.executePostQuery" parameterClass="java.lang.String">
+	<dynamic>
+		$postQuery$
+	</dynamic>
+ 	</update>
+	
+</sqlMap>

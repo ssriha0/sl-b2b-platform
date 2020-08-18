@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:element name="mobileSOAdvanceSearchRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="pageNo" type="xs:integer" minOccurs="0"/>
+				<xs:element name="pageSize" type="xs:integer" minOccurs="0"/>
+				<xs:element ref="advanceSearchCriteria" minOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>	
+	<xs:element name="advanceSearchCriteria">
+	<xs:complexType>
+	<xs:sequence>
+		<xs:element name="markets" type="integerType" minOccurs="0" maxOccurs="1"/>
+		<xs:element name="statuses" type="integerType" minOccurs="0" maxOccurs="1"/>
+		<xs:element name="subStatuses" type="integerType" minOccurs="0" maxOccurs="1"/>
+		<xs:element name="serviceProIds" type="integerType" minOccurs="0" maxOccurs="1"/>
+		<xs:element name="appointment" type="appointmentType" minOccurs="0" maxOccurs="1"/>
+		<xs:element name="flaggedOnlyInd" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+		<xs:element name="unAssignedInd" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+	</xs:sequence>
+	</xs:complexType>
+	</xs:element>
+	<xs:complexType name="appointmentType">
+			<xs:sequence>
+				 <xs:element name="appointmentFilter" type="appointmentFilterType" minOccurs="1" maxOccurs="unbounded"/>
+				<xs:element name="startRange" type="xs:date" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="endRange" type="xs:date" minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="integerType">
+			<xs:sequence>
+				 <xs:element name="value" type="xs:integer" minOccurs="1" maxOccurs="unbounded"/>
+			</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="serviceProNamesType">
+			<xs:sequence>
+				 <xs:element name="value" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
+			</xs:sequence>
+	</xs:complexType>
+	 <xs:simpleType name="appointmentFilterType">
+		<xs:restriction base="xs:string">
+				<xs:enumeration value="Today" />
+				<xs:enumeration value="Tomorrow" />
+				<xs:enumeration value="Next 2 days" />
+				<xs:enumeration value="Next 3 days" />
+				<xs:enumeration value="Range" />
+		</xs:restriction>
+	</xs:simpleType>
+  
+</xs:schema>

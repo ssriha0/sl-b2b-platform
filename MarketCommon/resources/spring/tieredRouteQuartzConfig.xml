@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	<bean id="trSchedulerAutoStart" class="java.lang.Boolean" >
+	  <constructor-arg value="false" />
+	</bean>
+	<bean id="tieredRouteScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" lazy-init="false"  scope="prototype" >
+		<property name="dataSource">
+			<ref bean="${datasource.quartz.spn.tieredroute.bean.id}" />
+		</property>
+		<property name="transactionManager">
+			<ref bean="dsTransactionManagerQuartzSPNTR" />
+		</property>
+		<property name="autoStartup">
+			<ref bean="trSchedulerAutoStart" />
+		</property>
+		<property name="startupDelay">
+		    <value>20</value>
+		</property>
+		<property name="applicationContextSchedulerContextKey">
+			<value>applicationContext</value>
+		</property>
+		<property name="schedulerContextAsMap">
+			<map>
+				<entry key="trRouteController">
+					<ref bean="trRouteController"/>
+				</entry>
+			</map>
+		</property>
+		<property name="waitForJobsToCompleteOnShutdown">
+			<value>true</value>
+		</property>
+		<property name="quartzProperties">
+			<props>
+				<!--  names and stuff  -->
+				<prop key="org.quartz.scheduler.instanceName">TimeTieredQuartzScheduler</prop>
+				<prop key="org.quartz.scheduler.instanceIdGenerator.class">org.quartz.simpl.SimpleInstanceIdGenerator</prop>
+				<prop key="org.quartz.scheduler.instanceName">TimeTieredQuartzScheduler</prop>
+				<!-- ThreadPool -->
+				<prop key="org.quartz.threadPool.class">org.quartz.simpl.SimpleThreadPool</prop>
+				<prop key="org.quartz.threadPool.threadCount">5</prop>
+				<prop key="org.quartz.threadPool.threadPriority">5</prop>
+				<!-- Job store -->
+				<prop key="org.quartz.jobStore.misfireThreshold">60000</prop>
+				<prop key="org.quartz.jobStore.class">org.quartz.impl.jdbcjobstore.JobStoreTX</prop>
+				<prop key="org.quartz.jobStore.driverDelegateClass">org.quartz.impl.jdbcjobstore.StdJDBCDelegate</prop>
+				<prop key="org.quartz.jobStore.useProperties">false</prop>
+				<prop key="org.quartz.jobStore.isClustered">false</prop>
+				<prop key="org.quartz.jobStore.clusterCheckinInterval">20000</prop>
+				<prop key="org.quartz.jobStore.selectWithLockSQL">SELECT * FROM {0}LOCKS UPDLOCK WHERE LOCK_NAME = ?</prop>
+				<!-- Plugins -->
+				<prop key="org.quartz.plugin.shutdownhook.class">org.quartz.plugins.management.ShutdownHookPlugin</prop>
+				<prop key="org.quartz.jobStore.maxMisfiresToHandleAtATime">12</prop>
+				<prop key="org.quartz.plugin.shutdownhook.cleanShutdown">true</prop>
+				<prop key="org.quartz.plugin.triggHistory.class">org.quartz.plugins.history.LoggingTriggerHistoryPlugin</prop>
+				<prop key="org.quartz.plugin.triggHistory.triggerFiredMessage">TimeTieredJOBTrigger {1}.{0} fired job {6}.{5} at: {4, date, HH:mm:ss MM/dd/yyyy}</prop>
+				<prop key="org.quartz.plugin.triggHistory.triggerCompleteMessage">TimeTieredJOB Trigger {1}.{0} completed firing job {6}.{5} at {4, date, HH:mm:ss MM/dd/yyyy} with resulting trigger instruction code: {9}</prop>
+			</props>
+		</property>
+	</bean>
+</beans>

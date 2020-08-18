@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+
+    <bean id="surveyManagerDAO" class="com.newco.marketplace.persistence.dao.buyersurvey.BuyerSurveyManagerDAOImpl"
+    	lazy-init="true">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	 
+    </bean>	
+    
+    <bean id="buyerSurveyBO" class="com.newco.marketplace.business.buyersurvey.BuyerSurveyManagerBOImpl"
+		lazy-init="true">
+		<property name="surveyManagerDAO">
+			<ref bean="surveyManagerDAO" />
+		</property>	
+		<property name="buyerFeatureSetDAO">
+			<ref bean="buyerFeatureSetDAO" />
+		</property>		
+		<property name="extendedSurveyBO">
+			<ref bean="extendedSurveyBO" />
+		</property>			
+	</bean>
+</beans>
+    

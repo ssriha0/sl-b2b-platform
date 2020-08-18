@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:c="http://www.servicelive.com/namespaces/leads"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+	elementFormDefault="qualified" jaxb:version="1.0"
+	jaxb:extensionBindingPrefixes="xjc">
+
+	<xs:element name="results">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="result" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="error" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="result">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="code" type="resultCodeEnum" default="0"/>
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="error">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="code" type="resultCodeEnum" default="0"/>
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:simpleType name="zipType">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="\d{5}" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="urgencyTypeEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="SAME_DAY" />
+			<xs:enumeration value="NEXT_DAY" />
+			<xs:enumeration value="AFTER_TOMORROW" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="skillTypeEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="INSTALL" />
+			<xs:enumeration value="REPAIR" />
+		</xs:restriction>
+	</xs:simpleType>	
+
+	<xs:simpleType name="projectType">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="\d{3}" />
+			<xs:maxLength value="3" />
+			<xs:minLength value="3"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="TimeZoneType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="3" />
+			<xs:minLength value="0"/>
+			<xs:whiteSpace value="collapse"/> 
+		</xs:restriction>
+	</xs:simpleType>
+   <xs:simpleType name="memberShip">
+       <xs:restriction base="xs:string">
+           <xs:maxLength value="50" />
+		   <xs:minLength value="1"/>
+		   <xs:whiteSpace value="collapse"/> 
+       </xs:restriction>
+   </xs:simpleType> 	
+	<xs:simpleType name="identificationTypeEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="BuyerResourceId"/>
+			<xs:enumeration value="ProviderResourceId"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="rescheduleEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Estimation"/>
+			<xs:enumeration value="Service"/>
+		</xs:restriction>
+	</xs:simpleType>	
+	<!-- The list of Error Codes is not final and TBD -->
+	<xs:element name="ResponseCode">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="0000" /><!-- SUCCESS -->
+				<xs:enumeration value="0001" /><!-- ERROR -->
+				<xs:enumeration value="0002" /><!-- PARTIAL RESPONSE -->
+				<xs:enumeration value="0003" /><!-- AUTHORIZATION_ERROR_CODE -->
+				<xs:enumeration value="0004" /><!-- INTERNAL_SERVER_ERROR -->
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+
+	<xs:simpleType name="resultCodeEnum">
+		<xs:restriction base="xs:int">
+			<xs:enumeration value="0000"/>  <!-- SUCCESS -->
+			<xs:enumeration value="0001"/>  <!-- INVALIDXML_ERROR_CODE -->
+			<xs:enumeration value="0002"/>  <!-- AUTHENTICATION_ERROR_CODE -->
+			<xs:enumeration value="0003"/>  <!-- AUTHORIZATION_ERROR_CODE -->
+			<xs:enumeration value="0004"/>  <!-- INTERNAL_SERVER_ERROR -->
+			<xs:enumeration value="0005"/>  <!-- GENERIC_ERROR -->
+			<xs:enumeration value="0006"/>  <!-- Reserve -->
+			<xs:enumeration value="0007"/>  <!-- INVALID_REQUIRED_PARAMS_FORGET  -->
+			<xs:enumeration value="0008"/>  <!-- INVALID_OPTIONAL_PARAMS_FORGET -->
+			<xs:enumeration value="0009"/>  <!-- WARNING -->
+			<xs:enumeration value="0010"/>  <!-- PROVIDER_SEARCH_MULTIPLE_MATCH -->
+			<xs:enumeration value="0011"/>  <!-- PROVIDER_SEARCH_SPELLING_MISTAKE -->
+			<xs:enumeration value="0012"/>  <!-- CREATE_BUYER_ACCOUNT_USER_ALREADY_EXISTS-->
+			<xs:enumeration value="0013"/>  <!-- CREATE_FUNDING_SOURCE_FAILED -->
+			<xs:enumeration value="0014"/>  <!-- GET_FUNDING_SOURCE_EMPTY -->
+			<xs:enumeration value="0015"/>  <!-- FAILURE -->
+			<xs:enumeration value="0709"/>  <!-- NOT AUTHORISED TO VIEW THE SO DETAILS -->
+			<xs:enumeration value="0208"/>  <!-- Problem with SO -->
+			<xs:enumeration value="0212"/>  <!-- SO Close Error -->
+			<xs:enumeration value="0016"/>  <!-- SEARCH SO ZIP VALIDATION Error -->
+			<xs:enumeration value="0017"/>  <!-- SEARCH SO MAX RESULT SET VALIDATION Error -->
+			<xs:enumeration value="1302"/>	<!-- EDIT FAILURE -->
+			<xs:enumeration value="1306"/>	<!-- NO PROVIDERS TO ROUTE Error -->
+			<xs:enumeration value="0018"/>  <!-- INVALID/MISSING PARAMETER -->
+			
+			<xs:enumeration value="0213"/>  <!-- SO_RELEASE_ERROR -->
+			<xs:enumeration value="0214"/>  <!-- SO_RELEASE_ERROR_PROBLEMSTATUS -->
+			<xs:enumeration value="0215"/>  <!-- SO_RELEASE_ERROR_ACCEPTEDSTATUS -->
+			<xs:enumeration value="0216"/>  <!-- SO_RELEASE_ERROR_ACTIVESTATUS -->
+			<xs:enumeration value="0921"/>  <!-- WALLET_CREDIT_PROMO_ERROR -->
+			
+			<xs:enumeration value="1000"/>  <!-- LOGIN - USER NOT VERIFIED -->
+			<xs:enumeration value="1001"/>  <!-- LOGIN - USER ACCOUNT IS LOCKED -->
+			<xs:enumeration value="1002"/>  <!-- LOGIN - INCORRECT USERNAME\PASSOWRD -->
+			<xs:enumeration value="1004"/>  <!-- LOGIN - NO BUYER ASSOCIATED WITH THE USER -->
+			<xs:enumeration value="9999"/>  <!-- Masked Value -->
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:element name="Contact" >
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Address" type="xs:string" minOccurs="0" maxOccurs="1" />
+				<xs:element name="City" type="xs:string" minOccurs="0" maxOccurs="1" />
+				<!-- Ideally we can add the states required in an enumerator -->
+				<xs:element name="State" minOccurs="0" maxOccurs="1" >
+				  <xs:simpleType>
+					 <xs:restriction base="xs:string">
+						<xs:length value="2"/>
+					 </xs:restriction>
+				   </xs:simpleType>
+			    </xs:element>
+			    <xs:choice>
+				   <xs:element name="CustomerZipCode" type="zipType" minOccurs="0" maxOccurs="1" />	
+				   <xs:element name="ZipCode" type="zipType" minOccurs="0" maxOccurs="1" />	
+				</xs:choice>		    
+				<xs:element name="Phone" minOccurs="0" maxOccurs="1">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:pattern value="[0-9]{10}" />
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="Email" minOccurs="1" maxOccurs="1">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:pattern value="[^@]+@[^\.]+\..+" />
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+</xs:schema>

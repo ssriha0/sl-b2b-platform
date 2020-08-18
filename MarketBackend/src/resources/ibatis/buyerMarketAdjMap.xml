@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="buyerMarketAdj" >
+  <typeAlias alias="marketAdj"	type="com.newco.marketplace.dto.vo.buyer.BuyerMarketAdjVO" />
+  <typeAlias alias="buyerCancellationPostingFeeVO" type="com.newco.marketplace.dto.vo.serviceorder.BuyerCancellationPostingFeeVO"/>
+
+
+	<select id="buyerMarketAdj.getBuyerMarkets" parameterClass="marketAdj" resultClass="marketAdj">
+		SELECT bm.buyer_id as buyerId, 
+				bm.market_id as marketId, 
+				bm.market_name as marketName,
+				bm.state_name as stateName,                     
+				bm.adjustment as adjustment 
+		FROM vw_buyer_market_adj_state bm
+		<dynamic prepend="WHERE">
+			<isNotNull property="buyerId" prepend="AND"> 
+	 			bm.buyer_id = #buyerId#
+	 		</isNotNull>
+			<isNotNull property="sortColumnName">
+				order by $sortColumnName$ $sortOrder$ 
+			</isNotNull>
+		</dynamic>
+	</select>
+	
+	<update id="buyerMarketAdj.adjustment.update" parameterClass="marketAdj">
+		UPDATE buyer_market_adjustment
+		SET
+			adjustment = #adjustment#,
+			modified_by = #modifiedBy#,
+			modified_date = #modifiedDate#
+		WHERE buyer_id = #buyerId#
+		AND   market_id = #marketId#
+	</update>
+
+		<!-- SLT-1726 -->
+	<insert id="BuyerCancellationRefundDetails.insert"
+		parameterClass="buyerCancellationPostingFeeVO">
+		INSERT INTO buyer_refund_posting_fee
+		(buyer_id,description,refund_posting_fee,bus_trans_id,funding_type_id,effective_date)
+		VALUES
+		(#buyerId#,#description#,#buyerCancellationRefund#,#busTransId#,#fundingTypeId#,#effectiveDate#)
+	</insert>
+	
+	<!-- Changes for SLT-1444 : Autoconfigure market adjustment Starts-->
+	<insert id="insertMarketsForBuyer.insert" parameterClass="java.lang.Integer" >
+	INSERT INTO buyer_market_adjustment(buyer_id,market_id,adjustment,created_date,modified_date,modified_by)
+		SELECT  #in_buyer_id#,market_id,1.000,NOW(),NOW(),'SLDEV'
+		FROM lu_market;
+	</insert>
+	<!-- Changes for SLT-1444 : Autoconfigure market adjustment ends-->
+</sqlMap>

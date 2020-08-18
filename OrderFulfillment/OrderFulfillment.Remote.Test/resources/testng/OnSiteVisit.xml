@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="OrderFulfillment.Remote.OnSiteVisit">
+    <test name="ProviderOnSiteVisitTest" >
+        <groups><run><include name="unit" /></run>
+        </groups>
+        <classes>
+            <class name="com.servicelive.orderfulfillment.remote.test.workflow.OnSiteVisitTests">
+                <methods>
+                    <include name="createServiceOrder"/>
+                    <include name="postServiceOrder"/>
+                    <include name="acceptServiceOrder"/>
+                    <include name="providerOnSiteVisit" />
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>

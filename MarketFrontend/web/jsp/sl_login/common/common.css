@@ -1,0 +1,60 @@
+<style type="text/css">
+body {
+	font-family : sans-serif; font-size:11px;
+}
+
+/* add padding to each contentpane inside the tab container, and scrollbar if necessary */
+.dojoTabPane {
+  padding : 10px 10px 10px 10px;
+  overflow: auto;
+}
+
+#FixedSizeRule .dojoTabPaneWrapper {
+	height: 300px;
+	overflow: auto;
+}
+
+div.container {
+	background-color: white;
+	border: 2px solid black;
+	width: 200px;
+	height: 600px;
+	padding: 0px;
+	margin: 0px;
+	overflow: hidden;
+}
+
+.label , .content {
+	width: 200px;
+	background:url(IconWeblinking.gif left no-repeat)
+}
+
+.label {
+	background: #F1F9FE;
+	height: 20px;
+	border-top: 1px solid black;
+	border-bottom: 1px solid black;
+	font-family:Arial, Helvetica, sans-serif;
+	font-weight:400;
+}
+
+.content {
+	background: #eeeeee;
+	border-top: 1px solid #eeeeee;	
+	background:url(IconWeblinking.gif left no-repeat)/* w/out this, an <h1> on the top line causes a gap between the .content and .label */
+}
+
+.innerLabel {
+	background: blue;
+	height: 20px;
+	border-top: 1px solid black;
+	border-bottom: 1px solid black;
+	width: 250px;
+}
+
+.innerContent {
+	background: #aaaaaa;
+	border-top: 1px solid #aaaaaa;	/* w/out this, an <h1> on the top line causes a gap between the .content and .label */
+	width: 250px;
+}
+</style>

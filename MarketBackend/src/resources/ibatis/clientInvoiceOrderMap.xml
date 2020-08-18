@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="clientInvoiceOrder">
+	
+	<typeAlias alias="clientInvoiceOrder" type="com.newco.marketplace.dto.vo.client.ClientInvoiceOrderVO" />
+
+		<insert id="clientInvoiceOrder.insert"
+		parameterClass="clientInvoiceOrder">
+		INSERT INTO client_invoice_order (
+		client_id,
+		sku_id,
+		so_id,
+		created_date,
+		client_incident_id
+		) VALUES (
+		#clientID#,
+		#skuID#,
+		#serviceOrderID#,
+		now(),
+		#incidentID#
+		)
+	</insert>
+	
+	<select id="clientInvoiceOrder.getClientIDForName" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		select client_id as clientID from client where name = #clientName#
+	</select>
+	
+	<select id="clientInvoiceOrder.getClientInvoiceBySOID" parameterClass="java.lang.String" resultClass="clientInvoiceOrder">
+		select client_invoice_order_id as clientInvoiceOrderID,
+		client_id as clientID,
+		sku_id as skuID,
+		so_id as serviceOrderID,
+		created_date as createdDate
+		from client_invoice_order
+		where so_id = #serviceOrderID#
+	</select>
+	
+	
+	<select id="clientInvoiceOrder.getClientInvoiceByIncidentID" parameterClass="java.util.Map" resultClass="clientInvoiceOrder">
+		select client_invoice_order_id as clientInvoiceOrderID,
+		client_id as clientID,
+		sku_id as skuID,
+		so_id as serviceOrderID,
+		created_date as createdDate
+		from client_invoice_order
+		where client_incident_id = #incidentId# and sku_id = #skuId# order by created_date desc LIMIT 1
+	</select>
+	
+	
+</sqlMap> 

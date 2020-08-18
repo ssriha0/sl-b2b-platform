@@ -1,0 +1,174 @@
+<div class="row">
+    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4 left-nav">
+        <div class="calendar_widget">
+            <div class="calendar_widget__nav">
+                <div class="calendar_widget__nav__arrow" (click)="onArrowClick('left')">
+                    <svg class="calendar_widget__nav__chevron" x="0px" y="0px" viewBox="0 0 50 50">
+                        <g>
+                            <path d="M39.7,7.1c0.5,0.5,0.5,1.2,0,1.7L29,19.6c-0.5,0.5-1.2,1.2-1.7,1.7L16.5,32.1c-0.5,0.5-1.2,0.5-1.7,0l-2.3-2.3
+                    c-0.5-0.5-1.2-1.2-1.7-1.7l-2.3-2.3c-0.5-0.5-0.5-1.2,0-1.7l10.8-10.8c0.5-0.5,1.2-1.2,1.7-1.7L31.7,0.8c0.5-0.5,1.2-0.5,1.7,0
+                    l2.3,2.3c0.5,0.5,1.2,1.2,1.7,1.7L39.7,7.1z" />
+                        </g>
+                        <g>
+                            <path d="M33.4,49c-0.5,0.5-1.2,0.5-1.7,0L20.9,38.2c-0.5-0.5-1.2-1.2-1.7-1.7L8.4,25.7c-0.5-0.5-0.5-1.2,0-1.7l2.3-2.3
+                    c0.5-0.5,1.2-1.2,1.7-1.7l2.3-2.3c0.5-0.5,1.2-0.5,1.7,0l10.8,10.8c0.5,0.5,1.2,1.2,1.7,1.7l10.8,10.8c0.5,0.5,0.5,1.2,0,1.7
+                    L37.4,45c-0.5,0.5-1.2,1.2-1.7,1.7L33.4,49z" />
+                        </g>
+                    </svg>
+                </div>
+                <div class="calendar_widget__nav__header">
+                    <span>{{ currentYear }}</span>
+                </div>
+                <div class="calendar_widget__nav__header">
+                    <span>{{ currentMonth }}</span>
+                    <!-- <input
+              #yearInput
+              class="calendar_widget__nav__header__year"
+              placeholder="Year"
+              [formControl]="yearControl"
+              (keyup.enter)="yearInput.blur()"
+              (blur)="onYearSubmit()"
+            /> -->
+                </div>
+                <div class="calendar_widget__nav__arrow" (click)="onArrowClick('right')">
+                    <svg class="calendar_widget__nav__chevron" x="0px" y="0px" viewBox="0 0 50 50">
+                        <g>
+                            <path d="M8.4,7.1c-0.5,0.5-0.5,1.2,0,1.7l10.8,10.8c0.5,0.5,1.2,1.2,1.7,1.7l10.8,10.8c0.5,0.5,1.2,0.5,1.7,0l2.3-2.3
+                    c0.5-0.5,1.2-1.2,1.7-1.7l2.3-2.3c0.5-0.5,0.5-1.2,0-1.7L29,13.2c-0.5-0.5-1.2-1.2-1.7-1.7L16.5,0.8c-0.5-0.5-1.2-0.5-1.7,0
+                    l-2.3,2.3c-0.5,0.5-1.2,1.2-1.7,1.7L8.4,7.1z" />
+                        </g>
+                        <g>
+                            <path d="M14.8,49c0.5,0.5,1.2,0.5,1.7,0l10.8-10.8c0.5-0.5,1.2-1.2,1.7-1.7l10.8-10.8c0.5-0.5,0.5-1.2,0-1.7l-2.3-2.3
+                    c-0.5-0.5-1.2-1.2-1.7-1.7l-2.3-2.3c-0.5-0.5-1.2-0.5-1.7,0L20.9,28.5c-0.5,0.5-1.2,1.2-1.7,1.7L8.4,40.9c-0.5,0.5-0.5,1.2,0,1.7
+                    l2.3,2.3c0.5,0.5,1.2,1.2,1.7,1.7L14.8,49z" />
+                        </g>
+                    </svg>
+                </div>
+            </div>
+            <div class="calendar_widget__content">
+                <div class="calendar_widget__labels">
+                    <div class="calendar_widget__label" *ngFor="let day of dayNamesOrdered">
+                        {{ day }}
+                    </div>
+                </div>
+                <div class="calendar_widget__month">
+                    <div *ngFor="let day of calendarDays" class="calendar_widget__month__day" [ngStyle]="{'cursor': day == 0 ? 'initial' : 'pointer',
+                          'background-color': getDayBackgroundColor(day),
+                          'color': isHoveredDay(day) ? accentColor : getDayFontColor(day),
+                          'pointer-events': day == 0 ? 'none' : ''
+                          }" (click)="onSelectDay(day)" (mouseenter)="hoveredDay = day" (mouseleave)="hoveredDay = null">
+                        <span *ngIf="day != 0">
+                {{ day.getDate() }}
+              </span>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="selectedWindow == windowList[0]; else elseTemplate" class="filter-day-result">
+                <p>Filter Results</p>
+                <hr/>
+
+                <div (change)="changeTimeFilter()">
+                    <p>Select Hours</p>
+                    <input class="select-hours" type="time" name="start" [(ngModel)]="timeFilter.start" value="00:00" />                    to
+                    <input class="select-hours" type="time" name="end" [(ngModel)]="timeFilter.end" max="00:00" />
+                </div>
+
+                <div (change)="changeEventDetailsFilter()">
+                    <div>
+                        <p>Appointment Info</p>
+                        <input type="checkbox" name="customerInfo" [(ngModel)]="eventDetailFilter.showCustomer" />
+                        <label for="customerInfo">Customer Info</label><br/>
+                        <input type="checkbox" name="locationInfo" [(ngModel)]="eventDetailFilter.showLocation" />
+                        <label for="locationInfo">Location Info</label>
+                    </div>
+                    <div>
+                        <p>Work Order Info</p>
+                        <input type="checkbox" name="priority-status" [(ngModel)]="eventDetailFilter.showPriorityOrStatus" />
+                        <label for="priority-status">Priority / Status</label><br/>
+                        <input type="checkbox" name="city-state" [(ngModel)]="eventDetailFilter.showCityState" />
+                        <label for="city-state">City, State</label><br/>
+                        <input type="checkbox" name="zip" [(ngModel)]="eventDetailFilter.showZip" />
+                        <label for="zip">Zip</label><br/>
+                    </div>
+                </div>
+            </div>
+            <ng-template #elseTemplate>
+                <div class="filter-weeks-result">
+                    <span>Select your Days</span>
+                    <div>
+                        <div *ngFor="let weekDay of weekDayNames; let weekIndex = index" class="filter-week-day" [ngStyle]="{'background-color': [weekDay.color]}"
+                            (click)="filterWeekDays(weekIndex)">
+                            <span>
+                {{ weekDay.name }}
+              </span>
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+        </div>
+    </div>
+    <div class="col-lg-9 col-md-9 col-sm-8 col-xs-8 right-content">
+        <div class="calendar-header">
+            <div class="row row-min-height">
+                <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+                    <div *ngIf="selectedWindow == windowList[0]; else selectedDateTemplate">
+                        <strong>Selected date : {{selectedDate | date}}</strong>
+                    </div>
+                    <ng-template #selectedDateTemplate>
+                        <strong>Selected date Range : <br/>{{selectedDateRange1 | date}} - {{selectedDateRange2 | date}}</strong>
+                    </ng-template>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+
+                </div>
+                <div class="col-all-4">
+                    <div class="row">
+                        <div class="col-all-6 button" [ngClass]="{'active-link' :  (selectedView == 'company')}" (click)="selectView('company')"
+                            style="width:100px">
+                            Company
+                        </div>
+                        <div class="col-all-6 button" [ngClass]="{'active-link' :  (selectedView == 'technician')}" (click)="selectView('technician')"
+                            style="width:100px">
+                            Provider
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <hr />
+            </div>
+            <div class="row row-min-height">
+                <div class="col-all-6">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 button" [ngClass]="{'active-link' :  (selectedWindow == 'day-window')}" (click)="selectWindow('day-window')">
+                            Day </div>
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 button" [ngClass]="{'active-link' :  (selectedWindow == 'week-window')}"
+                            (click)="selectWindow('week-window')"> Week </div>
+                        <!-- <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 button" [ngClass]="{'active-link' :  (selectedWindow == 'month-window')}"
+                            (click)="selectWindow('month-window')"> Month </div> -->
+                    </div>
+                </div>
+                <div class="col-all-6">
+                    <!-- Jobs to be completed: {{selectedCalendar}} <span class="job-count">{{jobCount}}</span> -->
+                </div>
+            </div>
+            <div class="row">
+                <hr />
+            </div>
+            <div class="row" [ngSwitch]="selectedWindow">
+                <div class="col-all-12">
+                    <day-view (openSOActionPopup)="openSoActionsPopup($event)" (openAddEventPopup)="openAddEventPopup($event)" [selectedDate]="selectedDate" [selectedView]="selectedView" [timeFilter]="timeFilter" [eventDetailFilter]="eventDetailFilter"
+                        (showLoader)="showLoaderOnDataFetch($event)" (providerList)="passProviderList($event)" *ngSwitchCase="windowList[0]"></day-view>
+                    <week-view (showLoader)="showLoaderOnDataFetch($event)" (openSOActionPopup)="openSoActionsPopup($event)" [selectedDate]="selectedDate" [selectedView]="selectedView" [hideWeekDaysInput]="hideWeekDays" *ngSwitchCase="windowList[1]"></week-view>
+                    <month-view [selectedDate]="selectedDate" [selectedView]="selectedView" *ngSwitchCase="windowList[2]"></month-view>
+                    <div *ngSwitchDefault> Select a view </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<so-action-popup (showLoader)="showLoaderOnDataFetch($event)" [soEvent]="selectedEvent" (completedAction)="actionCompleted($event)"></so-action-popup>
+<add-event-popup [addEventSlot]="selectedSlot" [addEventDate]="selectedDate" 
+[providerList]="providerList" (completedAddEvent)="addEventCompleted($event)"></add-event-popup>
+<loader [showLoader]="showLoader"></loader>

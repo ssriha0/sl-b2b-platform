@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+	<select id="fetch.providerResourceListByProviderId" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT DISTINCT resource_id FROM vendor_resource WHERE vendor_id = #firmId#;
+    </select>
+    
+    <select id="fetch.id.VendorMatchingScoreId" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT id FROM vendor_matching_score WHERE buyer_id = #buyerID# AND vendor_id = #vendorID#;
+    </select>
+    
+    
+	<insert id="save.VendorMatchingScoreId" parameterClass="java.util.HashMap">
+		INSERT INTO vendor_matching_score (buyer_id, vendor_id, score, created_date)
+		values (#buyerID#, #vendorID#, #score#, NOW());
+	</insert>
+    
+    
+	<update id="update.VendorMatchingScoreId" parameterClass="java.util.HashMap">
+		UPDATE
+			vendor_matching_score
+		SET
+			score = #score#
+			, modified_date = NOW()
+		WHERE
+			id = #vendorMatchingScoreId#;
+	</update>
+    
+</sqlMap>

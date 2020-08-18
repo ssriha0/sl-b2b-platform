@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="ap">
+
+	<cacheModel type="LRU" id="AppPropertiesCache">
+		<flushInterval hours="24" />
+		<flushOnExecute statement="application_properties.update"/>
+		<flushOnExecute statement="application_properties.insert"/>
+		<property name="size" value="500" />
+	</cacheModel>
+	
+	<typeAlias alias="ap" type="com.servicelive.common.properties.ApplicationPropertiesVO"/>	
+	<select id="application_properties.query" parameterClass="ap" resultClass="ap" cacheModel="AppPropertiesCache" >
+		select app_key as appKey, 
+				app_value as appValue
+			from application_properties
+			<dynamic prepend="where">
+				<isNotNull prepend="AND " property="appKey">app_key = #appKey#</isNotNull>
+			</dynamic>		
+	</select>
+
+<!-- reverted code change for SLT-2112 -->
+	<select id="application_propertiesbykey.query" parameterClass="java.lang.String" resultClass="ap" >
+		select app_key as appKey, 
+				app_value as appValue
+			from application_properties
+			Where app_key = #key#
+	</select>
+	
+	<select id="application_secure_propertiesbykey.query" parameterClass="java.lang.String" resultClass="ap" >
+		select app_key as appKey, 
+				aes_decrypt(app_value, 'servicelive123') as appValue,
+				app_file as appFile
+			from encryption_key 
+			Where app_key = #appKey#
+	</select>
+	
+	<select id="application_secure_properties.query" parameterClass="ap" resultClass="ap" cacheModel="AppPropertiesCache" >
+		select  app_key as appKey, 
+				aes_decrypt(app_value, 'servicelive123') as appValue,
+				app_file as appFile
+			from encryption_key 
+			<dynamic prepend="where">
+				<isNotNull prepend="AND " property="appKey">app_key = #appKey#</isNotNull>
+			</dynamic>		
+	</select>
+	
+	<select id="secure_valueforkey.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT app_value FROM encryption_key  WHERE app_key = #key#
+	</select>
+</sqlMap>

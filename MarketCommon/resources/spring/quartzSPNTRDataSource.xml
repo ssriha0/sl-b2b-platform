@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd" xmlns:tx="http://www.springframework.org/schema/tx">
+	
+	<bean id="datasourceBasePlaceholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="classpath:properties/datasource-BASE.properties" />
+		<property name="ignoreUnresolvablePlaceholders" value="true"/>
+		<property name="order" value="10"/>
+	</bean>
+
+	<bean id="datasourcePlaceholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="classpath:properties/datasource-${sl_app_lifecycle}.properties" />
+		<property name="ignoreUnresolvablePlaceholders" value="true"/>
+		<property name="order" value="9"/>
+	</bean>
+
+	<bean id="dataSourceQuartzSPNTRJndi" class="org.springframework.jndi.JndiObjectFactoryBean" lazy-init="true">
+		<property name="jndiName" value="${datasource.quartz.spn.tieredroute.jndi.name}"/>
+	</bean>
+
+	<bean id="dataSourceQuartzSPNTRJdbc" class="com.mysql.jdbc.jdbc2.optional.MysqlDataSource">
+		<property name="url" value="${datasource.quartz.spn.tieredroute.jdbc.url}" />
+		<property name="user" value="${datasource.quartz.spn.tieredroute.jdbc.user}" />
+		<property name="password" value="${datasource.quartz.spn.tieredroute.jdbc.password}" />
+	</bean>
+
+</beans>

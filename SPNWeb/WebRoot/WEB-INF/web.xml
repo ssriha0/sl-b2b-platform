@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="spn" version="2.4"
+ xmlns="http://java.sun.com/xml/ns/j2ee"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+ <display-name>SpN</display-name>
+ 
+ <!--  distributable/ -->
+ <context-param>
+  <param-name>contextConfigLocation</param-name>
+  <param-value>classpath:resources/spring/mainApplicationContext.xml<!--,/WEB-INF/hdiv-applicationContext.xml,/WEB-INF/hdiv-config.xml,/WEB-INF/hdiv-validations.xml  --></param-value>
+ </context-param>
+ <filter>
+  <filter-name>sitemesh</filter-name>
+  <filter-class>com.opensymphony.module.sitemesh.filter.PageFilter</filter-class>
+ </filter>
+ <filter>
+  <filter-name>Spring OpenEntityManagerInViewFilter</filter-name>
+  <filter-class>org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter</filter-class>
+  <init-param>
+   <param-name>entityManagerFactoryBeanName</param-name>
+   <param-value>entityManagerFactoryMain</param-value>
+  </init-param>
+ </filter>
+<!--  Added for HDIV -->
+	<!--  <filter>
+		<filter-name>ValidatorFilter</filter-name>
+		<filter-class>org.hdiv.filter.ValidatorFilter</filter-class>
+	</filter>
+	<filter-mapping>  
+		<filter-name>ValidatorFilter</filter-name>
+		<url-pattern>*.action</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>ValidatorFilter</filter-name>
+		<url-pattern>*.jsp</url-pattern>
+	</filter-mapping> -->
+<!--  <filter> 
+<filter-name>struts-cleanup</filter-name> 
+<filter-class>org.apache.struts2.dispatcher.ActionContextCleanUp</filter-class> 
+</filter> -->
+ <filter> 
+  <filter-name>struts2</filter-name>
+	<filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
+   <init-param>
+        <param-name>config</param-name>
+		<param-value>
+			<!-- hdiv-default.xml, --> struts-default.xml,struts-plugin.xml, struts.xml
+		</param-value>
+	</init-param>
+ </filter>
+ <filter-mapping>
+  <filter-name>sitemesh</filter-name>
+  <url-pattern>*.action</url-pattern>
+ </filter-mapping>
+ <filter-mapping>
+  <filter-name>sitemesh</filter-name>
+  <url-pattern>*.jsp</url-pattern>
+ </filter-mapping>
+ <filter-mapping>
+  <filter-name>Spring OpenEntityManagerInViewFilter</filter-name>
+  <url-pattern>/*</url-pattern>
+ </filter-mapping>
+ <filter-mapping>
+  <filter-name>struts2</filter-name>
+  <url-pattern>/*</url-pattern>
+ </filter-mapping>
+ <filter-mapping>
+  <filter-name>struts2</filter-name>
+  <url-pattern>*.action</url-pattern>
+ </filter-mapping>
+ <listener>
+  <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+ </listener>
+ <!-- Added for HDIV -->
+	<!-- <listener>
+		<listener-class>org.hdiv.listener.InitListener</listener-class>
+	</listener> -->
+<!-- Added Only for application properties -->
+<servlet>
+	<servlet-name>Initialization Servlet</servlet-name>
+	<servlet-class>
+			com.servicelive.spn.web.servlet.ServiceLiveSpnInitServlet</servlet-class>
+	<load-on-startup>3</load-on-startup>
+</servlet>
+ <session-config>
+  <session-timeout>60</session-timeout>
+ </session-config>
+ <welcome-file-list>
+  <welcome-file>index.jsp</welcome-file>
+ </welcome-file-list>
+ <login-config>
+  <auth-method>BASIC</auth-method>
+ </login-config>
+ <jsp-config>
+    <jsp-property-group > 
+        <url-pattern>*.jsp</url-pattern>
+        <page-encoding>UTF-8</page-encoding>
+    </jsp-property-group>
+</jsp-config>
+ <!-- 
+	<security-constraint>
+		<display-name>ServiceLiveSecurity</display-name>
+		<web-resource-collection>
+			<web-resource-name>SecureDirectory</web-resource-name>
+			<description>
+				In this example I lock down all struts actions that are
+				in the validator directory
+			</description>
+			<url-pattern>/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>*</role-name>
+		</auth-constraint>
+	</security-constraint>
+	
+	 
+ login-config>
+		<auth-method>FORM</auth-method>
+		<form-login-config>
+			<form-login-page>/jsp/redirect_login.jsp</form-login-page>
+			<form-error-page>/login.jsp?success=false</form-error-page>
+		</form-login-config>
+	</login-config 
+   Define your roles 
+	-->
+ <security-role>
+  <role-name>Buyer</role-name>
+ </security-role>
+</web-app>

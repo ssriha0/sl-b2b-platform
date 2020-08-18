@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="audit_task">
+
+	<typeAlias alias="pauditVO"
+		type="com.newco.marketplace.vo.provider.AuditVO" />
+
+	<insert id="paudit_task.insert" parameterClass="pauditVO">
+		insert into audit_task (vendor_id, resource_id, audit_link_id,
+		audit_key_id, document_id, wf_state_id) values (#vendorId#,
+		#resourceId#, #auditLinkId#, #auditKeyId#, #documentId#,
+		#wfStateId#)
+        <selectKey resultClass="int">
+           SELECT last_insert_id() 
+           AS audit_task_id
+       </selectKey> 
+	</insert>
+	<update id="paudit_task.updateStatusByTaskId"
+		parameterClass="pauditVO">
+		update audit_task
+		<dynamic prepend="set">
+			<isNotNull prepend=", " property="wfStateId">
+				wf_state_id=#wfStateId#
+			</isNotNull>
+		</dynamic>
+		where audit_task_id=#auditTaskId# and audit_key_id=#auditKeyId#
+		order by modified_date desc limit 1
+	</update>
+
+	<update id="paudit_task.updateStatusByResourceId"
+		parameterClass="pauditVO">
+		update audit_task
+		<dynamic prepend="set">
+			<isNotNull prepend=", " property="wfStateId">
+				wf_state_id=#wfStateId#
+			</isNotNull>
+		</dynamic>
+		where resource_id=#resourceId# and audit_key_id=#auditKeyId#
+		order by modified_date desc limit 1
+	</update>
+
+	<update id="paudit_task.updateStatusByVendorId"
+		parameterClass="pauditVO">
+		update audit_task
+		<dynamic prepend="set">
+			<isNotNull prepend=", " property="wfStateId">
+				wf_state_id=#wfStateId#
+			</isNotNull>
+		</dynamic>
+		where vendor_id=#vendorId# and audit_key_id=#auditKeyId# order
+		by modified_date desc limit 1
+	</update>
+
+	<update id="paudit_task.updateStatusVendorHeader"
+		parameterClass="pauditVO">
+		update vendor_hdr
+		<dynamic prepend="set">
+			<isNotNull prepend=", " property="wfStateId">
+				wf_state_id=#wfStateId#
+			</isNotNull>
+		</dynamic>
+		where vendor_id=#vendorId# order by modified_date desc limit 1
+	</update>
+
+	<update id="paudit_task.updateStatusVendorResource"
+		parameterClass="pauditVO">
+		update vendor_resource
+		<dynamic prepend="set">
+			<isNotNull property="wfStateId">
+				wf_state_id=#wfStateId#
+			</isNotNull>
+		</dynamic>
+		where resource_id=#resourceId# order by modified_date desc limit 1
+	</update>
+
+	<update id="paudit_task.updateStatusVendorCredential"
+		parameterClass="pauditVO">
+		update vendor_credentials
+		<dynamic prepend="set">
+			<isNotNull property="wfStateId">
+				wf_state_id=#wfStateId#
+			</isNotNull>
+		</dynamic>
+		where vendor_id=#vendorId# order by modified_date desc limit 1
+	</update>
+	
+	
+		<update id="paudit_task.updateStatusVendorCredentialById"
+		parameterClass="pauditVO">
+		update vendor_credentials
+		<dynamic prepend="set">
+			<isNotNull property="wfStateId">
+				wf_state_id=#wfStateId#
+			</isNotNull>
+		</dynamic>
+		where vendor_id=#vendorId#  AND vendor_cred_id=#auditKeyId# 
+	</update>
+
+	<update id="paudit_task.updateStatusResourceCredential"
+		parameterClass="pauditVO">
+		update resource_credentials
+			set wf_state_id=#wfStateId#
+		where resource_id=#resourceId# and resource_cred_id=#auditKeyId#
+	</update>
+
+	<select id="paudit_task.getStatusVendorHeader"
+		resultClass="java.lang.String" parameterClass="pauditVO">
+		select wf_state from wf_states where wf_state_id = ( select
+		wf_state_id from vendor_hdr where vendor_id=#vendorId# order by
+		modified_date desc limit 1)
+	</select>
+
+	<select id="paudit_task.getStatusVendorResource"
+		resultClass="java.lang.String" parameterClass="pauditVO">
+		select wf_state from wf_states where wf_state_id = ( select
+		wf_state_id from vendor_resource where resource_id=#resourceId#
+		order by modified_date desc limit 1)
+	</select>
+
+
+	<select id="paudit_task.getStatusVendorCredential"
+		resultClass="java.lang.String" parameterClass="pauditVO">
+		select wf_state from wf_states where wf_state_id = (select
+		wf_state_id from vendor_credentials where vendor_id=#vendorId#
+		order by modified_date desc limit 1)
+	</select>
+
+	<select id="paudit_task.getStatusResourceCredential"
+		resultClass="java.lang.String" parameterClass="pauditVO">
+		select wf_state from wf_states where wf_state_id=(select
+		wf_state_id from resource_credentials where
+		resource_id=#resourceId# order by modified_date desc limit 1)
+	</select>
+
+	<select id="paudit_task.getVendorBackgroundCheckStatus"
+		resultClass="java.lang.String" parameterClass="pauditVO">
+		select wf_state from wf_states where wf_state_id = (select
+		background_state_id from vendor_hdr where
+		resource_id=#resourceId# order by modified_date desc limit 1)
+	</select>
+
+	<select id="paudit_task.getVendorIdByResourceId"
+		resultClass="java.lang.Integer" parameterClass="java.lang.Integer">
+		<!--  
+		select vendor_id from vendor_resource where
+		resource_id=#resourceId#  limit 1
+		-->
+		select distinct vendor_id  from vendor_resource where resource_id=#resourceId#
+	</select>
+
+
+	<select id="paudit_task.getVendorIdByUserName"
+		resultClass="java.lang.Integer" parameterClass="java.lang.String">
+		select vendor_id from user_profile where user_name=#value# order
+		by modified_date desc limit 1
+	</select>
+
+	<select id="paudit_task.getStatusByVendorId"
+		resultClass="java.lang.String" parameterClass="pauditVO">
+		select wf_state from wf_states where wf_state_id = (select
+		wf_state_id from audit_task where vendor_id=#vendorId# and
+		audit_key_id=#auditKeyId# order by modified_date desc limit 1)
+	</select>
+
+	<select id="paudit_task.getStatusByTaskId"
+		resultClass="java.lang.String" parameterClass="pauditVO">
+		select wf_state from wf_states where wf_state_id=(select
+		wf_state_id from audit_task where resource_id=#resourceId# and
+		audit_key_id=#auditKeyId# order by modified_date desc limit 1)
+	</select>
+
+	<select id="paudit_task.getAuditStatusForResource"
+		parameterClass="pauditVO" resultClass="pauditVO">
+		select vendor_id as vendorId, resource_id as resourceId,
+		audit_link_id as auditLinkId, audit_key_id as auditKeyId,
+		document_id as documentId, wf_state_id as wfStateId from
+		audit_task where resource_id=#resourceId# and
+		audit_key_id=#auditKeyId# order by modified_date desc limit 1
+	</select>
+
+
+	<select id="paudit_task.getAuditStatusForVendor"
+		parameterClass="pauditVO" resultClass="pauditVO">
+		select vendor_id as vendorId, audit_link_id as auditLinkId,
+		audit_key_id as auditKeyId, document_id as documentId,
+		wf_state_id as wfStateId from audit_task where
+		vendor_id=#vendorId# and audit_key_id=#auditKeyId# order by
+		modified_date desc limit 1
+	</select>
+
+	<update id="paudit_task.updateResourceBackgroundCheckStatus"
+		parameterClass="pauditVO">
+		UPDATE vendor_resource
+		<dynamic prepend="set">
+			<isNotNull prepend=", " property="wfStateId">
+				background_state_id = #wfStateId#
+			</isNotNull>
+		</dynamic>
+		where resource_id = #resourceId#
+	</update>
+
+
+	<update id="paudit_task.updateBGCheckByResourceId"
+		parameterClass="pauditVO">
+		UPDATE audit_task
+		<dynamic prepend="SET">
+			<isNotNull property="wfStateId">
+				wf_state_id= #wfStateId#
+			</isNotNull>
+		</dynamic>
+		WHERE resource_id=#resourceId# and audit_key_id=#auditKeyId# and
+		wf_state_id in (10, 9, 8, 7) 
+		<isNotNull prepend=" AND " property="auditLinkId">
+			audit_link_id=#auditLinkId# 
+		</isNotNull> 
+	</update>
+
+
+	<select id="paudit_task.getResourceBackgroundCheckStatus"
+		resultClass="java.lang.String" parameterClass="pauditVO">
+		select wf_state from wf_states where wf_state_id = ( select
+		background_state_id from vendor_resource where
+		resource_id=#resourceId# order by modified_date desc limit 1 )
+	</select>
+
+
+	<update id="paudit_task.updateByResourceId"
+		parameterClass="pauditVO">
+		UPDATE audit_task
+		<dynamic prepend="SET">
+			<isNotNull property="wfStateId">
+			 wf_state_id= #wfStateId#,
+			</isNotNull>
+		</dynamic>
+		document_id= #documentId#
+		WHERE resource_id=#resourceId# and audit_key_id=#auditKeyId#
+		<isNotNull prepend=" AND " property="auditLinkId">
+			audit_link_id=#auditLinkId# 
+		</isNotNull> 
+		order by modified_date desc limit 1
+	</update>
+
+	<update id="paudit_task.updateByVendorId" parameterClass="pauditVO">
+		UPDATE audit_task
+		<dynamic prepend="SET">
+			<isNotNull property="wfStateId">
+			 wf_state_id= #wfStateId#, 
+			</isNotNull>
+		</dynamic>
+		document_id= #documentId#
+		WHERE vendor_id=#vendorId# and audit_key_id=#auditKeyId#
+		<isNotNull prepend=" AND " property="auditLinkId">
+			audit_link_id=#auditLinkId# 
+		</isNotNull> 
+		order by modified_date desc limit 1
+	</update>
+
+	<select id="paudit_task.getVendorComplianceStatus"
+		resultClass="java.lang.String" parameterClass="java.lang.Integer">
+		select wf_state from wf_states where wf_state_id = (select
+		wf_state_id from vendor_hdr where vendor_id=#value# order by
+		modified_date desc limit 1)
+	</select>
+
+	<update id="paudit_task.submitForVendorComplianceStatus"
+		parameterClass="pauditVO">
+		update vendor_hdr
+		<dynamic prepend="set">
+			<isNotNull prepend=", " property="wfStateId">
+				wf_state_id=#wfStateId#
+			</isNotNull>
+		</dynamic>
+		where vendor_id=#vendorId# order by modified_date desc limit 1
+	</update>
+
+	<update id="paudit_task.setAuditPendingStatusForVendorHdr"
+		parameterClass="java.lang.Integer">
+		update vendor_hdr set audit_pending_ind=1 where
+		vendor_id=#value# order by modified_date desc limit 1
+	</update>
+
+	<update id="paudit_task.unsetAuditPendingStatusForVendorHdr"
+		parameterClass="java.lang.Integer">
+		update vendor_hdr set audit_pending_ind=0 where
+		vendor_id=#value# order by modified_date desc limit 1
+	</update>
+
+	<select id="paudit_task.getAuditPendingStatusForVendorHdr"
+		resultClass="java.lang.Integer" parameterClass="java.lang.Integer">
+		select audit_pending_ind from vendor_hdr where vendor_id=#value#
+		order by modified_date desc limit 1
+	</select>
+
+	<update id="paudit_task.updateStateReasonCdForResource"
+		parameterClass="pauditVO">
+		UPDATE audit_task SET wf_state_id = #wfStateId#,
+		reviewed_by = #reviewedBy# WHERE resource_id =
+		#resourceId# AND vendor_id = #vendorId# AND audit_link_id =
+		#auditLinkId# AND audit_key_id = #auditKeyId# AND audit_task_id
+		= #auditTaskId#
+	</update>
+	
+	<delete id="paudit_task.deleteReasonCdForResource"
+		parameterClass="pauditVO">
+		DELETE FROM audit_task_reason_cd 
+		WHERE audit_task_id = #auditTaskId#
+	</delete>
+	
+	<insert id="paudit_task.insertReasonCdForResource"
+		parameterClass="pauditVO">
+		INSERT INTO audit_task_reason_cd 
+		VALUES (#auditTaskId#, #reasonId#) 
+	</insert>
+
+	<select id="paudit_task.queryWfStateReasonCd"
+		parameterClass="pauditVO" resultClass="pauditVO">
+		SELECT wf_state_id as wfStateId, reason_cd as reasonId,
+		audit_task_id as auditTaskId FROM audit_task WHERE resource_id =
+		#resourceId# AND vendor_id = #vendorId# AND audit_link_id =
+		#auditLinkId# AND audit_key_id = #auditKeyId#
+
+	</select>
+
+	<select id="paudit_task.queryWfStateReasonCdTM"
+		parameterClass="pauditVO" resultClass="pauditVO">
+		SELECT att.wf_state_id as wfStateId, reason_cd as reasonId,
+		audit_task_id as auditTaskId FROM audit_task att, wf_states wf
+		WHERE att.wf_state_id = wf.wf_state_id AND resource_id =
+		#resourceId# AND vendor_id = #vendorId# AND att.audit_link_id
+		=#auditLinkId# AND audit_key_id = #auditKeyId# AND wf.wf_entity
+		= #wfEntity#
+	</select>
+	<select id="paudit_task.getReasonCodeByVendorIDAndCredentialID" parameterClass="pauditVO" resultClass="java.lang.String">
+		SELECT	reason_name 
+		FROM    audit_task at,lu_audit_reason_codes larc,audit_task_reason_cd atrc
+		WHERE	vendor_id = #vendorId#  
+		AND		audit_key_id = #auditKeyId# 
+		AND  	at.wf_state_id = #wfStateId#
+		AND 	at.audit_task_id = atrc.audit_task_id
+		AND 	atrc.reason_cd = larc.reason_cd 
+		order by modified_date desc limit 1
+	</select>
+</sqlMap>

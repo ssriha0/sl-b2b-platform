@@ -1,0 +1,144 @@
+<project name="Tokenization-BuildAll" default="distribute"  basedir="../">
+	<echo level="info">
+	===============================================================================
+	                                ${ant.project.name} 
+	===============================================================================</echo>		
+	<target name="package" depends="distribute"/>
+	
+	<tstamp>
+		<format property="time" pattern="MM/dd/yyyy hh:mm:ss aa"  offset="-0" unit="hour"/>
+	</tstamp>
+	<echo>Build start time is :: ${time}</echo>
+	
+	<property name="dir.base" value="${basedir}" />
+	<property name="dir.src" value="${dir.base}/src/main/java" />
+	<property name="dir.dest" value="${dir.base}/bin" />
+	<property name="dir.lib" value="${dir.base}/lib" />
+	<property name="dir.dist" value="${dir.base}/dist"/>
+	<property name="dir.src.test" value="${dir.base}/src/test/java"/>
+	<property name="dir.junit.report" value="${dir.base}/${ant.project.name}Reports" />
+	<!--<property name="dir.slCommonBuild.nondeployables" value="../SLCommonBuild/lib/nondeployables"/>-->
+	
+	<path id="build.class.path">
+		<fileset dir="${dir.lib}">
+			<include name="*.jar" />
+		</fileset>
+		<!--<fileset dir="${dir.slCommonBuild.nondeployables}">
+			<include name="junit.jar" />
+			<include name="hamcrest-core-1.1.jar" />
+			<include name="hamcrest-library-1.1.jar" />
+			<include name="mockito-all-1.8.4.jar"/>
+		</fileset>-->
+	</path>
+	
+	<target name="clean">
+		<delete dir="${dir.dest}"/>
+		<delete dir="${dir.junit.report}" failonerror="false"/>			
+	</target>
+
+	<target name="init" depends="clean">
+		<mkdir dir="${dir.dest}"/>
+		<mkdir dir="${dir.junit.report}"/>	
+
+		<propertyfile comment="Build Information"
+			              file="${dir.dest}/buildInfo.txt">
+			<entry key="build.date"
+			           type="date"
+			           pattern="EEEE MMM dd, yyyy"
+			           value="now"/>
+			<entry key="build.time"
+			           type="date"
+			           pattern="kk:mm:ss"
+			           value="now"/>
+			<entry key="build.timestamp"
+			           type="date"
+			           pattern="yyyy-MM-dd'T'HH:mm:ss"
+			           value="now"/>
+			<entry key="build.user.name" value="${user.name}"/>
+			<entry key="build.computer" value="${env.COMPUTERNAME}"/>
+		</propertyfile>
+	</target>
+
+	<target name="compile" depends="init">
+			<javac 
+				srcdir="${dir.src}"
+	            destdir="${dir.dest}"
+	            classpathref="build.class.path"
+				target="1.5"
+				source="1.5"
+				debug="on"
+				deprecation="false"
+			/>
+	</target>
+	
+	<target name="jar" depends="compile">
+		<jar jarfile="${dir.dist}/tokenization.jar" manifest="${dir.base}/src/MANIFEST.MF">
+			<fileset dir="${dir.dest}">
+				<include name="**/*.class"/>
+				<include name="**/*.properties"/>
+				<include name="**/*.txt"/>
+
+			</fileset>
+
+			<zipfileset src="${dir.lib}/mysql-connector-java-5.0.4-bin.jar"
+				excludes="META-INF/*" />
+			<zipfileset src="${dir.lib}/log4j-1.2.14.jar"
+				excludes="META-INF/*" />
+			<zipfileset src="${dir.lib}/java-mail-1.4.jar"
+				excludes="META-INF/*" />
+			<zipfileset src="${dir.lib}/commons-lang-2.4.jar"
+				excludes="META-INF/*" />
+			<zipfileset src="${dir.lib}/activation-1.1.jar"
+				excludes="META-INF/*" />
+			<zipfileset src="${dir.lib}/jaxb-api-2.1.jar"
+							excludes="META-INF/*" />
+			<zipfileset src="${dir.lib}/xstream-1.3.jar"
+													excludes="META-INF/*" />
+		</jar>
+		<tstamp>
+			<format property="time2" pattern="MM/dd/yyyy hh:mm:ss aa" offset="-0" unit="hour"/>
+		</tstamp>
+		
+	</target>
+
+	<target name="zip-dist" depends="jar">
+		<delete dir="${dir.dist}/tokenizationzip"/>
+		<delete file="${dir.dist}/tokenizationzip.zip"/>
+		<delete file="${dir.dist}/tokenizationzip2.zip"/>
+		<zip destfile="${dir.dist}/tokenizationzip.zip"
+	       basedir="${dir.dist}"
+		   excludes="**/*.log , **/*.log.*"
+	        />
+		<echo>Build finish time is :: ${time2}</echo>
+		<echo>Build Information is written to buildInfo.txt file at ${dir.dist}/tokenization.jar/buildInfo.txt</echo>
+	</target>
+	
+	<!-- Compile test junit source code -->
+	<target name="compile-test" depends="zip-dist" description="compile the junit source " >
+	 	<!-- Compile the java code from dir.src.test into dir.dest -->
+		<javac
+			srcdir="${dir.src.test}"
+			destdir="${dir.dest}"		
+			target="1.5"
+			source="1.5"
+			classpathref="build.class.path"
+			debug="on"
+			deprecation="false"	>
+	 	</javac>
+	</target>
+	
+	<!-- Execute JUnit Tests -->
+	<target name="junit-report" depends="compile-test" description="Execute Unit Tests" >
+		
+	</target>
+	
+	<target name="distribute" depends="junit-report">
+	</target>
+	
+	<!-- Sonar Integration -->
+	<property name="dir.sonar.src" value="${basedir}/src/main/java" />
+	<!--<import file="../../SLCommonBuild/ant/opt/ant-script-library/asl-java-sonar.xml"/>
+	<target name="sonar" depends="sonar-init, sonar-run">
+	</target>-->
+
+</project>

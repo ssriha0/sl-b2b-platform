@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="OrderFulfillment.Remote.MainPathTests" thread-count="1">
+    <test name="MainPathTest" >
+        <groups><run><include name="init" /></run></groups>
+        <classes>
+            <class name="com.servicelive.orderfulfillment.remote.test.workflow.state.CloseOrderTest">
+                <methods>
+                    <include name="createServiceOrder"/>
+                    <include name="editDraftOrder"/>
+                    <include name="postServiceOrder"/>
+                    <include name="acceptServiceOrder"/>
+                    <include name="activateOrder"/>
+                    <include name="completeOrder"/>
+                    <include name="closeOrder"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="RecallTest" >
+        <groups><run><include name="init" /></run></groups>
+        <classes>
+            <class name="com.servicelive.orderfulfillment.remote.test.workflow.MainPathTests">
+                <methods>
+                    <include name="createServiceOrder"/>
+                    <include name="editDraftOrder"/>
+                    <include name="postServiceOrder"/>
+                    <include name="acceptServiceOrder"/>
+                    <include name="activateOrder"/>
+                    <include name="completeOrder"/>
+                    <include name="recallOrderCompletion"/>
+                    <include name="completeOrderAfterRecall"/>
+                    <include name="closeAfterRecall"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>
+

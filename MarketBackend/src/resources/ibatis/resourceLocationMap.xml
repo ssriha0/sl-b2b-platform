@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="location">
+
+    <typeAlias alias="resourceLocation" type="com.newco.marketplace.vo.provider.ResourceLocation"/>	
+
+    <insert id="resourceLocation.insert" parameterClass="resourceLocation">
+        INSERT INTO resource_location(resource_id,locn_id)
+			VALUES(#resourceId#,#locationId#)
+	</insert>
+	
+	<insert id="buyerLocation.insert" parameterClass="resourceLocation">
+        INSERT INTO buyer_locations(buyer_id,locn_id,created_date,modified_date,modified_by)
+			VALUES(#buyerId#,#locationId#,#createdDate#,#modifiedDate#,#modifiedBy#)
+	</insert>
+	
+	<insert id="buyerResourceLocation.insert" parameterClass="resourceLocation">
+        INSERT INTO buyer_resource_locations(resource_id,locn_id,default_locn,created_date,modified_date,modified_by)
+			VALUES(#resourceId#,#locationId#,#defaultLocnInd#,#createdDate#,#modifiedDate#,#modifiedBy#)
+	</insert>
+	
+</sqlMap>

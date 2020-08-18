@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd
+http://cxf.apache.org/jaxrs
+http://cxf.apache.org/schemas/jaxrs.xsd">
+
+	<jaxrs:server id="eventCallback" address="/">
+
+		<jaxrs:serviceBeans>
+
+			<bean class="com.newco.marketplace.api.processor.EventCallbackProcessor">
+				<property name="eventCallbackService">
+					<ref bean="eventCallbackService" />
+				</property>
+				<property name="closeOrderSerivce">
+					<ref bean="closeOrderSerivce" />
+				</property>
+				<property name="rescheduleOrderService">
+					<ref bean="rescheduleOrderService" />
+				</property>
+				<property name="conversionUtility">
+					<ref bean="conversionUtility" />
+				</property>
+			</bean>
+			
+
+			<!-- End -->
+		</jaxrs:serviceBeans>
+	</jaxrs:server>
+
+	<!-- <bean id="" abstract="true" class="" scope="prototype"> <property name=""> 
+		<ref bean=""/> </property> </bean> -->
+	<bean id="apiSecurity"
+		class="com.newco.marketplace.business.businessImpl.APISecurityBOImpl">
+		<property name="apiSecurityDAO">
+			<ref bean="apiSecurityDAO" />
+		</property>
+	</bean>
+
+	<bean id="closeOrderSerivce" class="com.newco.marketplace.api.service.CloseOrderService">
+		<property name="somClient">
+    		<ref bean="somClient"/>
+  		</property>	
+	</bean>
+	
+	<bean id="somClient"
+		class="com.newco.marketplace.api.client.SOMClient">
+	</bean>
+	
+	<bean id="conversionUtility"
+				class="com.newco.marketplace.api.utils.xstream.XStreamUtility">
+	</bean>
+
+	<bean id="rescheduleOrderService" class="com.newco.marketplace.api.service.RescheduleOrderService">
+		<property name="somClient">
+    		<ref bean="somClient"/>
+  		</property>	
+	</bean>
+</beans>

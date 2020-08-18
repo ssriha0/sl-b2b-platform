@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+
+    <package name="generalInfo" extends="ServiceLiveBase">
+    	<default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+	   
+	    <action name="generalInfoAction*" class="generalInfoAction" method="{1}">
+			
+			<result name="load">/jsp/providerRegistration/modules/tab_general_info.jsp</result>
+			
+			<result name="success" type="redirectAction">
+	             <param name="actionName">serviceProAllTab?tabView=tab1</param>
+	            <param name="namespace">/jsp/providerRegistration</param>
+        	</result>
+        	
+			<result name="input" type="redirectAction">
+	             <param name="actionName">serviceProAllTab?tabView=tab1</param>
+	             <param name="namespace">/jsp/providerRegistration</param>	  
+	             <param name="nexturl">jsp/providerRegistration/generalInfoActiondoInput.action</param>           
+        	</result>
+			
+			<result name="next" type="redirectAction">
+	           <param name="actionName">serviceProAllTab?tabView=tab2</param>
+	            <param name="namespace">/jsp/providerRegistration</param>
+        	</result>
+        	
+        	<result name="updateProfile" type="redirectAction">
+	           <param name="actionName">regDashboarddoSubmitRegistration</param>
+	            <param name="namespace">/jsp/providerRegistration</param>
+        	</result>
+        	 <result name="remove_user" type="redirectAction">
+	            <param name="actionName">regDashboarddoSubmitRegistration</param>
+        	</result>
+        	<result name="error" type="redirectAction">
+	             <param name="actionName">serviceProAllTab?tabView=tab1</param>
+	             <param name="namespace">/jsp/providerRegistration</param>                        
+        	</result>
+       		<result name="dispatchZipCode" type="stream">
+	             <param name="contentType">text/plain</param>
+	   			 <param name="inputName">inputStream</param>                       
+        	</result>   
+		</action>
+	    <!-- Add actions here -->
+	    
+	   	<action name="termsAndConditions_*" class="termsAndConditionsAction" method="{1}">
+			<result name="success">/jsp/public/common/footer/blank_agreement.jsp</result>	
+			<result name="newWindow">/jsp/public/common/footer/blank_agreement_termsandcond.jsp</result>   		
+	   	</action>
+	    
+	    
+	    <action name="generalInfoPicture_*" class="generalInfoPictureAction" method="{1}">
+			<result name="success">/jsp/providerRegistration/modules/tab_general_info_provider_picture.jsp</result>
+			<result name="uploadsuccess">/jsp/providerRegistration/modules/tab_general_info_provider_upload_success.jsp</result>
+			<result name="error">/jsp/providerRegistration/modules/tab_general_info_provider_upload_error.jsp</result> 		
+	   	</action>
+	    
+    </package>
+</struts>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="vendor_location">
+	<typeAlias alias="vendorLocation" type="com.newco.marketplace.vo.provider.VendorLocation"/>	
+		<select id="vendor_location.query" parameterClass="vendorLocation" resultClass="vendorLocation">
+    
+		select vendor_id as vendorId, 
+				locn_id as locationId, 
+				created_date as createdDate
+			from vendor_location
+			<dynamic prepend="where">
+				<isGreaterThan prepend="AND" property="vendorId" compareValue="-1"> vendor_id = #vendorId#</isGreaterThan>
+				<isGreaterThan prepend="AND" property="locationId" compareValue="-1"> locn_id = #locationId#</isGreaterThan>
+				<isNotNull prepend="AND" property="createdDate"> created_date = #createdDate#</isNotNull>
+			</dynamic>		
+	</select>
+	
+	<update id="vendor_location.update" parameterClass="vendorLocation">
+		update vendor_location
+		<dynamic prepend="set">
+			<isGreaterThan prepend=", " property="vendorId" compareValue="-1">vendor_id = #vendorId#</isGreaterThan>
+			<isGreaterThan prepend=", " property="locationId" compareValue="-1">locn_id = #locationId#</isGreaterThan>
+			<isNotNull prepend=", " property="createdDate">created_date = #createdDate#</isNotNull>
+		</dynamic>
+		where vendor_id = #vendorId#
+	</update>
+	
+		<insert id="vendor_location.insert" parameterClass="vendorLocation">
+		insert into vendor_location	(vendor_id,
+			locn_id,
+			created_date
+			)			
+		values(#vendorId#,
+			   #locationId#,
+			   #createdDate#
+			   )  
+	</insert>
+</sqlMap>

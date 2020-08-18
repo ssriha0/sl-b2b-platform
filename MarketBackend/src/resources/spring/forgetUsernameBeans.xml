@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
+	default-lazy-init="true">
+	
+	<!-- Start DAO  Loading -->
+	<bean id="iUserProfileDao" class="com.newco.marketplace.persistence.daoImpl.provider.UserProfileDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	<!-- End DAO  Loading -->
+	
+	<!-- Start DAO  Loading -->
+	<bean id="iInterimPasswordDao" class="com.newco.marketplace.persistence.daoImpl.common.InterimPasswordDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	<!-- End DAO  Loading -->
+	
+    <!-- Start BO  Loading -->
+	<bean id="forgotUsernameBOImplTarget" class="com.newco.marketplace.business.businessImpl.provider.ForgotUserNameBOImpl">
+        <constructor-arg index="0" ref="iUserProfileDao"/>
+        <constructor-arg index="1" ref="providerEmailBOImpl"/>
+        <constructor-arg index="2" ref="iInterimPasswordDao"/>
+	</bean>
+	<!-- End BO  Loading -->
+		
+	
+</beans>

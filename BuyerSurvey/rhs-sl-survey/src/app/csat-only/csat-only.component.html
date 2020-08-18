@@ -1,0 +1,8 @@
+<form [formGroup]="surveyForm" (ngSubmit)="onSubmit()" *ngIf="surveyDetails">
+  <div class="container-fluid inner-wrap">
+    <app-survey-header [buyerDetails]="buyerDetails"></app-survey-header>
+
+    <app-csat-form [parentForm]="surveyForm" [surveyDetails]="surveyDetails.csat"></app-csat-form>
+  </div>
+  <app-survey-footer [parentForm]="surveyForm" [privacyLink]="surveyDetails.policyURL" [termsLink]="surveyDetails.termsURL"></app-survey-footer>
+</form>

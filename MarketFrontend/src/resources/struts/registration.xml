@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+
+    <package name="registration" extends="ServiceLiveBase">
+    	<default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+       	<action name="providerRegistrationAction" class="providerRegistrationAction">
+			<result name="input">/jsp/providerRegistration/provider_registration.jsp</result>	
+			<result name="success">/jsp/providerRegistration/provider_registration.jsp</result>
+			<result name="duplicate">/jsp/providerRegistration/provider_registration.jsp</result>
+			<result name="error">/jsp/public/error/body/errorBody.jsp</result>	
+		</action>
+		 
+		 <action name="providerRegSaveAction" class="providerRegistrationAction" method="insert">
+		 	<result name="input">/jsp/providerRegistration/provider_registration.jsp</result>
+		 	<result name="success">/jsp/providerRegistration/provider_congrats.jsp</result>
+			<result name="error">/jsp/public/error/body/errorBody.jsp</result>
+			<result name="duplicate">/jsp/providerRegistration/provider_registration.jsp</result>
+			<result name="invalidState">/jsp/providerRegistration/provider_congrats_invalid_state.jsp</result>
+					
+		</action> 
+		
+		 <action name="providerDoSaveAction" class="providerRegistrationAction" method="saveProviderDetails">
+		 <result name="error">/jsp/public/error/body/errorBody.jsp</result>
+		 <result name="success">/jsp/providerRegistration/provider_congrats.jsp</result>
+		 <result name="duplicate">/jsp/providerRegistration/provider_registration.jsp</result>
+		 </action>
+		 
+        <!-- Add actions here -->
+    </package>
+</struts>

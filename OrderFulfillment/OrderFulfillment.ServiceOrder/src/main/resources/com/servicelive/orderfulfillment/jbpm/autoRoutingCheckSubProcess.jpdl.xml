@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process name="autoRoutingCheckSubProcess" xmlns="http://jbpm.org/4.0/jpdl">
+
+    <start g="25,101,48,48">
+        <transition to="AutoRouteBehaviorCheck"/>
+    </start>
+
+    <decision g="173,100,48,48" name="AutoRouteBehaviorCheck">
+        <handler expr="#{autoRouteBehaviorCheck}" />
+        <transition g="349,256:-67,-20" name="Conditional" to="Post">
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList">
+                    <string value="SetProvidersForConditionalAutoRoutingCmd()"/>                    
+                </field>
+            </event-listener>
+        </transition>
+        <transition g="344,179:-24,4" name="Tier" to="Post">
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList">
+                    <string value="SetProvidersForAutoRoutingCmd()"/>
+                </field>
+            </event-listener>
+        </transition>
+        <transition g="-32,-20" name="Basic" to="Post">
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList">
+                    <string value="SetProvidersForAutoRoutingCmd()"/>
+                </field>
+            </event-listener>
+        </transition>
+        <transition g="340,48:-34,-20" name="None" to="Post"/>
+    </decision>
+
+    <end g="421,94,88,52" name="Post"/>
+
+</process>

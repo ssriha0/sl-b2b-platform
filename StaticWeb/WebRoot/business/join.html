@@ -1,0 +1,798 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+  	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Join Now - ServiceLive for Business</title>
+
+		<!-- Framework CSS -->
+		<link rel="stylesheet" href="/ServiceLiveWebUtil/business/styles/screen.css" type="text/css" media="screen, projection">
+		<link rel="stylesheet" href="/ServiceLiveWebUtil/business/styles/print.css" type="text/css" media="print">
+		<link rel="stylesheet" href="/ServiceLiveWebUtil/provider/styles/banner.css" type="text/css">
+		<!--[if lt IE 8]><link rel="stylesheet" href="/ServiceLiveWebUtil/business/styles/ie.css" type="text/css" media="screen, projection"><![endif]-->
+
+
+		<script src="/ServiceLiveWebUtil/javascript/jquery/jquery.min.js" type="text/javascript"></script>
+		<script src="/ServiceLiveWebUtil/javascript/jquery/jqueryui/jquery-ui-1.10.4.custom.min.js" type="text/javascript"></script>
+		<script src="/ServiceLiveWebUtil/business/scripts/sifr.js" type="text/javascript"></script>
+		<script src="/ServiceLiveWebUtil/business/scripts/sifr-config.js" type="text/javascript"></script>
+		<script src="/ServiceLiveWebUtil/business/scripts/config.js" type="text/javascript"></script>
+	    <script src="/ServiceLiveWebUtil/provider/scripts/banner.js" type="text/javascript"></script>
+
+		<script type="text/javascript">
+			$(document).ready(function() {		
+				$("#accordion").accordion();
+				$("#buyerRegistrationDTO_businessStarted").datepicker({ dateFormat: 'yy-mm-dd' });
+				
+				var submitUrl = "https://" + window.location.hostname; 
+			       if (window.location.port != null) { 
+			                submitUrl += ":" + port
+			       } 
+			       submitUrl += "/MarketFrontend/buyerRegistrationAction_submit.action"; 
+			      	// alert(submitUrl); 
+			        $("#buyerRegistration").attr("action", submitUrl);
+			        $(".positive").attr("method", "submit");
+
+
+				$('.positive').click(function(){
+			        $("#buyerRegistration").submit();
+				});
+				
+				function dupeForm() {
+						var xstreet1 = $("#businessStreet1").val();
+						$("#mailingStreet1").val(xstreet1);
+
+						var xstreet2 = $("#businessStreet2").val();
+						$("#mailingStreet2").val(xstreet2);
+
+						var xcity = $("#businessCity").val();
+						$("#mailingCity").val(xcity);
+
+						var xzip = $("#businessZip").val();
+						$("#mailingZip").val(xzip)
+
+						var xstate = $("#businessState").val();
+						$("#mailingState").val(xstate)
+				}
+				
+				$('#copyform').click(function(){	
+					dupeform();
+				});
+				
+				
+			});
+		</script>
+	</head>
+<body id="about" class="retail">
+<!--  <body id="about" class="retail" onload="displayBanner();">
+	<div id="bannerDiv" class="bannerDiv" style="display:none;">
+	     <span class="spanText" id="spanText"></span>
+	     <a href="javascript:void(0);" onclick="removeBanner();"> Dismiss </a>
+    </div>-->
+	<div id="header" class="container">
+		<h1 id="logo"><a href="index.html">ServiceLive for Business</a></h1>
+		<div id="menu">
+			<ul>
+				<li class="home"><a title="ServiceLive Home" href="index.html">Home</a></li>
+				<li class="about"><a title="About ServiceLive" href="about.html">About</a></li>
+				<li class="industry_solutions"><a title="Industry Solutions" href="industry-solutions/index.html">Industry Solutions</a></li>
+				<li class="service_providers"><a title="Service Providers" href="providers.html">Service Providers</a></li>
+				<li class="products"><a title="ServiceLive Products" href="products/index.html">Products</a></li>
+				<li class="contact"><a title="Contact ServiceLive" href="contact.html">About</a></li>
+				<li class="login"><a title="Account Login" href="login.html">Account Login</a></li>
+			</ul>
+		</div>
+	</div>
+
+	<div id="content" class="container clearfix">
+		<div id="subheader">
+			<div class="submenu"></div>
+		</div>
+		<div id="breadcrumb">
+			<a href="index.html">Home</a> &raquo; <a href="join.html">Join Now</a>
+		</div>
+		<div id="inducontent" class="retail clearfix">
+			<div class="span-18">
+				<h2>Join Now</h2>
+				
+				
+				<p> ServiceLive connects you to an online community of pre-screened service providers. Sign up for a buyer account to find providers who can work within your budget on your schedule. </p>				
+				<div style="background: #ffffcc; font-size: 10px;">
+				<p>
+				<!-- SL-21161: Removed "VT" from list of U.S. territories unable to fulfill buyer requests-->
+					<strong>We are unable to fulfill buyer requests in the following states/U.S. Territories:</strong>
+					AS, FM, GU, MH, MP, PW, VI
+				</p>
+				</div>
+				<p class="required_msg">An asterisk (<span class="req">*</span>) indicates a required field.</p>
+				
+				<form id="buyerRegistration" name="buyerRegistrationAction" action="/MarketFrontend/buyerRegistrationAction_submit.action" method="post">
+				<fieldset id="signin" class="span-17">
+					<legend>Business Information</legend>
+					
+					<p> Enter your business contact information. If you are purchasing services for yourself and not as a representative for a company, provide your personal contact information instead. </p>
+					
+					<div class="clearfix">
+						<div class="span-8">
+							<label>Business Name <span class="req">*</span></label>
+							<input id="buyerRegistrationDTO_businessName" name="buyerRegistrationDTO.businessName" autocomplete="off" type="text" class="text span-7">
+						</div>
+							<div class="span-5">
+							<label>Main Business Phone <span class="req">*</span></label>
+							<input maxlength="3" id="buyerRegistrationDTO_phoneAreaCode" name="buyerRegistrationDTO.phoneAreaCode" type="text" class="text phone">
+							<input maxlength="3" id="buyerRegistrationDTO_phonePart1" name="buyerRegistrationDTO.phonePart1" type="text" class="text phone">
+							<input maxlength="4" id="buyerRegistrationDTO_phonePart2" name="buyerRegistrationDTO.phonePart2" type="text" class="text phonei">
+							</div>
+							<div class="span-2">
+								<label>Ext.</label>
+								<input id="buyerRegistrationDTO_phoneExtn" name="buyerRegistrationDTO.phoneExtn" type="text" class="text phoneext">							
+							</div>
+						</div>
+						<div class="clearfix">
+							<div class="span-8">
+								<label> Business Structure <span class="req">*</span></label>
+								<select name="buyerRegistrationDTO.businessStructure" id="buyerRegistrationDTO_businessStructure" class="text">
+							    <option value=""
+							    selected="selected"
+							    >---------- Please Select ---------</option>
+							    <option value="7">Individual</option>
+							    <option value="3">Sole Proprietor</option>
+							    <option value="8">S Corporation</option>
+							    <option value="1">Partnership</option>
+							    <option value="4">LLP</option>
+							    <option value="9">LLC</option>
+							    <option value="2">Corporation</option>
+								</select>
+						</div>					
+						<div class="span-8 last">
+							<label> Primary Industry <span class="req">*</span></label>					
+						
+							<select name="buyerRegistrationDTO.primaryIndustry" id="buyerRegistrationDTO_primaryIndustry" class="text">
+
+							    <option value=""
+							    selected="selected"
+							    >---------- Please Select ---------</option>
+							    <option value="100">Accounting</option>
+							    <option value="200">Airlines/Aviation</option>
+							    <option value="300">Alternative Dispute Resolution</option>
+							    <option value="400">Alternative Medicine</option>
+							    <option value="500">Animation</option>
+
+							    <option value="600">Apparel &amp; Fashion</option>
+							    <option value="700">Architecture &amp; Planning</option>
+							    <option value="800">Arts and Crafts</option>
+							    <option value="900">Automotive</option>
+							    <option value="1000">Aviation &amp; Aerospace</option>
+
+							    <option value="1100">Banking</option>
+							    <option value="1200">Biotechnology</option>
+							    <option value="1300">Broadcast Media</option>
+							    <option value="1400">Building Materials</option>
+							    <option value="1500">Business Supplies and Equipment</option>
+							    <option value="1600">Capital Markets</option>
+
+							    <option value="1700">Chemicals</option>
+							    <option value="1800">Civic &amp; Social Organization</option>
+							    <option value="1900">Civil Engineering</option>
+							    <option value="2000">Commercial Real Estate</option>
+							    <option value="2100">Computer &amp; Network Security</option>
+
+							    <option value="2200">Computer Games</option>
+							    <option value="2300">Computer Hardware</option>
+							    <option value="2400">Computer Networking</option>
+							    <option value="2500">Computer Software</option>
+							    <option value="2600">Construction</option>
+							    <option value="2700">Consumer Electronics</option>
+
+							    <option value="2800">Consumer Goods</option>
+							    <option value="2900">Consumer Services</option>
+							    <option value="3000">Cosmetics</option>
+							    <option value="3100">Dairy</option>
+							    <option value="3200">Defense &amp; Space</option>
+
+							    <option value="3300">Design</option>
+							    <option value="3400">Education Management</option>
+							    <option value="3500">E-Learning</option>
+							    <option value="3600">Electrical/Electronic Manufacturing</option>
+							    <option value="3700">Entertainment</option>
+							    <option value="3800">Environmental Services</option>
+
+							    <option value="3900">Events Services</option>
+							    <option value="4000">Executive Office</option>
+							    <option value="4100">Facilities Services</option>
+							    <option value="4200">Farming</option>
+							    <option value="4300">Financial Services</option>
+							    <option value="4400">Fine Art</option>
+
+							    <option value="4500">Fishery</option>
+							    <option value="4600">Food &amp; Beverages</option>
+							    <option value="4700">Food Production</option>
+							    <option value="4800">Fund-Raising</option>
+							    <option value="4900">Furniture</option>
+
+							    <option value="5000">Gambling &amp; Casinos</option>
+							    <option value="5100">Glass, Ceramics &amp; Concrete</option>
+							    <option value="5200">Government Administration</option>
+							    <option value="5300">Government Relations</option>
+							    <option value="5400">Graphic Design</option>
+
+							    <option value="5500">Health, Wellness and Fitness</option>
+							    <option value="5600">Higher Education</option>
+							    <option value="5700">Hospital &amp; Health Care</option>
+							    <option value="5800">Hospitality</option>
+							    <option value="5900">Human Resources</option>
+
+							    <option value="6000">Import and Export</option>
+							    <option value="6100">Individual &amp; Family Services</option>
+							    <option value="6200">Industrial Automation</option>
+							    <option value="6300">Information Services</option>
+							    <option value="6400">Information Technology and Services</option>
+
+							    <option value="6500">Insurance</option>
+							    <option value="6600">International Affairs</option>
+							    <option value="6700">International Trade and Development</option>
+							    <option value="6800">Internet</option>
+							    <option value="6900">Investment Banking</option>
+							    <option value="7000">Investment Management</option>
+
+							    <option value="7100">Judiciary</option>
+							    <option value="7200">Law Enforcement</option>
+							    <option value="7300">Law Practice</option>
+							    <option value="7400">Legal Services</option>
+							    <option value="7500">Legislative Office</option>
+							    <option value="7600">Leisure, Travel &amp; Tourism</option>
+
+							    <option value="7700">Libraries</option>
+							    <option value="7800">Logistics and Supply Chain</option>
+							    <option value="7900">Luxury Goods &amp; Jewelry</option>
+							    <option value="8000">Machinery</option>
+							    <option value="8100">Management Consulting</option>
+
+							    <option value="8200">Maritime</option>
+							    <option value="8300">Market Research</option>
+							    <option value="8400">Marketing and Advertising</option>
+							    <option value="8500">Mechanical or Industrial Engineering</option>
+							    <option value="8600">Media Production</option>
+							    <option value="8700">Medical Devices</option>
+
+							    <option value="8800">Medical Practice</option>
+							    <option value="8900">Mental Health Care</option>
+							    <option value="9000">Military</option>
+							    <option value="9100">Mining &amp; Metals</option>
+							    <option value="9200">Motion Pictures and Film</option>
+
+							    <option value="9300">Museums and Institutions</option>
+							    <option value="9400">Music</option>
+							    <option value="9500">Nanotechnology</option>
+							    <option value="9600">Newspapers</option>
+							    <option value="9700">Non-Profit Organization Management</option>
+							    <option value="9800">Oil &amp; Energy</option>
+
+							    <option value="9900">Online Media</option>
+							    <option value="10000">Outsourcing/Offshoring</option>
+							    <option value="10100">Package/Freight Delivery</option>
+							    <option value="10200">Packaging and Containers</option>
+							    <option value="10300">Paper &amp; Forest Products</option>
+
+							    <option value="10400">Performing Arts</option>
+							    <option value="10500">Pharmaceuticals</option>
+							    <option value="10600">Philanthropy</option>
+							    <option value="10700">Photography</option>
+							    <option value="10800">Plastics</option>
+							    <option value="10900">Political Organization</option>
+
+							    <option value="11000">Primary/Secondary Education</option>
+							    <option value="11100">Printing</option>
+							    <option value="11200">Professional Training &amp; Coaching</option>
+							    <option value="11300">Program Development</option>
+							    <option value="11400">Public Policy</option>
+
+							    <option value="11500">Public Relations and Communications</option>
+							    <option value="11600">Public Safety</option>
+							    <option value="11700">Publishing</option>
+							    <option value="11800">Railroad Manufacture</option>
+							    <option value="11900">Ranching</option>
+							    <option value="12000">Real Estate</option>
+
+							    <option value="12100">Recreational Facilities and Services</option>
+							    <option value="12200">Religious Institutions</option>
+							    <option value="12300">Renewables &amp; Environment</option>
+							    <option value="12400">Research</option>
+							    <option value="12500">Restaurants</option>
+
+							    <option value="12600">Retail</option>
+							    <option value="12700">Security and Investigations</option>
+							    <option value="12800">Semiconductors</option>
+							    <option value="12900">Shipbuilding</option>
+							    <option value="13000">Sporting Goods</option>
+							    <option value="13100">Sports</option>
+
+							    <option value="13200">Staffing and Recruiting</option>
+							    <option value="13300">Supermarkets</option>
+							    <option value="13400">Telecommunications</option>
+							    <option value="13500">Textiles</option>
+							    <option value="13600">Think Tanks</option>
+							    <option value="13700">Tobacco</option>
+
+							    <option value="13800">Translation and Localization</option>
+							    <option value="13900">Transportation/Trucking/Railroad</option>
+							    <option value="14000">Utilities</option>
+							    <option value="14100">Venture Capital &amp; Private Equity</option>
+							    <option value="14200">Veterinary</option>
+
+							    <option value="14300">Warehousing</option>
+							    <option value="14400">Wholesale</option>
+							    <option value="14500">Wine and Spirits</option>
+							    <option value="14600">Wireless</option>
+							    <option value="14700">Writing and Editing</option>
+							    <option value="14800">Other</option>
+
+
+							</select>
+										
+						</div>
+					
+					</div>
+					<div class="clearfix">
+									
+						<div class="span-8">
+							<label> Size of Company <span class="req">*</span></label>
+							<select name="buyerRegistrationDTO.sizeOfCompany" id="buyerRegistrationDTO_sizeOfCompany" class="text">
+							    <option value=""
+							    selected="selected"
+							    >---------- Please Select ---------</option>
+							    <option value="2">Sole Proprietor or Individual</option>
+							    <option value="3">2 - 10 Employees</option>
+
+							    <option value="4">11 - 50 Employees</option>
+							    <option value="5">51 - 250 Employees</option>
+							    <option value="6">251 - 500 Employees</option>
+							    <option value="7">501 - 1000 Employees</option>
+							    <option value="8">1000+ Employees</option>
+							    <option value="9">Prefer to not disclose.</option>
+
+
+							</select>
+							
+							
+							
+						</div>
+						
+						
+						<div class="span-8 last">
+							<label>Annual Sales Revenue <span class="req">*</span></label>
+							<select name="buyerRegistrationDTO.annualSalesRevenue" id="buyerRegistrationDTO_annualSalesRevenue" class="text">
+							    <option value=""
+							    selected="selected"
+							    >---------- Please Select ---------</option>
+							    <option value="1">Less than 10k</option>
+							    <option value="2">10k - 29k</option>
+							    <option value="3">30k - 59k</option>
+							    <option value="4">59k - 79k</option>
+
+							    <option value="5">80k - 99k</option>
+							    <option value="6">100k - 249k</option>
+							    <option value="7">250k - 499k</option>
+							    <option value="8">500k - 999k</option>
+							    <option value="9">1000k - 4999k</option>
+							    <option value="10">5000k or more</option>
+
+							    <option value="11">Prefer to not disclose.</option>
+
+
+							</select>
+							
+						</div>
+						
+					</div>
+					<div class="clearfix">
+						<label>Business Start Date <span class="req">*</span></label>
+						<input id="buyerRegistrationDTO_businessStarted" name="buyerRegistrationDTO.businessStarted" autocomplete="off" type="text" class="text span-3">
+
+
+					</div>
+					
+					
+			</fieldset>
+			
+			<fieldset class="span-8">
+			<legend>Business Address</legend>
+
+									<div class="clearfix">
+										<div class=" span-8">
+										<label>Address <span class="req">*</span></label>
+										<input id="businessStreet1" name="buyerRegistrationDTO.businessStreet1" type="text" class="text span-7">
+										<input id="businessStreet2" name="buyerRegistrationDTO.businessStreet2" type="text" class="text span-7">
+										</div>
+									</div>
+
+									<div class="clearfix">
+										<div class="span-3">
+										<label>City <span class="req">*</span></label>
+										<input id="businessCity" name="buyerRegistrationDTO.businessCity" type="text" class="text span-3">
+										</div>
+										 <div class="span-2">
+										<label class="inlistate">State <span class="req">*</span></label>
+										<select id="businessState" name="buyerRegistrationDTO.businessState" class="text span-2 selestate">
+												<option value="">--</option>
+												<option value="AL">AL</option>
+
+											    <option value="AK">AK</option>
+											    <option value="AS">AS</option>
+											    <option value="AZ">AZ</option>
+											    <option value="AR">AR</option>
+											    <option value="CA">CA</option>
+											    <option value="CO">CO</option>
+
+											    <option value="CT">CT</option>
+											    <option value="DE">DE</option>
+											    <option value="FM">FM</option>
+											    <option value="FL">FL</option>
+											    <option value="GA">GA</option>
+											    <option value="GU">GU</option>
+
+											    <option value="HI">HI</option>
+											    <option value="ID">ID</option>
+											    <option value="IL">IL</option>
+											    <option value="IN">IN</option>
+											    <option value="IA">IA</option>
+											    <option value="KS">KS</option>
+
+											    <option value="KY">KY</option>
+											    <option value="LA">LA</option>
+											    <option value="ME">ME</option>
+											    <option value="MH">MH</option>
+											    <option value="MD">MD</option>
+											    <option value="MA">MA</option>
+
+											    <option value="MI">MI</option>
+											    <option value="MN">MN</option>
+											    <option value="MS">MS</option>
+											    <option value="MO">MO</option>
+											    <option value="MT">MT</option>
+											    <option value="NE">NE</option>
+
+											    <option value="NV">NV</option>
+											    <option value="NH">NH</option>
+											    <option value="NJ">NJ</option>
+											    <option value="NM">NM</option>
+											    <option value="NY">NY</option>
+											    <option value="NC">NC</option>
+
+											    <option value="ND">ND</option>
+											    <option value="MP">MP</option>
+											    <option value="OH">OH</option>
+											    <option value="OK">OK</option>
+											    <option value="OR">OR</option>
+											    <option value="PW">PW</option>
+
+											    <option value="PA">PA</option>
+											    <option value="PR">PR</option>
+											    <option value="RI">RI</option>
+											    <option value="SC">SC</option>
+											    <option value="SD">SD</option>
+											    <option value="TN">TN</option>
+
+											    <option value="TX">TX</option>
+											    <option value="VI">VI</option>
+											    <option value="UT">UT</option>
+											    <option value="VT">VT</option>
+											    <option value="VA">VA</option>
+											    <option value="WA">WA</option>
+
+											    <option value="DC">DC</option>
+											    <option value="WV">WV</option>
+											    <option value="WI">WI</option>
+											    <option value="WY">WY</option>
+										</select>
+										</div>
+										<div class="span-2">
+										<label class="inlizip">Zip <span class="req">*</span></label>
+
+										<input id="businessZip" name="buyerRegistrationDTO.businessZip" type="text" class="text zip span-2">
+										</div>
+									</div>
+									<div class="clearfix">
+									</div>
+									<div class="clearfix">
+									</div>
+								</fieldset>
+								<fieldset class="span-8 last"><legend>Mailing Address</legend>
+
+									<div class="clearfix" style="display: none;">
+										<strong class="inlinecheckbox"><input id="maddtogl" name="registrationDto.mailAddressChk" type="checkbox" class="checkbox"></strong>
+										<strong class="inform">Mailing Address is the same as the Business Address.</strong>
+									</div>
+									<div class="maddtogl">
+										
+										<div class="clearfix">
+											<div class=" span-8">
+											<label>Address <span class="req">*</span></label>
+											<input id="mailingStreet1" name="buyerRegistrationDTO.mailingStreet1" type="text" class="text span-7">
+											<input id="mailingStreet2" name="buyerRegistrationDTO.mailingStreet2" type="text" class="text span-7">
+											</div>
+										</div>
+
+										<div class="clearfix">
+											<div class="span-3">
+											<label>City <span class="req">*</span></label>
+											<input id="mailingCity" name="buyerRegistrationDTO.mailingCity" type="text" class="text span-3">
+											</div>
+											 <div class="span-2">
+											<label class="inlistate">State <span class="req">*</span></label>
+											<select id="mailingState" name="buyerRegistrationDTO.mailingState" class="text span-2 selestate">
+												<option value="">--</option>
+
+													<option value="AL">AL</option>
+
+												    <option value="AK">AK</option>
+												    <option value="AS">AS</option>
+												    <option value="AZ">AZ</option>
+												    <option value="AR">AR</option>
+												    <option value="CA">CA</option>
+												    <option value="CO">CO</option>
+
+												    <option value="CT">CT</option>
+												    <option value="DE">DE</option>
+												    <option value="FM">FM</option>
+												    <option value="FL">FL</option>
+												    <option value="GA">GA</option>
+												    <option value="GU">GU</option>
+
+												    <option value="HI">HI</option>
+												    <option value="ID">ID</option>
+												    <option value="IL">IL</option>
+												    <option value="IN">IN</option>
+												    <option value="IA">IA</option>
+												    <option value="KS">KS</option>
+
+												    <option value="KY">KY</option>
+												    <option value="LA">LA</option>
+												    <option value="ME">ME</option>
+												    <option value="MH">MH</option>
+												    <option value="MD">MD</option>
+												    <option value="MA">MA</option>
+
+												    <option value="MI">MI</option>
+												    <option value="MN">MN</option>
+												    <option value="MS">MS</option>
+												    <option value="MO">MO</option>
+												    <option value="MT">MT</option>
+												    <option value="NE">NE</option>
+
+												    <option value="NV">NV</option>
+												    <option value="NH">NH</option>
+												    <option value="NJ">NJ</option>
+												    <option value="NM">NM</option>
+												    <option value="NY">NY</option>
+												    <option value="NC">NC</option>
+
+												    <option value="ND">ND</option>
+												    <option value="MP">MP</option>
+												    <option value="OH">OH</option>
+												    <option value="OK">OK</option>
+												    <option value="OR">OR</option>
+												    <option value="PW">PW</option>
+
+												    <option value="PA">PA</option>
+												    <option value="PR">PR</option>
+												    <option value="RI">RI</option>
+												    <option value="SC">SC</option>
+												    <option value="SD">SD</option>
+												    <option value="TN">TN</option>
+
+												    <option value="TX">TX</option>
+												    <option value="VI">VI</option>
+												    <option value="UT">UT</option>
+												    <option value="VT">VT</option>
+												    <option value="VA">VA</option>
+												    <option value="WA">WA</option>
+
+												    <option value="DC">DC</option>
+												    <option value="WV">WV</option>
+												    <option value="WI">WI</option>
+												    <option value="WY">WY</option>
+											</select>
+											</div>
+											<div class="span-2">
+											<label class="inlizip">Zip <span class="req">*</span></label>
+
+											<input id="mailingZip" name="buyerRegistrationDTO.mailingZip" type="text" class="text zip span-2">
+											</div>
+										</div>
+										
+									</div>
+								</fieldset>
+			
+			
+			
+			
+			<fieldset class="span-17">
+				<legend>Primary Contact Information</legend>
+				<p>By opening this account, you become the ServiceLive administrator for your company. You'll be the primary contact for all communications with ServiceLive and you will be authorized to enroll additional service buyers and support staff for your company. </p>
+
+				<div class="clearfix">
+					<label>Role within Company <span class="req">*</span></label>
+					<select name="buyerRegistrationDTO.roleWithinCom" id="buyerRegistrationDTO_roleWithinCom" class="text">
+					<option value=""
+					selected="selected"
+					>-- Please Select --</option>
+					<option value="1">C-Level (CEO, COO, CFO, CIO, CTO, CMO)</option>
+
+					<option value="2">President</option>
+					<option value="3">Managing Director</option>
+					<option value="4">Senior/Executive Vice President</option>
+					<option value="5">Vice President</option>
+					<option value="6">General Manager</option>
+					<option value="7">Owner/Partner</option>
+
+					<option value="8">Controller/Treasurer</option>
+					<option value="9">Technical Staff/Information Systems</option>
+					<option value="10">Group/Division Director</option>
+					<option value="11">Sales Representative</option>
+					<option value="12">Department Manager</option>
+					<option value="13">Consultant</option>
+
+					<option value="14">Professional (teacher, doctor, lawyer, etc)</option>
+					<option value="15">Clerical/Support Staff</option>
+					<option value="16">Government/Public Official</option>
+
+
+					</select>
+				</div>
+				<div class="clearfix">
+					<div class="span-8">
+						<label>First Name <span class="req">*</span></label>
+						<input id="buyerRegistrationDTO_firstName" name="buyerRegistrationDTO.firstName" autocomplete="off" type="text" class="text span-7">
+					</div>
+					<div class="span-8 last">
+						<label>Last Name <span class="req">*</span></label>
+						<input id="buyerRegistrationDTO_lastName" name="buyerRegistrationDTO.lastName" autocomplete="off" type="text" class="text span-7">
+					</div>
+				</div>
+				
+				<div class="clearfix">
+					<div class="span-5">
+					<label>Business Phone <span class="req">*</span></label>
+					<input maxlength="3" id="buyerRegistrationDTO.busPhoneNo1" name="buyerRegistrationDTO.busPhoneNo1" type="text" class="text phone">
+					<input maxlength="3" id="buyerRegistrationDTO.busPhoneNo2" name="buyerRegistrationDTO.busPhoneNo2" type="text" class="text phone">
+					<input maxlength="4" id="buyerRegistrationDTO.busPhoneNo3" name="buyerRegistrationDTO.busPhoneNo3" type="text" class="text phonei">
+					</div>
+					<div class="span-2">
+						<label>Ext.</label>
+						<input id="buyerRegistrationDTO.busExtn" name="buyerRegistrationDTO.busExtn" type="text" class="text phoneext">							
+					</div>
+				</div>
+				<div class="clearfix">
+					<div class="span-8">
+						<label>E-Mail Address <span class="req">*</span></label>
+						<input id="buyerRegistrationDTO.email" name="buyerRegistrationDTO.email" autocomplete="off" type="text" class="text span-7">
+					</div>
+					<div class="span-8 last">
+						<label>Confirm E-mail Address <span class="req">*</span></label>
+						<input id="buyerRegistrationDTO.confirmEmail" name="buyerRegistrationDTO.confirmEmail" autocomplete="off" type="text" class="text span-7">
+					</div>
+				</div>
+				<div class="clearfix">
+					<div class="span-8">
+						<label>Alternate E-Mail Address <span class="req">*</span></label>
+						<input id="buyerRegistrationDTO_altEmail" name="buyerRegistrationDTO.altEmail" autocomplete="off" type="text" class="text span-7">
+					</div>
+					<div class="span-8 last">
+						<label>Confirm Alternate E-mail Address <span class="req">*</span></label>
+						<input id="buyerRegistrationDTO_confAltEmail" name="buyerRegistrationDTO.confAltEmail" autocomplete="off" type="text" class="text span-7">
+					</div>
+				</div>				
+				<div class="clearfix">
+					<div class="span-8">
+						<label>User Name <span class="req">*</span></label>
+						<input id="buyerRegistrationDTO.userName" name="buyerRegistrationDTO.userName" autocomplete="off" type="text" class="text span-7">
+						<small class="moveup">(User name must be 8 characters or more) </small>
+					</div>
+					<div class="span-8 last">
+						<label>Confirm User Name <span class="req">*</span></label>
+						<input id="buyerRegistrationDTO.confirmUserName" name="buyerRegistrationDTO.confirmUserName" autocomplete="off" type="text" class="text span-7">
+					</div>
+				</div>
+				<div class="clearfix">
+					<div class="span-8">
+						<label>How did you hear about ServiceLive?</label>
+						<select name="buyerRegistrationDTO.howDidYouHear" id="buyerRegistration_buyerRegistrationDTO_howDidYouHear" class="text">
+						<option value=""
+						selected="selected"
+						>-- Please Select --</option>
+						<option value="1">Direct Mail</option>
+						<option value="2">Magazine/Newspaper</option>
+						<option value="3">Craig's List</option>
+
+						<option value="5">Other website or forum</option>
+						<option value="6">Friend or Business Associate</option>
+						<option value="7">TV Commercial</option>
+						<option value="8">Radio Advertisement</option>
+						<option value="11">Email</option>
+						<option value="12">ServiceLive 3rd Party</option>
+
+						<option value="13">ServiceLive Agent</option>
+						<option value="14">Rebuilding Together</option>
+
+
+						</select>
+					</div>
+					<div class="span-8">
+						<label> Referral Code</label>
+						<input id="buyerRegistrationDTO.promotionCode" name="buyerRegistrationDTO.promotionCode" type="text" class="span-7 text" value="SL-">													
+						<small class="moveup">(Enter all letters, numbers or special characters as shown.)</small>
+					</div>
+				</div>
+			</fieldset>
+			
+			<fieldset class="span-17">
+				<legend> Site Terms & Conditions</legend>
+					<p>Please read the following terms and conditions. After accepting, you'll receive an e-mail confirming your account. Use the temporary password included in that e-mail to log back onto the system so you can register other users for your firm or begin creating a service order.</p>
+					
+					
+					<input type="hidden" name="__checkbox_buyerRegistrationDTO.serviceLiveBucksInd" value="true" />
+					<input type="hidden" name="__checkbox_buyerRegistrationDTO.termsAndCondition" value="true" />
+					
+					
+					<div class="clearfix">
+						<strong class="inlinecheckbox"><input id="termsAndConditionID" name="buyerRegistrationDTO.termsAndCondition" type="checkbox" class="checkbox"></strong>
+						
+						<strong class="inform">I agree to the <a href="legal/buyeragreement.html">Buyer Terms and Conditions</a></strong>
+					</div>
+					<div class="clearfix">
+						<strong class="inlinecheckbox"><input id="maddtogl" name="buyerRegistrationDTO.serviceLiveBucksInd" type="checkbox" class="checkbox"></strong>
+						<strong class="inform">I agree to the <a href="legal/paymentterms.html">Payment Services*</a> offered on ServiceLive</strong>
+					</div>
+				
+					<label>&nbsp;</label><a class="button positive"><img src="/ServiceLiveWebUtil/provider/images/tick.png"> Join ServiceLive!</a>
+				
+					
+					
+				</fieldset>
+			</form>
+
+			<small>*Powered by Integrated Payments Systems, Inc. Licensed as a Money Transmitter by the Banking Department of the State of New York and other applicable State regulators. </small>
+				
+				</div>
+			</div>
+			<div class="span-1">&nbsp;</div>
+			<div class="span-5 last">
+				<div class="sb-industrylinks sidebox">
+
+
+			</div>
+		</div>
+	</div>
+	<div id="footer">
+		<div class="container">
+			<ul id="site">
+				<li><a title="About ServiceLive" href="about.html">About</a></li>
+				<li class="end"><a title="Contact ServiceLive" href="contact.html">Contact us</a></li>
+			</ul>
+			<ul id="community" style="display: none;">
+				<li><a title="ServiceLive Blog" href="http://blog.servicelive.com">Blog</a></li>
+			<!--	<li><a title="Contact ServiceLive" href="contact.html">Newsletter</a></li> -->
+				<li><a title="ServiceLive on Twitter" href="http://twitter.com/servicelive">Twitter</a></li>
+				<li class="end"><a title="ServiceLive on Facebook" href="http://www.facebook.com/servicelive">Facebook</a></li>
+			</ul>
+			<ul id="support">
+				<li class="end"><a title="Frequently Asked Questions" href="faq.html">Frequently Asked Questions</a></li>
+			</ul>
+			<ul id="legal">
+				<li><a title="Terms of Use" href="legal/terms.html">Terms Of Use</a></li>
+				<li><a title="Privacy Policy" href="https://transformco.com/privacy" target="_blank">Privacy Policy</a></li>
+				<li><a title="California Privacy Policy" href="https://transformco.com/privacy#_Toc31123888" target="_blank">California Privacy Policy</a></li>
+				<li><a title="Buyer Agreement" href="legal/buyeragreement.html">Buyer Agreement</a></li>
+				<li><a title="Provider Agreement" href="legal/provideragreement.html">Provider Agreement</a></li>
+				<li class="end"><a title="Payment Terms" href="legal/paymentterms.html">Payment Terms Of Use</a></li>
+			</ul>
+			<p class="faintgrey">
+			<!-- SL-21161: Removed "VT" from list of U.S. territories unable to fulfill buyer requests-->
+                <b>We are unable to fulfill buyer requests in the following states/U.S. Territories: </b> AS,
+        FM, GU, MH, MP, PW, VI
+         </p>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project basedir="../" default="compile-dependencies" name="ServiceLive-BuildAll" >
+	
+	<target name="compile-dependencies">
+		<ant antfile="../MarketFrontend/wildfly-build/buildall.xml" dir="../MarketFrontend"/>
+		<ant antfile="../ServiceLiveWebUtil/wildfly-build/buildall.xml" dir="../ServiceLiveWebUtil"/>
+		<ant antfile="../MarketWebServices/wildfly-build/build.xml" dir="../MarketWebServices"/>
+		<ant antfile="../SPNWeb/wildfly-build/buildall.xml" dir="../SPNWeb"/>
+		<ant antfile="../MarketBatch/wildfly-build/buildall.xml"   dir="../MarketBatch"/>
+		<ant antfile="../MarketPlatform.RemoteService/wildfly-build/buildall.xml" dir="../MarketPlatformRemoteService/MarketPlatform.RemoteService"/>
+		<ant antfile="../Wallet.RemoteService/wildfly-build/buildall.xml" dir="../Wallet/Wallet.RemoteService"/>
+		<ant antfile="../OrderFulfillment.Service/wildfly-build/buildall.xml" dir="../OrderFulfillment/OrderFulfillment.Service"/>
+		<ant antfile="../OrderFulfillment.Jobs/wildfly-build/buildall.xml" dir="../OrderFulfillment/OrderFulfillment.Jobs"/>
+		<ant antfile="../MarketServiceBus/wildfly-build.xml" dir="../MarketServiceBus"/>
+		<ant antfile="../Wallet.ValueLink.EJB/wildfly-build/build.xml" dir="../Wallet/Wallet.ValueLink.EJB"/>
+		<ant antfile="../StaticWeb/wildfly-build/build.xml" dir="../StaticWeb"/>
+		<!-- ant antfile="../MarketPublicAPI/build/buildall.xml" dir="../MarketPublicAPI"/>
+		<ant antfile="../ServiceLive.b2c.web/build.xml" dir="../ServiceLive.b2c.web"/ -->
+	</target>
+
+</project>

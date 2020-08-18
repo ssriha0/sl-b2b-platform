@@ -1,0 +1,138 @@
+<html>
+<head>
+</head>
+<body>
+<div class="error">
+	Error Message
+</div>
+<div class="clearfix">
+	<div class="left">
+		<ul>
+			<li>Company Requirements</li>
+			<li>Provider Requirements</li>
+		</ul>
+	</div>
+	<div class="right">
+		<strong>Contact Information:</strong><br />
+		John Smith &lt;<a href="mailto:jsmith@somecompany.com">jsmith@somecompany.com</a>&gt;<br />
+		(000) 000-0000
+	</div>
+</div>
+<p>An asterix (<strong>*</strong>) Indicates credentials that must be verified by ServiceLive for membership.  See the <a href="#">ServiceLive Verification Guide</a>.</p>
+
+
+<div class="clearfix tableWrap" style="border-left: 0px; border-right: 0px;">
+	<table border="0" cellpadding="6" cellspacing="0" class="left doctable">
+		<thead>
+			<tr>
+				<th class="tc bl" style="width: 100px">Status</th>
+				<th>Required Documents</th>
+				<th class="tl" style="width: 100px;">&nbsp;</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="tc bl">
+					<img src="../../images/common/status-yellow.png" alt="Incomplete" /><br />
+					<p class="sm">Incomplete</p>
+				</td>
+				<td>
+					<strong><a href="#">Document Title</a></strong><br />
+					<small>(Microsoft Word File)</small>
+					<div class="comment"><strong class="req">Need more information.</strong> Lore ipsum dolor sit amet.</div>
+				</td>
+				<td class="tl carr br">
+					<input type="submit" class="default button" value="Select">
+				</td>
+			</tr>
+			
+			<tr class="selected">
+				<td class="tc bl">
+					<img src="../../images/common/status-yellow.png" alt="Incomplete" /><br />
+					<p class="sm">Incomplete</p>
+				</td>
+				<td>
+					<strong><a href="#">Document Title</a></strong><br />
+					<small>(Microsoft Word File)</small>
+					<div class="comment"><strong class="req">Need more information.</strong> Lore ipsum dolor sit amet.</div>
+				</td>
+				<td class="tl carr br">
+					<input type="submit" class="default button disabled" value="Select" disabled="disabled">
+				</td>
+			</tr>
+
+			<tr>
+				<td class="tc bl">
+					<img src="../../images/common/status-white.png" alt="Pending Approval" /><br />
+					<p class="sm">Pending Approval</p>
+				</td>
+				<td>
+					<strong><a href="#">Document Title</a></strong><br />
+					<small>(Microsoft Word File)</small>
+					<div class="nocomment"><strong>Document On File:</strong> <a href="#">filename.doc</a></div>
+				</td>
+				<td class="tl carr br">
+					<a class="fileedit" href="#">Update File</a>
+				</td>
+			</tr>
+
+			<tr>
+				<td class="tc bl">
+					<img src="../../images/common/status-green.png" alt="On File" /><br />
+					<p class="sm">Pending Approval</p>
+				</td>
+				<td>
+					<strong><a href="#">Document Title</a></strong><br />
+					<small>(Microsoft Word File)</small>
+					<div class="nocomment"><strong>Document On File:</strong> <a href="#">filename.doc</a></div>
+				</td>
+				<td class="tl carr br">
+					&nbsp;
+				</td>
+			</tr>
+
+			<tr>
+				<td class="tc bl">
+					<img src="../../images/common/status-green.png" alt="On File" /><br />
+					<p class="sm">Pending Approval</p>
+				</td>
+				<td>
+					<strong><a href="#">Document Title</a></strong><br />
+					<small>(Microsoft Word File)</small>
+					<div class="nocomment"><strong>Document On File:</strong> <a href="#">filename.doc</a></div>
+				</td>
+				<td class="tl carr br">
+					&nbsp;
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="documents left">
+		<div class="content">
+			<h5>Upload Documents</h5>
+			<div class="error">Error Message</div>
+			<p>
+			<select name="select" class="select">
+				<option>Select A Document</option>
+				<option>Hello World Document</option>
+				<option>Some Insurance Form</option>
+			</select>
+			</p>
+			<p>
+			<input type="file">
+			</p>
+			<p>
+			<input type="submit" class="button action" value="Attach File" />
+			</p>
+			<p><small>Only files that have not been approved may be updated.<br />
+			Uploading a new file will automatically replace an existing one.</small></p>
+			<p class="note">
+			<small><strong>Accepted File Types:</strong>.jpg | .pdf | .doc | .gif | .tiff | .png | .bmp<br />
+			<strong>Max. file size:</strong> 100 MB</small>
+			</p>
+		</div>
+	</div>
+</div>
+
+</body>
+</html>

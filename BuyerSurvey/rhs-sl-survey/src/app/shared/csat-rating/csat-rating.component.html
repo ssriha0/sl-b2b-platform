@@ -1,0 +1,6 @@
+<ng-template #tcsat let-fill="fill">
+  <span class="star" [class.full]="fill === 100">{{ fill === 100 ? '&#9733;': '&#9734;' }}</span>
+</ng-template>
+
+<ngb-rating [(rate)]="currentRating" max="5" [starTemplate]="tcsat" (rateChange)="updateRatings($event)"></ngb-rating>
+<hr>

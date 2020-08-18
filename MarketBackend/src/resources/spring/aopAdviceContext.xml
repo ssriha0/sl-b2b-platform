@@ -1,0 +1,512 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<bean id="aopAdviceDao"
+		class="com.newco.marketplace.persistence.daoImpl.aop.AOPAdviceDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+	
+	<bean id="surveyAopAdvisor"
+		class="org.springframework.aop.support.NameMatchMethodPointcutAdvisor">
+		<property name="mappedName">
+			<value>saveResponse</value>
+		</property>
+		<property name="advice">
+			<ref bean="aopAdvice" />
+		</property>
+	</bean>
+
+	<bean id="aopAdvisor"
+		class="org.springframework.aop.support.NameMatchMethodPointcutAdvisor">
+		<property name="mappedNames">
+		 <list>		 
+			<value>process*</value>			
+			<value>re*</value>
+			<value>update*</value>
+			<value>is*</value>
+			<value>delete*</value>
+			<value>send*</value>
+			<value>save*</value>
+			<value>expire*</value>
+			<value>calcUpsellAmount</value>			
+			<value>acceptConditionalOffer</value>
+			<value>insertSoCustomReference</value>
+			<value>acceptRescheduleRequest</value>
+			<value>cancelRescheduleRequest</value>
+			<value>withdrawConditionalAcceptance</value>			
+			<value>assurantAlertForNeedsAttentionSubStatus</value>
+			<value>activateAcceptedSO</value>
+			<value>findValidServiceOrders</value>
+			<value>editCompletionRecordForSo</value>	
+			<value>saveReassignSO,getBuyerAttrFromBuyerId</value>
+			<value>checkBuyerFundsForIncreasedSpendLimit</value>
+			<value>generateOrderNo</value>
+			<value>createConditionalOffer</value>
+			<value>buyerOverMaxLimit</value>
+			<value>enoughBuyerFunds</value>			
+		</list>	
+		</property>
+		<property name="advice">
+			<ref bean="aopAdvice" />
+		</property>
+	</bean>
+	
+	<bean id="fmAopAdvisor"
+		class="org.springframework.aop.support.NameMatchMethodPointcutAdvisor">
+		<property name="mappedName">
+			<value>withdrawfunds</value>
+		</property>
+		<property name="advice">
+			<ref bean="aopAdvice" />
+		</property>
+	</bean>
+    
+    <!-- respondToRescheduleRequest method is not called from serviceOrderBO. 
+                   The method is split it into two accpetRescheduleRequest and rejectRescheduleRequest-->
+                   
+	<bean id="soPostProcessingAopAdvisor"
+		class="org.springframework.aop.support.NameMatchMethodPointcutAdvisor">
+		<property name="mappedNames">
+		 <list>	
+			<value>respondToRescheduleRequest</value>
+			<value>processCloseSO</value>
+			<value>deleteDraftSO</value>
+			<value>processVoidSO</value>
+			<value>processVoidSOForWS</value>
+			<value>processCancelRequestInActive</value>
+			<value>processCancelSOInAccepted</value>
+			<value>processUngroupOrderGrp</value>
+			<value>processAcceptServiceOrder</value>
+			<value>processAcceptGroupOrder</value>
+			<value>acceptConditionalOfferForGroup</value>
+			<value>addToOrderGrp</value>
+			<value>addToOrderGroup</value>
+			<value>processCreateConditionalOffer</value>
+			<value>rejectServiceOrder</value>
+		 </list>		
+		</property>
+		<property name="advice">
+			<ref bean="soPostProcessingAdvice" />
+		</property>
+	</bean>
+	
+	<bean id="orderGroupAopAdvisor"
+		class="org.springframework.aop.support.NameMatchMethodPointcutAdvisor">
+		<property name="mappedNames">
+			<value>processRouteOrderGroup,routeGroupToSelectedProviders,sendallProviderResponseExceptAcceptedForGroup</value>
+		</property>
+		<property name="advice">
+			<ref bean="aopAdvice" />
+		</property>
+	</bean>
+
+	<bean id="aopAdvice" class="com.newco.marketplace.aop.MPAOPAdvice">
+		<property name="aopAdviceDao">
+			<ref bean="aopAdviceDao" />
+		</property>
+		<property name="serviceOrderDao">
+			<ref bean="serviceOrderDao" />
+		</property>					
+		<!-- Requires for Logging -->
+		<property name="loggingAdvice">
+			<ref bean="loggingAdvice" />
+		</property>
+		<!-- Requires for Caching -->
+		<property name="cachingAdvice">
+			<ref bean="cachingAdvice" />
+		</property>	
+		<!-- Requires for ALert -->
+		<property name="alertAdvice">
+			<ref bean="alertAdvice" />
+		</property>		
+		<property name="orderGroupDAO">
+			<ref bean="orderGroupDAO" />
+		</property>	
+		<property name="promoDAO">
+			<ref bean="promoDAO" />
+		</property>
+		<property name="buyerBO">
+    		<ref bean="buyerBo"/>
+  		</property>
+  		<property name="buyerDao">
+	    	<ref bean="buyerDao"/>
+	    </property>
+  		<property name="contactDao">
+    		<ref bean="socontactDaoImpl"/>
+  		</property>	
+  		<property name="buyerUserProfileDao">
+    		<ref bean="buyerUserProfileDao"/>
+	    </property>		
+  		<property name="transactionDao">
+	    	<ref bean="transactionDao"/>
+	    </property>
+	    <property name="spnetworkBO">
+	    	<ref bean="spnetworkBO"/>
+	    </property>
+	    <property name="soTierRoutingHistoryBo" ref="soTierRoutingHistoryBo"/>
+		
+		<property name="walletBO" ref="walletTx" />
+	</bean>
+
+	<bean id="soBOAOP"
+		class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="proxyInterfaces">
+			<value>
+				com.newco.marketplace.business.iBusiness.serviceorder.IServiceOrderBO
+			</value>
+		</property>
+	 	<property name="target">
+			<ref bean="serviceOrderBO" />
+		</property> 	
+		<property name="interceptorNames">
+			<list>
+				<value>aopAdvisor</value>
+				<value>soPostProcessingAopAdvisor</value>
+			</list>
+		</property>
+	</bean>
+	
+	
+	<bean id="soOrderGroupRouteAOP" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="proxyInterfaces">
+			<value>
+				com.newco.marketplace.business.iBusiness.orderGroup.IRouteOrderGroupBO
+			</value>
+		</property>
+	 	<property name="target">
+			<ref bean="soRouteGroupTransacBO" />
+		</property> 	
+		<property name="interceptorNames">
+			<list>
+				<value>orderGroupAopAdvisor</value>
+			</list>
+		</property>		
+	</bean>
+	
+	<bean id="soOrderGroupBOAOP" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="proxyInterfaces">
+			<value>
+				com.newco.marketplace.business.iBusiness.orderGroup.IOrderGroupBO
+			</value>
+		</property>
+	 	<property name="target">
+			<ref bean="soGroupBO" />
+		</property> 	
+		<property name="interceptorNames">
+			<list>
+				<value>orderGroupAopAdvisor</value>
+				<value>soPostProcessingAopAdvisor</value>
+			</list>
+		</property>		
+	</bean>
+	
+	<bean id="soUPBOAOP"
+		class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="proxyInterfaces">
+			<value>
+				com.newco.marketplace.business.iBusiness.serviceorder.IServiceOrderUpdateBO
+			</value>
+		</property>
+	 	<property name="target">
+			<ref bean="serviceOrderUpdateBO" />
+		</property> 	
+		<property name="interceptorNames">
+			<list>
+				<value>aopAdvisor</value>
+				<value>soPostProcessingAopAdvisor</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="surveyAOP"
+		class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="proxyInterfaces">
+			<value>
+				com.newco.marketplace.business.iBusiness.survey.ISurveyBO
+			</value>
+		</property>
+	 	<property name="target">
+			<ref bean="surveyBO" />
+		</property> 	
+		<property name="interceptorNames">
+			<list>
+				<value>surveyAopAdvisor</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="fmBOAOP"
+		class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="proxyInterfaces">
+			<value>
+				com.newco.marketplace.business.iBusiness.financeManager.IFinanceManagerBO
+			</value>
+		</property>
+	 	<property name="target">
+			<ref bean="fmBOTrans" />
+		</property> 	
+		<property name="interceptorNames">
+			<list>
+				<value>fmAopAdvisor</value>
+			</list>
+		</property>
+	</bean>
+	
+	
+	<bean id="loggingAdvice"
+		class="com.newco.marketplace.aop.LoggingAdvice">
+		<property name="loggingDao">
+			<ref bean="loggingDao" />
+		</property>
+		<property name="templateDao">
+			<ref bean="templateDao" />
+		</property>
+		<property name="velocityEngine">
+         	<ref bean="velocityEngine"/> 
+        </property> 
+	</bean>
+  
+  	<bean id="loggingDao"
+		class="com.newco.marketplace.persistence.daoImpl.logging.LoggingDaoImpl"
+		lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+  
+  <bean id="cachingAdvice"
+		class="com.newco.marketplace.aop.CachingAdvice" autowire="byName">
+		<!-- AUTOWIRED <property name="cacheManagerBO">
+			<ref bean="cacheManagerBO" />
+		</property>	-->
+  </bean>
+	
+  <bean id="alertAdvice"
+		class="com.newco.marketplace.aop.AlertAdvice">
+			<property name="alertDao">
+				<ref bean="alertDao" />
+			</property>	
+			<property name="templateDao">
+				<ref bean="templateDao" />
+			</property>	
+			<property name="alertDispositionProcessor">
+				<ref bean="alertDispositionProcessor" />
+			</property>	
+			<property name="orderGroupDAO">
+				<ref bean="orderGroupDAO" />
+			</property>	
+
+  </bean>
+  	
+  <bean id="soPostProcessingAdvice"
+		class="com.newco.marketplace.aop.SOPostProcessingAdvice">
+		<property name="soPostProcessingFactory">
+			<ref bean="soPostProcessingFactory" />
+		</property>
+		<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO" />
+		</property> 
+		<property name="buyerFeatureSetBO">
+			<ref bean="buyerFeatureSetBO" />
+		</property> 
+  </bean>	
+
+	<bean id="incidentAOPAdvice" class="com.newco.marketplace.aop.IncidentAOPAdvice">
+		<property name="aopAdviceDao">
+			<ref bean="aopAdviceDao" />
+		</property>
+		<property name="serviceOrderDao">
+			<ref bean="serviceOrderDao" />
+		</property>					
+		<!-- Required for Alerts -->
+		<property name="alertAdvice">
+			<ref bean="alertAdvice" />
+		</property>		
+	</bean>
+
+	<bean id="incidentAopAdvisor"
+		class="org.springframework.aop.support.NameMatchMethodPointcutAdvisor">
+		<property name="mappedName">
+			<value>processIncidentResponse</value>
+		</property>
+		<property name="advice">
+			<ref bean="incidentAOPAdvice" />
+		</property>
+	</bean>
+
+	<bean id="incidentBO" class="org.springframework.aop.framework.ProxyFactoryBean"
+	lazy-init="true">
+		<property name="proxyInterfaces">
+			<value>com.newco.marketplace.business.iBusiness.serviceorder.IIncidentBO</value>
+		</property>
+	 	<property name="target">
+			<ref bean="incidentBOTarget" />
+		</property>
+		<property name="interceptorNames">
+			<list>
+				<value>incidentAopAdvisor</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- Provider Insurance Tab  -->
+		<bean id="providerInsuranceAdvice" class="com.newco.marketplace.aop.ProviderAOPAdvice">
+		<property name="aopAdviceDao">
+			<ref bean="aopAdviceDao" />
+		</property>
+					
+		<!-- Required for Alerts -->
+		<property name="alertAdvice">
+			<ref bean="alertAdvice" />
+		</property>		
+	</bean>
+	
+	
+		<bean id="insuranceAdvisor"
+		class="org.springframework.aop.support.NameMatchMethodPointcutAdvisor">
+		<property name="mappedName">
+			<value>sendWCINotRequiredAlert</value>
+		</property>
+		<property name="advice">
+			<ref bean="providerInsuranceAdvice" />
+		</property>
+	</bean>
+	
+		<bean id="insuranceBOAOP"
+		class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="proxyInterfaces">
+			<value>
+				com.newco.marketplace.business.iBusiness.provider.IInsurancePolicyBO
+			</value>
+		</property>
+	 	<property name="target">
+			<ref bean="insurancePolicyBOImpl" />
+		</property> 	
+		<property name="interceptorNames">
+			<list>
+				<value>insuranceAdvisor</value>			
+			</list>
+		</property>
+	</bean>
+	<bean id="provRegBOAOP"
+		class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="proxyInterfaces">
+			<value>
+				com.newco.marketplace.business.iBusiness.provider.IRegistrationBO
+			</value>
+		</property>
+	 	<property name="target">
+			<ref bean="registrationBOImpl" />
+		</property> 	
+		<property name="interceptorNames">
+			<list>
+				<value>provRegAdvisor</value>			
+			</list>
+		</property>
+	</bean>	
+	
+	<bean id="provRegAdvisor"
+		class="org.springframework.aop.support.NameMatchMethodPointcutAdvisor">
+		<property name="mappedName">
+			<value>saveRegistration</value>
+		</property>
+		<property name="advice">
+			<ref bean="provRegAdvice" />
+		</property>
+	</bean>
+	
+	<bean id="provRegAdvice" class="com.newco.marketplace.aop.ProvRegistrationAOPAdvice">
+		<property name="aopAdviceDao">
+			<ref bean="aopAdviceDao" />
+		</property>
+					
+		<!-- Required for Alerts -->
+		<property name="alertAdvice">
+			<ref bean="alertAdvice" />
+		</property>
+	</bean>
+	
+	<bean id="buyerRegBOAOP"
+		class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="proxyInterfaces">
+			<value>
+				com.newco.marketplace.business.iBusiness.buyer.IBuyerRegistrationBO
+			</value>
+		</property>
+	 	<property name="target">
+			<ref bean="buyerRegistrationBOImpl" />
+		</property> 	
+		<property name="interceptorNames">
+			<list>
+				<value>buyerRegAdvisor</value>
+			</list>
+		</property>
+	</bean>	
+	
+	<bean id="buyerRegAdvisor"
+		class="org.springframework.aop.support.NameMatchMethodPointcutAdvisor">
+		<property name="mappedNames">
+			<value>saveProfBuyerRegistration,saveSimpleBuyerRegistration</value>
+		</property>
+		<property name="advice">
+			<ref bean="buyerRegAdvice" />
+		</property>
+	</bean>
+	
+	<bean id="buyerRegAdvice" class="com.newco.marketplace.aop.BuyerRegistrationAOPAdvice">
+		<property name="aopAdviceDao">
+			<ref bean="aopAdviceDao" />
+		</property>
+					
+		<!-- Required for Alerts -->
+		<property name="alertAdvice">
+			<ref bean="alertAdvice" />
+		</property>		
+	</bean>
+	
+ 	<bean id="forgotUsernameBOAOP"
+		class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="proxyInterfaces">
+			<value>
+				com.newco.marketplace.business.iBusiness.provider.IForgotUsernameBO
+			</value>
+		</property>
+	 	<property name="target">
+			<ref bean="forgotUsernameBOImpl" />
+		</property> 	
+		<property name="interceptorNames">
+			<list>
+				<value>forgotUsernameAdvisor</value>			
+			</list>
+		</property>
+	</bean>	
+	
+	<bean id="forgotUsernameAdvisor"
+		class="org.springframework.aop.support.NameMatchMethodPointcutAdvisor">
+		<property name="mappedNames">
+			<value>sendForgotUsernameMail,validateAns,resetPassword</value>
+		</property>
+		<property name="advice">
+			<ref bean="forgotUsernameAdvice" />
+		</property>
+	</bean>
+	
+	<bean id="forgotUsernameAdvice" class="com.newco.marketplace.aop.ForgotUsernameAOPAdvice">
+		<property name="aopAdviceDao">
+			<ref bean="aopAdviceDao" />
+		</property>
+		
+		<property name="alertAdvice">
+			<ref bean="alertAdvice" />
+		</property>
+		
+  		<property name="contactDao">
+	    	<ref bean="socontactDaoImpl"/>
+	    </property>
+	</bean>
+</beans>

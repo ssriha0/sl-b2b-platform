@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap>
+
+	<typeAlias alias="achQueueEntry"
+		type="com.servicelive.wallet.ach.vo.AchProcessQueueEntryVO" />
+    <typeAlias alias="autoFundingVO" type="com.servicelive.wallet.ach.vo.AutoFundingVO" />
+
+	<insert id="achqueueEntry.query" parameterClass="achQueueEntry">
+		INSERT INTO ach_process_queue ( entity_type_id,
+		entity_id, account_id, ledger_entry_id, transaction_type_id,
+		trans_amount, ach_transcode_acc_id, process_status_id,modified_date
+		) values (
+		#entityTypeId#, #entityId#, #accountId#,
+		#ledgerEntryId#, #transactionTypeId#, #transactionAmount#,
+		#achBatchAssocId#, #processStatusId#,NOW()
+		)
+		<selectKey resultClass="java.lang.Long" > 
+			select LAST_INSERT_ID() as value
+		</selectKey>
+	</insert>
+	<update id="updateHsAuthResponse.update" parameterClass="java.util.HashMap">
+	    UPDATE account_hs_auth_resp SET ach_process_queue_id = #achProcessId#  WHERE resp_id = #respId#
+	</update>
+	<update id="achqueueEntrySetCreatedDate.update" parameterClass="achQueueEntry">
+		UPDATE ach_process_queue SET created_date = #createdDate#
+		 WHERE ach_process_id = #achProcessId#
+	</update>
+	
+	<update id="achqueueEntry.update" parameterClass="achQueueEntry">
+		UPDATE ach_process_queue SET ach_transcode_acc_id = (SELECT
+		ach_transcode_acc_id FROM lu_ach_transcode_acc WHERE
+		account_type_id = (SELECT account_type_id FROM account_hdr WHERE
+		account_id = #accountId#) AND ledger_trans_entry_type_id =
+		#transactionEntryTypeId#) WHERE ach_process_id = #achProcessId#
+	</update>
+
+    <select id="autoFunding.query" parameterClass="autoFundingVO" resultClass="autoFundingVO">
+        Select entity_id as entityId, entity_type_id as entityTypeId, account_id as accountId, enabled_ind as enabled
+        From auto_funding_service where entity_id = #entityId# and entity_type_id = #entityTypeId# and enabled_ind = 1
+    </select>
+	
+</sqlMap>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<bean id="businessinfoDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.BusinessinfoDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+		<property name="activityRegistryDao">
+			<ref bean="activityDaoImpl"/>
+		</property>		
+	</bean>
+	<bean id="zipDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.ZipDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	<bean id="businessinfoBOImpl" class="com.newco.marketplace.business.businessImpl.provider.BusinessinfoBOImpl">
+		<constructor-arg index="0" ref="businessinfoDaoImpl"/>
+		<constructor-arg index="1" ref="lookupDAOImpl"/>
+		<constructor-arg index="2" ref="zipDaoImpl"/>
+	</bean>
+ 	
+	
+		
+</beans>

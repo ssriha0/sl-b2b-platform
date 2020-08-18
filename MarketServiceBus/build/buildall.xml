@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project basedir="../" default="build-dependencies" name="MarketServiceBus-BuildAll">
+	
+	<target name="build-dependencies">
+		<ant antfile="../OMSStaging/build/build.xml" dir="../OMSStaging" />
+		<ant antfile="../MarketCommon/build/build.xml" dir="../MarketCommon" />
+		<ant antfile="../MarketBusinessInterface/build/build.xml" dir="../MarketBusinessInterface" />
+		<ant antfile="../OrderFulfillment.Domain/build/build.xml" dir="../OrderFulfillment/OrderFulfillment.Domain" />
+		<!--
+	 	################################################################################################################
+		 # Commenting code changes done for injecting ofclient dependency 
+		   <ant antfile="../OrderFulfillment.Client/build/build.xml" dir="../OrderFulfillment/OrderFulfillment.Client" inheritAll="false"/>
+		   <ant antfile="../OrderFulfillment.ServiceInterface/build/build.xml" dir="../OrderFulfillment/OrderFulfillment.ServiceInterface" inheritAll="false"/>
+		################################################################################################################
+		-->
+		<ant antfile="../ServiceLiveCommonDomain/build/build.xml"   dir="../ServiceLiveCommonDomain" />
+		<ant antfile="../ServiceLiveBus/build/build.xml"   dir="../ServiceLiveBus" />
+		
+		<!--
+		  ###########################################################################
+		  # Eliminating build for the following dependencies since they are currently
+		  # being built by ../MarketServiceBus/build.xml
+		  #
+		  #		<ant antfile="../MarketServiceBus.Mapforce.Code/build/build.xml" dir="../MarketServiceBus.Mapforce.Code" />
+		  #		<ant antfile="../ServiceOrderFileProcess/build/build.xml" dir="../ServiceOrderFileProcess" inheritAll="false" />
+		  #		<ant antfile="../MarketTranslator/build/build.xml" dir="../MarketTranslator" inheritAll="false" />
+		-->
+		<ant antfile="../MarketServiceBus/build.xml"   dir="../MarketServiceBus"/>
+	</target>
+
+</project>

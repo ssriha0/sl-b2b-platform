@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
+	default-lazy-init="true">
+	
+	<bean id="workflowDao"
+		class="com.newco.marketplace.persistence.daoImpl.provider.WorkflowDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+	<bean id="auditDao"
+		class="com.newco.marketplace.persistence.daoImpl.provider.AuditDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+	
+	<bean id="vendorCredentialsDao"
+		class="com.newco.marketplace.persistence.daoImpl.provider.VendorCredentialsDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+	
+	<bean id="teamCredentialsDao"
+		class="com.newco.marketplace.persistence.daoImpl.provider.TeamCredentialsDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+	
+	<bean id="vendorNotesDao"
+		class="com.newco.marketplace.persistence.daoImpl.provider.VendorNotesDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+	
+	<bean id="auditDaoImpl"
+		class="com.newco.marketplace.persistence.daoImpl.audit.AuditDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+	
+	<bean id="auditBoImplTarget"
+		class="com.newco.marketplace.business.businessImpl.provider.AuditBOImpl">
+		<property name="auditDao">
+			<ref bean="auditDao" />
+		</property>
+		<property name="workflowDao">
+			<ref bean="workflowDao" />
+		</property>
+		<property name="vendorResourceDao">
+			<ref bean="vendorResourceDaoImpl" />
+		</property>
+	</bean>
+	
+	<bean id="auditBoImpl"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		lazy-init="true">
+		<property name="proxyInterfaces">
+			<list>
+				<value>
+					com.newco.marketplace.business.iBusiness.provider.IAuditBO
+				</value>
+			</list>
+		</property>
+		<property name="target">
+			<ref bean="auditBoImplTarget" />
+		</property>
+		<property name="transactionManager">
+			<ref bean="dsTransactionManagerMain" />
+		</property>
+		<property name="transactionAttributeSource">
+			<ref bean="attributeSource" />
+		</property>
+	</bean>	
+	
+	
+	<bean id="auditProfileBoTarget"
+			class="com.newco.marketplace.business.businessImpl.audit.AuditProfileBOImpl">
+		<property name="auditDao">
+			<ref bean="auditDaoImpl" />
+		</property>
+		<property name="vendorHdrDao">
+			<ref bean="vendorHdrDaoImpl" />
+		</property>
+		<property name="vendorResourceDao">
+			<ref bean="vendorResourceDaoImpl" />
+		</property>
+		<property name="vendorCredentialsDao">
+			<ref bean="vendorCredentialsDao" />
+		</property>
+		<property name="teamCredentialsDao">
+			<ref bean="teamCredentialsDao" />
+		</property>
+		<property name="auditEmailBean">
+			<ref bean="auditEmailBO" />
+		</property>
+		<property name="vendorNotesDao">
+			<ref bean="vendorNotesDao" />
+		</property>
+	</bean>
+	
+	<bean id="auditProfileBo"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="proxyInterfaces">
+			<list>
+				<value>
+					com.newco.marketplace.business.iBusiness.audit.IAuditProfileBO
+				</value>
+			</list>
+		</property>
+		<property name="target">
+			<ref bean="auditProfileBoTarget" />
+		</property>
+		<property name="transactionManager">
+			<ref bean="dsTransactionManagerMain" />
+		</property>
+		<property name="transactionAttributeSource">
+			<ref bean="attributeSource" />
+		</property>
+	</bean>	
+	
+	<bean id="auditEmailDao"
+		class="com.newco.marketplace.persistence.daoImpl.audit.AuditEmailDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+	
+	<bean id="auditEmailBO"
+		class="com.newco.marketplace.business.businessImpl.audit.email.AuditEmailBOImpl">
+		<property name="auditEmailDao">
+			<ref bean="auditEmailDao" />
+		</property>
+		<property name="templateDao">
+			<ref bean="pTemplateDao" />
+		</property>
+		<property name="emailTemplateBean">
+			<ref bean="emailTemplateBean" />
+		</property>
+		<property name="velocityEngine">
+			<ref bean="velocityEngine" />
+		</property>
+		<property name="mailSender">
+			<ref bean="jmsIMailSender" />
+		</property>
+		<property name="logoPath">
+			<value>/images/icon_logo.gif</value>
+		</property>
+		<property name="templateDaoImpl">
+			<ref bean="templateDao" />
+		</property>
+		<property name="alertDao">
+			<ref bean="alertDao" />
+		</property>
+	</bean>
+	<!-- SLT 2227 Wallet control audit notes -->
+	<bean id="walletControlAuditNotesBO"
+	class="com.newco.marketplace.business.businessImpl.audit.WalletControlAuditNotesBOImpl">
+		<property name="auditProfileBoTarget">
+			<ref bean="auditProfileBoTarget" />
+		</property>
+		<property name="walletControlAuditNotesDao">
+			<ref bean="walletControlAuditNotesDao" />
+		</property>
+	</bean>
+	<bean id="walletControlAuditNotesDao"
+		class="com.newco.marketplace.persistence.daoImpl.audit.WalletControlAuditNotesDaoImpl"
+		lazy-init="true">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClientFinance"/>
+  		</property>	
+	</bean> 
+</beans>

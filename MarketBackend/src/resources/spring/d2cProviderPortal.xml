@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<bean id="d2cProviderPortalBO" class="com.newco.marketplace.business.businessImpl.d2cproviderportal.D2CProviderPortalBOImpl"
+		lazy-init="true">
+		<property name="d2cProviderPortalService">
+			<ref bean="d2cProviderPortalService" />
+		</property>
+	</bean>
+
+	<!-- <bean id="d2cProviderPortalDao" class="com.newco.marketplace.persistence.daoImpl.d2cproviderportal.D2CProviderPortalDaoImpl"
+		lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClientIntegration" />
+		</property>
+	</bean> -->
+	
+	<bean id="d2cProviderPortalDao" class="com.newco.marketplace.persistence.daoImpl.d2cproviderportal.D2CProviderPortalDaoImpl"
+		lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+
+	<bean id="d2cProviderPortalService" class="com.newco.marketplace.servicesImpl.d2cproviderportal.D2CProviderPortalServiceImpl"
+		lazy-init="true">
+		<property name="d2cProviderPortalDao">
+			<ref bean="d2cProviderPortalDao" />
+		</property>
+		<property name="vendorHdrDao">
+			<ref bean="vendorHdrDaoImpl" />
+		</property>
+		<property name="locationDao">
+			<ref bean="locationDaoImpl" />
+		</property>
+		<property name="iContactDao">
+			<ref bean="contactDaoImpl" />
+		</property>
+		<property name="lookupDAO">
+			<ref bean="lookupDAOImpl" />
+		</property>
+		<property name="vendorResourceDao">
+			<ref bean="vendorResourceDaoImpl" />
+		</property>
+		<property name="licensesAndCertDao">
+			<ref bean="licensesAndCertDaoImpl" />
+		</property>
+		<property name="profileDocDAO">
+		    <ref bean="providerProfileDocDao" />
+		</property>
+		<property name="documentBO">
+		    <ref bean="documentBO" />
+		</property>
+		<property name="providerSearchBO">
+		    <ref bean="providerSearchBO" />
+		</property>
+	</bean>
+
+</beans>

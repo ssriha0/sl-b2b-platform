@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
+	default-lazy-init="true">
+	
+	
+	<bean id="mailSender"
+		class="org.springframework.mail.javamail.JavaMailSenderImpl" lazy-init="true" >
+		<property name="host">
+			<value>${email.smtp.address}</value>
+		</property>
+	</bean>
+	<bean id="jmsIMailSender" lazy-init="true" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+ 		<property name="host">
+			<value>${email.smtp.address}</value>
+		</property>
+   	</bean>
+	<bean id="mailMessage"
+		class="org.springframework.mail.SimpleMailMessage">
+		<property name="from">
+			<value>
+				<![CDATA[MarketPlace <akarker@searshc.com>]]>
+			</value>
+		</property>
+		<property name="subject">
+			<value>Coming Soon</value>
+		</property>
+	</bean>
+	
+	<bean id="velocityEngine"
+    	class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
+    	<property name="velocityProperties">
+    		<value>
+    			resource.loader=class
+    			class.resource.loader.class=org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+    		</value>
+    	</property>
+    </bean>
+	
+ <bean id="pTemplateDao" class="com.newco.marketplace.persistence.daoImpl.provider.TemplateDaoImpl" >
+        <property name="sqlMapClient">
+            <ref bean="sqlMapClient" />
+        </property>         
+    </bean>
+    
+    <bean id="emailTemplateBean"
+		class="com.newco.marketplace.business.businessImpl.provider.EmailTemplateBOImpl"
+		lazy-init="true">
+		<property name="transactionManager">
+			<ref bean="dsTransactionManagerMain" />
+		</property>
+		<property name="velocityEngine">
+			<ref bean="velocityEngine" />
+		</property>
+		<property name="mailSender">
+			<ref bean="jmsIMailSender" />
+		</property>
+		<property name="logoPath">
+			<value>/images/icon_logo.gif</value>
+		</property>
+		<property name="emailService">
+			<ref bean="emailService" />
+		</property>
+		<property name="templateDao">
+			<ref bean="templateDao" />
+		</property>
+		<property name="alertDao">
+			<ref bean="alertDao" />
+		</property>
+	</bean>
+	
+	<bean id="providerEmailBOImpl"
+		class="com.newco.marketplace.business.businessImpl.provider.ProviderEmailBOImpl"
+		lazy-init="true">
+		<property name="transactionManager">
+            <ref bean="dsTransactionManagerMain"/>
+        </property>
+		<property name="mailSender">
+			<ref bean="mailSender" />
+		</property>
+		<property name="message">
+			<ref bean="mailMessage" />
+		</property>
+		<property name="plusOneURL">
+			<value>${plusone.email.linkurl}</value>
+		</property>
+		<property name="websiteHomePage">
+			<value>${sears.website.homepage}</value>
+		</property>
+		<property name="velocityEngine">
+			<ref bean="velocityEngine" />
+		</property>
+		<property name="templateDao">
+			<ref bean="pTemplateDao" />
+		</property>
+		<property name="emailTemplateBean">
+			<ref bean="emailTemplateBean" />
+		</property>
+	</bean>
+	
+	<bean id="buyerEmailBOImpl"
+		class="com.newco.marketplace.business.businessImpl.buyer.BuyerEmailBOImpl"
+		lazy-init="true">
+		<property name="transactionManager">
+            <ref bean="dsTransactionManagerMain"/>
+        </property>
+		<property name="mailSender">
+			<ref bean="mailSender" />
+		</property>
+		<property name="message">
+			<ref bean="mailMessage" />
+		</property>
+		<property name="plusOneURL">
+			<value>${plusone.email.linkurl}</value>
+		</property>
+		<property name="websiteHomePage">
+			<value>${sears.website.homepage}</value>
+		</property>
+		<property name="velocityEngine">
+			<ref bean="velocityEngine" />
+		</property>
+		<property name="templateDao">
+			<ref bean="pTemplateDao" />
+		</property>
+		<property name="emailTemplateBean">
+			<ref bean="emailTemplateBean" />
+		</property>
+		<property name="emailService">
+			<ref bean="emailService" />
+		</property>
+	</bean>
+	
+  </beans>

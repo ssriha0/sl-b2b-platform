@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
+	default-lazy-init="true">
+
+	<import resource="classpath:resources/spring/actions/homepageBeans.xml" />
+	<import resource="classpath:resources/spring/actions/serviceOrderSimpleBeans.xml" />
+	<import resource="classpath:resources/spring/actions/exploreTheMarketplaceBeans.xml" />
+	<import resource="classpath:resources/spring/actions/adminBeans.xml" />
+	<import resource="classpath:resources/spring/actions/buyerAdminBeans.xml" />
+	<import resource="classpath:resources/spring/actions/selectProviderNetworkBeans.xml" />
+	<import resource="classpath:resources/spring/actions/soContactUsBeans.xml" />
+	<import resource="classpath:resources/spring/actions/soWizardBeans.xml" />
+	<import resource="classpath:resources/spring/actions/soDashboardBeans.xml" />
+	<import resource="classpath:resources/spring/actions/soMonitorBeans.xml" />
+	<import resource="classpath:resources/spring/actions/soDetailBeans.xml" />
+	<import resource="classpath:resources/spring/actions/soSecurityBeans.xml" />
+	<import resource="classpath:resources/spring/actions/soWidgetBeans.xml" />
+
+	<import resource="classpath:resources/spring/delegates/delegates.xml" />
+	<import resource="classpath:resources/spring/actions/soWhatIsSLBeans.xml" />
+	<import resource="classpath:resources/spring/actions/soFinanceManagerBeans.xml" />
+	<import resource="classpath:resources/spring/actions/powerBuyerBeans.xml" />
+	<import resource="classpath:resources/spring/actions/marketPlaceActionBeans.xml" />
+	<!-- SL-1475 -->
+	<import resource="classpath:resources/spring/actions/zipCoverageBeans.xml" />
+	<import resource="classpath:resources/spring/actions/registrationActions.xml" />
+	<import resource="classpath:resources/spring/actions/loginAction.xml" />
+	<import resource="classpath:resources/spring/actions/forgotPasswordAction.xml" />
+	<import resource="classpath:resources/spring/actions/businessInfoAction.xml" />
+	<import resource="classpath:resources/spring/actions/termsAndConditionsAction.xml" />
+	<import resource="classpath:resources/spring/actions/licensesAndCertAction.xml" />
+	<import resource="classpath:resources/spring/actions/serviceProAllTabAction.xml" />
+	<import resource="classpath:resources/spring/actions/teamCredentialAction.xml" />
+	<import resource="classpath:resources/spring/actions/addServiceProAction.xml" />
+	<import resource="classpath:resources/spring/actions/skillAssignAction.xml" />
+	<import resource="classpath:resources/spring/actions/allTabAction.xml" />
+	<import resource="classpath:resources/spring/actions/companyProfileAction.xml" />
+	<import resource="classpath:resources/spring/actions/companyTabAction.xml" />
+	<import resource="classpath:resources/spring/actions/forgetUsernameAction.xml" />
+	<import resource="classpath:resources/spring/actions/joinNowAction.xml" />
+	<import resource="classpath:resources/spring/actions/termsAction.xml" />
+	<import resource="classpath:resources/spring/actions/manageUserAction.xml" />
+	<import resource="classpath:resources/spring/actions/generalInfoAction.xml" />
+	<import resource="classpath:resources/spring/actions/insuranceActions.xml" />
+	<import resource="classpath:resources/spring/actions/publicProfileActions.xml" />
+	<import resource="classpath:resources/spring/actions/changePasswordAction.xml" />
+	<import resource="classpath:resources/spring/actions/profileTabBeans.xml" />
+	<import resource="classpath:resources/spring/actions/providerInfoPagesBeans.xml" />
+	<!-- Added for display documents -->
+	<import resource="classpath:resources/spring/actions/soCommonBean.xml" />
+	<import resource="classpath:resources/spring/actions/warrantyAction.xml" />
+	<!-- Added for Auditor functions -->
+	<import resource="classpath:resources/spring/actions/auditorActions.xml" />
+	<!--SL-21142 -->
+	<import resource="classpath:resources/spring/actions/lmsFileUploadAction.xml" />
+	<!--SL-21142 -->
+
+	<!-- Start SL-21464 -->
+	<import resource="classpath:resources/spring/actions/d2cProviderPortalAction.xml" />
+	<!-- End SL-21464 -->
+	
+	<import resource="classpath:resources/spring/actions/calendarPortalAction.xml" />
+	
+	<!-- Added for Buyer Registration functions -->
+	<import resource="classpath:resources/spring/actions/joinNowBuyerAction.xml" />
+	<import resource="classpath:resources/spring/actions/buyerRegistrationAction.xml" />
+	<import resource="classpath:resources/spring/actions/jobCodeBeans.xml" />
+	<import resource="classpath:resources/spring/actions/skuMaintenanceBeans.xml" />
+	<import resource="classpath:resources/spring/actions/templateMaintenanceAction.xml" />
+	<import resource="classpath:resources/spring/actions/blackoutStatesAction.xml" />
+	<!-- Added for ServiceLive-FileUploadInitiative -->
+	<import resource="classpath:resources/spring/actions/buyerUploadFileAction.xml" />
+	<import resource="classpath:resources/spring/actions/serviceLiveWalletAction.xml" />
+	<!-- Added for I-22 - Manage Custom References -->
+	<import resource="classpath:resources/spring/actions/manageCustomReferences.xml" />
+	<import resource="classpath:resources/spring/actions/soProviderSelectAction.xml" />
+
+	<import resource="classpath:resources/spring/actions/autoCloseBeans.xml" />
+	<import resource="classpath:resources/spring/actions/inHomeAutoCloseBeans.xml" />
+	<import resource="classpath:resources/spring/actions/reasonCodeBeans.xml" />
+	<import resource="classpath:resources/spring/actions/buyerSurveyAction.xml" />
+	
+	<!-- SL-17698:Member offers -->
+	<import resource="classpath:resources/spring/actions/memberOfferBeans.xml" />
+	<import resource="classpath:resources/spring/actions/feedbackBeans.xml" />
+
+	<import resource="classpath:resources/spring/actions/orderGroupBeans.xml" />
+	<import resource="classpath:resources/spring/actions/powerAuditorWorkflowBeans.xml" />
+	<import resource="classpath:resources/spring/actions/powerAuditorWorkflowControllerBeans.xml" />
+	<import resource="classpath:resources/spring/actions/w9RegistrationBeans.xml" />
+	<import resource="classpath:resources/spring/actions/manageAutoOrderAcceptanceBeans.xml" />
+	<import resource="classpath:resources/spring/actions/manageServiceOfferingsBeans.xml" />
+	<import resource="classpath:resources/spring/actions/promotionsAction.xml" />
+
+	<import resource="classpath:resources/spring/actions/assurantBeans.xml" />
+	<import resource="classpath:resources/spring/actions/buyerLogoAction.xml" />
+
+	<import resource="classpath:resources/spring/mappers/ofServiceOrderMapper.xml" />
+	<import resource="classpath:resources/spring/actions/buyerPIIAction.xml" />
+	<import resource="classpath:resources/spring/actions/hsrPartsBeans.xml" />
+
+	<!-- SL-15642 Order Management -->
+	<import resource="classpath:resources/spring/actions/orderManagementBeans.xml" />
+	<import resource="classpath:resources/spring/actions/nonSecureRedirectPageBeans.xml" />
+	<!-- NS Leads Management -->
+	<import resource="classpath:resources/spring/actions/leadsManagementBeans.xml" />
+	<import resource="classpath:resources/spring/actions/buyerLeadManagementBeans.xml" />
+
+	<!-- SL-15642 Parts Management -->
+	<import resource="classpath:resources/spring/actions/partsManagementBeans.xml" />
+	
+	<!-- SL-1475 -->
+	<import resource="classpath:resources/spring/actions/zipCoverageBeans.xml" />
+</beans>

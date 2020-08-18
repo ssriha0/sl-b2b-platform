@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jboss>
+	<enterprise-beans> 
+		 
+		<message-driven>
+			<ejb-name>WalletResponseBean</ejb-name>
+			<local-jndi-name>ejb/WalletResponseBean</local-jndi-name>
+			<destination-jndi-name>queue/SLWalletRequestQueue</destination-jndi-name>
+			<resource-ref>				
+				<res-ref-name>jdbc/ServiceLiveMySqlDS</res-ref-name>
+				<jndi-name>jdbc/ServiceLiveMySqlDS</jndi-name>
+			</resource-ref>
+			<resource-ref>				
+				<res-ref-name>jdbc/ServiceLiveMySqlFinanceDS</res-ref-name>
+				<jndi-name>jdbc/ServiceLiveMySqlFinanceDS</jndi-name>
+			</resource-ref>
+		</message-driven>
+		 
+	</enterprise-beans>
+</jboss>

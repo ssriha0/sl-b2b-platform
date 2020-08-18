@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+     <bean id="leadOutBoundNotificationDao" class="com.newco.marketplace.persistance.daoImpl.leadOutBoundNotification.LeadOutBoundNotificationDaoImpl"
+     	lazy-init="true">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	 
+    </bean>	
+    
+    
+    <bean id="leadOutBoundNotificationService" class="com.newco.marketplace.business.businessImpl.leadOutBoundNotification.LeadOutBoundNotificationServiceImpl">
+	 	<property name="leadOutBoundNotificationDao">
+			<ref bean="leadOutBoundNotificationDao" />
+		</property>
+    </bean>
+     
+ 
+     <bean id="leadOutBoundAPIService"
+		class="com.newco.marketplace.business.businessImpl.leadOutBoundNotification.LeadOutBoundAPIServiceImpl">
+		<property name="leadOutBoundNotificationService">
+			<ref bean="leadOutBoundNotificationService"/>
+		</property>
+		<property name="leadOutboundNotificationClient">
+			<ref bean="leadOutboundNotificationClient"/>
+		</property>
+	</bean>
+	
+     
+     <bean id="leadOutboundNotificationClient" class="com.newco.marketplace.leadoutboundnotification.service.LeadOutBoundNotificationClient">
+ 		 <property name="leadOutBoundNotificationService">
+ 			<ref bean="leadOutBoundNotificationService"/>
+ 		 </property>
+ 		 <property name="leadOutBoundBaseUrl"
+			value="${leadOutBoundNotification.api.base.url}">
+		 </property> 
+		 <property name="leadOutBoundHeader"
+		 	value="${leadOutBoundNotification.api.header}">
+		 </property>
+     </bean>
+</beans>

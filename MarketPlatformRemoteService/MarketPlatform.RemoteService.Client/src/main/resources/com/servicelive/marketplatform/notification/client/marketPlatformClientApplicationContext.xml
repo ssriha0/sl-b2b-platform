@@ -1,0 +1,38 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context-2.0.xsd">
+
+	<!-- 
+		This bean reads the properties from the server.
+		In JBoss it is usually defined in 
+		properties-services.xml in the deploy folder
+		Properties needed by the Wallet.RemoteClient are
+		java.naming.factory.initial=org.jnp.interfaces.NamingContextFactory
+		java.naming.factory.url.pkgs=org.jboss.naming:org.jnp.interfaces
+		java.naming.url=localhost:1399
+		marketplatform.restservice.url=http://localhost:8180/MarketPlatform.RemoteService/rest-services
+		marketplatform.jms.connection.factory.name=QueueConnectionFactory
+		marketplatform.jms.queue.name=queue/SLNotificationServiceQueue		
+	 -->
+    <bean id="marketPlatformPropertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" />
+
+    <import resource="classpath:com/servicelive/marketplatform/jms/jmsContext.xml" />
+
+	<bean id="baseService" class="com.servicelive.common.rest.ServiceLiveBaseRestClient" abstract="true">
+		<property name="baseUrl" value="${marketplatform.service.url}"></property>
+	</bean>
+	
+    <bean id="marketPlatformRemoteService" class="com.servicelive.marketplatform.client.MarketPlatformRemoteServiceClient" parent="baseService">
+        <property name="jmsTemplate" ref="marketPlatformJmsTemplate" />
+    </bean>
+
+    <bean id="marketPlatformRemoteServiceChecker" class="com.servicelive.common.rest.ServiceLiveRemoteServiceChecker" parent="baseService">
+        <property name="remoteServiceName" value="MarketPlatformRemoteService"/>
+    </bean>
+
+</beans>

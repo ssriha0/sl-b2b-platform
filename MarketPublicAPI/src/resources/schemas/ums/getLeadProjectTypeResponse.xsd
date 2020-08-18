@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/ums" 
+		xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+		targetNamespace="http://www.servicelive.com/namespaces/ums" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		elementFormDefault="qualified">
+  <xs:include schemaLocation="../common.xsd"/>
+  <xs:element name="getLeadProjectTypeResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="results"/>
+        <xs:element ref="projects" minOccurs="0" maxOccurs="1"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="projects">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="project" minOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="project">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="categoryID" type="xs:integer" minOccurs="0"/>
+				<xs:element name="category" type="xs:string" minOccurs="0"/>
+				<xs:element name="projectId" type="xs:integer" minOccurs="0"/>
+				<xs:element name="projectName" type="xs:string" minOccurs="0"/>
+				<xs:element name="exclusivePrice" type="xs:double" minOccurs="0"/>
+				<xs:element name="compPriceTwo" type="xs:double" minOccurs="0"/>
+				<xs:element name="compPriceThree" type="xs:double" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+</xs:schema>
+
+
+
+

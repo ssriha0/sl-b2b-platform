@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified">
+  <xs:include schemaLocation="leadsCommon.xsd" />
+    <!-- This is the new get Lead Request -->
+	<!-- Root Element -->
+	<xs:element name="LeadRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="LeadId" type="xs:string" minOccurs="1"
+					maxOccurs="1" />
+				<xs:element ref="FirmIds" minOccurs="0" maxOccurs="1" />
+				<xs:element name="ProjectDescription" type="xs:string"
+					minOccurs="0" maxOccurs="1" />
+				<xs:element name="SecondaryProjects" type="xs:string" 
+				    minOccurs="0" maxOccurs="1" />			
+				<xs:element name="ServicePreferredDate" type="xs:date"
+					minOccurs="0" maxOccurs="1" />
+				<xs:element name="ServiceTimeZone" type="TimeZoneType"
+					minOccurs="0" maxOccurs="1" nillable="true" />
+				<xs:element name="ServicePreferredStartTime" type="xs:time"
+					minOccurs="0" maxOccurs="1" />
+				<xs:element name="ServicePreferredEndTime" type="xs:time"
+					minOccurs="0" maxOccurs="1" />
+				<xs:element ref="CustomerContact" minOccurs="1"
+					maxOccurs="1" />
+				<xs:element name="MemberShipNumber" type="memberShip"
+				    minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+
+	<xs:element name="FirmIds">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="FirmId" type="xs:string" minOccurs="1"
+					maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="CustomerContact">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="FirstName" minOccurs="0"
+					type="xs:string" maxOccurs="1" />
+				<xs:element name="LastName" minOccurs="0" maxOccurs="1"
+					type="xs:string" />
+				<xs:element ref="Contact" minOccurs="1" maxOccurs="1" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

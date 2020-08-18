@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="promo">
+
+	<typeAlias alias="promoVo" type="com.newco.marketplace.vo.promo.PromoVO" />
+	<typeAlias alias="promoContentVo" type="com.newco.marketplace.vo.promo.PromoContentVO" />
+	<typeAlias alias="soVO" type="com.newco.marketplace.dto.vo.serviceorder.ServiceOrder" />
+	<parameterMap id="soPromoMap" class="java.util.Map">
+        <parameter property="soId"/>
+        <parameter property="promoId"/>
+    </parameterMap>
+    
+    <resultMap class="promoVo" id="promo.selectActivePromosBySO-result-mapping">
+    	<result column="promoID" property="promoID"/>
+    	<result column="beginDateTime" property="beginDateTime"/>
+    	<result column="endDateTime" property="endDateTime"/>
+    	<result column="promoType" property="promoType"/>
+    	<result column="roleID" property="roleID"/>
+    	<result column="promoValue" property="promoValue"/>
+    	<result column="adjustmentType" property="adjustmentType"/>
+    	<result column="soDependent" property="soDependent"/>
+    	<result property="promoContent" column="promoID" select="promocontent.query" />
+    </resultMap>	
+  
+    <parameterMap id="promoContentMap" class="java.util.Map">
+        <parameter property="promoId"/>
+        <parameter property="contentLocation"/>
+        <parameter property="roleId"/>
+    </parameterMap>	
+	
+	<select id="promocontent.query" parameterClass="java.lang.Integer" resultClass="promoContentVo">
+		select pc.promo_id as promoID,
+		       pc.content_location as contentLocation,
+		       pc.content as content
+		  from promo_content pc
+		  where promo_id = #promoID#  
+	</select>
+
+	<select id="promo.selectActivePromos" resultClass="promoVo" parameterClass="java.util.Map">
+		SELECT promo_id AS promoID
+		       ,begin_date_time AS beginDateTime
+		       ,end_date_time AS endDateTime
+		       ,promo_type AS promoType
+		       ,role_id AS roleID
+		       ,promo_value AS promoValue
+		       ,max_value AS maxPossibleValue
+		       ,adjustment_type as adjustmentType
+		  FROM promo
+		 WHERE begin_date_time &lt; #beginDateTime#
+		   AND end_date_time > #endDateTime#
+  	</select>
+	
+	<select id="promo.selectActivePromosByRole" parameterClass="java.lang.Integer" resultClass="promoVo">
+		SELECT promo_id AS promoID
+		       ,begin_date_time AS beginDateTime
+		       ,end_date_time AS endDateTime
+		       ,promo_type AS promoType
+		       ,promo_required AS promoRequired
+		       ,role_id AS roleID
+		       ,promo_value AS promoValue
+		       ,max_value AS maxPossibleValue
+		       ,adjustment_type as adjustmentType
+		  FROM promo
+		 WHERE begin_date_time &lt; NOW() 
+		   AND end_date_time > NOW()
+		   and role_id = #roleId#
+  	</select>
+
+	<select id="promo.selectActivePromosBySO" parameterClass="java.lang.String" resultMap="promo.selectActivePromosBySO-result-mapping">
+		SELECT 
+			p.promo_id AS promoID,
+			p.begin_date_time AS beginDateTime,
+    		p.end_date_time AS endDateTime,
+    		p.promo_type AS promoType,
+    		p.role_id AS  roleID,
+    		p.promo_value AS promoValue,
+    		p.adjustment_type AS adjustmentType,
+    		p.so_dependant AS soDependent	
+		  FROM 
+		  		promo p 
+		  		join so_promo sp on sp.promo_id = p.promo_id and sp.so_id = #soId#
+		  		left outer join promo_content pc on pc.promo_id = p.promo_id
+		 WHERE 
+		 		p.begin_date_time &lt; NOW() 
+		   	AND p.end_date_time > NOW()
+  	</select>
+
+	<select id="promo.selectActivePromoByType" parameterClass="java.util.Map" resultClass="promoVo">
+		SELECT promo_id AS promoID
+		       ,begin_date_time AS beginDateTime
+		       ,end_date_time AS endDateTime
+		       ,promo_type AS promoType
+		       ,promo_required AS promoRequired
+		       ,role_id AS roleID
+		       ,promo_value AS promoValue
+		       ,max_value AS maxPossibleValue
+		       ,adjustment_type as adjustmentType
+		  FROM promo
+		 WHERE begin_date_time &lt; NOW() 
+		   AND end_date_time > NOW()
+		   AND promo_type = #promoType#
+		   AND role_id = #roleId#
+		 LIMIT 1
+  	</select>
+
+	<select id="promo.selectPromoContentByID_Tag" parameterMap="promoContentMap" resultClass="promoContentVo">
+		 select pc.content as content 
+		  FROM promo_content pc , promo p
+		 WHERE p.begin_date_time &lt; NOW() 
+		   AND p.end_date_time > NOW()
+		   and pc.promo_id = ?
+		   and pc.content_location = ?
+		   and pc.promo_id = p.promo_id
+		   and p.role_id = ?
+  	</select>
+	<update id="so.updatePostingFee" parameterClass="soVO">
+		UPDATE so_hdr SET posting_fee = #postingFee# WHERE so_id =
+		#soId#
+	</update>
+	
+	<insert id="promo.activatePromoForSO" parameterMap="soPromoMap">
+		INSERT INTO so_promo (so_id , promo_id)
+		VALUES (?,?)
+	</insert>
+	
+<!-- 	code change for SLT-2112 -->
+	<select id="promo.selectActiveSoPromos" parameterClass="java.util.HashMap" resultClass="promoVo">
+		SELECT promo_id AS promoID
+		       ,begin_date_time AS beginDateTime
+		       ,end_date_time AS endDateTime
+		       ,promo_type AS promoType
+		       ,role_id AS roleID
+		       ,promo_value AS promoValue
+		       ,adjustment_type as adjustmentType
+		  FROM promo
+		 WHERE begin_date_time &lt; NOW() 
+		   AND so_dependant = 1
+		   and not exists ( select promo_id from so_promo where so_promo.so_id = #soId# and so_promo.promo_id = promo.promo_id ) 
+		   AND end_date_time > NOW()
+  	</select>
+	
+</sqlMap>

@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<title>Datepicker</title>
+
+
+<link rel="stylesheet" href="/ServiceLiveWebUtil/css/jqueryui/jquery-ui-1.7.2.custom.css" type="text/css"></link>
+<script type="text/javascript" src="/ServiceLiveWebUtil/javascript/jquery/jquery-1.3.2.min.js"></script>
+<script type="text/javascript" src="/ServiceLiveWebUtil/javascript/jquery/jqueryui/jquery-ui-1.7.2.custom.min.js"></script>
+
+
+<link rel="stylesheet" href="uicodesamples.css" type="text/css"></link>
+</head>
+
+<body>
+<div id="wrapper">
+<a id="home" href="/UICodeSamples">Home</a>
+<h1>Datepicker</h1>
+
+<p>We use the datepicker provided in the jQueryUI library. The CSS theme we've selected for ServiceLive is called "Black Tie". 
+See the How To section below about what scripts and stylesheets to import.</p>
+<script type="text/javascript">
+	$(function() {
+		$("#datepicker").datepicker();
+	});
+	</script>
+
+<div>
+<form>
+<p>Date: <input id="datepicker" type="text" readonly="readonly"></p>
+</form>
+
+
+========<br/>
+<h2>How to:</h2>
+<ol>
+<li>Put these in the &lt;head>&lt;/head> section of your document: <br/>
+<pre>&lt;link rel="stylesheet" href="${staticContextPath}/css/jqueryui/jquery-ui-1.7.2.custom.css" type="text/css">&lt;/link>
+&lt;script type="text/javascript" src="${staticContextPath}/javascript/jquery/jquery-1.3.2.min.js">&lt;/script>
+&lt;script type="text/javascript" src="${staticContextPath}/javascript/jquery/jqueryui/jquery-ui-1.7.2.custom.min.js">&lt;/script>
+
+</pre>
+<strong>Note:</strong> Don't insert duplicates if the above files have already been referenced on the page. 
+Also, the above code assumes that you've defined the "staticContextPath" variable in your JSP.
+</li>
+
+<li>Initialize the datepicker: <br/>
+<pre>
+&lt;script type="text/javascript">
+	$(function() {
+		$("#datepicker").datepicker();
+	});
+	&lt;/script>
+
+</pre>
+</li>
+
+<li>Create a field for the datepicker to update: <br/>
+<pre>
+&lt;form>
+&lt;p>Date: &lt;input id="datepicker" type="text" readonly="readonly">&lt;/p>
+&lt;/form>
+</pre>
+<strong>Note:</strong> The <i>readonly</i> attribute prevents user input into the field, but allows it to be updated programmatically. 
+Remove it if the requirement is for users to be able to enter a date manually.  
+</li>
+</ol>
+
+Complete documentation available <a href="http://jqueryui.com/demos/datepicker/">here</a>. 
+
+<div class="ltCorner"></div>
+<div class="rtCorner"></div>
+<div class="lbCorner"></div>
+<div class="rbCorner"></div>
+</div>
+</body>
+</html>

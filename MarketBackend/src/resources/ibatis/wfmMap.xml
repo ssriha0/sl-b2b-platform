@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="wfm">
+	<typeAlias alias="wfmBuyerQueueVO" type="com.newco.marketplace.dto.vo.WFMBuyerQueueVO" />
+	<!-- SLT-1613 START -->
+	<typeAlias alias="wfmQueueVO" type="com.newco.marketplace.dto.vo.WFMQueueVO" />
+	<typeAlias alias="buyerQueueVO" type="com.newco.marketplace.dto.vo.BuyerQueueVO" />
+	<!-- SLT-1613 END -->
+    	
+	<select id="wfmBuyerQueueSelect" parameterClass="java.util.HashMap" resultClass="wfmBuyerQueueVO">
+		select 
+		wfmBuyerQueue.q_id as qId,
+		wfmQueues.q_name as qName,
+		wfmQueues.q_desc as qDesc,
+		wfmTasks.task_id as taskId,
+		wfmTasks.task_code as taskCode,
+		wfmTasks.task_desc as taskDesc
+		from 
+		wfm_buyer_queues wfmBuyerQueue
+		join wfm_queues wfmQueues on (wfmBuyerQueue.q_id = wfmQueues.q_id )
+		join wfm_tasks wfmTasks on (wfmQueues.q_id = wfmTasks.q_id)
+		join wfm_so_tasks wfmSoTasks on (wfmSoTasks.so_task_id = wfmTasks.task_id) 
+		where
+		wfmBuyerQueue.buyer_id = #buyerId# 
+		and wfmSoTasks.so_id = #soId# 
+		order by wfmBuyerQueue.q_id
+	</select>
+	
+	<!-- SLT-1613 START -->
+	<select id="wfmQueueSelect" parameterClass="java.util.HashMap" resultClass="wfmQueueVO">
+		SELECT queue_id as queueId,queue_name as queueName,queue_desc as queueDesc,
+		category as category,is_standard as isStandard, is_generic as isGeneric ,visibility_ind as visibilityInd
+		FROM wfm_queues WHERE is_standard='Y' and is_generic='Y' ORDER BY category;
+	</select>
+	
+	<select id="wfmQueueBuyerSelect" parameterClass="java.util.HashMap" resultClass="wfmQueueVO">
+		SELECT wfmq.queue_id as queueId,wfmq.queue_name as queueName,wfmq.queue_desc
+		as queueDesc,wfmq.category as category,
+		wfmq.is_standard as isStandard,wfmq.is_generic as isGeneric,wfmq.visibility_ind as
+		visibilityInd,'Y' as checkInd
+		FROM wfm_queues wfmq, wfm_buyer_queues wfmbq
+		WHERE wfmq.queue_id = wfmbq.queue_id
+		AND wfmbq.buyer_id = #buyerId# ORDER BY wfmq.category;
+   </select>
+	
+	<insert id="saveWfmBuyerQueue"
+		parameterClass="buyerQueueVO">
+		INSERT IGNORE INTO wfm_buyer_queues (buyer_id, queue_id,
+		queue_sort_order, active_ind, visible_ind) 
+		SELECT #buyerId#, #queueId#, IF((MAX(queue_sort_order)+1)=99,100,(MAX(queue_sort_order)+1)),#activeInd#,#visibilityInd#
+		FROM wfm_buyer_queues WHERE buyer_id=#buyerId# AND queue_sort_order != 99;
+	</insert>
+	
+	<delete id="deleteWfmBuyerQueue"
+		parameterClass="java.util.HashMap">
+		DELETE FROM wfm_buyer_queues WHERE buyer_id=#buyerId# AND queue_id NOT IN
+		<iterate property="queueIdList" open="(" close=")"
+			conjunction=",">
+			#queueIdList[]#
+		</iterate>
+	</delete>
+	
+	<delete id="deleteAllWfmBuyerQueue"
+		parameterClass="java.util.HashMap">
+		DELETE FROM wfm_buyer_queues WHERE buyer_id=#buyerId#
+	</delete>
+	
+	<!-- SLT-1613 END -->
+
+	<!-- SLT-1892 START -->
+	<select id="checkClaimedQueue" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+	SELECT queue_id FROM wfm_buyer_queues WHERE buyer_id=#buyerId# AND
+	queue_id IN
+		<iterate property="queueIdList" open="(" close=")" conjunction=",">
+			#queueIdList[]#
+		</iterate>
+	</select>
+	<!-- SLT-1892 END -->
+</sqlMap>

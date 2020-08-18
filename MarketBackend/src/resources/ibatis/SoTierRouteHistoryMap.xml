@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="soTierRoutingHistory">
+	<typeAlias alias="soTierRoutingHistoryVO" type="com.servicelive.routing.tiered.vo.SoTierRoutingHistoryVO" />
+ 
+  
+  <select id="soTierRoutingHistory.select" parameterClass="soTierRoutingHistoryVO" resultClass="soTierRoutingHistoryVO">
+	 select strh.id as soTierRoutingHistId, strh.so_id as soId, strh.tier_id as tierId, strh.reason_code as reasonCode, 
+	 ltrr.descr as reasonDesc, strh.route_status_ind as routeStatusInd,strh.created_date as createdDate, 
+	 strh.modified_date as modifiedDate 
+	 from so_tier_route_history strh join lu_tier_route_reason ltrr on strh.reason_code = ltrr.reason_id
+     <dynamic prepend="where">
+      <isNotNull prepend="AND" property="soId">
+        so_id = #soId:VARCHAR#
+      </isNotNull>
+      <isNotNull prepend="AND" property="tierId">
+        tier_id = #tierId:INTEGER#
+      </isNotNull>
+      <isNotNull prepend="AND" property="reasonCode">
+        reason_code = #reasonCode:INTEGER#
+      </isNotNull>
+      <isNotNull prepend="AND" property="routeStatusInd">
+        route_status_ind = #routeStatusInd:BIT#
+      </isNotNull>
+    </dynamic>
+    ORDER BY soTierRoutingHistId DESC
+  </select> 
+  
+  <insert id="soTierRoutingHistory.insert" parameterClass="soTierRoutingHistoryVO">
+    insert into so_tier_route_history 
+    (so_id, tier_id, reason_code, route_status_ind)
+    values 
+    (#soId:VARCHAR#, #tierId:INTEGER#, #reasonCode:INTEGER#, #routeStatusInd:BIT#)
+    <selectKey resultClass="int">
+            SELECT last_insert_id() as soTierRoutingHistId
+    </selectKey> 
+  </insert>
+  
+ 
+  <update id="soTierRoutingHistory.update" parameterClass="soTierRoutingHistoryVO">
+    update so_tier_route_history
+    <dynamic prepend="set">
+      <isNotNull prepend="," property="reasonCode">
+        reason_code = #reasonCode:INTEGER#
+      </isNotNull>
+      <isNotNull prepend="," property="routeStatusInd">
+        route_status_ind = #routeStatusInd:BIT#
+      </isNotNull>
+    </dynamic>
+    <dynamic prepend="where">
+      <isNotNull prepend="and" property="soId">
+        so_id = #soId:VARCHAR#
+      </isNotNull>
+      <isNotNull prepend="and" property="tierId">
+        tier_id = #tierId:INTEGER#
+      </isNotNull>
+    </dynamic>
+  </update>
+  
+</sqlMap>

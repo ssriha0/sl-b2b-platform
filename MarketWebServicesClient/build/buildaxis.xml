@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project basedir="../" default="compile" name="MarketWebServicesClient-axis">
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties" />
+
+	<target name="splash">
+		<property name="splash.dir" location="." />
+		<splash imageurl="file:${}/images/ant.gif" />
+	</target>
+
+	<target name="init" depends="splash">
+
+		<property name="dir.base" value="${basedir}" />
+		<property name="dir.src" value="${dir.base}/src" />
+		<property name="dir.wsdl" value="${dir.base}/wsdl" />
+		<property name="dir.dist" value="${dir.base}/dist" />
+		<property name="dir.dest" value="${dir.base}/bin" />
+
+
+
+
+		<!-- Folder under which all the libraries are kept -->
+		<property name="global.lib" value="${dir.base}/lib/axislib" />
+
+		<!-- Folder containing uncompressed final release software-->
+		<property name="dir.dist" value="${dir.base}/dist" />
+
+		<path id="build.class.path">
+			<fileset dir="lib/axislib">
+				<include name="*.jar" />
+			</fileset>
+		</path>
+	</target>
+
+	<taskdef resource="axis-tasks.properties" classpathref="build.class.path" />
+
+	<target name="create-dirs" depends="init">
+		<mkdir dir="${dir.dest}" />
+		<mkdir dir="${dir.dist}" />
+		<mkdir dir="${dir.src}" />
+	</target>
+
+	<target name="create-source" depends="init,clean,create-dirs">
+
+		<axis-wsdl2java output="${dir.src}" verbose="true" url="${dir.wsdl}/ServiceOrderSEI.wsdl">
+			<mapping namespace="http://localhost:8080/marketws/services/ServiceOrderSEI" package="com.ws.servicelive" />
+		</axis-wsdl2java>
+
+
+	</target>
+
+	<target name="compile" depends="create-source">
+		<javac srcdir="${dir.src}" classpathref="build.class.path" debug="on" deprecation="false" />
+
+		<copy todir="${dir.dest}">
+			<fileset dir="${dir.src}">
+				<include name="**/*.xml" />
+			</fileset>
+
+			<fileset dir="${dir.src}">
+				<include name="**/*.properties" />
+			</fileset>
+			<fileset dir="${dir.src}">
+				<include name="**/*.class" />
+			</fileset>
+		</copy>
+
+
+
+		<jar compress="yes" jarfile="${dir.dist}/marketwsclient.jar">
+
+			<fileset dir="${dir.dest}">
+				<include name="**/*.class" />
+				<include name="**/*.xml" />
+				<include name="**/*.properties" />
+			</fileset>
+
+		</jar>
+
+	</target>
+
+
+
+
+	<target name="clean" depends="init">
+		<delete includeemptydirs="true" dir="${dir.src}">
+
+		</delete>
+
+		<delete dir="${dir.dist}" includeemptydirs="true">
+
+		</delete>
+
+		<delete dir="${dir.dest}" includeemptydirs="true">
+
+		</delete>
+
+
+	</target>
+
+
+	<target name="create-source-marketws" depends="init,clean,create-dirs">
+		<axis-wsdl2java output="${dir.src}" verbose="true" url="${dir.wsdl}/ServiceOrderSEI.wsdl">
+			<mapping namespace="http://localhost:8080/marketws/services/ServiceOrderSEI" package="com.ws.servicelive" />
+		</axis-wsdl2java>
+	</target>
+
+	<target name="compile-marketws" depends="create-source-marketws">
+		<javac srcdir="${dir.src}" destdir="${dir.dest}" classpathref="build.class.path" debug="on" deprecation="false" />
+
+		<copy todir="${dir.dest}">
+			<fileset dir="${dir.src}">
+				<include name="**/*.xml" />
+			</fileset>
+
+			<fileset dir="${dir.src}">
+				<include name="**/*.properties" />
+			</fileset>
+		</copy>
+
+		<jar compress="yes" jarfile="${dir.dist}/marketwsclient.jar">
+			<fileset dir="${dir.dest}">
+				<include name="**/*.class" />
+				<include name="**/*.xml" />
+				<include name="**/*.properties" />
+			</fileset>
+		</jar>
+
+	</target>
+
+
+
+
+
+	<target name="compile_responsys" depends="create_source_reponsys">
+		<javac srcdir="${dir.src}" classpathref="build.class.path" debug="on" deprecation="false" />
+
+		<copy todir="${dir.dest}">
+			<fileset dir="${dir.src}">
+				<include name="**/*.xml" />
+			</fileset>
+
+			<fileset dir="${dir.src}">
+				<include name="**/*.properties" />
+			</fileset>
+			<fileset dir="${dir.src}">
+				<include name="**/*.class" />
+			</fileset>
+		</copy>
+
+		<jar compress="yes" jarfile="${dir.dist}/responsys4.jar">
+
+			<fileset dir="${dir.dest}">
+				<include name="**/*.class" />
+				<include name="**/*.xml" />
+				<include name="**/*.properties" />
+			</fileset>
+
+		</jar>
+
+	</target>
+
+
+	<target name="create_source_reponsys" depends="init,clean,create-dirs">
+
+		<axis-wsdl2java output="${dir.src}" verbose="true" url="${dir.wsdl}/TriggeredMessageWS.xml">
+			<mapping namespace="http://localhost:8080/marketws/services/TriggeredMessageWS" package="com.ws.servicelive" />
+		</axis-wsdl2java>
+
+	</target>
+
+
+</project>

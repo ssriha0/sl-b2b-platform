@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by Shekhar/Nilesh (Servicelive) -->
+<xs:schema xmlns="http://www.servicelive.com/namespaces/skillTree" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.servicelive.com/namespaces/skillTree" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" elementFormDefault="qualified">
+	<xs:include schemaLocation="searchCommon.xsd"/>
+	<xs:include schemaLocation="../common.xsd" />	
+	
+	<!-- Root element -->
+	<xs:element name="skillTreeResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="results"/>
+				<xs:element name="searchTerm" minOccurs="0"/>
+				<xs:element name="suggestedTerm" minOccurs="0"/>
+				<xs:element ref="categories" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

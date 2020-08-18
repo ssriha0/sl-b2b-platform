@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="MarketTranslator" basedir="../" default="distribute">
+	<echo level="info">
+	===============================================================================
+	                                ${ant.project.name} 
+	===============================================================================</echo>
+    <property environment="env"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.5"/>
+    <property name="source" value="1.5"/>
+	<property name="dir.base" value="${basedir}" />
+	<property name="dir.dest" value="${dir.base}/bin" />
+	<property name="dir.test" value="${dir.base}/src/test/java" />
+	<property name="deployables.lib" value="lib"/>
+	<property name="dir.service.live.web.util.base" value="../ServiceLiveWebUtil" />
+	<property name="servicelive.deployables.lib" value="${dir.service.live.web.util.base}/lib/deployables"/>
+	<property name="struts2InitialDeployables.lib" value="${dir.service.live.web.util.base}/lib/Struts2InitialDeployables"/>
+	<property name="dir.omsstaging.dist" value="../OMSStaging/dist" />
+	<property name="dir.serviceOrderFileProcess.dist" value="../ServiceOrderFileProcess/dist" />
+	<property name="dir.market.bi.dist" value="../MarketBusinessInterface/target/dist" />
+	<property name="dir.market.common.dist" value="../MarketCommon/dist" />
+	<property name="junit-report.dir" value="${basedir}/${ant.project.name}Reports" />
+	<property name="dir.slCommonBuild.nondeployables" value="../SLCommonBuild/lib/nondeployables"/>
+	
+	<target name="package" depends="distribute"/>
+    
+	<target name="init" depends="clean">
+        <mkdir dir="bin/classes"/>
+		<mkdir dir="bin/spring"/>
+		<mkdir dir="dist"/>
+		<mkdir dir="${junit-report.dir}"/>	
+        <copy includeemptydirs="false" todir="bin/">
+            <fileset dir="src/main/java" excludes="**/*.launch, **/*.java"/>
+        </copy>
+		 <copy includeemptydirs="false" todir="bin/spring">
+            <fileset dir="src/main/resources" excludes="**/*.launch, **/*.java"/>
+        </copy>
+		<copy includeemptydirs="false" todir="bin">
+		    <fileset dir="src/main/resources" includes="**/*.properties"/>
+		</copy>
+		<copy includeemptydirs="false" todir="${deployables.lib}">
+			<fileset dir="${dir.omsstaging.dist}" includes="OMSStaging.jar"/>
+		</copy>
+		
+		<path id="MarketTranslator.classpath">
+	    	<fileset dir="${deployables.lib}">
+	    		<include name="**/*.jar"/>
+	    	</fileset>
+	    	<!-- 
+	    	  <fileset dir="${servicelive.deployables.lib}">
+	    		<include name="**/*.jar"/>
+	    	  </fileset>
+	    	 -->
+	    	<fileset dir="${dir.omsstaging.dist}">
+	    	    	<include name="OMSStaging.jar"/>
+	    	 </fileset>	    	
+	    	<fileset dir="${dir.serviceOrderFileProcess.dist}">
+	    			<include name="ServiceOrderFileProcess.jar"/>
+	    	</fileset>
+	    	<fileset dir="${dir.market.common.dist}">
+			  	     <include name="MarketCommon.jar"/>
+			</fileset>
+			<fileset dir="${dir.market.bi.dist}">
+				<include name="MarketBusinessInterface.jar"/>
+			</fileset>
+	    	<fileset dir="${servicelive.deployables.lib}">
+	    	    	<include name="**/*.jar"/>
+	    			<exclude name="marketwsclient.jar"/>
+	    	</fileset>
+	    	<fileset dir="${struts2InitialDeployables.lib}">
+	    	    <include name="**/*.jar"/>
+	    	</fileset>
+			<fileset dir="${dir.slCommonBuild.nondeployables}">
+	    			<include name="junit.jar" />
+	    			<include name="mockito-all-1.8.4.jar"/>
+    		</fileset>
+	    </path>
+		
+		<path id="test.class.path">
+    		<pathelement location="${MarketTranslator.classpath}" />
+			<pathelement location="${dir.dest}"/>
+    		<fileset dir="${dir.slCommonBuild.nondeployables}">
+	    			<include name="junit.jar" />
+	    			<include name="hamcrest-core-1.1.jar" />
+	    			<include name="hamcrest-library-1.1.jar" />
+	    			<include name="mockito-all-1.8.4.jar"/>
+    		</fileset>
+			<fileset dir="${servicelive.deployables.lib}">
+			        <include name="log4j-1.2.14.jar"/>
+			 </fileset>
+		</path>
+    </target>
+    
+	<target name="clean">
+        <delete dir="bin"/>
+        <delete dir="dist"/>
+		<delete>
+				<fileset dir="${deployables.lib}">
+			    		<include name="marketwsclient.jar"/>
+			    	 	<include name="OMSStaging.jar"/>
+			    </fileset>
+		</delete>
+		<delete dir="${junit-report.dir}" failonerror="false"/>
+    </target>
+	
+    <target name="cleanall" depends="clean"/>
+    
+	<target name="compile" depends="init">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin/" source="${source}" target="${target}" deprecation="false">
+            <src path="src/main/java"/>
+            <classpath refid="MarketTranslator.classpath"/>
+        </javac>
+	</target>
+	
+	<target name="jar" depends="compile">	
+		<jar compress="yes" jarfile="dist/MarketTranslator.jar">
+            <fileset dir="bin">
+                <include name="**/*.class"/>
+            </fileset>
+			<fileset dir="bin/spring">
+                <include name="**/*.xml"/>
+            </fileset>
+			<fileset dir="bin">
+               <include name="**/*.properties"/>
+            </fileset>
+	    </jar>
+		<copy todir="${deployables.lib}">
+			<fileset dir="${servicelive.deployables.lib}">
+			   		<include name="marketwsclient.jar"/>
+			 </fileset>
+		</copy>		
+    </target>
+	
+	<target name="compile-test" depends="jar">
+			<javac
+				srcdir="${dir.test}"
+				destdir="${dir.dest}"
+				classpathref="MarketTranslator.classpath"
+				target="${target}"
+				source="${source}"
+				debug="on"
+				deprecation="false"
+			/>	
+	</target>
+	
+	<target name="junit-report" description="Runs the JUnit test cases" depends="compile-test">			
+			<junit fork="yes" haltonfailure="false" printsummary="withOutAndErr" showoutput="yes">		
+				<classpath>
+						<path refid="test.class.path"/>						  				
+				</classpath>
+		
+				<formatter type="xml" />
+					
+				<batchtest fork="yes" todir="${junit-report.dir}" >	 
+					<fileset dir="${dir.test}" >
+						<include name="**/*Test.java" />
+					</fileset>
+				</batchtest>	  
+			</junit>
+			<echo message="build date ">${DSTAMP}${TSTAMP}</echo>
+			<echo message="build.number ">${build.number}</echo>
+			<echo message="full tag ">${app.lastbuild.tag.auto}</echo>
+	
+			<echo message="Format the tests report" />
+			<junitreport todir="${junit-report.dir}">
+				<fileset dir="${junit-report.dir}">
+					<include name="TEST-*.xml" />
+				</fileset>
+				<report todir="${junit-report.dir}" />
+			</junitreport>		
+	</target>
+	
+	<target name="distribute" depends="junit-report">	
+	</target>
+	
+	<!-- Sonar Integration -->
+	<property name="dir.sonar.src" value="${basedir}/src/main/java" />
+	<property name="dir.sonar.ant.task" value="../SLCommonBuild/lib/nondeployables"/>
+	<import file="../../SLCommonBuild/ant/opt/ant-script-library/asl-java-sonar.xml"/>
+	<target name="sonar" depends="sonar-init, sonar-run">
+	</target>
+</project>

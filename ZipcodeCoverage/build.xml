@@ -1,0 +1,63 @@
+<project name="ZipcodeCoverage">
+	
+	<tstamp>
+			<format property="time" pattern="MM/dd/yyyy hh:mm:ss aa"  offset="-0" unit="hour"/>
+		</tstamp>
+		<echo>Build start time is :: ${time}</echo>
+	
+    <!-- set global properties for this build -->
+	<property name="src.dir"     location="src"/>
+	<property name="lib.dir"     value="lib"/>
+	<property name="build.dir"   location="build"/>
+	<property name="dist.dir"   location="dist"/>
+	<property name="classes.dir" value="${build.dir}/classes"/>
+	<property name="jar.dir"     value="${build.dir}/jar"/>
+	<property name="main-class"  value="GetResourceCoverageAreaForExistingResources"/>
+
+	<path id="classpath">
+	    <fileset dir="${lib.dir}" includes="**/*.jar"/>
+	</path>
+
+	<target name="clean">
+	    <delete dir="${build.dir}"/>
+		<delete dir="${dist.dir}"/>
+	</target>
+	
+	<target name="cleanall" depends="clean"/>
+
+	<target name="init">
+	        <!-- Create the time stamp -->
+	        <tstamp />
+	        <!-- Create the build directory structure used by compile -->
+	        <mkdir dir="${build.dir}" />
+			<mkdir dir="${classes.dir}" />
+			<mkdir dir="${jar.dir}" />
+		</target>
+	<target name="compile" depends="init">
+	    <javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="classpath"/>
+	</target>
+
+	<target name="jar" depends="compile">
+	    <jar destfile="${jar.dir}/${ant.project.name}.jar" basedir="${classes.dir}">
+	        <manifest>
+	        <!--	<attribute name="Class-Path" value="lib/commons-lang-2.3.jar lib/json-20180813.jar lib/log4j-1.2.14.jar lib/mysql-connector-java-5.1.10-bin.jar lib/rt.jar" /> -->
+	            <attribute name="Main-Class" value="${main-class}"/>
+	        </manifest>
+	    	<zipgroupfileset dir="${lib.dir}" includes="*.jar"/>
+	    </jar>
+	</target>
+
+	<target name="run" depends="jar">
+	    <java fork="true" classname="${main-class}">
+	    <classpath>
+	        <path refid="classpath"/>
+	        <path location="${jar.dir}/${ant.project.name}.jar"/>
+	    </classpath>
+	    	</java>
+	</target>
+
+	<target name="clean-build" depends="clean,jar"/>
+
+	<target name="main" depends="clean,run"/>
+ 
+</project>

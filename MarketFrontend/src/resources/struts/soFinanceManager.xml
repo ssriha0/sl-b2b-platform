@@ -1,0 +1,115 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="finance_manager" extends="ServiceLiveBase,json-default" >
+        <default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+        <global-results >
+        	<result name="gl_finance_success" type="redirectAction">financeManagerController_execute?defaultTab=${defaultTab}</result>
+        </global-results>
+        
+	    <action name="financeManagerController_*" class="fmControllerAction" method="{1}">
+	        <result name="bucks">/jsp/admin/modules/fm_bucks_agreement.jsp</result>
+	    	<result name="license">/jsp/admin/modules/fm_license_agreement.jsp</result>
+	        <result name="login"    type="redirectAction">login.action</result>	    
+	        <result name="Buyer"    type="tiles">base.servicelive.finance_manager_buyer</result>
+	        <result name="SimpleBuyer"    type="tiles">base.servicelive.finance_manager_buyer</result>
+	        <result name="Provider" type="tiles">base.servicelive.finance_manager_provider</result>
+	        <result name="NewCo"    type="tiles">base.servicelive.finance_manager_provider</result>
+	         <result name="tokenResponse" type="httpheader">
+	        	<param name="status">204</param>
+	        </result> 
+	    </action>	    
+	   <action name="fmOverviewHistory_*" class="fmOverviewHistoryAction" method="{1}">
+	        <result name="Buyer">/jsp/finance_manager/body/tabs/tab_both_overview_history.jsp</result>
+	        <result name="SimpleBuyer">/jsp/finance_manager/body/tabs/tab_both_overview_history.jsp</result>
+	        <result name="buyer">/jsp/finance_manager/body/tabs/tab_both_overview_history.jsp</result>
+	        <result name="Provider">/jsp/finance_manager/body/tabs/tab_both_overview_history.jsp</result>	    	    
+	        <result name="NewCo">/jsp/finance_manager/body/tabs/tab_both_overview_history.jsp</result>	    	    
+	        <result name="adminDashboard">/jsp/admin/sl_admin_dashboard.jsp</result>
+	        <result type="tiles">base.servicelive.finance_manager_provider</result>
+	        <result name="xls">/jsp/finance_manager/body/financeManagerExportExcel.jsp</result>
+	    </action>
+	    
+	   
+	    <action name="fmFinancialProfile_*" class="fmFinancialProfileAction" method="{1}">
+	        <result name="Buyer">/jsp/finance_manager/body/tabs/tab_buyer_financial_profile.jsp</result>
+	        <result name="SimpleBuyer">/jsp/finance_manager/body/tabs/tab_buyer_financial_profile.jsp</result>
+	        <result name="buyer">/jsp/finance_manager/body/tabs/tab_buyer_financial_profile.jsp</result>
+  	        <result name="Provider">/jsp/finance_manager/body/tabs/tab_both_financial_profile.jsp</result>
+	        <result name="NewCo">/jsp/finance_manager/body/tabs/tab_both_financial_profile.jsp</result>
+	        <result type="tiles">base.servicelive.finance_manager_provider</result>
+	        	    	    
+	    </action>
+	    
+	    <action name="fmFinancialProfileSave_*" class="fmFinancialProfileSaveAction" method="{1}">
+	        <result name="Buyer">/jsp/finance_manager/body/tabs/tab_both_financial_profile.jsp</result>
+	        <result name="SimpleBuyer">/jsp/finance_manager/body/tabs/tab_both_financial_profile.jsp</result>
+	        <result name="buyer">/jsp/finance_manager/body/tabs/tab_both_financial_profile.jsp</result>   	
+	        <result name="Provider">/jsp/finance_manager/body/tabs/tab_both_financial_profile.jsp</result>
+	        <result name="NewCo">/jsp/finance_manager/body/tabs/tab_both_financial_profile.jsp</result>
+	        <result type="tiles">base.servicelive.finance_manager_provider</result>
+	        	    	    
+	    </action>	    
+	    
+	    <action name="fmManageAccounts_*" class="fmManageAccountsAction" method="{1}">
+	        <result name="Buyer">/jsp/finance_manager/body/tabs/tab_buyer_manage_accounts.jsp</result>
+	        <result name="SimpleBuyer">/jsp/finance_manager/body/tabs/tab_buyer_manage_accounts.jsp</result>
+	        <result name="buyer">/jsp/finance_manager/body/tabs/tab_buyer_manage_accounts.jsp</result>
+	        <result name="Provider">/jsp/finance_manager/body/tabs/tab_provider_manage_accounts.jsp</result>
+	        <result name="NewCo">/jsp/finance_manager/body/tabs/tab_provider_manage_accounts.jsp</result>
+	        <result type="tiles">base.servicelive.finance_manager_provider</result>	    	    
+	    </action>
+	    
+	    <action name="fmManageFunds_*" class="fmManageFundsAction" method="{1}">
+	        <result name="Buyer">/jsp/finance_manager/body/tabs/tab_buyer_manage_funds.jsp</result>
+	        <result name="SimpleBuyer">/jsp/finance_manager/body/tabs/tab_buyer_manage_funds.jsp</result>
+	        <result name="buyer">/jsp/finance_manager/body/tabs/tab_buyer_manage_funds.jsp</result>
+	        <result name="Provider">/jsp/finance_manager/body/tabs/tab_provider_manage_funds.jsp</result>
+	        <result name="NewCo">/jsp/finance_manager/body/tabs/tab_sladmin_manage_funds.jsp</result>
+	        <result type="tiles">base.servicelive.finance_manager_provider</result>	    	    
+	    </action>
+	    
+	    
+	    <!-- SL-21117: Revenue Pull Code change starts-->
+	    
+	    <action name="fmRevenuePull_*" class="fmRevenuePullAction" method="{1}">
+	        <result name="NewCo">/jsp/finance_manager/body/tabs/tab_sladmin_revenue_pull.jsp</result>
+	    </action>
+	    
+	    <!-- Code change ends -->
+	    
+   		<action name="fmRefundsAction_*" class="fmRefundsAction"  method="{1}">
+	    	<result name="login"    type="redirectAction">login.action</result>	    
+	        <result name="Buyer"    type="tiles">base.servicelive.finance_manager_buyer</result>
+	        <result name="buyer"    type="tiles">base.servicelive.finance_manager_buyer</result>
+	        <result name="SimpleBuyer"    type="tiles">base.servicelive.finance_manager_buyer</result>
+	        <result name="Provider" type="tiles">base.servicelive.finance_manager_provider</result>
+	        <result name="NewCo"    type="tiles">base.servicelive.finance_manager_provider</result>
+	        <result name="adminDashboard">/jsp/admin/sl_admin_dashboard.jsp</result>
+		</action>
+
+		<action name="fullfillmentAdminAction_*" class="fullfillmentAdminAction"  method="{1}">
+	        <result name="NewCo">/jsp/admin/fulfillment_admin.jsp</result>
+	        <result name="Buyer">/jsp/admin/fulfillment_admin.jsp</result>
+	        <result name="success">/jsp/admin/fulfillment_admin.jsp</result>
+		</action>
+		
+<action name="fmReports_*" class="fmReportsAction" method="{1}">
+	 <result name="Buyer">/jsp/finance_manager/body/tabs/tab_buyer_reports.jsp</result>
+	 <result name="Provider">/jsp/finance_manager/body/tabs/tab_provider_reports.jsp</result>	    	       	    
+	 <result name="GenerateReport">/jsp/finance_manager/body/1099_misc_reports.jsp</result>
+	 <result name="csv">/jsp/finance_manager/body/financeManagerCsv.jsp</result>
+	 <result name="slAdmin_refresh" type="redirectAction">fullfillmentAdminAction_execute.action</result>
+	 <result name="general_refresh" type="redirectAction">financeManagerController_execute?defaultTab=Reports</result>	 
+	 <result name="json" type="json">
+	 <param name="excludeProperties">
+	 cryptography
+	 </param>
+	 </result>
+</action>
+
+
+
+	</package>
+</struts>

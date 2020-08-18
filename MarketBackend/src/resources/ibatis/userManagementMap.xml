@@ -1,0 +1,522 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="user_management">
+	<typeAlias alias="userProfileLogging" type="com.newco.marketplace.dto.vo.logging.UserProfileLoggingVO"/>
+	<typeAlias alias="userVO" type="com.newco.marketplace.dto.vo.permission.UserVO"/>
+	<typeAlias alias="userRoleVO" type="com.newco.marketplace.dto.vo.permission.UserRoleVO"/>
+	<typeAlias alias="permissionSetVO" type="com.newco.marketplace.dto.vo.permission.PermissionSetVO"/>
+	<typeAlias alias="activityVO" type="com.newco.marketplace.dto.vo.ActivityVO"/>
+	<typeAlias alias="userAdminVO" type="com.newco.marketplace.dto.vo.permission.UserVO"/>
+	
+	<resultMap class="userVO" id="user.resultmap">
+		<result property="userName" column="userName" />
+		<result property="firstName" column="firstName" />
+		<result property="lastName" column="lastName" />
+		<result property="middleName" column="middleName" />
+		<result property="suffix" column="suffix" />
+		<result property="jobTitle" column="jobTitle" />
+		<result property="email" column="email" />
+		<result property="editable_int" column="editable" />
+ 		<result property="maxSpendLimitPerSO" javaType="java.lang.Double" column="maxSpendLimitPerSO" />
+		<result property="businessPhone" column="businessPhone" />
+		<result property="phoneExt" column="phoneExt" />
+		<result property="businessFax" column="businessFax" /> 
+		<result property="mobilePhone" column="mobilePhone" />
+		<result property="altEmail" column="altEmail" />
+		<result property="resourceId" column="resourceId" />
+		<result property="buyerId" column="buyerId"/>
+		<result property="loggedInBefore" column="loggedInBefore" />			
+ 		<result property="userRoles" column="userName" select="userCompanyRole.query" />
+		<result property="userActivities" column="userName" select="userActivities.query" />
+	</resultMap>
+	
+	<resultMap id="companyRole.resultmap" class="userRoleVO">
+		<result property="companyRoleId" javaType="java.lang.Integer"  column="roleId"/>
+		<result property="roleDescription" column="descr"/>
+	</resultMap>
+
+	<resultMap id="activity.resultmap" class="activityVO">
+		<result property="activityId" javaType="java.lang.Integer"  column="activityId"/>
+		<result property="activityName" column="activityName"/>
+	</resultMap>
+	
+	<resultMap class="permissionSetVO" id="permissionSet.resultmap">
+		<result property="permissionSetId" column="permissionSetId" />
+		<result property="permissionSetName" column="permissionSetName" />
+		<result property="adminInd" column="adminIndicator" />
+	</resultMap>
+	
+	<sql id="slAdmin_select_fragement">
+		select up.user_name as userName, c.first_name as firstName, c.last_name as lastName, c.mi as middleName,
+			   c.suffix, c.title as jobTitle, c.email, 
+			   case ccr.company_role_id when ap.app_value then 0 else 1 end as editable,
+			   coalesce(up.question_id, 0) as loggedInBefore,
+			   0.00 as maxSpendLimitPerSO, null as businessPhone,
+			   null as phoneExt,null as businessFax, null as mobilePhone, null as altEmail, ar.resource_id as resourceId,
+			   null as buyerId
+		  from user_profile up
+		  join contact c on up.contact_id = c.contact_id
+		  left outer join contact_company_role ccr on c.contact_id = ccr.contact_id
+		  left outer join lu_company_role lcr on ccr.company_role_id = lcr.company_role_id and lcr.role_id = 2
+		  join application_properties ap on app_key = 'sl_admin_super_admin_com_role_id'
+		  join admin_resource ar on up.user_name = ar.user_name
+		 where up.active_ind = 1
+		   and up.role_id = 2
+	</sql>
+	
+	
+	<sql id="provider_select_fragement">
+		select br.user_name as userName, c.first_name as firstName, c.last_name as lastName, c.mi as middleName,
+		 c.suffix, c.title as jobTitle, c.email,
+		 case br.user_name when br.user_name then 0 else 1 end as editable,	
+		 0.00 as maxSpendLimitPerSO,	
+		 null as buyerId, 
+		 coalesce(up.question_id, 0) as loggedInBefore,
+			   c.phone_no as businessPhone,c.fax_no as businessFax, c.mobile_no as mobilePhone,
+			   c.email_alt as altEmail, c.phone_no_ext as phoneExt,
+			   br.resource_id as resourceId
+		  from vendor_resource br
+		  join contact c on br.contact_id = c.contact_id
+		  join user_profile up on br.user_name = up.user_name
+	</sql>
+	
+	<sql id="buyer_select_fragement">
+		select br.user_name as userName, c.first_name as firstName, c.last_name as lastName, c.mi as middleName,
+			   c.suffix, c.title as jobTitle, c.email,
+			   case b.user_name when br.user_name then 0 else 1 end as editable,
+			   coalesce(up.question_id, 0) as loggedInBefore,
+			   c.phone_no as businessPhone,c.fax_no as businessFax, c.mobile_no as mobilePhone,
+			   c.email_alt as altEmail, c.phone_no_ext as phoneExt,
+			   br.max_spend_limit_per_so as maxSpendLimitPerSO,
+			   br.resource_id as resourceId,
+         	   br.buyer_id as buyerId
+		  from buyer_resource br
+		  join contact c on br.contact_id = c.contact_id
+		  join buyer b on br.buyer_id = b.buyer_id 
+		  join user_profile up on br.user_name = up.user_name
+	</sql>
+	
+	 <insert id="userProfileLogging.insert" parameterClass="userProfileLogging">
+		insert into user_profile_logging
+			(user_name,action, modified_by, modified_date)			
+		values(#userName#,#action#,#modifiedBy#,now())
+	</insert>	
+	
+	<select id="serviceLiveAdminsAll.query" resultMap="user.resultmap">
+		<include refid="slAdmin_select_fragement"/>
+		 order by c.first_name, c.last_name
+	</select>
+	
+	<select id="buyerResourcesForGivenBuyer.query" parameterClass="java.lang.Integer" resultMap="user.resultmap">
+		<include refid="buyer_select_fragement"/>
+		 where br.buyer_id = #buyerId# and 
+		 	   up.active_ind = 1
+		 order by c.first_name, c.last_name
+	</select>
+	
+	<select id="serviceLiveAdmin.query" parameterClass="java.lang.String" resultMap="user.resultmap">
+		<include refid="slAdmin_select_fragement"/>
+		   and up.user_name = #userName#
+	</select>
+	
+	
+	<select id="serviceLiveProvider.query" parameterClass="java.lang.String" resultMap="user.resultmap">
+		<include refid="provider_select_fragement"/>
+		   and up.user_name = #userName#
+	</select>
+	
+	<select id="userManagement_buyerResource.query" parameterClass="java.lang.String" resultMap="user.resultmap">
+		<include refid="buyer_select_fragement"/>
+		 where br.user_name = #userName#
+	</select>
+	
+	<select id="userCompanyRole.query" parameterClass="java.lang.String" resultMap="companyRole.resultmap">
+		select ccr.company_role_id as roleId, lcr.descr
+		  from user_profile up
+	 	  join contact_company_role ccr on up.contact_id = ccr.contact_id
+		  join lu_company_role lcr on ccr.company_role_id = lcr.company_role_id
+		 where up.user_name = #userName#
+	</select>
+	
+	<select id="userActivities.query" parameterClass="java.lang.String" resultMap="activity.resultmap">
+		select lpr.role_activity_id as activityId, lp.activity_name as activityName
+		  from user_profile_permissions upp
+		  join lu_permission_role lpr on upp.role_activity_id = lpr.role_activity_id
+		  join lu_permissions lp on lpr.activity_id = lp.activity_id
+		 where upp.user_name = #userName#
+	</select>	
+	
+<select id="isSuperAdminUser.query" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT COUNT(*) FROM contact_company_role WHERE contact_id IN (SELECT contact_id FROM user_profile WHERE user_name=#username#) AND company_role_id=20;
+</select>	
+
+<delete id="userManagementRemoveUserActivities_superadmin.delete" parameterClass="java.util.Map">
+		delete from user_profile_permissions
+			where user_name = #username# 
+		<isNotEmpty property="userActivities">	
+			AND role_activity_id NOT IN
+			<iterate property="userActivities" open="("
+			close=")" conjunction=", ">
+				#userActivities[]#	
+			</iterate>
+		</isNotEmpty>	
+</delete>	
+	
+	<select id="permissionSet.query" parameterClass="java.util.Map" resultMap="permissionSet.resultmap">
+		select lps.permission_set_id as permissionSetId, 
+		       lps.permission_set_name as permissionSetName,
+		       lps.admin_ind as adminIndicator
+		  from lu_permission_set lps
+		 where lps.role_id = #roleId#
+			 order by lps.role_id, lps.sort_order
+	</select>
+
+	<select id="activityIdLegalHold.select" parameterClass="java.lang.String"
+		resultClass="java.lang.Integer">
+		SELECT `role_activity_id` FROM
+		`supplier_prod`.`lu_permission_role`
+		WHERE `role_id`='2' AND `permission_set_id`='32' AND `activity_id`=(SELECT `activity_id` FROM `supplier_prod`.`lu_permissions` 
+		WHERE `activity_name` LIKE "%Legal Hold : Disable Wallet Funds Withdrawals%")
+	</select>
+
+	<select id="permissionSetAll.query" resultMap="permissionSet.resultmap">
+		select lps.permission_set_id as permissionSetId, 
+		       lps.permission_set_name as permissionSetName,
+		       lps.admin_ind as adminIndicator
+		  from lu_permission_set lps
+		 order by lps.role_id, lps.sort_order
+	</select>
+
+	<select id="permissionSetActivities.query" parameterClass="java.util.Map" resultClass="activityVO">
+	select lpr.role_activity_id as activityId, 
+		       lp.activity_name as activityName,
+		       lp.inactive_ind as inactiveInd,
+		       cpp.remove_flag as removeFlag,
+		       cpp.add_flag as addFlag
+		  from lu_permission_role lpr 
+		  join lu_permissions lp on lpr.activity_id = lp.activity_id and #roleId# = lpr.role_id
+		  left outer join company_profile_permissions cpp on lp.activity_id = cpp.activity_id 
+				and #roleId# = cpp.role_id
+				and #entityId# = cpp.entity_id
+		  where lpr.permission_set_id = #permissionSetId#
+		 order by lp.sort_order
+	</select>
+		
+	<select id="permissionSetActivities.queryOLD" parameterClass="java.lang.Integer" resultClass="activityVO">
+		select lpr.role_activity_id as activityId, 
+		       lp.activity_name as activityName,
+		       lp.inactive_ind as inactiveInd
+		  from lu_permission_role lpr 
+		  join lu_permissions lp on lpr.activity_id = lp.activity_id
+		 where lpr.permission_set_id = #permissionSetId#
+		 order by lp.sort_order
+	</select>
+	
+	<select id="userNameAvailable.query" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		select count(user_name) from user_profile where user_name = #username#
+	</select>
+	
+	<update id="disableUserName.update" parameterClass="java.lang.String">
+		update user_profile 
+			set active_ind = 0
+			where user_name = #username#
+	</update>
+	
+	<update id="reassignServiceOrders.update" parameterClass="java.util.Map">
+		update so_hdr s, buyer b, buyer_resource br
+		set buyer_contact_id = (select bra.contact_id
+                            from buyer_resource bra, buyer ba
+                            where bra.buyer_id = #buyerId#
+                            AND ba.buyer_id = bra.buyer_id
+                            AND bra.user_name = ba.user_name)
+		where s.buyer_contact_id = br.contact_id AND
+          b.buyer_id = br.buyer_id AND
+		      br.user_name = #username# AND
+		      wf_state_id IN (110, 150, 155, 160, 130)
+	</update>
+
+	<select id="reAssignableServiceOrders.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+		select so_id
+		from so_hdr, buyer_resource br
+			where br.contact_id = so_hdr.buyer_contact_id AND
+			br.user_name = #username# AND
+      		wf_state_id IN (110, 150, 155, 160, 130)
+			order by so_hdr.so_id
+	</select>
+	
+	<select id="retrieveUserType.query" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		select role_id from user_profile where user_name = #username#
+	</select>
+	
+	<insert id="userManagementAddUserRole.insert" parameterClass="java.util.Map">
+		insert into contact_company_role (contact_id, company_role_id) 
+			values( (select contact_id from user_profile up where up.user_name = #username#), 
+					#companyRoleId#)
+	</insert>
+	
+	<delete id="userManagementRemoveUserRole.delete" parameterClass="java.lang.String">
+		delete from contact_company_role
+			where contact_id = (select contact_id from user_profile up where up.user_name = #username#)
+	</delete>
+
+    <!-- Note: using insert IGNORE here. Please lookup MySQL specs for more info -->
+	<insert id="userManagementInsertUserActivities.insert" parameterClass="java.util.Map">
+		insert ignore into user_profile_permissions (user_name, role_activity_id)
+			values(#username#, #userActivity#)
+	</insert>
+
+	<delete id="userManagementRemoveUserActivities.delete" parameterClass="java.util.Map">
+		delete from user_profile_permissions
+			where user_name = #username# 
+			AND role_activity_id NOT IN (SELECT role_activity_id FROM lu_permission_role WHERE permission_set_id in (32))
+		<isNotEmpty property="userActivities">	
+			AND role_activity_id NOT IN
+			<iterate property="userActivities" open="("
+			close=")" conjunction=", ">
+				#userActivities[]#
+			</iterate>
+		</isNotEmpty>	
+	</delete>
+
+	<insert id="user_management.contact.insert" parameterClass="userVO">
+		insert into contact	
+		   (last_name,
+			first_name
+			<isNotNull prepend="," property="middleName">
+				mi
+			</isNotNull>
+			<isNotNull prepend="," property="suffix">
+				suffix
+			</isNotNull>
+			<isNotNull prepend="," property="jobTitle">
+				title		
+			</isNotNull>
+			<isNotNull prepend="," property="businessPhone">
+				phone_no
+			</isNotNull>
+			<isNotNull prepend="," property="phoneExt">
+				phone_no_ext
+			</isNotNull>
+			<isNotNull prepend="," property="businessFax">
+				fax_no 
+			</isNotNull>
+			<isNotNull prepend="," property="mobilePhone">
+				mobile_no
+			</isNotNull>
+				,email
+			<isNotNull prepend="," property="altEmail">
+				email_alt			
+			</isNotNull>)			
+		values(#lastName#,
+			   #firstName#
+			<isNotNull prepend="," property="middleName">
+				#middleName#
+			</isNotNull>
+			<isNotNull prepend="," property="suffix">
+				#suffix#
+			</isNotNull>
+			<isNotNull prepend="," property="jobTitle">
+				#jobTitle#		
+			</isNotNull>
+			<isNotNull prepend="," property="businessPhone">
+				#businessPhone#
+			</isNotNull>
+			<isNotNull prepend="," property="phoneExt">
+				#phoneExt#
+			</isNotNull>
+			<isNotNull prepend="," property="businessFax">
+				#businessFax#
+			</isNotNull>
+			<isNotNull prepend="," property="mobilePhone">
+				#mobilePhone#
+			</isNotNull>
+			   ,#email#
+			<isNotNull prepend="," property="altEmail">
+				#altEmail#			
+			</isNotNull>)
+			   
+        <selectKey resultClass="int">
+            SELECT last_insert_id() as contactId
+        </selectKey>    		
+	</insert>
+		
+	<insert id="user_management.user.insert" parameterClass="userVO">
+		insert into user_profile	
+		(	user_name, 
+			contact_id,
+			password,
+			role_id,
+			generated_password_ind
+		)			
+		values(#userName#,
+			   #contactId#,
+			   #password#,
+			   #roleTypeId#,
+			   1
+		)
+	</insert>
+	<insert id="user_management.user.buyer.insert" parameterClass="userVO">
+
+		insert into buyer_resource
+			(	buyer_id,
+				contact_id,
+				user_name,
+				max_spend_limit_per_so
+				<isNotNull prepend=", " property="terms_cond_id">
+					terms_cond_ind,
+					term_cond_date_accepted,
+					term_cond_id					
+				</isNotNull>
+			)
+			values(	#buyerId#,
+					#contactId#,
+					#userName#,
+					#maxSpendLimitPerSO#
+					<isNotNull prepend=", " property="terms_cond_id">
+						1,
+						NOW(),
+						#terms_cond_id#
+					</isNotNull>
+					)
+
+	</insert>
+	
+	<insert id="user_management.user.admin.insert" parameterClass="userVO">
+
+		insert into admin_resource
+			(	company_id,
+				user_name,
+				company_role_id,
+				created_date,
+				modified_date,
+				modified_by								
+			)
+			values(	#companyId#,
+					#userName#,
+					#roleTypeId#,
+					now(),
+					now(),
+					#modifiedBy#
+					)
+	</insert>		
+	
+	<update id="user_management.user.update" parameterClass="userVO">
+		update contact c
+		<isEqual prepend=", " property="roleTypeId" compareValue="3">buyer_resource br</isEqual>
+			set c.last_name = #lastName#,
+				c.first_name = #firstName#
+			<isNotNull prepend="," property="middleName">
+				c.mi = #middleName#
+			</isNotNull>
+			<isNotNull prepend="," property="suffix">
+				c.suffix = #suffix#
+			</isNotNull>
+			<isNotNull prepend="," property="jobTitle">
+				c.title = #jobTitle#			
+			</isNotNull>
+				,c.phone_no = #businessPhone#			
+			<isNotNull prepend="," property="phoneExt">
+				c.phone_no_ext = #phoneExt#
+			</isNotNull>
+			<isNotNull prepend="," property="businessFax">
+				c.fax_no = #businessFax#
+			</isNotNull>
+			<isNotNull prepend=","  property="mobilePhone">
+				c.mobile_no = #mobilePhone#
+			</isNotNull>
+				,c.email = #email#
+			<isNotNull prepend="," property="altEmail">
+				c.email_alt = #altEmail#			
+			</isNotNull>
+			<isNotNull prepend=", " property="maxSpendLimitPerSO">
+				br.max_spend_limit_per_so = #maxSpendLimitPerSO#
+			</isNotNull>
+			<isEqual property="roleTypeId" compareValue="3">
+				<isNotNull prepend=", " property="terms_cond_id">
+					br.terms_cond_ind = 1,
+					br.term_cond_date_accepted = NOW(),
+					br.term_cond_id = #terms_cond_id#
+				</isNotNull>
+			</isEqual>			
+			where c.contact_id = (select up.contact_id 
+									from user_profile up 
+									where user_name = #userName#)
+		<isEqual prepend=" AND " property="roleTypeId" compareValue="3">c.contact_id = br.contact_id</isEqual>	
+	</update>
+	
+	<select id="user_management.user.buyer.resource.query" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+			select  br.resource_id
+				from contact c, buyer b, buyer_resource br, user_profile up
+				where c.contact_id = b.contact_id AND
+				      b.buyer_id = br.buyer_id AND
+					  br.user_name = up.user_name AND
+					  up.user_name = #username#
+	</select>	
+	<!-- Get this user's company/firm admin info -->
+	<select id="user_management.user.buyer.query" parameterClass="java.util.Map" resultClass="userAdminVO">
+			select  c.last_name as lastName,
+					c.first_name as firstName,
+					c.email as email,
+					b.business_name as companyName,
+					b.buyer_id as buyerId,
+					br.resource_id as resourceId,
+          (select bra.resource_id
+                            from buyer_resource bra, buyer ba
+                            where bra.buyer_id = #buyerId#
+                            AND ba.buyer_id = bra.buyer_id
+                            AND bra.user_name = ba.user_name) as buyerAdminId
+				from contact c, buyer b, buyer_resource br
+				where c.contact_id = b.contact_id AND
+				      b.buyer_id = br.buyer_id AND
+					  br.resource_id = #resourceId#
+	</select>
+	
+	<select id="user_management.user.buyer.admin.query" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		select buyer_id as buyerId from buyer_resource where user_name = #username#
+	</select>
+	
+	<select id="user_management.super_admin_user_name.query" resultClass="java.lang.String">
+		select user_name 
+		  from user_profile 
+		 where contact_id in (select contact_id from contact_company_role where company_role_id in 
+			(select app_value from application_properties where app_key = 'sl_admin_super_admin_com_role_id'))
+	</select>
+	
+	<update id="user_management.user.unlock" parameterClass="java.lang.String">
+		update user_profile set locked_ind = 0, login_attempt_count = 0 where user_name=#userName# 
+	</update>
+
+	
+	<select id="user_management.vendorAdmin.select" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		select resource_id from vendor_resource where vendor_id=#entityId# and primary_ind=1
+	</select>
+	
+	<select id="buyerAdmin.select" parameterClass="java.lang.Integer" resultClass="java.lang.String">
+		select user_name as userName from buyer where buyer_id=#entityId#
+	</select>
+	
+	<select id="newcoAdmin.select" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		select coalesce(contact.contact_id,0) from contact,user_profile where contact.contact_id = user_profile.contact_id and user_profile.user_name=#userName# and 
+		contact.company_role_id=20
+	</select>
+	
+	<select id="isSLAdmin.select" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		select admin_ind from admin_resource where user_name=#userName#
+	</select>
+		
+	<select id="isSLAdminResourceId.select" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		select resource_id from admin_resource where user_name=#userName#;
+	</select>
+	
+	<select id="userManagement.rold_id" resultClass="java.lang.Integer">
+         SELECT role_id from user_profile where user_name= #username#
+    </select>
+    
+    <update id="user_management_password.update" parameterClass="userVO">
+		update user_profile set password=#password# , locked_ind = 0 , login_attempt_count = 0, verification_attempt_count = 0 where user_name=#userName# 
+	</update>
+	
+</sqlMap>

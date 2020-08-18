@@ -1,0 +1,26 @@
+<ng-template #tnps let-fill="fill" let-index="index + 1">
+  <div class="star-container">
+    <span class="star" [class.full]="index === currentRating">{{index}}</span>
+  </div>
+</ng-template>
+
+<div class="nps-rating-container">
+  <div class="nps-legend row">
+    <div class="col-5">0 = Not at all likely</div>
+    <div class="col-3">5 = Neutral</div>
+    <div class="col-4">10 = Extremely likely</div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+
+      <span (click)="clickZeroRating()" [style.cursor]="'pointer'">
+        <div class="star-container">
+          <span class="star" [class.full]="currentRating === 0">0</span>
+        </div>
+      </span>
+
+      <ngb-rating [(rate)]="currentRating" [starTemplate]="tnps" (rateChange)="updateRatings($event)"></ngb-rating>
+    </div>
+  </div>
+</div>
+<hr>

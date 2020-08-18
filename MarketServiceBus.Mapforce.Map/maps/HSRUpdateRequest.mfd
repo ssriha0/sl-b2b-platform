@@ -1,0 +1,889 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="16">
+	<component name="defaultmap1" blackbox="0" editable="1">
+		<properties AppName="HSRUpdateRequest" JavaBasePackage="com.servicelive.esb.mapforce" SelectedLanguage="java"/>
+		<structure>
+			<children>
+				<component name="normalize-space" library="core" uid="35" kind="5">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="44"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="45"/>
+					</targets>
+					<view ltx="667" lty="432" rbx="-120" rby="364"/>
+				</component>
+				<component name="normalize-space" library="core" uid="38" kind="5">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="53"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="52"/>
+					</targets>
+					<view ltx="669" lty="381" rbx="59" rby="365"/>
+				</component>
+				<component name="constant" library="core" uid="41" kind="2">
+					<properties/>
+					<targets>
+						<datapoint pos="0" key="68"/>
+					</targets>
+					<view ltx="826" lty="97" rbx="184" rby="-187"/>
+					<data>
+						<constant value="1" datatype="decimal"/>
+						<wsdl/>
+					</data>
+				</component>
+				<component name="constant" library="core" uid="40" kind="2">
+					<properties/>
+					<targets>
+						<datapoint pos="0" key="70"/>
+					</targets>
+					<view ltx="834" lty="283" rbx="-180" rby="307"/>
+					<data>
+						<constant value="3" datatype="decimal"/>
+						<wsdl/>
+					</data>
+				</component>
+				<component name="processingDelay" library="core" uid="565" kind="3">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="83"/>
+						<datapoint pos="1" key="84"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="85"/>
+						<datapoint/>
+					</targets>
+					<view ltx="448" lty="662" rbx="-182" rby="258"/>
+				</component>
+				<component name="integrationId" library="core" uid="43" kind="6">
+					<properties/>
+					<sources>
+						<datapoint/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="86"/>
+					</targets>
+					<view ltx="226" lty="618" rbx="3" rby="-18"/>
+					<data>
+						<input datatype="long" previewvalue="6" usepreviewvalue="1"/>
+						<wsdl/>
+						<parameter usageKind="input" name="integrationId"/>
+					</data>
+				</component>
+				<component name="equal" library="core" uid="566" kind="5">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="87"/>
+						<datapoint pos="1" key="88"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="89"/>
+					</targets>
+					<view ltx="361" lty="663" rbx="90" rby="-22"/>
+				</component>
+				<component name="get-process-after-date" library="user" blackbox="0" uid="563" kind="19" visible="0">
+					<view ltx="597" lty="665" rbx="819" rby="699"/>
+					<data>
+						<root scrollposition="1">
+							<header>
+								<namespaces>
+									<namespace/>
+								</namespaces>
+							</header>
+							<entry name="current_timestamp" inpkey="105" componentid="616"/>
+							<entry name="processingDelayMinutes" inpkey="92" componentid="549"/>
+						</root>
+						<root rootindex="1">
+							<header>
+								<namespaces>
+									<namespace/>
+								</namespaces>
+							</header>
+							<entry name="result" outkey="93" componentid="543"/>
+						</root>
+					</data>
+				</component>
+				<component name="normalize-space" library="core" uid="36" kind="5">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="46"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="47"/>
+					</targets>
+					<view ltx="667" lty="474" rbx="-120" rby="406"/>
+				</component>
+				<component name="constant" library="core" uid="622" kind="2">
+					<properties/>
+					<targets>
+						<datapoint pos="0" key="112"/>
+					</targets>
+					<view ltx="681" lty="175" rbx="54" rby="-7"/>
+					<data>
+						<constant value="8" datatype="decimal"/>
+						<wsdl/>
+					</data>
+				</component>
+				<component name="constant" library="core" uid="621" kind="2">
+					<properties/>
+					<targets>
+						<datapoint pos="0" key="113"/>
+					</targets>
+					<view ltx="677" lty="154" rbx="39" rby="-9"/>
+					<data>
+						<constant value="3" datatype="decimal"/>
+						<wsdl/>
+					</data>
+				</component>
+				<component name="equal" library="core" uid="619" kind="5">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="114"/>
+						<datapoint pos="1" key="115"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="116"/>
+					</targets>
+					<view ltx="591" lty="115" rbx="174" rby="-10"/>
+				</component>
+				<component name="constant" library="core" uid="620" kind="2">
+					<properties/>
+					<targets>
+						<datapoint pos="0" key="117"/>
+					</targets>
+					<view ltx="513" lty="158" rbx="10" rby="-37"/>
+					<data>
+						<constant value="CA" datatype="string"/>
+						<wsdl/>
+					</data>
+				</component>
+				<component name="if-else" library="core" uid="618" kind="4">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="118"/>
+						<datapoint pos="1" key="119"/>
+						<datapoint pos="2" key="120"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="121"/>
+					</targets>
+					<view ltx="743" lty="123" rbx="141" rby="-158"/>
+				</component>
+				<component name="normalize-space" library="core" uid="37" kind="5">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="51"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="50"/>
+					</targets>
+					<view ltx="669" lty="334" rbx="59" rby="318"/>
+				</component>
+				<component name="normalize-space" library="core" uid="624" kind="5">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="132"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="133"/>
+					</targets>
+					<view ltx="453" lty="-92" rbx="103" rby="2"/>
+				</component>
+				<component name="normalize-space" library="core" uid="623" kind="5">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="128"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="129"/>
+					</targets>
+					<view ltx="452" lty="-139" rbx="102" rby="-45"/>
+				</component>
+				<component name="concat" library="core" uid="625" kind="5" growable="1" growablebasename="value">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="130"/>
+						<datapoint pos="1" key="134"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="131"/>
+					</targets>
+					<view ltx="600" lty="-127" rbx="193" rby="-50"/>
+				</component>
+				<component name="txt" library="text" uid="1" kind="16">
+					<properties/>
+					<view rbx="380" rby="576"/>
+					<data>
+						<root scrollposition="16">
+							<header>
+								<namespaces/>
+							</header>
+							<entry name="FileInstance" outkey="2" expanded="1">
+								<entry name="document" expanded="1">
+									<entry name="Root" outkey="3" expanded="1">
+										<entry name="CSV" outkey="4" expanded="1">
+											<entry name="Service Unit Num" outkey="5"/>
+											<entry name="Service Order Num" outkey="6"/>
+											<entry name="Service Order Status Code" outkey="7"/>
+											<entry name="Employee ID Number" outkey="8"/>
+											<entry name="Filler" outkey="9"/>
+											<entry name="ID of Modifying Unit" outkey="10"/>
+										</entry>
+									</entry>
+								</entry>
+							</entry>
+						</root>
+						<wsdl/>
+						<text type="txt" inputinstance="..\sample-files/HSR-UpdateRequest2.txt" encoding="52" byteorder="1" byteordermark="0" config="..\file-formats/HSR-UpdateRequest.mft"/>
+					</data>
+				</component>
+				<component name="structure" library="db" uid="44" kind="15">
+					<properties JDBCDriver="sun.jdbc.odbc.JdbcOdbcDriver" JDBCDatabaseURL="jdbc:odbc:localhost" DBDataSource="localhost"/>
+					<view ltx="9" lty="655" rbx="159" rby="855"/>
+					<data>
+						<root scrollposition="1">
+							<header>
+								<namespaces/>
+							</header>
+							<entry name="document" expanded="1">
+								<entry name="CURRENT_TIMESTAMP" type="table" expanded="1">
+									<entry name="NOW()" valuekeygeneration="databasegenerated"/>
+								</entry>
+								<entry name="integrations" type="table" expanded="1">
+									<entry name="integrationId" outkey="90" valuekeygeneration="databasegenerated"/>
+									<entry name="processingDelay" outkey="91"/>
+								</entry>
+							</entry>
+						</root>
+						<wsdl/>
+						<database>
+							<database_connection is_global_resource="Yes" global_resource_alias="ServiceLiveIntegrationDb" database_kind="MySQL" import_kind="ODBC" version="5.1.51-community" name="ServiceLiveIntegrationDb" path="ServiceLiveIntegrationDb">
+								<LocalViewStorage>
+									<LocalViewElement SQL="SELECT NOW() FROM DUAL">
+										<PathElement Name="ServiceLiveIntegrationDb" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="CURRENT_TIMESTAMP" Kind="Select Statement"/>
+									</LocalViewElement>
+								</LocalViewStorage>
+								<LocalRelationsStorage/>
+								<selections>
+									<selection>
+										<PathElement Name="ServiceLiveIntegrationDb" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="CURRENT_TIMESTAMP" Kind="Select Statement"/>
+									</selection>
+									<selection>
+										<PathElement Name="ServiceLiveIntegrationDb" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="integrations" Kind="Table"/>
+									</selection>
+								</selections>
+							</database_connection>
+							<recordset/>
+						</database>
+					</data>
+				</component>
+				<component name="structure" library="db" uid="2" kind="15">
+					<properties XSLTDefaultOutput="1" JDBCDriver="sun.jdbc.odbc.JdbcOdbcDriver" JDBCDatabaseURL="jdbc:odbc:localhost" DBDataSource="localhost" DBUseTransactions="1"/>
+					<view ltx="923" lty="4" rbx="1204" rby="576"/>
+					<data>
+						<root scrollposition="1">
+							<header>
+								<namespaces/>
+							</header>
+							<entry name="document" expanded="1">
+								<entry name="batches" type="table" inpkey="11" expanded="1">
+									<entry name="batchId" valuekeygeneration="databasegenerated"/>
+									<entry name="integrationId" inpkey="82"/>
+									<entry name="fileName" inpkey="12"/>
+									<entry name="statusId" inpkey="73"/>
+									<entry name="createdOn" inpkey="13"/>
+									<entry name="transactions|batchId" type="table" inpkey="14" expanded="1">
+										<entry name="transactionId" valuekeygeneration="databasegenerated"/>
+										<entry name="transactionTypeId" inpkey="74"/>
+										<entry name="externalOrderNumber" inpkey="15"/>
+										<entry name="processAfter" inpkey="16"/>
+										<entry name="createdOn" inpkey="35"/>
+										<entry name="statusId" inpkey="75"/>
+										<entry name="serviceorders|transactionId" type="table" inpkey="17" expanded="1">
+											<entry name="serviceOrderId" valuekeygeneration="databasegenerated"/>
+											<entry name="contacts|serviceOrderId" type="table">
+												<entry name="contactId" valuekeygeneration="databasegenerated"/>
+												<entry name="phones|contactId" type="table">
+													<entry name="phoneId" valuekeygeneration="databasegenerated"/>
+												</entry>
+												<entry name="parts|pickupContactId" type="table">
+													<entry name="partId" valuekeygeneration="databasegenerated"/>
+													<entry name="locations|pickupLocationId" type="table">
+														<entry name="locationId" valuekeygeneration="databasegenerated"/>
+														<entry name="ordersparts|pickupLocationId" type="table">
+															<entry name="orderPartId" valuekeygeneration="databasegenerated"/>
+														</entry>
+													</entry>
+													<entry name="ordersparts|partId" type="table">
+														<entry name="orderPartId" valuekeygeneration="databasegenerated"/>
+														<entry name="locations|pickupLocationId" type="table">
+															<entry name="locationId" valuekeygeneration="databasegenerated"/>
+														</entry>
+													</entry>
+												</entry>
+												<entry name="ordersparts|pickupContactId" type="table">
+													<entry name="orderPartId" valuekeygeneration="databasegenerated"/>
+													<entry name="locations|pickupLocationId" type="table">
+														<entry name="locationId" valuekeygeneration="databasegenerated"/>
+														<entry name="parts|pickupLocationId" type="table">
+															<entry name="partId" valuekeygeneration="databasegenerated"/>
+														</entry>
+													</entry>
+													<entry name="parts|partId" type="table">
+														<entry name="partId" valuekeygeneration="databasegenerated"/>
+														<entry name="locations|pickupLocationId" type="table">
+															<entry name="locationId" valuekeygeneration="databasegenerated"/>
+														</entry>
+													</entry>
+												</entry>
+											</entry>
+											<entry name="customrefs_hsr|serviceOrderId" type="table" expanded="1">
+												<entry name="customRefId" valuekeygeneration="databasegenerated"/>
+												<entry name="unitNumber" inpkey="101"/>
+												<entry name="orderNumber" inpkey="102"/>
+												<entry name="orderIdstring" inpkey="142"/>
+												<entry name="serviceOrderStatusCode" inpkey="19"/>
+												<entry name="lastModifiedEmployeeID" inpkey="20"/>
+												<entry name="soCreationUnitNum" inpkey="21"/>
+												<entry name="filler" inpkey="22"/>
+											</entry>
+											<entry name="locations|serviceOrderId" type="table">
+												<entry name="locationId" valuekeygeneration="databasegenerated"/>
+												<entry name="parts|pickupLocationId" type="table">
+													<entry name="partId" valuekeygeneration="databasegenerated"/>
+													<entry name="contacts|pickupContactId" type="table">
+														<entry name="contactId" valuekeygeneration="databasegenerated"/>
+														<entry name="phones|contactId" type="table">
+															<entry name="phoneId" valuekeygeneration="databasegenerated"/>
+														</entry>
+														<entry name="ordersparts|pickupContactId" type="table">
+															<entry name="orderPartId" valuekeygeneration="databasegenerated"/>
+														</entry>
+													</entry>
+													<entry name="ordersparts|partId" type="table">
+														<entry name="orderPartId" valuekeygeneration="databasegenerated"/>
+														<entry name="contacts|pickupContactId" type="table">
+															<entry name="contactId" valuekeygeneration="databasegenerated"/>
+															<entry name="phones|contactId" type="table">
+																<entry name="phoneId" valuekeygeneration="databasegenerated"/>
+															</entry>
+														</entry>
+													</entry>
+												</entry>
+												<entry name="ordersparts|pickupLocationId" type="table">
+													<entry name="orderPartId" valuekeygeneration="databasegenerated"/>
+													<entry name="contacts|pickupContactId" type="table">
+														<entry name="contactId" valuekeygeneration="databasegenerated"/>
+														<entry name="parts|pickupContactId" type="table">
+															<entry name="partId" valuekeygeneration="databasegenerated"/>
+														</entry>
+														<entry name="phones|contactId" type="table">
+															<entry name="phoneId" valuekeygeneration="databasegenerated"/>
+														</entry>
+													</entry>
+													<entry name="parts|partId" type="table">
+														<entry name="partId" valuekeygeneration="databasegenerated"/>
+														<entry name="contacts|pickupContactId" type="table">
+															<entry name="contactId" valuekeygeneration="databasegenerated"/>
+															<entry name="phones|contactId" type="table">
+																<entry name="phoneId" valuekeygeneration="databasegenerated"/>
+															</entry>
+														</entry>
+													</entry>
+												</entry>
+											</entry>
+											<entry name="notes|serviceOrderId" type="table">
+												<entry name="noteId" valuekeygeneration="databasegenerated"/>
+											</entry>
+											<entry name="parts|serviceOrderId" type="table">
+												<entry name="partId" valuekeygeneration="databasegenerated"/>
+												<entry name="contacts|pickupContactId" type="table">
+													<entry name="contactId" valuekeygeneration="databasegenerated"/>
+													<entry name="phones|contactId" type="table">
+														<entry name="phoneId" valuekeygeneration="databasegenerated"/>
+													</entry>
+													<entry name="ordersparts|pickupContactId" type="table">
+														<entry name="orderPartId" valuekeygeneration="databasegenerated"/>
+														<entry name="locations|pickupLocationId" type="table">
+															<entry name="locationId" valuekeygeneration="databasegenerated"/>
+														</entry>
+													</entry>
+												</entry>
+												<entry name="locations|pickupLocationId" type="table">
+													<entry name="locationId" valuekeygeneration="databasegenerated"/>
+													<entry name="ordersparts|pickupLocationId" type="table">
+														<entry name="orderPartId" valuekeygeneration="databasegenerated"/>
+														<entry name="contacts|pickupContactId" type="table">
+															<entry name="contactId" valuekeygeneration="databasegenerated"/>
+															<entry name="phones|contactId" type="table">
+																<entry name="phoneId" valuekeygeneration="databasegenerated"/>
+															</entry>
+														</entry>
+													</entry>
+												</entry>
+												<entry name="ordersparts|partId" type="table">
+													<entry name="orderPartId" valuekeygeneration="databasegenerated"/>
+													<entry name="contacts|pickupContactId" type="table">
+														<entry name="contactId" valuekeygeneration="databasegenerated"/>
+														<entry name="phones|contactId" type="table">
+															<entry name="phoneId" valuekeygeneration="databasegenerated"/>
+														</entry>
+													</entry>
+													<entry name="locations|pickupLocationId" type="table">
+														<entry name="locationId" valuekeygeneration="databasegenerated"/>
+													</entry>
+												</entry>
+											</entry>
+											<entry name="tasks|serviceOrderId" type="table">
+												<entry name="taskId" valuekeygeneration="databasegenerated"/>
+											</entry>
+											<entry name="addons|serviceOrderId" type="table">
+												<entry name="addOnId" valuekeygeneration="databasegenerated"/>
+											</entry>
+											<entry name="ordersparts|serviceOrderId" type="table">
+												<entry name="orderPartId" valuekeygeneration="databasegenerated"/>
+												<entry name="contacts|pickupContactId" type="table">
+													<entry name="contactId" valuekeygeneration="databasegenerated"/>
+													<entry name="parts|pickupContactId" type="table">
+														<entry name="partId" valuekeygeneration="databasegenerated"/>
+														<entry name="locations|pickupLocationId" type="table">
+															<entry name="locationId" valuekeygeneration="databasegenerated"/>
+														</entry>
+													</entry>
+													<entry name="phones|contactId" type="table">
+														<entry name="phoneId" valuekeygeneration="databasegenerated"/>
+													</entry>
+												</entry>
+												<entry name="locations|pickupLocationId" type="table">
+													<entry name="locationId" valuekeygeneration="databasegenerated"/>
+													<entry name="parts|pickupLocationId" type="table">
+														<entry name="partId" valuekeygeneration="databasegenerated"/>
+														<entry name="contacts|pickupContactId" type="table">
+															<entry name="contactId" valuekeygeneration="databasegenerated"/>
+															<entry name="phones|contactId" type="table">
+																<entry name="phoneId" valuekeygeneration="databasegenerated"/>
+															</entry>
+														</entry>
+													</entry>
+												</entry>
+												<entry name="parts|partId" type="table">
+													<entry name="partId" valuekeygeneration="databasegenerated"/>
+													<entry name="contacts|pickupContactId" type="table">
+														<entry name="contactId" valuekeygeneration="databasegenerated"/>
+														<entry name="phones|contactId" type="table">
+															<entry name="phoneId" valuekeygeneration="databasegenerated"/>
+														</entry>
+													</entry>
+													<entry name="locations|pickupLocationId" type="table">
+														<entry name="locationId" valuekeygeneration="databasegenerated"/>
+													</entry>
+												</entry>
+											</entry>
+										</entry>
+										<entry name="processing_statuses|statusId" type="table">
+											<entry name="statusId" valuekeygeneration="databasegenerated"/>
+										</entry>
+										<entry name="transaction_types|transactionTypeId" type="table">
+											<entry name="transactionTypeId" valuekeygeneration="databasegenerated"/>
+										</entry>
+									</entry>
+									<entry name="processing_statuses|statusId" type="table">
+										<entry name="statusId" valuekeygeneration="databasegenerated"/>
+										<entry name="transactions|statusId" type="table">
+											<entry name="transactionId" valuekeygeneration="databasegenerated"/>
+											<entry name="serviceorders|transactionId" type="table">
+												<entry name="serviceOrderId" valuekeygeneration="databasegenerated"/>
+												<entry name="contacts|serviceOrderId" type="table">
+													<entry name="contactId" valuekeygeneration="databasegenerated"/>
+													<entry name="phones|contactId" type="table">
+														<entry name="phoneId" valuekeygeneration="databasegenerated"/>
+													</entry>
+													<entry name="parts|pickupContactId" type="table">
+														<entry name="partId" valuekeygeneration="databasegenerated"/>
+														<entry name="locations|pickupLocationId" type="table">
+															<entry name="locationId" valuekeygeneration="databasegenerated"/>
+														</entry>
+														<entry name="ordersparts|partId" type="table">
+															<entry name="orderPartId" valuekeygeneration="databasegenerated"/>
+														</entry>
+													</entry>
+													<entry name="ordersparts|pickupContactId" type="table">
+														<entry name="orderPartId" valuekeygeneration="databasegenerated"/>
+													</entry>
+												</entry>
+												<entry name="customrefs_hsr|serviceOrderId" type="table">
+													<entry name="customRefId" valuekeygeneration="databasegenerated"/>
+												</entry>
+												<entry name="locations|serviceOrderId" type="table">
+													<entry name="locationId" valuekeygeneration="databasegenerated"/>
+													<entry name="parts|pickupLocationId" type="table">
+														<entry name="partId" valuekeygeneration="databasegenerated"/>
+														<entry name="contacts|pickupContactId" type="table">
+															<entry name="contactId" valuekeygeneration="databasegenerated"/>
+															<entry name="phones|contactId" type="table">
+																<entry name="phoneId" valuekeygeneration="databasegenerated"/>
+															</entry>
+														</entry>
+														<entry name="ordersparts|partId" type="table">
+															<entry name="orderPartId" valuekeygeneration="databasegenerated"/>
+														</entry>
+													</entry>
+													<entry name="ordersparts|pickupLocationId" type="table">
+														<entry name="orderPartId" valuekeygeneration="databasegenerated"/>
+													</entry>
+												</entry>
+												<entry name="notes|serviceOrderId" type="table">
+													<entry name="noteId" valuekeygeneration="databasegenerated"/>
+												</entry>
+												<entry name="parts|serviceOrderId" type="table">
+													<entry name="partId" valuekeygeneration="databasegenerated"/>
+													<entry name="contacts|pickupContactId" type="table">
+														<entry name="contactId" valuekeygeneration="databasegenerated"/>
+														<entry name="phones|contactId" type="table">
+															<entry name="phoneId" valuekeygeneration="databasegenerated"/>
+														</entry>
+													</entry>
+													<entry name="locations|pickupLocationId" type="table">
+														<entry name="locationId" valuekeygeneration="databasegenerated"/>
+													</entry>
+													<entry name="ordersparts|partId" type="table">
+														<entry name="orderPartId" valuekeygeneration="databasegenerated"/>
+													</entry>
+												</entry>
+												<entry name="tasks|serviceOrderId" type="table">
+													<entry name="taskId" valuekeygeneration="databasegenerated"/>
+												</entry>
+												<entry name="addons|serviceOrderId" type="table">
+													<entry name="addOnId" valuekeygeneration="databasegenerated"/>
+												</entry>
+												<entry name="ordersparts|serviceOrderId" type="table">
+													<entry name="orderPartId" valuekeygeneration="databasegenerated"/>
+												</entry>
+											</entry>
+											<entry name="transaction_types|transactionTypeId" type="table">
+												<entry name="transactionTypeId" valuekeygeneration="databasegenerated"/>
+											</entry>
+										</entry>
+									</entry>
+									<entry name="buyers|buyerId" type="table">
+										<entry name="buyerId" valuekeygeneration="databasegenerated"/>
+									</entry>
+								</entry>
+								<entry name="customrefs_hsr" type="table">
+									<entry name="customRefId" valuekeygeneration="databasegenerated"/>
+									<entry name="serviceorders|serviceOrderId" type="table">
+										<entry name="serviceOrderId" valuekeygeneration="databasegenerated"/>
+										<entry name="contacts|serviceOrderId" type="table">
+											<entry name="contactId" valuekeygeneration="databasegenerated"/>
+											<entry name="phones|contactId" type="table">
+												<entry name="phoneId" valuekeygeneration="databasegenerated"/>
+											</entry>
+										</entry>
+										<entry name="locations|serviceOrderId" type="table">
+											<entry name="locationId" valuekeygeneration="databasegenerated"/>
+										</entry>
+										<entry name="notes|serviceOrderId" type="table">
+											<entry name="noteId" valuekeygeneration="databasegenerated"/>
+										</entry>
+										<entry name="parts|serviceOrderId" type="table">
+											<entry name="partId" valuekeygeneration="databasegenerated"/>
+										</entry>
+										<entry name="tasks|serviceOrderId" type="table">
+											<entry name="taskId" valuekeygeneration="databasegenerated"/>
+										</entry>
+										<entry name="transactions|transactionId" type="table">
+											<entry name="transactionId" valuekeygeneration="databasegenerated"/>
+											<entry name="batches|batchId" type="table">
+												<entry name="batchId" valuekeygeneration="databasegenerated"/>
+											</entry>
+											<entry name="processing_statuses|statusId" type="table">
+												<entry name="statusId" valuekeygeneration="databasegenerated"/>
+												<entry name="batches|statusId" type="table">
+													<entry name="batchId" valuekeygeneration="databasegenerated"/>
+												</entry>
+											</entry>
+											<entry name="transaction_types|transactionTypeId" type="table">
+												<entry name="transactionTypeId" valuekeygeneration="databasegenerated"/>
+											</entry>
+										</entry>
+									</entry>
+								</entry>
+							</entry>
+						</root>
+						<wsdl/>
+						<database>
+							<database_connection is_global_resource="Yes" global_resource_alias="ServiceLiveIntegrationDb" database_kind="MySQL" import_kind="ODBC" version="5.1.51-community" name="ServiceLiveIntegrationDb" path="ServiceLiveIntegrationDb">
+								<LocalViewStorage>
+									<LocalViewElement SQL="SELECT NOW() FROM DUAL">
+										<PathElement Name="ServiceLiveIntegrationDb" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="CURRENT_TIMESTAMP" Kind="Select Statement"/>
+									</LocalViewElement>
+								</LocalViewStorage>
+								<LocalRelationsStorage/>
+								<selections>
+									<selection>
+										<PathElement Name="ServiceLiveIntegrationDb" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="batches" Kind="Table"/>
+									</selection>
+									<selection>
+										<PathElement Name="ServiceLiveIntegrationDb" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="buyers" Kind="Table"/>
+									</selection>
+									<selection>
+										<PathElement Name="ServiceLiveIntegrationDb" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="contacts" Kind="Table"/>
+									</selection>
+									<selection>
+										<PathElement Name="ServiceLiveIntegrationDb" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="customrefs_hsr" Kind="Table"/>
+									</selection>
+									<selection>
+										<PathElement Name="ServiceLiveIntegrationDb" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="locations" Kind="Table"/>
+									</selection>
+									<selection>
+										<PathElement Name="ServiceLiveIntegrationDb" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="notes" Kind="Table"/>
+									</selection>
+									<selection>
+										<PathElement Name="ServiceLiveIntegrationDb" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="parts" Kind="Table"/>
+									</selection>
+									<selection>
+										<PathElement Name="ServiceLiveIntegrationDb" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="phones" Kind="Table"/>
+									</selection>
+									<selection>
+										<PathElement Name="ServiceLiveIntegrationDb" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="processing_statuses" Kind="Table"/>
+									</selection>
+									<selection>
+										<PathElement Name="ServiceLiveIntegrationDb" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="serviceorders" Kind="Table"/>
+									</selection>
+									<selection>
+										<PathElement Name="ServiceLiveIntegrationDb" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="tasks" Kind="Table"/>
+									</selection>
+									<selection>
+										<PathElement Name="ServiceLiveIntegrationDb" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="transaction_types" Kind="Table"/>
+									</selection>
+									<selection>
+										<PathElement Name="ServiceLiveIntegrationDb" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="transactions" Kind="Table"/>
+									</selection>
+								</selections>
+							</database_connection>
+							<recordset/>
+						</database>
+					</data>
+				</component>
+				<component name="now" library="lang" uid="626" kind="5">
+					<properties/>
+					<targets>
+						<datapoint pos="0" key="145"/>
+					</targets>
+					<view ltx="465" lty="617"/>
+				</component>
+				<component name="now" library="lang" uid="627" kind="5">
+					<properties/>
+					<targets>
+						<datapoint pos="0" key="148"/>
+					</targets>
+					<view ltx="703" lty="24"/>
+				</component>
+			</children>
+			<graph directed="1">
+				<edges/>
+				<vertices>
+					<vertex vertexkey="2">
+						<edges>
+							<edge vertexkey="12" edgekey="25"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="3">
+						<edges>
+							<edge vertexkey="11" edgekey="26"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="4">
+						<edges>
+							<edge vertexkey="14" edgekey="27"/>
+							<edge vertexkey="17" edgekey="28"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="5">
+						<edges>
+							<edge vertexkey="128" edgekey="135"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="6">
+						<edges>
+							<edge vertexkey="132" edgekey="136"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="7">
+						<edges>
+							<edge vertexkey="51" edgekey="58"/>
+							<edge vertexkey="114" edgekey="122"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="8">
+						<edges>
+							<edge vertexkey="53" edgekey="59"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="9">
+						<edges>
+							<edge vertexkey="44" edgekey="60"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="10">
+						<edges>
+							<edge vertexkey="46" edgekey="61"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="45">
+						<edges>
+							<edge vertexkey="22" edgekey="62"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="47">
+						<edges>
+							<edge vertexkey="21" edgekey="63"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="50">
+						<edges>
+							<edge vertexkey="19" edgekey="65"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="52">
+						<edges>
+							<edge vertexkey="20" edgekey="66"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="68">
+						<edges>
+							<edge vertexkey="73" edgekey="76"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="70">
+						<edges>
+							<edge vertexkey="75" edgekey="78"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="85">
+						<edges>
+							<edge vertexkey="92" edgekey="94"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="86">
+						<edges>
+							<edge vertexkey="82" edgekey="95"/>
+							<edge vertexkey="87" edgekey="96"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="89">
+						<edges>
+							<edge vertexkey="84" edgekey="97"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="90">
+						<edges>
+							<edge vertexkey="88" edgekey="98"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="91">
+						<edges>
+							<edge vertexkey="83" edgekey="99"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="93">
+						<edges>
+							<edge vertexkey="16" edgekey="100"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="112">
+						<edges>
+							<edge vertexkey="120" edgekey="123"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="113">
+						<edges>
+							<edge vertexkey="119" edgekey="124"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="116">
+						<edges>
+							<edge vertexkey="118" edgekey="125"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="117">
+						<edges>
+							<edge vertexkey="115" edgekey="126"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="121">
+						<edges>
+							<edge vertexkey="74" edgekey="127"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="129">
+						<edges>
+							<edge vertexkey="130" edgekey="137"/>
+							<edge vertexkey="101" edgekey="138"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="131">
+						<edges>
+							<edge vertexkey="15" edgekey="139"/>
+							<edge vertexkey="142" edgekey="143"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="133">
+						<edges>
+							<edge vertexkey="134" edgekey="140"/>
+							<edge vertexkey="102" edgekey="141"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="145">
+						<edges>
+							<edge vertexkey="105" edgekey="146"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="148">
+						<edges>
+							<edge vertexkey="13" edgekey="149"/>
+							<edge vertexkey="35" edgekey="150"/>
+						</edges>
+					</vertex>
+				</vertices>
+			</graph>
+		</structure>
+	</component>
+</mapping>

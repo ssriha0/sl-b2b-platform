@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
+	default-lazy-init="true">
+
+	<!-- Start DTO  Loading -->
+	<bean id="forgotUsernameDto" class="com.newco.marketplace.web.dto.provider.ForgotUsernameDto" scope="prototype"/>
+	<!-- End DTO  Loading -->
+	<!-- Start Mapper Loading -->
+	<bean id="forgetUsernameMapper" class="com.newco.marketplace.web.utils.ForgetUsernameMapper" scope="prototype"/>
+	<!-- End Mapper  Loading -->
+	<!-- Start Delegate  Loading -->
+	<bean name="iForgetUsernameDelegate" class="com.newco.marketplace.web.delegatesImpl.provider.ForgetUsernameDelegateImpl">
+	 	<constructor-arg index="0" ref="forgotUsernameBOImpl"/>
+		<constructor-arg index="1" ref="forgetUsernameMapper"/>
+		<property name="iForgotUsernameBO">
+			<ref bean="forgotUsernameBOAOP"/>
+		</property>
+	</bean>
+	<!-- End Delegate  Loading -->	
+</beans>

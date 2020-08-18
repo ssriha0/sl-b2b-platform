@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
+	default-autowire="byName">
+
+	<bean id="queueingPlaceholderConfig"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	</bean>
+
+	<bean id="jmsTemplateServiceOrderSender" class="org.springframework.jms.core.JmsTemplate102">
+		<property name="connectionFactory">
+			<ref bean="jmsQueueConnectionFactoryMQ" />
+		</property>
+		<property name="pubSubDomain">
+			<value>false</value>
+		</property>
+		<property name="defaultDestination">
+			<ref bean="soDestinationMQ" />
+		</property>
+	</bean>
+
+	<!-- Direct to MQ -->
+
+	<bean id="const"
+		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+		<property name="staticField">
+			<value>com.ibm.mq.jms.JMSC.MQJMS_TP_CLIENT_MQ_TCPIP
+			</value>
+		</property>
+	</bean>
+
+	<bean id="jmsQueueConnectionFactoryMQ" class="com.ibm.mq.jms.MQQueueConnectionFactory">
+		<property name="transportType" ref="const" />
+		<property name="queueManager">
+			<value>${injection.queue.manager}</value>
+		</property>
+		<property name="hostName">
+			<value>${injection.queue.host.name}
+			</value>
+		</property>
+		<property name="port">
+			<value>${injection.queue.host.port}
+			</value>
+		</property>
+		<property name="channel">
+			<value>${injection.queue.channel}</value>
+		</property>
+
+	</bean>
+
+
+	<bean id="soDestinationMQ" class="com.ibm.mq.jms.MQQueue">
+		<property name="baseQueueManagerName">
+			<value>${injection.queue.manager}</value>
+		</property>
+		<property name="baseQueueName">
+			<value>${injection.queue.name}</value>
+		</property>
+	</bean>
+
+	<bean id="uploadFileActionbean" class="com.orderinject.UploadFileAction" />
+
+</beans>

@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="marketPlace">
+	<typeAlias alias="mrktPlace" type="com.newco.marketplace.vo.provider.MarketPlaceVO"/>
+	<typeAlias alias="usrActivity" type="com.newco.marketplace.auth.UserActivityVO"/>
+	<typeAlias alias="alertTask" type="com.newco.marketplace.business.businessImpl.alert.AlertTask"/>
+	<typeAlias alias="vendorResourceSmsSubscription" type="com.newco.marketplace.vo.vibes.VendorResourceSmsSubscription"/>
+	
+	<select id="market_place_contact.query" parameterClass="java.lang.String" resultClass="mrktPlace">
+       SELECT
+       			ct.contact_id as contactID,
+       			phone_no AS businessPhone,
+       			mobile_no AS mobilePhone,
+       			email AS email,
+       			email_alt AS altEmail,
+       			pri_contact_method_id AS primaryContact,
+       			alt_contact_method_id AS secondaryContact1,
+       			sms_no AS smsAddress,
+       			phone_no_ext AS businessExtn
+       FROM contact AS ct, vendor_resource AS vr 
+       	WHERE ct.contact_id = vr.contact_id AND vr.user_name = #userName#
+    </select>
+	
+	<select id="market_place_activity.query" parameterClass="mrktPlace" resultClass="usrActivity">
+        SELECT up.user_name as userName , lup.activity_name AS activityName, lur.role_activity_id AS roleActivityId,
+        lur.activity_id AS activityId,
+		 case when upp.role_activity_id is null then 0 else 1
+      		 end as checked,
+      		lur.permission_set_id as permissionSetId,lps.admin_ind as adminInd
+			FROM lu_permissions AS lup
+			JOIN lu_permission_role AS lur ON (lur.activity_id = lup.activity_id)
+			JOIN lu_permission_set AS lps ON (lps.permission_set_id = lur.permission_set_id)
+			Join user_profile as up on up.role_id = lur.role_id
+	    	left outer  JOIN user_profile_permissions AS upp
+      			ON  lur.role_activity_id = upp.role_activity_id
+      			and up.user_name = upp.user_name
+			where up.user_name = #userName#
+				and lup.inactive_ind = 0
+    </select>
+	
+	<select id="market_place_contactID.query" parameterClass="mrktPlace" resultClass="java.lang.String">
+		SELECT contact_id
+		FROM vendor_resource
+			WHERE user_name = #userName#
+	</select>
+	
+	<update id="market_place_contact.updateMobileNo" parameterClass="java.util.Map">
+		UPDATE contact 
+		SET mobile_no = #mobileNo#
+		WHERE contact_id = #contactId#
+	</update>
+	
+	<update id="market_place_contact.update" parameterClass="mrktPlace">
+		UPDATE contact 
+		SET phone_no = #businessPhone#,
+			mobile_no = #mobilePhone#,
+			email = #email#,
+			email_alt = #altEmail#,
+			pri_contact_method_id = #primaryContact#,
+			alt_contact_method_id = #secondaryContact1#,
+			sms_no =  #smsAddress#,
+       		phone_no_ext = #businessExtn#
+		WHERE contact_id = #contactID#
+	</update>
+	
+	<select id="market_place_roleID.query" parameterClass="mrktPlace" resultClass="java.lang.String">
+		SELECT role_id
+		FROM user_profile_role 
+			WHERE user_name = #userName#
+	</select>
+	
+	<select id="market_place_roleActivityID.query" parameterClass="mrktPlace" resultClass="java.lang.String">
+		SELECT role_activity_id 
+		FROM lu_permission_role 
+			WHERE role_id = #roleID# 
+					AND	activity_id = #activityID#
+	</select>
+	
+	
+	<insert id="market_place_userProfPermissions.insert" parameterClass="usrActivity">
+		insert into user_profile_permissions(
+				user_name,
+				role_activity_id)
+			select user_name , #roleActivityId# from user_profile up where up.user_name = #userName# 
+				and not exists (select 'x' from  user_profile_permissions
+        where role_activity_id = #roleActivityId#  and up.user_name = user_profile_permissions.user_name)
+	</insert>
+	
+	<delete id="market_place_userProfPermissions.delete" parameterClass="usrActivity">
+		DELETE FROM user_profile_permissions 
+			WHERE user_name = #userName# and role_activity_id = #roleActivityId#
+	</delete>
+	
+	<select id="market_place_serviceCall.query" parameterClass="mrktPlace" resultClass="java.lang.String">
+		SELECT resource_ind 
+		FROM vendor_resource 
+			WHERE resource_id = #resourceId#
+	</select>
+	
+	<select id="market.place.getusername" parameterClass="java.lang.String" resultClass="mrktPlace">
+		SELECT user_name as userName,
+			contact_id as contactID
+		FROM vendor_resource 
+			WHERE resource_id = #resourceId#
+	</select>
+	
+	<select id="market.place.getPrimaryInd" parameterClass="java.lang.String" resultClass="mrktPlace">
+		SELECT primary_ind As primaryIndicator
+			FROM vendor_resource WHERE 
+		resource_id = #resourceId#
+	</select>
+	
+	<select id="mp.resource.contact.query" parameterClass="java.lang.String" resultClass="mrktPlace">
+       SELECT
+       			ct.contact_id as contactID,
+       			phone_no AS businessPhone,
+       			mobile_no AS mobilePhone,
+       			email AS email,
+       			email_alt AS altEmail,
+       			pri_contact_method_id AS primaryContact,
+       			alt_contact_method_id AS secondaryContact1,
+       			sms_no AS smsAddress,
+       			phone_no_ext AS businessExtn,
+       			first_name AS firstName,
+       			last_name AS lastName
+       FROM contact AS ct, vendor_resource AS vr 
+       	WHERE ct.contact_id = vr.contact_id AND vr.resource_id = #resourceId#
+    </select>
+		
+	<insert id="alert_SMS_subscription.insert" parameterClass="alertTask">
+		INSERT INTO alert_task (
+		alert_task_id,
+ 		alerted_timestamp,
+ 		target_key,
+ 		payload,
+ 		payload_key,
+ 		transaction_id,
+		completion_indicator,
+ 		created_date,
+ 		modified_date,
+ 		modified_by,
+ 		alert_type_id,
+ 		template_id,
+ 		state_transition_id,
+ 		alert_to,
+ 		alert_from,
+ 		alert_cc,
+ 		alert_bcc,
+ 		priority, 
+ 		template_input_value
+		) 
+		values
+		(
+		#alertTaskId#,
+ 		#alertedTimestamp#,
+ 		#targetKey#,
+ 		#payload#,
+ 		#payloadKey#,
+ 		#transactionId#,
+		#completionIndicator#,
+ 		#createdDate#,
+ 		#modifiedDate#,
+ 		#modifiedBy#,
+ 		#alertTypeId#,
+ 		#templateId#,
+ 		#stateTransitionId#,
+ 		#alertTo#,
+ 		#alertFrom#,
+ 		#alertCc#,
+ 		#alertBcc#,
+ 		#priority#,
+ 		#templateInputValue#
+ 		)
+	</insert>
+	
+	<update id="provider_contact.update" parameterClass="mrktPlace">
+		UPDATE contact 
+	      <dynamic prepend="SET">
+	     	<isNotNull prepend=", " property="otherJobTitle">title = #otherJobTitle#</isNotNull>
+   			<isNotNull prepend=", " property="businessPhone">phone_no = #businessPhone#</isNotNull>
+   			<isNotNull prepend=", " property="mobilePhone">mobile_no = #mobilePhone#</isNotNull>
+   			<isNotNull prepend=", " property="email">email = #email#</isNotNull>
+   			<isNotNull prepend=", " property="altEmail">email_alt = #altEmail#</isNotNull>
+   			<isNotNull prepend=", " property="primaryContact">pri_contact_method_id = #primaryContact#</isNotNull>
+   			<isGreaterThan prepend=", " property="secondaryContact1" compareValue="-1">alt_contact_method_id = #secondaryContact1#</isGreaterThan>
+   			<isNotNull prepend=", " property="smsAddress">sms_no = #smsAddress#</isNotNull>
+   			<isNotNull prepend=", " property="businessExtn">phone_no_ext = #businessExtn#</isNotNull>
+   		</dynamic>
+		WHERE contact_id = #contactID#
+	</update>
+
+	<!-- R16_1: SL-18979: Fetching constant values from application constants  -->
+	<select id="fetchAddParticipantApiDetails.query" parameterClass="java.util.List" resultClass="java.util.HashMap">
+		SELECT app_constant_key,app_constant_value FROM application_constants WHERE app_constant_key IN
+		<iterate open="(" close=")" conjunction=",">	
+		#[]#
+	</iterate>
+	</select>
+	
+	<!-- R16_1: SL-18979: Checking whether sms subscription details exists for a resource in db  -->
+	<select id="vendorResourceSmsSubscriptionInfo.query" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT 1
+		FROM vendor_resource_sms_subscription WHERE resource_id = #resourceId#
+	</select>
+	
+	<!-- R16_1: SL-18979: Inserting sms subscription details for a resource in db  -->
+	<insert id="addParticipantResponse.insert" parameterClass="vendorResourceSmsSubscription">
+		INSERT INTO vendor_resource_sms_subscription  (
+		resource_id,
+ 		person_id,
+ 		participation_date,
+ 		expire_date,
+ 		sms_number,
+ 		status,
+ 		opt_in_ind,
+ 		opt_in_date,
+ 		opt_out_date,
+ 		created_date,
+ 		modified_date,
+ 		created_by,
+ 		modified_by
+		) 
+		values
+		(
+		#resourceId#,
+ 		#personId#,
+ 		#participationDate#,
+ 		#expireDate#,
+ 		#smsNumber#,
+ 		#status#,
+ 		#optInInd#,
+ 		#optInDate#,
+ 		#optOutDate#,
+ 		NOW(),
+ 		NOW(),
+ 		#createdBy#,
+ 		#modifiedBy#
+ 		)
+	</insert>
+	
+		<!-- R16_1: SL-18979: Updating sms subscription details for a resource in db  -->
+	<update id="addParticipantResponse.update" parameterClass="vendorResourceSmsSubscription">
+		UPDATE vendor_resource_sms_subscription
+	     SET person_id = #personId#,
+			participation_date = #participationDate#,
+			expire_date = #expireDate#,
+			sms_number = #smsNumber#,
+			status = #status#,
+			opt_in_ind = #optInInd#,
+			opt_in_date = #optInDate#,
+			opt_out_date = #optOutDate#,
+			modified_date= NOW(),
+			modified_by = #modifiedBy#
+		WHERE resource_id = #resourceId#
+	</update>
+	
+	<!-- R16_1: SL-18979: Updating sms subscription details for a resource in db  -->
+	<update id="vibesDetails.update" parameterClass="vendorResourceSmsSubscription">
+		UPDATE vendor_resource_sms_subscription
+	     SET sms_number = #smsNumber#,
+			status = #status#,
+			opt_in_ind = #optInInd#,
+			modified_date= NOW(),
+			modified_by = #modifiedBy#
+		WHERE resource_id = #resourceId#
+	</update>
+	
+	<!-- R16_1: SL-18979: Fetching sms subscription details exists for a sms no in db  -->
+	<select id="vendorResourceSmsSubscriptionInfoSmsNo.query" parameterClass="java.lang.String" resultClass="vendorResourceSmsSubscription">
+		SELECT 
+			person_id AS personId,
+			participation_date AS participationDate,
+			expire_date AS expireDate,
+			opt_in_date AS optInDate,
+			opt_out_date AS optOutDate
+		FROM vendor_resource_sms_subscription
+		WHERE sms_number = #smsNumber# 
+		ORDER BY modified_date DESC LIMIT 1
+	</select>
+	
+	<!-- R16_1: SL-18979: Checking whether sms subscription details exists for a resource in db  -->
+	<select id="vendorResourcePersonId.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT person_id
+		FROM vendor_resource_sms_subscription WHERE resource_id = #resourceId#
+	</select>	
+	
+	<!-- R16_1: SL-18979: Deleting sms subscription details for a resource in db  -->
+	<update id="vibesDetails.delete" parameterClass="vendorResourceSmsSubscription">
+		UPDATE vendor_resource_sms_subscription
+	     SET sms_number = #smsNumber#,
+			status = #status#,
+			modified_date= NOW(),
+			modified_by = #modifiedBy#
+		WHERE resource_id = #resourceId#
+	</update>
+	
+	<!-- R16_1: SL-18979: Fetching vendorIds for a sms no  -->
+	<select id="fetchVendorIds.query" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT vr.vendor_id FROM vendor_resource_sms_subscription vrs 
+		JOIN vendor_resource vr 
+		ON  (vrs.resource_id = vr.resource_id )
+		WHERE
+		vrs.sms_number = #smsNumber#  AND vrs.status NOT IN ('DELETED','INACTIVE') 
+		AND vr.wf_state_id != 32
+	</select>
+	
+	<!-- R16_1: SL-18979: Fetching vendorId for that resource  -->
+	<select id="vendorId.query" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT vendor_id 
+		FROM vendor_resource WHERE resource_id = #resourceId#
+	</select>
+	
+	<!-- R16_1: SL-18979: Fetching sms subscription details exists for a sms no in db  -->
+	<select id="SmsSubscriptionInfo.query" parameterClass="java.lang.String" resultClass="vendorResourceSmsSubscription">
+		SELECT 
+			person_id AS personId,
+			participation_date AS participationDate,
+			expire_date AS expireDate,
+			STATUS AS STATUS,
+			opt_in_ind AS optInInd,
+			opt_in_date AS optInDate,
+			opt_out_date AS optOutDate
+		FROM vendor_resource_sms_subscription
+		WHERE sms_number =  #smsNumber# 
+		AND STATUS NOT IN ('DELETED','INACTIVE')
+		ORDER BY modified_date 
+		DESC LIMIT 1
+	</select>
+	
+		<!-- to fetch template data  -->
+	<select id="fetchTemplate.query" parameterClass="java.lang.Integer" resultClass="java.lang.String">
+		SELECT template_source
+		FROM template WHERE template_id = #resourceId#
+	</select>
+	
+	<!-- R16_1: SL-18979: Fetching vendorIds for a sms no  -->
+	<select id="checkForSMSNumDuplicates.query" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT COUNT(1) FROM vendor_resource_sms_subscription vrs
+		WHERE
+		vrs.sms_number = #smsNumber#  AND vrs.status NOT IN ('DELETED','INACTIVE') 
+	</select>
+	<!-- R16_1: SL-18979: Fetching value for vibes switch  -->
+	 <select id="vibes_sms_switch.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT f.app_value FROM application_flags f WHERE f.app_key = #key#
+	</select>
+</sqlMap>

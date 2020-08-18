@@ -1,0 +1,1 @@
+update template set template_source = 'Final Labor Spend Limit is $$LABOR_FINAL_PRICE.  Final Parts Spend Limit is $$PARTS_FINAL_PRICE.  $UPSOLD_TOTAL_PRICE.  Total Service Order payment is $$FINAL_PRICE.' where template_id = 57;

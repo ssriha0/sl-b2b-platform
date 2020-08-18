@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="soUpsell">
+	<typeAlias alias="soAddon"
+		type="com.newco.marketplace.dto.vo.serviceorder.ServiceOrderAddonVO" />
+	<typeAlias alias="so"
+		type="com.newco.marketplace.dto.vo.serviceorder.ServiceOrder" />
+	<typeAlias alias="soAdditionalPayment"
+		type="com.newco.marketplace.dto.vo.serviceorder.AdditionalPaymentVO" />
+	<typeAlias alias="soStagingData"
+		type="com.newco.marketplace.dto.vo.serviceorder.ServiceOrderStagingVO" />
+
+		
+	<resultMap class="soAddon" id="soAddon.resultsmap">
+		<result property="soId" column="so_id"/>
+		<result property="addonId" column="so_addon_id"/>
+		<result property="sku" column="sku" />
+		<result property="description" column="description" />
+		<result property="addonPermitTypeId" column="description" select="permitTypeId.query"/>
+		<result property="retailPrice" column="retail_price" />
+		<result property="margin" column="margin" />
+		<result property="miscInd" column="misc_ind" />
+		<result property="quantity" column="qty" />
+		<result property="scopeOfWork" column="scope_of_work"/>
+		<result property="serviceFee" column="service_fee_final" />
+		<result property="coverage" column="coverage" />
+		<result property="autoGenInd" column="auto_gen_ind" />
+		<result property="taxPercentage" column="tax_percentage" />
+		<result property="skuGroupType" column="sku_group_type" />
+	</resultMap>
+	
+	<resultMap class="soStagingData" id="soStagingData.resultmap">
+		<result property="soId" column="soId"/>
+		<result property="soAdditionalPayment" column="soId" select="soUpsell.soUpsoldPayment.query" />
+		<result property="soAddonSkusList" column="soId" select="soUpsell.soUpsoldSku.query" />
+		<result property="serviceOrder" column="soId" select="serviceOrder.details.query" />
+		<result property="serialNumber" column="soId" select="serviceOrder.serialNumber.query" />
+		<result property="modelNumber" column="soId" select="serviceOrder.modelNumber.query" />
+	</resultMap>
+	
+	<resultMap class="so" id="shcOrder.resultsmap">
+		<result property="soId" column="so_id"/>
+		<result property="wfStateId" column="wf_state_id" />
+		<result property="routedDate" column="routed_date" />
+		<result property="completedDate" column="completed_date" />
+		<result property="resolutionDs" column="resolution_descr" />
+		<result property="customRefs" column="so_id" select="customReferences.query" />
+	</resultMap>
+	
+	<resultMap class="soAdditionalPayment" id="soAdditionalPayment.resultsmap">
+		<result property="soId" column="so_id"/>
+		<result property="additionalPaymentDesc" column="additional_payment_desc"/>
+		<result property="paymentType" column="payment_type" />
+		<result property="paymentAmount" column="payment_amount"/>
+		<result property="cardType" column="card_type"/>
+		<result property="cardExpireMonth" column="card_expire_month"/>
+		<result property="cardExpireYear" column="card_expire_year"/>
+		<result property="cardNo" column="cc_no"/>
+		<result property="checkNo" column="check_no"/>
+		<result property="authNumber" column="auth_no"/>
+		<result property="paymentReceivedDate" column="created_date"/>
+		<result property="maskedAccountNo" column="masked_acc_num"/>
+		<result property="token" column="token"/>
+	</resultMap>
+	
+	<insert id="additionalpayment.insert" parameterClass="soAdditionalPayment">
+		insert into so_additional_payment (so_id,
+		additional_payment_desc, payment_type, payment_amount,
+		card_type, card_expire_month, card_expire_year, cc_no, check_no,
+		created_date) values(#soId#, #additionalPaymentDesc#,
+		#paymentType#, #paymentAmount#, #cardType#, #cardExpireMonth#
+		#cardExpireYear#, #cardNo#, #checkNo#, now())
+	</insert>
+	
+	<insert id="additionalpayment.check.insert" parameterClass="soAdditionalPayment">
+		insert into so_additional_payment (so_id,
+		additional_payment_desc, payment_type, payment_amount,
+		check_no, card_type,
+		created_date) values(#soId#, #additionalPaymentDesc#,
+		#paymentType#, #paymentAmount#, #checkNo#, #cardType#, now())
+	</insert>
+
+
+	<insert id="additionalpayment.creditcard.insert" parameterClass="soAdditionalPayment">
+		insert into so_additional_payment (so_id,
+		additional_payment_desc, payment_type, payment_amount,
+		card_type, card_expire_month, card_expire_year, cc_no, 
+		created_date, auth_no) values(#soId#, #additionalPaymentDesc#,
+		#paymentType#, #paymentAmount#, #cardType#, #cardExpireMonth#,
+		#cardExpireYear#, #cardNo#, now(), #authNumber#)
+	</insert>
+
+	<delete id="additionalpayment.delete" parameterClass="java.lang.String">
+		delete from so_additional_payment where so_id=#soId#
+	</delete>
+	
+	<insert id="addon.insert" parameterClass="soAddon">
+		insert into so_addon (so_id, sku, description, retail_price, qty, coverage, margin, misc_ind, scope_of_work, created_date)
+		values (#soId#, #sku#, #description#, #retailPrice#, #quantity#, #coverage#, #margin#, #miscInd#, #scopeOfWork#, now())
+	</insert>
+	
+	<update id="addon.update.qty" parameterClass="soAddon">
+		UPDATE so_addon SET qty = #quantity#, service_fee_final = #serviceFee#
+		WHERE so_id= #soId# AND sku = #sku#
+	</update>
+
+	<update id="addon.update.qtyanddescription" parameterClass="soAddon">
+		UPDATE so_addon SET qty = #quantity#, description = #description#, retail_price= #retailPrice#, service_fee_final = #serviceFee#
+		WHERE so_id= #soId# AND sku = #sku#
+	</update>
+	
+	<delete id="addons.delete" parameterClass="java.lang.String">
+		delete from so_addon where so_id=#soId# and qty = 0
+	</delete>
+
+	<select id="soUpsell.soUpsoldSku.query" parameterClass="java.lang.String" resultMap="soAddon.resultsmap">
+		select so_id,sku,description,retail_price,margin,misc_ind,qty,scope_of_work,service_fee_final,coverage
+ 		from so_addon where qty > 0 and  so_id = #soId#
+	</select>
+	
+<!-- 	code change for SLT-2112 -->
+	<select id="soUpsell.soUpsellALLSku.query" parameterClass="java.util.HashMap" resultMap="soAddon.resultsmap">
+		select *,coverage='CC' sortorder from so_addon where so_id = #soId# order by sortorder desc, misc_ind asc, sku asc
+	</select>
+	
+	<select id="soUpsell.soUpsellALLSkuWithQty.query" parameterClass="java.lang.String" resultMap="soAddon.resultsmap">
+		select *,coverage='CC' sortorder from so_addon where so_id = #soId# and qty > 0 order by sortorder desc
+	</select>
+	
+	<select id="soUpsell.soUpsoldPayment.query" parameterClass="java.lang.String" resultMap="soAdditionalPayment.resultsmap">
+		select * from so_additional_payment where so_id = #soId#
+	</select>
+	
+	<select id="serviceOrder.details.query" parameterClass="java.lang.String" resultMap="shcOrder.resultsmap">
+		select * from so_hdr where so_id = #soId#
+	</select>
+	
+	<select id="serviceOrder.serialNumber.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+		select buyer_ref_value
+			from so_custom_reference scr, buyer_reference_type brt
+			where scr.buyer_ref_type_id = brt.buyer_ref_type_id and scr.so_id = #soId# and brt.ref_type = 'Serial Number'
+	</select>
+	
+	<select id="serviceOrder.modelNumber.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+		select buyer_ref_value
+			from so_custom_reference scr, buyer_reference_type brt
+			where scr.buyer_ref_type_id = brt.buyer_ref_type_id and scr.so_id = #soId# and trim(brt.ref_type) = 'Model Number'
+	</select>
+	
+	<select id="serviceOrder.upsell.info" parameterClass="java.lang.String" resultMap="soStagingData.resultmap">
+		select so_id as soId from so_hdr where so_id = #soId#
+	</select>
+		
+	<select id="serviceOrder.fee.addonskus" parameterClass="java.lang.String" resultClass="java.lang.Double">
+		select sum(service_fee_final) from so_addon where so_id = #soId# and qty > 0
+	</select>
+	
+	<select id="serviceOrder.upsell.info.bySkuandSOID" parameterClass="soAddon" resultMap="soAddon.resultsmap">
+		select * from so_addon where so_id = #soId# and sku = #sku#
+	</select>
+	
+	<select id="serviceOrder.upsell.info.list.bySkuandSOID" parameterClass="soAddon" resultClass="java.lang.String">
+		select sku from so_addon where so_id = #soId# and sku in
+		<iterate property="skuList"
+		  	open="(" close=")" conjunction=",">
+   			 #skuList[]#
+  		</iterate>			
+	</select>
+	<select id="permitTypeId.query" resultClass="java.lang.Integer">
+		select id as addonPermitTypeId from lu_permit_type 
+		where type= #value#
+	</select>
+</sqlMap>

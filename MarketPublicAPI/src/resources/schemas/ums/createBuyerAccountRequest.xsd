@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:include schemaLocation="../common.xsd"/>
+  <xs:element name="createBuyerAccountRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="userName" type="xs:string"/>
+        <xs:element name="email" type="emailType"/>
+        <xs:element name="buyerType" type="buyerRoleType"/>
+        <xs:element name="firstName" type="xs:string" minOccurs="0"/>
+        <xs:element name="lastName" type="xs:string" minOccurs="0"/>
+        <xs:element name="isHomeAddress" type="booleanIndicatorType" minOccurs="0"/>
+         <xs:element name="addressLabel" type="xs:string" minOccurs="0"/>
+        <xs:element name="address1" type="xs:string" minOccurs="0"/>
+        <xs:element name="address2" type="xs:string" minOccurs="0"/>
+        <xs:element name="city" type="xs:string" minOccurs="0"/>
+        <xs:element name="stateCode" type="xs:string" minOccurs="0"/>
+        <xs:element name="zip" type="xs:string" minOccurs="0"/>
+        <xs:element name="primaryPhone" type="PhoneType" nillable="true" minOccurs="0"/>
+        <xs:element name="alternatePhone" type="PhoneType" nillable="true" minOccurs="0"/>
+        <xs:element name="sendSpecialOffer" type="booleanIndicatorType" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

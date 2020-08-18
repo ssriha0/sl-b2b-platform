@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+
+<!--  	<bean id="providerSearchImpl" class="com.newco.services.provider.impl.ProviderSearchImpl">
+	
+	</bean>-->
+	<bean id="providerSearchBO" class="com.newco.marketplace.business.businessImpl.providerSearch.ProviderSearchBO"
+		lazy-init="true">
+	<!-- <property name="transactionManager">
+			<ref bean="dsTransactionManagerMain" />
+		</property> -->	
+		<property name="providerSearchDao">
+			<ref bean="providerSearchDao" />
+		</property>	
+		<property name="marketplaceSkillSearch">
+			<ref bean="marketplaceSearchBean" />
+		</property>	
+		<property name="surveyDao">
+			<ref bean="surveyDAO" />
+		</property>	
+		<property name="masterCalculatorBO">
+        	<ref bean="masterCalculatorBO"/>
+        </property>	
+        <property name="orderGroupBO">
+        	<ref bean="OrderGroupBOTarget"/>
+        </property>
+        <property name="serviceOrderBO">
+        	<ref bean="serviceOrderBOTarget"/>
+        </property>		
+        <property name="pageBO" ref="providerInfoPagesBOImpl" />
+        <property name="publicBO" ref="publicProfileBOImpl" />
+		<property name="venderResourceDao" ref="vendorResourceDao" />
+        <property name="vendorCredentialDAO">
+			<ref bean="vendorCredentialsDao" />
+		</property>
+		<property name="extendedSurveyDAO">
+        	<ref bean="extendedSurveyDAO"/>        
+        </property>
+	</bean>
+	
+	<bean id="marketPlaceDao" class="com.newco.marketplace.persistence.daoImpl.skillTree.MarketplaceSearchDAOImpl"
+		lazy-init="true">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	 
+	</bean>	
+	<bean id="marketplaceSearchBean" class="com.newco.marketplace.business.businessImpl.skillTree.MarketplaceSearchBean">
+		<property name="marketPlaceDao">
+			<ref bean="marketPlaceDao" />
+		</property>		
+	</bean>	
+	
+    <bean id="providerSearchDao" class="com.newco.marketplace.persistence.daoImpl.providerSearch.ProviderSearchDaoImpl"
+    	lazy-init="true">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	 
+    </bean>	
+    
+    <!-- for the ratings -->
+  
+  <!-- This is the main processing BO, where the ratings calculator will be executed -->
+  <bean id="masterCalculatorBO" 
+  	class = "com.newco.marketplace.business.businessImpl.providerSearch.rating.MasterCalculatorBO">
+  
+  	<!-- This property is of the same interface as the calculators below implement -->
+  	<property name="ratingCalculator" ref="gis"/>
+  </bean>
+  	<bean id="buyerRoutingDistanceCache" class="com.newco.marketplace.business.businessImpl.routingDistance.BuyerRoutingDistanceCache">
+		<property name="buyerBo" ref="buyerBo" />
+	</bean>
+
+	<!--  These beans all support the same interface for rating calculation -->  
+ <bean id="gis" class="com.newco.marketplace.business.businessImpl.providerSearch.rating.ZipDistanceFilter">
+ 	<constructor-arg ref = "cred" />
+ 	<property name="providerSearchDao">
+		<ref bean="providerSearchDao" />
+	</property>	
+ </bean>
+  <bean id="cred" class = "com.newco.marketplace.business.businessImpl.providerSearch.rating.CredentialRatingCalculator">
+  	<constructor-arg ref="vendCred" />
+  </bean>
+  <bean id="vendCred" class = "com.newco.marketplace.business.businessImpl.providerSearch.rating.VendorCredentialRatingCalculator">
+  	<constructor-arg ref="star" />
+  </bean>
+  <bean id="star" class = "com.newco.marketplace.business.businessImpl.providerSearch.rating.StarRatingCalculator">
+  	<constructor-arg ref="background"/>
+  </bean>
+  <bean id="background" class = "com.newco.marketplace.business.businessImpl.providerSearch.rating.BackgroundCheckFilter">
+  	<constructor-arg ref="insurance"/>
+  </bean>
+  <bean id="insurance" class = "com.newco.marketplace.business.businessImpl.providerSearch.rating.InsuranceFilter">
+  	<constructor-arg ref="spnInsurance"/>
+  </bean>
+  <bean id="spnInsurance" class = "com.newco.marketplace.business.businessImpl.providerSearch.rating.SPNInsuranceFilter">
+  	<constructor-arg ref="minSOClosed"/>
+  </bean>
+   <bean id="minSOClosed" class = "com.newco.marketplace.business.businessImpl.providerSearch.rating.MinimumSoClosedFilter">
+  	<constructor-arg ref="lang"/>
+  </bean>
+  <bean id="lang" class = "com.newco.marketplace.business.businessImpl.providerSearch.rating.LanguageFilter">
+  	<constructor-arg ref="spNet"/>
+  </bean>
+  <bean id="spNet" class = "com.newco.marketplace.business.businessImpl.providerSearch.rating.SPNetFilter">
+  <constructor-arg ref="insuranceFilter"/>
+  </bean>
+  <bean id="insuranceFilter" class = "com.newco.marketplace.business.businessImpl.providerSearch.rating.InsuranceRatingFilter">
+  </bean>
+  <!--  <bean id="skill" class = "">
+   <constructor-arg ref="cred" />
+  </bean>-->
+  
+</beans>

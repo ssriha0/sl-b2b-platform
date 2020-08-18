@@ -1,0 +1,3082 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd
+http://cxf.apache.org/jaxrs
+http://cxf.apache.org/schemas/jaxrs.xsd">
+
+	<import resource="classpath:resources/spring/apiSecurityContext.xml" />
+	
+	<jaxrs:server id="orderService" address="/">
+	
+	     <jaxrs:serviceBeans>
+	     
+	     	<bean class="com.newco.marketplace.api.server.v1_7.SORequestProcessor">
+		        <property name="retrieveService_v1_7">
+					<ref bean="retrieveService_v1_7" />
+				</property>	
+		    </bean>
+	     
+	     	<bean class="com.newco.marketplace.api.server.v1_6.SORequestProcessor">
+		        <property name="retrieveService_v1_6">
+					<ref bean="retrieveService_v1_6" />
+				</property>	
+		    </bean>
+		    
+	     	<bean class="com.newco.marketplace.api.server.v1_5.SORequestProcessor">
+		        <property name="retrieveService_v1_5">
+					<ref bean="RetrieveService_v1_5" />
+				</property>	
+		    </bean>
+		    
+		    <bean class="com.newco.marketplace.api.server.v1_4.SORequestProcessor">
+		        <property name="retrieveService_v1_4">
+					<ref bean="RetrieveService_v1_4" />
+				</property>	
+		    </bean>
+	
+			<bean class="com.newco.marketplace.api.server.v1_3.SORequestProcessor">
+		        <property name="retrieveService_v1_3">
+					<ref bean="RetrieveService_v1_3" />
+				</property>	
+				<property name="createService_v1_3"> 
+			  		<ref bean="soCreateService_v1_3" />
+			  	</property>
+		    </bean>
+			<bean class="com.newco.marketplace.api.server.v1_2.SORequestProcessor">
+				<property name="createService"> 
+			  		<ref bean="soCreateService_v1_1" />
+			  	</property>	
+				<property name="createService_v1_2"> 
+			  		<ref bean="soCreateService_v1_2" />
+			  	</property>	
+				<property name="updateService_v1_2"> 
+			  		<ref bean="soUpdateService_v1_2" />
+			  	</property>	
+			  	<property name="cancelService">
+			  		<ref bean="soCancelService_v1_1" />
+			  	</property>	
+			  	<property name="soCancelService">
+			  		<ref bean="soCancelService_v1_2" />
+			  	</property>	
+			  	<property name="retrieveService">
+					<ref bean="RetrieveService_v1_2" />
+				</property>	
+			  	<property name="soPostV1Service">
+			  		<ref bean="soPostService_v1_1" />
+			  	</property>		
+			  	<property name="addNoteService">
+			  		<ref bean="soAddNoteService_v1_1" />
+			  	</property>	
+			  	<property name="rescheduleService">
+  					<ref bean="rescheduleService_v1_1" /> 
+  				</property>
+  				<property name="cancelRescheduleService">
+  					<ref bean="cancelRescheduleService_v1_1" /> 
+  				</property> 
+			  	<property name="providerRescheduleService">
+  					<ref bean="providerRescheduleService_v1_1" /> 
+  				</property>
+  				<property name="timeOnSiteService">
+  					<ref bean="timeOnSiteService_v1_1" /> 
+  				</property>
+  				<property name="soEditService">
+			  		<ref bean="soEditService_v1_1" />
+			  	</property>
+			  	<property name="searchService">
+			  		<ref bean="soSearchService_v1_1" />
+			  	</property>	
+			  	<property name="acceptService">
+			  		<ref bean="acceptService_v1_1" />
+			  	</property>
+			  	<property name="soAddProviderNoteService">
+			  		<ref bean="soProviderAddNoteService_v1_1" />
+			  	</property>			  	
+			  	<property name="soRescheduleResponseService">
+			  		<ref bean="soRescheduleResponseService_v1_1" />
+			  	</property>
+			  	<property name="reportProblemService">
+			  		<ref bean="ReportProblem"/>
+			  	</property>
+			  	<property name="soProviderRetrieveService">
+			  		<ref bean="soProviderRetrieveService_v1_1" />
+			  	</property>			  	
+			  	<property name="addSODocService">
+			  		<ref bean="addSODocService" />
+			  	</property>
+			  	<property name="deleteSODocService">
+			  		<ref bean="deleteSODocService" />
+			  	</property>
+			  	<property name="acceptOfferService">
+			  		<ref bean="soAcceptOfferService" />
+			  	</property>
+			  	<property name="readSODocService">
+			  		<ref bean="readSODocService" />
+			  	</property>
+			  	<property name="soCloseService">
+			  		<ref bean="SOCloseService" />
+			  	</property>
+			  	<property name="soReleaseService">
+			  		<ref bean="SOReleaseService" />
+			  	</property>
+			  	<property name="soReassignService">
+			  		<ref bean="SOReassignService" />
+			  	</property>
+			  	
+			  	<property name="resolveProblemService">
+			  		<ref bean="resolveProblem"/>
+			  	</property>
+			  	<property name="rejectSOService">
+			  		<ref bean="rejectSOService"/>
+			  	</property>
+			  	<property name="createConditionalOfferService">
+			  		<ref bean="createConditionalOfferService_v1_1" />
+			  	</property>
+			  	<property name="providerReportProblemService">
+			  		<ref bean="soProviderReportProblemService_v1_1"/>
+			  	</property>
+			  	<property name="searchByProviderService">
+			  		<ref bean="soSearchByProviderService_v1_1" />
+			  	</property>
+			  	<property name="completeSOService">
+			  		<ref bean="completeSOService"/>
+			  	</property>
+			  	<property name="soProviderRescheduleResponseService">
+			  		<ref bean="soProviderRescheduleResponseService_v1_1"/>
+			  	</property>
+			  	<property name="resolveProviderProblemService">
+			  		<ref bean="soResolveProviderProblemService_v1_1"/>
+			  	</property>
+			  	<property name="acceptRejectReleaseService">
+			  		<ref bean="acceptRejectReleaseService" />
+			  	</property>
+			  	<property name="unSubscribeService">
+			  		<ref bean="unSubscribeService" />
+			  	</property>
+			</bean>
+			<bean  class="com.newco.marketplace.api.server.leadsmanagement.v1_0.LeadManagementRequestProcessor">
+			     <property name="fetchProvidersService">
+			         <ref bean="fetchProvidersService"/>
+			     </property>
+			     <property name="postleadService">
+			          <ref bean="postleadService"/>
+			     </property>
+			     <property name="getProviderFirmDetailService">
+			          <ref bean="getProviderFirmDetailService"/>
+			     </property>
+			     <property name="membershipInfoService">
+			          <ref bean="membershipInfoService"/>
+			     </property>
+			 	 <property name="providerRatingAndReviewService">
+			          <ref bean="providerRatingAndReviewService"/>
+			     </property>  
+				 <property name="scheduleAppointmentService">
+			          <ref bean="scheduleAppointmentService"/>
+			     </property> 
+			     <property name="assignOrReassignProviderService">
+			          <ref bean="assignOrReassignProviderService"/>
+			     </property>
+			      <property name="getEligibleProviderService">
+			          <ref bean="getEligibleProviderService"/>
+			     </property>
+			      <property name="completeLeadsService">
+			          <ref bean="completeLeadsService"/>
+			     </property>
+			     <property name="cancelLeadService">
+			          <ref bean="cancelLeadService"/>
+			     </property>
+			     <property name="insideSalesLeadsService">
+			          <ref bean="insideSalesLeadsService"/>
+			     </property>			     
+	        </bean>
+	        <!-- B2C START -->
+	        
+	        <bean id= "leadManagementRequestProcessorV2" class="com.newco.marketplace.api.server.leadsmanagement.v2_0.LeadManagementRequestProcessor"
+	        				parent="leadsBaseRequestProcessor" scope="prototype">
+			     <property name="fetchProvidersService">
+			         <ref bean="fetchProvidersServiceV2"/>
+			     </property>
+			     <property name="postleadService">
+			          <ref bean="postleadServiceV2"/>
+			     </property>
+	        </bean>        
+	        
+	         <!-- B2C END -->
+	         <bean class="com.newco.marketplace.api.server.leaddetailmanagement.v1_0.LeadDetailManagementRequestProcessor">
+			     <property name="getIndividualLeadDetailsService">
+			          <ref bean="getIndividualLeadDetailsService"/>
+			     </property> 
+			      <property name="getAllLeadService">
+			          <ref bean="getAllLeadService"/>
+			     </property>
+			      <property name="updateLeadStatusService">
+			          <ref bean="updateLeadStatusService"/>
+			     </property>
+			     <property name="addNotesForLeadService">
+			          <ref bean="addNotesForLeadService"/>
+			     </property>
+			     
+			     <property name="leadFirmDetailService">
+			         <ref bean="leadFirmDetailService"/>
+			     </property>
+			     
+			     
+	        </bean>
+	        <bean class="com.newco.marketplace.api.server.advancedprovidersomanagement.v1_0.AdvancedGetSORequestProcessor">
+	             <property name="soSubstatusService">
+	                <ref bean="soSubstatusService"/>
+	             </property>
+	        </bean>
+	        <bean class="com.newco.marketplace.api.server.advancedprovidersomanagement.v1_0.AdvancedPostSORequestProcessor">
+	             
+	        </bean>
+			<bean class="com.newco.marketplace.api.server.v1_1.SORequestProcessor">
+				<property name="createService"> 
+			  		<ref bean="soCreateService_v1_1" />
+			  	</property>	
+			  	<property name="cancelService">
+			  		<ref bean="soCancelService_v1_1" />
+			  	</property>	
+			  	<property name="retrieveService">
+					<ref bean="RetrieveService_v1_1" />
+				</property>	
+			  	<property name="soPostV1Service">
+			  		<ref bean="soPostService_v1_1" />
+			  	</property>		
+			  	<property name="addNoteService">
+			  		<ref bean="soAddNoteService_v1_1" />
+			  	</property>	
+			  	<property name="rescheduleService">
+  					<ref bean="rescheduleService_v1_1" /> 
+  				</property>
+  				<property name="cancelRescheduleService">
+  					<ref bean="cancelRescheduleService_v1_1" /> 
+  				</property> 
+			  	<property name="providerRescheduleService">
+  					<ref bean="providerRescheduleService_v1_1" /> 
+  				</property>
+  				<property name="timeOnSiteService">
+  					<ref bean="timeOnSiteService_v1_1" /> 
+  				</property>
+  				<property name="soEditService">
+			  		<ref bean="soEditService_v1_1" />
+			  	</property>
+			  	<property name="searchService">
+			  		<ref bean="soSearchService_v1_1" />
+			  	</property>	
+			  	<property name="acceptService">
+			  		<ref bean="acceptService_v1_1" />
+			  	</property>
+			  	<property name="soAddProviderNoteService">
+			  		<ref bean="soProviderAddNoteService_v1_1" />
+			  	</property>			  	
+			  	<property name="soRescheduleResponseService">
+			  		<ref bean="soRescheduleResponseService_v1_1" />
+			  	</property>
+			  	<property name="reportProblemService">
+			  		<ref bean="ReportProblem"/>
+			  	</property>
+			  	<property name="soProviderRetrieveService">
+			  		<ref bean="soProviderRetrieveService_v1_1" />
+			  	</property>			  	
+			  	<property name="addSODocService">
+			  		<ref bean="addSODocService" />
+			  	</property>
+			  	<property name="deleteSODocService">
+			  		<ref bean="deleteSODocService" />
+			  	</property>
+			  	<property name="acceptOfferService">
+			  		<ref bean="soAcceptOfferService" />
+			  	</property>
+			  	<property name="readSODocService">
+			  		<ref bean="readSODocService" />
+			  	</property>
+			  	<property name="soCloseService">
+			  		<ref bean="SOCloseService" />
+			  	</property>
+			  	<property name="soReleaseService">
+			  		<ref bean="SOReleaseService" />
+			  	</property>
+			  	<property name="soReassignService">
+			  		<ref bean="SOReassignService" />
+			  	</property>
+			  	
+			  	<property name="resolveProblemService">
+			  		<ref bean="resolveProblem"/>
+			  	</property>
+			  	<property name="rejectSOService">
+			  		<ref bean="rejectSOService"/>
+			  	</property>
+			  	<property name="createConditionalOfferService">
+			  		<ref bean="createConditionalOfferService_v1_1" />
+			  	</property>
+			  	<property name="providerReportProblemService">
+			  		<ref bean="soProviderReportProblemService_v1_1"/>
+			  	</property>
+			  	<property name="searchByProviderService">
+			  		<ref bean="soSearchByProviderService_v1_1" />
+			  	</property>
+			  	<property name="completeSOService">
+			  		<ref bean="completeSOService"/>
+			  	</property>
+			  	<property name="soProviderRescheduleResponseService">
+			  		<ref bean="soProviderRescheduleResponseService_v1_1"/>
+			  	</property>
+			  	<property name="resolveProviderProblemService">
+			  		<ref bean="soResolveProviderProblemService_v1_1"/>
+			  	</property>
+			  	<property name="acceptRejectReleaseService">
+			  		<ref bean="acceptRejectReleaseService" />
+			  	</property>
+			  	<property name="updateService">
+			  		<ref bean="updateService" />
+			  	</property>
+			  	<property name="spendLimitIncreaseretrieveService">
+					<ref bean="spendLimitIncreaseretrieveService" />
+				</property>	
+				<property name="soPriceService">
+					<ref bean="getSOPriceDetailsService" />
+				</property>	
+				<property name="subStatusService">
+					<ref bean="subStatusService" />
+				</property>	
+				<property name="soUpdateEstimateStatusService">
+					<ref bean="soUpdateEstimateStatusService" />
+				</property>
+				<property name="soUpdateEstimateService">
+					<ref bean="soUpdateEstimateService" />
+				</property>				
+				<property name="getFirmDetailsService">
+					<ref bean="getFirmDetailsService" />
+				</property>
+				<property name="soGetClosedOrdersService">
+					<ref bean="soGetClosedOrdersService" />
+				</property>
+				<property name="buyerSkuService">
+					<ref bean="buyerSkuService"/>
+				</property>
+				<property name="getAcceptedSODetailService">
+					<ref bean="getAcceptedSODetailService"/>
+				</property>		
+			  </bean>
+			
+			<bean class="com.newco.marketplace.api.server.SORequestProcessor">
+				<property name="createService">
+					<ref bean="CreateService" />
+				</property>
+				<property name="cancelService">
+			  		<ref bean="CancelService" />
+			  	</property>
+				<property name="rescheduleService">
+					<ref bean="RescheduleService" />
+				</property>
+				<property name="retrieveService">
+					<ref bean="RetrieveService" />
+				</property>
+			  	<property name="searchService">
+					<ref bean="SearchService" />
+				</property>
+				<property name="postService">
+			  		<ref bean="PostService" />
+			  	</property>
+			  	<property name="addNoteService">
+			  		<ref bean="AddNoteService" />
+			  	</property>
+				<property name="requestValidator">
+					<ref bean="RequestValidator"/>
+			  	</property>
+			  	<property name="responseValidator">
+					<ref bean="ResponseValidator"/>
+				</property>	  	
+				<property name="rejectSOService">
+			  		<ref bean="rejectSOService"/>
+			  	</property>
+			  	<property name="soPostFirmService">
+			  		<ref bean="soPostFirmService_v1_0" />
+			  	</property>
+			  	<property name="rescheduleReasonService">
+			  		<ref bean="rescheduleReasonService" />
+			  	</property>
+			  	<property name="soCancelReasonService">
+			  		<ref bean="soCancelReasonService" />
+			  	</property>
+			  	<property name="searchFirmsForAutoPostService">
+			  		<ref bean="searchFirmsForAutoPostService" />
+			  	</property>
+			</bean>
+			
+			<bean class="com.newco.marketplace.api.server.v1_2.SearchRequestProcessor" >
+				<property name="responseValidator">
+					<ref bean="ResponseValidator"/>
+				</property>
+				<property name="zipCodeService">
+					<ref bean="ZipCodeService"/>
+				</property>
+				<property name="providerByIdService">
+					<ref bean="ProviderByIdService"/>
+				</property>
+				<property name="providerByskillTreeService">
+					<ref bean="ProviderByskillTreeService"/>
+				</property>
+				<property name="mockZipCodeService">
+					<ref bean="mockZipCodeService"/>
+				</property>
+				<property name="mockProviderByIdService">
+					<ref bean="mockProviderByIdService"/>
+				</property>
+				<property name="mockProviderByskillTreeService">
+					<ref bean="mockProviderByskillTreeService"/>
+				</property>
+				<property name="commonUtility">
+					<ref bean="commonUtility"/>
+				</property>
+				<property name="addProviderReviewService">
+			  		<ref bean="addProviderReviewService" />
+				</property>				
+				<property name="providerReviewsService">
+					<ref bean="providerReviewsService"/>
+				</property>				
+				<property name="soSearchTemplateService">
+					<ref bean="SOSearchTemplateService"/>
+				</property>
+				<!-- Search provider firms by search criteria: generic buyer -->
+				<property name="d2CFirmDetailsServiceAPI">
+					<ref bean="d2CFirmDetailsServiceAPI" />
+				</property>
+			</bean>
+			
+			<bean class="com.newco.marketplace.api.server.v1_1.SearchRequestProcessor" parent="baseRequestProcessor">
+			</bean>
+			
+			<bean class="com.newco.marketplace.api.server.v1_2.WalletRequestProcessor">
+				<property name="walletHistoryService">
+					<ref bean="WalletHistoryService"/>
+				</property>			
+				<property name="responseValidator">
+					<ref bean="ResponseValidator"/>
+				</property>
+				<property name="commonUtility">
+					<ref bean="commonUtility"/>
+				</property>
+				<property name="requestValidator">
+					<ref bean="RequestValidator"/>
+				</property>
+				<property name="addFundsToWalletService">
+					<ref bean="AddFundsToWalletService"/>
+				</property>
+				<property name="walletBalanceService">
+					<ref bean="WalletBalanceService"/>
+				</property>	
+			</bean>
+						
+			<bean class="com.newco.marketplace.api.server.v1_1.WalletRequestProcessor">
+				<property name="walletHistoryService">
+					<ref bean="WalletHistoryService"/>
+				</property>			
+				<property name="responseValidator">
+					<ref bean="ResponseValidator"/>
+				</property>
+				<property name="commonUtility">
+					<ref bean="commonUtility"/>
+				</property>
+				<property name="requestValidator">
+					<ref bean="RequestValidator"/>
+				</property>
+				<property name="addFundsToWalletService">
+					<ref bean="AddFundsToWalletService"/>
+				</property>
+				<property name="walletBalanceService">
+					<ref bean="WalletBalanceService"/>
+				</property>	
+				<property name="walletThresholdService">
+					<ref bean="WalletThresholdService"/>
+				</property>
+			</bean>
+			
+			<bean class="com.newco.marketplace.api.server.v1_2.FundingSourceRequestProcessor">
+				<property name="createFundingSourceService">
+					<ref bean="CreateFundingSourceService"/>
+				</property>
+				<property name="responseValidator">
+					<ref bean="ResponseValidator"/>
+				</property>
+				<property name="getFundingSourceService">
+					<ref bean="GetFundingSourceService"/>
+				</property>	
+			</bean>			
+			
+			<bean class="com.newco.marketplace.api.server.v1_1.FundingSourceRequestProcessor">
+				<property name="createFundingSourceService">
+					<ref bean="CreateFundingSourceService"/>
+				</property>
+				<property name="responseValidator">
+					<ref bean="ResponseValidator"/>
+				</property>
+				<property name="getFundingSourceService">
+					<ref bean="GetFundingSourceService"/>
+				</property>	
+			</bean>
+						
+			<bean class="com.newco.marketplace.api.server.v1_2.UMSRequestProcessor">
+				<property name="requestValidator">
+					<ref bean="RequestValidator"/>
+			  	</property>
+			  	<property name="responseValidator">
+					<ref bean="ResponseValidator"/>
+				</property>
+				<property name="commonUtility">
+					<ref bean="commonUtility"/>
+				</property>
+				<property name="createBuyerAccountService">
+					<ref bean="createBuyerAccountService"/> 
+				</property>
+				
+				<property name="modifyBuyerAccountService">
+					<ref bean="modifyBuyerAccountService"/> 
+				</property>
+				<property name="getBuyerAccountService">
+			  		<ref bean="getBuyeraccountService" />
+				</property>
+				<property name="loginService">
+			  		<ref bean="loginService" />
+				</property>
+			</bean>			
+			
+			<bean class="com.newco.marketplace.api.server.providermanagement.v1_0.ProviderManagementRequestProcessor">
+				<property name="createProviderAccountService">
+					<ref bean="createProviderAccountService"/> 
+				</property>
+				<property name="searchProviderService">
+					<ref bean="searchProviderService"/> 
+				</property>
+				<!--  SL 16934 Mapping the IPR service class to ProviderManagementRequestProcessor-->
+				<property name="createIPRProviderAccountService">
+					<ref bean="createIPRProviderAccountService"/> 
+				</property>
+			</bean>
+			
+			<bean class="com.newco.marketplace.api.server.v1_1.ProviderCapacityRequestProcessor">
+				<property name="getTimeSlotsForTechTalkService">
+					<ref bean="getTimeSlotsForTechTalkService"/>	
+				</property>
+			</bean>
+			
+			<bean class="com.newco.marketplace.api.server.apiUserProfileAuth.v1_0.UserAuthenticationRequestProcessor">
+				<property name="userAuthenticationService">
+					<ref bean="userAuthenticationService"/> 
+				</property>
+			</bean>
+			
+			<bean class="com.newco.marketplace.api.server.leadprofile.v1_0.LeadProfileRequestProcessor">
+				<property name="leadProfileCreationService">
+					<ref bean="leadProfileCreationService"/> 
+				</property>
+				<property name="leadProfileBillingService">
+					<ref bean="leadProfileBillingService"/> 
+				</property>
+				<property name="getleadProjectService">
+					<ref bean="getleadProjectService"/> 
+				</property>
+				<property name="leadInsertFiltersetService">
+					<ref bean="leadInsertFiltersetService"/> 
+				</property>
+			</bean>
+			
+			
+			<bean class="com.newco.marketplace.api.server.v1_1.UMSRequestProcessor">
+				<property name="requestValidator">
+					<ref bean="RequestValidator"/>
+			  	</property>
+			  	<property name="responseValidator">
+					<ref bean="ResponseValidator"/>
+				</property>
+				<property name="commonUtility">
+					<ref bean="commonUtility"/>
+				</property>
+				<property name="createBuyerAccountService">
+					<ref bean="createBuyerAccountService"/> 
+				</property>
+			
+				<property name="modifyBuyerAccountService">
+					<ref bean="modifyBuyerAccountService"/> 
+				</property>
+				<property name="getBuyerAccountService">
+			  		<ref bean="getBuyeraccountService" />
+				</property>
+				<property name="loginService">
+			  		<ref bean="loginService" />
+				</property>
+			</bean>
+						
+			<bean class="com.newco.marketplace.api.server.v1_2.DocumentRequestProcessor">
+				<property name="uploadService">
+					<ref bean="uploadService"/>
+				</property>
+				<property name="documentDeleteService">
+					<ref bean="documentDeleteService"/>
+				</property>				
+			</bean>			
+			
+			<bean class="com.newco.marketplace.api.server.v1_1.DocumentRequestProcessor">
+				<property name="uploadService">
+					<ref bean="uploadService"/>
+				</property>
+				<property name="documentDeleteService">
+					<ref bean="documentDeleteService"/>
+				</property>
+				<property name="buyerDocumentUploadService">
+					<ref bean="buyerDocumentUploadService"/>
+				</property>
+			</bean>
+			
+			<bean class="com.newco.marketplace.api.server.v1_2.AlertRequestProcessor">
+				<property name="sendAlertsService">
+					<ref bean="sendAlertsService"/>
+				</property>				
+			</bean>
+			
+			<bean class="com.newco.marketplace.api.server.v1_1.AlertRequestProcessor">
+				<property name="sendAlertsService">
+					<ref bean="sendAlertsService"/>
+				</property>				
+			</bean>
+			<bean class="com.newco.marketplace.api.server.ordermanagement.v1_0.OrderManagementRequestProcessor">
+				<property name="fetchSoService"> 
+			  		<ref bean="fetchSoService" />
+			  	</property>	
+			  	<property name="eligibleProvidersService">
+			  		<ref bean="eligibleProvidersService" />
+			  	</property>	
+			  	<property name="assignProviderService">
+					<ref bean="assignProviderService" />
+				</property>	
+			  	<property name="reassignService">
+			  		<ref bean="SOReassignService" />
+			  	</property>		
+			  	<property name="acceptService">
+			  		<ref bean="acceptService_v1_1" />
+			  	</property>
+			  	<property name="addNoteService">
+  					<ref bean="soAddNoteService_v1_1" /> 
+  				</property>
+  				<property name="rescheduleService">
+  					<ref bean="rescheduleService_v1_1" /> 
+  				</property> 
+			  	<property name="conditionalOfferService">
+  					<ref bean="createConditionalOfferService_v1_1" /> 
+  				</property>
+  				<property name="editSOLocationNotesService">
+			  		<ref bean="editSOLocationNotesService" />
+			  	</property>
+			  	<property name="appointmentTimeService">
+			  		<ref bean="appointmentTimeService" />
+			  	</property>
+			  	<property name="callInfoService">
+			  		<ref bean="callInfoService" />
+			  	</property>
+			  
+			  	<property name="priorityService">
+			  		<ref bean="priorityService" />
+			  	</property>
+			  	<property name="callService">
+			  		<ref bean="callService" />
+			  	</property>	
+			  	<property name="reasonCodesService">
+			  		<ref bean="reasonCodesService" />
+			  	</property>
+			  	<property name="orderManagementTabsService">
+			  		<ref bean="orderManagementTabsService" />
+			  	</property>			  	
+			  	<property name="releaseInfoService">
+			  		<ref bean="releaseInfoService" />
+			  	</property>
+			  	<property name="releaseService">
+			  		<ref bean="releaseService"/>
+			  	</property>
+			  	<property name="withdrawCondOfferService">
+			  		<ref bean="withdrawCondOfferService"/>
+			  	</property>
+			  	<property name="precallHistoryService">
+			  		<ref bean="precallHistoryService"/>
+			  	</property>
+			  	<property name="scheduleDetailsService">
+			  		<ref bean="scheduleDetailsService"/>
+			  	</property>
+			  </bean>
+			  <bean class="com.newco.marketplace.api.server.downloadsignedcopy.DownloadSignedCopyProcessor">
+			      <property name="signedCopyService">
+			         <ref bean="signedCopyService"/>
+			  </property>
+			  <property name="soDocumentsService">
+			         <ref bean="soDocumentsService"/>
+			  </property>
+			  </bean>
+			  <bean id="providerRequestProcessor" class="com.newco.marketplace.api.server.homeimprovement.v1_0.ProviderRequestProcessor" parent="providerBaseRequestProcessor" scope="prototype">
+				<property name="updateFirmAccountService">
+				    <ref bean="updateFirmAccountService"/>
+				</property>	
+				<property name="createFirmAccountService">
+				    <ref bean="createFirmAccountService"/>
+				</property>	
+				<property name="approveFirmService">
+				    <ref bean="approveFirmService"/>
+				</property>	
+				<property name="createHiProviderAccountService">
+				    <ref bean="createHiProviderAccountService"/>
+				</property>			
+				<property name="updateProviderRegistrationService">
+				    <ref bean="updateProviderRegistrationService"/>
+				</property>
+				<property name="addProviderSkillService">
+				    <ref bean="addProviderSkillService"/>
+				</property>		
+				<property name="removeProviderSkillService">
+				    <ref bean="removeProviderSkillService"/>
+				</property>	
+				<property name="approveProviderService">
+				    <ref bean="approveProviderService"/>
+				</property>	
+			</bean>
+			<!-- R15_0 B2C API Processor START -->
+			 <bean id="b2cRequestProcessor" class="com.newco.marketplace.api.server.b2c.v1_0.B2CRequestProcessor" parent="providerBaseRequestProcessor" scope="prototype">
+				<property name="searchProvidersService">
+				    <ref bean="searchProvidersService"/>
+				</property>	
+				<property name="getProviderDetailsService">
+				    <ref bean="getProviderDetailsService"/>
+				</property>	
+				<property name="documentDownloadService">
+				    <ref bean="documentDownloadService"/>
+				</property>
+				<property name="createAndPostLeadService">
+				    <ref bean="createAndPostLeadService"/>
+				</property>			
+			</bean>	
+			<!-- R15_0 B2C API Processor END -->
+    	<!-- Added for dc2 providerRequestProcessor start -->
+			<bean class="com.newco.marketplace.api.server.d2cprovider.D2CProviderRequestProcessor">
+				<property name="d2CProviderPortalBO">
+					<ref bean="d2cProviderPortalBO" />
+				</property>
+				<property name="d2CFirmDetailsServiceAPI">
+					<ref bean="d2CFirmDetailsServiceAPI" />
+				</property>
+				
+			</bean>
+			<!-- End -->
+			<!-- Start :  Below code added for new API to get provider list(Standard+Non-Standard) -->
+			<bean class="com.newco.marketplace.api.server.d2cprovider.D2CProviderFirmRequestProcessor">
+				<property name="d2CProviderPortalBO">
+					<ref bean="d2cProviderPortalBO" />
+				</property>
+				<property name="d2CFirmDetailsServiceAPI">
+					<ref bean="d2CFirmDetailsServiceAPI" />
+				</property>
+				<property name="providerSearch">
+					<ref bean="providerSearchImplAlias" />
+				</property>
+			</bean>
+
+
+			<!-- beans for BuyerEventCallbackProcessor starts -->
+    		<bean class="com.newco.marketplace.api.server.v1_0.BuyerEventCallbackProcessor">
+				<property name="buyerDetailsEventService">
+					<ref bean="buyerDetailsEventService"/>
+				</property>
+
+				<property name="commonUtility">
+					<ref bean="commonUtility"/>
+				</property>
+
+				<property name="buyerEventService">
+					<ref bean="BuyerEventCallbackService"/>
+				</property>
+
+				<property name="buyerEventAcknowledgementService">
+					<ref bean="buyerEventAcknowledgementService"/>
+				</property>
+			</bean>
+			 
+			 <bean class="com.newco.marketplace.api.server.v1_0.BuyerAuthenticationDetailsProcessor">
+			 	<property name="buyerAuthenticationDetailsService">
+					<ref bean="buyerAuthenticationDetailsService"/>
+				</property>
+			 </bean>
+			 
+			 <bean class="com.newco.marketplace.api.survey.SurveyRequestProcessor">
+				 <property name="extendedSurveyBO">
+					 <ref bean="extendedSurveyBO"/>
+				 </property>
+				 <property name="extendedSurveyService">
+					 <ref bean="extendedSurveyService"/>
+				 </property>
+			 </bean>
+			 <!-- End -->
+		</jaxrs:serviceBeans>
+	</jaxrs:server>
+	
+	<bean id="leadsBaseRequestProcessor" abstract="true" class="com.newco.marketplace.api.server.leadsmanagement.v2_0.BaseRequestProcessor" scope="prototype">
+				<property name="responseValidator">
+					<ref bean="ResponseValidator"/>
+				</property>
+				<property name="commonUtility">
+					<ref bean="commonUtility"/>
+				</property>	
+	</bean>
+
+	<bean id="providerBaseRequestProcessor" abstract="true" class="com.newco.marketplace.api.server.homeimprovement.v1_0.BaseRequestProcessor" scope="prototype">
+				<property name="responseValidator">
+				<ref bean="ResponseValidator"/>
+				</property>
+				<property name="commonUtility">
+				<ref bean="commonUtility"/>
+				</property>	
+	</bean>
+	
+	<bean id="fetchSoService"  parent = "abstractBaseService" class="com.newco.marketplace.api.services.ordermanagement.v1_0.FetchSOService">
+        <property name="managementService" ref="managementService" />
+         <property name="omMapper" ref="omMapper" />
+    </bean>
+    <bean id="eligibleProvidersService"  parent = "abstractBaseService" class="com.newco.marketplace.api.services.ordermanagement.v1_0.SOGetEligibleProvidersService">
+        <property name="managementService" ref="managementService" />
+         <property name="omMapper" ref="omMapper" />
+         <property name="serviceOrderBo">
+                <ref bean="soBOAOP"/>
+        </property>
+    </bean>
+    <bean id="assignProviderService"  parent = "abstractBaseService" class="com.newco.marketplace.api.services.ordermanagement.v1_0.SOAssignProviderService">
+        <property name="managementService" ref="managementService" />
+         <property name="omMapper" ref="omMapper" />
+        <property name="serviceOrderBo" ref="soBOAOP" />
+    </bean>
+
+ 	<bean id="callInfoService"  parent = "abstractBaseService" class="com.newco.marketplace.api.services.ordermanagement.v1_0.GetCallInfoService">
+        <property name="managementService" ref="managementService" />
+         <property name="omMapper" ref="omMapper" />
+    </bean>
+     <bean id="precallHistoryService"  parent = "abstractBaseService" class="com.newco.marketplace.api.services.ordermanagement.v1_0.GetPrecallHistoryService">
+        <property name="managementService" ref="managementService" />
+         <property name="omMapper" ref="omMapper" />
+    </bean>
+      <bean id="scheduleDetailsService"  parent = "abstractBaseService" class="com.newco.marketplace.api.services.ordermanagement.v1_0.UpdateScheduleDetailsService">
+        <property name="managementService" ref="managementService" />
+         <property name="omMapper" ref="omMapper" />
+    </bean>
+    
+     <bean id="appointmentTimeService"  parent = "abstractBaseService" class="com.newco.marketplace.api.services.ordermanagement.v1_0.SOEditAppointmentTimeService">
+        <property name="managementService" ref="managementService" />
+         <property name="omMapper" ref="omMapper" />
+    </bean>
+    <bean id="editSOLocationNotesService"  parent = "abstractBaseService" class="com.newco.marketplace.api.services.ordermanagement.v1_0.SOEditSOLocationNotesService">
+        <property name="managementService" ref="managementService" />
+         <property name="omMapper" ref="omMapper" />
+    </bean>
+    
+      <bean id="priorityService"  parent = "abstractBaseService" class="com.newco.marketplace.api.services.ordermanagement.v1_0.SetSOPriorityService">
+        <property name="managementService" ref="managementService" />
+         <property name="omMapper" ref="omMapper" />
+    </bean>
+    
+    <bean id="callService"  parent = "abstractBaseService" class="com.newco.marketplace.api.services.ordermanagement.v1_0.SOProviderCallService">
+        <property name="managementService" ref="managementService" />
+         <property name="omMapper" ref="omMapper" />
+    </bean>
+    
+    <bean id="reasonCodesService"  parent = "abstractBaseService" class="com.newco.marketplace.api.services.ordermanagement.v1_0.GetReasonCodesService">
+        <property name="managementService" ref="managementService" />
+         <property name="omMapper" ref="omMapper" />
+         <property name="lookupBO">
+			<ref bean="lookupBO"/>
+		</property>
+    </bean>
+    
+    <bean id="orderManagementTabsService"  parent = "abstractBaseService" class="com.newco.marketplace.api.services.ordermanagement.v1_0.GetOrderManagementTabsService">
+        <property name="managementService" ref="managementService" />
+         <property name="omMapper" ref="omMapper" />
+    </bean>
+    
+     <bean id="releaseInfoService"  parent = "abstractBaseService" class="com.newco.marketplace.api.services.ordermanagement.v1_0.GetReleaseInfoService">
+        <property name="managementService" ref="managementService" />
+         <property name="omMapper" ref="omMapper" />
+    </bean>
+     <bean id="releaseService"  parent = "abstractBaseService" class="com.newco.marketplace.api.services.ordermanagement.v1_0.SOReleaseService">
+        <property name="managementService" ref="managementService" />
+         <property name="omMapper" ref="omMapper" />
+    </bean>
+     <bean id="withdrawCondOfferService"  parent = "abstractBaseService" class="com.newco.marketplace.api.services.so.v1_1.SOWithdrawCondOfferService">
+    	<property name="serviceOrderBo" ref="soBOAOP" />
+        <property name="omMapper" ref="omMapper" />
+        <property name="orderGrpBO" ref="soOrderGroupBOAOP" />
+    </bean>
+   
+    <bean id="abstractBaseService" abstract="true" class="com.newco.marketplace.api.services.so.v1_1.SOBaseService">
+        <property name="ofHelper" ref="ofHelper" />
+    </bean>
+    <bean id="abstractHIBaseService" abstract="true" class="com.newco.marketplace.api.services.BaseService">
+        <property name="apiLoggingBO" ref="apiLoggingBO" />
+    </bean>
+    <bean id="baseRequestProcessor" abstract="true" class="com.newco.marketplace.api.server.BaseRequestProcessor">
+				<property name="responseValidator">
+					<ref bean="ResponseValidator"/>
+				</property>
+				<property name="zipCodeService">
+					<ref bean="ZipCodeService"/>
+				</property>
+				<property name="providerByIdService">
+					<ref bean="ProviderByIdService"/>
+				</property>
+				<property name="providerByskillTreeService">
+					<ref bean="ProviderByskillTreeService"/>
+				</property>
+				<property name="mockZipCodeService">
+					<ref bean="mockZipCodeService"/>
+				</property>
+				<property name="mockProviderByIdService">
+					<ref bean="mockProviderByIdService"/>
+				</property>
+				<property name="mockProviderByskillTreeService">
+					<ref bean="mockProviderByskillTreeService"/>
+				</property>
+				<property name="commonUtility">
+					<ref bean="commonUtility"/>
+				</property>
+				<property name="addProviderReviewService">
+			  		<ref bean="addProviderReviewService" />
+				</property>				
+				<property name="providerReviewsService">
+					<ref bean="providerReviewsService"/>
+				</property>				
+				<property name="soSearchTemplateService">
+					<ref bean="SOSearchTemplateService"/>
+				</property>		
+				<property name="providerCountService">
+					<ref bean="providerCountService"/>
+				</property>		
+				<!-- SL-21308: Standard Service Offerings Search API -->
+				<property name="searchFirmsService">
+					<ref bean="SearchFirmsService"/>
+				</property>		
+				<!-- R 16_2_0_1: SL-21376- Search provider firms by zip and category and skill, SKU -->
+				<property name="searchProvidersService">
+					<ref bean="SearchByZipService"/>
+				</property>	
+	</bean>
+     
+	<bean id="completeSOService" class="com.newco.marketplace.api.services.so.v1_1.SOCompleteSOService">
+				<property name="serviceOrderBO">
+					<ref bean="soBOAOP"/>
+				</property>
+				<property name="soCompleteSOMapper">
+					<ref bean="soCompleteSOMapper"/>
+				</property>
+				<property name="securityProcess">
+					<ref bean="SecurityProcess" />
+				</property>
+	</bean>
+	
+	<bean id="ReportProblem" class="com.newco.marketplace.api.services.so.ReportProblemService" parent="abstractBaseService">
+		<property name="serviceOrderBO">
+			<ref bean="soBOAOP"/>
+		</property>
+	</bean>
+	
+	<bean id="resolveProblem" class="com.newco.marketplace.api.services.so.ResolveProblemOnSOService" parent="abstractBaseService">
+		<property name="serviceOrderBO">
+			<ref bean="soBOAOP"/>
+		</property>
+	</bean>
+	
+	<bean id="rejectSOService" class="com.newco.marketplace.api.services.so.SORejectService">
+		<property name="serviceOrderBO">
+			<ref bean="soBOAOP"/>
+		</property>
+		<property name="orderGroupBO">
+			<ref bean="soGroupBO"/>
+		</property>
+		<property name="lookupBO">
+			<ref bean="lookupBO"/>
+		</property>
+		<property name="ofHelper" ref="ofHelper" />
+		<property name="managementService" ref="managementService" />
+	</bean>
+	
+	<bean id="CreateService" class="com.newco.marketplace.api.services.so.SOCreateService">
+ 		<property name="conversionUtility">
+			<ref bean="ConversionUtility"/>
+	  	</property>
+	 	<property name="createMapper">
+			<ref bean="SOCreateMapper"/>
+	  	</property>
+	  	<property name="serviceOrderBO">
+			<ref bean="soBOAOP"/>
+	  	</property>
+	  	<property name="securityProcess">
+			<ref bean="SecurityProcess"/>
+	  	</property>
+	    <property name="documentBO">
+		   <ref bean="documentBO"/>
+	  </property>
+	  	
+    </bean>
+    
+    <bean id="createConditionalOfferService_v1_1" class="com.newco.marketplace.api.services.so.v1_1.SOCreateConditionalOfferService">
+		<property name="conditionalOfferMapper">
+			<ref bean="soConditionalOfferMapper_v1_1" />
+		</property>
+		<property name="serviceOrderBo">
+			<ref bean="soBOAOP" />
+		</property>
+		<property name="orderGrpBO">
+			<ref bean="soOrderGroupBOAOP"/>
+		</property>
+		<property name="ofHelper" ref="ofHelper" />
+	</bean>
+	
+	<bean id="soProviderReportProblemService_v1_1" class="com.newco.marketplace.api.services.so.v1_1.SOProviderReportProblemService">
+		<property name="serviceOrderBO">
+			<ref bean="soBOAOP"/>
+		</property>
+	</bean>
+	
+	<bean id="soProviderRescheduleResponseService_v1_1" class="com.newco.marketplace.api.services.so.v1_1.SOProviderRescheduleResponseService" parent="abstractBaseService">
+     	<property name="serviceOrderBO">
+			<ref bean="soBOAOP" />
+		</property>
+		<!-- Added for R12.0 Update NPS Provider Accept Reschedule -->
+		<property name="notificationService">
+			<ref bean="notificationService" />
+		</property>
+	</bean>
+	
+	<bean id="soResolveProviderProblemService_v1_1" class="com.newco.marketplace.api.services.so.v1_1.ResolveProblemByProviderService">
+     	<property name="serviceOrderBO">
+			<ref bean="soBOAOP" />
+		</property>
+	</bean>
+	
+	<bean id="soConditionalOfferMapper_v1_1" class="com.newco.marketplace.api.utils.mappers.so.v1_1.SOCreateConditionalOfferMapper">
+	</bean>
+	<bean id="createProviderAccountService" class="com.newco.marketplace.api.services.account.provider.CreateProviderAccountService">
+    	<property name="providerRegistrationBO">
+    		<ref bean="registrationBOImpl"/>
+    	</property>
+    	<property name="lookupBO">
+    		<ref bean="lookupBO"/>
+    	</property>
+    </bean>
+    <!--SL 16934 Defining the IPR service class-->
+    <bean id="createIPRProviderAccountService" class="com.newco.marketplace.api.services.account.provider.CreateIPRProviderAccountService">
+    	<property name="providerRegistrationBO">
+    		<ref bean="registrationBOImpl"/>
+    	</property>
+    	<property name="lookupBO">
+    		<ref bean="lookupBO"/>
+    	</property>
+    	<property name="leadProfileBO">
+    		<ref bean="leadProfileBO"/>
+    	</property>
+    	<property name="isApiUserName" 
+			value="${servicelive.is.api.username}" >
+ 		</property>
+ 		<property name="isApiPassword" 
+			value="${servicelive.is.api.password}" >
+ 		</property>
+ 		<property name="isApiToken" 
+			value="${servicelive.is.api.token}" >
+ 		</property>
+    	
+    </bean>    
+    <bean id="searchProviderService" class="com.newco.marketplace.api.beans.search.provider.SearchProviderService">
+    	<property name="searchPortalBO">
+    		<ref bean="searchPortalBOImpl"/>
+    	</property>
+    	<property name="applicationProperties">
+			<ref bean="applicationPropertiesWallet"/>
+	  	</property>  	
+    </bean>
+     <bean id="userAuthenticationService" class="com.newco.marketplace.api.beans.apiUserProfileAuth.UserAuthenticationService">
+		<property name="userAuthProfileBO">
+    		<ref bean="userAuthProfileBO"/>
+    	</property>
+    </bean>
+	
+     <bean id="leadProfileCreationService" class="com.newco.marketplace.api.beans.leadprofile.LeadProfileCreationService">
+		<property name="leadProfileBO">
+    		<ref bean="leadProfileBO"/>
+    	</property>
+    </bean>
+    
+     <bean id="leadProfileBillingService" class="com.newco.marketplace.api.beans.leadprofile.LeadProfileBillingService">
+		<property name="leadProfileBO">
+    		<ref bean="leadProfileBO"/>
+    	</property>
+    </bean>
+     <bean id="getleadProjectService" class="com.newco.marketplace.api.beans.leadprofile.GetleadProjectService">
+		<property name="leadProfileBO">
+    		<ref bean="leadProfileBO"/>
+    	</property>
+    </bean>
+    
+     <bean id="leadInsertFiltersetService" class="com.newco.marketplace.api.beans.leadprofile.LeadInsertFiltersetService">
+		<property name="leadProfileBO">
+    		<ref bean="leadProfileBO"/>
+    	</property>
+    </bean>
+    
+    <bean id="createBuyerAccountService" class="com.newco.marketplace.api.services.account.buyer.CreateBuyerAccountService">
+    	<property name="buyerRegistrationBO">
+    		<ref bean="buyerRegistrationBOImpl"/>
+    	</property>
+    	<property name="lookupBO">
+    		<ref bean="lookupBO"/>
+    	</property>
+    </bean>
+    
+    <bean id="modifyBuyerAccountService" class="com.newco.marketplace.api.services.account.buyer.ModifyBuyerAccountService">
+    	<property name="buyerRegistrationBO">
+    		<ref bean="buyerRegistrationBOImpl"/>
+    	</property>
+    	<property name="lookupBO">
+    		<ref bean="lookupBO"/>
+    	</property>
+    </bean>
+    
+    <bean id="CancelService" class="com.newco.marketplace.api.services.so.SOCancelService">
+		<property name="conversionUtility">
+			<ref bean="ConversionUtility" />
+		</property>
+		<property name="cancelMapper">
+			<ref bean="SOCancelMapper" />
+		</property>
+		<property name="securityProcess">
+			<ref bean="SecurityProcess" />
+		</property>
+		<property name="serviceOrderBO">
+			<ref bean="soBOAOP" />
+		</property>
+	</bean>
+	
+	<bean id="soCancelService_v1_1"	
+		class="com.newco.marketplace.api.services.so.v1_1.SOCancelService" parent="abstractBaseService">
+		<property name="cancelMapper">
+			<ref bean="soCancelMapper_v1_1" />
+		</property>
+		<property name="serviceOrderBO">
+			<ref bean="soBOAOP" />
+		</property>
+	</bean>
+	
+	<bean id="soCancelService_v1_2"	
+		class="com.newco.marketplace.api.services.so.v1_2.SOCancelService" parent="abstractBaseService">
+		<property name="serviceOrderBO">
+			<ref bean="soBOAOP" />
+		</property>
+		<property name="manageReasonCodeBO">
+			<ref bean="manageReasonCodeBO"/>
+		</property>
+		<property name="buyerBO">
+    		<ref bean="buyerBo"/>
+  		</property>	
+  		<property name="applicationProperties">
+			<ref bean="applicationPropertiesWallet"/>
+	  	</property>	
+	  	<property name="financeManagerBO">
+            <ref bean="fmBOAOP"/>
+        </property>
+	</bean>
+	
+	<bean id="soPostService_v1_1" class="com.newco.marketplace.api.services.so.v1_1.SOPostService" parent="abstractBaseService">
+		<property name="serviceOrderBO">
+			<ref bean="soBOAOP" />
+		</property>
+		<property name="templateBO">
+			<ref bean="buyerSOTemplateBO" />
+		</property>
+		<property name="provSearchObj">
+			<ref bean="providerSearchBO" />
+		</property>
+		<property name="masterCalcObj">
+			<ref bean="masterCalculatorBO" />
+		</property>
+		<property name="postMapper">
+			<ref bean="soPostMapper_v1_1" />
+		</property>
+		<property name="ofPostMapper">
+			<ref bean="ofPostMapper_v1_1"/>
+	  	</property>		
+	</bean>
+	
+	<bean id="soEditService_v1_1" class="com.newco.marketplace.api.services.so.v1_1.SOEditService" parent="abstractBaseService">
+		<property name="serviceOrderBO">
+			<ref bean="soBOAOP" />
+		</property>
+		<property name="templateBO">
+			<ref bean="buyerSOTemplateBO" />
+		</property>
+		<property name="provSearchObj">
+			<ref bean="providerSearchBO" />
+		</property>
+		<property name="masterCalcObj">
+			<ref bean="masterCalculatorBO" />
+		</property>
+		<property name="soEditMapper">
+			<ref bean="SOEditMapper" />
+		</property>
+		<property name="documentBO">
+			<ref bean="documentBO" />
+		</property>
+		<property name="ofServiceOrderMapper">
+			<ref bean="ofServiceOrderMapper_v1_1"/>
+	  	</property>
+	</bean>
+	<bean id="updateService" class="com.newco.marketplace.api.services.so.v1_1.SOUpdateService" parent="abstractBaseService">
+		<property name="ofServiceOrderMapper">
+			<ref bean="ofServiceOrderMapper_v1_1"/>
+	  	</property>
+	  	<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO"/>
+	  	</property>
+	</bean>
+	<bean id="soUpdateService_v1_2" class="com.newco.marketplace.api.services.so.v1_2.SOUpdateService" parent="abstractBaseService">
+		<property name="ofServiceOrderMapper">
+			<ref bean="ofServiceOrderMapper_v1_2"/>
+	  	</property>
+	  	<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO"/>
+	  	</property>
+	</bean>
+	<bean id="soSearchService_v1_1"	
+		class="com.newco.marketplace.api.services.so.v1_1.SOSearchService">
+		<property name="searchMapper">
+			<ref bean="soSearchMapper_v1_1"/>
+	  	</property>
+	  	<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO"/>
+	  	</property>
+	  	<property name="serviceOrderSearchBO">
+			<ref bean="soSearchBO"/>
+	  	</property>
+	</bean>
+	
+	<bean id="soSearchByProviderService_v1_1" class="com.newco.marketplace.api.services.so.v1_1.SOSearchByProviderService">
+		<property name="searchByProviderMapper">
+			<ref bean="soSearchByProviderMapper_v1_1"/>
+	  	</property>
+	  	<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO"/>
+	  	</property>
+	</bean>
+	
+	<bean id="soCreateService_v1_1" class="com.newco.marketplace.api.services.so.v1_1.SOCreateService">
+		<property name="ofServiceOrderMapper">
+			<ref bean="ofServiceOrderMapper_v1_1"/>
+	  	</property>
+		<property name="applicationProperties">
+			<ref bean="applicationPropertiesWallet"/>
+	  	</property>
+		<property name="createMapper">
+			<ref bean="soCreateMapper_v1_1"/>
+	  	</property>
+	  	<property name="serviceOrderBO">
+			<ref bean="soBOAOP"/>
+	  	</property>
+	  	<property name="documentBO">
+		   <ref bean="documentBO"/>
+	  </property>
+    </bean>
+    <bean id="soCreateService_v1_2" class="com.newco.marketplace.api.services.so.v1_2.SOCreateService">
+		<property name="ofServiceOrderMapper">
+			<ref bean="ofServiceOrderMapper_v1_2"/>
+	  	</property>
+		<property name="applicationProperties">
+			<ref bean="applicationPropertiesWallet"/>
+	  	</property>
+		<property name="createMapper">
+			<ref bean="soCreateMapper_v1_2"/>
+	  	</property>
+	  	<property name="serviceOrderBO">
+			<ref bean="soBOAOP"/>
+	  	</property>
+	  	<property name="documentBO">
+		   <ref bean="documentBO"/>
+	  </property>
+    </bean>
+    
+        <bean id="soCreateService_v1_3" class="com.newco.marketplace.api.services.so.v1_3.SOCreateService">
+		<property name="ofServiceOrderMapper">
+			<ref bean="ofServiceOrderMapper_v1_3"/>
+	  	</property>
+		<property name="applicationProperties">
+			<ref bean="applicationPropertiesWallet"/>
+	  	</property>
+		<property name="createMapper">
+			<ref bean="soCreateMapper_v1_2"/>
+	  	</property>
+	  	<property name="serviceOrderBO">
+			<ref bean="soBOAOP"/>
+	  	</property>
+	  	<property name="documentBO">
+		   <ref bean="documentBO"/>
+	  </property>
+    </bean>
+    
+    <bean id="soAddNoteService_v1_1" class="com.newco.marketplace.api.services.so.v1_1.SOAddNoteService" parent="abstractBaseService">
+		<property name="serviceOrderBO">
+			<ref bean="soBOAOP" />
+		</property>
+		<property name="addNoteMapper">
+			<ref bean="soAddNoteMapper_v1_1" />
+		</property>
+		<property name="notificationService">
+			<ref bean="notificationService" />
+		</property>
+	</bean>	
+	
+    <bean id="soProviderAddNoteService_v1_1"
+		class="com.newco.marketplace.api.services.so.v1_1.SOAddProviderNoteService">
+		<property name="serviceOrderBO">
+			<ref bean="soBOAOP" />
+		</property>
+		<property name="addNoteMapper">
+			<ref bean="soAddNoteMapper_v1_1" />
+		</property>
+		<property name="notificationService">
+			<ref bean="notificationService" />
+		</property>
+		<property name="buyerOutBoundNotificationService">
+		    <ref bean="buyerOutBoundNotificationService"/>
+		</property>
+		<property name="buyerOutBoundNotificationJMSService">
+			 <ref bean="buyerOutBoundNotificationJMSService" />
+		</property>
+	<property name="relayNotificationService">
+			<ref bean="relayNotificationService" />
+		</property>
+	</bean>
+	
+	<bean id="rescheduleService_v1_1" class="com.newco.marketplace.api.services.so.v1_1.SORescheduleService" parent="abstractBaseService">
+		<property name="rescheduleMapper">
+			<ref bean="soRescheduleMapper_v1_1" />
+		</property>
+		<property name="serviceOrderBO">
+			<ref bean="soBOAOP" />
+		</property>
+	</bean>
+	
+	<bean id="cancelRescheduleService_v1_1"	
+		class="com.newco.marketplace.api.services.so.v1_1.SOCancelRescheduleService" parent="abstractBaseService">
+		<property name="rescheduleMapper">
+			<ref bean="soRescheduleMapper_v1_1" />
+		</property>
+		<property name="serviceOrderBO">
+			<ref bean="soBOAOP" />
+		</property>
+	</bean>
+	
+	<bean id="providerRescheduleService_v1_1" class="com.newco.marketplace.api.services.so.v1_1.SOProviderRescheduleService">
+		<property name="rescheduleMapper">
+			<ref bean="soRescheduleMapper_v1_1" />
+		</property>
+		<property name="serviceOrderBO">
+			<ref bean="soBOAOP" />
+		</property>
+		<property name="buyerOutBoundNotificationService">
+			<ref bean="buyerOutBoundNotificationService"/>
+		</property>
+		<property name="buyerOutBoundNotificationJMSService">
+			<ref bean="buyerOutBoundNotificationJMSService" />
+		</property>
+		<property name="notificationService">
+			<ref bean="notificationService" />
+		</property>
+	</bean>
+	
+	<bean id="timeOnSiteService_v1_1"
+		class="com.newco.marketplace.api.services.so.v1_1.SOProviderTimeOnSiteService">
+ 		<property name="siteVisitBO">
+			<ref bean="onsiteVisitBO" />
+		</property>
+		<property name="serviceOrderBO">
+			<ref bean="soBOAOP" />
+		</property>
+		<property name="ofHelper" ref="ofHelper" />
+ 		<property name="timeOnSiteResponse">
+			<ref bean="timeOnSiteResponse_v1_1" />
+		</property>	
+		<property name="relayNotificationService">
+			 <ref bean="relayNotificationService"/>
+		</property>	
+	</bean>			
+	<bean id="timeOnSiteResponse_v1_1"
+		class="com.newco.marketplace.api.beans.so.timeonsite.SOTimeOnSiteResponse">
+	</bean> 
+	<bean id="RescheduleService"
+		class="com.newco.marketplace.api.services.so.SORescheduleService">
+		<property name="conversionUtility">
+			<ref bean="ConversionUtility"/>
+	  	</property>
+	 	<property name="serviceOrderBO">
+			<ref bean="soBOAOP"/>
+	  	</property>
+	  	<property name="securityProcess">
+			<ref bean="SecurityProcess"/>
+	  	</property>
+	  	<property name="rescheduleMapper">
+			<ref bean="SORescheduleMapper"/>
+	  	</property>
+	</bean>
+
+ 	<bean id="RetrieveService" class="com.newco.marketplace.api.services.so.SORetrieveService">
+     	<property name="conversionUtility">
+			<ref bean="ConversionUtility"/>
+	  	</property>
+	  	<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO" />
+		</property>
+		<property name="retrieveMapper">
+			<ref bean="SORetrieveMapper" />
+		</property>
+		<property name="securityProcess">
+			<ref bean="SecurityProcess"/>
+	  	</property>
+    </bean>
+    <bean id="spendLimitIncreaseretrieveService" class="com.newco.marketplace.api.services.so.v1_1.SORetrieveSpendLimitService">
+	  	<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO" />
+		</property>
+		<property name="retrieveMapper">
+			<ref bean="SORetrieveMapper_v1_1" />
+		</property>
+    </bean>
+    <bean id="getSOPriceDetailsService" class="com.newco.marketplace.api.services.so.v1_1.GetSOPriceDetailsService">
+	  	<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO" />
+		</property>
+		<property name="priceHistoryMapper">
+			<ref bean="SOPriceHistoryMapper" />
+		</property>
+		<property name="applicationProperties">
+			<ref bean="applicationPropertiesWallet"/>
+	  	</property>	
+	 </bean>
+      <bean id="subStatusService" class="com.newco.marketplace.api.services.so.GetSubStatusService">
+	  	<property name="serviceOrderMonitorBO">
+			<ref bean="serviceOrderMonitorBO"/>
+		</property>
+		<property name="substatusMapper">
+			<ref bean="substatusMapper" />
+		</property>	
+		<property name="soValidator">
+			<ref bean="soValidator" />
+		</property>	
+		
+	 </bean>
+    <bean id="RetrieveService_v1_1" class="com.newco.marketplace.api.services.so.v1_1.SORetrieveService">
+     	<property name="conversionUtility">
+			<ref bean="ConversionUtility"/>
+	  	</property>
+	  	<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO" />
+		</property>
+		<property name="retrieveMapper">
+			<ref bean="SORetrieveMapper_v1_1" />
+		</property>
+		<property name="securityProcess">
+			<ref bean="SecurityProcess"/>
+	  	</property>
+    </bean>
+     <!--v1.3 config start-->
+     <bean id="RetrieveService_v1_3" class="com.newco.marketplace.api.services.so.v1_3.SORetrieveService">
+     	<property name="conversionUtility">
+			<ref bean="ConversionUtility"/>
+	  	</property>
+	  	<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO" />
+		</property>
+		<property name="retrieveMapper">
+			<ref bean="SORetrieveMapper_v1_3" />
+		</property>
+		<property name="securityProcess">
+			<ref bean="SecurityProcess"/>
+	  	</property>
+    </bean>
+    
+    <!--v1.4 config start-->
+     <bean id="RetrieveService_v1_4" class="com.newco.marketplace.api.services.so.v1_4.SORetrieveService">
+     	<property name="conversionUtility">
+			<ref bean="ConversionUtility"/>
+	  	</property>
+	  	<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO" />
+		</property>
+		<property name="retrieveMapper">
+			<ref bean="SORetrieveMapper_v1_4" />
+		</property>
+		<property name="securityProcess">
+			<ref bean="SecurityProcess"/>
+	  	</property>
+    </bean>
+    
+    <bean id="retrieveService_v1_7" class="com.newco.marketplace.api.services.so.v1_7.SORetrieveService">
+     	<property name="conversionUtility">
+			<ref bean="ConversionUtility"/>
+	  	</property>
+	  	<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO" />
+		</property>
+		<property name="retrieveMapper">
+			<ref bean="soRetrieveMapper_v1_7" />
+		</property>
+		<property name="securityProcess">
+			<ref bean="SecurityProcess"/>
+	  	</property>
+    </bean>
+
+     <bean id="retrieveService_v1_6" class="com.newco.marketplace.api.services.so.v1_6.SORetrieveService">
+     	<property name="conversionUtility">
+			<ref bean="ConversionUtility"/>
+	  	</property>
+	  	<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO" />
+		</property>
+		<property name="retrieveMapper">
+			<ref bean="soRetrieveMapper_v1_6" />
+		</property>
+		<property name="securityProcess">
+			<ref bean="SecurityProcess"/>
+	  	</property>
+    </bean>    
+        <!--v1.5 config start-->
+     <bean id="RetrieveService_v1_5" class="com.newco.marketplace.api.services.so.v1_5.SORetrieveService">
+     	<property name="conversionUtility">
+			<ref bean="ConversionUtility"/>
+	  	</property>
+	  	<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO" />
+		</property>
+		<property name="retrieveMapper">
+			<ref bean="SORetrieveMapper_v1_5" />
+		</property>
+		<property name="securityProcess">
+			<ref bean="SecurityProcess"/>
+	  	</property>
+    </bean>
+     <bean id="soUpdateEstimateStatusService" class="com.newco.marketplace.api.services.so.v1_1.SOUpdateEstimateStatusService">
+     	<property name="conversionUtility">
+			<ref bean="ConversionUtility"/>
+	  	</property>
+	  	<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO" />
+		</property>
+		<property name="securityProcess">
+			<ref bean="SecurityProcess"/>
+	  	</property>
+	  	<property name="relayNotificationService">
+			<ref bean="relayNotificationService" />
+		</property>
+    </bean>
+    
+    <bean id="getFirmDetailsService" class="com.newco.marketplace.api.services.so.v1_1.GetFirmDetailsService">
+	  	<property name="firmDetailsMapper">
+			<ref bean="firmDetailsMapper" />
+		</property>
+		<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO" />
+		</property>
+		<property name="firmValidator">
+			<ref bean="firmValidator" />
+		</property>
+    </bean>
+    
+    <bean id="soUpdateEstimateService" class="com.newco.marketplace.api.services.so.v1_1.SOUpdateEstimateService">
+     	<property name="conversionUtility">
+			<ref bean="ConversionUtility"/>
+	  	</property>
+	  	<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO" />
+		</property>
+		<property name="securityProcess">
+			<ref bean="SecurityProcess"/>
+	  	</property>
+	  	<property name="relayNotificationService">
+			<ref bean="relayNotificationService" />
+		</property>
+		<property name="estimateValidator" ref ="estimateValidator"/>
+		<property name="mobileGenericBO" ref ="mobileGenericBO"/>
+		<property name="retrieveMapper" ref="detailsRetrieveMapper"/>
+		<property name="mobileSOActionsBO" ref="mobileSOActionsBO" />
+    </bean> 
+    
+    
+   <bean id="estimateValidator" class ="com.newco.marketplace.api.utils.validators.EstimateValidator">
+ 	   <property name="mobileGenericBO">
+			<ref bean="mobileGenericBO" />
+		</property>	
+	</bean>   
+	
+	<bean id="detailsRetrieveMapper"
+		class="com.newco.marketplace.api.utils.mappers.so.SODetailsRetrieveMapper">
+	</bean>
+    
+     <!-- Added For D2c Api -->
+	<bean id="d2CFirmDetailsServiceAPI"
+		class="com.newco.marketplace.api.services.D2CProviderPortalService.D2CFirmDetailsServiceAPI">
+		<property name="d2CFirmDetailsMapper">
+			<ref bean="d2CFirmDetailsMapper" />
+		</property>
+		<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO" />
+		</property>
+		<property name="firmValidator">
+			<ref bean="firmValidator" />
+		</property>
+		<property name="d2CProviderPortalBO">
+			<ref bean="d2cProviderPortalBO" />
+		</property>
+		
+		<!-- start: SEARCH_MATCH_RANK -->
+		<property name="providerSearchMatchRankBO">
+			<ref bean="providerSearchMatchRankBO" />
+		</property>
+		<!-- start: SEARCH_MATCH_RANK -->
+	</bean>
+    
+    <bean id="soGetClosedOrdersService" class="com.newco.marketplace.api.services.so.v1_1.SOGetClosedOrdersService">
+	  	<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO" />
+		</property>
+		<property name="closedSOByProviderMapper">
+			<ref bean="closedSOByProviderMapper"/>
+	  	</property>
+    </bean>
+    
+    <bean id="firmDetailsMapper" class="com.newco.marketplace.api.utils.mappers.so.v1_1.FirmDetailsMapper">
+    </bean>
+    <bean id="firmValidator" class="com.newco.marketplace.api.utils.firm.validators.GetFirmValidator">
+    <property name="serviceOrderBO">
+			<ref bean="serviceOrderBO" />
+		</property>
+    </bean>
+    <bean id="closedSOByProviderMapper" class="com.newco.marketplace.api.utils.mappers.so.v1_1.ClosedSOByProviderMapper">
+    </bean>
+	<!-- Added Mapper For D2C -->
+	<bean id="d2CFirmDetailsMapper"
+		class="com.newco.marketplace.api.utils.mappers.d2c.D2CFirmDetailsMapper">
+	</bean>
+    <!--v1.3 config end-->
+    <!--v1.2 config start-->
+     <bean id="RetrieveService_v1_2" class="com.newco.marketplace.api.services.so.v1_2.SORetrieveService">
+     	<property name="conversionUtility">
+			<ref bean="ConversionUtility"/>
+	  	</property>
+	  	<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO" />
+		</property>
+		<property name="retrieveMapper">
+			<ref bean="SORetrieveMapper_v1_2" />
+		</property>
+		<property name="securityProcess">
+			<ref bean="SecurityProcess"/>
+	  	</property>
+    </bean>
+    <!--v1.2 config end-->
+    <bean id="acceptService_v1_1" class="com.newco.marketplace.api.services.so.v1_1.SOAcceptService">
+     	<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO" />
+		</property>
+		<property name="acceptMapper">
+			<ref bean="acceptMapper_v1_1" />
+		</property>
+	  	<property name="orderGroupBO">
+			<ref bean="soGroupBO"/>
+		</property>
+		<property name="ofHelper" ref="ofHelper" />
+		<property name="resourceBO" ref="resourceBOImpl" />
+		<property name="managementService" ref="managementService" />
+	</bean>
+	
+	
+	<bean id="acceptRejectReleaseService" class="com.newco.marketplace.api.services.so.v1_1.SOAcceptRejectReleaseService">
+     	<property name="serviceOrderBO">
+			<ref bean="soBOAOP"/>
+		</property>
+		<property name="acceptMapper">
+			<ref bean="acceptMapper_v1_1" />
+		</property>
+		<property name="securityProcess">
+			<ref bean="SecurityProcess"/>
+	  	</property>
+	</bean>
+	
+    <bean id="SearchService" class="com.newco.marketplace.api.services.so.SOSearchService">
+     	<property name="conversionUtility">
+			<ref bean="ConversionUtility"/>
+	  	</property>
+	  	<property name="searchMapper">
+			<ref bean="SOSearchMapper"/>
+	  	</property>
+	  	<property name="securityProcess">
+			<ref bean="SecurityProcess"/>
+	  	</property>
+	   	<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO"/>
+	  	</property>
+    </bean>
+    
+    <bean id="PostService"
+		class="com.newco.marketplace.api.services.so.SOPostService">
+		<property name="conversionUtility">
+			<ref bean="ConversionUtility" />
+		</property>
+		<property name="securityProcess">
+			<ref bean="SecurityProcess" />
+		</property>
+		<property name="serviceOrderBO">
+			<ref bean="soBOAOP" />
+		</property>
+		<property name="templateBO">
+			<ref bean="buyerSOTemplateBO" />
+		</property>
+		<property name="provSearchObj">
+			<ref bean="providerSearchBO" />
+		</property>
+		<property name="masterCalcObj">
+			<ref bean="masterCalculatorBO" />
+		</property>
+		<property name="postMapper">
+			<ref bean="SOPostMapper" />
+		</property>
+	</bean>
+	
+	<bean id="AddNoteService"
+		class="com.newco.marketplace.api.services.so.SOAddNoteService">
+		<property name="conversionUtility">
+			<ref bean="ConversionUtility" />
+		</property>
+		<property name="securityProcess">
+			<ref bean="SecurityProcess" />
+		</property>
+		<property name="serviceOrderBO">
+			<ref bean="soBOAOP" />
+		</property>
+		<property name="addNoteMapper">
+			<ref bean="SOAddNoteMapper" />
+		</property>
+	</bean>
+
+	<bean id="addSODocService"
+		class="com.newco.marketplace.api.services.so.AddSODocService">
+		<property name="documentBO">
+			<ref bean="documentBO" />
+		</property>
+		<property name="soAddDocMapper">
+			<ref bean="soAddDocMapper" />
+		</property>
+	</bean>
+	<bean id="deleteSODocService"
+		class="com.newco.marketplace.api.services.so.DeleteSODocService">
+		<property name="documentBO">
+			<ref bean="documentBO" />
+		</property>
+		<property name="soDeleteDocMapper">
+			<ref bean="soDeleteDocMapper" />
+		</property>
+	</bean>
+	<bean id="readSODocService"
+		class="com.newco.marketplace.api.services.so.ReadSODocService">
+		<property name="conversionUtility">
+			<ref bean="ConversionUtility" />
+		</property>
+		<property name="documentBO">
+			<ref bean="documentBO" />
+		</property>
+		<property name="securityProcess">
+			<ref bean="SecurityProcess" />
+		</property>		
+		<property name="soReadDocMapper">
+			<ref bean="soReadDocMapper" />
+		</property>
+	</bean>
+	<bean id="mockZipCodeService"
+		class="com.newco.marketplace.api.services.search.SearchProviderByZipCodeService">
+		<property name="providerSearch">
+			<ref bean="mockProviderSearch" />
+		</property>
+		<property name="providerMapper">
+			<ref bean="ProviderMapper" />
+		</property>
+	</bean>
+
+	<bean id="addProviderReviewService"
+		class="com.newco.marketplace.api.services.search.AddProviderReviewService">
+		<property name="surveyBO">
+			<ref bean="surveyBO" />
+		</property>
+	</bean>	
+	
+	<bean id="providerReviewsService"
+		class="com.newco.marketplace.api.services.search.ProviderReviewsService">
+ 		<property name="backendBO">
+			<ref bean="providerInfoPagesBOImpl"/>
+	  	</property>		
+	</bean>	
+	<bean id="SOSearchTemplateService"
+		class="com.newco.marketplace.api.services.search.SOSearchTemplateService">
+ 		<property name="serviceOrderSearchBO">
+			<ref bean="soSearchBO"/>
+	  	</property>
+	  	<property name="searchTemplateMapper">
+			<ref bean="SearchTemplateMapper"/>
+	  	</property>		
+	</bean>
+	<bean id="mockProviderByIdService"
+		class="com.newco.marketplace.api.services.search.SearchProviderByIdService">
+		<property name="providerSearch">
+			<ref bean="mockProviderSearch" />
+		</property>
+		<property name="providerMapper">
+			<ref bean="ProviderMapper" />
+		</property>
+		<property name="conversionUtility">
+			<ref bean="ConversionUtility" />
+		</property>		
+	</bean>
+	
+	<bean id="mockProviderByskillTreeService"
+		class="com.newco.marketplace.api.services.search.SearchProviderByskillTreeService">
+		<property name="providerSearch">
+			<ref bean="mockProviderSearch" />
+		</property>
+		<property name="skillTreeMapper">
+			<ref bean="SkillTreeMapper" />
+		</property>
+		<property name="conversionUtility">
+			<ref bean="ConversionUtility" />
+		</property>		
+	</bean>
+	<bean id="abstractSearchService"
+		class="com.newco.marketplace.api.services.search.AbstractSearchService" abstract="true">
+		<property name="providerSearch">
+			<ref bean="providerSearchImplAlias" />
+		</property>	  
+		<property name="conversionUtility">
+			<ref bean="ConversionUtility" />
+		</property>
+   	</bean>	
+	<bean id="ZipCodeService"
+		class="com.newco.marketplace.api.services.search.SearchProviderByZipCodeService" parent="abstractSearchService">
+		<property name="providerMapper">
+			<ref bean="ProviderMapper" />
+		</property>		
+    	<property name="lookupBO">
+    		<ref bean="lookupBO"/>
+    	</property>				
+	</bean>
+	
+	<bean id="ProviderByIdService"
+		class="com.newco.marketplace.api.services.search.SearchProviderByIdService">
+		<property name="providerSearch">
+			<ref bean="providerSearchImplAlias" />
+		</property>
+		<property name="providerMapper">
+			<ref bean="ProviderMapper" />
+		</property>
+		<property name="conversionUtility">
+			<ref bean="ConversionUtility" />
+		</property>		
+		<property name="lookupBO">
+    		<ref bean="lookupBO"/>
+    	</property>
+	</bean>
+	
+	<bean id="providerCountService"
+		class="com.newco.marketplace.api.services.search.ProviderCountService" parent="abstractSearchService">	
+	</bean>
+	
+	<bean id="ProviderByskillTreeService"
+		class="com.newco.marketplace.api.services.search.SearchProviderByskillTreeService">
+		<property name="providerSearch">
+			<ref bean="providerSearchImplAlias" />
+		</property>
+		<property name="skillTreeMapper">
+			<ref bean="SkillTreeMapper" />
+		</property>
+		<property name="conversionUtility">
+			<ref bean="ConversionUtility" />
+		</property>		
+	</bean>
+	<bean id="soAcceptOfferService" class="com.newco.marketplace.api.services.so.SOAcceptOfferService" parent="abstractBaseService">
+ 	 	<property name="acceptOfferMapper">
+			<ref bean="acceptOfferMapper"/>
+	  	</property>
+	  	<property name="serviceOrderBO">
+			<ref bean="soBOAOP"/>
+	  	</property>	  
+	  	<property name="resourceBO" ref="resourceBOImpl" />
+	  	<property name="provSearchObj" ref="providerSearchBO" />
+    </bean>    
+    <bean id="getBuyeraccountService" class="com.newco.marketplace.api.services.account.buyer.GetBuyerAccountService">
+ 		<property name="conversionUtility">
+			<ref bean="ConversionUtility"/>
+	  	</property>
+	 	<property name="buyerAccountDetailsMapper">
+			<ref bean="BuyerAccountDetailsMapper"/>
+	  	</property>
+	  	<property name="simpleBuyerLocationBO">
+			<ref bean="simpleBuyerLocationBO"/>
+	  	</property>
+    </bean>  
+       <bean id="loginService" class="com.newco.marketplace.api.services.login.LoginService">
+ 		<property name="loginBO">
+			<ref bean="loginBOImpl"/>
+	  	</property>
+	  	<property name="teamCredentialBO">
+			<ref bean="iTeamCredentilaBOImpl" />
+		</property>
+		<property name="b2cURL">			
+			<value>${b2c.servicelive.com}</value>
+		</property>
+		<property name="slProxyHost">			
+			<value>${http.proxy.host}</value>
+		</property>
+		<property name="slProxyPort">			
+			<value>${http.proxy.port}</value>
+		</property>
+		<property name="proxyEnabled">			
+			<value>${http.proxy.set}</value>
+		</property>		
+    </bean>  
+    <bean id="acceptOfferMapper"
+		class="com.newco.marketplace.api.utils.mappers.so.SOAcceptOfferMapper">
+	</bean>	
+	<bean id="BuyerAccountDetailsMapper"
+		class="com.newco.marketplace.api.utils.mappers.account.buyer.BuyerAccountDetailsMapper">
+	</bean>	
+	
+	<bean id="soCompleteSOMapper"
+		class="com.newco.marketplace.api.utils.mappers.so.v1_1.SOCompleteMapper">
+	</bean>
+	
+  	<bean id="uploadService" class="com.newco.marketplace.api.services.document.DocumentUploadService">
+ 		<property name="uploadMapper">
+			<ref bean="uploadMapper"/>
+	  	</property>	  	
+	    <property name="documentBO">
+		   <ref bean="documentBO"/>
+	  </property>	  	
+    </bean>
+    <bean id="documentDeleteService" class="com.newco.marketplace.api.services.document.DocumentDeleteService">
+	  	<property name="documentDeleteMapper">
+			<ref bean="documentDeleteMapper"/>
+	  	</property>	  	
+	    <property name="documentBO">
+		   <ref bean="documentBO"/>
+	  </property>	  	
+    </bean>
+    
+    <bean id="sendAlertsService" class="com.newco.marketplace.api.services.alerts.SendAlertsService">
+		<property name="sendAlertsMapper">
+			<ref bean="sendAlertsMapper" />
+		</property>
+		<property name="emailAlertBO">
+			<ref bean="emailAlertBO"/>
+	  </property>	  	
+	</bean>  
+   <bean id="sendAlertsMapper"
+		class="com.newco.marketplace.api.utils.mappers.alerts.SendAlertsMapper">
+    </bean>
+	<alias name="searchProviderImpl" alias="providerSearchImplAlias"/> 
+
+
+	<bean id="mockProviderSearch"
+		class="com.newco.marketplace.api.mock.SearchMockResponse">
+	</bean>
+	
+	<bean id="ProviderMapper"
+		class="com.newco.marketplace.api.utils.mappers.search.SearchProviderMapper">
+		<property name="resourcesContext">
+	    	<value>${resources.context}</value>
+	  	</property>
+	</bean>	
+ 
+	<bean id="SkillTreeMapper"
+		class="com.newco.marketplace.api.utils.mappers.search.SearchProviderSkillTreeMapper">
+	</bean>
+	<bean id="SearchTemplateMapper"
+		class="com.newco.marketplace.api.utils.mappers.search.SearchTemplateMapper">
+	</bean>
+	<bean id="ConversionUtility"
+		class="com.newco.marketplace.api.utils.xstream.XStreamUtility">
+	</bean>
+	
+	<bean id="SecurityProcess" 
+		class="com.newco.marketplace.api.security.SecurityProcess">
+		<property name="accessSecurity">
+			<ref bean="securityBO" />
+		</property>
+	  <property name="financeManagerBO">
+            <ref bean="fmBOAOP"/>
+        </property>
+        <property name="creditCardBO">
+                <ref bean="creditCardTransactionManagedBO"/>
+        </property>
+   	</bean>
+   	
+   	<bean id="SOCloseService"
+		class="com.newco.marketplace.api.services.so.SOCloseService" parent="abstractBaseService">
+		<property name="serviceOrderCloseBO">
+			<ref bean="soCloseBO" />
+		</property>	  
+		<property name="buyerFeatureSetBO">
+			<ref bean="buyerFeatureSetBO" />
+		</property>
+   	</bean>
+   	   	 <bean id="SOReleaseService"
+		class="com.newco.marketplace.api.services.so.SOReleaseService">
+		<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO" />
+		</property>	  
+   	</bean>
+   	<bean id="SOReassignService"
+		class="com.newco.marketplace.api.services.so.SOReassignService">
+		<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO" />
+		</property>
+   	</bean>
+   		<bean id="unSubscribeService"
+		class="com.newco.marketplace.api.services.so.v1_2.SmsUnSubscribeService">
+		<property name="userManagementBO">
+			<ref bean="iUserManagementBOTarget" />
+		</property>
+   	</bean>
+   	<bean id="soPostFirmService_v1_0" class="com.newco.marketplace.api.services.so.SOPostFirmService" parent="abstractBaseService">
+		<property name="serviceOrderBO">
+			<ref bean="soBOAOP" />
+		</property>
+		<property name="provSearchObj">
+			<ref bean="providerSearchBO" />
+		</property>
+		<property name="postMapper">
+			<ref bean="soPostMapper_v1_1" />
+		</property>
+		<property name="ofPostMapper">
+			<ref bean="ofPostMapper_v1_1"/>
+	  	</property>		
+	</bean>
+	
+	<bean id="rescheduleReasonService" class="com.newco.marketplace.api.services.so.SORescheduleReasonService" parent="abstractBaseService">
+		<property name="serviceOrderBO">
+			<ref bean="soBOAOP" />
+		</property>	
+	</bean>
+	
+	<bean id="soCancelReasonService" class="com.newco.marketplace.api.services.so.SOCancelReasonService" parent="abstractBaseService">
+		<property name="manageReasonCodeService">
+			<ref bean="manageReasonCodeService" />
+		</property>
+	</bean>
+
+	<bean id="searchFirmsForAutoPostService" class="com.newco.marketplace.api.services.search.SearchFirmsForAutoPostService" parent="abstractBaseService">
+		<property name="provSearchObj">
+			<ref bean="providerSearchBO" />
+		</property>
+		<property name="templateBO">
+			<ref bean="buyerSOTemplateBO" />
+		</property>
+		<property name="jobCodeMappingBO">
+			<ref bean="jobCodeMappingBO" />
+		</property>
+		<property name="buyerRoutingDistanceCache">
+			<ref bean="buyerRoutingDistanceCache" />
+		</property>
+		<property name="masterCalculatorBO">
+			<ref bean="masterCalculatorBO" />
+		</property>
+		<property name="firmDetailsMapper">
+			<ref bean="firmDetailsMapper" />
+		</property>
+		<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO" />
+		</property>
+		<property name="d2CProviderPortalBO">
+			<ref bean="d2cProviderPortalBO" />
+		</property>
+		<!-- start: SEARCH_MATCH_RANK -->
+		<property name="providerSearchMatchRankBO">
+			<ref bean="providerSearchMatchRankBO" />
+		</property>
+	</bean>	
+	
+	<bean id="SOCreateMapper"
+		class="com.newco.marketplace.api.utils.mappers.so.SOCreateMapper">
+		<property name="skillAssignBOImpl">
+			<ref bean="SkillAssignBOImpl" />
+		</property>
+		<property name="lookupBO">
+			<ref bean="lookupBO" />
+		</property>
+		<property name="buyerSOTemplateBO">
+			<ref bean="buyerSOTemplateBO" />
+		</property>
+		<property name="jobCodeMappingBO">
+			<ref bean="jobCodeMappingBO" />
+		</property>
+		<property name="buyerBO">
+    		<ref bean="buyerBo"/>
+  		</property>
+  		<property name="documentBO">
+			<ref bean="documentBO" />
+		</property>
+		<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO"/>
+	  	</property>
+	</bean>
+		
+	<bean id="ofServiceOrderMapper_v1_1" class="com.newco.marketplace.api.utils.mappers.so.v1_1.OFServiceOrderMapper">
+		<property name="skillAssignBOImpl" ref="SkillAssignBOImpl" />
+		<property name="lookupBO" ref="lookupBO" />
+		<property name="buyerBO" ref="buyerBo" />
+  		<property name="promoBO" ref="promoBO" />
+  		<property name="ofHelper" ref="ofHelper" />
+  		<property name="manageReasonCodeBO" ref="manageReasonCodeBO"/>
+        <property name="serviceOrderBO">
+			<ref bean="serviceOrderBO"/>
+	  	</property>	
+	</bean>
+	<bean id="ofServiceOrderMapper_v1_2" class="com.newco.marketplace.api.utils.mappers.so.v1_2.OFServiceOrderMapper">
+		<property name="skillAssignBOImpl" ref="SkillAssignBOImpl" />
+		<property name="lookupBO" ref="lookupBO" />
+		<property name="buyerBO" ref="buyerBo" />
+  		<property name="promoBO" ref="promoBO" />
+  		<property name="ofHelper" ref="ofHelper" />
+  		<property name="manageReasonCodeBO" ref="manageReasonCodeBO"/>
+        <property name="serviceOrderBO">
+			<ref bean="serviceOrderBO"/>
+	  	</property>	
+	</bean>
+		<bean id="ofServiceOrderMapper_v1_3" class="com.newco.marketplace.api.utils.mappers.so.v1_3.OFServiceOrderMapper">
+		<property name="skillAssignBOImpl" ref="SkillAssignBOImpl" />
+		<property name="lookupBO" ref="lookupBO" />
+		<property name="buyerBO" ref="buyerBo" />
+  		<property name="promoBO" ref="promoBO" />
+        <property name="serviceOrderBO">
+			<ref bean="serviceOrderBO"/>
+	  	</property>	
+	</bean>
+	<bean id="ofPostMapper_v1_1"
+		class="com.newco.marketplace.api.utils.mappers.so.v1_1.OFPostMapper">
+		<property name="provSearchObj">
+			<ref bean="providerSearchBO" />
+		</property>
+	</bean>
+	
+	<bean id="soCreateMapper_v1_1"
+		class="com.newco.marketplace.api.utils.mappers.so.v1_1.SOCreateMapper">
+		<property name="skillAssignBOImpl">
+			<ref bean="SkillAssignBOImpl" />
+		</property>
+		<property name="lookupBO">
+			<ref bean="lookupBO" />
+		</property>
+		<property name="buyerSOTemplateBO">
+			<ref bean="buyerSOTemplateBO" />
+		</property>
+		<property name="jobCodeMappingBO">
+			<ref bean="jobCodeMappingBO" />
+		</property>
+		<property name="buyerBO">
+    		<ref bean="buyerBo"/>
+  		</property>
+  		<property name="documentBO">
+			<ref bean="documentBO" />
+		</property>
+		<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO"/>
+	  	</property>
+	</bean>
+	
+	<bean id="soCreateMapper_v1_2"
+		class="com.newco.marketplace.api.utils.mappers.so.v1_2.SOCreateMapper">
+		<property name="skillAssignBOImpl">
+			<ref bean="SkillAssignBOImpl" />
+		</property>
+		<property name="lookupBO">
+			<ref bean="lookupBO" />
+		</property>
+		<property name="buyerSOTemplateBO">
+			<ref bean="buyerSOTemplateBO" />
+		</property>
+		<property name="jobCodeMappingBO">
+			<ref bean="jobCodeMappingBO" />
+		</property>
+		<property name="buyerBO">
+    		<ref bean="buyerBo"/>
+  		</property>
+  		<property name="documentBO">
+			<ref bean="documentBO" />
+		</property>
+		<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO"/>
+	  	</property>
+	</bean>
+	<bean id="leadOFMapper"
+		class="com.newco.marketplace.api.utils.mappers.lead.LeadOFMapper">		
+	</bean>
+	<bean id="SOCancelMapper"
+		class="com.newco.marketplace.api.utils.mappers.so.SOCancelMapper">
+	</bean>
+	<bean id="soCancelMapper_v1_1"
+		class="com.newco.marketplace.api.utils.mappers.so.v1_1.SOCancelMapper">
+	</bean>
+	<bean id="SORescheduleMapper"
+		class="com.newco.marketplace.api.utils.mappers.so.SORescheduleMapper">
+	</bean>
+		<bean id="soRescheduleMapper_v1_1"
+		class="com.newco.marketplace.api.utils.mappers.so.v1_1.SORescheduleMapper">
+	</bean>
+	
+	<bean id="SORetrieveMapper"
+		class="com.newco.marketplace.api.utils.mappers.so.SORetrieveMapper">
+		<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO" />
+		</property>
+	</bean>
+	<bean id="SOProviderRetrieveMapper_v1_1"
+		class="com.newco.marketplace.api.utils.mappers.so.v1_1.SOProviderRetrieveMapper">
+		<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO" />
+		</property>
+		<property name="timeOnSiteVisitBO">
+			<ref bean="onsiteVisitBO"/>
+		</property>
+	</bean>
+	<bean id="acceptMapper_v1_1"
+		class="com.newco.marketplace.api.utils.mappers.so.v1_1.SOAcceptMapper">
+	</bean>
+
+	<bean id="SORetrieveMapper_v1_1"
+		class="com.newco.marketplace.api.utils.mappers.so.v1_1.SORetrieveMapper">
+		<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO" />
+		</property>
+		<property name="timeOnSiteVisitBO">
+			<ref bean="onsiteVisitBO"/>
+		</property>
+	</bean>
+	
+	<bean id="SOPriceHistoryMapper"
+		class="com.newco.marketplace.api.utils.mappers.so.v1_1.SOPriceHistoryMapper">
+		<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO" />
+		</property>
+<!-- 		<property name="applicationProperties">
+			<ref bean="applicationPropertiesWallet"/>
+	  	</property>	 -->
+	</bean>
+	
+	<bean id="SORetrieveMapper_v1_2"
+		class="com.newco.marketplace.api.utils.mappers.so.v1_2.SORetrieveMapper">
+		<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO" />
+		</property>
+		<property name="timeOnSiteVisitBO">
+			<ref bean="onsiteVisitBO"/>
+		</property>
+	</bean>
+	<bean id="SORetrieveMapper_v1_3"
+		class="com.newco.marketplace.api.utils.mappers.so.v1_3.SORetrieveMapperV1_3">
+		<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO" />
+		</property>
+		<property name="timeOnSiteVisitBO">
+			<ref bean="onsiteVisitBO"/>
+		</property>
+	</bean>
+	<bean id="SORetrieveMapper_v1_4"
+		class="com.newco.marketplace.api.utils.mappers.so.v1_4.SORetrieveMapperV1_4">
+		<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO" />
+		</property>
+		<property name="timeOnSiteVisitBO">
+			<ref bean="onsiteVisitBO"/>
+		</property>
+	</bean>
+	<bean id="soRetrieveMapper_v1_7"
+		class="com.newco.marketplace.api.utils.mappers.so.v1_7.SORetrieveMapperV1_7">
+		<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO" />
+		</property>
+		<property name="timeOnSiteVisitBO">
+			<ref bean="onsiteVisitBO"/>
+		</property>
+	</bean>
+	<bean id="soRetrieveMapper_v1_6"
+		class="com.newco.marketplace.api.utils.mappers.so.v1_6.SORetrieveMapperV1_6">
+		<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO" />
+		</property>
+		<property name="timeOnSiteVisitBO">
+			<ref bean="onsiteVisitBO"/>
+		</property>
+	</bean>
+	<bean id="SORetrieveMapper_v1_5"
+		class="com.newco.marketplace.api.utils.mappers.so.v1_5.SORetrieveMapperV1_5">
+		<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO" />
+		</property>
+		<property name="timeOnSiteVisitBO">
+			<ref bean="onsiteVisitBO"/>
+		</property>
+	</bean>
+	<bean id="SOSearchMapper"
+		class="com.newco.marketplace.api.utils.mappers.so.SOSearchMapper">
+	</bean>
+	<bean id="soSearchMapper_v1_1"
+		class="com.newco.marketplace.api.utils.mappers.so.v1_1.SOSearchMapper">
+	</bean>
+	<bean id="soSearchByProviderMapper_v1_1"
+		class="com.newco.marketplace.api.utils.mappers.so.v1_1.SOSearchByProviderMapper">
+	</bean>
+	
+	<bean id="SOPostMapper"
+		class="com.newco.marketplace.api.utils.mappers.so.SOPostMapper">
+	</bean>
+	<bean id="soPostMapper_v1_1"
+		class="com.newco.marketplace.api.utils.mappers.so.v1_1.SOPostMapper">
+		<property name="lookupBO">
+			<ref bean="lookupBO" />
+		</property>
+	</bean>
+	<bean id="SOEditMapper"
+		class="com.newco.marketplace.api.utils.mappers.so.SOEditMapper">
+		<property name="skillAssignBOImpl">
+			<ref bean="SkillAssignBOImpl" />
+		</property>
+		<property name="lookupBO">
+			<ref bean="lookupBO" />
+		</property>
+		<property name="buyerSOTemplateBO">
+			<ref bean="buyerSOTemplateBO" />
+		</property>
+		<property name="jobCodeMappingBO">
+			<ref bean="jobCodeMappingBO" />
+		</property>
+		<property name="buyerBO">
+    		<ref bean="buyerBo"/>
+  		</property>
+  		<property name="documentBO">
+			<ref bean="documentBO" />
+		</property>
+		<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO"/>
+	  	</property>
+	</bean>
+	<bean id="acceptRescheduleService_v1_1" class="com.newco.marketplace.api.services.so.v1_1.AcceptRescheduleRequestService" parent="abstractBaseService">
+     	<property name="serviceOrderBO">
+			<ref bean="soBOAOP" />
+		</property>
+	</bean>
+	<bean id="soRescheduleResponseService_v1_1" class="com.newco.marketplace.api.services.so.v1_1.SORescheduleResponseService" parent="abstractBaseService">
+     	<property name="serviceOrderBO">
+			<ref bean="soBOAOP" />
+		</property>
+		<!-- Added for R12.0 Update NPS Buyer Accept Reschedule -->
+		<property name="notificationService">
+			<ref bean="notificationService" />
+		</property>
+	</bean>
+	<bean id="rejectRescheduleService_v1_1" class="com.newco.marketplace.api.services.so.v1_1.RejectRescheduleRequestService" parent="abstractBaseService">
+     	<property name="serviceOrderBO">
+			<ref bean="soBOAOP" />
+		</property>
+	</bean>
+	<bean id="soProviderRetrieveService_v1_1" class="com.newco.marketplace.api.services.so.v1_1.SOProviderRetrieveService">
+     	<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO" />
+		</property>
+		<property name="retrieveMapper">
+			<ref bean="SOProviderRetrieveMapper_v1_1" />
+		</property>
+	</bean>
+	<bean id="SOAddNoteMapper"
+		class="com.newco.marketplace.api.utils.mappers.so.SOAddNoteMapper">
+	</bean>
+	<bean id="soAddNoteMapper_v1_1"
+		class="com.newco.marketplace.api.utils.mappers.so.v1_1.SOAddNoteMapper">
+	</bean>
+	<bean id="commonUtility"
+		class="com.newco.marketplace.api.utils.utility.CommonUtility">
+	</bean>
+	<bean id="soAddDocMapper"
+		class="com.newco.marketplace.api.utils.mappers.so.SOAddDocMapper">
+	</bean>
+	<bean id="soDeleteDocMapper"
+		class="com.newco.marketplace.api.utils.mappers.so.SODeleteDocMapper">
+	</bean>
+	<bean id="soReadDocMapper"
+		class="com.newco.marketplace.api.utils.mappers.so.SOReadDocMapper">
+	</bean>
+	<bean id="RequestValidator" 
+		class="com.newco.marketplace.api.utils.validators.RequestValidator">
+ 		<property name="loggingProcess">
+			<ref bean="LoggingProcess"/>
+	  	</property>	
+	 	<property name="authenticationProcess">
+			<ref bean="AuthenticationProcess"/>
+		</property>
+		<property name="authorizationProcess">
+			<ref bean="AuthorizationProcess"/>
+		</property>
+    </bean>
+
+	<bean id="ResponseValidator" 
+		class="com.newco.marketplace.api.utils.validators.ResponseValidator">
+		<property name="loggingProcess">
+			<ref bean="LoggingProcess"/>
+	  	</property>	
+	  	
+		<property name="conversionUtility">
+			<ref bean="ConversionUtility"/>
+	  	</property>
+ 	</bean>
+   
+    <bean id="SkillAssignBOImpl" class="com.newco.marketplace.business.businessImpl.provider.SkillAssignBOImpl"
+    	lazy-init="true">
+		<constructor-arg index="0" ref="skillAssignDAOImpl"/>
+		<constructor-arg index="1" ref="marketPlaceSearchDAOImpl"/>
+		<constructor-arg index="2" ref="luActivityDaoImpl"/>
+		<constructor-arg index="3" ref="activityDaoImpl"/>
+		<constructor-arg index="4" ref="lookupDaoImpl"/>
+   	</bean> 
+	<bean id="WalletHistoryService"
+		class="com.newco.marketplace.api.services.wallet.WalletHistoryService">
+ 		<property name="conversionUtility">
+			<ref bean="ConversionUtility"/>
+	  	</property>
+		<property name="financeManagerBO">
+			<ref bean="financeManagerBO" />
+		</property>	
+		<property name="walletHistoryMapper">
+			<ref bean="WalletHistoryMapper"/>
+		</property>		
+	</bean>
+	<bean id="AddFundsToWalletService"
+		class="com.newco.marketplace.api.services.wallet.AddFundsToWalletService">
+ 		<property name="conversionUtility">
+			<ref bean="ConversionUtility"/>
+	  	</property>
+		<property name="financeManagerBO">
+			<ref bean="financeManagerBO" />
+		</property>		
+		<property name="promoBO">
+			<ref bean="promoBO"/>
+		</property>		
+		<property name="creditCardBO">
+			<ref bean="creditCardBO"/>
+		</property>		
+		<property name="securityProcess">
+			<ref bean="SecurityProcess"/>
+	  	</property>
+	</bean>
+	<bean id="WalletBalanceService" 
+			class="com.newco.marketplace.api.services.wallet.WalletBalanceService">
+ 		<property name="conversionUtility">
+			<ref bean="ConversionUtility"/>
+	  	</property>
+		<property name="financeManagerBO">
+			<ref bean="financeManagerBO" />
+		</property>	
+		<property name="walletBalanceMapper">
+			<ref bean="WalletBalanceMapper"/>
+		</property>			
+	</bean>	
+	
+	<bean id="WalletThresholdService" 
+			class="com.newco.marketplace.api.services.wallet.WalletThresholdService">
+		<property name="piiThresholdDao">
+			<ref bean="piiThresholdDao"/>
+		</property>			
+	</bean>	
+	
+	<bean id="WalletHistoryMapper"
+		class="com.newco.marketplace.api.utils.mappers.wallet.WalletHistoryMapper">
+	</bean>
+	<bean id="WalletBalanceMapper"
+		class="com.newco.marketplace.api.utils.mappers.wallet.WalletBalanceMapper">
+	</bean>
+	<bean id="CreateFundingSourceService"
+		class="com.newco.marketplace.api.services.wallet.fundingsource.CreateFundingSourceService">
+ 		<property name="conversionUtility">
+			<ref bean="ConversionUtility"/>
+	  	</property>
+		<property name="financeManagerBO">
+			<ref bean="financeManagerBO" />
+		</property>	
+		<property name="getFundingSourceService">
+			<ref bean="GetFundingSourceService" />
+		</property>
+		<property name="creditCardBO">
+			<ref bean="creditCardBO"/>
+		</property>		
+			
+			
+	</bean>
+	
+	<bean id="GetFundingSourceService"
+		class="com.newco.marketplace.api.services.wallet.fundingsource.GetFundingSourceService">
+ 		<property name="conversionUtility">
+			<ref bean="ConversionUtility"/>
+	  	</property>
+		<property name="financeManagerBO">
+			<ref bean="financeManagerBO" />
+		</property>	
+		<property name="creditCardBO">
+			<ref bean="creditCardBO"/>
+		</property>		
+	  	<property name="getFundingSourceMapper">
+			<ref bean="GetFundingSourceMapper"/>
+	  	</property>
+	</bean>
+	
+	<bean id="GetFundingSourceMapper"
+		class="com.newco.marketplace.api.utils.mappers.wallet.fundingsource.GetFundingSourceMapper">
+	</bean>
+	<bean id="uploadMapper"
+		class="com.newco.marketplace.api.utils.mappers.document.DocumentUploadMapper">
+	</bean>	
+	<bean id="documentDeleteMapper"
+		class="com.newco.marketplace.api.utils.mappers.document.DocumentDeleteMapper">
+	</bean>	
+	<bean id="apiSecurityAndOAuth"
+		class="com.newco.marketplace.api.security.APISecurityAndOAuth"> 	
+		<constructor-arg ref="apiSecurityDAO"/>
+	  	<property name="oAuthFilter" value="${oauth.authentication}" />  
+	    <property name="basicAuthFilter" value="${basic.authentication}" />  	  		
+	</bean>
+	<!--  required by OAuth -->
+	<alias name="apiSecurityAndOAuth" alias="OAuthConsumerImpl"/>
+	<bean id="apiFieldMasker" class="com.newco.marketplace.api.security.APIFieldMasker">
+		<property name="apiSecurity">
+			<ref bean="apiSecurityAndOAuth"/>
+		</property>
+	</bean>	
+	
+	<bean id="fetchProvidersService" class="com.newco.marketplace.api.services.leadsmanagement.FetchProvidersService">
+	      <property name="leadProcessingBO">
+	         <ref bean="leadProcessingBO"/>
+	      </property>
+	      <property name="leadManagementMapper">
+	         <ref bean="leadManagementMapper"/>
+	      </property>
+	      <property name="leadManagementValidator">
+	         <ref bean="leadManagementValidator"/>
+	      </property>	      
+	      <property name="lookupBO">
+	         <ref bean="lookupBO"/>
+	      </property>
+	      <property name="leadOFMapper">
+	         <ref bean="leadOFMapper"/>
+	      </property>
+	      <property name="ofHelper">
+	         <ref bean="ofHelper"/>
+	      </property>
+	      <property name="lmsUrl"
+	              value="${lms.api.base.url}">
+	      </property>
+	</bean>
+	
+	<bean id="postleadService" class="com.newco.marketplace.api.services.leadsmanagement.PostLeadService">
+	      <property name="leadProcessingBO">
+	         <ref bean="leadProcessingBO"/>
+	      </property>
+	      <property name="leadManagementMapper">
+	         <ref bean="leadManagementMapper"/>
+	      </property>
+	      <property name="leadManagementValidator">
+	         <ref bean="leadManagementValidator"/>
+	      </property>
+	      <property name="leadOFMapper">
+	         <ref bean="leadOFMapper"/>
+	      </property>
+	      <property name="ofHelper">
+	         <ref bean="ofHelper"/>
+	      </property> 
+	       <property name="lmsUrl"
+	              value="${lms.api.base.url}">
+	      </property>
+	      <property name="leadOutBoundNotificationService">
+	         <ref bean="leadOutBoundNotificationService"/>
+	      </property>    
+	</bean>	
+	<bean id="getProviderFirmDetailService" class="com.newco.marketplace.api.services.leadsmanagement.GetProviderFirmDetailService">
+	      <property name="leadProcessingBO">
+	         <ref bean="leadProcessingBO"/>
+	      </property>
+	      <property name="leadManagementMapper">
+	         <ref bean="leadManagementMapper"/>
+	      </property>
+	</bean>	
+
+	<bean id="membershipInfoService" class="com.newco.marketplace.api.services.leadsmanagement.MembershipInfoService">
+	      <property name="leadProcessingBO">
+	         <ref bean="leadProcessingBO"/>
+	      </property>
+	      <property name="leadManagementValidator">
+	         <ref bean="leadManagementValidator"/>
+	      </property>	      
+	</bean>
+	
+	<bean id="providerRatingAndReviewService" class="com.newco.marketplace.api.services.leadsmanagement.ProviderRatingAndReviewService">
+	      <property name="leadProcessingBO">
+	         <ref bean="leadProcessingBO"/>
+	      </property>
+	      <property name="leadManagementValidator">
+	         <ref bean="leadManagementValidator"/>
+	      </property>	      
+	</bean>
+	
+	<bean id="scheduleAppointmentService" class="com.newco.marketplace.api.services.leadsmanagement.ScheduleAppointmentService">
+	      <property name="leadProcessingBO">
+	         <ref bean="leadProcessingBO"/>
+	      </property>
+	      <property name="leadManagementValidator">
+	         <ref bean="leadManagementValidator"/>
+	      </property>	      
+	</bean>
+	
+	<bean id="assignOrReassignProviderService" class="com.newco.marketplace.api.services.leadsmanagement.AssignOrReassignProviderService">
+	      <property name="leadProcessingBO">
+	         <ref bean="leadProcessingBO"/>
+	      </property>
+	      <property name="leadManagementValidator">
+	         <ref bean="leadManagementValidator"/>
+	      </property>	      
+	</bean>
+	
+	<bean id="completeLeadsService" class="com.newco.marketplace.api.services.leadsmanagement.CompleteLeadsService">
+	      <property name="leadProcessingBO">
+	         <ref bean="leadProcessingBO"/>
+	      </property>
+	      <property name="leadManagementValidator">
+	         <ref bean="leadManagementValidator"/>
+	      </property>
+	       <property name="leadOFMapper">
+	         <ref bean="leadOFMapper"/>
+	      </property>
+	      <property name="ofHelper">
+	         <ref bean="ofHelper"/>
+	      </property>
+	</bean>
+	
+	<bean id="cancelLeadService" class="com.newco.marketplace.api.services.leadsmanagement.CancelLeadService">
+	      <property name="leadProcessingBO">
+	         <ref bean="leadProcessingBO"/>
+	      </property>
+	      <property name="leadManagementValidator">
+	         <ref bean="leadManagementValidator"/>
+	      </property>	
+	      <property name="leadOFMapper">
+	         <ref bean="leadOFMapper"/>
+	      </property>
+	      <property name="ofHelper">
+	         <ref bean="ofHelper"/>
+	      </property>       
+	</bean>
+	
+	<!--<bean id="getAllLeadService" class="com.newco.marketplace.api.services.leadsmanagement.GetAllLeadService">
+	      <property name="leadProcessingBO">
+	         <ref bean="leadProcessingBO"/>
+	      </property>
+	</bean>-->
+	
+	<bean id="insideSalesLeadsService" class="com.newco.marketplace.api.services.leadsmanagement.InsideSalesLeadsService">
+	      <property name="leadProcessingBO">
+	         <ref bean="leadProcessingBO"/>
+	      </property>
+	      <property name="leadManagementValidator">
+	         <ref bean="leadManagementValidator"/>
+	      </property>	   
+	</bean> 
+	
+	<bean id="getAllLeadService" class="com.newco.marketplace.api.services.leadsdetailmanagement.GetAllLeadService">
+	      <property name="leadProcessingBO">
+	         <ref bean="leadProcessingBO"/>
+	      </property>
+	      	<property name="staleAfter" 
+			value="${lms.staleAfter.days}" >
+ 		</property>
+	</bean>
+	<bean id="getIndividualLeadDetailsService" class="com.newco.marketplace.api.services.leadsdetailmanagement.GetIndividualLeadDetailsService">
+	      <property name="leadProcessingBO">
+	         <ref bean="leadProcessingBO"/>
+	      </property>
+	</bean>
+	<bean id="leadManagementValidator" class="com.newco.marketplace.api.services.leadsmanagement.LeadManagementValidator">
+	      <property name="leadProcessingBO">
+	         <ref bean="leadProcessingBO"/>
+	      </property>
+	</bean>	
+	<bean id="soValidator" class="com.newco.marketplace.api.validator.so.SoValidator">
+	  	<property name="serviceOrderMonitorBO">
+			<ref bean="serviceOrderMonitorBO"/>
+		</property>
+		<property name="substatusMapper">
+			<ref bean="substatusMapper" />
+		</property>	
+	</bean>
+	<bean id="updateLeadStatusService" class="com.newco.marketplace.api.services.leadsdetailmanagement.UpdateLeadStatusService">
+	      <property name="leadProcessingBO">
+	         <ref bean="leadProcessingBO"/>
+	      </property>
+	</bean>	
+	<bean id="addNotesForLeadService" class="com.newco.marketplace.api.services.leadsdetailmanagement.AddNotesForLeadService">
+	      <property name="leadProcessingBO">
+	         <ref bean="leadProcessingBO"/>
+	      </property>
+	     <property name="applicationProperties">
+			<ref bean="applicationPropertiesWallet"/>
+	  	</property>	
+	  	<property name="leadManagementMapper">
+	         <ref bean="leadManagementMapper"/>
+	      </property>
+	</bean>
+	<bean id="getEligibleProviderService" class="com.newco.marketplace.api.services.leadsmanagement.GetEligibleProviderService" scope="prototype">
+	      <property name="leadProcessingBO">
+	         <ref bean="leadProcessingBO"/>
+	      </property>
+	      <property name="leadManagementValidator">
+	         <ref bean="leadManagementValidator"/>
+	      </property>
+	      	
+	</bean>
+	<bean id="soSubstatusService" class="com.newco.marketplace.api.services.advancedprovidersomanagement.SoSubStatusService">
+	  <property name="soManagementBO">
+	      <ref bean="soManagementBO"/>
+	  </property>
+	</bean>
+    
+    <bean id="leadFirmDetailService" class="com.newco.marketplace.api.services.leadsdetailmanagement.LeadFirmDetailService" scope="prototype">
+           <property name="leadProcessingBO">
+	         <ref bean="leadProcessingBO"/>
+	      </property>
+	      <property name="leadManagementValidator">
+	         <ref bean="leadManagementValidator"/>
+	      </property>
+    </bean>
+    <bean id ="signedCopyService" class="com.newco.marketplace.api.services.downloadsignedcopy.DownloadSignedCopyService">
+        <property name="downloadsignedCopyBO">
+           <ref bean="downloadsignedCopyBO"/>
+        </property>
+    </bean>
+    <bean id ="soDocumentsService" class="com.newco.marketplace.api.services.downloadsignedcopy.DownloadSODocumentsService">
+        <property name="downloadsignedCopyBO">
+           <ref bean="downloadsignedCopyBO"/>
+        </property>
+    </bean>
+    
+    <bean id="updateFirmAccountService" class="com.newco.marketplace.api.services.hi.UpdateFirmAccountService" parent="abstractHIBaseService"> 
+		<property name="providerBO">
+			<ref bean="providerBO" />
+		</property>
+		<property name="providerMapper">
+			<ref bean="providerMapper" />
+		</property>
+	</bean>
+	
+	 <bean id="createFirmAccountService" class="com.newco.marketplace.api.services.hi.CreateFirmAccountService" parent="abstractHIBaseService">
+	 <property name="providerBO">
+			<ref bean="providerBO" />
+		</property>
+		<property name="providerMapper">
+			<ref bean="providerMapper" />
+		</property> 
+	</bean>
+	<bean id="approveFirmService" class="com.newco.marketplace.api.services.hi.ApproveFirmsService" parent="abstractHIBaseService">
+	    <property name="providerBO">
+			<ref bean="providerBO" />
+		</property>
+		<property name="providerMapper">
+			<ref bean="providerMapper" />
+		</property> 
+	</bean>
+	<bean id="approveProviderService" class="com.newco.marketplace.api.services.hi.ApproveProviderService" parent="abstractHIBaseService">
+	    <property name="providerBO">
+			<ref bean="providerBO" />
+		</property>
+		<property name="providerMapper">
+			<ref bean="providerMapper" />
+		</property> 
+	</bean>
+	
+	<bean id="providerMapper" class="com.newco.marketplace.api.utils.mappers.provider.ProviderMapper"/>
+	
+	<bean id="createHiProviderAccountService" class="com.newco.marketplace.api.services.hi.CreateHIProviderAccountService" parent="abstractHIBaseService">
+		<property name="providerResourceBO">
+			<ref bean="providerResourceBO" />
+		</property> 
+		<property name="providerResourceMapper">
+			<ref bean="providerResourceMapper" />
+		</property> 
+	</bean>
+	
+	<bean id="updateProviderRegistrationService" class="com.newco.marketplace.api.services.hi.UpdateProviderRegistrationService" parent="abstractHIBaseService">
+		<property name="providerResourceBO">
+			<ref bean="providerResourceBO" />
+		</property>
+		<property name="providerResourceMapper">
+			<ref bean="providerResourceMapper" />
+		</property> 
+	</bean>
+	<bean id="addProviderSkillService" class="com.newco.marketplace.api.services.hi.AddProviderSkillService" parent="abstractHIBaseService">
+	    <property name="providerResourceBO">
+			<ref bean="providerResourceBO" />
+		</property>
+		<property name="providerResourceMapper">
+			<ref bean="providerResourceMapper" />
+		</property> 
+	</bean>
+	<bean id="removeProviderSkillService" class="com.newco.marketplace.api.services.hi.RemoveProviderSkillService" parent="abstractHIBaseService">
+	    <property name="providerResourceBO">
+			<ref bean="providerResourceBO" />
+		</property>
+		<property name="providerResourceMapper">
+			<ref bean="providerResourceMapper" />
+		</property> 
+		</bean>
+	<bean id="providerResourceMapper" class="com.newco.marketplace.api.utils.mappers.provider.ProviderResourceMapper"/>
+	
+	<bean id="substatusMapper" class="com.newco.marketplace.api.utils.mappers.so.v1_1.SoSubStatusMapper"/>
+	    
+	
+<!-- R15_0 B2C API Services START -->
+	 <bean id="searchProvidersService" class="com.newco.marketplace.api.services.b2c.SearchProvidersService"> 
+		<property name="b2CRequestValidator">
+			<ref bean="b2CRequestValidator" />
+		</property>
+		<property name="b2CGenericBO">
+			<ref bean="b2CGenericBO" />
+		</property>
+		<property name="b2CRequestResponseMapper">
+			<ref bean="b2CRequestResponseMapper" />
+		</property>
+	</bean>
+	<bean id="getProviderDetailsService" class="com.newco.marketplace.api.services.b2c.GetProviderDetailsService"> 
+		<property name="b2CRequestValidator">
+			<ref bean="b2CRequestValidator" />
+		</property>
+		<property name="b2CGenericBO">
+			<ref bean="b2CGenericBO" />
+		</property>
+		<property name="b2CRequestResponseMapper">
+			<ref bean="b2CRequestResponseMapper" />
+		</property>
+	</bean>
+	<bean id="documentDownloadService" class="com.newco.marketplace.api.services.b2c.DocumentDownloadService"> 
+		<property name="b2CRequestValidator">
+			<ref bean="b2CRequestValidator" />
+		</property>
+		<property name="b2CGenericBO">
+			<ref bean="b2CGenericBO" />
+		</property>
+		<property name="b2CRequestResponseMapper">
+			<ref bean="b2CRequestResponseMapper" />
+		</property>
+	</bean>
+	<bean id="createAndPostLeadService" class="com.newco.marketplace.api.services.b2c.CreateAndPostLeadService"> 
+		<property name="b2CRequestValidator">
+			<ref bean="b2CRequestValidator" />
+		</property>
+		<property name="b2CGenericBO">
+			<ref bean="b2CGenericBO" />
+		</property>
+		<property name="b2CRequestResponseMapper">
+			<ref bean="b2CRequestResponseMapper" />
+		</property>
+	</bean>	
+	
+	<bean id="b2CRequestValidator" class="com.newco.marketplace.api.services.b2c.B2CRequestValidator"> 
+		<property name="b2CGenericBO">
+			<ref bean="b2CGenericBO" />
+		</property>
+	</bean>
+
+	<bean id="b2CRequestResponseMapper" class="com.newco.marketplace.api.services.b2c.B2CRequestResponseMapper"/>
+<!-- R15_0 B2C API Services END -->
+	<!-- B2C START -->
+	
+	<bean id="fetchProvidersServiceV2" class="com.newco.marketplace.api.services.leadsmanagement.v2_0.FetchProvidersService">
+	      <property name="leadProcessingBO">
+	         <ref bean="leadProcessingBO"/>
+	      </property>
+	      <property name="leadManagementMapper">
+	         <ref bean="leadManagementMapper"/>
+	      </property>
+	      <property name="leadManagementValidator">
+	         <ref bean="leadManagementValidator"/>
+	      </property>	      
+	      <property name="lookupBO">
+	         <ref bean="lookupBO"/>
+	      </property>
+	      <property name="leadOFMapper">
+	         <ref bean="leadOFMapper"/>
+	      </property>
+	      <property name="ofHelper">
+	         <ref bean="ofHelper"/>
+	      </property>
+	      <property name="lmsUrl"
+	              value="${lms.api.base.url}">
+	      </property>
+	</bean>
+	
+	<bean id="postleadServiceV2" class="com.newco.marketplace.api.services.leadsmanagement.v2_0.PostLeadService">
+	      <property name="leadProcessingBO">
+	         <ref bean="leadProcessingBO"/>
+	      </property>
+	      <property name="leadManagementMapper">
+	         <ref bean="leadManagementMapper"/>
+	      </property>
+	      <property name="leadManagementValidator">
+	         <ref bean="leadManagementValidator"/>
+	      </property>
+	      <property name="leadOFMapper">
+	         <ref bean="leadOFMapper"/>
+	      </property>
+	      <property name="ofHelper">
+	         <ref bean="ofHelper"/>
+	      </property> 
+	       <property name="lmsUrl"
+	              value="${lms.api.base.url}">
+	      </property>
+	      <property name="leadOutBoundNotificationService">
+	         <ref bean="leadOutBoundNotificationService"/>
+	      </property>    
+	</bean>	
+	<!-- B2C END -->
+	
+	<!--  SL-21308: Standard Service Offerings Search API -->
+	<bean id="SearchFirmsService"
+		class="com.newco.marketplace.api.services.search.SearchFirmsService">
+ 		<property name="serviceOrderSearchBO">
+			<ref bean="soSearchBO"/>
+	  	</property>
+	  	<property name="searchFirmsMapper">
+			<ref bean="SearchFirmsMapper"/>
+	  	</property>		
+	</bean>
+	
+	<bean id="SearchFirmsMapper"
+		class="com.newco.marketplace.api.utils.mappers.search.SearchFirmsMapper">
+	</bean>
+	
+	<!-- R 16_2_0_1: SL-21376- Search provider firms by zip and category and skill, SKU -->
+	<bean id="SearchByZipService"
+		class="com.newco.marketplace.api.services.search.SearchProvidersByZipService" parent="ZipCodeService">
+		<property name="searchByZipMapper">
+			<ref bean="SearchByZipMapper" />
+		</property>					
+	</bean>
+	
+	<bean id="SearchByZipMapper"
+		class="com.newco.marketplace.api.utils.mappers.search.SearchProvidersByZipMapper" parent="ProviderMapper">
+	</bean>
+	
+	 <bean id="buyerSkuService" class="com.newco.marketplace.api.services.so.v1_1.BuyerSkuService">
+	  	<property name="buyerSkuBO">
+			<ref bean="buyerSkuBO"/>
+		</property>
+		<property name="buyerSkuMapper">
+			<ref bean="buyerSkuMapper"/>
+	  	</property>
+    </bean>
+    
+    <bean id="buyerDocumentUploadService" class="com.newco.marketplace.api.services.document.BuyerDocumentUploadService">
+	   	<property name="documentBO">
+		   <ref bean="documentBO"/>
+	 	 </property>
+	 	 <property name="downloadsignedCopyBO">
+           <ref bean="downloadsignedCopyBO"/>
+        </property>
+        <property name="serviceOrderBO">
+			<ref bean="serviceOrderBO" />
+		</property>
+		<property name="uploadMapper">
+			<ref bean="uploadMapper" />
+		</property>		
+    </bean>
+    
+    <bean id="buyerSkuMapper" class="com.newco.marketplace.api.utils.mappers.so.v1_1.BuyerSkuMapper"/>
+    
+    <!-- beans for ProviderCapacityRequestProcessor starts-->
+
+	<bean id="getTimeSlotsForTechTalkService"
+		class="com.newco.marketplace.api.services.providre.capacity.v1_1.GetTimeSlotsForTechTalkService">
+		<property name="availableTimeSlotMapper">
+			<ref bean="availableTimeSlotMapper" />
+		</property>
+		<property name="generalInfoBO">
+			<ref bean="generalInfoBOImpl" />
+		</property>
+		<property name="avaialbleTimeSlotCalculatorBO">
+			<ref bean="availableTimeSlotCalculatorBO" />
+		</property>
+		<property name="buyerSkuBO">
+			<ref bean="buyerSkuBO" />
+		</property>
+	</bean>
+   		
+   	<bean id="availableTimeSlotMapper" class="com.newco.marketplace.api.utils.mappers.provider.capacity.v1_1.AvailableTimeSlotMapper"></bean>
+   	
+   	<bean id="getAcceptedSODetailService"
+		class="com.newco.marketplace.api.services.so.v1_1.GetAcceptedSODetailService">
+		
+		<property name="serviceOrderBO">
+			<ref bean="serviceOrderBO" />
+		</property>
+		
+	</bean>
+   
+    <!-- beans for ProviderCapacityRequestProcessor ends -->
+   
+    <!-- beans for BuyerEventCallbackProcessor starts  -->
+   	<bean id="buyerDetailsEventService"
+		class="com.newco.marketplace.api.services.so.BuyerDetailsEventCallbackService">
+		<property name="buyerBO">
+			<ref bean="buyerBo" />
+		</property>
+		
+	</bean>
+	
+	<bean id="BuyerEventCallbackService"
+		class="com.newco.marketplace.api.services.buyerEventCallback.BuyerEventCallbackService">
+ 		 <property name="buyerBO">
+			<ref bean="buyerBo"/>
+	  	</property> 
+	</bean>
+    <!-- beans for BuyerEventCallbackProcessor ends  -->
+	
+	<!-- beans for BuyerEventAcknowledgementService starts -->
+	<bean id="buyerEventAcknowledgementService" class="com.newco.marketplace.api.services.buyerEventAck.BuyerEventAcknowledgementService">
+		<property name="conversionUtility">
+			<ref bean="ConversionUtility"/>
+		</property>
+		<property name="buyerEventCallbackBO">
+			<ref bean="BuyerEventCallbackBO"/>
+	  	</property>
+	</bean>
+	<!-- End -->
+	<bean id="buyerAuthenticationDetailsService" class="com.newco.marketplace.api.services.buyerauthentication.BuyerAuthenticationDetailsService">
+		<property name="buyerBO">
+			<ref bean="buyerBo"/>
+	  	</property> 	  
+	</bean>
+	
+	<!-- 	ExtendedSurveyService -->
+	<bean id="extendedSurveyService" class="com.newco.marketplace.api.services.survey.ExtendedSurveyService">
+		<property name="extendedSurveyBO">
+			<ref bean="extendedSurveyBO"/>
+	  	</property>
+	</bean>
+</beans>

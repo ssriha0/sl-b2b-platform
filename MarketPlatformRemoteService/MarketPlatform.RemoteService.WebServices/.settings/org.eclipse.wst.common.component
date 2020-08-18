@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="MarketPlatform.RemoteService.WebServices">
+        <wb-resource deploy-path="/" source-path="/src/main/webapp"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
+<wb-resource deploy-path="/WEB-INF/classes" source-path="/src/test/java"/>
+        <dependent-module archiveName="MarketPlatform.RemoteService.Domain.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/MarketPlatform.RemoteService.Domain/MarketPlatform.RemoteService.Domain">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="MarketPlatform.RemoteService.Common.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/MarketPlatform.RemoteService.Common/MarketPlatform.RemoteService.Common">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <property name="context-root" value="MarketPlatform.RemoteService.WebServices"/>
+        <property name="java-output-path"/>
+    </wb-module>
+</project-modules>

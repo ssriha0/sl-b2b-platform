@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+
+	<bean id="SPNBuyerLandingAction"  class="com.newco.marketplace.web.action.spn.SPNBuyerLandingAction" scope="prototype">
+		  <constructor-arg index="0" ref="spnBuyerDelegate"/> 
+ 	</bean>
+	<bean id="SPNBuyerAgreeModalAction"  class="com.newco.marketplace.web.action.spn.SPNBuyerAgreeModalAction" scope="prototype">
+		<constructor-arg index="0" ref="selectProviderNetworkBO"/>  
+ 	</bean>
+ 	<bean id="SPNShowDocumentAction"  class="com.newco.marketplace.web.action.spn.SPNShowDocumentAction" scope="prototype">
+		<constructor-arg index="0" ref="selectProviderNetworkBO"/>  
+ 	</bean>
+ 	<bean id="SPNSubmitBuyerAgreementAction"  class="com.newco.marketplace.web.action.spn.SPNSubmitBuyerAgreementAction" scope="prototype">
+		<constructor-arg index="0" ref="selectProviderNetworkBO"/>  
+ 	</bean>
+ 	<bean id="SPNProviderInvitationAction"  class="com.newco.marketplace.web.action.spn.SPNProviderInvitationAction" scope="prototype">
+		<constructor-arg index="0" ref="selectProviderNetworkBO"/>  
+ 	</bean>
+	<bean id="SPNBuyerBuilderAction"  class="com.newco.marketplace.web.action.spn.SPNBuyerBuilderAction" scope="prototype">
+		 <constructor-arg index="0" ref="spnBuyerDelegate"/> 
+		  <property name="fetchDelegate">
+			<ref bean="SOWizardFetchBean" />
+		</property>
+		<property name="isoWizardPersistDelegate">
+			<ref bean="SOWizardPersistBean" />
+		</property>
+		<property name="lookupManager">
+			<ref bean="lookupManager" />
+		</property>
+ 	</bean>
+
+	<bean id="SPNBuyerCriteriaBuilderAction"  class="com.newco.marketplace.web.action.spn.SPNBuyerCriteriaBuilderAction" scope="prototype">
+	<constructor-arg ref="SOWizardFetchBean" />
+		<property name="isoWizardPersistDelegate">
+			<ref bean="SOWizardPersistBean" />
+		</property>
+		<property name="lookupManager">
+			<ref bean="lookupManager" />
+		</property>	
+		
+ 	</bean>
+ 	
+ 	<bean id="SPNCampaignLandingAction"  class="com.newco.marketplace.web.action.spn.SPNCampaignLandingAction" scope="prototype">
+		 <constructor-arg index="0" ref="spnBuyerDelegate"/> 
+ 	</bean>
+
+	<bean id="spnAdminAction" class="com.newco.marketplace.web.action.admin.spn.SPNSLAdminCampaignManager" scope="prototype">
+ 		<constructor-arg index="0" ref="spnBuyerDelegate"/>
+		<property name="lookupManager">
+			<ref bean="lookupManager" />
+		</property>
+ 	</bean>
+ 	
+ 	<bean id="spnMemberManager"  class="com.newco.marketplace.web.action.spn.SPNMemberManagerAction"
+ 										 scope="prototype">
+		 <constructor-arg index="0" ref="spnBuyerDelegate"/> 
+		 <property name="lookupManager">
+			<ref bean="lookupManager" />
+		</property>
+ 	</bean>
+ 	
+ 	<bean id="SPNMonitorAction"  class="com.newco.marketplace.web.action.spn.SPNMonitorAction" scope="prototype">
+		  <constructor-arg index="0" ref="spnMonitorBO"/> 
+		  <constructor-arg index="1" ref="selectProviderNetworkBO"/> 
+	</bean>
+	
+	<bean id="SPNMonitorCustomAction"  class="com.newco.marketplace.web.action.spn.SPNMonitorCustomAction" scope="prototype">
+		  <constructor-arg index="0" ref="spnMonitorBO"/> 
+		  <constructor-arg index="1" ref="selectProviderNetworkBO"/> 
+	</bean>
+ 	
+ 	
+ 	
+</beans>

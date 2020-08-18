@@ -1,0 +1,51 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+    <package name="monitorCampaign" extends="selectProviderNetworkBase" >
+        <!-- default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/-->
+
+		<!--         
+		<action name="spnMonitorCampaign_*" class="spnMonitorCampaignAction" method="{1}">
+			<result name="success">/jsp/spn/buyer/campaign/monitor/monitor_campaign.jsp</result>
+		</action>
+		-->
+		
+		<action name="spnMonitorCampaign_display" class="spnMonitorCampaignAction" method="display">
+			<result name="success">/jsp/spn/buyer/campaign/monitor/tab_campaign_monitor.jsp</result>
+		</action>
+		
+		<action name="spnMonitorCampaign_viewCampaignTableAjax" class="spnMonitorCampaignAction" method="viewCampaignTableAjax">
+			<result name="success">/jsp/spn/buyer/campaign/monitor/panel_campaign_monitor_results.jsp</result>
+		</action>
+			
+			
+		<action name="spnMonitorCampaign_approveCampaign" class="spnMonitorCampaignAction" method="approveCampaign">
+			<!-- <result name="success" type="redirectAction">spnMonitorCampaign_display</result> -->
+			<result name="success">/jsp/spn/buyer/campaign/monitor/tab_campaign_monitor.jsp</result>
+		</action>
+		
+		<action name="spnMonitorCampaign_stopCampaign" class="spnMonitorCampaignAction" method="stopCampaign">
+			<!--<result name="success" type="redirectAction">
+					 <param name="actionName">spnMonitorCampaign_display.action</param>
+			</result> -->
+			<result name="success">/jsp/spn/buyer/campaign/monitor/tab_campaign_monitor.jsp</result>
+		</action>	
+			
+		<action name="spnMonitorCampaign_displayTabCampaignDetailsAjax" class="spnMonitorCampaignAction" method="displayTabCampaignDetailsAjax">
+			<result name="criteria">/jsp/spn/buyer/campaign/monitor/expanded_details/tab_campaign_details_criteria.jsp</result>
+			<result name="providers">/jsp/spn/buyer/campaign/monitor/expanded_details/tab_campaign_details_providers.jsp</result>
+		</action>
+
+		<action name="spnMonitorCampaign_displayTabCampaignHistoryAjax" class="spnMonitorCampaignAction" method="displayTabCampaignHistoryAjax">
+			<result name="success">/jsp/spn/buyer/campaign/monitor/expanded_details/tab_campaign_history.jsp</result>
+		</action>
+
+		<action name="spnMonitorCampaign_displayTabNetworkDetailsAjax" class="spnMonitorCampaignAction" method="displayTabNetworkDetailsAjax">
+			<result name="success">/jsp/spn/common/monitor/tab_network_details.jsp</result>
+		</action>
+		
+    </package>
+    
+</struts>

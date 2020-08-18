@@ -1,0 +1,18 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="whatIsSL" extends="ServiceLiveBase" >
+        <default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+	    
+	    <action name="soWhatIsSL_*" class="soWhatIsSLAction" method="{1}">
+	        <result name="success" type="tiles">base.servicelive.about_sl</result>
+	        <result name="aboutSL" type="tiles">base.servicelive.about_sl</result>
+	        <result name="companyNews" type="tiles">base.servicelive.company_news</result>
+	        <result name="services" type="tiles">base.servicelive.services</result>
+	        <result name="whatIsSL" type="tiles">base.servicelive.what_is_sl</result>
+	    </action>
+
+    </package>
+    
+</struts>

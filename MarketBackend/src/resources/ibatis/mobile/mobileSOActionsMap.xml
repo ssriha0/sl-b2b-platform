@@ -1,0 +1,1240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+ 
+<sqlMap namespace="mobileSOActions">
+<typeAlias alias="note" type="com.newco.marketplace.dto.vo.serviceorder.ServiceOrderNote" />
+<typeAlias alias="buyerReferenceType" type="com.newco.marketplace.dto.vo.buyer.BuyerReferenceVO" />
+<typeAlias alias="taskVO" type="com.newco.marketplace.vo.mobile.TaskVO" />
+<typeAlias alias="addOnPaymentDetails" type="com.newco.marketplace.api.mobile.beans.updateSoCompletion.AddOnPaymentDetails" />
+<typeAlias alias="addonDetails" type="com.newco.marketplace.api.mobile.beans.updateSoCompletion.AddOn" />
+<typeAlias alias="partsVO" type="com.newco.marketplace.vo.mobile.PartsVO" />
+<typeAlias alias="invVO" type="com.newco.marketplace.vo.mobile.InvoicePartsVO" />
+<typeAlias alias="pricingData" type="com.newco.marketplace.api.mobile.beans.updateSoCompletion.Pricing" />
+<typeAlias alias="contact" type="com.newco.marketplace.dto.vo.serviceorder.Contact"/> 
+<typeAlias alias="customReferenceType" type="com.newco.marketplace.vo.mobile.CustomReferenceVO" />
+<typeAlias alias="hisVO" type="com.newco.marketplace.vo.mobile.ProviderHistoryVO" />
+<typeAlias alias="laborPriceReasonVO" type="com.newco.marketplace.vo.mobile.SOPartLaborPriceReasonVO" />
+<typeAlias alias="logSOMobile" type="com.newco.marketplace.vo.mobile.MobileSOLoggingVO" />
+<typeAlias alias="permitAddon" type="com.newco.marketplace.api.mobile.beans.sodetails.PermitAddon" />
+<typeAlias alias="permitTask" type="com.newco.marketplace.api.mobile.beans.sodetails.PermitTask" />
+<typeAlias alias="reasons" type="com.newco.marketplace.api.mobile.beans.sodetails.Reason" />
+<typeAlias alias="serviceOrder" type="com.newco.marketplace.dto.vo.serviceorder.ServiceOrder" />
+<typeAlias alias="signatureData" type="com.newco.marketplace.api.mobile.beans.updateSoCompletion.Signature" />
+<typeAlias alias="addonPayment" type="com.newco.marketplace.api.mobile.beans.sodetails.AddonPayment" />
+<typeAlias alias="document" type="com.newco.marketplace.dto.vo.DocumentVO"/>
+<typeAlias alias="soTripDetailsVO" type="com.newco.marketplace.vo.mobile.v2_0.SOTripDetailsVO" />
+<typeAlias alias="soRevisitNeededVO" type="com.newco.marketplace.vo.mobile.v2_0.SORevisitNeededVO" />
+<typeAlias alias="supplierVO" type="com.newco.marketplace.vo.mobile.v2_0.SupplierVO" />
+<typeAlias alias="lpnVO" type="com.newco.marketplace.vo.mobile.v2_0.LpnVO"/>
+<typeAlias alias="invoiceTripVO" type="com.newco.marketplace.dto.vo.serviceorder.SoTripVo"/>
+<typeAlias alias="timeWindoVO" type="com.newco.marketplace.vo.mobile.UpdateApptTimeVO"/>
+<typeAlias alias="templateDetailsVO" type="com.newco.marketplace.vo.mobile.TemplateDetailsVO"/>
+<typeAlias alias="buyerTemplateMapperVO" type="com.newco.marketplace.vo.mobile.BuyerTemplateMapperVO"/>
+<typeAlias alias="addOnPaymentHistoryDetails" type="com.newco.marketplace.api.mobile.beans.updateSoCompletion.AddOnPaymentHistoryDetails"/>
+
+<resultMap id="reasonMap" class="java.util.HashMap">
+		<result property="key" column="reason_id" />
+		<result property="value" column="reason_descr" />
+</resultMap>
+<select id="validateResourceId.query" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+	SELECT vr.resource_id FROM vendor_resource vr ,user_profile up
+	WHERE vr.resource_id=#value# AND vr.user_name= up.user_name AND up.active_ind=1
+</select>
+
+<!-- code change for SLT-2112 -->
+<select id="getServiceOrder.query" parameterClass="java.util.HashMap" resultClass="serviceOrder">
+	SELECT so_id AS soId, 
+		wf_state_id AS wfStateId,
+		buyer_id AS buyerId,
+		accepted_vendor_id AS acceptedVendorId,
+		service_date1 AS serviceDate1,
+		service_date2 AS serviceDate2,
+		service_time_start AS serviceTimeStart,
+		service_time_end AS serviceTimeEnd,
+		service_locn_time_zone AS serviceLocationTimeZone 
+	FROM so_hdr WHERE so_id=#soId#
+</select>
+
+<select id="toValidateSoIdForProvider.query" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+	SELECT so_id FROM so_hdr WHERE so_id=#soId# AND accepted_resource_id=#resourceId#
+</select>
+
+<insert id="soNote.insert" parameterClass="note">
+		insert into so_notes(
+				so_id,
+				created_date,
+				note_subject, 
+				role_id, 
+				note, 
+				created_by_name, 
+				modified_date,
+				modified_by, 
+				note_type_id,
+				<dynamic>
+			  	  <isGreaterThan property="privateId" compareValue="-1">private_ind,</isGreaterThan>
+			  	</dynamic>
+				entity_id) 
+		values(
+				#soId#,
+				#createdDate#, 
+				#subject#, 
+				#roleId#, 
+				#note#, 
+				#createdByName#,
+				#modifiedDate#,  
+				#modifiedBy#, 
+				#noteTypeId#,
+				<dynamic>
+					<isGreaterThan property="privateId" compareValue="-1">#privateId#,</isGreaterThan>
+				</dynamic>
+				#entityId#
+				)
+		<selectKey resultClass="int" > 
+			select LAST_INSERT_ID() as value
+		</selectKey>
+	</insert>
+	
+<!-- 	code change for SLT-2112 -->
+	<select id="getBuyerAndwfStateIdForSo.query" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+		SELECT buyer_id as buyerId, wf_state_id as wfStateId
+		FROM so_hdr h
+		WHERE
+		so_id=#soId#
+	</select>
+	
+	<select id="vendorBNameList.query" parameterClass="java.util.List" resultClass="java.lang.String">
+		SELECT CONCAT(vendor_id, '_', business_name) FROM vendor_hdr WHERE vendor_id in 
+			<iterate open="(" close=")" conjunction=",">
+				#[]#
+			</iterate>
+	</select>
+	
+	<select id="getAssignmentTypeForSo.query" resultClass="java.lang.String"
+		parameterClass="java.lang.String">
+		SELECT assignment_type
+		FROM so_hdr h
+		WHERE
+		so_id=#soId#
+	</select>
+	
+	<select id="getCardType.query" resultClass="java.lang.Integer"
+		parameterClass="java.lang.String">
+		SELECT card_id FROM lu_credit_card_types WHERE card_type= #ccType#
+	</select>
+	
+	<select id="getMandatoryReferencesForSo.query" resultClass="buyerReferenceType" parameterClass="java.util.HashMap">
+		SELECT
+			brt.buyer_ref_type_id as buyerRefTypeId,
+			brt.buyer_id as buyerId,
+			brt.ref_type as referenceType,
+			brt.ref_descr as referenceDescription,
+			brt.so_identifier as soIdentifier,
+			brt.active_ind as  activeInd,
+			brt.buyer_input as  buyerInput,
+			brt.provider_input as  providerInput,
+			brt.required as  required,
+			brt.searchable as  searchable,
+			brt.private_ind as privateInd,
+			brt.editable as editable
+	   FROM buyer_reference_type brt
+	      INNER JOIN
+	         so_hdr soh
+	      ON soh.buyer_id = brt.buyer_id			
+		 WHERE soh.so_id = #soId#
+			 AND brt.provider_input = 1
+			 AND brt.active_ind = 1
+			<isEqual property="mandatoryInd" compareValue="1">
+			 AND  brt.required =1	  			 
+			</isEqual>
+	</select>
+	
+	<select id="getReimbursmentRate.query" resultClass="java.util.HashMap"
+		parameterClass="java.util.HashMap">
+		SELECT bp.reimbursement_rate as reImbursementRate,
+		bp.sl_gross_up_val AS grossupVal
+		FROM buyer_parts_price_calc_values bp
+		JOIN lu_part_coverage_type lc ON bp.part_coverage_type_id = lc.part_coverage_type_id AND lc.part_coverage_type = #coverage#
+		JOIN lu_part_sourcing_level ls ON bp.part_sourcing_level_id = ls.part_sourcing_level_id AND ls.part_sourcing_type= #source#
+	</select>
+	
+	<select id="getAutoAdjudicationValues.query"  resultClass="java.util.HashMap">
+	SELECT app_constant_key AS app_constant_key,app_constant_value AS app_constant_value FROM application_constants WHERE app_constant_key
+	IN('auto_adjudication_default_reimbursement_rate','adjudication_tolerance','auto_adjudication_grossup_value','adjudication_commercial_discount_percentage','adjudication_final_price_constant')
+   </select>
+	
+	
+	
+	
+	<select id="getBuyerPartsPriceCalcValues.query" resultClass="invVO"
+		parameterClass="java.util.HashMap">
+		SELECT bp.reimbursement_rate AS reimbursementRate,
+		bp.sl_gross_up_val AS slGrossUpValue,
+		bp.adjudication_tolerance AS adjTolerance
+		FROM buyer_parts_price_calc_values bp
+		JOIN lu_part_coverage_type lc ON bp.part_coverage_type_id = lc.part_coverage_type_id AND lc.part_coverage_type = #coverage#
+		JOIN lu_part_sourcing_level ls ON bp.part_sourcing_level_id = ls.part_sourcing_level_id AND ls.part_sourcing_type= #source#
+	</select>
+	
+	
+	<select id="getCreditCardID.query" resultClass="java.lang.Integer"
+		parameterClass="java.lang.String">
+	SELECT card_id FROM lu_credit_card_types WHERE card_type=#value#;
+	</select>
+	<update id="soSubStatusData.update"
+			parameterClass="java.util.HashMap">
+			UPDATE so_hdr SET so_substatus_id = #subStatusid# WHERE so_id =
+			#soid#
+		</update>
+		
+	<update id="soResolutionComments.update"
+			parameterClass="java.util.HashMap">
+			UPDATE so_hdr SET resolution_descr =#comments# WHERE so_id =
+			#soid#
+	</update>	
+	<update id="soAdditionalPaymentDetails.update" parameterClass="addOnPaymentDetails">
+		UPDATE so_additional_payment SET
+		 payment_type=#paymentType#,	   
+		 payment_amount=#amountAuthorized#,		
+		 card_type=#ccType#,		
+		 card_expire_month=#month#,
+		 card_expire_year=#year#,
+		 cc_no=#ccNumber#,
+		 auth_no=#preAuthNumber#,
+		 check_no=#checkNumber#
+	   where so_id=#soId#				
+	</update>
+	<!--To do keeping below update query if check alone has to update,remove after confirmation  -->
+	<update id="soAdditionalPaymentDetails.check.update" parameterClass="addOnPaymentDetails">
+		UPDATE so_additional_payment SET
+		 payment_type=#paymentType#
+	    <isNotNull property="amountAuthorized" prepend=",">
+			payment_amount=#amountAuthorized#			
+		</isNotNull>	
+		<isNotNull property="checkNumber" prepend=",">
+			check_no=#checkNumber#
+		</isNotNull>		
+          where so_id=#soId#				
+	</update>
+	<insert id="soAdditionalPaymentDetails.check.insert" parameterClass="addOnPaymentDetails">
+		insert into so_additional_payment (so_id,
+		additional_payment_desc, payment_type, payment_amount,
+		check_no,created_date) values(#soId#, '',
+		#paymentType#, #amountAuthorized#, #checkNumber#, now())
+	</insert>
+	<insert id="soAdditionalPayment.insert" parameterClass="addOnPaymentDetails">
+	INSERT INTO so_additional_payment	(
+	so_id,
+	additional_payment_desc,
+	payment_type,
+	payment_amount,
+	card_type,
+	card_expire_month,
+	card_expire_year,
+	cc_no,
+	auth_no,
+	masked_acc_num,
+	token,
+	created_date)
+	VALUES
+	(
+	#soId#,
+	'',
+	#paymentType#,
+	#amountAuthorized#,
+	#ccType#,
+	#month#,
+	#year#,
+	#ccNumber#,
+	#preAuthNumber#,
+	#maskedAccNum#,
+	#token#,
+	now()
+	)
+	</insert>
+	
+	<insert id="soAdditionalPaymentHistory.insert" parameterClass="addOnPaymentHistoryDetails">
+	INSERT INTO so_additional_payment_history	(
+	so_id,
+	payment_type,
+	payment_amount,
+	card_type,
+	card_expire_month,
+	card_expire_year,
+	cc_no,
+	check_no,
+	auth_no,
+	response,
+	masked_acc_num,
+	token,
+	created_date,
+	modified_date)
+	VALUES
+	(
+	#soId#,
+	#paymentType#,
+	#amountAuthorized#,
+	#ccType#,
+	#month#,
+	#year#,
+	#ccNumber#,
+	#checkNumber#,
+	#preAuthNumber#,
+	#response#,
+	#maskedAccNum#,
+	#token#,
+	now(),
+	now()
+	)
+	</insert>
+	
+	<delete id="soAdditionalPayment.delete" parameterClass="java.lang.String">
+	delete from so_additional_payment where so_id=#soId#
+	</delete>
+	<select id="selectAdditionalPayment.query" resultClass="java.lang.Integer"	parameterClass="java.lang.String" >
+	     SELECT COUNT(so_id) FROM so_additional_payment WHERE so_id=#value# 
+	</select> 
+	<update id="soAddonData.update" parameterClass="addonDetails">
+		UPDATE so_addon SET
+		 qty=#qty#
+		 <isNotNull property="miscInd">
+			<isEqual property="miscInd" compareValue="Y" prepend=",">
+				description=#description#
+			<isNotNull property="customerCharge" prepend=",">
+				retail_price=#customerCharge#
+			</isNotNull>
+			</isEqual>
+		</isNotNull>
+		,modified_date = #modifiedDate#,
+		modified_by =#modifiedBy#
+		where so_id = #soId# and so_addon_id=#soAddonId#
+	</update>
+	<update id="soPrisingDetails.update" parameterClass="pricingData">
+		UPDATE so_workflow_controls 
+		<dynamic prepend="SET">
+	    <isNotNull prepend=", " property="labour">
+		    final_price_labor=#labour#
+		</isNotNull> 
+		<isNotNull prepend=", " property="materials">
+			  final_price_parts=#materials#
+		</isNotNull>  	 
+	    where so_id=#soId#	
+	    </dynamic>	
+	</update>
+	<update id="soOriginalPrisingDetails.update" parameterClass="pricingData">
+		UPDATE so_hdr
+		<dynamic prepend="SET">
+		<isNotNull prepend=", " property="originalLabour">
+				spend_limit_labor = #originalLabour#
+			</isNotNull>
+		<isNotNull prepend=", " property="originalMaterials">
+				 spend_limit_parts=#originalMaterials#
+			</isNotNull> 	   
+	    where so_id=#soId#
+	    </dynamic>			
+	</update>
+	<select id="getcreditCardAlias.query" resultClass="java.lang.String"
+		parameterClass="java.lang.String">
+		SELECT card_type_alias FROM lu_credit_card_types WHERE card_type=#value#;
+	</select>
+	<update id="updateTaskDetails.update"
+			parameterClass="taskVO">
+			UPDATE so_tasks SET task_status=#taskStatus# WHERE so_task_id=#taskId# AND so_id=#soId#
+	</update>
+	
+		<select id="getCustomeReferences.query" resultClass="customReferenceType" parameterClass="java.lang.String">
+		SELECT
+			brt.buyer_ref_type_id AS buyerRefTypeId,
+			brt.buyer_ref_value AS buyerRefValue,
+			so_custom_reference_id AS custRefId			
+	   FROM so_custom_reference brt		
+	   WHERE brt.so_id = #soId#			 
+	</select>
+	
+	<insert id="insertCustomReference.query" parameterClass="customReferenceType">
+		INSERT INTO so_custom_reference(so_id,buyer_ref_type_id,created_date,modified_date,modified_by,buyer_ref_value)
+		VALUES (#soId#,#buyerRefTypeId#,#createdDate#,#modifiedDate#,#modifiedBy#,#buyerRefValue#)	 
+	</insert>
+	
+	<update id="updateCustomReference.query" parameterClass="customReferenceType">
+		UPDATE so_custom_reference
+		SET buyer_ref_value = #buyerRefValue#,
+		modified_date = #modifiedDate#,
+		modified_by = #modifiedBy#
+		WHERE so_custom_reference_id = #custRefId#
+	</update>
+	<select id="getCarrierId.query" resultClass="java.lang.Integer" parameterClass="java.lang.String">
+		SELECT shipping_carrier_id FROM lu_shipping_carrier WHERE descr=#carrier#
+	</select>
+	<update id="updatePartsDetails.update" parameterClass="partsVO">
+		UPDATE so_parts SET part_descr=#partName# ,
+		return_carrier_id=#carrierId#,
+		core_return_carrier_id=#coreCarrierId# ,
+		return_track_no=#trackingNumber#,
+		core_return_track_no=#coreTrackingNumber#
+		WHERE so_id=#soId# AND part_id=#partId#	
+	</update>
+	<insert id="insertInvoicePartsDetails.insert" parameterClass="invVO">
+	INSERT INTO so_provider_invoice_parts(
+				so_id,
+				part_coverage,
+				source,
+				part_no,
+				description,
+				invoice_no,
+				unit_cost,
+				retail_price,
+				qty,
+				source_non_sears,
+				retail_cost_to_inventory,
+				retail_reimbursement,
+				retail_price_sl_gross_up,
+				retail_sl_gross_up,
+				created_date,
+				modified_date,
+				modified_by,
+				est_provider_parts_payment,
+				division_number,
+				source_number,
+				final_price,
+				reimbursement_max,
+				provider_margin,
+				auto_adjudication_ind,
+				part_status
+				)
+									
+		VALUES(
+				#soId#,
+				#partCoverage#, 
+				#partSource#, 
+				#partNumber#, 
+				#partDescription#, 
+				#invoiceNumber#,
+				#unitCost#, 
+				#retailPrice#, 
+				#qty#,
+				#nonSearsSource#,
+				#retailCostToInventory#,
+				#retailReimbursement#,
+				#retailPriceSLGrossUp#,
+				#retailSLGrossUp#,
+				#createdDate#,
+				#modifiedDate#,
+				#modifiedBy#,
+				#netPayment#,
+				#divisionNumber#,
+				#sourceNumber#,
+				#finalPayment#,
+				#reimbursementMax#,
+				#providerMargin#,
+				#autoAdjudicationInd#,
+				#partStatus#
+				)
+	
+	</insert>
+	
+	 <select id="mobile.vendorResourceContactInfoFromResourceId.query" parameterClass="java.lang.Integer" resultClass="contact">
+        SELECT vr.contact_id as contactId, vh.business_name as businessName, ct.last_name as lastName, ct.first_name as firstName, 
+        	ct.mi, ct.suffix, ct.email, ct.honorific, vr.locn_id as locationId, vh.bus_phone_no AS phoneNo, vh.bus_fax_no AS faxNo, 
+			ct.mobile_no as cellNo, vh.bus_phone_no_ext AS phoneNoExt, lc.street_1, lc.street_2, lc.city, lc.state_cd as stateCd, lc.zip,
+            lc.zip4, lc.country, lc.locn_type_id as locnTypeId, lc.locn_name as locName, vr.vendor_id as vendorId, vr.resource_id as entityId
+        FROM vendor_resource vr JOIN contact ct ON vr.contact_id = ct.contact_id
+            JOIN vendor_hdr vh ON vr.vendor_id = vh.vendor_id
+            JOIN location lc ON vr.locn_id = lc.locn_id
+        WHERE vr.resource_id = #resourceId#;    
+    </select>
+    
+    <select id="mobile.checkIfSOIsActive.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+        SELECT so_id
+        FROM so_hdr
+        WHERE so_id=#soId#
+        and wf_state_id=155
+        <!-- More substatus check should be included here .  -->   
+    </select>
+    
+    <insert id="insertAddNoteHistory.insert" parameterClass="hisVO">
+	INSERT INTO so_logging(
+				so_id,
+				action_id,
+				chg_comment,
+				created_date,
+				modified_date,
+				modified_by,
+				role_id,
+				created_by_name,
+				entity_id)
+									
+		VALUES(
+				#soId#,
+				#actionId#, 
+				#description#, 
+				#createdDate#, 
+				#modifiedDate#, 
+				#modifiedBy#,
+				#roleId#, 
+				#createdBy#, 
+				#enitityId#
+				)
+	
+	</insert>
+	
+	<select id="mobile.checkIfReasonAlreadyExists" parameterClass="laborPriceReasonVO" resultClass="java.lang.Integer">
+        SELECT reason_id
+        FROM so_part_labor_price_reason
+        WHERE so_id=#soId#
+        AND price_type = #priceType#
+    </select>
+    
+     <insert id="mobile.inserReason.query" parameterClass="laborPriceReasonVO">
+		INSERT INTO so_part_labor_price_reason(
+				so_id,
+				reason_code_id,
+				reason_comments,
+				created_date,
+				modified_by,
+				price_type,
+				modified_date)
+									
+		VALUES(
+				#soId#,
+				#reasonCodeId#, 
+				#reasonComments#, 
+				#createdDate#, 
+				#modifiedBy#,
+				#priceType#, 
+				#modifiedDate#
+				)
+	
+	</insert>
+	
+	<update id="mobile.updateReason.query" parameterClass="laborPriceReasonVO">
+		UPDATE so_part_labor_price_reason SET reason_code_id=#reasonCodeId# ,
+		reason_comments=#reasonComments#,
+		modified_date=#modifiedDate# ,
+		modified_by=#modifiedBy#
+		WHERE reason_id = #reasonId#
+	</update>
+	
+	<insert id="mobile.insertSignatureDetails.query" parameterClass="java.util.HashMap">
+	INSERT INTO mobile_so_signature(
+				so_id,
+				document_id,
+				resource_name,
+				resource_ind,
+				customer_email,
+				generate_pdf_status,
+				email_sent_ind,
+				created_date,
+				modified_date)
+									
+		VALUES(
+				#soId#,
+				#documentId#, 
+				#resourceName#, 
+				#resourceInd#,
+				#customerEmail#,
+				#pdfGenStatus#,
+				#emailSentInd#,
+				#createdDate#,
+				#modifiedDate#
+				)
+	
+	</insert>
+	
+	<update id="mobile.updateSignatureDetails.query" parameterClass="java.util.HashMap" >
+		UPDATE mobile_so_signature 
+		SET 
+			so_id = #soId#,
+			document_id=#documentId#,
+			resource_name=#resourceName# ,
+			resource_ind=#resourceInd#,
+			customer_email=#customerEmail#,
+			generate_pdf_status=#pdfGenStatus#,
+			email_sent_ind=#emailSentInd#,
+			modified_date = #modifiedDate#
+		WHERE so_id = #soId# AND resource_ind = #resourceInd#
+	</update>
+	
+	<select id="mobile.fetchSignatureDetails.query" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT document_id FROM mobile_so_signature where so_id = #soId# AND resource_ind = #resourceInd#
+	</select>
+	
+	<delete id="mobile.deletHSRParts.query" parameterClass="java.lang.String">
+		DELETE FROM so_provider_invoice_parts
+		WHERE so_id = #soId#
+	</delete>
+	
+	 <select id="mobile.findLaborPartReasons" parameterClass="java.lang.String" resultMap="reasonMap">
+        SELECT * FROM lu_completion_reasons; 
+   </select>
+    <select id="soResourceAndFirmId.query" parameterClass="java.lang.String" resultClass="hisVO">
+        SELECT accepted_resource_id AS enitityId, accepted_vendor_id AS roleId FROM so_hdr WHERE so_id=#value#
+   </select>
+    <update id="soPermitTaskData.update" parameterClass="permitTask">
+		UPDATE so_tasks SET 
+		modified_date = now(),
+		final_price = #finalPermitPriceByProvider#,
+		permit_type_id = #permitTypeId#
+		WHERE so_task_id = #taskId# and so_id = #soId#
+	</update>
+	
+	<update id="soPermitAddonData.update" parameterClass="permitAddon">	
+		UPDATE so_addon SET
+		qty = #qty#,
+		modified_date = now()
+		<isNotNull property="customerCharge" prepend=",">
+			retail_price = #customerCharge#
+		</isNotNull>
+		<isNotNull property="permitType" prepend=",">
+			description = #permitType#
+		</isNotNull>
+		where so_id = #soId# and so_addon_id = #soAddonId#
+	</update>
+	
+	<insert id="soPermitAddonData.insert" parameterClass="permitAddon">	
+		insert into so_addon
+		(so_id, sku, description, retail_price, qty, coverage, margin, misc_ind, created_date, modified_date, scope_of_work, auto_gen_ind) 
+		values 
+		(#soId#, #addonSKU#, #permitType#, #customerCharge#, #qty#, #coverageType#, 0.0000, #misc#, now(), now(), #scopeOfWork#, #autogenAddon#)
+	</insert>
+	
+   <insert id="logSOMobileHistory.insert" parameterClass="logSOMobile">
+		insert into mobile_so_logging(
+				so_id,
+ 			action_id,
+ 			request,
+ 			response,
+		 created_date,
+		 modified_date,
+			 created_by,
+			 http_method) 
+		values(
+				#soId#,
+				#actionId#, 
+				#request#, 
+				#response#, 
+				NOW(),
+				NOW(),  
+				#createdBy#,
+				#httpMethod#
+				)
+		<selectKey resultClass="int" > 
+			select LAST_INSERT_ID() as value
+		</selectKey>
+	</insert>
+	
+	<update id="mobile.updateResponse.query" parameterClass="logSOMobile">
+		UPDATE mobile_so_logging SET response=#response# ,
+		modified_date=NOW()
+		WHERE mobile_so_logging_id = #loggingId#
+	</update>
+	
+    <select id="mobile.getResourceIdFromName" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+        SELECT resource_id FROM 
+		 vendor_resource WHERE user_name = #userName#
+   </select>
+	<update id="updateSignature.update" parameterClass="signatureData">
+		UPDATE  mobile_so_signature SET 
+		 generate_pdf_status=#pdfStatus# ,
+		 modified_date=NOW()
+		 <isNotNull property="retryCount" prepend=",">
+			no_of_retries = #retryCount#
+		</isNotNull>
+		<isNotNull property="errorReason" prepend=",">
+			exception = #errorReason#
+		</isNotNull>
+		 WHERE  so_id=#soId#
+	</update>
+	
+	<update id="updateSignature.updateEmailSent" parameterClass="signatureData">
+		UPDATE  mobile_so_signature SET email_sent_ind=#emailSentInd# , modified_date=NOW() WHERE  so_id=#soId#
+	</update>
+	
+	<select id="getSoStatusData.query" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+        SELECT wf_state_id FROM so_hdr WHERE so_id=#value#
+    </select>
+    <!-- R15_5 SL-21130 query optimized -->
+    <!-- Changed the query  old getSignatureDetails.query to two queries getSignatureDetails.query & getSignatureDetails.soId.query-->
+    <select id="getSignatureDetails.query" resultClass="signatureData"  parameterClass="java.util.List">
+	SELECT ms.so_id AS soId ,
+		ms.resource_name AS name,
+		ms.customer_email	AS customerEmail,
+		ms.resource_ind AS resourceInd,
+		d.doc_path AS docPath,
+		ms.generate_pdf_status AS pdfStatus,
+		ms.email_sent_ind AS emailSentInd,
+		ms.no_of_retries AS retryCount,
+		ms.document_id AS documentId,
+		d.doc_category_id AS docCategoryId
+	FROM mobile_so_signature ms,
+		document d
+	WHERE d.document_id = ms.document_id
+	AND    ms.so_id IN 
+	<iterate open="(" close=")" conjunction=",">
+				#[]#
+	</iterate>
+	ORDER BY ms.so_id;
+   </select>
+   
+    <select id="getSignatureDetails.soId.query" resultClass="java.lang.String"  parameterClass="java.lang.Integer">
+	SELECT DISTINCT so_id FROM mobile_so_signature
+		 WHERE generate_pdf_status IN('WAITING','ERROR') LIMIT #limit#
+   </select>
+   
+   
+   <select id="getCustomerEmailDetails.query" resultClass="java.util.HashMap" parameterClass="java.lang.String">
+	SELECT s.buyer_id AS buyerId
+	FROM so_hdr s
+	WHERE s.so_id = #soId#;  
+   </select>
+   
+   <select id="getBuyerTemplatesMap.query" resultClass="buyerTemplateMapperVO">
+	SELECT buyer_id AS buyerId, 
+		template_id AS templateId, 
+		from_email_id AS fromEmail, 
+		from_alias AS aliasName, 
+		reply_to_email_id AS replyToEmail, 
+		email_subject AS subject, 
+		template_input AS templateInputs
+	FROM buyer_email_template_mapping
+	WHERE category ='Digital Signature'
+   </select>
+   
+   <select id="getAllTemplates.query" parameterClass="java.util.List" resultClass="templateDetailsVO">
+	SELECT template_id AS templateId, template_subject AS templateSubject, template_source AS templateSource
+	FROM template
+	WHERE template_id IN
+		<iterate open="(" close=")" conjunction=",">
+				#[]#
+		 </iterate>
+   </select>
+   
+  <select id="additionalPaymentData.query" parameterClass="java.lang.String" resultClass="addonPayment">
+	SELECT  sap.payment_type AS paymentType,
+	sap.payment_amount AS amountAuthorized,
+	lcc.card_type AS ccType,
+	sap.card_expire_month AS cardExpireMonth,
+	sap.card_expire_year AS cardExpireYear,
+	sap.cc_no AS ccNumber,
+	sap.masked_acc_num AS maskedAccNumber,
+	sap.check_no AS checkNumber,
+	sap.auth_no AS preAuthNumber 
+	FROM so_additional_payment sap 
+	LEFT OUTER JOIN lu_credit_card_types lcc ON lcc.card_id = sap.card_type
+    WHERE so_id=#so_id#;	
+ </select> 
+   
+    <select id="getServiceOrderDocuments.query" resultClass="document" parameterClass="java.lang.String">
+	SELECT d.title AS title, d.doc_category_id AS
+	docCategoryId,d.document_id AS documentId
+	FROM document d,
+	so_document so_doc
+	WHERE so_doc.document_id = d.document_id
+	AND
+	so_doc.document_id = d.document_id
+	AND d.delete_ind = 0
+	AND d.file_name NOT LIKE '%_Thumb%'
+	AND so_doc.so_id =#soId#
+   </select>
+   
+    <select id="getDocumentPathData.query" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+    	select d.doc_path as dacPath
+    	from document d
+    	join so_document sd on d.document_id = sd.document_id 
+    	where file_name = #documentName#
+    	and so_id = #soId# and delete_ind = 0
+   </select>
+    <select id="getServiceOrderSignatureDetails.query" resultClass="signatureData" parameterClass="java.lang.String">
+	SELECT ms.so_id AS soId ,
+		ms.resource_name AS NAME,
+		ms.customer_email	AS customerEmail,
+		ms.resource_ind AS resourceInd,
+		ms.document_id AS documentId
+	FROM mobile_so_signature ms,
+	document d
+	WHERE ms.so_id = #soId#
+	AND d.document_id=ms.document_id;  
+   </select>
+   
+    <select id="getNonDeletedSOTasks.query" resultClass="java.lang.Integer" parameterClass="java.lang.String">
+	SELECT so_task_id
+	FROM so_tasks s
+	WHERE s.so_id = #soId#
+	AND task_status NOT IN('DELETED','CANCELED')
+
+   </select>
+   
+   <update id="updateDocumentDetails.update" parameterClass="java.lang.Integer">
+		UPDATE document SET delete_ind = 1 WHERE document_id =#docId#
+   </update>
+   
+   
+    <update id="updateExistingPermitAddOnQty.update" parameterClass="java.lang.String">
+		UPDATE so_addon SET qty = 0 WHERE so_id =#soId# AND sku = 99888
+   </update>
+   
+   <update id="updateExistingAutoGenPermitAddOnQty.update" parameterClass="java.lang.String">
+		UPDATE so_addon SET qty = 0 WHERE so_id =#soId# AND auto_gen_ind = 1
+   </update>
+   
+   <select id="getPermitSOTasks.query" resultClass="java.lang.Integer" parameterClass="java.lang.String">
+	SELECT so_task_id
+	FROM so_tasks s
+	WHERE s.so_id = #soId#
+	AND task_status NOT IN('DELETED','CANCELED')
+	and task_type=1
+   </select>
+   
+   <select id="getAddOnMiscInds.query" resultClass="addonDetails"
+		 parameterClass="java.util.List">
+		SELECT a.so_addon_id AS soAddonId,
+		a.misc_ind AS miscellInd
+		FROM so_addon a
+		WHERE 
+		a.so_addon_id IN
+		<iterate open="(" close=")" conjunction=",">
+				#[]#
+			</iterate>
+	</select>
+	
+	<select id="getAddonDetails.query" resultClass="addonDetails"
+		 parameterClass="java.lang.String">
+		SELECT a.qty AS qty,
+		a.retail_price AS customerCharge
+		FROM so_addon a
+		WHERE 
+		a.so_id = #soId# AND
+		a.qty > 0
+	</select>
+	
+	<select id="getDocumentIdList.query" resultClass="java.util.List" parameterClass="java.util.List">
+	   SELECT document_id  FROM document WHERE document_id IN
+	     <iterate open="(" close=")" conjunction=",">
+				#[]#
+		 </iterate>
+	</select>
+
+	<select id="getSoDocumentIdList.query" resultClass="java.util.List"
+		parameterClass="java.util.HashMap">
+		SELECT sd.document_id FROM so_document sd, document d
+		WHERE sd.so_id=#soid#
+		AND d.document_id=sd.document_id
+		AND d.title="Parts Invoice"
+		AND sd.document_id IN
+		<iterate property="documentIdList" open="(" close=")"
+			conjunction=",">
+			#documentIdList[]#
+		</iterate>
+	</select>
+	
+	<select id="getMobKeyValue.query" resultClass="java.lang.String" parameterClass="java.lang.String">
+	SELECT app_value FROM application_properties WHERE app_key=#appKey#
+	</select>
+	
+	<insert id="soTripDetails.insert" parameterClass="soTripDetailsVO">
+		INSERT INTO so_trip_details
+		(so_trip_id,change_type,change_comments,created_date,created_by)
+		VALUES
+		(#soTripId#,#changeType#,#changeComment#,NOW(),#createdBy#)		
+		 <selectKey resultClass="java.lang.Integer" > 
+		   select LAST_INSERT_ID() as value
+		 </selectKey>
+	</insert>
+	
+	<update id="updateRevisitNeeded.update" parameterClass="soRevisitNeededVO">
+		UPDATE so_trip SET
+		 next_appt_start_date=#serviceDateStart#,
+		 next_appt_end_date=#serviceDateEnd#,
+		 next_appt_start_time=#serviceTimeStart#,		
+		 next_appt_end_time=#serviceTimeEnd#,
+		 revisit_reason=#revisitReason#,
+		 merch_delivered=#merchDeliveredInd#,
+		 work_started=#workStartedInd#,
+		 trip_comments=#tripComments#,
+		 modified_date=#modifiedDate#,
+		 modified_by=#modifiedBy#,
+		 revisit_needed_created_by=#modifiedBy#
+	   WHERE so_id=#soId#
+	   AND trip_no=#tripNumber#
+   </update>
+   
+   <update id="updateCurrentApptDetailsInTrip.update" parameterClass="soRevisitNeededVO">
+		UPDATE so_trip SET
+		 current_appt_start_date=#currentServiceDateStart#,
+		 current_appt_end_date=#currentServiceDateEnd#,
+		 current_appt_start_time=#currentServiceTimeStart#,		
+		 current_appt_end_time=#currentServiceTimeEnd#
+	   WHERE so_id=#soId#
+	   AND trip_no=#tripNumber#
+	   AND current_appt_start_date IS NULL
+   </update>
+   
+   <update id="updateAppointmentDateTime.update" parameterClass="soRevisitNeededVO">
+   		UPDATE so_hdr SET
+			service_date1 = #serviceDateStart#,
+			service_date2 = #serviceDateEnd#,
+			service_time_start = #serviceTimeStart#,
+			service_time_end = #serviceTimeEnd#,
+			service_date_type_id = 2
+		WHERE so_id=#soId#
+   </update>
+   <update id="updateSOScheduleForRevisit.update" parameterClass="soRevisitNeededVO">
+   		UPDATE so_schedule SET
+			source = #scheduleSource#,
+			schedule_status_id = #scheduleStatusId#,
+			resp_reason_id = #responseReasonId#,
+			vendor_id = #vendorId#,
+			customer_appt_confirm_ind = #customerApptConfirmInd#,
+			expected_time_of_arrival = #eta#,
+			modified_date = NOW(),
+			modified_by = #userName#
+		WHERE so_id = #soId#
+   </update>
+   
+   <insert id="insertSOScheduleHistoryForRevisit.insert" parameterClass="soRevisitNeededVO">
+   		INSERT INTO so_schedule_history(
+			so_id,
+			source,
+			schedule_status_id,
+			resp_reason_id,				
+			vendor_id,
+			customer_appt_confirm_ind,
+			expected_time_of_arrival,				
+			created_date,
+			modified_date,
+			modified_by)					
+		VALUES(
+			#soId#,	
+			#scheduleSource#, 
+			#scheduleStatusId#,			
+			#responseReasonId#,				
+			#vendorId#,
+			#customerApptConfirmInd#,
+			#eta#,
+			NOW(),
+			NOW(),
+			#userName#)	
+   </insert>
+   
+<!--    code change for SLT-2112 -->
+	<select id="checkIfPartExists.query" resultClass="invVO"	parameterClass="java.util.HashMap" >
+	      SELECT so_provider_invoice_parts_id AS invoiceId,
+	             qty AS qty,
+	             part_status AS partStatus,
+	             retail_price AS retailPrice,
+	             so_id AS soId,
+	             reimbursement_max AS reimbursementMax,
+				 provider_margin AS providerMargin,
+				 auto_adjudication_ind AS autoAdjudicationInd,
+				 part_source AS partNoSource
+	      FROM so_provider_invoice_parts WHERE so_id=#soId#
+	     <!--   AND delete_ind = 0 -->
+	</select> 
+	
+	<select id="getAvailablePartIds.query" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	      SELECT so_provider_invoice_parts_id FROM so_provider_invoice_parts WHERE so_id=#soId#
+	      <!--   AND delete_ind = 0 -->
+	</select>
+	<select id ="getLpnClientUrlHeader.query" parameterClass="java.util.List" resultClass="lpnVO">
+	    SELECT app_constant_key as appKey,app_constant_value as appValue  FROM application_constants WHERE 
+	        app_constant_key IN
+	        <iterate open="(" close=")" conjunction=",">
+				#[]#
+			</iterate>
+	</select>
+	<select id="getLatestOpenTrip.query" parameterClass="java.lang.String" resultClass="invoiceTripVO">
+		SELECT trip_no as tripNo,so_trip_id as tripId FROM so_trip WHERE so_id =#soId# AND trip_status ='OPEN' ORDER BY created_date DESC LIMIT 1
+	</select>
+	<select id="getAutoAdjudicationInd.query" resultClass="java.lang.String">
+		SELECT app_value FROM application_properties WHERE app_key='auto_adjudication_ind'	
+		</select>
+		
+	<select id="getInvoicePartInd.query"  parameterClass="java.lang.String" resultClass="java.lang.String" >
+		 SELECT invoice_parts_ind FROM so_workflow_controls WHERE so_id =#soId#
+	</select>	
+		
+   <update id="updateInvoicePartsDetails.update" parameterClass="invVO">
+		       UPDATE  so_provider_invoice_parts  SET				
+				part_coverage=#partCoverage#
+				<isNotNull prepend=", " property="partSource">
+				 	source=#partSource#	
+				</isNotNull> 
+				
+				<isNotNull property="nonSearsSource">
+					<isNotEmpty prepend=", " property="nonSearsSource">
+				 		source_non_sears=#nonSearsSource#
+				 	</isNotEmpty>	
+				</isNotNull> 
+				,invoice_no=#invoiceNumber#,
+				unit_cost=#unitCost#,
+				retail_cost_to_inventory=#retailCostToInventory#,
+				retail_reimbursement=#retailReimbursement#,
+				retail_price_sl_gross_up=#retailPriceSLGrossUp#,
+				retail_sl_gross_up=#retailSLGrossUp#,			
+				modified_date=#modifiedDate#,
+				modified_by=#modifiedBy#,				
+				est_provider_parts_payment=#netPayment#,				
+				final_price=#finalPayment#,
+				part_status=#partStatus#,
+				qty = #qty#,
+				parts_invoice_source=#partInvoiceSource#,
+				claim_status=#claimStatus#,
+				reimbursement_max=#reimbursementMax#,
+				provider_margin=#providerMargin#
+				<isNotNull prepend=", " property="divisionNumber">
+				 	division_number=#divisionNumber#
+				</isNotNull> 	
+				<isNotNull prepend=", " property="sourceNumber">
+				 	source_number=#sourceNumber#
+				</isNotNull> 
+				<isNotNull prepend=", " property="retailPrice">
+				 	retail_price=#retailPrice#
+				</isNotNull>
+				<isNotNull prepend=", " property="reimbursementRate">
+				 	reimbursement_rate=#reimbursementRate#
+				</isNotNull> 
+		WHERE   so_id=#soId#  AND  so_provider_invoice_parts_id=#invoiceId#	
+	</update>
+	<insert id="saveInvoicePartDocument.insert" parameterClass="java.util.List">
+	    INSERT INTO so_provider_invoice_doc(invoice_part_id,invoice_document_id)
+	    VALUES	    
+	    <iterate conjunction=",">(					
+				#docVoList[].invoiceId#,
+				#docVoList[].docId#
+				)</iterate>		    
+	</insert>
+	<insert id="insertInhomePartDetails.insert" parameterClass="java.util.List">
+	INSERT INTO so_provider_invoice_parts(
+				so_id,
+				part_no,
+				description,
+				qty,				
+				created_date,
+				modified_date,
+				modified_by,				
+				division_number,
+				source_number,
+				part_status,
+				category,
+				auto_adjudication_ind,
+				retail_price,
+				part_source,
+				commercial_price,
+				part_coverage)
+									
+		VALUES
+		<iterate conjunction=",">(
+				#part[].soId#,	
+				#part[].partNumber#, 
+				#part[].partDescription#,			
+				#part[].qty#,				
+				#part[].createdDate#,
+				#part[].modifiedDate#,
+				#part[].modifiedBy#,
+				#part[].divisionNumber#,
+				#part[].sourceNumber#,
+				#part[].partStatus#,
+				#part[].category#,
+				#part[].autoAdjudicationInd#,
+				#part[].retailPrice#,
+				#part[].partNoSource#,
+				#part[].commercialPrice#,
+				#part[].partCoverage#
+				)</iterate>	
+	</insert>
+	
+	<!--  <update id="removeInHomePart.update" parameterClass="java.util.List">
+		UPDATE  so_provider_invoice_parts  SET				
+				delete_ind=1,modified_date=NOW()			
+		WHERE so_provider_invoice_parts_id IN
+			<iterate  open="(" close=")" conjunction=",">
+				    #[]#
+		</iterate>				
+	</update> -->
+	<!-- <update id="removeInHomePartLocation.update" parameterClass="java.util.List">
+		UPDATE  so_provider_invoice_part_location SET				
+				delete_ind=1,			
+				modified_date=now()			
+		WHERE invoice_part_id IN
+		<iterate  open="(" close=")" conjunction=",">
+				    #[]#
+		</iterate>				
+	</update> -->
+	 <update id="updateInhomePartDetails.update" parameterClass="supplierVO">
+		UPDATE  so_provider_invoice_parts  SET				
+				part_status=#partStatus#,
+				<!-- modified_by=#modifiedBy#, -->
+				modified_date=NOW()									
+		WHERE   so_id=#soId#  AND  so_provider_invoice_parts_id=#invoiceId#	
+	</update>
+	<!-- <update id="deletePartLocationDetails.update" parameterClass="java.util.List">
+	    UPDATE so_provider_invoice_part_location SET delete_ind=1,modified_date=NOW()
+	    WHERE invoice_part_id IN
+	      <iterate open="(" close=")" conjunction=",">
+			#[]#
+		 </iterate>
+	</update> -->
+	<delete id="deletePartLocationDetails.delete" parameterClass="java.util.List">
+	    DELETE FROM  so_provider_invoice_part_location WHERE invoice_part_id IN
+	      <iterate open="(" close=")" conjunction=",">
+			#[]#
+		 </iterate>
+	</delete>
+	<delete id="deletePartDocDetails.delete" parameterClass="java.util.List">
+	    DELETE FROM  so_provider_invoice_doc WHERE invoice_part_id IN
+	      <iterate open="(" close=")" conjunction=",">
+			#[]#
+		 </iterate>
+	</delete>
+	<delete id="deleteInvoicePartsDetails.delete" parameterClass="java.util.List">
+	    DELETE FROM  so_provider_invoice_parts WHERE so_provider_invoice_parts_id IN
+	      <iterate open="(" close=")" conjunction=",">
+			#[]#
+		 </iterate>
+	</delete> 
+	<insert id="insertPartLocationDetails.insert" parameterClass="java.util.List">
+	INSERT INTO `so_provider_invoice_part_location`(
+			`supplier_name`,
+			`street_1`,
+			`street_2`,
+			`city`,
+			`state_cd`,
+			`zip`,
+			`phone`,
+			`fax`,
+			`latitude`,
+			`longitude`,
+			`distance`,
+			`created_date`,
+			`modified_date`,
+			`invoice_part_id`)
+	VALUES
+	<iterate conjunction=",">(
+			#part[].supplierName#,
+			#part[].address1#,
+			#part[].address2#,
+			#part[].city#,
+			#part[].state#,
+			#part[].zip#,
+			#part[].phone#,
+			#part[].fax#,
+			#part[].latitude#,
+			#part[].longitude#,
+			#part[].distance#,
+			#part[].createdDate#,
+			#part[].modifiedDate#,
+			#part[].invoiceId#
+			)</iterate>	
+	</insert>
+	<delete id="deleteInvoicePartDocumentDetails.delete" parameterClass="java.lang.String">
+	    DELETE FROM  so_provider_invoice_doc WHERE invoice_part_id=#value#
+	</delete> 
+	
+	<update id="insertPartRequiredIndicator.update" parameterClass="java.util.HashMap">
+   		UPDATE so_workflow_controls
+   		SET	invoice_parts_ind = #requiredType#
+		WHERE so_id = #soId#
+   </update>
+   
+   	<select id="getInvoiceDocumentIdList.query" resultClass="java.lang.Integer" parameterClass="java.util.List">
+	   SELECT invoice_document_id  FROM so_provider_invoice_doc WHERE invoice_part_id IN
+	     <iterate open="(" close=")" conjunction=",">
+				#[]#
+		 </iterate>
+	</select>
+	<select id="getInvoicePartIdList.query" resultClass="java.lang.Integer" parameterClass="java.util.List">
+	   SELECT DISTINCT invoice_document_id  FROM so_provider_invoice_doc WHERE invoice_document_id IN
+	     <iterate open="(" close=")" conjunction=",">
+				#[]#
+		 </iterate>
+	</select>
+	<delete id="deleteInvoiceDocFromSODocuments.delete" parameterClass="java.util.List">
+	    DELETE FROM  so_document WHERE document_id IN
+	      <iterate open="(" close=")" conjunction=",">
+			#[]#
+		 </iterate>
+	</delete>
+	<delete id="deleteInvoiceDocFromDocuments.delete" parameterClass="java.util.List">
+	    UPDATE document SET delete_ind = 1 WHERE document_id IN
+	      <iterate open="(" close=")" conjunction=",">
+			#[]#
+		 </iterate>
+	</delete>
+	
+	<update id="updateInvoicePartsStatus.update" parameterClass="invVO">
+		       UPDATE so_provider_invoice_parts
+		       SET part_status=#partStatus#
+			   WHERE so_provider_invoice_parts_id=#invoiceId#	
+	</update>
+	
+<!-- 	code change for SLT-2112 -->
+	<select id="getBuyerTimeWindow.query" resultClass="timeWindoVO" parameterClass="java.util.HashMap">
+	  SELECT 
+		b.min_time_window AS minTimeWindow,
+		b.max_time_window AS maxTimeWindow
+		FROM so_hdr s 
+		JOIN buyer b ON s.buyer_id = b.buyer_id 
+		WHERE so_id = #soId#
+	</select>
+	 <select id="getExistingPartStatus.query" parameterClass="java.lang.String" resultClass="supplierVO">
+	 	SELECT so_provider_invoice_parts_id AS invoiceId,
+  		part_status AS partStatus,
+  		part_no AS partNumber,
+  		description AS partDesc
+  		FROM so_provider_invoice_parts WHERE so_id=#soId#
+	</select>
+	<select id="getExistingPartStatusList.query" parameterClass="java.lang.String" resultClass="invVO">
+	 	SELECT so_provider_invoice_parts_id AS invoiceId,
+  		part_status AS partStatus,
+  		part_no AS partNumber,
+  		description AS partDescription,
+  		part_source AS partNoSource
+  		FROM so_provider_invoice_parts WHERE so_id=#soId#
+	</select>
+	<select id="getPartDeatilsForPartId.query" parameterClass="java.util.List" resultClass="invVO">
+	 	SELECT so_provider_invoice_parts_id AS invoiceId,
+  		part_no AS partNumber,
+  		description AS partDescription
+  		FROM so_provider_invoice_parts WHERE so_provider_invoice_parts_id IN
+  		 <iterate open="(" close=")" conjunction=",">
+			#[]#
+		 </iterate>
+	</select>
+	<update id="mobile.updateInvoicePartsInd.query" parameterClass="java.util.HashMap" >
+		UPDATE so_workflow_controls SET invoice_parts_ind = #invoicepartsInd# WHERE so_id =  #soId#
+	</update>
+	
+	<update id="mobile.updateInvoicePartsPricingModel.query" parameterClass="java.util.HashMap" >
+		UPDATE so_workflow_controls SET invoice_parts_pricing_model = #pricingModel# WHERE so_id =  #soId#
+	</update>
+	
+<!-- 	code change for SLT-2112 -->
+	<select id="mobile.getInvoicePartsPricingModel.query" resultClass="java.lang.String" parameterClass="java.util.HashMap">
+		SELECT invoice_parts_pricing_model FROM so_workflow_controls WHERE so_id =  #soId#
+	</select>
+	
+	<select id="mobile.getFirmReimbursementRate.query" resultClass="java.lang.Double" parameterClass="java.lang.String">
+		SELECT r.reimbursement_rate 
+		FROM inhome_auto_close_rule_firm_assoc r, so_hdr h
+		WHERE r.firm_id = h.accepted_vendor_id AND r.active_ind=1
+		AND h.so_id = #soId#
+	</select>
+	
+	<select id="getReimbursementModelValues.query"  resultClass="java.util.HashMap">
+	SELECT app_constant_key AS app_constant_key,app_constant_value AS app_constant_value FROM application_constants WHERE app_constant_key
+	IN('reimbursement_model_grossup_value','reimbursement_model_reimbursement_rate')
+   </select>
+   
+   <update id="tripStatusData.update"
+			parameterClass="java.util.HashMap">
+			UPDATE so_trip SET trip_status = #status#,modified_date = now() WHERE so_trip_id=#tripId#
+		</update>
+   <select id="getTripID.query" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT so_trip_id  FROM so_trip WHERE so_id =#soId# AND trip_no=#curTripNo#
+	</select>
+	
+	<select id="mobile.getAddonForSO.query" resultClass="java.lang.Integer" parameterClass="java.lang.String">
+        SELECT COUNT(so_addon_id) FROM so_addon WHERE so_id=#soId# AND qty >0
+    </select>
+</sqlMap>

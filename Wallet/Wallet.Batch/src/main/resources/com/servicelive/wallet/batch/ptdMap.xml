@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap>
+
+	<typeAlias alias="ptdRecordTypeVO" 
+		type="com.servicelive.wallet.batch.ptd.vo.PTDRecordTypeVO"/>
+	<typeAlias alias="ptdProcessLogVO" 
+		type="com.servicelive.wallet.batch.ptd.vo.PTDProcessLogVO"/>
+	<typeAlias alias="ptdFullfillmentEntryVO" 
+		type="com.servicelive.wallet.batch.ptd.vo.PTDFullfillmentEntryVO"/>			
+	<typeAlias alias="ptdEntryVO" 
+		type="com.servicelive.wallet.batch.ptd.vo.PtdEntryVO"/>			
+		
+	
+	<select id="ptdRecordTypeQuery.select" parameterClass="java.lang.String" resultClass="ptdRecordTypeVO">
+		Select ptd_detail_id as ptdDetailId, ptd_short_alias as ptdShortAlias, 
+		field_data_type as fieldDataType, field_start_position as fieldStartPosition,
+		field_end_position fieldEndPosition, field_length fieldLength, field_name fieldName  
+		from lu_ptd_detail detail, lu_ptd_template template 
+		where detail.ptd_record_type_id=template.ptd_record_type_id and 
+		ptd_short_alias=#shortAlias#
+	</select>
+	
+	<insert id="ptdprocessLog.insert" parameterClass="ptdProcessLogVO">
+		insert into ptd_process_log (ptd_process_status, ptd_transactions_received, ptd_transactions_updated, process_run_date, 
+		ptd_sequence_number, prev_sequence_number )
+	    values (#ptdProcessStatus#, #ptdTransactionsReceived#,#ptdTransactionsUpdated#,
+	    #processRunDate#,#ptdSequenceNumber#,#prevSequenceNumber#);
+        <selectKey resultClass="int">
+            SELECT last_insert_id() as ptd_log_id
+        </selectKey>   
+	</insert>
+	
+	<update id="ptdprocessLog.update" parameterClass="ptdProcessLogVO">
+		update ptd_process_log set ptd_transactions_updated = #ptdTransactionsUpdated#
+		where ptd_log_id = #ptdLogId#	    
+	</update>
+
+
+	<update id="fullfillmentEntryPtd.update" parameterClass="ptdFullfillmentEntryVO">
+		update fullfillment_entry  set 
+		<dynamic>
+		<isNotNull property="ptdRequestCode">
+			ptd_request_code=#ptdRequestCode#
+		</isNotNull>
+		<isNotNull property="ptdResponseCode" prepend=",">
+			ptd_response_code=#ptdResponseCode#
+		</isNotNull>
+		<isNotNull property="ptdReversalFlag" prepend=",">
+			ptd_reversal_flag=#ptdReversalFlag#
+		</isNotNull>
+		<isNotNull property="ptdAuthCode" prepend=",">
+			ptd_auth_code=#ptdAuthCode#
+		</isNotNull>
+		<isNotNull property="ptdReconsiledInd" prepend=",">
+			ptd_reconsiled_ind=#ptdReconsiledInd#
+		</isNotNull>		
+		, ptd_reconsiled_date=now(), modified_date=now() 
+		
+		</dynamic>  where fullfillment_entry_id=#fullfillmentEntryId#
+	</update>
+	
+	<insert id="ptdErrorTransactions.insert" parameterClass="ptdFullfillmentEntryVO">
+		insert into ptd_transactions (fullfillment_entry_id, v1_account_number, ptd_request_code, 
+		ptd_response_code, ptd_reversal_flag,trans_amount, entry_type_id,created_date,updated_date,ptd_log_id,ptd_error_id, entry_date )
+	    values (#fullfillmentEntryId#, #primaryAccountNumber#,#ptdRequestCode#,
+	    #ptdResponseCode#,#ptdReversalFlag#,#transAmount#, #entryTypeId#,#createdDate#,#modifiedDate#,#ptdLogId#, #ptdErrorCode#, NOW())
+	</insert>
+		
+	<select id="sltransactions.select" resultClass="java.lang.Long">
+		select fullfillment_entry_id, sort_order
+  		FROM fullfillment_entry fe
+		where fe.sort_order = (select min(sort_order) from fullfillment_entry mfe
+                        where mfe.fullfillment_grp_id = fe.fullfillment_grp_id)
+       AND created_date <![CDATA[ < ]]> TIMESTAMP(#time#)
+       AND created_date <![CDATA[ > ]]> DATE_SUB(TIMESTAMP(#time#),INTERVAL 24 HOUR)
+       AND ptd_reconsiled_ind IS NULL;
+     </select>
+	
+	<insert id="ptdFileTransactions.insert" parameterClass="ptdEntryVO">
+		insert into ptd_file_transactions (
+			fullfillment_entry_id
+			,v1_account_number
+			,ptd_request_code
+			,ptd_response_code
+			,ptd_reversal_flag
+			,ptd_source_code
+			,ptd_auth_code
+			,trans_amount
+			,entry_type_id
+			,created_date
+			,updated_date
+			,ptd_log_id
+			,entry_date 
+			,record_form_indicator
+			,reserved_1
+			,reserved_2
+			,merchant_id
+			,reserved_3
+			,reserved_4
+			,alternate_merchant_number
+			,terminal_id
+			,terminal_transaction_number
+			,base_amount
+			,reporting_amount
+			,base_currency_code
+			,local_currency_code
+			,reporting_currency_code
+			,exchange_code
+			,clerk_id
+			,balance_sign
+			,base_balance
+			,consortium_code
+			,promotion_code
+			,fdms_local_timestamp
+			,terminal_local_timestamp
+			,replaced_by_account_number
+			,reserved_5
+			,user_id
+			,card_class
+			,expiration_date
+			,card_cost
+			,escheatable_transaction
+			,reference_number
+			,user_2
+			,local_cash_back
+			,base_cash_back
+			,reporting_cash_back
+			,local_lock_amount
+			,base_lock_amount
+			,reversed_timestamp
+			,processed_date
+			,original_request_code
+			,internal_request_code
+			,call_trace_info
+			,uplift_amount
+			,gmt_timestamp
+			,alternate_account_number
+			,email_sent_flag
+			)
+		values (
+			#fullfillmentEntryId#
+			,#primaryAccountNumber#
+			,#ptdRequestCode#
+			,#ptdResponseCode#
+			,#ptdReversalFlag#
+			,#ptdSourceCode#
+			,#ptdAuthCode#
+			,#transAmount#
+			,#entryTypeId#
+			,#createdDate#
+			,#modifiedDate#
+			,#ptdLogId#
+			, NOW()
+			,#recordFormIndicator#
+			,#reserved1#
+			,#reserved2#
+			,#merchantId#
+			,#reserved3#
+			,#reserved4#
+			,#alternateMerchantNumber#
+			,#terminalId#
+			,#terminalTransactionNumber#
+			,#baseAmount#
+			,#reportingAmount#
+			,#baseCurrencyCode#
+			,#localCurrencyCode#
+			,#reportingCurrencyCode#
+			,#exchangeCode#
+			,#clerkId#
+			,#balanceSign#
+			,#baseBalance#
+			,#consortiumCode#
+			,#promotionCode#
+			,#fdmsLocalTimestamp#
+			,#terminalLocalTimestamp#
+			,#replacedByAccountNumber#
+			,#reserved5#
+			,#userId#
+			,#cardClass#
+			,#expirationDate#
+			,#cardCost#
+			,#escheaTableTransaction#
+			,#referenceNumber#
+			,#user2#
+			,#localCashback#
+			,#baseCashback#
+			,#reportingCashback#
+			,#localLockAmount#
+			,#baseLockAmount#
+			,#reversedTimestamp#
+			,#processedDate#
+			,#originalRequestCode#
+			,#internalRequestCode#
+			,#callTraceInfo#
+			,#upliftAmount#
+			,#gmtTimestamp#
+			,#alternateAccountNumber#
+			,#emailSentFlag#	
+			)
+		<selectKey resultClass="int">
+			SELECT last_insert_id() as ptd_transaction_id
+		</selectKey>   
+	</insert>
+
+</sqlMap>

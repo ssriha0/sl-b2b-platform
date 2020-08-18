@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions targetNamespace="urn:tmws.rsys.com" xmlns:tns="urn:tmws.rsys.com" xmlns:fns="urn:fault.tmws.rsys.com" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <schema elementFormDefault="qualified" targetNamespace="urn:tmws.rsys.com" xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="urn:fault.tmws.rsys.com"/>
+            <element name="login">
+                <complexType>
+                    <sequence>
+                        <element name="username" nillable="true" type="xsd:string"/>
+                        <element name="password" nillable="true" type="xsd:string"/>
+                    </sequence>
+                </complexType>
+            </element>
+            
+            <complexType name="LoginResult">
+                <sequence>
+                    <element name="sessionId" nillable="true" type="xsd:string"/>
+                </sequence>
+            </complexType>
+            
+            <element name="loginResponse">
+                <complexType>
+                    <sequence>
+                        <element name="result" nillable="true" type="tns:LoginResult"/>
+                    </sequence>
+                </complexType>
+            </element>
+            
+            <element name="logout">
+                <complexType/>
+            </element>
+            
+            <element name="logoutResponse">
+                <complexType>
+                    <sequence>
+                        <element name="result" type="xsd:boolean"/>
+                    </sequence>
+                </complexType>
+            </element>
+            
+            <!-- Header Elements -->
+            <element name="SessionHeader">
+                <complexType>
+                    <sequence>
+                        <element name="sessionId" type="xsd:string"/> 
+                    </sequence>
+                </complexType>
+            </element>
+            <!-- Header Elements -->
+            
+            <simpleType name="EmailFormat">
+                <restriction base="xsd:string">
+                    <enumeration value="TEXT"/>
+                    <enumeration value="HTML"/>
+                    <enumeration value="AOL"/>
+                    <enumeration value="MULTIPART"/>
+                </restriction>
+            </simpleType>
+            
+            <complexType name="PersonalizationData">
+                <sequence>
+                    <element name="name" type="xsd:string"/>
+                    <element name="value" type="xsd:string"/>
+                </sequence>
+            </complexType>
+            
+            <complexType name="RecipientData">
+                <sequence>
+                    <element name="emailAddress" nillable="true" type="xsd:string"/>
+                    <element name="emailFormat" nillable="true" type="tns:EmailFormat"/>
+                    <element maxOccurs="unbounded" name="personalizationData" nillable="true" type="tns:PersonalizationData"/>
+                </sequence>
+            </complexType>
+            
+            <element name="sendTriggeredMessages">
+                <complexType>
+                    <sequence>
+                        <element name="campaignName" nillable="true" type="xsd:string"/>
+                        <element maxOccurs="unbounded" name="recipientData" nillable="true" type="tns:RecipientData"/>
+                    </sequence>
+                </complexType>
+            </element>
+            
+            <complexType name="TriggeredMessageResult">
+                <sequence>
+                    <element name="emailAddress" nillable="true" type="xsd:string"/>
+                    <element name="tmID" nillable="true" type="xsd:string"/>
+                </sequence>
+            </complexType>
+            
+            <element name="sendTriggeredMessagesResponse">
+                <complexType>
+                    <sequence>
+                        <element maxOccurs="unbounded" name="result" nillable="true" type="tns:TriggeredMessageResult"/>
+                    </sequence>
+                </complexType>
+            </element>
+            
+            <element name="checkTriggeredMessages">
+                <complexType>
+                    <sequence>
+                        <element maxOccurs="unbounded" name="tmIDs" nillable="true" type="xsd:string"/>
+                    </sequence>
+                </complexType>
+            </element>
+            
+            <simpleType name="Status">
+                <restriction base="xsd:string">
+                    <enumeration value="PENDING"/>
+                    <enumeration value="SENT"/>
+                    <enumeration value="FAILED"/>
+                    <enumeration value="EXPIRED"/>
+                    <enumeration value="INVALID"/>
+                </restriction>
+            </simpleType>
+            
+            <complexType name="CheckMessageResult">
+                <sequence>
+                    <element name="status" nillable="true" type="tns:Status"/>
+                    <element name="description" nillable="true" type="xsd:string"/>
+                    <element name="responseTimeInMillis" nillable="true" type="xsd:long"/>
+                </sequence>
+            </complexType>
+            
+            <element name="checkTriggeredMessagesResponse">
+                <complexType>
+                    <sequence>
+                        <element maxOccurs="unbounded" name="result" nillable="true" type="tns:CheckMessageResult"/>
+                    </sequence>
+                </complexType>
+            </element>
+        </schema>
+    <schema elementFormDefault="qualified" targetNamespace="urn:fault.tmws.rsys.com" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:fns="urn:fault.tmws.rsys.com">
+            <simpleType name="ExceptionCode">
+                <restriction base="xsd:string">
+                    <enumeration value="API_DISABLED_FOR_USER"/>
+                    <enumeration value="INVALID_USER_NAME"/>
+                    <enumeration value="INVALID_PASSWORD"/>
+                    <enumeration value="INVALID_LOGIN_CREDENTIALS"/>
+                    <enumeration value="INVALID_SESSION_ID"/>
+                    <enumeration value="INVALID_SOAP_HEADER"/>
+                    <enumeration value="INVALID_PARAMETER"/>
+                    <enumeration value="CAMPAIGN_NOT_FOUND"/>
+                    <enumeration value="INVALID_CAMPAIGN"/>
+                    <enumeration value="CAMPAIGN_STANDBY"/>
+                    <enumeration value="RECIPIENT_LIMIT_EXCEEDED"/>
+                    <enumeration value="ID_LIMIT_EXCEEDED"/>
+                    <enumeration value="REQUEST_LIMIT_EXCEEDED"/>
+                    <enumeration value="SERVER_SHUTDOWN"/>
+                    <enumeration value="TEMPORARILY_UNAVAILABLE"/>
+                    <enumeration value="UNEXPECTED_EXCEPTION"/>
+                </restriction>
+            </simpleType>
+            
+            <!-- Fault -->
+            <complexType name="ApiFault">
+                <sequence>
+                    <element name="errorCode" nillable="true" type="fns:ExceptionCode"/>
+                    <element name="errorMessage" nillable="true" type="xsd:string"/>
+                </sequence>
+            </complexType>
+            
+            <element name="AccountFault">
+                <complexType>
+                    <complexContent>
+                        <extension base="fns:ApiFault"/>
+                    </complexContent>
+                </complexType>
+            </element>
+            
+            <element name="TriggeredMessageFault">
+                <complexType>
+                    <complexContent>
+                        <extension base="fns:ApiFault"/>
+                    </complexContent>
+                </complexType>
+            </element>
+            
+            <element name="UnexpectedErrorFault">
+                <complexType>
+                    <complexContent>
+                        <extension base="fns:ApiFault"/>
+                    </complexContent>
+                </complexType>
+            </element>
+        </schema>
+  </types>
+  <message name="Header">
+    <part name="SessionHeader" element="tns:SessionHeader">
+    </part>
+  </message>
+  <message name="sendTriggeredMessagesRequest">
+    <part name="parameters" element="tns:sendTriggeredMessages">
+    </part>
+  </message>
+  <message name="checkTriggeredMessagesRequest">
+    <part name="parameters" element="tns:checkTriggeredMessages">
+    </part>
+  </message>
+  <message name="ApiFault">
+    <part name="fault" type="fns:ApiFault">
+    </part>
+  </message>
+  <message name="sendTriggeredMessagesResponse">
+    <part name="parameters" element="tns:sendTriggeredMessagesResponse">
+    </part>
+  </message>
+  <message name="checkTriggeredMessagesResponse">
+    <part name="parameters" element="tns:checkTriggeredMessagesResponse">
+    </part>
+  </message>
+  <message name="UnexpectedErrorFault">
+    <part name="fault" element="fns:UnexpectedErrorFault">
+    </part>
+  </message>
+  <message name="logoutRequest">
+    <part name="parameters" element="tns:logout">
+    </part>
+  </message>
+  <message name="loginResponse">
+    <part name="parameters" element="tns:loginResponse">
+    </part>
+  </message>
+  <message name="AccountFault">
+    <part name="fault" element="fns:AccountFault">
+    </part>
+  </message>
+  <message name="loginRequest">
+    <part name="parameters" element="tns:login">
+    </part>
+  </message>
+  <message name="TriggeredMessageFault">
+    <part name="fault" element="fns:TriggeredMessageFault">
+    </part>
+  </message>
+  <message name="logoutResponse">
+    <part name="parameters" element="tns:logoutResponse">
+    </part>
+  </message>
+  <portType name="TriggeredMessagePort">
+    <operation name="login">
+<documentation>Login to the Triggered Message Web Service.</documentation>
+      <input name="loginRequest" message="tns:loginRequest">
+    </input>
+      <output name="loginResponse" message="tns:loginResponse">
+    </output>
+      <fault name="AccountFault" message="tns:AccountFault">
+    </fault>
+      <fault name="UnexpectedErrorFault" message="tns:UnexpectedErrorFault">
+    </fault>
+    </operation>
+    <operation name="logout">
+<documentation>Logout of the Triggered Message Web Service.</documentation>
+      <input name="logoutRequest" message="tns:logoutRequest">
+    </input>
+      <output name="logoutResponse" message="tns:logoutResponse">
+    </output>
+      <fault name="AccountFault" message="tns:AccountFault">
+    </fault>
+      <fault name="UnexpectedErrorFault" message="tns:UnexpectedErrorFault">
+    </fault>
+    </operation>
+    <operation name="sendTriggeredMessages">
+<documentation>Send Triggered Message to one or more recipients.</documentation>
+      <input name="sendTriggeredMessagesRequest" message="tns:sendTriggeredMessagesRequest">
+    </input>
+      <output name="sendTriggeredMessagesResponse" message="tns:sendTriggeredMessagesResponse">
+    </output>
+      <fault name="UnexpectedErrorFault" message="tns:UnexpectedErrorFault">
+    </fault>
+      <fault name="TriggeredMessageFault" message="tns:TriggeredMessageFault">
+    </fault>
+    </operation>
+    <operation name="checkTriggeredMessages">
+<documentation>Check Triggered Message Status for one or more trigger message IDs.</documentation>
+      <input name="checkTriggeredMessagesRequest" message="tns:checkTriggeredMessagesRequest">
+    </input>
+      <output name="checkTriggeredMessagesResponse" message="tns:checkTriggeredMessagesResponse">
+    </output>
+      <fault name="UnexpectedErrorFault" message="tns:UnexpectedErrorFault">
+    </fault>
+      <fault name="TriggeredMessageFault" message="tns:TriggeredMessageFault">
+    </fault>
+    </operation>
+  </portType>
+  <binding name="TriggeredMessageSoapBinding" type="tns:TriggeredMessagePort">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="login">
+      <soap:operation soapAction=""/>
+      <input name="loginRequest">
+        <soap:body use="literal"/>
+      </input>
+      <output name="loginResponse">
+        <soap:body use="literal"/>
+      </output>
+      <fault name="AccountFault">
+        <soap:fault name="AccountFault" use="literal"/>
+      </fault>
+      <fault name="UnexpectedErrorFault">
+        <soap:fault name="UnexpectedErrorFault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="logout">
+      <soap:operation soapAction=""/>
+      <input name="logoutRequest">
+        <soap:header message="tns:Header" part="SessionHeader" use="literal">
+        </soap:header>
+        <soap:body use="literal"/>
+      </input>
+      <output name="logoutResponse">
+        <soap:body use="literal"/>
+      </output>
+      <fault name="AccountFault">
+        <soap:fault name="AccountFault" use="literal"/>
+      </fault>
+      <fault name="UnexpectedErrorFault">
+        <soap:fault name="UnexpectedErrorFault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="sendTriggeredMessages">
+      <soap:operation soapAction=""/>
+      <input name="sendTriggeredMessagesRequest">
+        <soap:header message="tns:Header" part="SessionHeader" use="literal">
+        </soap:header>
+        <soap:body use="literal"/>
+      </input>
+      <output name="sendTriggeredMessagesResponse">
+        <soap:body use="literal"/>
+      </output>
+      <fault name="UnexpectedErrorFault">
+        <soap:fault name="UnexpectedErrorFault" use="literal"/>
+      </fault>
+      <fault name="TriggeredMessageFault">
+        <soap:fault name="TriggeredMessageFault" use="literal"/>
+      </fault>
+    </operation>
+    <operation name="checkTriggeredMessages">
+      <soap:operation soapAction=""/>
+      <input name="checkTriggeredMessagesRequest">
+        <soap:header message="tns:Header" part="SessionHeader" use="literal">
+        </soap:header>
+        <soap:body use="literal"/>
+      </input>
+      <output name="checkTriggeredMessagesResponse">
+        <soap:body use="literal"/>
+      </output>
+      <fault name="UnexpectedErrorFault">
+        <soap:fault name="UnexpectedErrorFault" use="literal"/>
+      </fault>
+      <fault name="TriggeredMessageFault">
+        <soap:fault name="TriggeredMessageFault" use="literal"/>
+      </fault>
+    </operation>
+  </binding>
+  <service name="TriggeredMessageWS">
+<documentation>Triggered Messages Web Services API</documentation>
+    <port name="TriggeredMessageWS" binding="tns:TriggeredMessageSoapBinding">
+      <soap:address location="http://rtm4.responsys.net:80/tmws/services/TriggeredMessageWS"/>
+    </port>
+  </service>
+</definitions>

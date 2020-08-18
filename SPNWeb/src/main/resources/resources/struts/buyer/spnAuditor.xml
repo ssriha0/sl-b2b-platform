@@ -1,0 +1,174 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+    <package name="auditor" extends="selectProviderNetworkBase,json-default" >
+        <default-interceptor-ref name="SPNInterceptorStack"/>
+        
+
+		<action name="spnAuditorController_route" class="spnAuditorControllerAction" method="route">
+			<result name="new_applicants_tab" type="redirectAction">
+					<param name="actionName">spnAuditorApplicantsTab_displayNewApplicant</param>
+			</result>
+			<result name="re_applicants_tab" type="redirectAction">
+					<param name="actionName">spnAuditorApplicantsTab_displayReApplicant</param>
+			</result>
+			<result name="membership_under_review_tab" type="redirectAction">
+					<param name="actionName">spnAuditorApplicantsTab_displayMembershipUnderReview</param>
+			</result>
+			<result name="search_tab" type="redirectAction">
+					<param name="actionName">spnAuditorSearchTab_display</param>
+			</result>
+		</action>				
+
+	
+		<action name="spnAuditorApplicantsTab_displayNewApplicant" class="spnAuditorApplicantsTabAction" method="displayNewApplicant">
+			<result name="success">/jsp/spn/buyer/auditor/tab_applicants.jsp</result>
+		</action>	
+			
+			<action name="spnAuditorApplicantsTab_displayMembershipUnderReview" class="spnAuditorApplicantsTabAction" method="displayMembershipUnderReview">
+			<result name="success">/jsp/spn/buyer/auditor/tab_applicants.jsp</result>
+			</action>	
+		
+		<action name="spnAuditorApplicantsTab_displayReApplicant" class="spnAuditorApplicantsTabAction" method="displayReApplicant">
+			<result name="success">/jsp/spn/buyer/auditor/tab_applicants.jsp</result>
+		</action>				
+
+
+		<action name="spnAuditorSearchTab_display" class="spnAuditorSearchTabAction" method="display">
+			<result name="success">/jsp/spn/buyer/auditor/tab_search.jsp</result>
+		</action>
+		
+		<action name="spnAuditorSearchTab_searchSPNAjax" class="spnAuditorSearchTabAction" method="searchSPNAjax">
+			<result name="success">/jsp/spn/buyer/auditor/search/searchResults.jsp</result>
+		</action>
+		
+		<action name="spnAuditorSearchTab_exportBackgroundInformationAjax" class="spnAuditorSearchTabAction" method="exportBackgroundInformationAjax">
+		<result name="success">/jsp/spn/buyer/auditor/search/export_results.jsp</result>
+		</action>
+		
+		<action name="spnAuditorSearchTab_displayBackgroundHistoryAjax" class="spnAuditorSearchTabAction" method="displayBackgroundHistoryAjax">
+		<result name="success">/jsp/spn/buyer/auditor/search/background_check_history.jsp</result>
+		</action>
+		
+		<action name="spnAuditorSearchTab_searchBackgroundInformationCountAjax" class="spnAuditorSearchTabAction" method="searchBackgroundInformationCountAjax">
+		<result name="back">/jsp/spn/buyer/auditor/search/search_background_information_results.jsp</result>
+		 <result name="error">/jsp/spn/common/default_error.jsp</result>
+		</action>
+		
+		
+			<action name="spnAuditorSearchTab_searchBackgroundInformationAjax" class="spnAuditorSearchTabAction" method="searchBackgroundInformationAjax">
+						<result name="json" type="json">
+						<param name="excludeProperties">
+			 	spnId
+			 </param> 
+			 </result>	
+		</action>
+		
+		<action name="spnAuditorApplicantsTab_displayApplicantPanelAjax" class="spnAuditorApplicantsTabAction" method="displayApplicantPanelAjax">
+			<result name="success">/jsp/spn/buyer/auditor/panel_applicant.jsp</result>
+		</action>
+		
+		<action name="spnAuditorApplicantsTab_getProviderFirmSPNLockAjax" class="spnAuditorApplicantsTabAction" method="getProviderFirmSPNLockAjax">
+			<result name="success">/jsp/spn/buyer/auditor/search/check_lock.jsp</result>
+		</action>
+		
+		<action name="spnAuditorApplicantsTab_unlockProviderFirmSPNAjax" class="spnAuditorApplicantsTabAction" method="unlockProviderFirmSPNAjax">
+			<result name="success">/jsp/spn/buyer/auditor/search/unlock.jsp</result>
+		</action>
+		
+		<action name="spnAuditorApplicantsTab_displayExpirationPanelAjax" class="spnAuditorApplicantsTabAction" method="displayExpirationPanelAjax">
+			<result name="success">/jsp/spn/buyer/auditor/panel_expiration.jsp</result>
+		</action>		
+		
+		<action name="spnAuditorApplicantsTab_buttonDeclineAjax" class="spnAuditorApplicantsTabAction" method="buttonDeclineAjax">
+			<result name="success" type="redirectAction">
+					<param name="actionName">spnAuditorController_route?auditorTab=${auditorTab}</param>
+			</result>
+		</action>
+		
+		
+		
+		<action name="spnAuditorApplicantsTab_buttonMembershipUnderReviewAjax" class="spnAuditorApplicantsTabAction" method="buttonMembershipUnderReviewAjax">
+			<result name="success" type="redirectAction">
+					<param name="actionName">spnAuditorController_route</param>
+			</result>
+		</action>
+		
+		<action name="spnAuditorApplicantsTab_buttonAcceptAjax" class="spnAuditorApplicantsTabAction" method="buttonAcceptAjax">
+			<result name="success" type="redirectAction">
+					<param name="actionName">spnAuditorController_route?auditorTab=${auditorTab}</param>
+			</result>
+			<result name="error_newapplicant" type="redirectAction">
+					<param name="actionName">spnAuditorApplicantsTab_displayNewApplicant</param>
+					<param name="networkId">${networkId}</param>
+					<param name="providerFirmId">${providerFirmId}</param>
+					<param name="errorMessage">${errorMessage}</param>
+			</result>			
+			<result name="error_reapplicant" type="redirectAction">
+					<param name="actionName">spnAuditorApplicantsTab_displayReApplicant</param>
+					<param name="networkId">${networkId}</param>
+					<param name="errorMessage">${errorMessage}</param>					
+			</result>	
+			<result name="error_membership" type="redirectAction">
+					<param name="actionName">spnAuditorApplicantsTab_displayMembershipUnderReview</param>
+					<param name="networkId">${networkId}</param>
+					<param name="providerFirmId">${providerFirmId}</param>
+					<param name="errorMessage">${errorMessage}</param>					
+			</result>	
+			<result name="error_search_page">/jsp/spn/buyer/auditor/search/error_approve.jsp</result>		
+		</action>
+		
+		<action name="spnAuditorApplicantsTab_buttonSendNotificationAjax" class="spnAuditorApplicantsTabAction" method="buttonSendNotificationAjax">
+			<result name="success" type="redirectAction">
+					<param name="actionName">spnAuditorController_route?auditorTab=${auditorTab}</param>
+			</result>
+		</action>
+		
+		<!-- Start subtabs on 'New Applicants' tab -->		
+		<action name="spnAuditorDocumentsTab_viewTabAjax" class="spnAuditorDocumentsTabAction" method="viewTabAjax">
+			<result name="success">/jsp/spn/buyer/auditor/newapplicants/tab-audit-documents.jsp</result>
+		</action>
+
+		<action name="spnAuditorDocumentsTab_buttonSubmitAddAction" class="spnAuditorDocumentsTabAction" method="buttonSubmitAddAction">
+			<result name="success" type="redirectAction">
+					<param name="actionName">spnAuditorDocumentsTab_viewTabAjax</param>
+					<param name="networkId">${networkId}</param>					
+					<param name="providerFirmId">${providerFirmId}</param>
+					<param name="errorMessage">${errorMessage}</param>
+			</result>
+		</action>
+
+		<action name="spnAuditorDocumentsTab_loadDocumentAjax" class="spnAuditorDocumentsTabAction" method="loadDocumentAjax">
+			<result name="success">/jsp/spn/common/blankDocument.jsp</result>
+		</action>
+
+		<action name="spnAuditorMeetAndGreetTab_viewTabAjax" class="spnAuditorMeetAndGreetTabAction" method="viewTabAjax">
+			<result name="success">/jsp/spn/buyer/auditor/newapplicants/tab-audit-greet.jsp</result>
+		</action>
+		
+		<action name="spnAuditorMeetAndGreetTab_buttonSubmitAddAction" class="spnAuditorMeetAndGreetTabAction" method="buttonSubmitAddAction">
+			<result name="success" type="redirectAction">
+					<param name="actionName">spnAuditorMeetAndGreetTab_viewTabAjax</param>
+					<param name="networkId">${networkId}</param>					
+					<param name="providerFirmId">${providerFirmId}</param>
+					<param name="errorMessage">${errorMessage}</param>
+			</result>
+		</action>
+		
+
+		<action name="spnAuditorCriteriaAndCredentialsTab_viewTabAjax" class="spnAuditorCriteriaAndCredentialsTabAction" method="viewTabAjax">
+			<result name="success">/jsp/spn/buyer/auditor/newapplicants/tab-audit-criteria.jsp</result>
+		</action>
+		<action name="spnAuditorCriteriaAndCredentialsTab_getProviderRequirementsListAjax" class="spnAuditorCriteriaAndCredentialsTabAction" method="getProviderRequirementsListAjax">
+			<result name="success" type="redirect">${resultUrl}</result>
+		</action>
+		<action name="spnAuditorCriteriaAndCredentialsTab_getCompanyRequirementsListAjax" class="spnAuditorCriteriaAndCredentialsTabAction" method="getCompanyRequirementsListAjax">
+			<result name="success" type="redirect">${resultUrl}</result>
+		</action>
+		<!-- End subtabs on 'New Applicants' tab -->
+
+    </package>
+    
+</struts>

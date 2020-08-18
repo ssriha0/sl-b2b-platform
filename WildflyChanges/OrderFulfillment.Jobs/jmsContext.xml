@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="jndiTemplate" class="org.springframework.jndi.JndiTemplate">
+        <property name="environment">
+            <props>
+                <prop key="java.naming.factory.initial">
+                    ${java.naming.factory.initial}
+                </prop>
+                <prop key="java.naming.factory.url.pkgs">
+                    ${java.naming.factory.url.pkgs}
+                </prop>
+                <prop key="java.naming.provider.url">
+                    ${java.naming.provider.url}
+                </prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="marketPlatformJmsQueueConnectionFactory" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiTemplate" ref="jndiTemplate"/>
+        <property name="jndiName">
+            <value>${marketplatform.jms.connection.factory.name}</value>
+        </property>
+    </bean>
+
+    <bean id="marketPlatformRequestQueue" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiTemplate" ref="jndiTemplate"/>
+        <property name="jndiName">
+            <value>${marketplatform.jms.queue.name}</value>
+        </property>
+    </bean>
+    
+    <!-- JBOSS Upgrade: changed from JmsTemplate102 to JmsTemplate implementation-->
+    <bean id="marketPlatformJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="marketPlatformJmsQueueConnectionFactory"/>
+        <property name="defaultDestination" ref="marketPlatformRequestQueue"/>
+        <property name="sessionTransacted" value="true" />
+    </bean>
+
+</beans>

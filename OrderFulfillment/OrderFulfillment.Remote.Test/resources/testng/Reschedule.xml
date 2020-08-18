@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="OrderFulfillment.Remote.Reschedule" thread-count="1">
+    <test name="BuyerAcceptReschedule" >
+        <groups><run><include name="init" /></run></groups>
+        <classes>
+            <class name="com.servicelive.orderfulfillment.remote.test.workflow.RescheduleTests">
+                <methods>
+                    <include name="createServiceOrder"/>
+                    <include name="postServiceOrder"/>
+                    <include name="acceptServiceOrder"/>
+                    <include name="providerRequestReschedule" />
+                    <include name="buyerAcceptReschedule" />
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="ProviderAcceptReschedule" >
+        <groups><run><include name="init" /></run></groups>
+        <classes>
+            <class name="com.servicelive.orderfulfillment.remote.test.workflow.RescheduleTests">
+                <methods>
+                    <include name="createServiceOrder"/>
+                    <include name="postServiceOrder"/>
+                    <include name="acceptServiceOrder"/>
+                    <include name="buyerRequestReschedule" />
+                    <include name="providerAcceptReschedule" />
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>

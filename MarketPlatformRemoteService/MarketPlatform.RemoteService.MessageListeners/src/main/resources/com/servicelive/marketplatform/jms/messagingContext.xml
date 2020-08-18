@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+    >
+
+    <import resource="classpath:com/servicelive/marketplatform/jms/jmsContext.xml" />
+    
+    <!--
+    ################################################################################
+    # Listeners
+    ################################################################################
+    -->
+    <bean id="notificationListener" class="com.servicelive.marketplatform.jms.NotificationMessageListener">
+        <property name="marketPlatformNotificationBO" ref="notificationService" />
+    </bean>
+
+    <bean id="buyerDocumentMessageListener" class="com.servicelive.marketplatform.jms.BuyerDocumentMessageListener">
+        <property name="marketPlatformBuyerBO" ref="mktPlatformBuyerBO" />
+    </bean>
+
+    <!--
+    ################################################################################
+    # JMS Containers
+    ################################################################################
+    -->
+    <!--<bean id="jtaTransactionManager" class="org.springframework.transaction.jta.JtaTransactionManager" />-->
+
+    <bean id="notificationListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="destination" ref="marketPlatformRequestQueue" />
+        <property name="connectionFactory" ref="marketPlatformJmsQueueConnectionFactory" />
+        <property name="messageListener" ref="notificationListener" />
+        <property name="messageSelector" value="Payload = 'ServiceOrderNotificationTask'" />
+        <property name="sessionTransacted" value="true"/>
+    </bean>
+
+    <bean id="buyerDocumentMessageListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="destination" ref="marketPlatformRequestQueue" />
+        <property name="connectionFactory" ref="marketPlatformJmsQueueConnectionFactory" />
+        <property name="messageListener" ref="buyerDocumentMessageListener" />
+        <property name="messageSelector" value="Payload = 'ServiceOrderBuyerDocumentsVO'" />
+        <property name="sessionTransacted" value="true"/>
+    </bean>
+
+</beans>

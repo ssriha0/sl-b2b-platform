@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+    <package name="powerAuditorWorkflowController" extends="ServiceLiveBase" >
+    	<default-interceptor-ref name="ServiceLiveBaseInterceptorStack" />
+       	<action name="powerAuditorWorkflowControllerAction_*" class="powerAuditorWorkflowControllerAction" method="{1}">
+				<result name="success">/jsp/admin/audit_workflow_queue.jsp</result>
+				<result name="notFound">/jsp/admin/audit_workflow_not_found.jsp</result>
+				<result name="loadLicenceandcert" type="redirectAction">
+				 	<param name="actionName">licensesAndCertActiondoLoad.action?auditTimeLoggingId=${auditTimeLoggingId}</param>
+				</result>
+				<result name="loadTeamLicenceandcert" type="redirectAction">
+				 	<param name="actionName">teamCredentialActionloadCredentialDetails.action?auditTimeLoggingId=${auditTimeLoggingId}</param>
+				</result>
+				<result name="loadVendorInsurance" type="redirectAction">
+				 	<param name="actionName">loadInsuranceActiondoLoad.action?auditTimeLoggingId=${auditTimeLoggingId}</param>
+				</result>
+		</action>
+	</package>
+</struts>

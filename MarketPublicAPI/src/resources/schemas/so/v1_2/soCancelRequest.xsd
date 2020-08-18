@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema  xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"  elementFormDefault="qualified" jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+	<!-- Root element -->
+	<xs:element name="soCancelRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="identification" type="IdentificationType" />
+				<xs:element name="cancelReason" minOccurs="1" maxOccurs="1">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:maxLength value="120" />
+							<xs:minLength value="1" />
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="cancelComment" minOccurs="1" maxOccurs="1">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:maxLength value="700" />
+							<xs:minLength value="1" />						
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element> 
+				<xs:element name="cancelAmount" type="price-format" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="providerPaymentReqd" type="xs:string"
+					default="Yes" />
+				<xs:element name="providerPaymentAcknowledgement" type="xs:string"
+					default="No" />
+				<xs:element name="cancelSkus" type="cancelSku"
+					minOccurs="0"  maxOccurs="1" />					
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- User Identification element -->
+	<xs:complexType name="IdentificationType">
+		<xs:sequence>
+			<xs:element name="id" type="xs:integer" />
+		</xs:sequence>
+		<xs:attribute name="type" type="identificationTypeEnum"
+			use="required" />
+	</xs:complexType>
+
+	<!-- Work order SKU -->
+	<xs:complexType name="cancelSku">
+		<xs:sequence>
+	            <xs:element name="sku" type="workOrder" maxOccurs="unbounded"/>
+	    </xs:sequence>		
+	</xs:complexType>
+	
+	<xs:complexType name="workOrder">
+		<xs:sequence>
+			<xs:element name="cancellationSKU" type="xs:string" />
+			<xs:element name="cancellationAmount" type="price-format" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:simpleType name="identificationTypeEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="BuyerResourceId" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="price-format">
+		<xs:restriction base="xs:decimal">
+			<xs:minInclusive value="0" />
+			<xs:fractionDigits value="2" />
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

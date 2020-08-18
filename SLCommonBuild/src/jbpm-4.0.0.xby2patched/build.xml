@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="jBPM Patch" default="dist" basedir=".">
+    <description>jBPM Patch Build</description>
+  <!-- set global properties for this build -->
+  <property name="src" location="src"/>
+  <property name="build_dir" location="target/classes"/>
+  <property name="pkg_dir" location="target/dist"/>
+  <property name="dist_dir"  location="../../lib/deployables"/>
+  <property name="orig-jbpm-jar" value="jbpm-4.0.GA.jar" />
+  <property name="dest-jbpm-jar" value="${pkg_dir}/jbpm-4.0.0.xby2patched.jar" />
+
+  <path id="jbpm-compile-classpath">
+	<fileset dir="${dist_dir}">
+		<include name="jta-1.1.jar" />
+	</fileset>
+  	<pathelement location="${orig-jbpm-jar}" />
+  </path>
+	
+  <target name="init">
+    <!-- Create the build directory structure used by compile -->
+	<delete dir="${build_dir}" />
+	<delete dir="${pkg_dir}" />
+  	<mkdir dir="${build_dir}"/>
+  	<mkdir dir="${pkg_dir}"/>
+  </target>
+
+  <target name="compile" depends="init" description="compile the source " >
+    <!-- Compile the java code from ${src} into ${build_dir} -->
+	<javac srcdir="${src}" destdir="${build_dir}" debug="on">
+		<classpath refid="jbpm-compile-classpath" />
+	</javac>
+  </target>
+
+  <target name="update_jar" depends="compile" description="update jbpm jar" >
+	<copy file="${orig-jbpm-jar}" tofile="${dest-jbpm-jar}" />
+    <jar jarfile="${dest-jbpm-jar}" basedir="${build_dir}" update="true" />
+  </target>
+  
+  <target name="dist" depends="update_jar" description="copy to lib" >
+	<copy file="${dest-jbpm-jar}" todir="${dist_dir}" />
+  </target>
+
+</project>

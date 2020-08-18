@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<!--
+  This file overrides targets in asl-java-test.xml to add support for:
+    - compiling groovy unit tests
+    - copying resources from src/test/resources, instead of inline with the src files
+    - test-unit and test-integration targets will use files from these directories:
+        - src/test/unit/java
+        - src/test/integration/java
+ -->
+<project name="sl-test">
+    <dirname property="java-test.basedir" file="${ant.file.asl-java-test}" />
+
+    <property name="sl-unit.resources-dir" location="src/test/resources" />
+
+    <property name="sl-test.unit-src-dir" location="src/test/unit/java" />
+    <property name="sl-test.int-src-dir" location="src/test/integration/java" />
+
+    <property name="sl-test.unit-classes-dir" location="${java-test.classes-dir}-unit" />
+    <property name="sl-test.int-classes-dir" location="${java-test.classes-dir}-int" />
+
+
+<!-- ===================================================================================
+        Overridden Targets
+     =================================================================================== -->
+    <target name="-test-prepare" depends="-test-compile, -test-copy-resources, -test-instrument"/>
+
+    <target name="test-run-unit" depends="-test-init-fileset-unit, -test-prepare" 
+            description="Runs only unit tests, not integration.">
+        <junit-asl test-fileset-refid="java-test.unit-fileset"/>
+    </target>
+
+    <target name="test-run-integration" depends="-test-init-fileset-integration, -test-prepare"
+            description="Runs only integration tests, not unit.">
+        <junit-asl test-fileset-refid="java-test.integration-fileset"/>
+    </target>
+
+
+    <!-- Override asl-java-test's version to add groovy support.  For this to work, 
+         java/groovy need to share symbols, hence the nested java task.
+         Note that javac uses groovyc's src, dest, and classpath attrs.
+    -->
+    <target name="-test-compile" depends="dist">
+        <antcall target="-test-compile-helper" inheritRefs="true">
+            <param name="tch.src-dir" value="${java-test.src-dir}"/>
+            <param name="tch.classes-dir" value="${java-test.classes-dir}"/>
+        </antcall>
+
+        <antcall target="-test-compile-helper" inheritRefs="true">
+            <param name="tch.src-dir" value="${sl-test.int-src-dir}"/>
+            <param name="tch.classes-dir" value="${sl-test.int-classes-dir}"/>
+            <param name="tch.doMove" value="${tch.useInt}"/>
+        </antcall>
+
+        <antcall target="-test-compile-helper" inheritRefs="true">
+            <param name="tch.src-dir" value="${sl-test.unit-src-dir}"/>
+            <param name="tch.classes-dir" value="${sl-test.unit-classes-dir}"/>
+            <param name="tch.doMove" value="${tch.useUnit}"/>
+        </antcall>
+    </target>
+
+
+    <target name="-test-compile-helper">
+        <if><available type="dir" file="${tch.src-dir}" />
+            <then>
+                <mkdir dir="${tch.classes-dir}"/>
+                <groovyc srcdir="${tch.src-dir}" destdir="${tch.classes-dir}" classpathref="java-test.classpath" stacktrace="true">
+                    <javac debug="on" />
+                </groovyc>
+                <if><equals arg1="1" arg2="${tch.doMove}" />
+                    <then>
+                        <move todir="${java-test.classes-dir}" overwrite="true" failonerror="true">
+                            <fileset dir="${tch.classes-dir}">
+                                <include name="**/*" />
+                            </fileset>
+                        </move>
+                        <delete dir="${tch.classes-dir}" failonerror="false" quiet="true" />
+                    </then>
+                </if>
+            </then>
+        </if>
+    </target>
+
+
+    <!-- Override asl-java-test's version to use src/test/resources as the srcdir
+         instead of allowing resources within the java/groovy src tree -->
+    <target name="-test-copy-resources">
+        <if><available type="dir" file="${sl-unit.resources-dir}" />
+            <then>
+                <copy todir="${java-test.classes-dir}" verbose="true">
+                    <fileset dir="${sl-unit.resources-dir}">
+                        <exclude name="**/*.java"/>
+                    </fileset>
+                </copy>
+            </then>
+        </if>
+    </target>
+
+
+    <target name="-test-init-fileset-unit">
+        <property name="tch.useUnit" value="1" />
+        <fileset id="java-test.unit-fileset" dir="${java-test.classes-dir}">
+            <include name="**/*Test.class"/>
+            <exclude name="**/*IntegrationTest.class"/>
+        </fileset>
+    </target>
+
+
+    <target name="-test-init-fileset-integration">
+        <property name="tch.useInt" value="1" />
+        <fileset id="java-test.integration-fileset" dir="${java-test.classes-dir}">
+            <include name="**/*IntegrationTest.class"/>
+        </fileset>
+    </target>
+
+</project>

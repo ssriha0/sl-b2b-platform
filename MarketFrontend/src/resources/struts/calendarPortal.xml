@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+
+	<package name="calendar_portal" extends="ServiceLiveBase,json-default">
+		<default-interceptor-ref name="ServiceLiveBaseInterceptorStack" />
+
+		<global-results>
+			<result name="error" type="redirectAction">
+				<param name="actionName">errorAction</param>
+				<param name="errorMessage">${errorMessage}</param>
+				<param name="returnURL">${returnURL}</param>
+			</result>
+		</global-results>
+
+		<action name="calendarAction" class="calendarPortalAction"
+			method="initPage">
+			<result name="success">/jsp/calendarPortal/calendar_portal.jsp
+			</result>
+			<result name="error">/jsp/public/error/body/errorBody.jsp</result>
+		</action>
+
+		<action name="calendarAction_getVendorEvents" class="calendarPortalAction"
+			method="getVenderEvents">
+			<result type="json">
+				<param name="noCache">true</param>
+				<param name="excludeNullProperties">true</param>
+				<param name="root">jsonString</param>
+			</result>
+		</action>
+		
+		<action name="calendarAction_acceptSO" class="calendarPortalAction"
+			method="acceptSO">
+			<result type="json">
+				<param name="noCache">true</param>
+				<param name="excludeNullProperties">true</param>
+				<param name="root">jsonString</param>
+			</result>
+		</action>
+		
+		<action name="calendarAction_rejectSO" class="calendarPortalAction"
+			method="rejectSO">
+			<result type="json">
+				<param name="noCache">true</param>
+				<param name="excludeNullProperties">true</param>
+				<param name="root">jsonString</param>
+			</result>
+		</action>
+
+		<action name="calendarAction_ping" class="calendarPortalAction"
+			method="pingAJAX">
+			<result type="json">
+				<param name="noCache">true</param>
+				<param name="excludeNullProperties">true</param>
+				<param name="root">jsonString</param>
+			</result>
+		</action>
+		
+		<action name="externalCalendarIntegration" class="calendarPortalAction"
+			method="externalCalIntegration">
+			<result name="success">/jsp/calendarPortal/external_calendar_integration.jsp
+			</result>
+			<result name="error">/jsp/public/error/body/errorBody.jsp</result>
+		</action>
+	</package>
+</struts>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project basedir="../" default="compile-dependencies" name="ServiceLiveWebUtil-BuildAll">
+	<target name="compile-dependencies">
+		<ant antfile="../MarketDojoSrc/wildfly-build.xml" dir="../MarketDojoSrc"/>
+		<ant antfile="wildfly-build/build.xml" />
+	</target>
+	
+	<target name="clean">
+		<delete dir="dist"/>
+	</target>
+	
+</project>
+

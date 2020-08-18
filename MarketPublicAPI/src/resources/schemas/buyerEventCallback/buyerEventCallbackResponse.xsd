@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/buyereventcallback" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.servicelive.com/namespaces/buyereventcallback" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" elementFormDefault="qualified">
+<xs:include schemaLocation="../common.xsd" id="xcom"/>
+	<xs:element name="buyerEventCallbackResponse">
+  	<xs:complexType>
+      	<xs:sequence>
+        	<xs:element ref="results"/>
+        	<xs:element name="eventId" type="xs:integer" minOccurs="0"/>
+        	<xs:element name="filterNames" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

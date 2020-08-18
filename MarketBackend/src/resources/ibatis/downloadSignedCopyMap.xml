@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="downloadSignedCopy">
+  <typeAlias alias="signedCopyVo" type="com.newco.marketplace.vo.downloadsignedcopy.SignedCopyVO"/>
+   <select id="downloadSignedCopyForSo.query" resultClass ="signedCopyVo" parameterClass ="java.util.HashMap">
+      SELECT sd.so_id AS soId,
+             d.doc_path AS filePath,
+             d.file_name AS fileName,
+             d.doc_size AS fileSize,
+             vr.user_name AS uploadedBy,
+             d.created_date AS uploadedDate
+      FROM document d, so_document  sd,vendor_resource vr 
+      WHERE d.title = #title#
+      AND sd.document_id= d.document_id
+      AND sd.so_id=#soId# 
+      AND d.entity_id = vr.resource_id
+      LIMIT 1;
+   </select>
+   <select id="downloadSignedCopyForSoList.query"  parameterClass="java.util.HashMap" resultClass="signedCopyVo">
+      SELECT sd.so_id AS soId,
+             d.doc_path AS filePath,
+             d.file_name AS fileName,
+             d.doc_size AS fileSize,
+             CONCAT(COALESCE(c.first_name,''),' ',COALESCE(c.last_name,''))
+             AS uploadedBy,
+             d.created_date AS uploadedDate
+      FROM document d, so_document  sd,contact c,vendor_resource vr
+      WHERE d.title = 'Signed Customer Copy Including Waiver of Lien'
+      AND sd.document_id= d.document_id
+      AND sd.so_id IN
+         <iterate property="soId" open="(" close=")" conjunction=",">
+			#soId[]#
+		</iterate>
+      AND d.entity_id = vr.resource_id
+      AND vr.contact_id = c.contact_id
+      AND d.file_name NOT LIKE '%_Thumb%'
+      AND d.delete_ind = 0
+   </select>
+   
+    <select id="downloadSODocumentsForSoList.query"  parameterClass="java.lang.String" resultClass="signedCopyVo">
+      SELECT sd.so_id AS soId,
+             d.doc_path AS filePath,
+             d.title AS docTitle,
+             d.file_name AS fileName,
+             d.doc_size AS fileSize,
+             CONCAT(COALESCE(c.first_name,''),' ',COALESCE(c.last_name,''))
+             AS uploadedBy,
+             d.created_date AS uploadedDate
+      FROM document d, so_document  sd,contact c,buyer_resource br
+      WHERE sd.document_id= d.document_id
+      AND sd.so_id = #soId#
+      AND d.entity_id = br.resource_id
+      AND br.contact_id = c.contact_id
+      AND d.file_name NOT LIKE '%_Thumb%'
+      AND d.delete_ind = 0 AND d.role_id=3
+      
+      UNION
+      
+           SELECT sd.so_id AS soId,
+             d.doc_path AS filePath,
+             d.title AS docTitle,
+             d.file_name AS fileName,
+             d.doc_size AS fileSize,
+             CONCAT(COALESCE(c.first_name,''),' ',COALESCE(c.last_name,''))
+             AS uploadedBy,
+             d.created_date AS uploadedDate
+      FROM document d, so_document  sd,contact c,vendor_resource vr
+      WHERE sd.document_id= d.document_id
+      AND sd.so_id = #soId#
+      AND d.entity_id = vr.resource_id
+      AND vr.contact_id = c.contact_id
+      AND d.file_name NOT LIKE '%_Thumb%'
+      AND d.delete_ind = 0 AND d.role_id=1
+   </select>
+   
+      <select id="downloadSODocumentsBuyerForSoList.query"  parameterClass="java.lang.String" resultClass="signedCopyVo">
+      SELECT sd.so_id AS soId,
+             d.doc_path AS filePath,
+             d.title AS docTitle,
+             d.file_name AS fileName,
+             d.doc_size AS fileSize,
+             CONCAT(COALESCE(c.first_name,''),' ',COALESCE(c.last_name,''))
+             AS uploadedBy,
+             d.created_date AS uploadedDate
+      FROM document d, so_document  sd,contact c,buyer_resource br
+      WHERE sd.document_id= d.document_id
+      AND sd.so_id = #soId#
+      AND d.entity_id = br.resource_id
+      AND br.contact_id = c.contact_id
+      AND d.file_name NOT LIKE '%_Thumb%'
+      AND d.delete_ind = 0 AND d.role_id=3
+   </select>
+   
+   <select id="downloadSODocumentsProviderForSoList.query"  parameterClass="java.lang.String" resultClass="signedCopyVo">
+      SELECT sd.so_id AS soId,
+             d.doc_path AS filePath,
+             d.title AS docTitle,
+             d.file_name AS fileName,
+             d.doc_size AS fileSize,
+             CONCAT(COALESCE(c.first_name,''),' ',COALESCE(c.last_name,''))
+             AS uploadedBy,
+             d.created_date AS uploadedDate
+      FROM document d, so_document  sd,contact c,vendor_resource vr
+      WHERE sd.document_id= d.document_id
+      AND sd.so_id = #soId#
+      AND d.entity_id = vr.resource_id
+      AND vr.contact_id = c.contact_id
+      AND d.file_name NOT LIKE '%_Thumb%'
+      AND d.delete_ind = 0 AND d.role_id=1
+   </select>
+   
+   
+   <select id="downloadSignedCopy.validateSoId" parameterClass="java.lang.String" resultClass="java.lang.String">
+        SELECT so_id FROM so_hdr WHERE so_id = #value#
+   </select>
+   <select id="downloadSignedCopy.validateBuyerId" parameterClass = "java.lang.Integer" resultClass= "java.lang.Integer" >
+        SELECT buyer_id FROM buyer WHERE buyer_id = #value#
+   </select>
+   <select id="downloadSignedCopy.fetchSOStatus" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT h.wf_state_id FROM so_hdr h WHERE h.so_id = #value# AND h.wf_state_id IN(160,180)
+   </select>
+   <select id="downloadSignedCopy.validateSoAssociation" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+        SELECT buyer_id FROM so_hdr WHERE so_id=#soId# and buyer_id =#buyerId#
+   </select>
+</sqlMap> 

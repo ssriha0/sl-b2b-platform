@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="campaign.activation">
+	
+	<typeAlias alias="campaignActivationVO" type="com.servicelive.spn.common.detached.CampaignActivationVO"/>
+
+	<resultMap id="campaignActivationVOResultMap" class="campaignActivationVO">
+		<result property="campaignId" column="campaign_id" />
+		<result property="campaignName" column="campaign_name" />
+		<result property="endDate" column="end_date" />
+		<result property="startDate" column="start_date" />
+		<result property="state" column="state" />
+	</resultMap>
+
+	<select id="getcampaigns" parameterClass="java.util.Map" resultClass="campaignActivationVO" resultMap="campaignActivationVOResultMap">
+		<![CDATA[
+		select 
+		sch.campaign_id as campaign_id,
+		sch.campaign_name,
+		sch.end_date,
+		sch.start_date,
+		sws.wf_entity_state as state
+		from
+		spnet_campaign_hdr sch,
+		spnet_workflow_status sws
+		where
+		sch.campaign_id = sws.entity_id
+		and sws.wf_entity_id = 'CAMPAIGN'
+		and sws.wf_entity_state = 'CAMPAIGN APPROVED'
+		and sch.start_date <= #now# 
+		and sch.end_date >= #now#
+		]]>
+	</select>
+
+	<select id="getexpiredcampaigns" parameterClass="java.util.Map" resultClass="campaignActivationVO" resultMap="campaignActivationVOResultMap">
+	<![CDATA[
+		select 
+		sch.campaign_id as campaign_id,
+		sch.campaign_name,
+		sch.end_date,
+		sch.start_date,
+		sws.wf_entity_state as state
+		from
+		spnet_campaign_hdr sch,
+		spnet_workflow_status sws
+		where
+ 		sch.campaign_id = sws.entity_id
+		and sws.wf_entity_id = 'CAMPAIGN' 
+		and sws.wf_entity_state = 'CAMPAIGN ACTIVE'
+		and sch.end_date < #now#
+		]]>	
+	</select>
+
+	<update id="updatecampaign" parameterClass="campaignActivationVO">
+		update spnet_workflow_status
+		set
+		wf_entity_state = #state#, 
+		modified_date = #modifiedDate#,
+		comments = null
+		where
+		wf_entity_id = 'CAMPAIGN' and
+		entity_id = #campaignId#
+	</update>
+
+</sqlMap>

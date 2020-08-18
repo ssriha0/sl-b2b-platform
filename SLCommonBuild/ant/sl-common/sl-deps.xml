@@ -1,0 +1,127 @@
+<project name="sl-deps">
+    <description>
+        Common targets for handling dependent and legacy projects.
+    </description>
+
+
+<!-- ===================================================================================
+        COMMON TARGETS
+     =================================================================================== -->
+
+    <target name="clean-generated"
+            description="Call 'clean' against self and all generated projects defined in your build-deps">
+        <antcall target="-depends">
+            <param name="target" value="clean" />
+        </antcall>
+    </target>
+
+
+    <target name="getlatest-generated" depends="-svn-version-check"
+            description="Call 'getlatest' against self and all generated projects defined in your build-deps">
+        <antcall target="-depends">
+            <param name="target" value="getlatest" />
+        </antcall>
+    </target>
+
+    <target name="showdepends" depends="-init"
+            description="Dump the generated project dependency tree to the console">
+        <groovy src="${sl-common.ant-dir}/sl-common/groovy/depends.groovy" />
+    </target>
+
+
+<!-- ===================================================================================
+        Private Helper Targets do NOT include 'description' attr in target element
+          and (per ASL conventions) start with a hyphen.
+     =================================================================================== -->
+
+    <!-- Having trouble calling <Ant> directly from groovy. Workaround. -->
+    <target name="-groovy-call-ant">
+        <!-- <echo>####### ant dir="${groovy-call-ant-dir}" antfile="${groovy-call-ant-file}" target="${target}" inheritAll="false"</echo>-->
+        <ant dir="${groovy-call-ant-dir}" antfile="${groovy-call-ant-file}" target="${target}" inheritAll="false" />
+    </target>
+
+
+    <target name="-depends" depends="-init">
+            <!-- description="Call 'dist' (or ${target}) against self and all generated projects defined in your build-deps"-->
+
+        <property name="target" value="dist" />
+
+        <groovy src="${sl-common.ant-dir}/sl-common/groovy/depends.groovy" />
+
+        <!-- Now build ourself -->
+        <antcall target="${target}" />
+    </target>
+
+
+    <!-- Look for legacy project build/build.xml, or build.xml, 
+            invoke default target (or clean), and copy dist/Project.jar to ${generated} -->
+    <target name="-legacy-build">
+        <echo level="info">
+===============================================================================
+                                ${legacyname} [${target}]
+===============================================================================</echo>
+
+        <available property="legacy-antfile" value="build/build.xml" file="${sl-common.branch-dir}/${legacyname}/build/build.xml" />
+        <available property="legacy-antfile" value="build.xml" file="${sl-common.branch-dir}/${legacyname}/build.xml" />
+        <fail message="Can't find build.xml for ${legacyname}.  You can override this with the legacy-antfile property." unless="legacy-antfile" />
+
+        <if><equals arg1="dist" arg2="${target}" />
+            <then>
+                <ant dir="${sl-common.branch-dir}/${legacyname}" inheritAll="false" antfile="${legacy-antfile}" />
+                <copy todir="${generated}" overwrite="true" failonerror="false"
+                      file="${sl-common.branch-dir}/${legacyname}/dist/${legacyname}.jar" />
+            </then>
+        <elseif>
+            <equals arg1="clean" arg2="${target}" />
+            <then>
+                <ant dir="${sl-common.branch-dir}/${legacyname}" target="${target}" inheritAll="false" antfile="${legacy-antfile}" />
+                <delete file="${generated}/${legacyname}.jar" failonerror="false" />
+            </then>
+        </elseif>
+        <elseif>
+            <equals arg1="compile" arg2="${target}" />
+            <then>
+                <ant dir="${sl-common.branch-dir}/${legacyname}" target="${target}" inheritAll="false" antfile="${legacy-antfile}" />
+            </then>
+        </elseif>
+        <else>
+            <echo level="warn">Don't know how to do a ${target} on legacy ${legacyname}'s ${legacy-antfile}.</echo>
+        </else>
+        </if>
+    </target>
+
+
+
+<!-- ===================================================================================
+        LEGACY DEPENDENCIES (remove these as new build.xml scripts are created for them)
+     =================================================================================== -->
+    <target name="MarketFrontend.war">
+        <antcall target="-legacy-build">
+            <param name="legacyname" value="MarketFrontend" />
+        </antcall>
+    </target>
+
+    <target name="MarketBusinessInterface">
+        <antcall target="-legacy-build">
+            <param name="legacyname" value="MarketBusinessInterface" />
+        </antcall>
+    </target>
+
+
+    <target name="ServiceLiveCommonDomain">
+        <antcall target="-legacy-build">
+            <param name="legacyname" value="ServiceLiveCommonDomain" />
+        </antcall>
+    </target>
+
+    <!-- sl-deps now finds MC/build/build-asl.xml.  BUT, OVERRIDE since MC/src/main/java 
+         don't exist yet, and MFE is still looking for jar in /dist... -->
+    <target name="MarketCommon">
+        <antcall target="-legacy-build">
+            <param name="legacyname" value="MarketCommon" />
+        </antcall>
+    </target>
+
+</project>
+
+

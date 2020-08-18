@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd"
+   	default-autowire="byName" >
+   
+	<bean id="dataSourceMySQL" class="com.mysql.jdbc.jdbc2.optional.MysqlDataSource" lazy-init="true">
+		<property name="url">
+			<value>jdbc:mysql://localhost:6446/supplier_prod</value>
+		</property>
+		<property name="user">
+			<value>supply_usr</value>
+		</property>
+		<property name="password">
+			<value>supply</value>
+		</property>
+	</bean>	
+	
+ 	<bean id="jbpm-config-name" class="java.lang.String">
+		<constructor-arg value="of.jbpm.online.cfg.xml" />
+	</bean>
+	
+<!-- imported from OF context -->
+    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+    
+    <bean id="entityManagerFactory"
+        class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource">
+            <ref bean="dataSourceMySQL" />
+        </property>
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <property name="database" value="MYSQL" />
+                <property name="showSql" value="true" />
+                <property name="generateDdl" value="false" />
+                <property name="databasePlatform" value="org.hibernate.dialect.MySQLInnoDBDialect" />
+            </bean>
+        </property>
+        <property name="persistenceUnitName" value="OrderFulfillment.Domain" />
+    </bean>
+    
+    <!-- use the following declaration for JPA transaction manager -->
+
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory" />
+        <property name="dataSource">
+            <ref bean="dataSourceMySQL" />
+        </property>
+    </bean>
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+
+<!-- jBPM bootstrapping -->  
+   <import resource="classpath:/com/servicelive/orderfulfillment/contexts/jBPMContext.xml"/>
+
+	<bean id="timerTestDeployer" class="com.servicelive.orderfulfillment.jbpm.WFProcessDeploymentManager">
+		<constructor-arg ref="repositoryService" />
+		<constructor-arg>
+			<list>
+		 		<value>classpath:/com/servicelive/orderfulfillment/process.jpdl.xml</value>
+			</list>
+		</constructor-arg>
+	</bean>
+	
+ <!-- DAO objects  --> 	
+ 	<bean id="serviceOrderDao" class="com.servicelive.orderfulfillment.dao.ServiceOrderDao" />	
+ 	<bean id="templateDao" class="com.servicelive.orderfulfillment.dao.TemplateDao" />
+    <bean id="serviceOrderProcessDao" class="com.servicelive.orderfulfillment.dao.ServiceOrderProcessDao" />
+
+	<bean id="workflowManagerProxy" class="com.servicelive.orderfulfillment.jbpm.WorkflowManagerProxy">
+		<property name="serviceOrderWFManager" ref="soWorkflowManager" />
+	</bean>
+<!-- Service Order Types -->
+	<bean id="defaultServiceOrder" class="com.servicelive.orderfulfillment.ordertype.ServiceOrderType">
+		<property name="soTypeName" value="SB" />
+		<property name="buyerId" value="-1" />	
+		<property name="WFProcessDefinitionName" value="SB_ServiceOrderBPM" />
+	</bean>
+
+<!-- so commands infrastructure objects -->	
+	<bean id="soCommandResolver" class="com.servicelive.orderfulfillment.command.util.SOCommandResolver">
+		<property name="serviceOrderDao" ref="serviceOrderDao"/>
+		<property name="serviceOrderProcessDao" ref="serviceOrderProcessDao"/>
+		<property name="gateWay" ref="gateWay"/>
+	</bean>
+	<bean id="soCommandRunner" class="com.servicelive.orderfulfillment.command.util.SOCommandRunner">
+		<property name="soCommandResolver" ref="soCommandResolver"/>
+	</bean>
+
+<!-- so commands 
+    <import resource="classpath:/com/servicelive/orderfulfillment/contexts/soCommandContext.xml"/>
+ -->	
+    	
+	<bean id="gateWay" class="com.servicelive.orderfulfillment.jbpm.WalletGateway" />
+
+    <bean id="baseSODecision" class="com.servicelive.orderfulfillment.decision.AbstractServiceOrderDecision" abstract="true">
+        <property name="serviceOrderDao" ref="serviceOrderDao"/>
+    </bean>
+	
+	<bean id="serviceOrderDraftStateCheck" class="com.servicelive.orderfulfillment.jbpm.decisions.ServiceOrderDraftStateCheck" />
+
+	<bean id="fundsConfirmedCheck" class="com.servicelive.orderfulfillment.jbpm.decisions.FundsConfirmedCheck" parent="baseSODecision">
+		<property name="gateWay" ref="gateWay"/>
+	</bean>	
+	<bean id="isAutoFunded" class="com.servicelive.orderfulfillment.jbpm.decisions.IsAutoFunded" parent="baseSODecision">
+		<property name="gateWay" ref="gateWay"/>
+	</bean>
+	<bean id="availableBalanceCheck" class="com.servicelive.orderfulfillment.jbpm.decisions.AvailableBalanceCheck" parent="baseSODecision">
+		<property name="gateWay" ref="gateWay"/>
+	</bean>
+
+	<bean id="areFundsRequired" class="com.servicelive.orderfulfillment.jbpm.decisions.AreFundsRequired" parent="baseSODecision" />
+	<bean id="isPostCommandDone" class="com.servicelive.orderfulfillment.jbpm.decisions.AreFundsRequired" parent="baseSODecision" />
+	<bean id="serviceDateTimePastCheck" class="com.servicelive.orderfulfillment.jbpm.decisions.ServiceDateTimePastCheck" parent="baseSODecision" />
+    <bean id="serviceDateTimeReachedCheck" class="com.servicelive.orderfulfillment.jbpm.decisions.ServiceDateTimeReachedCheck" parent="baseSODecision" />
+    <bean id="isOrderTypeNameYourPrice" class="com.servicelive.orderfulfillment.jbpm.decisions.OrderTypeCheck" parent="baseSODecision" />
+    <bean id="cancellationPenaltyCheck" class="com.servicelive.orderfulfillment.jbpm.decisions.CancellationPenaltyCheck" parent="baseSODecision" />
+    <bean id="sendAllRejectAlertDecision" class="com.servicelive.orderfulfillment.jbpm.decisions.SendAllRejectAlertDecision" parent="baseSODecision" />
+    <bean id="autoRouteEligibilityCheck" class="com.servicelive.orderfulfillment.jbpm.decisions.AutoRouteEligibilityCheck" parent="baseSODecision" />
+    <bean id="autoRouteBehaviorCheck" class="com.servicelive.orderfulfillment.jbpm.decisions.AutoRouteBehaviorCheck" parent="baseSODecision" />
+    <bean id="autoRouteTierIncrementCheck" class="com.servicelive.orderfulfillment.jbpm.decisions.AutoRouteTierIncrementCheck" parent="baseSODecision" />
+	<bean id="areKeyFieldsChanged" class="com.servicelive.orderfulfillment.jbpm.decisions.AutoRouteTierIncrementCheck" parent="baseSODecision"/>
+	<bean id="isAutoRoutedGroup" class="com.servicelive.orderfulfillment.jbpm.decisions.AutoRouteTierIncrementCheck" parent="baseSODecision"/>
+	<bean id="isTierTimerRequired" class="com.servicelive.orderfulfillment.jbpm.decisions.IsTieredTimerRequired" parent="baseSODecision"/>
+	<bean id="conditionalProvidersListCheck" class="com.servicelive.orderfulfillment.jbpm.decisions.IsTieredTimerRequired" parent="baseSODecision"/>
+	<bean id="locationAndTaskChangedCheck" class="com.servicelive.orderfulfillment.jbpm.decisions.IsTieredTimerRequired" parent="baseSODecision"/>
+	<bean id="scopeChangedCheck" class="com.servicelive.orderfulfillment.jbpm.decisions.IsTieredTimerRequired" parent="baseSODecision"/>
+	<bean id="spendLimitChanged" class="com.servicelive.orderfulfillment.jbpm.decisions.SpendLimitChanged" parent="baseSODecision"/>
+	
+	<bean id="TracingCmd" class="com.servicelive.orderfulfillment.jbpm.commands.BusyLoopCmd"/>
+	<bean id="SetAutoRoutingBehaviorCmd" class="com.servicelive.orderfulfillment.jbpm.commands.BusyLoopCmd"/>
+	<bean id="UpdateLegacyStatusCmd" class="com.servicelive.orderfulfillment.jbpm.commands.BusyLoopCmd"/>
+	<bean id="FireEventCmd" class="com.servicelive.orderfulfillment.jbpm.commands.BusyLoopCmd"/>
+	<bean id="updateServiceDateProcessVariableCmd" class="com.servicelive.orderfulfillment.jbpm.commands.BusyLoopCmd" />
+	<bean id="SaveBuyerDocumentsCmd" class="com.servicelive.orderfulfillment.jbpm.commands.BusyLoopCmd" />
+	<bean id="SavePromoFeeCmd" class="com.servicelive.orderfulfillment.jbpm.commands.BusyLoopCmd" />
+
+</beans>

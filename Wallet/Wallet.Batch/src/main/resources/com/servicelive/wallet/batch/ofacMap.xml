@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap>
+
+	<typeAlias alias="ofacprocessqueuevo" 
+		type="com.servicelive.wallet.batch.ofac.vo.OFACProcessQueueVO"/>
+		
+	<select id="OFAC.select"  resultClass="ofacprocessqueuevo">
+		select userType,entityId,TaxPayerId,userName as user,UserID,businessName,contactNumber,
+		firstName,lastName,email,street1,street2,city,state,ZipCode,aptNo,V1Account,V2Account,
+		CreatedDate,DateofBirth,AlternateIdType,AlternateIDCountryofIssuance,AlternateIDNumber from vw_ofac_info
+	</select>
+
+</sqlMap>

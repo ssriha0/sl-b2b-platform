@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <bean id="buyerAuthorization" class="com.servicelive.orderfulfillment.authorization.BuyerAuthorization"/>
+   		
+   	<bean id="acceptedProviderAuthorization" class="com.servicelive.orderfulfillment.authorization.AcceptedProviderAuthorization"/>
+   	
+   	
+   <bean id="acceptedProviderorAdminAuthorization" class="com.servicelive.orderfulfillment.authorization.AcceptedProviderOrAdminAuthorization"/>
+   	
+   		
+   	<bean id="routedProviderAuthorization" class="com.servicelive.orderfulfillment.authorization.RoutedProviderAuthorization"/>
+   	
+   	<bean id="adminAuthorization" class="com.servicelive.orderfulfillment.authorization.AdminAuthorization"/>
+
+    <bean id="buyerOrAdminAuthorization" class="com.servicelive.orderfulfillment.authorization.CompositeAuthorization">
+        <property name="authorizations">
+            <list>
+                <ref bean="buyerAuthorization"/>
+                <ref bean="adminAuthorization"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="buyerProviderOrAdminAuthorization" class="com.servicelive.orderfulfillment.authorization.CompositeAuthorization">
+        <property name="authorizations">
+            <list>
+                <ref bean="buyerAuthorization"/>
+                <ref bean="adminAuthorization"/>
+                <ref bean="routedProviderAuthorization"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="BuyerOrRoutedProviderAuthorization" class="com.servicelive.orderfulfillment.authorization.CompositeAuthorization">
+        <property name="authorizations">
+            <list>
+                <ref bean="buyerAuthorization"/>
+                <ref bean="routedProviderAuthorization"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="BuyerOrAcceptedProviderAuthorization" class="com.servicelive.orderfulfillment.authorization.CompositeAuthorization">
+        <property name="authorizations">
+            <list>
+                <ref bean="buyerAuthorization"/>
+                <ref bean="acceptedProviderAuthorization"/>
+            </list>
+        </property>
+    </bean>
+</beans>

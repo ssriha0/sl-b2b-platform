@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified" >
+	<xs:include schemaLocation="../../common.xsd" />
+	<xs:include schemaLocation="../../soMobileCommon.xsd" />
+	<xs:element name="soResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="results"/>
+				<xs:element name="serviceOrder" type="serviceOrderType" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:decimal"/>
+		</xs:complexType>
+		</xs:element>
+		
+	<xs:complexType name="serviceOrderType">
+	<xs:sequence>				
+		<xs:element name="soDetails" type="soDetailsType" minOccurs="0"/>
+	</xs:sequence>
+	</xs:complexType>		
+	<xs:complexType name="soDetailsType">
+		<xs:sequence>
+			<xs:element name="currentTripNo" type="xs:decimal" minOccurs="0" /> 
+			<xs:element name="latestTrip" type="LatestTripDetailsType" minOccurs="0" />		
+			<xs:element name="orderDetails" type="soSectionGeneralType" minOccurs="0"/>
+			<xs:element name="appointment" type="appointmentType" minOccurs="0"/>
+			<xs:element name="buyer" type="BuyerType" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="provider" type="providerType" minOccurs="0"/>
+			<xs:element name="serviceLocation" type="servicelocationType" minOccurs="0"/>
+			<xs:element name="alternateServiceLocation" type="altServicelocationType" minOccurs="0"/>
+			<xs:element name="scope" type="soScopeType" minOccurs="0"/>
+			<xs:element name="addonList" type="addOnListType" minOccurs="0"/> 
+			<xs:element name="parts" type="PartsType" minOccurs="0"/>
+			<xs:element name="merchandises" type="merchandisesType" minOccurs="0"/>	
+			<xs:element name="invoicePartsList" type="invoicePartsTypeForGetSO" minOccurs="0"/>		
+			<xs:element name="documents" type="documentsType" minOccurs="0"/>
+			<xs:element name="buyerRefPresentInd" type="mandatoryValueEnum" default="N" />
+			<xs:element name="buyerReferences" type="buyerReferencesType" minOccurs="0"/>
+			<xs:element name="notes" type="notesType" minOccurs="0"/>
+			<xs:element name="supportNotes" type="supportNotesType" minOccurs="0"/>	
+			<xs:element name="tripDetails" type="tripDetailsType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

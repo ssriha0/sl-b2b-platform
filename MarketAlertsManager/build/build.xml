@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Build.xml file for MarketAlertsManager -->
+
+<project name="MarketAlertsManager" basedir="../" default="distribute">
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+	<property name="dir.slCommonBuild.generated" value="../SLCommonBuild/lib/generated" />
+	<echo level="info">
+	===============================================================================
+	                                ${ant.project.name} 
+	===============================================================================</echo>
+	<target name="package" depends="distribute"/>
+	
+	<!-- Initialize -->
+	<target name="init">
+			<!-- Create the time stamp -->
+			<tstamp/>
+			<!-- Create build number file -->
+			<buildnumber />
+			<property name="dir.base" value="${basedir}" />
+
+			<property name="dir.app" value="${dir.base}/web" />
+			<property name="dir.source" value="${dir.base}/src" />
+			<property name="dir.dest" value="${dir.base}/bin" />
+			<property name="dir.build" value="${dir.base}/build" />
+		
+			<!-- JUnit source dir path -->
+			<property name="dir.src.test" value="${dir.base}/test"/>
+			<property name="dir.junit.report" value="${dir.base}/${ant.project.name}Reports" />
+			<property name="dir.slCommonBuild.nondeployables" value="../SLCommonBuild/lib/nondeployables"/>
+			<property name="dir.market.common.base" value="../MarketCommon" />
+			<property name="dir.service.live.web.util.base" value="../ServiceLiveWebUtil" />
+			<property name="deployables.lib" value="${dir.service.live.web.util.base}/lib/deployables"/>
+			<property name="struts2Deployables.lib" value="${dir.service.live.web.util.base}/lib/Struts2InitialDeployables"/>
+			<property name="nondeployables.lib" value="${dir.service.live.web.util.base}/lib/nondeployables"/>
+			<property name="dir.market.common.dist" value="${dir.market.common.base}/dist" />
+			<property name="env" value="dev" />
+			<property name="app.lastbuild.tag.auto" value="release_1_${build.number}_${env}_${DSTAMP}${TSTAMP}Ztest" />
+			<property name="dir.wallet.ServiceLive.Common.base" value="../Wallet/ServiceLive.Common" />
+			<property name="dir.market.responsys.base" value="../ResponsysClient" />
+			<property name="dir.market.responsys.dist" value="${dir.market.responsys.base}/target/dist" />
+		
+			<property name="dir.market.responsys.interact.base" value="../ResponsysInteractClient" />
+			<property name="dir.market.responsys.interact.dist" value="${dir.market.responsys.interact.base}/target/dist" />
+		
+			<!-- Folder containing uncompressed final release software-->
+			<property name="dir.dist" value="${dir.base}/dist"/>
+		
+			<path id="build.class.path">
+				<fileset dir="${deployables.lib}">
+					<include name="*.jar"/>
+				</fileset>
+				<fileset dir="${struts2Deployables.lib}">
+					<include name="*.jar"/>
+				</fileset>
+				<fileset dir="${nondeployables.lib}">
+					<include name="*.jar"/>
+				</fileset>							
+				<fileset dir="${dir.market.common.dist}">
+					<include name="*.jar"/>
+				</fileset>	
+				<fileset dir="${dir.wallet.ServiceLive.Common.base}/target/dist">
+					<include name="*.jar"/>
+				</fileset>  
+				<fileset dir="${dir.market.responsys.dist}">
+					<include name="*.jar"/>
+				</fileset>
+				
+				<fileset dir="${dir.market.responsys.interact.dist}">
+					<include name="*.jar"/>
+				</fileset>
+					
+				<fileset dir="${dir.slCommonBuild.nondeployables}">
+					<include name="mockito-all-1.8.4.jar"/>
+				</fileset>
+			</path>
+	</target>
+	
+	<!-- Clean the distribution folders -->
+	<target name="clean" depends="init">
+			<delete dir="${dir.dest}" failonerror="false"/>
+			<mkdir dir="${dir.dest}"/>
+			<delete dir="${dir.dist}" failonerror="false"/>
+			<mkdir dir="${dir.dist}"/>
+			<delete dir="${dir.junit.report}" failonerror="false"/>
+			<mkdir dir="${dir.junit.report}"/>	
+	</target>
+	
+	<target name="compile" depends="clean">
+				<javac
+					srcdir="${dir.source}"
+					destdir="${dir.dest}"
+					classpathref="build.class.path"
+					target="1.5"
+					source="1.5"
+					debug="on"
+					deprecation="false"
+				/>
+				<copy todir="${dir.dest}">
+					<fileset dir="${dir.source}">
+						<include name="**/*.xml"/>
+					</fileset>					
+					<fileset dir="${dir.source}">
+						<include name="**/*.xsd"/>
+					</fileset>
+					<fileset dir="${dir.source}">
+						<include name="**/*.properties"/>
+					</fileset>					
+				</copy>				
+	</target>
+							
+	<!-- Create the WAR file -->
+	<target name="jar" depends="compile">		
+
+		<!-- Build the WAR file -->
+		<jar compress="yes" jarfile="${dir.dist}/alerts.jar">
+			<fileset dir="${dir.dest}">
+				<include name="**/*.class"/>				
+				<include name="**/*.xml"/>				
+				<include name="**/*.xsd"/>				
+				<include name="**/*.properties"/>				
+				<include name="**/*.jar"/>			
+				<include name="${dir.base}/jars/*.jar"/>
+			</fileset>
+		</jar>
+	</target>
+
+	<target name="slcommonbuildcopy" depends="jar">
+	        <copy file="${dir.dist}/alerts.jar" tofile="${dir.slCommonBuild.generated}/MarketAlertsManager.jar" />
+	</target>
+	
+	<!-- Compile test junit source code -->
+	 <target name="compile-test" depends="slcommonbuildcopy" description="compile the junit source " >
+	 	<!-- Compile the java code from dir.src.test into dir.dest -->
+		<javac
+			srcdir="${dir.src.test}"
+			destdir="${dir.dest}"		
+			target="1.5"
+			source="1.5"
+			classpathref="build.class.path"
+			debug="on"
+			deprecation="false"	>
+	 	</javac>
+	 </target>
+	
+	<!-- Execute JUnit Tests -->
+	 <target name="junit-report" depends="compile-test" description="Execute Unit Tests" >
+		<junit fork="no" haltonfailure="false" printsummary="withOutAndErr" showoutput="yes">	
+	  		<classpath>
+	  			<path refid="build.class.path"/>
+	  			<pathelement location="${dir.dest}"/>
+	  			<pathelement path="${dir.slCommonBuild.nondeployables}/junit.jar"/>
+	  		</classpath>
+	   		<formatter type="xml" />
+	  			  		
+	  		<batchtest fork="no" todir="${dir.junit.report}" >
+	  				
+	  		 		<fileset dir="${dir.src.test}" >
+	  					<include name="**/*Test.java" />
+	  				</fileset>
+	  		</batchtest>
+	  			  		
+	  	</junit>
+	 	<echo message="Format the tests report" />
+	 			<junitreport todir="${dir.junit.report}">
+	 				<fileset dir="${dir.junit.report}">
+	 					<include name="TEST-*.xml" />
+	 				</fileset>
+	 				<report todir="${dir.junit.report}" />
+	 			</junitreport>
+	 </target>
+	
+	<target name="dist" depends="distribute" />
+	
+	<target name="distribute" depends="junit-report">
+	</target>
+	
+	<!-- Sonar Integration -->
+	<property name="dir.sonar.src" value="${basedir}/src" />
+	<property name="dir.sonar.ant.task" value="../SLCommonBuild/lib/nondeployables"/>
+	<import file="../../SLCommonBuild/ant/opt/ant-script-library/asl-java-sonar.xml"/>
+	<target name="sonar" depends="sonar-init, sonar-run">
+	</target>
+
+</project>
+			

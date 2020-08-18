@@ -1,0 +1,27 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="buyerSurvey" extends="ServiceLiveBase" >
+        <default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+        
+    	<global-results >
+			<result name="error" type="redirectAction">
+				<param name="actionName">errorAction</param>
+				<param name="errorMessage">${errorMessage}</param>
+				<param name="returnURL">${returnURL}</param>
+			</result>
+		</global-results>	   	
+        
+		
+	    <action name="buyerSurvey_*" class="buyerSurveyManagerAction" method="{1}">
+	        <result name="input">/jsp/buyer_survey/buyerSurveyManager.jsp</result>
+	        <result name="success" type="redirectAction">buyerSurvey_displayPage</result>	    	   
+	        <result name="homepage" type="redirectAction">homepage</result>		         
+	    </action> 
+	    
+    </package>
+    
+    
+    
+</struts>

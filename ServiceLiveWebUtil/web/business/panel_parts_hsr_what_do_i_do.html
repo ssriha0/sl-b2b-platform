@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title>Pop Up Help Window for ServiceLive</title>
+
+<script src="/ServiceLiveWebUtil/javascript/inhomeParts/SpryAccordion.js" type="text/javascript"></script>
+<script>
+  /**
+   * Opens window screen centered.
+   * @param windowWidth the window width in pixels (integer)
+   * @param windowHeight the window height in pixels (integer)
+   * @param windowOuterHeight the window outer height in pixels (integer)
+   * @param url the url to open
+   * @param wname the name of the window
+   * @param features the features except width and height (status, toolbar, location, menubar, directories, resizable, scrollbars)
+   */
+  function CenterWindow(windowWidth, windowHeight, windowOuterHeight, url, wname, features) {
+    var centerLeft = parseInt((window.screen.availWidth - windowWidth) / 2);
+    var centerTop = parseInt(((window.screen.availHeight - windowHeight) / 2) - windowOuterHeight);
+ 
+    var misc_features;
+    if (features) {
+      misc_features = ', ' + features;
+    }
+    else {
+      misc_features = ', status=no, location=no, scrollbars=yes, resizable=yes';
+    }
+    var windowFeatures = 'width=' + windowWidth + ',height=' + windowHeight + ',left=' + centerLeft + ',top=' + centerTop + misc_features;
+    var win = window.open(url, wname, windowFeatures);
+    win.focus();
+    return win;
+  }
+</script>
+<link href="/ServiceLiveWebUtil/css/inhomeParts/popupStyles.css" rel="stylesheet" type="text/css" />
+<link href="/ServiceLiveWebUtil/css/inhomeParts/SpryAccordion.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+
+<div id="popupWrapper">
+  <div id="mainPageHeader">
+    <h2><span class="headerColorChange">Service Order Help |</span> Entering Parts Information</h2>
+  </div>
+  
+  <div id="mainContentFrame">
+    <div id="Accordion1" class="Accordion" tabindex="0">
+      <div class="AccordionPanel">
+        <div class="AccordionPanelTab">Required Part Information</div>
+        <div class="AccordionPanelContent"><br />
+		<p></p>
+          <p>When completing an order that  includes parts, Providers will need to enter part information specific to this  Buyer.&nbsp; The information required is the <strong>Part Number</strong>, <strong>Division  Number</strong>, and <strong>Source Number.</strong></p>
+          <p>The Part Number is the  identifying number on the part or packaging - you should already have  this.&nbsp; You will need to obtain the <strong>Division Number</strong> and <strong>Source  Number</strong> from the Sears Parts Direct web site.</p>
+        </div>
+      </div>
+      <div class="AccordionPanel">
+        <div class="AccordionPanelTab">Obtaining the Part Division Number &amp; Source Numbers</div>
+        <div class="AccordionPanelContent"><br />
+		<p></p>
+          <p>There are two ways to obtain and enter the Part <strong>Division  Number</strong> and <strong>Source Number</strong>.&nbsp; You will need to browse the Sears  Parts Direct web site, search and find your part.&nbsp; See the steps below for  an explanation of each option. </p>
+          <p>After  finding your part, you have two ways of entering the part information, which  are:</p>
+          <p class="hangingIndent">1. &quot;Copying &amp; Pasting&quot; the Parts Direct web page's URL</p>
+          <p class="hangingIndent">2. &quot;Copying &amp; Pasting&quot; the <strong>Division Number</strong> and <strong>Source Number</strong> embedded in the Parts Direct web page's URL</p>
+        </div>
+      </div>
+      <div class="AccordionPanel">
+        <div class="AccordionPanelTab">Option A: Copy &amp; Pasting the URL</div>
+        <div class="AccordionPanelContent"><br />
+		<p></p>
+          <p class="hangingIndent">1. Click on <img src="/ServiceLiveWebUtil/images/inhomeParts/linkButton.jpg" width="160" height="20" alt="link button image" /> or enter the URL &quot;http://www.searspartsdirect.com&quot; into your browser address bar</p>
+          <p class="hangingIndent">2.  Click on the &quot;Part Number&quot; dropdown selection and enter in your Part  Number (e.g. 95405 )</p>
+          <p><img src="/ServiceLiveWebUtil/images/inhomeParts/partsSearchBar.jpg" align="center" alt="image of the parts seach menu bar" /></p>
+          <p class="hangingIndent">3. If more than one part number is  returned in the search, click on the part that you have used and display the  part details</p>
+          <p class="hangingIndent">4. On the part page, click and select the entire URL displayed in your browser&rsquo;s address bar. &ldquo;Copy&rdquo; the selected URL by pressing &ldquo;CTRL-C&rdquo;  or &ldquo;CMD-C&rdquo; on your keyboard</p>
+          <p><img src="/ServiceLiveWebUtil/images/inhomeParts/browserWindow1.jpg" alt="image of browser window one" /></p>
+          <p class="hangingIndent">5. Paste the copied URL into the field  provided on the parts page</p>
+          <p class="hangingIndent">6. Click on the &ldquo;Save URL&rdquo; button to save the Part Number, Division Number, and Source Number embedded in the URL</p>
+          <p class="hangingIndent">7. Complete the rest of the form and click  the &ldquo;Add&rdquo; button to finish entering the part</p>
+        </div>
+      </div>
+      <div class="AccordionPanel">
+        <div class="AccordionPanelTab">Option B: Copy &amp; Pasting the Part's Division &amp; Source Numbers</div>
+        <div class="AccordionPanelContent"><br />
+		<p></p>
+          <p class="hangingIndent">1. Click on <img src="/ServiceLiveWebUtil/images/inhomeParts/linkButton.jpg" width="160" height="20" alt="image of parts button link" /> or enter the URL &quot;http://www.searspartsdirect.com&quot; into your browser address bar</p>
+          <p class="hangingIndent">2. Click on the &quot;Part Number&quot;  dropdown selection and enter in your Part Number (e.g. 95405 )</p>
+          <p><img src="/ServiceLiveWebUtil/images/inhomeParts/partsSearchBar.jpg" align="center" alt="image of the parts seach menu bar" /></p>
+          <p class="hangingIndent">3. If more than one part is returned in  the search, click on the part that you have used and display the part details</p>
+          <p class="hangingIndent">4. On the part page, double-click and copy  the <strong>Division Number</strong> in the URL. The  division number is the second number series in the URL. The first number is the  part number you used for your search</p>
+          <p><img src="/ServiceLiveWebUtil/images/inhomeParts/browserWindow2.jpg" alt="image of browser window one" /></p>
+          <p class="hangingIndent">5. Paste the copied <strong>Division Number</strong> into the  field provided on the parts page</p>
+          <p class="hangingIndent">6. On the part page, double-click and copy the <strong>Source  Number</strong> in the URL.&nbsp; The Source Number is the third number in  the URL</p>
+          <p><img src="/ServiceLiveWebUtil/images/inhomeParts/browserWindow3.jpg" alt="image of browser window one" /></p>
+          <p class="hangingIndent">7. Paste the copied <strong>Source Number</strong> into the  field provided on the parts page</p>
+          <p class="hangingIndent">8. Complete the rest of the form and  click the &quot;Add&quot; button to finish entering the part</p>
+          <ol>
+            <li></li>
+          </ol>
+        </div>
+      </div>
+</div>
+  </div>
+  </div>
+<script type="text/javascript">
+var Accordion1 = new Spry.Widget.Accordion("Accordion1");
+</script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+		<!-- Start Action  Loading -->
+	<bean id="buyerRegistrationAction"  class="com.newco.marketplace.web.action.buyer.BuyerRegistrationAction" scope="prototype">
+		<constructor-arg index="0" ref="buyerRegistrationDelegate"/>
+		<constructor-arg index="1" ref="buyerRegistrationDTO"/>
+ 	</bean>
+	<bean id="buyerEditCompanyProfileAction"  class="com.newco.marketplace.web.action.buyer.BuyerEditCompanyProfileAction" scope="prototype">
+		<constructor-arg index="0" ref="buyerRegistrationDelegate"/>
+		<constructor-arg index="1" ref="buyerRegistrationDTO"/>
+		<property name="auditLogDelegates">
+			<ref bean="auditLogDelegates" />
+		</property>
+ 	</bean>
+	<!-- End Delegate  Loading -->
+	
+	<!-- Start DTO  Loading -->
+	<bean id="buyerRegistrationDTO" class="com.newco.marketplace.web.dto.buyer.BuyerRegistrationDTO" scope="prototype"/>
+	<!-- End DTO  Loading -->
+
+</beans>

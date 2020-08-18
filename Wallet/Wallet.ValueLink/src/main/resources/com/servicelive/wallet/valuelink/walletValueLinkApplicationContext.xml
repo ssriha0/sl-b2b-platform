@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-2.0.xsd">
+	
+	<import resource="classpath:/com/servicelive/wallet/common/walletCommonApplicationContext.xml" />
+	
+	<bean id="valueLink" class="com.servicelive.wallet.valuelink.ValueLinkBO">
+		<property name="valueLinkRules" ref="valueLinkRules"/>
+		<property name="valueLinkQueueDao" ref="valueLinkQueueDao"/>
+		<property name="valueLinkDao" ref="valueLinkDao"/>
+		<property name="identifierDao" ref="identifierDaoWallet"/>
+	</bean>
+
+    <bean id="valueLinkRules" class="com.servicelive.wallet.valuelink.ValueLinkRulesBO">
+    	<property name="identifierDao" ref="identifierDaoWallet"/>
+		<property name="valueLinkDao" ref="valueLinkDao"/>
+    </bean>
+		    
+    <bean id="valueLinkDao" class="com.servicelive.wallet.valuelink.dao.ValueLinkDao">
+    	<property name="sqlMapClient" ref="valueLinkSqlMapClient"/>
+    </bean>
+    
+    <bean id="valueLinkQueueDao" class="com.servicelive.wallet.valuelink.dao.ValueLinkQueueDao">
+    	<property name="sqlMapClient" ref="valueLinkSqlMapClient"/>
+    </bean>
+
+	<bean id="valueLinkSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation">
+			<value>classpath:/com/servicelive/wallet/valuelink/valueLinkSqlMapConfig.xml</value>
+		</property>
+		<property name="dataSource" ref="${datasource.finance.bean.id}" />
+	</bean>
+	
+	<bean id="isoRequestProcessorWallet" class="com.servicelive.wallet.valuelink.sharp.iso.IsoRequestProcessor">
+  		<property name="sharpDeviceNo">
+			<value>${sharp.device.no}</value>
+		</property>
+		<property name="isoMessageTemplateDao" ref="isoMessageTemplateDaoWallet"/>
+	</bean>
+	
+	<bean id="isoResponseProcessor" class="com.servicelive.wallet.valuelink.sharp.iso.IsoResponseProcessor">
+		<property name="isoMessageTemplateDao" ref="isoMessageTemplateDaoWallet"/>
+	</bean>
+	
+	<bean id="isoMessageTemplateDaoWallet" class="com.servicelive.wallet.valuelink.sharp.iso.dao.IsoMessageTemplateDao">
+		<property name="sqlMapClient" ref="valueLinkSqlMapClient"/>
+	</bean>
+
+	<!-- TRANSACTION SUPPORT -->
+	<bean id="valueLinkTx"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		lazy-init="true">
+		<property name="proxyInterfaces">
+			<list>
+				<value>
+					com.servicelive.wallet.valuelink.IValueLinkBO
+				</value>
+			</list>
+		</property>
+		<property name="target">
+			<ref bean="valueLink" />
+		</property>
+		<property name="transactionManager">
+			<ref bean="dsTransactionManagerFinance" />
+		</property>
+		<property name="transactionAttributeSource">
+			<ref bean="attributeSource" />
+		</property>
+	</bean>	
+		
+</beans>
+

@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig
+    PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"
+    "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+
+
+
+	<sqlMapConfig>
+	<settings useStatementNamespaces="true"
+	lazyLoadingEnabled="false"
+	cacheModelsEnabled="false"
+   />
+	<sqlMap resource="resources/ibatis/transactionMap.xml" />
+	<sqlMap resource="resources/ibatis/serviceOrderMap.xml" />
+	<sqlMap resource="resources/ibatis/feeManagementMap.xml" />
+	<sqlMap resource="resources/ibatis/ApplicationPropertiesMap.xml" />
+	<sqlMap resource="resources/ibatis/lu_owner_entity_type_SqlMap.xml" />
+	<sqlMap resource="resources/ibatis/surveyMap.xml" />
+	<sqlMap resource="resources/ibatis/extendedSurveyMap.xml" />
+	<sqlMap resource="resources/ibatis/AchRequest_Sql_Map.xml"/>
+	<sqlMap resource="resources/ibatis/platformActivityMap.xml"/>
+	<sqlMap resource="resources/ibatis/soLoggingMap.xml"/>
+	<sqlMap resource="resources/ibatis/messageMap.xml"/>
+	<sqlMap resource="resources/ibatis/contactMap.xml"/>
+	<sqlMap resource="resources/ibatis/buyerMap.xml"/>
+	<sqlMap resource="resources/ibatis/buyerMarketAdjMap.xml"/>
+	<sqlMap resource="resources/ibatis/vendorResourceMap.xml"/>
+	<sqlMap resource="resources/ibatis/vendorResourceLocationMap.xml"/>
+	<sqlMap resource="resources/ibatis/soSearchMap.xml"/>
+	<sqlMap resource="resources/ibatis/buyerSOCountsMap.xml"/>
+	<sqlMap resource="resources/ibatis/creditCardMap.xml"/>
+	<sqlMap resource="resources/ibatis/security.xml"/>
+	<sqlMap resource="resources/ibatis/apiSecurity.xml"/>
+	<sqlMap resource="resources/ibatis/providerSearchMap.xml" />
+	<sqlMap resource="resources/ibatis/buyerSearchMap.xml" />
+	<sqlMap resource="resources/ibatis/locationMap.xml" />
+	<sqlMap resource="resources/ibatis/nacha_template_map.xml"/>
+	<sqlMap resource="resources/ibatis/MarketplaceSearchMap.xml"/>
+	<sqlMap resource="resources/ibatis/aopAdviceMap.xml"/>
+	<sqlMap resource="resources/ibatis/providerMap.xml"/>
+	<sqlMap resource="resources/ibatis/alertMap.xml"/>
+	<!-- Start -Insurance -->
+	<sqlMap resource="resources/ibatis/InsuranceTypesMap.xml" />
+	<sqlMap resource="resources/ibatis/resourceCredentialsDocumentMap.xml" />
+	<sqlMap resource="resources/ibatis/vendorCredentialsDocumentMap.xml" />
+	<sqlMap resource="resources/ibatis/lookupMap.xml"/>
+	<sqlMap resource="resources/ibatis/loggingMap.xml"/>
+	<sqlMap resource="resources/ibatis/LoginMap.xml" />
+	<sqlMap resource="resources/ibatis/ChangePasswordMap.xml" />
+	<sqlMap resource="resources/ibatis/BusinessinfoMap.xml" />
+	<sqlMap resource="resources/ibatis/WarrantyMap.xml" />
+	<!-- <sqlMap resource="resources/ibatis/lookupMap.xml" />-->
+	<sqlMap resource="resources/ibatis/interimPasswordMap.xml" />
+	<sqlMap resource="resources/ibatis/userProfileMap.xml" />
+	<sqlMap resource="resources/ibatis/vendorHdrMap.xml" />
+	<!-- <sqlMap resource="resources/ibatis/contactMap.xml" />-->
+	<!-- <sqlMap resource="resources/ibatis/locationMap.xml" /> -->
+	<!-- <sqlMap resource="resources/ibatis/vendorResourceMap.xml" />-->
+	<sqlMap resource="resources/ibatis/resourceLocationMap.xml" />
+	<sqlMap resource="resources/ibatis/vendorLocationMap.xml" />
+	<sqlMap resource="resources/ibatis/templateMap.xml" />
+	<sqlMap resource="resources/ibatis/TermsAndCondMap.xml" />
+	<sqlMap resource="resources/ibatis/LicensesAndCertMap.xml" />
+	<sqlMap resource="resources/ibatis/LicensesMap.xml" />
+	<sqlMap resource="resources/ibatis/activityRegistryMap.xml" />
+
+	<sqlMap resource="resources/ibatis/vendorPolicyMap.xml" />
+	<sqlMap resource="resources/ibatis/vendorFinanceMap.xml" />
+	<sqlMap resource="resources/ibatis/ZipMap.xml" />
+	<sqlMap resource="resources/ibatis/plookupMap.xml" />
+	<sqlMap resource="resources/ibatis/pcontactMap.xml" />
+	<sqlMap resource="resources/ibatis/plocationMap.xml" />
+	<sqlMap resource="resources/ibatis/pvendorResourceMap.xml" />
+	<sqlMap resource="resources/ibatis/downloadSignedCopyMap.xml" />
+	<sqlMap resource="resources/ibatis/documentExpiryMap.xml" />
+	<sqlMap resource="resources/ibatis/providerBackgroundMap.xml" />
+	<sqlMap resource="resources/ibatis/buyerOutBoundNotificationMap.xml" />
+	<sqlMap resource="resources/ibatis/leadOutBoundNotificationMap.xml" />
+	<sqlMap resource="resources/ibatis/pdocumentMap.xml" />
+	<sqlMap resource="resources/ibatis/InsuranceMap.xml" />
+	<sqlMap resource="resources/ibatis/companyCredentialsMap.xml" />
+	<sqlMap resource="resources/ibatis/vendorCredentialMap.xml" />
+	<sqlMap resource="resources/ibatis/marketPlaceMap.xml" />
+	<sqlMap resource="resources/ibatis/purchaseAmountMigrationMap.xml" />
+	
+	<!-- Added for general info -->
+	<sqlMap resource="resources/ibatis/documentMap.xml"/>
+	<sqlMap resource="resources/ibatis/backendDocumentMap.xml"/>
+	<sqlMap resource="resources/ibatis/resourceScheduleMap.xml" />
+	<sqlMap resource="resources/ibatis/teamProfileMap.xml" />
+	<sqlMap resource="resources/ibatis/teamCredentialMap.xml" />
+	<!--  Added for skills & Services -->
+	<sqlMap resource="resources/ibatis/skillAssignMap.xml" />
+	<sqlMap resource="resources/ibatis/luActivityMap.xml" />
+	<sqlMap resource="resources/ibatis/SkillSearchMap.xml" />
+	<!-- Added for Testing & Cond -->
+	<sqlMap resource="resources/ibatis/TermsMap.xml" />
+	<!-- Added for audit -->
+	<sqlMap resource="resources/ibatis/pauditMap.xml" />
+	<sqlMap resource="resources/ibatis/pworkflowMap.xml" />
+	<sqlMap resource="resources/ibatis/auditMap.xml" />
+	<!-- Added for Dashboard -->
+	<sqlMap resource="resources/ibatis/ResourceStatusMap.xml" />
+
+	<!-- Added for header Resource full name  -->
+	<sqlMap resource="resources/ibatis/ResourceMap.xml" />
+
+	<sqlMap resource="resources/ibatis/soPostProcessingMap.xml" />
+	<sqlMap resource="resources/ibatis/powerBuyerMap.xml" />
+	<sqlMap resource="resources/ibatis/WebServiceQueueMap.xml" />
+	<sqlMap resource="resources/ibatis/SOEventMap.xml" />
+	<sqlMap resource="resources/ibatis/adminLoggingMap.xml" />
+	<sqlMap resource="resources/ibatis/onsiteVisitMap.xml" />
+	<sqlMap resource="resources/ibatis/ETMProviderSearchMap.xml"/>
+	<sqlMap resource="resources/ibatis/isoMessageMap.xml"/>
+<!--	<sqlMap resource="resources/ibatis/fullfillmentMap.xml"/>-->
+	<sqlMap resource="resources/ibatis/auditEmailMap.xml"/>
+	<sqlMap resource="resources/ibatis/userManagementMap.xml"/>
+	<sqlMap resource="resources/ibatis/vendorNotesMap.xml"/>
+	<sqlMap resource="resources/ibatis/ptdMap.xml"/>
+	<sqlMap resource="resources/ibatis/buyerSOTemplateMap.xml"/>
+
+	<sqlMap resource="resources/ibatis/tierRouteMap.xml"/>
+	<sqlMap resource="resources/ibatis/SoTierRouteHistoryMap.xml"/>	
+	<sqlMap resource="resources/ibatis/spnMap.xml"/>
+	<sqlMap resource="resources/ibatis/jobCodeMap.xml"/>
+	<sqlMap resource="resources/ibatis/siteStatsMap.xml"/>
+	<!-- Added for anonymous user document upload  -->
+	<sqlMap resource="resources/ibatis/sdocumentMap.xml" />
+	<sqlMap resource="resources/ibatis/transFileMap.xml" />
+	<sqlMap resource="resources/ibatis/adminEmailMap.xml" />
+	<!-- Added for promo  -->
+	<sqlMap resource="resources/ibatis/promoMap.xml" />
+
+
+	<sqlMap resource="resources/ibatis/soGroupMap.xml" />
+	<sqlMap resource="resources/ibatis/buyerHoldTimeMap.xml" />
+	<sqlMap resource="resources/ibatis/buyerFeatureSetMap.xml" />
+	<sqlMap resource="resources/ibatis/tripChargeMap.xml"/>
+	<sqlMap resource="resources/ibatis/powerAuditorworkflowMap.xml"/>
+
+	<sqlMap resource="resources/ibatis/buyerSubstatusAssocMap.xml"/>
+	<sqlMap resource="resources/ibatis/clientInvoiceOrderMap.xml"/>
+	<sqlMap resource="resources/ibatis/soIncidentMap.xml"/>
+	<sqlMap resource="resources/ibatis/w9RegistrationMap.xml"/>
+
+	<sqlMap resource="resources/ibatis/shcGLMap.xml"/>
+	<sqlMap resource="resources/ibatis/searchPortalMap.xml"/>
+
+	<!-- Added for SO Upsell skus  -->
+	<sqlMap resource="resources/ibatis/soUpsellMap.xml"/>
+	
+	<!-- SLT-1613 START -->
+	<sqlMap resource="resources/ibatis/wfmMap.xml"/>
+	<!-- SLT-1613 END -->
+	<sqlMap resource="resources/ibatis/auditLogMap.xml"/>
+		
+	<!-- Added for SO details summary page  -->
+	<sqlMap resource="resources/ibatis/wfmSoQueueMap.xml"/>
+	
+	<!-- Added fo SO Feature Set -->
+	<sqlMap resource="resources/ibatis/soFeatureSetMap.xml" />
+	
+	<sqlMap resource="resources/ibatis/integrationMap.xml" />
+	
+	<!-- Added for pii threshold mapping -->
+	<sqlMap resource="resources/ibatis/piiThresholdMap.xml" />
+	
+	<!-- Added for buyer pii mapping -->
+	<sqlMap resource="resources/ibatis/buyerPIIMap.xml" />
+	
+	<!-- Added for member offers -->
+	<sqlMap resource="resources/ibatis/memberOfferMap.xml" />
+	
+	<sqlMap resource="resources/ibatis/feedbackMap.xml" />
+	
+	<!-- CAR rule notification for auto acceptance -->
+	<sqlMap resource="resources/ibatis/autoAcceptanceMap.xml" />
+	
+	<sqlMap resource="resources/ibatis/serviceOfferingsMap.xml" />
+	
+	<!-- SL-15642 OrderManagement -->
+	<sqlMap resource="resources/ibatis/orderManagementMap.xml" /> 
+	
+		<!-- SL-18226 Tier Performance -->
+	<sqlMap resource="resources/ibatis/performanceMap.xml" /> 
+	
+	<!--SL-16934 IPR -->
+	<sqlMap resource="resources/ibatis/userAuthProfileMap.xml" /> 
+	<sqlMap resource="resources/ibatis/leadProfileMap.xml" /> 
+	<!--NS-1 New Services -->
+	<sqlMap resource="resources/ibatis/leadsmanagementMap.xml" />
+	<sqlMap resource="resources/ibatis/buyerleadsmanagementMap.xml" />
+	<!-- Provider Mobile SO-->
+	<sqlMap resource="resources/ibatis/mobile/mobileSOManagementMap.xml" />
+	<sqlMap resource="resources/ibatis/mobile/mobileAuthenticateUserMap.xml" />
+	<sqlMap resource="resources/ibatis/mobile/mobileSOManageScheduleMap.xml" />
+	<sqlMap resource="resources/ibatis/mobile/mobileSOActionsMap.xml" />
+	<!-- Mobile Version 2 Phase 2 -->
+	<sqlMap resource="resources/ibatis/mobile/mobileGenericMap.xml" />
+	<!-- In Home call Close -->
+    <sqlMap resource="resources/ibatis/inhomeOutBoundMap.xml" />
+    <!-- In Home auto close -->
+    <sqlMap resource="resources/ibatis/inHomeAutoCloseMap.xml" />
+    <!-- PCI Encryption -->
+    <sqlMap resource="resources/ibatis/SlkSecureMap.xml" />
+    
+    <!-- Parts Management -->
+	<sqlMap resource="resources/ibatis/partsManagementMap.xml" /> 
+	<!-- InHomeAutoClose --> 
+	<sqlMap resource="resources/ibatis/inHomeAutoCloseProcessMap.xml" /> 	
+	<!-- Mobile v3.1 API"S -->
+	<sqlMap resource="resources/ibatis/mobile/newMobileGenericMap.xml" /> 
+	<!-- SL-18979 -->
+	<sqlMap resource="resources/ibatis/smsDataSynchMap.xml" /> 
+	
+	 <sqlMap resource="resources/ibatis/calendarPortalAppContextMap.xml" />
+	 
+	 <sqlMap resource="resources/ibatis/externalCalendarMap.xml" />
+	 <sqlMap resource="resources/ibatis/techTalkPortalMap.xml" />
+	 
+	 <!-- START: search, match and rank criteria -->
+	 <sqlMap resource="resources/ibatis/providerRankMatchingDaoImplMap.xml"/>
+	 <sqlMap resource="resources/ibatis/providerRankPerformanceMetricMap.xml"/>
+	 <sqlMap resource="resources/ibatis/providerRankMatchingCriteriaDaoMap.xml"/>
+	 <!-- END: search, match and rank criteria -->
+	  
+	  <sqlMap resource="resources/ibatis/buyerCallbackEventAppContextMap.xml" />
+	  <sqlMap resource="resources/ibatis/buyerCallbackNotificationMap.xml" />
+	  <sqlMap resource="resources/ibatis/systemGeneratedEmailMap.xml" />
+	  <sqlMap resource="resources/ibatis/buyerEmailConfigurationMap.xml" />
+	  <sqlMap resource="resources/ibatis/walletControlMap.xml" />
+	   <!-- SLT-1475-->
+	   <sqlMap resource="resources/ibatis/zipcodeCoverageMap.xml" />
+</sqlMapConfig>

@@ -1,0 +1,40 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="homepage" extends="ServiceLiveBase" >
+         <default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+        
+        <global-results>
+    		<result name="to_sso_controller" type="redirectAction">
+				<param name="actionName">ssoController_execute?appMode=${appMode}&amp;view=${view}</param>	
+			</result>
+    	</global-results>
+        
+       <action name="ssoController_*" class="ssoControllerAction" method="{1}">
+	    	<!--  This is just a text.  Remove after we get 'gl_simple_wizard_success' working -->
+	        <result name="review">/jsp/public/simple/create_service_order/simple_review.jsp</result>	   	    	    
+	    </action>
+	    
+	    <action name="homepage_*" class="homepageAction" method="{1}">
+	           <result name="fail">/jsp/public/homepage/revised/homepage.jsp</result>	     
+	    </action>
+	    
+		<action name="homepage" class="homepageAction" method="displayPage">
+	        <result name="success">/jsp/public/homepage/revised/homepage.jsp</result>
+	        <result name="dashboard" type="redirectAction">
+				<param name="actionName">dashboardAction</param>
+			</result>
+			<result name="login">/jsp/sl_login/base/login.jsp</result>
+	    </action>
+	    
+	   <action name="buyerlogo_*" class="buyerLogoAction" method="{1}">
+	        
+       </action>
+	    
+	    
+	    
+	    
+    </package>
+    
+</struts>

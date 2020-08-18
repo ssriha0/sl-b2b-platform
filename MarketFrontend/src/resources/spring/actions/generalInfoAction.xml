@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<bean id="generalInfoAction" class="com.newco.marketplace.web.action.provider.GeneralInfoAction" scope="prototype" >
+		<constructor-arg index="0" ref="generalInfoDelegates"/>
+		<constructor-arg index="1" ref="generalInfoDto"/>
+		<property name="auditLogDelegates">
+			<ref bean="auditLogDelegates" />
+		</property>
+		<property name="manageUsersDelegate">
+			<ref bean="manageUsersDelegate" />
+		</property>
+	</bean>
+	
+	<bean id="generalInfoPictureAction" class="com.newco.marketplace.web.action.provider.GeneralInfoPictureAction" scope="prototype" >
+	
+		<property name="providerProfilePagesDelegate">
+			<ref bean="providerProfilePagesDelegateImpl"/>
+		</property>
+		
+	</bean>
+
+	<bean id="termsAndConditionsAction" class="com.newco.marketplace.web.action.util.SLTermsAndConditionsAction" scope="prototype" >
+		<property name="lookupDelegate">
+			<ref bean="lookupManager"/>
+		</property>
+	</bean>
+	
+</beans>

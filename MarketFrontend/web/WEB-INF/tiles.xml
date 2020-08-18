@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!--
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ *
+ */
+-->
+
+<!DOCTYPE tiles-definitions PUBLIC
+        "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+        "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+
+<tiles-definitions>
+
+    <definition name="template.base" template="/jsp/so_monitor/base/soMonitorTemplate.jsp">
+        <put-attribute name="title" value="ServiceLive Homepage"/>
+        <put-attribute name="css" value="/layout/common/common.css"/>
+        <put-attribute name="scripts" value="/jsp/public/common/commonScripts.jsp"/>
+        <put-attribute name="logo" value="/jsp/public/common/defaultLogo.jsp"/>
+        <put-attribute name="topRight" value="/jsp/public/common/defaultTopRight.jsp"/>
+        <put-attribute name="mainNav" value="/jsp/public/common/defaultMainNav.jsp"/>
+        <put-attribute name="pageHeader" value="/jsp/public/common/defaultHeader.jsp"/>
+        <put-attribute name="body" value="/jsp/so_monitor/grid/tabbedPanelBody.jsp"/>
+        <put-attribute name="footer" value="template.footer"/>
+    </definition>
+
+    <definition name="base.servicelive.index" template="/jsp/sl_login/base/loginLayoutContainer.jsp">
+        <put-attribute name="title" value="ServiceLive Homepage"/>
+        <put-attribute name="siteCss" value="/jsp/sl_login/common/common.css"/>
+        <put-attribute name="siteScripts" value="/jsp/public/common/commonIncludes.jsp"/>
+        <put-attribute name="siteHeader" value="/jsp/sl_login/common/serviceLiveHeader.jsp"/>
+        <put-attribute name="siteLogin" value="/jsp/sl_login/base/defaultLogin.jsp"/>
+        <put-attribute name="siteMenu" value="/jsp/sl_login/common/serviceLiveMenu.jsp"/>
+        <put-attribute name="siteContent" value="/jsp/sl_login/base/loginContent.jsp"/>
+        <put-attribute name="siteFooter" value="/jsp/sl_login/base/defaultFooter.jsp"/>
+    </definition>
+
+    <definition name="base.servicelive.serviceordermonitor" template="/layout/base/baseLayoutContainer.jsp">
+        <put-attribute name="title" value="ServiceLive: Service Order Monitor"/>
+        <put-attribute name="siteCss" value="/layout/common/common.css"/>
+        <put-attribute name="siteScripts" value="/jsp/public/common/commonScripts.jsp"/>
+        <put-attribute name="siteHeader" value="/views/header/serviceLiveHeader.jsp"/>
+        <put-attribute name="siteMenu" value="/views/menu/serviceLiveMenu.jsp"/>
+        <put-attribute name="siteContent" value="/views/content/mainLandingContent.jsp"/>
+        <put-attribute name="siteFooter" value="/views/footer/defaultFooter.jsp"/>
+    </definition>
+
+
+    <definition name="base.servicelive.dashboard" extends="template.ServiceLife">
+        <put-attribute name="title" value="ServiceLive Homepage"/>
+
+    </definition>
+
+    <definition name="base.servicelive.details" template="/jsp/details/base/detailsTemplate.jsp">
+        <put-attribute name="title" value="ServiceLive Homepage"/>
+        <put-attribute name="css" value="/layout/common/common.css"/>
+        <put-attribute name="logo" value="/jsp/public/common/defaultLogo.jsp"/>
+        <put-attribute name="topRight" value="/jsp/public/common/defaultTopRight.jsp"/>
+        <put-attribute name="mainNav" value="/jsp/public/common/defaultMainNav.jsp"/>
+        <put-attribute name="pageHeader" value="/jsp/dashboard/header/dashboardHeader.jsp"/>
+        <put-attribute name="body" value="/jsp/details/body/detailsBody.jsp"/>
+        <put-attribute name="footer" value="/jsp/public/common/defaultFooter.jsp"/>
+    </definition>
+
+    <definition name="base.servicelive.wizard" template="/jsp/wizard/base/wizardTemplate.jsp">
+        <put-attribute name="title" value="ServiceLive Homepage"/>
+        <put-attribute name="css" value="/layout/common/common.css"/>
+
+        <put-attribute name="header" value="/jsp/wizard/header/wizardHeader.jsp"/>
+        <put-attribute name="body" value="/jsp/wizard/body/wizardBody.jsp"/>
+        <put-attribute name="footer" value="newco.base.footer" type="definition"/>
+    </definition>
+
+
+    <definition name="base.servicelive.about_sl" template="/jsp/public/what_is_servicelive/base/whatIsSLTemplate.jsp">
+        <put-attribute name="title" value="About ServiceLive"/>
+        <put-attribute name="css" value="/layout/common/common.css"/>
+        <put-attribute name="body" value="/jsp/public/what_is_servicelive/body/aboutServiceLiveBody.jsp"/>
+        <put-attribute name="footer" value="/jsp/public/common/defaultFooter.jsp"/>
+    </definition>
+
+    <definition name="base.servicelive.company_news" template="/jsp/public/what_is_servicelive/base/whatIsSLTemplate.jsp">
+        <put-attribute name="title" value="ServiceLive Company News"/>
+        <put-attribute name="css" value="/layout/common/common.css"/>
+        <put-attribute name="body" value="/jsp/public/what_is_servicelive/body/companyNewsBody.jsp"/>
+        <put-attribute name="footer" value="/jsp/public/common/defaultFooter.jsp"/>
+    </definition>
+
+    <definition name="base.servicelive.services" template="/jsp/public/what_is_servicelive/base/whatIsSLTemplate.jsp">
+        <put-attribute name="title" value="ServiceLive Services"/>
+        <put-attribute name="css" value="/layout/common/common.css"/>
+        <put-attribute name="body" value="/jsp/public/what_is_servicelive/body/servicesBody.jsp"/>
+        <put-attribute name="footer" value="/jsp/public/common/defaultFooter.jsp"/>
+    </definition>
+
+    <definition name="base.servicelive.what_is_sl" template="/jsp/public/what_is_servicelive/base/whatIsSLTemplate.jsp">
+        <put-attribute name="title" value="What Is ServiceLive"/>
+        <put-attribute name="css" value="/layout/common/common.css"/>
+        <put-attribute name="body" value="/jsp/public/what_is_servicelive/body/whatIsServiceLiveBody.jsp"/>
+        <put-attribute name="footer" value="/jsp/public/common/defaultFooter.jsp"/>
+    </definition>
+
+    <definition name="base.servicelive.finance_manager_buyer" template="/jsp/finance_manager/base/financeManagerTemplate.jsp">
+        <put-attribute name="title" value="Financial Manager - Buyer"/>
+        <put-attribute name="css" value="/layout/common/common.css"/>
+        <put-attribute name="scripts" value="/layout/common/commonScripts.jsp"/>
+        <put-attribute name="logo" value="newco.base.topnav" type="definition"/>
+        <put-attribute name="mainNav" value="/jsp/public/common/defaultMainNav.jsp"/>
+        <put-attribute name="pageHeader" value="/jsp/finance_manager/header/financeManagerHeader.jsp"/>
+        <put-attribute name="body" value="/jsp/finance_manager/body/financeManagerBody.jsp"/>
+        <put-attribute name="footer" value="/jsp/public/common/defaultFooter.jsp"/>
+    </definition>
+
+    <definition name="base.servicelive.finance_manager_provider" template="/jsp/finance_manager/base/financeManagerTemplate.jsp">
+        <put-attribute name="title" value="Financial Manager - Provider"/>
+        <put-attribute name="css" value="/layout/common/common.css"/>
+        <put-attribute name="scripts" value="/layout/common/commonScripts.jsp"/>
+        <put-attribute name="logo" value="newco.base.topnav" type="definition"/>
+        <put-attribute name="mainNav" value="/jsp/public/common/defaultMainNav.jsp"/>
+        <put-attribute name="pageHeader" value="/jsp/finance_manager/header/financeManagerHeader.jsp"/>
+        <put-attribute name="body" value="/jsp/finance_manager/body/financeManagerBody.jsp"/>
+        <put-attribute name="footer" value="/jsp/public/common/defaultFooter.jsp"/>
+    </definition>
+
+    <definition name="base.servicelive.contactus" template="/jsp/public/contact_us/base/contactUsTemplate.jsp">
+        <put-attribute name="title" value="Contact Us"/>
+        <put-attribute name="css" value="/layout/common/common.css"/>
+        <put-attribute name="header" value="/jsp/public/contact_us/header/contactUsHeader.jsp"/>
+        <put-attribute name="mainNav" value="/jsp/public/common/defaultMainNav.jsp"/>
+        <put-attribute name="body" value="/jsp/public/contact_us/body/contactUsBody.jsp"/>
+        <put-attribute name="footer" value="/jsp/public/common/defaultFooter.jsp"/>
+    </definition>
+
+	<definition name="template.ServiceLife" template="/jsp/public/common/defaultTemplate.jsp">
+        <put-attribute name="title" value="ServiceLive"/>
+        <put-attribute name="css" value="/layout/common/common.css"/>
+        <put-attribute name="scripts" value="/layout/common/commonScripts.jsp"/>
+        <put-attribute name="logo" value="newco.base.topnav" type="definition"/>
+  		<!-- <put-attribute name="topRight" value="/jsp/public/common/defaultTopRight.jsp"/>-->
+        <put-attribute name="mainNav" value="/jsp/public/common/defaultMainNav.jsp"/>
+        <put-attribute name="pageHeader" value="/jsp/dashboard/header/dashboardHeader.jsp"/>
+        <put-attribute name="body" value="/jsp/dashboard/body/dashboardBody.jsp"/>
+        <put-attribute name="footer" value="newco.base.footer" type="definition"/>
+ 	</definition>
+
+    <definition name="base.servicelive.power_buyer" template="/jsp/power_buyer/powerBuyerTemplate.jsp">
+        <put-attribute name="title" value="Power Buyer - Workflow"/>
+        <put-attribute name="css" value="/layout/common/common.css"/>
+        <put-attribute name="body" value="/jsp/power_buyer/powerBuyerBody.jsp"/>
+        <put-attribute name="footer" value="/jsp/public/common/defaultFooter.jsp"/>
+    </definition>
+
+    <definition name="base.servicelive.admin_search" template="/jsp/admin/adminSearchTemplate.jsp">
+        <put-attribute name="title" value="Admin Search"/>
+        <put-attribute name="css" value="/layout/common/common.css"/>
+        <put-attribute name="body" value="/jsp/admin/adminSearchBody.jsp"/>
+        <put-attribute name="footer" value="/jsp/public/common/defaultFooter.jsp"/>
+    </definition>
+
+    <definition name="base.servicelive.etm_search" template="/jsp/explore_the_marketplace/exploreTheMarketplaceTemplate.jsp">
+        <put-attribute name="title" value="Explore The Marketplace: Search"/>
+        <put-attribute name="css" value="/layout/common/common.css"/>
+        <put-attribute name="body" value="/jsp/explore_the_marketplace/exploreTheMarketplaceBody.jsp"/>
+        <put-attribute name="footer" value="/jsp/public/common/defaultFooter.jsp"/>
+    </definition>
+
+ 	<definition name="base.servicelive.job_codes" template="/jsp/job_code/jobCodeTemplate.jsp">
+        <put-attribute name="title" value="Job Code Mapping"/>
+        <put-attribute name="css" value="/layout/common/common.css"/>
+        <put-attribute name="body" value="/jsp/job_code/jobCodeBody.jsp"/>
+        <put-attribute name="footer" value="/jsp/public/common/defaultFooter.jsp"/>
+    </definition>
+
+    <definition name="base.servicelive.template_maintenance" template="/jsp/template_maintenance/maintenanceTemplate.jsp">
+        <put-attribute name="title" value="Template Maintenance"/>
+        <put-attribute name="css" value="/layout/common/common.css"/>
+        <put-attribute name="body" value="/jsp/template_maintenance/maintenanceBody.jsp"/>
+        <put-attribute name="footer" value="/jsp/public/common/defaultFooter.jsp"/>
+    </definition>
+
+	<definition name="newco.base.joinNow" template="/jsp/public/common/defaultLogo.jsp"></definition>
+	<definition name="newco.base.welcomeUser" template="/jsp/public/common/defaultLogo.jsp"></definition>
+	<definition name="newco.base.help" template="/jsp/public/common/defaultLogo.jsp"></definition>
+	<definition name="newco.base.public.commonIncludes" template="/jsp/public/common/commonIncludes.jsp"></definition>
+
+	<definition name="newco.base.headerTitle" template="/jsp/public/common/defaultHeaderTitle.jsp"></definition>
+	<definition name="newco.base.headerDate" template="/jsp/public/common/defaultHeaderDate.jsp"></definition>
+
+	<definition name="base.servicelive.providerprofile" template="/jsp/providerRegistration/company_profile.jsp">
+		<put-attribute name="header" value="/jsp/providerRegistration/header/default_header.jsp"/>
+		<put-attribute name="body" value="/jsp/providerRegistration/provider_profile_pages_body.jsp"/>
+		<put-attribute name="footer" value="/jsp/public/common/defaultFooter.jsp"/>
+	</definition>
+
+	<definition name="base.servicelive.providerprofile_popup" template="/jsp/providerRegistration/company_profile.jsp">
+		<put-attribute name="header" value=" "/>
+		<put-attribute name="body" value="/jsp/providerRegistration/provider_profile_pages_body.jsp"/>
+		<put-attribute name="footer" value=" "/>
+	</definition>
+	
+	<definition name="base.servicelive.companyprofile_popup" template="/jsp/providerRegistration/company_profile.jsp">
+		<put-attribute name="header" value=" "/>
+		<put-attribute name="body" value="/jsp/providerRegistration/company_profile_pages_body.jsp"/>
+		<put-attribute name="footer" value=" "/>
+	</definition>
+
+
+
+	<definition name="base.servicelive.providerw9" template="/jsp/providerRegistration/w9RegistrationMain.jsp">
+		<put-attribute name="header" value="/jsp/providerRegistration/header/default_header.jsp"/>
+		<put-attribute name="body" value="/jsp/providerRegistration/w9RegistrationFormBody.jsp"/>
+		<put-attribute name="footer" value="/jsp/public/common/blackoutFooter.jsp"/>
+	</definition>
+
+	<definition name="base.servicelive.providerw9Modal" template="/jsp/providerRegistration/w9RegistrationMain.jsp">
+		<put-attribute name="header" value=" "/>
+		<put-attribute name="body" value="/jsp/providerRegistration/w9RegistrationFormBody.jsp"/>
+		<put-attribute name="footer" value=" "/>
+	</definition>
+<!-- Templates -->
+	<definition name="newco.base.topnav"              template="/jsp/public/common/header/defaultTopNav.jsp"></definition>
+	<definition name="newco.base.blue_nav"            template="/jsp/public/common/header/defaultMainNav.jsp"></definition>
+	<definition name="newco.base.blue_nav_blank"      template="/jsp/public/common/header/blue_nav_blank.jsp"></definition>
+	<definition name="newco.base.dark_gray_nav"       template="/jsp/public/common/header/defaultAuxNav.jsp"></definition>
+	<definition name="newco.base.footer"              template="/jsp/public/common/defaultFooter.jsp"></definition>
+	<definition name="newco.base.orderManagementHeader"              template="/jsp/public/common/header/order_management_header.jsp"></definition>
+
+
+	<definition name="newco.base.topnav.findprov"              template="/jsp/public/common/header/findprovdefaultTopNav.jsp"></definition>
+	<definition name="newco.base.dark_gray_nav.findprov"       template="/jsp/public/common/header/findprovdefaultAuxNav.jsp"></definition>
+
+
+<!-- Alias -->
+	<definition name="newco.base.logo" template="/jsp/public/common/defaultLogo.jsp"></definition>
+	<definition name="newco.base.topnavlinks" template="/jsp/public/common/defaultTopNavLinks.jsp"></definition>
+	
+<!-- New Framework Tiles.  Use these in new jsps as of 10/13/08.  Refer to exampletemplate.jsp for reference -->	
+	<definition name="blueprint.base.meta" template="/jsp/public/blueprint/meta.jsp"></definition>
+	<definition name="blueprint.base.header" template="/jsp/public/blueprint/header.jsp"></definition>
+	<definition name="blueprint.base.navigation" template="/jsp/public/blueprint/navigation.jsp"></definition>
+	<definition name="blueprint.base.footer" template="/jsp/public/blueprint/footer.jsp"></definition>
+
+<!-- Added for NS -->
+    <definition name="newco.base.leadsManagementHeader" template="/jsp/leadsManagement/leads_management_header.jsp"></definition>
+    <definition name="newco.base.leadsManagementFooter" template="/jsp/leadsManagement/leads_management_footer.jsp"></definition>
+
+</tiles-definitions>
+
+

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	<!-- Start Action  Loading -->
+	
+	<bean id="lmsFileUploadAction"  class="com.newco.marketplace.web.action.LmsFileUpload.LmsFileUploadAction" scope="prototype">
+		<constructor-arg index="0" ref="lmsFileUploadServiceImpl"/>
+		<constructor-arg index="1" ref="lmsFileUploadDetailDTO"/>
+		<constructor-arg index="2" ref="buyerBo"/>
+        <constructor-arg index="3" ref="adminUserProfileContact"/>
+ 	</bean>
+ 	<bean id="lmsFileUploadDetailDTO" class="com.servicelive.domain.lms.LmsFileUploadDTO" scope="prototype"/>
+    <bean id="adminUserProfileContact" class="com.servicelive.domain.view.AdminUserProfileContact" scope="prototype"/>
+</beans>

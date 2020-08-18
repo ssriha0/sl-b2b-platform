@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/addNoteRequest" 
+   xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+   xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
+   xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+   targetNamespace="http://www.servicelive.com/namespaces/addNoteRequest"
+   elementFormDefault="qualified" jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+   <xs:include schemaLocation="../../common.xsd"/>
+	<!-- Root element -->
+	<xs:element name="addNoteRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="identification" type="IdentificationType"/>
+				<xs:element name="note" type="NoteType" />
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:decimal"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="NoteType">
+		<xs:sequence>
+			<xs:element name="subject">
+  			    <xs:simpleType>
+    				<xs:restriction base="xs:string">
+      					<xs:maxLength value="30"/>
+      					<xs:minLength value="1"/>
+    				</xs:restriction>
+  			    </xs:simpleType>
+			</xs:element>
+			<xs:element name="noteBody">
+  			    <xs:simpleType>
+    				<xs:restriction base="xs:string" >
+      					<xs:maxLength value="750"/>
+      					<xs:minLength value="1"/>
+    				</xs:restriction>
+  			    </xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="private" type="xs:boolean" use="required"/>
+		<xs:attribute name="support" type="xs:boolean" default="false" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="IdentificationType">
+		<xs:sequence>		
+			<xs:element name="id" type="xs:integer" />  
+		</xs:sequence>
+		<xs:attribute name="type" type="identificationTypeEnum" use="required"/>
+	</xs:complexType>
+</xs:schema>

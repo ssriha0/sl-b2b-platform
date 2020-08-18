@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="message">
+
+  <typeAlias alias="template" type="com.servicelive.wallet.alert.vo.TemplateVO" />
+
+  <select id="template.query" parameterClass="template" resultClass="template">
+    select template_id as templateId, 
+      template_type_id as templateTypeId, 
+      template_name as templateName, 
+      template_from as templateFrom,
+      template_subject as subject, 
+      template_source as source, 
+      sort_order as sortOrder,
+      created_date as createdDate, 
+      modified_date as modifiedDate,
+      modified_by as modifiedBy,
+      priority as priority ,
+      eid as eid
+      from template 
+		<dynamic prepend="where" >
+			<isNotNull property="templateTypeId" prepend="AND">
+				template_type_id = #templateTypeId#  
+			</isNotNull>
+			<isNotNull property="templateId" prepend="AND">
+				template_id = #templateId#
+			</isNotNull>
+			<isNotNull property="templateName" prepend="AND">
+				template_name = #templateName#			
+			</isNotNull>			   
+		</dynamic>
+   
+  </select>
+
+ <select id="getTemplateById.query" parameterClass="int" resultClass="template">
+    select template_id as templateId, 
+      template_type_id as templateTypeId, 
+      template_name as templateName, 
+      template_from as templateFrom,
+      template_subject as subject, 
+      template_source as source, 
+      sort_order as sortOrder,
+      created_date as createdDate, 
+      modified_date as modifiedDate,
+      modified_by as modifiedBy,
+      priority as priority,
+      eid as eid
+    from template 
+    where template_id = #templateId# 
+  </select>
+  
+</sqlMap>

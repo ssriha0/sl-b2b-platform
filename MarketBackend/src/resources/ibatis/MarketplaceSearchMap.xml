@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="marketplaceSearch">
+	<typeAlias alias="skillSearch" type="com.newco.marketplace.dto.vo.skillTree.SkillNodeVO"/>	
+	<typeAlias alias="searchExpression" type="com.newco.marketplace.dto.vo.skillTree.SearchExpressionVO"/>
+	
+	<select id="getParent.query" parameterClass="skillSearch" resultClass="skillSearch">
+		SELECT	node_id as nodeId,
+				parent_node as parentNodeId,
+				node_name as nodeName,
+				match_weight_factor as matchFactorDecrement,
+				level as level
+		FROM 	skill_tree
+		WHERE 	node_id = #parentNodeId#
+	</select>
+	<select id="getChildren.query" parameterClass="skillSearch" resultClass="skillSearch">
+		SELECT	node_id as nodeId,
+				parent_node as parentNodeId,
+				node_name as nodeName,
+				level as level
+		FROM 	skill_tree
+		WHERE 	parent_node = #nodeId#
+	</select>
+	<select id="getMatchSearchNodes.query" parameterClass="searchExpression" resultClass="skillSearch">
+		SELECT 	node_id as nodeId,
+				parent_id as parentNodeId,
+				node_name as nodeName,
+				level as level
+		FROM	skill_tree
+		WHERE	node_name LIKE '%#searchExpression#%'
+	</select>
+	<select id="getNodeNameById.query" parameterClass="skillSearch" resultClass= "skillSearch">
+		SELECT 	node_name as nodeName,
+				node_id as nodeId,
+				parent_node as parentNodeId,
+				match_weight_factor as matchFactorDecrement,
+				level as level
+		FROM	skill_tree
+		WHERE	node_id = #nodeId#
+	</select>
+</sqlMap>

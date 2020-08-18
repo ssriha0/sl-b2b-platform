@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+  <bean id="MarketplaceSearchDao"
+		class="com.newco.marketplace.persistence.daoImpl.skillTree.MarketplaceSearchDAOImpl" 
+		abstract="false"
+		lazy-init="default" 
+		autowire="default"
+		dependency-check="default">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+  </bean>
+     
+  <bean id="SkillAssignBusinessBean"
+        class="com.newco.marketplace.business.businessImpl.skillassign.SkillAssignBusinessBean"
+        abstract="false" 
+        lazy-init="default"
+        autowire="default" 
+        dependency-check="default" scope="prototype">
+        <property name="assignDAO">
+        	<ref bean = "SkillAssignDAO"/>
+        </property>
+  </bean>
+  <bean id="SkillAssignDAO" class="com.newco.marketplace.persistence.daoImpl.skillassign.SkillAssignDAOImpl" >
+        <property name="sqlMapClient">
+            <ref bean="sqlMapClient" />
+		</property>         
+  </bean> 
+</beans>

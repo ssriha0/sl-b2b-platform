@@ -1,0 +1,577 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified" >
+<xs:include schemaLocation="../../common.xsd" />
+
+	<xs:element name="soCompletionRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="completionStatus" type="completionStatusType"
+					minOccurs="1" maxOccurs="1" nillable="false"/>
+				<xs:element name="updateAction" type="updateActionType"
+					minOccurs="1" maxOccurs="1" nillable="false"/>
+				<xs:element name="tripNo" type="xs:integer"
+					minOccurs="1" maxOccurs="1" nillable="false"/>
+				<xs:element name="tripStatus" type="xs:string" minOccurs="0" />	
+				<xs:element name="tasks" type="tasksType" minOccurs="0" />
+				<xs:element name="resolutionComments" type="resCommentType"
+					minOccurs="0" maxOccurs="1"/>
+				<!-- <xs:element name="cancellationOrRevisitReasonCode" type="xs:integer"
+					minOccurs="0" maxOccurs="1"/> -->
+				<xs:element name="permits" type="permitsType" minOccurs="0" />
+				<xs:element name="references" type="referencesType"
+					minOccurs="0" />
+				<xs:element name="partsTracking" type="partsTrackingType"
+					minOccurs="0" />
+				<xs:element name="providerSignature" type="signatureType"
+					minOccurs="0" />
+				<xs:element name="customerSignature" type="signatureType"
+					minOccurs="0" />
+				<xs:element name="addOns" type="addOnsType" minOccurs="0" />
+				<xs:element name="addOnPaymentDetails" type="addOnPaymentDetailsType"
+					minOccurs="0" />
+				<xs:element name="pricing" type="pricingType" minOccurs="0" />
+				<xs:element name="noPartsRequired" type="invoicePartsIndEnumType"
+				minOccurs="0" />
+				<xs:element name="cancellationCharge" type="xs:string" 
+				minOccurs="0" />
+				<xs:element name="dispositionCode" type="xs:string" 
+				minOccurs="0" />
+				<xs:element name="hSCreditCardResponse" type="hsCreditCardResponseType"
+					minOccurs="0" />
+				
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!--completionStatusType -->
+	<xs:simpleType name="completionStatusType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Complete" />
+			<xs:enumeration value="Cancel" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!--updateActionType -->
+	<xs:simpleType name="updateActionType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Work not started" />
+			<xs:enumeration value="Work Started" />
+			<xs:enumeration value="Pending Claim" />
+			<xs:enumeration value="Completed" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!--resCommentType -->
+	<xs:simpleType name="resCommentType">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"></xs:minLength>
+			<xs:maxLength value="1000"></xs:maxLength>
+		</xs:restriction>
+	</xs:simpleType>
+	
+
+	<xs:complexType name="tasksType">
+		<xs:sequence>
+			<xs:element name="task" type="taskType" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+
+	<!--pricingType -->
+	<xs:complexType name="pricingType">
+		<xs:sequence>
+			<xs:element name="labour" type="price-format" minOccurs="1"/>
+			<xs:element name="materials" type="price-format" minOccurs="0"/>
+			<xs:element name="originalLabour" type="price-format" minOccurs="1" />
+			<xs:element name="originalMaterials" type="price-format" minOccurs="0" />
+			<xs:element name="labourChangeReasonCodeId" type="partIdType" minOccurs="0" />
+			<xs:element name="labourChangeReasonComments" type="stringFiftyType" minOccurs="0"/>
+			<xs:element name="partChangeReasonCodeId" type="partIdType" minOccurs="0"/>
+			<xs:element name="partChangeReasonComments" type="stringFiftyType" minOccurs="0" />
+			<xs:element name="partsTax" type="percent" minOccurs="0" />	
+			<xs:element name="partsDiscount" type="percent" minOccurs="0" />	
+			<xs:element name="laborTax" type="percent" minOccurs="0" />	
+			<xs:element name="laborDiscount" type="percent" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="addOnsType">
+		<xs:sequence>
+			<xs:element name="addOn" type="addOnType" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<!--  
+	<xs:complexType name="permitsType">
+		<xs:sequence>
+			<xs:element name="permit" type="permitType" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType> -->
+	
+	<xs:complexType name="permitsType">
+		<xs:sequence>
+		 	<xs:element name="permitTasks" type="permitTasksType" minOccurs="0"/>
+			<xs:element name="permitAddons" type="permitAddonsType" minOccurs="0" /> 
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="referencesType">
+		<xs:sequence>
+			<xs:element name="reference" type="referenceType" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="partsTrackingType">
+		<xs:sequence>
+			<xs:element name="part" type="partTrackingType" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<!-- addOnPaymentDetailsType -->
+	<xs:complexType name="addOnPaymentDetailsType">
+		<xs:sequence>
+			<xs:element name="paymentType" type="paymentSimpleType" minOccurs="1" />
+			<xs:element name="checkNumber" type="stringSixteenNumType" minOccurs="0"/>
+			<xs:element name="ccNumber" type="stringSixteenNumType" minOccurs="0" />
+			<xs:element name="ccType" type="stringHundredType" minOccurs="0"/>
+			<xs:element name="expirationDate" type="expirationDateType" minOccurs="0"/>
+			<xs:element name="preAuthNumber" type="preAuthNumberType" minOccurs="0" />
+			<xs:element name="amountAuthorized" type="price-format" minOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="hsCreditCardResponseType">
+		<xs:sequence>
+		
+		<xs:element name="correlationId" type="xs:string"
+					minOccurs="1" maxOccurs="1" nillable="false"/>
+			<xs:element name="responseCode" type="xs:integer"
+					minOccurs="1" maxOccurs="1" nillable="false"/>
+			<xs:element name="responseMessage" type="xs:string" 
+				minOccurs="0" />
+			<xs:element name="token" type="xs:integer" 
+				minOccurs="0" />
+			<xs:element name="maskedAccount" type="xs:string" 
+				minOccurs="0" />
+			<xs:element name="messages" type="xs:string" 
+				minOccurs="0" />
+				
+			<xs:element name="transAmt" type="xs:integer" 
+				minOccurs="0" />
+			<xs:element name="auditNo" type="xs:integer" 
+				minOccurs="0" />
+			<xs:element name="refNo" type="xs:integer" 
+				minOccurs="0" />
+			<xs:element name="approvalCd" type="xs:string" 
+				minOccurs="0" />
+			<xs:element name="actionCd" type="xs:integer" 
+				minOccurs="0" />
+			<xs:element name="addlResponseData" type="xs:string" 
+				minOccurs="0" />
+			<xs:element name="authRespCd" type="xs:string" 
+				minOccurs="0" />
+			<xs:element name="authCd" type="xs:integer" 
+				minOccurs="0" />
+		
+			<xs:element name="newAcctNo" type="xs:string" 
+				minOccurs="0" />
+				<xs:element name="ajbKey" type="xs:string" 
+				minOccurs="0" />
+				<xs:element name="avsStatus" type="xs:string" 
+				minOccurs="0" />
+				
+			
+		</xs:sequence>
+	</xs:complexType>
+	<!--expirationDateType -->
+
+	<xs:simpleType name="expirationDateType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="10"></xs:maxLength>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!--preAuthNumberType -->
+
+	<xs:simpleType name="preAuthNumberType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="20"></xs:maxLength>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	
+	<!--taskType -->
+	<xs:complexType name="taskType">
+		<xs:sequence>
+			<xs:element name="taskId" type="taskIdType" minOccurs="0" />
+			<xs:element name="taskStatus" type="taskStatusType"
+				minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!--taskIdType -->
+
+	<xs:simpleType name="taskIdType">
+		<xs:restriction base="xs:integer">
+			<xs:totalDigits value="11"></xs:totalDigits>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!--PartsType -->
+	<xs:complexType name="PartsType">
+		<xs:sequence>
+		<xs:element name="deleteAllInd" type="deleteIndType" minOccurs="0"/>
+			<xs:element name="part" type="PartType" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+
+	<!--addOnType -->
+	<xs:complexType name="addOnType">
+		<xs:sequence>
+		    <xs:element name="soAddonId" type="partIdType" minOccurs="0" />
+			<xs:element name="addOnSKU" type="stringFiftyType" minOccurs="0" />
+			<xs:element name="description" type="stringTwoFiftyType" minOccurs="0" />
+			<xs:element name="customerCharge" type="price-format"
+				minOccurs="0" />
+			<xs:element name="qty" type="partIdType" minOccurs="0" />
+			<xs:element name="miscInd" type="miscIndicatorType" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<!--signatureType -->
+	<xs:complexType name="signatureType">
+		<xs:sequence>
+			<xs:element name="documentId" type="xs:integer"
+				minOccurs="1" />
+			<xs:element name="name" type="stringHundredType"
+				minOccurs="0" />
+			<xs:element name="customerEmail" type="emailType"
+				minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<!--partTrackingType -->
+	<xs:complexType name="partTrackingType">
+		<xs:sequence>
+			<xs:element name="partId" type="partIdType" minOccurs="0" />
+			<xs:element name="partName" type="stringTwoFiftyType" minOccurs="0" />
+			<xs:element name="carrier" type="xs:string" minOccurs="0" nillable="true"/>
+			<xs:element name="trackingNumber" type="stringFiftyType"
+				minOccurs="0" nillable="true"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<!--partNumType -->
+
+	<xs:simpleType name="partIdType">
+		<xs:restriction base="xs:integer">
+			<xs:totalDigits value="10"></xs:totalDigits>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	
+	<!--PartType -->
+	<xs:complexType name="PartType">
+		<xs:sequence>
+			<xs:element name="partCoverage" type="partCoverageType"
+				minOccurs="1" />
+			<xs:element name="partSource" type="partSourceType" minOccurs="1" />
+			<xs:element name="nonSearsSource" type="stringFiftyType" minOccurs="0" />
+			<xs:element name="partDescription" type="stringHundredType"
+				minOccurs="1" />
+			<xs:element name="partNumber" type="partNumType" minOccurs="1" />
+			<xs:element name="invoiceNumber" type="invoiceType"
+				minOccurs="1" />
+			<xs:element name="divisionNumber" type="divSourceNumType"
+				minOccurs="1" />
+			<xs:element name="sourceNumber" type="divSourceNumType"
+				minOccurs="1" />
+			<xs:element name="unitCost" type="price-format" minOccurs="1" />
+			<xs:element name="retailPrice" type="price-format"
+				minOccurs="1" />
+			<xs:element name="qty" type="qtyType" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+
+	<!--referenceType -->
+	<xs:complexType name="referenceType">
+		<xs:sequence>
+			<xs:element name="referenceName" type="xs:string"
+				minOccurs="1" nillable="false"/>
+			<xs:element name="referenceValue" type="stringFiftyType"
+				minOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<!--permitType -->
+	<!-- <xs:complexType name="permitType">
+		<xs:sequence>
+			<xs:element name="addOnPrePaid" type="addOnPrePaidType"
+				minOccurs="0" />
+			<xs:element name="autogenAddon" type="xs:boolean"
+				minOccurs="0" />
+			<xs:element name="permitType" type="permitSimpleType"
+				minOccurs="0" />
+			<xs:element name="prePaidAmount" type="price-format"
+				minOccurs="0" />
+			<xs:element name="customerCharge" type="price-format"
+				minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType> -->
+	
+	<xs:complexType name="permitTasksType">
+		<xs:sequence>
+			<xs:element name="permitTask" type="permitTaskType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="permitTaskType">
+		<xs:sequence>
+		    <xs:element name="taskId" type="xs:integer" minOccurs="1"/>
+			<xs:element name="taskStatus" type="taskStatusType" minOccurs="1"/>
+			<xs:element name="permitType" type="permitTypes" minOccurs="1"/>
+			<xs:element name="custPrePaidAmount" type="price-format" minOccurs="1"/>
+			<xs:element name="finalPermitPriceByProvider" type="price-format" minOccurs="1"/>
+			
+		</xs:sequence>
+	</xs:complexType>		
+	<xs:complexType name="permitAddonsType">
+		<xs:sequence>
+			<xs:element name="permitAddon" type="permitAddonType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="permitAddonType">
+		<xs:sequence>
+			<xs:element name="soAddonId" type="partIdType" minOccurs="0" nillable="true"/>
+			<xs:element name="addonSKU" type="stringFiftyType" minOccurs="1" nillable="true"/>
+			<xs:element name="description" type="stringTwoFiftyType" minOccurs="0" nillable="true"/>
+			<xs:element name="customerCharge" type="price-format" minOccurs="1" nillable="true"/>
+			<xs:element name="miscInd" type="miscIndicatorType" minOccurs="0" nillable="true"/>
+			<xs:element name="qty" type="permitAddonQtyType" minOccurs="1" nillable="true"/>
+			<xs:element name="permitType" type="permitTypes" minOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<!--partNumType -->
+
+	<xs:simpleType name="partNumType">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[a-zA-Z0-9]*"/>
+			<xs:maxLength value="25"></xs:maxLength>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="divSourceNumType">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[a-zA-Z0-9]*"/>
+			<xs:maxLength value="10"></xs:maxLength>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!--part quantity Type-->
+	<xs:simpleType name="quantityType">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[1-9]\d?"/>
+			<xs:maxLength value="2"></xs:maxLength>
+		</xs:restriction>
+	</xs:simpleType>
+	
+		<xs:simpleType name="qtyType">
+		<xs:restriction base="xs:integer">
+			<xs:minInclusive value="1"></xs:minInclusive>
+			<xs:maxInclusive value="99"></xs:maxInclusive>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	
+	<xs:simpleType name="permitAddonQtyType">
+		<xs:restriction base="xs:integer">
+			<xs:minInclusive value="0"></xs:minInclusive>
+			<xs:maxInclusive value="1"></xs:maxInclusive>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!--stringFiftyType -->
+
+	<xs:simpleType name="stringFiftyType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="50"></xs:maxLength>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!--stringTwoFiftyType -->
+
+	<xs:simpleType name="stringTwoFiftyType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="250"></xs:maxLength>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	
+	
+	<xs:simpleType name="stringTwoFiftyFiveType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="255"></xs:maxLength>
+		</xs:restriction>
+	</xs:simpleType>
+	
+		<!--stringSixtyFourType -->
+
+	<xs:simpleType name="stringSixtyFourType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="64"></xs:maxLength>
+		</xs:restriction>
+	</xs:simpleType>
+	
+		<xs:simpleType name="stringSixteenNumType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="16"></xs:maxLength>
+			<xs:pattern value="[0-9]+"></xs:pattern>
+		</xs:restriction>
+	</xs:simpleType>
+	
+			<xs:simpleType name="stringSixteenType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="16"></xs:maxLength>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	
+	<!--partNumType -->
+
+	<xs:simpleType name="stringHundredType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="100"></xs:maxLength>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!--invoiceType -->
+
+	<xs:simpleType name="invoiceType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="15"></xs:maxLength>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	
+		<!--descType -->
+
+	<xs:simpleType name="descType">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[a-zA-Z0-9\s]*"/>
+			<xs:maxLength value="50"></xs:maxLength>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!--taskStatusType -->
+
+	<xs:simpleType name="taskStatusType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Active" />
+			<xs:enumeration value="Completed" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!--taskStatusType -->
+
+	<xs:simpleType name="permitTypes">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Building" />
+			<xs:enumeration value="Electrical"/>
+			<xs:enumeration value="Plumbing"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+		<!--part source Type -->
+
+	<xs:simpleType name="partSourceType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Sears" />
+			<xs:enumeration value="Non-sears" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!--partCoverageType -->
+
+	<xs:simpleType name="partCoverageType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Protection Agreement" />
+			<xs:enumeration value="In-Warranty" />			
+		</xs:restriction>
+	</xs:simpleType>
+
+
+	<!--paymentSimpleType -->
+
+	<xs:simpleType name="paymentSimpleType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Credit Card" />
+			<xs:enumeration value="Check" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!--carrierType 
+
+	<xs:simpleType name="carrierType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="UPS" />
+			<xs:enumeration value="FedEx" />
+			<xs:enumeration value="DHL" />
+			<xs:enumeration value="USPS" />
+			<xs:enumeration value="Other" />
+		</xs:restriction>
+	</xs:simpleType> -->
+	
+	<!--addOnPrePaidType -->
+	<xs:simpleType name="addOnPrePaidType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Addon" />
+			<xs:enumeration value="Permit" />
+		</xs:restriction>
+	</xs:simpleType>
+
+
+	<!--permitSimpleType -->
+	<xs:simpleType name="permitSimpleType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Building" />
+			<xs:enumeration value="Electrical" />
+			<xs:enumeration value="General" />
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- miscIndicatorType -->
+	<xs:simpleType name="miscIndicatorType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Y" />
+			<xs:enumeration value="N" />
+		</xs:restriction>		
+	</xs:simpleType>
+
+	<xs:simpleType name="deleteIndType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Y" />
+			<xs:enumeration value="N" />
+		</xs:restriction>		
+	</xs:simpleType>
+	
+	<xs:simpleType name="invoicePartsIndEnumType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="NO_PARTS_ADDED" />
+			<xs:enumeration value="PARTS_ADDED" />
+			<xs:enumeration value="NO_PARTS_REQUIRED" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+  <xs:simpleType name="percent">
+	  <xs:restriction base="xs:decimal">
+	    <xs:minInclusive value="0"/>
+	    <xs:maxInclusive value="100"/>
+	  </xs:restriction>
+	</xs:simpleType>
+</xs:schema>
+	

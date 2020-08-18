@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<s:schema elementFormDefault="qualified" targetNamespace="http://market.soup.net" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://market.soup.net">
+    <s:element name="ServiceOrderResponse">
+        <s:complexType>
+            <s:sequence>
+                <s:element minOccurs="1" maxOccurs="1" name="GetServiceOrder"
+                           type="tns:ServiceOrder" nillable="true"/>
+            </s:sequence>
+        </s:complexType>
+    </s:element>
+	<s:element name="ServiceOrderDetailsResponse">
+        <s:complexType>
+            <s:sequence>
+                <s:element minOccurs="1" maxOccurs="1" name="GetServiceOrderDetails"
+                           type="tns:ServiceOrder" nillable="true"/>
+            </s:sequence>
+        </s:complexType>
+    </s:element>
+	<s:element name="CancelServiceOrderRequest">
+        <s:complexType>
+           <s:sequence>
+                <s:element minOccurs="0" maxOccurs="1" name="orderId" type="s:integer" nillable="false"/>
+				<s:element minOccurs="0" maxOccurs="1" name="saveOrderInMarketPlace" type="s:boolean" nillable="false"/>
+				<s:element minOccurs="0" maxOccurs="1" name="isRouted" type="s:boolean"/>
+        </s:sequence>
+        </s:complexType>
+    </s:element>
+	<s:element name="CancelServiceOrderResponse">
+        <s:complexType>
+            <s:sequence>
+                <s:element minOccurs="0" maxOccurs="1" name="orderId" type="s:integer" nillable="false"/>
+				<s:element minOccurs="0" maxOccurs="1" name="orderStatus" type="s:string" nillable="true"/>
+				<s:element minOccurs="0" maxOccurs="1" name="orderCanceledBySavedInMarketPlace" type="s:boolean" nillable="false"/>
+				<s:element minOccurs="0" maxOccurs="1" name="cancelDate" type="s:date" nillable="false"/>
+				<s:element minOccurs="0" maxOccurs="1" name="transactionNumber" type="s:integer" nillable="false"/>
+        </s:sequence>
+        </s:complexType>
+    </s:element>
+	 <s:element name="DraftServiceOrder">
+        <s:complexType>
+            <s:sequence>
+				<s:element minOccurs="0" maxOccurs="1" name="orderType" type="s:string"/>
+				<s:element minOccurs="0" maxOccurs="1" name="routeOrder" type="s:boolean"/>
+				<s:element minOccurs="1" maxOccurs="1" name="endUserContact" type="tns:EndUserContact"/>
+            </s:sequence>
+        </s:complexType>
+    </s:element>
+    <s:complexType name="ServiceOrder">
+        <s:sequence>
+             <s:element minOccurs="0" maxOccurs="1" name="orderId" type="s:integer" />
+				<s:element minOccurs="0" maxOccurs="1" name="orderStatus" type="s:string" />
+				<s:element minOccurs="0" maxOccurs="1" name="orderRouted" type="s:boolean"/>
+				<s:element minOccurs="1" maxOccurs="1" name="GetRoutingInformation" type="tns:ServiceOrderRouting" nillable="true"/>
+			    <s:element minOccurs="1" maxOccurs="1" name="GetContactInformation" type="tns:EndUserContact" nillable="true"/>
+				<s:element minOccurs="1" maxOccurs="1" name="GetBuyerInformation" type="tns:BuyerContact" nillable="true"/>
+				<s:element minOccurs="0" maxOccurs="500" name="GetProviders"  type="tns:ProviderContact" nillable="true"/>
+        </s:sequence>
+    </s:complexType>
+    <s:complexType name="ServiceOrderRouting">
+        <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="routingCode" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="routingState" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="routingTransactionTime" type="s:date"/>
+        </s:sequence>
+    </s:complexType>
+	 <s:complexType name="EndUserContact">
+        <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="homePhone" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="workPhone" type="s:string"/>
+			<s:element minOccurs="0" maxOccurs="1" name="mobilPhone" type="s:string"/>
+			<s:element minOccurs="0" maxOccurs="1" name="fax" type="s:string"/>
+			<s:element minOccurs="0" maxOccurs="1" name="email" type="s:string"/>
+        </s:sequence>
+    </s:complexType>
+	 <s:complexType name="ProviderContact">
+        <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="homePhone" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="workPhone" type="s:string"/>
+			<s:element minOccurs="0" maxOccurs="1" name="mobilPhone" type="s:string"/>
+			<s:element minOccurs="0" maxOccurs="1" name="fax" type="s:string"/>
+			<s:element minOccurs="0" maxOccurs="1" name="email" type="s:string"/>
+        </s:sequence>
+    </s:complexType>
+	 <s:complexType name="BuyerContact">
+        <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="homePhone" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="workPhone" type="s:string"/>
+			<s:element minOccurs="0" maxOccurs="1" name="mobilPhone" type="s:string"/>
+			<s:element minOccurs="0" maxOccurs="1" name="fax" type="s:string"/>
+			<s:element minOccurs="0" maxOccurs="1" name="email" type="s:string"/>
+        </s:sequence>
+    </s:complexType>
+	<s:complexType name="ServiceNote">
+        <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="serviceOrderId" type="s:integer"/>
+            <s:element minOccurs="0" maxOccurs="1" name="note" type="s:string" />
+        </s:sequence>
+    </s:complexType>
+	<s:complexType name="ServiceOrderCopy">
+        <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="serviceOrderId" type="s:integer"/>
+            <s:element minOccurs="0" maxOccurs="1" name="orderDate" type="s:date" />
+        </s:sequence>
+    </s:complexType>
+</s:schema>

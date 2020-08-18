@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/soAccept"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+	targetNamespace="http://www.servicelive.com/namespaces/soAccept"
+	elementFormDefault="qualified" jaxb:version="1.0"
+	jaxb:extensionBindingPrefixes="xjc">
+	<xs:include schemaLocation="../../common.xsd" />
+	<xs:element name="soAccept">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="results" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

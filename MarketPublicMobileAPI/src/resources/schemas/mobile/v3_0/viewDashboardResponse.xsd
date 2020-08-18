@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified">
+	<xs:include schemaLocation="../../common.xsd" />
+
+	<xs:element name="viewDashboardResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="results" />
+				<xs:element name="tabs" type="tabsType"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+    <xs:complexType name="tabsType">
+		<xs:sequence>
+			<xs:element name="tab" type="tabType" minOccurs="3" maxOccurs="4"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="tabType">
+		<xs:sequence>
+			<xs:element name="tabName" type="tabTypeEnum" />
+			<xs:element name="tabCount" type="xs:integer"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="tabTypeEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Received" />
+			<xs:enumeration value="Accepted" />
+			<xs:enumeration value="Active" />
+			<xs:enumeration value="Problem" />
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

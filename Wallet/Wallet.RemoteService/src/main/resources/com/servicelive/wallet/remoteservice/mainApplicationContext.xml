@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-2.0.xsd
+        http://www.springframework.org/schema/jee 
+        http://www.springframework.org/schema/jee/spring-jee-2.0.xsd">
+        
+    <!-- 
+    Need two external properties that could be set either in local.properties or properties-service.xml in JBoss
+    datasource.finance.bean.id=dataSourceFinance
+	datasource.main.bean.id=dataSourceMySQL
+     -->
+    <bean id="com.servicelive.wallet.remoteservice.placeholderConfig"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" />
+	
+	<bean id="remoteServiceSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation">
+			<value>classpath:/com/servicelive/wallet/remoteservice/walletRemoteServiceSqlMapConfig.xml</value>
+		</property>
+		<property name="dataSource" ref="dataSourceFinance" />
+	</bean>
+	
+	<bean id="dataSourceMySQL" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName" value="jdbc/ServiceLiveMySqlDS" />
+	</bean>	
+	
+	<bean id="dataSourceFinance" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName" value="jdbc/ServiceLiveMySqlFinanceDS" />
+	</bean>
+	<bean id="dataSourceSecureJndi" class="org.springframework.jndi.JndiObjectFactoryBean" lazy-init="true">
+		<property name="jndiName" value="jdbc/ServiceLiveMySqlSecureDS" />
+	</bean>
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource">
+			<ref bean="dataSourceMySQL" />
+		</property>
+	</bean>
+
+	<bean id="dsTransactionManagerFinance"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource">
+			<ref bean="dataSourceFinance" />
+		</property>
+	</bean>
+	
+	<bean id="attributeSource" 
+	    class="org.springframework.transaction.interceptor.MatchAlwaysTransactionAttributeSource">
+	    <property name="transactionAttribute">
+	    		<value>PROPAGATION_REQUIRED,ISOLATION_READ_COMMITTED,-Exception</value>
+	    </property>
+	</bean>
+	
+ 	<bean id="walletRestService" class="com.servicelive.wallet.remoteservice.rest.RestWalletBO" scope="prototype">
+    	<property name="walletBO" ref="walletTx" />
+    	<property name="walletMessageDao" ref="walletMessageDao" />
+    </bean>
+    
+    <bean id="walletMessageDao" class="com.servicelive.wallet.remoteservice.dao.WalletMessageDao" >
+    	<property name="sqlMapClient">
+			<ref bean="remoteServiceSqlMapClient" />
+		</property>
+    </bean>
+	<import resource="classpath:/com/servicelive/wallet/service/walletServiceApplicationContext.xml" />
+	
+</beans>
+
+

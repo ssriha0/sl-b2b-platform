@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- beans for licenses application for dependency injection support -->
+
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	
+	<bean id="licensesBOImpl" class="com.newco.marketplace.business.businessImpl.provider.LicensesBOImpl" scope="prototype">
+		<constructor-arg ref="licensesDaoImpl"/>
+	</bean>
+			
+	
+	<bean id="licensesDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.LicensesDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+</beans>

@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd"
+   	default-autowire="byName" >
+    
+    <bean id="autoRouteHelper" class="com.servicelive.orderfulfillment.command.util.AutoRouteHelper">
+    	<property name="marketPlatformProviderBO" ref="marketPlatformRemoteService" />
+    	<property name="serviceOrderDao" ref="serviceOrderDao" />
+        <property name="carAssociationDao" ref="carAssociationDao"/>
+        <property name="tierRouteUtil" ref="tierRouteUtil"/>
+        <property name="quickLookupCollection" ref="quickLookupCollection"/>
+    </bean>
+
+    <bean id="tierRouteUtil" class="com.servicelive.orderfulfillment.command.util.TierRouteUtil">
+        <property name="quickLookupCollection" ref="quickLookupCollection" />
+        <property name="marketPlatformRoutingRulesBO" ref="marketPlatformRemoteService" />
+    </bean>
+    
+<!-- so commands  -->
+	<bean id="TracingCmd" class="com.servicelive.orderfulfillment.command.TracingCmd"/>
+	<bean id="DemoteCmd" class="com.servicelive.orderfulfillment.command.DemoteCmd"/>
+	<bean id="AlertCmd" class="com.servicelive.orderfulfillment.command.AlertCmd">
+        <property name="notificationTaskProcessor" ref="notificationTaskProcessor" />
+        <property name="quickLookupCollection" ref="quickLookupCollection" />
+	</bean>
+	<bean id="ScheduleUpdateCommand" class="com.servicelive.orderfulfillment.command.ScheduleUpdateCommand"/>
+	<bean id="RescheduleNullCommand" class="com.servicelive.orderfulfillment.command.RescheduleNullCommand"/>
+    <bean id="GroupAlertCmd" class="com.servicelive.orderfulfillment.command.AlertCmd">
+        <property name="notificationTaskProcessor" ref="notificationTaskProcessorForGroup" />
+	</bean>
+    <bean id="FireEventCmd" class="com.servicelive.orderfulfillment.command.FireEventCmd">
+        <property name="eventAdapter" ref="eventAdapter"/>
+    </bean>
+    <bean id="ASN_FireEventCmd" class="com.servicelive.orderfulfillment.command.FireASNEventCmd" parent="FireEventCmd"/>
+    <bean id="CheckAndSendAlertCmd" class="com.servicelive.orderfulfillment.command.CheckAndSendAlertCmd" parent="AlertCmd" />
+	<bean id="PostCmd" class="com.servicelive.orderfulfillment.command.PostCmd"/>
+	<bean id="SpendLimitChangeCmd" class="com.servicelive.orderfulfillment.command.SpendLimitChangeCmd"/>
+	<bean id="GetFieldFromSOCmd" class="com.servicelive.orderfulfillment.command.GetFieldFromSOCmd"/>
+	<bean id="CheckAvailableBalanceCmd" class="com.servicelive.orderfulfillment.command.CheckAvailableBalanceCmd"/>
+	<bean id="AddBuyerFundCmd" class="com.servicelive.orderfulfillment.command.AddBuyerFundCmd"/>
+	<bean id="AddBuyerFundCmdForBid" class="com.servicelive.orderfulfillment.command.AddBuyerFundCmdForBid"/>
+    <bean id="GetWalletPostInfoCmd" class="com.servicelive.orderfulfillment.command.GetWalletPostInfoCmd" />
+    <bean id="GetWalletCloseInfoCmd" class="com.servicelive.orderfulfillment.command.GetWalletCloseInfoCmd" />
+    <bean id="GetCreditCardDepositInfoCmd" class="com.servicelive.orderfulfillment.command.GetCreditCardDepositInfoCmd" />
+	<bean id="UpdateLegacyStatusCmd" class="com.servicelive.orderfulfillment.command.UpdateLegacyStatusCmd"/>
+	<bean id="BuyerOutboundNotificationCmd" class="com.servicelive.orderfulfillment.command.BuyerOutboundNotificationCmd"/>
+	<!-- SL 15642 Start Setting bean id for method UpdateOrderAcceptAttributeCmd and UpdateOrderRouteAttributeCmd -->
+	<bean id="UpdateOrderAcceptAttributeCmd" class="com.servicelive.orderfulfillment.command.UpdateOrderAcceptAttributeCmd"/>
+	<bean id="UpdateOrderRouteAttributeCmd" class="com.servicelive.orderfulfillment.command.UpdateOrderRouteAttributeCmd"/>
+	<bean id="UpdateProvidersForConditionalAutoRoutingCmd" class="com.servicelive.orderfulfillment.command.UpdateProvidersForConditionalAutoRoutingCmd"></bean>
+	<bean id="UpdateSoHdrOnAutoAccept" class="com.servicelive.orderfulfillment.command.UpdateSoHdrOnAutoAccept"/>
+	<!-- SL 15642 End Setting bean id for method UpdateOrderAcceptAttributeCmd and UpdateOrderRouteAttributeCmd -->
+	<bean id="UpdateSoHdrOnInhomeAutoAccept" class="com.servicelive.orderfulfillment.command.UpdateSoHdrOnInhomeAutoAccept"/>
+	<bean id="ClearRecallOrderDetails" class="com.servicelive.orderfulfillment.command.ClearRecallOrderDetails"/>
+	<bean id="UpdateSOCancellationCmd" class="com.servicelive.orderfulfillment.command.UpdateSOCancellationCmd"/>
+    <bean id="UpdateSubStatusCmd" class="com.servicelive.orderfulfillment.command.UpdateSubStatusCmd"/>
+    <bean id="SEARSRI_UpdateSubStatusCmd" class="com.servicelive.orderfulfillment.command.SearsRI_UpdateSubStatusCmd" parent="UpdateSubStatusCmd"/>
+	<bean id="VoidCmd" class="com.servicelive.orderfulfillment.command.VoidCmd"/>
+    <bean id="CompleteOrderCmd" class="com.servicelive.orderfulfillment.command.CompleteOrderCmd" />
+    <bean id="SEARSHSR_CompleteOrderCmd" class="com.servicelive.orderfulfillment.command.SearsHSRCompleteOrderCmd" />
+    <bean id="CloseOrderCmd" class="com.servicelive.orderfulfillment.command.CloseOrderCmd">
+		<property name="marketPlatformBO" ref="marketPlatformRemoteService" />
+    </bean>
+    <bean id="SEARSHSR_CloseOrderCmd" class="com.servicelive.orderfulfillment.command.SearsHSRCloseOrderCmd">
+		<property name="marketPlatformBO" ref="marketPlatformRemoteService" />
+    </bean>
+    <bean id="ValueLinkReconChkCmd" class="com.servicelive.orderfulfillment.command.ValueLinkReconciliationCheckCmd"/>
+	<bean id="IncreaseSpendingCmd" class="com.servicelive.orderfulfillment.command.IncreaseSpendingCmd" />
+	<bean id="ReverseSpendLimitCmd" class="com.servicelive.orderfulfillment.command.ReverseSpendLimitCmd" />
+	<bean id="IncreasingSpendLimitCmd" class="com.servicelive.orderfulfillment.command.IncreasingSpendLimitCmd" />
+	<bean id="IncreaseSpendingPendingCancelCmd" class="com.servicelive.orderfulfillment.command.IncreaseSpendingPendingCancelCmd" />
+	<bean id="DecreasingSpendLimitCmd" class="com.servicelive.orderfulfillment.command.DecreasingSpendLimitCmd" />
+	<bean id="ProviderPaymentCmd" class="com.servicelive.orderfulfillment.command.ProviderPaymentCmd" />
+	<bean id="BuyerWithdrawCmd" class="com.servicelive.orderfulfillment.command.BuyerWithdrawCmd" />
+	<bean id="ProviderWithdrawCmd" class="com.servicelive.orderfulfillment.command.ProviderWithdrawCmd" />
+	<bean id="BuyerDisagreeCmd" class="com.servicelive.orderfulfillment.command.BuyerDisagreeCmd" />
+	<bean id="ProviderDisagreeCmd" class="com.servicelive.orderfulfillment.command.ProviderDisagreeCmd" />
+	<bean id="BuyerAgreeCmd" class="com.servicelive.orderfulfillment.command.BuyerAgreeCmd" />
+	<bean id="UpdatePendingCancelHistoryCmd" class="com.servicelive.orderfulfillment.command.UpdatePendingCancelHistoryCmd" />
+	<bean id="ProviderAgreeCmd" class="com.servicelive.orderfulfillment.command.ProviderAgreeCmd"/>
+	<bean id="SpendLimitHistoryUpdateCmd" class="com.servicelive.orderfulfillment.command.SpendLimitHistoryUpdateCmd" />
+	<bean id="CheckAvailableBalanceForIncreaseCmd" class="com.servicelive.orderfulfillment.command.CheckAvailableBalanceForIncreaseCmd" />
+	<bean id="DecreaseSpendingCmd" class="com.servicelive.orderfulfillment.command.DecreaseSpendingCmd" />
+    <bean id="CancelWithPenaltyCmd" class="com.servicelive.orderfulfillment.command.CancelWithPenaltyCmd" />
+    <bean id="CancelWithNoPenaltyCmd" class="com.servicelive.orderfulfillment.command.CancelWithNoPenaltyCmd" />
+    <bean id="GetWalletCancelPenaltyInfoCmd" class="com.servicelive.orderfulfillment.command.GetWalletCancelPenaltyInfoCmd" />
+    <bean id="RequestCancellationCmd" class="com.servicelive.orderfulfillment.command.RequestCancellationCmd" />
+    <bean id="RecallCompletionCmd" class="com.servicelive.orderfulfillment.command.RecallCompletionCmd" />
+    <bean id="RemoveFieldsCmd" class="com.servicelive.orderfulfillment.command.RemoveFieldsCmd" />
+    <bean id="RemoveAcceptedProviderFromSOCmd" class="com.servicelive.orderfulfillment.command.RemoveAcceptedProviderFromSOCmd" />
+    <bean id="MarkOrderProcessFinished" class="com.servicelive.orderfulfillment.command.MarkOrderProcessFinished" />
+    <bean id="MarkOrderNotUpdatable" class="com.servicelive.orderfulfillment.command.MarkOrderNotUpdatable" />
+	<bean id="ClearPendingCancelHistCmd" class="com.servicelive.orderfulfillment.command.ClearPendingCancelHistCmd" />    
+    <bean id="SONoteCommand" class="com.servicelive.orderfulfillment.command.SONoteCommand">
+        <property name="noteUtil" ref="soNoteUtil"  />
+    </bean>
+    <bean id="SetAutoRoutingBehaviorCmd" class="com.servicelive.orderfulfillment.command.SetAutoRoutingBehaviorCmd">
+        <property name="quickLookupCollection" ref="quickLookupCollection" />
+        <property name="carAssociationDao" ref="carAssociationDao" />
+    </bean>
+    <bean id="SaveConditionalRoutingNoteCmd" class="com.servicelive.orderfulfillment.command.SaveConditionalRoutingNoteCmd" />
+    <bean id="SaveBuyerDocumentsCmd" class="com.servicelive.orderfulfillment.command.SaveBuyerDocumentsCmd">
+        <property name="orderBuyerCollection" ref="orderBuyerCollection" />
+        <property name="marketPlatformBuyerBO" ref="marketPlatformRemoteService" />
+    </bean>
+    <bean id="SetProvidersForAutoRoutingCmd" class="com.servicelive.orderfulfillment.command.SetProvidersForAutoRoutingCmd">
+    	<property name="autoRouteHelper" ref="autoRouteHelper"/>
+    </bean>
+    <bean id="SetProvidersForInHomeAutoAccept" class="com.servicelive.orderfulfillment.command.SetProvidersForInHomeAutoAccept">
+    	<property name="autoRouteHelper" ref="autoRouteHelper"/>
+    </bean>
+    <bean id="SetProvidersForConditionalAutoRoutingCmd" class="com.servicelive.orderfulfillment.command.SetProvidersForConditionalAutoRoutingCmd">
+    	<property name="autoRouteHelper" ref="autoRouteHelper"/>
+    </bean>
+    <bean id="SetAutoTierRoutingTime" class="com.servicelive.orderfulfillment.command.SetAutoTierRoutingTime">
+        <property name="tierRouteUtil" ref="tierRouteUtil" />
+    </bean>
+    <bean id="ResetAutoTierRoutingTimeCmd" class="com.servicelive.orderfulfillment.command.ResetAutoTierRoutingTimeCmd">
+        <property name="tierRouteUtil" ref="tierRouteUtil" />
+    </bean>
+    <bean id="DisableTierRouteCmd" class="com.servicelive.orderfulfillment.command.DisableTierRouteCmd">
+        <property name="tierRouteUtil" ref="tierRouteUtil" />
+    </bean>
+	<bean id="SOLoggingCmd" class="com.servicelive.orderfulfillment.command.SOLoggingCmd">
+        <property name="soLoggingCmdHelper" ref="soLoggingCmdHelper" />
+	</bean>	
+    <bean id="SOGroupLoggingCmd" class="com.servicelive.orderfulfillment.group.command.SOGroupLoggingCmd">
+        <property name="soLoggingCmdHelper" ref="soLoggingCmdHelper" />
+    </bean>
+    <bean id="CancelOrderLogCmd" class="com.servicelive.orderfulfillment.command.SOLoggingCmd" parent="SOLoggingCmd" />
+    <bean id="SOLoggingRouteCmd" class="com.servicelive.orderfulfillment.command.SOLoggingRouteCmd" parent="SOLoggingCmd" />
+    <bean id="soLoggingCmdHelper" class="com.servicelive.orderfulfillment.common.SOLoggingCmdHelper">
+        <property name="logObjMap">
+            <map>
+                <entry key="expireSOLogging" value-ref="expireSOLogging"/>
+                <entry key="activate" value-ref="activateSOLogging"/>
+                <entry key="releaseAcceptedOrder" value-ref="releaseAcceptedOrderLogging" />
+                <entry key="releaseActiveOrder" value-ref="releaseActiveOrderLogging" />
+                <entry key="releaseProblemOrder" value-ref="releaseProblemOrderLogging" />
+                <entry key="voidOrder" value-ref="voidOrderLogging" />
+                <entry key="cancelOrder" value-ref="cancelOrderLogging" />
+                <entry key="requestCancellation" value-ref="requestCancellationLogging" />
+                <entry key="repostedWithUpdateLogging" value-ref="repostedWithUpdateLogging" />
+                <entry key="spendLimitUpdateLogging" value-ref="spendLimitUpdateLogging" />
+                <entry key="problemScopeChangeLogging" value-ref="problemScopeChangeLogging" />
+                <entry key="counterOfferLogging" value-ref="counterOfferLogging" />
+                <entry key="routeToProvidersLogging" value-ref="routeToProvidersLogging" />
+                <!-- SL 15642 Start Creating entry key for logging auto acceptance of a so by a provider  -->
+                <entry key="autoAcceptUpdateLogging" value-ref="autoAcceptUpdateLogging"></entry>
+                <!-- SL 15642 End Creating entry key for logging auto acceptance of a so by a provider  -->
+                <entry key="contactChangeLogging" value-ref="contactChangeLogging" />
+                <entry key="providerInstructionChangeLogging" value-ref="providerInstructionChangeLogging" />
+                <entry key="descriptionChangeLogging" value-ref="descriptionChangeLogging" />
+                <entry key="locationChangeLogging" value-ref="locationChangeLogging" />
+                <entry key="customRefChangeLogging" value-ref="customRefChangeLogging" />
+                <entry key="buyerAcceptRescheduleLogging" value-ref="buyerAcceptRescheduleLogging" />
+                <entry key="buyerRejectRescheduleLogging" value-ref="buyerRejectRescheduleLogging" />
+                <entry key="autoCloseSucessLogging" value-ref="autoCloseSucessLogging" />
+			    <entry key="autoCloseFailureLogging" value-ref="autoCloseFailureLogging" />
+			    <entry key="serviceIncompleteLogging" value-ref="serviceIncompleteLogging" />
+			    <entry key="processAutoCloseSO" value-ref="processAutoCloseSO" />
+			    <entry key="pendingCancelScopeChangeLogging" value-ref="pendingCancelScopeChangeLogging" />	
+			    <entry key="deleteDraftSO" value-ref="deleteDraftSOLogging" />
+			    <entry key="CancelSOWithoutPenalty" value-ref="CancelSOWithoutPenaltyLogging" />
+			    <entry key="CancelSOWithPenalty" value-ref="CancelSOWithPenaltyLogging" />
+			    <entry key="pendingCancelLogging" value-ref="pendingCancelLogging" />
+			    <entry key="scopeChangeCancelLogging" value-ref="scopeChangeCancelLogging" />
+			    <entry key="voidOrderFromCancelOrderSignal" value-ref="voidOrderFromCancelOrderSignalLogging" />
+			    <entry key="providerAgreePayment" value-ref="providerAgreePayment" />
+				<entry key="providerDisagreePayment" value-ref="providerDisagreePayment" />
+				<entry key="buyerAgreePayment" value-ref="buyerAgreePayment" />
+				<entry key="buyerDisgreePayment" value-ref="buyerDisgreePayment" />
+				<entry key="cancellingOrder" value-ref="cancellingOrderLogging" />
+				<entry key="requestCancel" value-ref="requestCancelLogging" />
+				<entry key="withdrawPendingCancel" value-ref="withdrawPendingCancel" />
+				<entry key="spendLimitUpdateAPILogging" value-ref="spendLimitUpdateAPILogging" />
+				<entry key="custRefAPIUpdateLogging" value-ref="custRefAPIUpdateLogging" />	
+				<!-- Priority 1 changes : NPS - SL Platform Sync using Update Service Order API -->
+				<entry key="updateServiceOrderLogging" value-ref="updateServiceOrderLogging"></entry>
+				<!-- Priority 4 changes : add order history if no matching CAR rule is found for In-home order -->
+				<entry key="noMatchingRuleLogging" value-ref="noMatchingRuleLogging"></entry>		
+				<!-- SL-21086 changes : For Service order substatus update -->
+				<entry key="updateSubstatusLogging" value-ref="updateSubstatusLogging"></entry>
+				<entry key="inHomeAutoAcceptUpdateLogging" value-ref="inHomeAutoAcceptUpdateLogging" />
+				<entry key="createWarrantyDraftSOLogging" value-ref="createWarrantyDraftSOLogging" />
+				<!-- SL-21126 :Price Reduction logging -->
+				<entry key="priceReductionLogging" value-ref="priceReductionLogging"></entry>
+				<entry key="buyerRescheduleAutoAcceptLogging" value-ref="buyerRescheduleAutoAcceptLogging"></entry>
+				<entry key="updateSOServiceDates" value-ref="updateSOServiceDates"></entry>
+				<entry key="spendLimitDecreaseAPILogging" value-ref="spendLimitDecreaseAPILogging"></entry>
+			  </map>
+		</property>
+	</bean>
+	
+	<bean id="CancellationRequestCmd" class="com.servicelive.orderfulfillment.command.CancellationRequestCmd"/>
+	<bean id="AutoCloseCmd" class="com.servicelive.orderfulfillment.command.AutoCloseCmd">
+	<property name="marketPlatformBO" ref="marketPlatformRemoteService" />
+    </bean>
+    <bean id="AutoCloseRulesExecutionCmd" class="com.servicelive.orderfulfillment.command.AutoCloseRulesExecutionCmd" />
+    <bean id="AutoCancelCmd" class="com.servicelive.orderfulfillment.command.AutoCancelCmd"/>
+    <bean id="ReversingSpendLimitCmd" class="com.servicelive.orderfulfillment.command.ReversingSpendLimitCmd" />
+    <bean id="ProviderReleasePaymentCmd" class="com.servicelive.orderfulfillment.command.ProviderReleasePaymentCmd" />
+    <bean id="PriceUpdateCmd" class="com.servicelive.orderfulfillment.command.PriceUpdateCmd" />
+    <bean id="PriceUpdateForPndngCnclCmd" class="com.servicelive.orderfulfillment.command.PriceUpdateForPndngCnclCmd" />
+    <bean id="DistributeTaskPriceCmd" class="com.servicelive.orderfulfillment.command.DistributeTaskPriceCmd" />
+    <bean id="UpdatePOSIndicatorCmd" class="com.servicelive.orderfulfillment.command.UpdatePOSIndicatorCmd" />
+    <bean id="SetPenaltyCmd" class="com.servicelive.orderfulfillment.command.SetPenaltyCmd" />
+    <bean id="SOCompletionNoteCmd" class="com.servicelive.orderfulfillment.command.SOCompletionNoteCmd"/>
+    
+     
+<!-- so commands for groups -->
+    <bean id="SOGroupLoggingForTierRoutingCmd" class="com.servicelive.orderfulfillment.group.command.SOGroupLoggingForTierRoutingCmd" parent="SOGroupLoggingCmd" />
+    <bean id="GroupProcessEndCmd" class="com.servicelive.orderfulfillment.group.command.GroupProcessEndCmd" />
+    <bean id="SetGroupExpirationTimeCmd" class="com.servicelive.orderfulfillment.group.command.SetGroupExpirationTimeCmd" />
+    <bean id="CancelOrderGroupCmd" class="com.servicelive.orderfulfillment.group.command.CancelOrderGroupCmd" />
+    <bean id="RemoveOrderGroupCmd" class="com.servicelive.orderfulfillment.group.command.RemoveOrderGroupCmd" />
+    <bean id="UpdateSubstatusGroupCmd" class="com.servicelive.orderfulfillment.group.command.UpdateSubstatusGroupCmd" />
+    <bean id="UpdateGroupSearchabilityCmd" class="com.servicelive.orderfulfillment.group.command.UpdateGroupSearchabilityCmd" />
+    <bean id="UnPostGroupCmd" class="com.servicelive.orderfulfillment.group.command.UnPostGroupCmd">
+        <property name="serviceOrderBO" ref="serviceOrderBO"/>
+    </bean>
+    <bean id="AutoRouteGroupCmd" class="com.servicelive.orderfulfillment.group.command.AutoRouteGroupCmd">
+    	<property name="serviceOrderBO" ref="serviceOrderBO"/>
+    	<property name="autoRouteHelper" ref="autoRouteHelper"/>
+    </bean>
+    <bean id="SearchProvidersForAutoRouteCmd" class="com.servicelive.orderfulfillment.group.command.SearchProvidersForAutoRouteCmd">
+    	<property name="autoRouteHelper" ref="autoRouteHelper"/>
+    </bean>
+    <bean id="SendPostOrderCmd" class="com.servicelive.orderfulfillment.group.command.SendPostOrderCmd">
+    	<property name="serviceOrderBO" ref="serviceOrderBO"/>
+    </bean>
+    <bean id="SetAutoRouteForGroupCmd" class="com.servicelive.orderfulfillment.group.command.SetAutoRouteForGroupCmd">
+        <property name="quickLookupCollection" ref="quickLookupCollection" />
+    </bean>
+    <bean id="GroupPricingCmd" class="com.servicelive.orderfulfillment.group.command.GroupPricingCmd">
+        <property name="marketPlatformBuyerBO" ref="marketPlatformRemoteService" />
+        <property name="serviceOrderNoteUtil" ref="soNoteUtil" />
+    </bean>
+    <bean id="EditOrderGroupCmd" class="com.servicelive.orderfulfillment.group.command.EditOrderGroupCmd"/>
+    <bean id="BatchUpdateCmd" class="com.servicelive.orderfulfillment.group.command.BatchUpdateCmd"/>
+    <bean id="SetGroupQueueTimerCmd" class="com.servicelive.orderfulfillment.group.command.SetGroupQueueTimerCmd">
+        <property name="quickLookupCollection" ref="quickLookupCollection" />
+    </bean>
+    <bean id="SetGroupAutoTierRoutingTime" class="com.servicelive.orderfulfillment.group.command.SetGroupAutoTierRoutingTime">
+        <property name="tierRouteUtil" ref="tierRouteUtil" />
+    </bean>
+    <bean id="ResetGroupAutoTierRoutingTime" class="com.servicelive.orderfulfillment.group.command.ResetGroupAutoTierRoutingTime">
+        <property name="tierRouteUtil" ref="tierRouteUtil" />
+    </bean>
+    <!--R16_0 added a new caommand to remove draft orders from grouping  -->
+    <bean id="RemoveDraftFromGroupCmd" class="com.servicelive.orderfulfillment.group.command.RemoveDraftFromGroupCmd" />
+  	<bean id="SetGroupedOrdersExpiredCmd" class="com.servicelive.orderfulfillment.group.command.SetGroupedOrdersExpiredCmd">
+        <property name="serviceOrderBO" ref="serviceOrderBO"/>
+    </bean>
+    <bean id="transitionForGroupUpdateCheck" class="com.servicelive.orderfulfillment.decision.TransitionForGroupUpdateCheck" parent="baseSODecision" />
+<!-- so commands infrastructure objects -->
+	<bean id="soCommandResolver" class="com.servicelive.orderfulfillment.command.util.SOCommandResolver">
+		<property name="serviceOrderDao" ref="serviceOrderDao"/>
+		<property name="serviceOrderProcessDao" ref="serviceOrderProcessDao"/>
+		<property name="gateWay" ref="gateWay"/>
+	</bean>
+	<bean id="soCommandRunner" class="com.servicelive.orderfulfillment.command.util.SOCommandRunner">
+		<property name="soCommandResolver" ref="soCommandResolver"/>
+	</bean>
+
+    <bean id="updateServiceDateProcessVariableCmd" class="com.servicelive.orderfulfillment.command.UpdateServiceDateProcessVariableCmd" />
+	<bean id="setRouteDateProcessVariableCmd" class="com.servicelive.orderfulfillment.command.SetRouteDateProcessVariableCmd" >
+    	<property name="quickLookupCollection" ref="quickLookupCollection"/>
+    </bean>
+    <bean id="RecordJmsMessageIdCmd" class="com.servicelive.orderfulfillment.command.RecordJmsMessageIdCmd" />
+    <bean id="ClearJmsMessageIdCmd" class="com.servicelive.orderfulfillment.command.ClearJmsMessageIdCmd" />
+	
+<!-- so Decisions -->
+
+    <bean id="baseSODecision" class="com.servicelive.orderfulfillment.decision.AbstractServiceOrderDecision" abstract="true">
+        <property name="serviceOrderDao" ref="serviceOrderDao"/>
+    </bean>
+    
+    <bean id="baseLeadDecision" class="com.servicelive.orderfulfillment.decision.AbstractLeadDecision" abstract="true">
+        <property name="leadDao" ref="leadDao"/>
+    </bean>
+
+	<bean id="fundsConfirmedCheck" class="com.servicelive.orderfulfillment.decision.FundsConfirmedCheck" parent="baseSODecision">
+		<property name="gateWay" ref="gateWay"/>
+	</bean>	
+    <bean id="isAutoFunded" class="com.servicelive.orderfulfillment.decision.IsAutoFunded" parent="baseSODecision">
+        <property name="gateWay" ref="gateWay"/>
+    </bean>
+    <bean id="spendLimitChanged" class="com.servicelive.orderfulfillment.decision.SpendLimitChanged" parent="baseSODecision">
+        <property name="gateWay" ref="gateWay"/>
+    </bean>
+    <bean id="spendLimitIncreased" class="com.servicelive.orderfulfillment.decision.IsSpendLimitIncreased" parent="baseSODecision"/>
+	<bean id="availableBalanceCheck" class="com.servicelive.orderfulfillment.decision.AvailableBalanceCheck" parent="baseSODecision">
+		<property name="gateWay" ref="gateWay"/>
+	</bean>
+	<bean id="availableBalanceCheckAutoFunded" class="com.servicelive.orderfulfillment.decision.AvailableBalanceCheckAutoFunded" parent="baseSODecision">
+		<property name="gateWay" ref="gateWay"/>
+	</bean>
+    <bean id="availableBalanceCheckAutoFundedBid" class="com.servicelive.orderfulfillment.decision.AvailableBalanceCheckAutoFundedBid" parent="baseSODecision">
+		<property name="gateWay" ref="gateWay"/>
+	</bean>
+    <bean id="serviceOrderDraftStateCheck" class="com.servicelive.orderfulfillment.decision.ServiceOrderDraftStateCheck" parent="baseSODecision" />
+    <bean id="leadDraftStateCheck" class="com.servicelive.orderfulfillment.decision.LeadDraftStateCheck" parent="baseLeadDecision" />
+	<bean id="areFundsRequired" class="com.servicelive.orderfulfillment.decision.AreFundsRequired" parent="baseSODecision" />
+	<bean id="isPostCommandDone" class="com.servicelive.orderfulfillment.decision.IsWalletPostDone" parent="baseSODecision" />
+	<bean id="serviceDateTimePastCheck" class="com.servicelive.orderfulfillment.decision.ServiceDateTimePastCheck" parent="baseSODecision" />
+    <bean id="serviceDateTimeReachedCheck" class="com.servicelive.orderfulfillment.decision.ServiceDateTimeReachedCheck" parent="baseSODecision" />
+    <bean id="isOrderTypeNameYourPrice" class="com.servicelive.orderfulfillment.decision.OrderTypeCheck" parent="baseSODecision" />
+    <bean id="cancellationPenaltyCheck" class="com.servicelive.orderfulfillment.decision.CancellationPenaltyCheck" parent="baseSODecision" />
+    <bean id="IVREntryCheck" class="com.servicelive.orderfulfillment.decision.IVREntryCheck" parent="baseSODecision" />    
+    <bean id="sendAllRejectAlertDecision" class="com.servicelive.orderfulfillment.decision.SendAllRejectAlertDecision" parent="baseSODecision" />
+    <bean id="sendAllCounterOfferAlertDecision" class="com.servicelive.orderfulfillment.decision.SendAllCounterOfferAlertDecision" parent="baseSODecision" />
+    <bean id="autoRouteEligibilityCheck" class="com.servicelive.orderfulfillment.decision.ProcessingPathCheck" parent="baseSODecision" />
+    <bean id="autoRouteBehaviorCheck" class="com.servicelive.orderfulfillment.decision.AutoRouteBehaviorCheck" parent="baseSODecision" />
+    <bean id="autoRouteTierIncrementCheck" class="com.servicelive.orderfulfillment.decision.AutoRouteTierIncrementCheck" parent="baseSODecision" />
+	<bean id="areKeyFieldsChanged" class="com.servicelive.orderfulfillment.decision.AutoRouteTierIncrementCheck" parent="baseSODecision"/>
+	<bean id="isAutoRoutedGroup" class="com.servicelive.orderfulfillment.decision.AutoRouteTierIncrementCheck" parent="baseSODecision"/>
+	<bean id="majorChangesCheck" class="com.servicelive.orderfulfillment.decision.MajorChangesCheck" parent="baseSODecision"/>
+	<bean id="scopeChangedCheck" class="com.servicelive.orderfulfillment.decision.ScopeChangedCheck" parent="baseSODecision"/>
+    <bean id="conditionalProvidersListCheck" class="com.servicelive.orderfulfillment.decision.ConditionalProvidersListCheck" parent="baseSODecision" />
+    <!-- SL 19004  -->
+    <bean id="routingBehaviourCheck" class="com.servicelive.orderfulfillment.decision.RoutingBehaviourCheck" parent="baseSODecision" />
+    <bean id="routingBehaviourCheckForCounterOffer" class="com.servicelive.orderfulfillment.decision.RoutingBehaviourCheckForCounterOffer" parent="baseSODecision" />
+    <!-- SL 15642 Creating bean for the auto accept status class -->
+    <bean id="conditionalRouteFeatureOn" class="com.servicelive.orderfulfillment.decision.ConditionalRouteFeatureOn" parent="baseSODecision"></bean>
+    <bean id="autoAcceptFeatureCheck" class="com.servicelive.orderfulfillment.decision.AutoAcceptFeatureCheck" parent="baseSODecision"></bean>
+    <bean id="associateRuleWithSo" class="com.servicelive.orderfulfillment.decision.AssociateRuleWithSo" parent="baseSODecision">
+      <property name="quickLookupCollection" ref="quickLookupCollection" />
+      <property name="marketPlatformRoutingRulesBO" ref="marketPlatformRemoteService" />
+   </bean> 
+    <bean id="evalAndSetVendorForSo" class="com.servicelive.orderfulfillment.decision.AssignVendorForSo" parent="baseSODecision">
+   <!--  <property name="autoRouteHelper" ref="autoRouteHelper"/> -->
+    </bean>
+    <bean id="evalProviderForAutoAcceptance" class="com.servicelive.orderfulfillment.decision.ProviderForAutoAcceptanceEligibilityCheck" parent="baseSODecision"/>
+    <!-- Non w2 priority 2 changes start -->
+    <!-- injecting decision to evaluate order and route to CAR,Draft and auto Acceptance -->
+    <bean id="evaluateRecallOrder" class="com.servicelive.orderfulfillment.decision.EvaluateRecallOrder" parent="baseSODecision"/>
+    <bean id="evalProviderForInhomeAutoAcceptance" class="com.servicelive.orderfulfillment.decision.ProviderForInhomeAutoAcceptanceEligibilityCheck" parent="baseSODecision"/>
+     <!-- Non w2 priority 2 changes end -->
+    <!-- End SL 15642 -->
+    
+    <!-- <bean id="locationAndTaskChangedCheck" class="com.servicelive.orderfulfillment.decision.LocationChangedCheck" parent="baseSODecision"/> -->
+    <bean id="locationChangedCheck" class="com.servicelive.orderfulfillment.decision.LocationChangedCheck" parent="baseSODecision"/>
+    <bean id="autoAcceptCheck" class="com.servicelive.orderfulfillment.decision.AutoAcceptCheck" parent="baseSODecision"/>
+    <bean id="autoAcceptCheckBuyerReschedule" class="com.servicelive.orderfulfillment.decision.AutoAcceptCheckBuyerReschedule" parent="baseSODecision"/>
+    <bean id="autoCloseBuyerFeatureCheck" class="com.servicelive.orderfulfillment.decision.AutoCloseBuyerFeatureCheckInActive" parent="baseSODecision">
+    <property name="quickLookupCollection" ref="quickLookupCollection" />
+    </bean>
+    <bean id="autoCloseCheck" class="com.servicelive.orderfulfillment.decision.AutoCloseCheck" parent="baseSODecision"/>
+        <bean id="buyerWithdrawCheck" class="com.servicelive.orderfulfillment.decision.BuyerWithdrawCheck" parent="baseSODecision">
+        		<property name="gateWay" ref="gateWay"/>
+         </bean>
+        <bean id="buyerAgreeCheck" class="com.servicelive.orderfulfillment.decision.BuyerAgreeCheck" parent="baseSODecision">
+        		<property name="gateWay" ref="gateWay"/>
+         </bean>
+         <bean id="buyerDisagreeCheck" class="com.servicelive.orderfulfillment.decision.BuyerDisagreeCheck" parent="baseSODecision">
+         		<property name="gateWay" ref="gateWay"/>
+          </bean>
+         <bean id="providerWithdrawCheck" class="com.servicelive.orderfulfillment.decision.ProviderWithdrawCheck" parent="baseSODecision"/>
+    
+    <bean id="CreateInvoiceforAssurantCancelCmd" class="com.servicelive.orderfulfillment.command.CreateInvoiceforAssurantCancelCmd">
+       <property name="serviceOrderBO" ref="serviceOrderBO"/>
+    </bean>
+     <bean id="tripChargeOverrideCheck" class="com.servicelive.orderfulfillment.decision.TripChargeOverrideCheck" parent="baseSODecision"/>
+     <bean id="payProviderCheck" class="com.servicelive.orderfulfillment.decision.PayProviderCheck" parent="baseSODecision"/>
+     <bean id="soPricingMethodCheck" class="com.servicelive.orderfulfillment.decision.SoPricingMethodCheck" parent="baseSODecision"/>
+     <bean id="providerVerbalAcknowledgmentCheck" class="com.servicelive.orderfulfillment.decision.ProviderVerbalAcknowledgmentCheck" parent="baseSODecision"/>
+      
+     <bean id="manualReviewCheck" class="com.servicelive.orderfulfillment.decision.ManualReviewCheck" parent="baseSODecision"/>
+     <bean id="templatePresentCheck" class="com.servicelive.orderfulfillment.decision.TemplatePresentCheck" parent="baseSODecision"/> 
+     <bean id="SPNPresentCheck" class="com.servicelive.orderfulfillment.decision.SPNPresentCheck" parent="baseSODecision"/>
+     <bean id="autoPostAPIfeatureCheck" class="com.servicelive.orderfulfillment.decision.AutoPostAPIFeatureCheck" parent="baseSODecision">        
+     <property name="quickLookupCollection" ref="quickLookupCollection" />
+     </bean>     
+     <!-- SL-15642: to update problem type -->
+     <bean id="UpdateProblemTypeCmd" class="com.servicelive.orderfulfillment.command.UpdateProblemTypeCmd" />
+     <!-- Auto Close for HSR -->
+     <bean id="autoCloseCheckHSR" class="com.servicelive.orderfulfillment.decision.AutoCloseCheckHSR" parent="baseSODecision"/>
+	<bean id="AutoCloseHSRCmd" class="com.servicelive.orderfulfillment.command.AutoCloseHSRCmd" />
+	<bean id="DecreaseSpendingCmdFromPostToDraft" class="com.servicelive.orderfulfillment.command.DecreaseSpendingCmdFromPostToDraft" />
+	
+	<!-- R15.5 Command for price reduction -->
+	<bean id="PriceReductionCmd" class="com.servicelive.orderfulfillment.command.PriceReductionCmd">
+		<property name="quickLookupCollection" ref="quickLookupCollection" />
+		<property name="soLoggingCmdHelper" ref="soLoggingCmdHelper" />
+	</bean>
+	
+	<!-- R16_1_1 :Webhooks (Relay Services) -->
+	<bean id="RelayOutboundNotificationCmd" class="com.servicelive.orderfulfillment.command.RelayOutboundNotificationCmd"/>
+	
+	<bean id="BuyerCallbackNotificationCmd" class="com.servicelive.orderfulfillment.command.BuyerCallbackNotificationCmd">
+		<property name="quickLookupCollection" ref="quickLookupCollection" />
+		<property name="marketPlatformBuyerBO" ref="marketPlatformRemoteService" />
+		
+	</bean>
+</beans>

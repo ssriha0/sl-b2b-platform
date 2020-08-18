@@ -1,0 +1,954 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="verify-v1" content="R6L9lmtKlkFFBG+QUzk8AXqe2f+zZ+SEBsnd0++R/bo=" />
+<title>Welcome to ServiceLive</title>
+<link rel="shortcut icon" href="http://www.servicelive.com/ServiceLiveWebUtil/images/favicon.ico" />
+<link rel="shortcut icon" 
+		href="http://www.servicelive.com/ServiceLiveWebUtil/images/favicon.ico" />
+<link rel="stylesheet" type="text/css" 
+		href="../../css/main.css" />
+<link rel="stylesheet" type="text/css" 
+		href="http://www.servicelive.com/ServiceLiveWebUtil/css/iehacks.css" />
+<link rel="stylesheet" type="text/css" href="http://www.servicelive.com/ServiceLiveWebUtil/css/top-section.css" />
+<link rel="stylesheet" type="text/css" href="http://www.servicelive.com/ServiceLiveWebUtil/css/buttons.css"/>
+<link rel="stylesheet" type="text/css" href="../../css/acquity-homeupdates.css" />
+<link rel="stylesheet" type="text/css" href="../../css/acquity.css" />
+
+<link rel="stylesheet" type="text/css" href="../../css/home-cat.css" />
+<link rel="stylesheet" type="text/css" href="../../css/homepage-re.css" />
+<!--[if lt IE 8]>
+			<link rel="stylesheet" type="text/css" href="http://www.servicelive.com/ServiceLiveWebUtil/css/acquity-ie.css" />
+		<![endif]-->
+<script type="text/javascript" src="http://www.servicelive.com/ServiceLiveWebUtil/javascript/jquery-1.2.3.min.js"></script>
+<script type="text/javascript" src="http://www.servicelive.com/ServiceLiveWebUtil/javascript/toolbox.js"></script>
+<script type="text/javascript" src="http://www.servicelive.com/ServiceLiveWebUtil/javascript/vars.js"></script>
+<!-- FRONT END DEV NOT: jQuery file: acquity-homeupdates.css -->
+<script type="text/javascript" src="../../javascript/acquity-homeupdates.js"></script>
+<script language="JavaScript" type="text/javascript" src="http://www.servicelive.com/ServiceLiveWebUtil/javascript/nav.js"></script>
+<script language="JavaScript" type="text/javascript">			
+			function showhide(){ 
+				if (document.getElementById){
+					if (document.getElementById('hpServices').selectedIndex == 0){
+						document.getElementById("simpleList").style.display='block'; 
+						document.getElementById("proList").style.display='none'; 
+					} else {
+						document.getElementById("simpleList").style.display='none'; 
+						document.getElementById("proList").style.display='block'; 
+					}
+				}
+			}
+		</script>
+<script language="JavaScript" type="text/javascript">
+			function setHiddenFields(name, mainCategoryId, categoryId, subCategoryId, serviceTypeTemplateId, buyerTypeId)
+			{ 
+				document.getElementById('pop_name').value=name;
+				document.getElementById('mainCategoryId').value=mainCategoryId;
+				document.getElementById('categoryId').value=categoryId;
+				document.getElementById('subCategoryId').value=subCategoryId;
+				document.getElementById('serviceTypeTemplateId').value=serviceTypeTemplateId;
+				document.getElementById('buyerId').value=buyerTypeId;
+
+				jQuery.noConflict();
+			    jQuery(document).ready(function($) {
+												 
+		     		$('#exploreMarketPlace').jqm({modal:true, toTop: true});
+		     		$('#exploreMarketPlace').jqmShow();
+				 });
+		
+			}
+			
+			function setNewZipFields(name, mainCategoryId, categoryId, subCategoryId, serviceTypeTemplateId, buyerTypeId)
+			{ 
+				jQuery.noConflict();
+			    jQuery(document).ready(function($) {
+			
+		     	$('#modalUserTypeChoose').jqm({modal:true, toTop: true});
+		     	$('#modalUserTypeChoose').jqmShow();
+				 });
+					
+			}
+			
+			
+				function setCategoryFields(name, mainCategoryId, categoryId, subCategoryId, serviceTypeTemplateId, buyerTypeId)
+			{ 
+				jQuery.noConflict();
+			    jQuery(document).ready(function($) {
+			
+		     	$('#modalUserCategory').jqm({modal:true, toTop: true});
+		     	$('#modalUserCategory').jqmShow();
+				 });
+					
+			}
+			
+			
+				function setDefineTermsCandidatesFields(name, mainCategoryId, categoryId, subCategoryId, serviceTypeTemplateId, buyerTypeId)
+			{ 
+				jQuery.noConflict();
+			    jQuery(document).ready(function($) {
+			
+		     	$('#modalDefineTermsCandidates').jqm({modal:true, toTop: true});
+		     	$('#modalDefineTermsCandidates').jqmShow();
+				 });
+					
+			}
+			
+				function setDefinePreScreenedFields(name, mainCategoryId, categoryId, subCategoryId, serviceTypeTemplateId, buyerTypeId)
+			{ 
+				jQuery.noConflict();
+			    jQuery(document).ready(function($) {
+			
+		     	$('#modalDefinePreScreened').jqm({modal:true, toTop: true});
+		     	$('#modalDefinePreScreened').jqmShow();
+				 });
+					
+			}
+			
+				function setDefineTermsFundPayFields(name, mainCategoryId, categoryId, subCategoryId, serviceTypeTemplateId, buyerTypeId)
+			{ 
+				jQuery.noConflict();
+			    jQuery(document).ready(function($) {
+			
+		     	$('#modalDefineTermsFundPay').jqm({modal:true, toTop: true});
+		     	$('#modalDefineTermsFundPay').jqmShow();
+				 });
+					
+			}			
+		</script>
+</head>
+<body class="tundra acquity">
+<!-- SiteCatalyst code version: H.14.
+Copyright 1997-2007 Omniture, Inc. More info available at
+http://www.omniture.com -->
+<script language="JavaScript"><!--
+var s_account="searsliveprovider";
+//--></script>
+<script language="JavaScript" src="http://www.servicelive.com/ServiceLiveWebUtil/javascript/s_code.js"></script>
+<script language="JavaScript"><!--
+/* You may give each page an identifying name, server, and channel on
+the next lines. */
+s.pageName="HomePage";
+
+/************* DO NOT ALTER ANYTHING BELOW THIS LINE ! **************/
+var s_code=s.t();if(s_code)document.write(s_code)//--></script>
+<script language="JavaScript"><!--
+if(navigator.appVersion.indexOf('MSIE')>=0)document.write(unescape('%3C')+'\!-'+'-')
+//--></script>
+
+
+
+<!--/DO NOT REMOVE/-->
+<!-- End SiteCatalyst code version: H.14. -->
+<div id="page_margins">
+<div id="page"><div class="outer">
+  <div id="header">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <title>ServiceLive : ServiceLive Home</title>
+    <link rel="shortcut icon" href="http://www.servicelive.com/ServiceLiveWebUtil/images/favicon.ico" />
+
+    <div id="logo"> <a href="http://www.servicelive.com/MarketFrontend" title="ServiceLive">
+      <!-- FRONT DEV NOTE 12/10: Using "beta" logo. Original version is seta side "service_live_logo_NON-BETA.gif" -->
+      <img
+									src="../../images/artwork/common/service_live_logo.gif"
+									alt="ServiceLive"/> </a> </div>
+    <div id="tagline"> Your home service marketplace </div>
+    <!-- /#tagline -->
+    <div id="topNav">
+      <div id="tollfreenumber">1-888-549-0640</div>
+      <a href="http://community.servicelive.com/" onclick="window.open(this.href); return false;" onkeypress="window.open(this.href); return false;">Community</a> | <a href="http://www.servicelive.com/MarketFrontend/jsp/public/support/support_main.jsp">Support</a> | <a href="http://www.servicelive.com/MarketFrontend/contactUsAction.action">Contact Us</a>
+      <!-- <a href="/MarketFrontend/jsp/public/simple/join_now.jsp" id="joinNowLink">Join Now</a> | -->
+      <!-- <a href="" id="searchLink">Search</a> -->
+      <form action="https://www.servicelive.com:443/MarketFrontend/doLogin.action" method="post" name="doLogin">
+        <!-- FRONT END DEV NOTE 12/10: Replaced UL with FIELDSET -->
+        <fieldset>
+          <table border="0" id="headerLogin">
+            <tbody>
+              <tr>
+                <td><label for="username">Username:</label>
+                <input type="text" name="username" value="Username" id="username" class="loginBox" onclick="clear_enter_zip();" /></td>
+                <td><label for="username">Password:</label>
+                  <input type="password" name="password" value="Password" id="password" class="loginBox"/></td>
+                <td id="headerLoginSubmit"><input type="image" alt="Submit" src="http://www.servicelive.com/ServiceLiveWebUtil/images/spacer.gif" id="" value="Submit" class="loginBtnHdr btn17" style="background-image: url(http://www.servicelive.com/ServiceLiveWebUtil/images/buttons/login_header.gif);border:0pt none;padding:0;"/></td>
+              </tr>
+              <tr>
+                <td colspan="3" id="usernampassword"> Forgot your <a href="http://www.servicelive.com/MarketFrontend/forgetUsernameAction%21loadForgetUserPage.action;jsessionid=TlCXhH5unwgpMRJstg6GcA**.shcapp3004"> username</a> or <a href="http://www.servicelive.com/MarketFrontend/resetPasswordAction%21loadResetPasswordPage.action;jsessionid=TlCXhH5unwgpMRJstg6GcA**.shcapp3004"> password</a>? </td>
+              </tr>
+            </tbody>
+          </table>
+        </fieldset>
+      </form>
+      <!-- FRONT END DEV NOTE 12/12: Show here when user is logged in -->
+      <!-- <div id="userLoggedIn">Welcome SMITA SHARMA! #1701 Not Rated</div> -->
+    </div>
+    <!-- /#tagline -->
+    
+    <!--
+   
+    -->
+    
+    <!-- /.jqmWindow #exploreMarketPlace -->
+
+    <!-- FRONT END DEV NOTE 12/12: new modal - "Choose User Type" -->
+    
+    
+    <div  class="jqmWindow" id="modalUserCategory">
+   
+      <div class="modalHomepage"> <a href="#" class="jqmClose">Close</a> </div>
+      <form onsubmit="return true;" action="/MarketFrontend/homepage_submitZip.action" method="post">
+        <div class="modalContent">
+          <h2>Please enter the Zip Code of the location where work will be done.</h2>
+          <input type="text" name="zipCode2" value="Enter Zip Code" id="zipCode2" onclick="clear_enter_zip();" onblur="add_enter_zip();"/>
+          <br /><br /><br />
+          
+          <fieldset> 
+            <label>
+              <input name="UserType" type="radio" value="HomeOffice" checked="checked" />
+              <span id="userTypeHomeOffice">Home/Office</span> <img src="../../images/homepage/acquity/modalIconHomeOffice.gif" alt="Home/Office" /><br />
+              <span class="TypeDescription">For homeowners and small business owners</span> </label>
+            <label>
+              <input name="UserType" type="radio" value="Commercial" id="UserTypeCommercial" />
+              <span id="userTypeCommercial">Commercial</span> <img src="../../images/homepage/acquity/modalIconCommercial.gif" alt="Commercial" /><br />
+              <span class="TypeDescription">For larger business owners who have <strong>ongoing projects</strong> or manage <strong>multiple projects</strong> at once.</span> </label>
+            <input type="image" alt="Submit" src="http://www.servicelive.com/ServiceLiveWebUtil/images/simple/button-find-sp.png" id="input" value="Submit" class="findProv"/>
+          </fieldset>
+        </div>
+        <!-- /.modalContent -->
+      </form>
+     </div> 
+    
+    
+    
+    
+    
+    
+    
+    <div  class="jqmWindow" id="modalUserTypeChoose">
+      <div class="modalHomepage"> <a href="#" class="jqmClose">Close</a> </div>
+      <form onsubmit="return true;" action="/MarketFrontend/homepage_submitZip.action" method="post">
+				
+			<div class="modalContent">
+
+				<h2>What is your project for?</h2>
+	
+						<fieldset>
+				
+							<label>
+
+								<input name="UserType" type="radio" value="HomeOffice" checked="checked" />
+								<span id="userTypeHomeOffice">Home/Office</span>
+								<img src="../../images/homepage/acquity/modalIconHomeOffice.gif" alt="Home/Office" /><br />
+								<span class="TypeDescription">For homeowners and small business owners</span> 
+							</label>
+				
+				
+							<label>
+								<input name="UserType" type="radio" value="Commercial" id="UserTypeCommercial" />
+								<span id="userTypeCommercial">Commercial</span>
+
+								<img src="../../images/homepage/acquity/modalIconCommercial.gif" alt="Commercial" /><br />
+								<span class="TypeDescription">For larger business owners who have <strong>ongoing projects</strong> 
+								or manage <strong>multiple projects</strong> at once.</span>
+							</label>
+							
+							<input type="image" alt="Submit" src="http://www.servicelive.com/ServiceLiveWebUtil/images/simple/button-find-sp.png" id="" value="Submit" class="findProv"/>
+				
+					</fieldset>
+
+				</div><!-- /.modalContent -->
+			</form>
+      
+    </div>
+    
+    
+    <div  class="jqmWindow" id="modalUserZipTypeChoose">
+      <div class="modalHomepage" id="modalCategory"> <a href="#" class="jqmClose">Close</a> </div>
+      
+     
+      
+    </div>    
+    
+    
+    
+    <!-- /.jqmWindow #modalUserTypeChoose -->
+    <!-- FRONT END DEV NOTE 12/10: Trigger not working -->
+    <!-- <script>				 
+	jQuery.noConflict();
+	   jQuery(document).ready(function($) {
+    		$('#modalUserTypeChoose').jqm({modal:true, toTop: true, trigger: a.modalDefineCandidates});
+    		$('#modalUserTypeChoose').jqmShow();
+	 });
+</script> -->
+    <!-- FRONT END DEV NOTE 12/12: new modal - "Define Candidates" -->
+    <div  class="jqmWindow modalDefineTerms" id="modalDefineTermsCandidates">
+      <div class="modalHomepage"> <a href="#" class="jqmClose">Close</a> </div>
+      <div class="modalContent">
+        <h2>&ldquo;Candidates&rdquo;</h2>
+        <p>From a complete list of service providers in your area, you will be able to select the service providers you would like to work on your project. <strong>These are your candidates.</strong> </p>
+        <p>Select candidates based on: location, required skills, languages spoken, and ratings. Also, view provider profiles and customer comments.</p>
+        <p><strong>Your service order will be routed only to the candidates you select</strong>. The candidate who accepts the project first, at the price and time you named, wins the project.</p>
+        <p>Remember, new service providers are joining every day, so if you don&lsquo;t see service providers with the skill you are looking for in your area, be sure to check back soon!</p>
+        <input type="image" alt="Submit" src="../../images/simple/button-close.png" id="" value="Submit" class="jqmClose" />
+      </div>
+      <!-- /.modalContent .modalDefineTerms-->
+    </div>
+    <!-- /.jqmWindow #modalDefineTermsCandidates -->
+    <!-- FRONT END DEV NOTE 12/10: Trigger not working -->
+    <script>				 
+	jQuery.noConflict();
+    jQuery(document).ready(function($) {
+    		$('#modalDefineTermsCandidates').jqm({modal:true, toTop: true, trigger: a.modalDefineCandidates});
+    		$('#modalDefineTermsCandidates').jqmShow();
+	 });
+</script>
+    <!-- FRONT END DEV NOTE 12/12: new modal - "Define Pre-screened" -->
+    <div  class="jqmWindow modalDefineTerms" id="modalDefinePreScreened">
+      <div class="modalHomepage"> <a href="#" class="jqmClose">Close</a> </div>
+      <div class="modalContent">
+        <h2>Pre-screened</h2>
+        <p>Every service provider on ServiceLive.com has passed the same criminal, civil and vehicle background checks required by contractors of Fortune 500 companies.</p>
+        <input type="image" alt="Submit" src="../../images/simple/button-close.png" id="" value="Submit" class="jqmClose" />
+      </div>
+      <!-- /.modalContent -->
+    </div>
+    <!-- /.jqmWindow #modalDefineTermsFundPay -->
+    <!-- FRONT END DEV NOTE 12/10: Trigger not working -->
+    <script>				 
+	jQuery.noConflict();
+    jQuery(document).ready(function($) {
+  		$('#modalDefinePreScreened').jqm({modal:true, toTop: true, trigger: a.modalDefinePreScreened});
+   		$('#modalDefinePreScreened').jqmShow();
+	 });
+</script>
+    <!-- FRONT END DEV NOTE 12/12: new modal - "Define Fund and Pay" -->
+    <div  class="jqmWindow modalDefineTerms" id="modalDefineTermsFundPay">
+      <div class="modalHomepage"> <a href="#" class="jqmClose">Close</a> </div>
+      <div class="modalContent">
+        <h2>&ldquo;Fund&rdquo; and &ldquo;Pay&rdquo;</h2>
+        <h3>Fund</h3>
+        <p>After you determine the price you’d like to pay, you will be asked to <strong>fund your account before the service order is routed</strong> to the providers you select (your candidates).</p>
+        <p>Although your credit card or bank account will be charged, <strong>you maintain control of the funds</strong> in your account.</p>
+        <h3>Pay</h3>
+        <p>You <strong>only pay the service provider when you are satisfied</strong>.</p>
+        <p>At that point you will log back in to ServiceLive.com and <strong>&ldquo;release&rdquo; the money to the service provider</strong>.</p>
+        <p><i>This protects you AND the service provider. You know your project will get done to your satisfaction. The service providers know they’ll get paid.</i></p>
+        <input type="image" alt="Submit" src="../../images/simple/button-close.png" id="" value="Submit" class="jqmClose" />
+      </div>
+      <!-- /.modalContent -->
+    </div>
+    <!-- /.jqmWindow #modalDefineTermsFundPay -->
+    <!-- FRONT END DEV NOTE 12/10: Trigger not working -->
+    <!-- <script>				 
+	jQuery.noConflict();
+    jQuery(document).ready(function($) {
+    		$('#modalDefineTermsFundPay').jqm({modal:true, toTop: true, trigger: a.modalDefineFundPay});
+    		$('#modalDefineTermsFundPay').jqmShow();
+	 });
+</script> -->
+    <div style="clear:both;"></div>
+    <div id="mainNav">
+      <ul>
+        <li class="parentNavItem"> <a href="http://www.servicelive.com/MarketFrontend/jsp/public/what_is_servicelive/body/what_is_sl_landing.jsp" id="whatIsSL"></a>
+          <ul class="level2 whatIsSl-subnav">
+            <li class="parentNavItem"> <a href="http://www.servicelive.com/MarketFrontend/joinNowBuyerSimpleAction.action" class="subnav subnavArrow" id="aboutUsLink">About Us</a> </li>
+            <li class="parentNavItem"> <a href="http://www.servicelive.com/MarketFrontend/soWhatIsSL_services.action" class="subnav">Services</a> </li>
+            <li class="parentNavItem"> <a href="http://www.servicelive.com/MarketFrontend/joinNowGeneralAction.action" class="subnav">Why Join?</a> </li>
+          </ul>
+        </li>
+        <li> <a href="http://www.servicelive.com/MarketFrontend/joinNowBuyerSimpleAction.action" id="homeowners"></a> </li>
+        <li> <a href="http://www.servicelive.com/MarketFrontend/joinNowBuyerAction.action" id="businesses"></a> </li>
+        <li> <a href="http://www.servicelive.com/MarketFrontend/joinNowBuyerAction.action" id="serviceProviders"></a> </li>
+        <!-- li><a href="/MarketFrontend/homepage_etm.action" id="exploreMktplace"></a></li-->
+        <!-- FRONT END DEV NOTE 12/10: Hide this tab>
+						
+					<li>
+						<a onClick="exploreTheMarketplace('1')" href="#"
+							id="exploreMktplace"></a>
+					</li>-->
+      </ul>
+    </div>
+    <!-- /#mainNav -->
+    <script language="javascript" type="text/javascript">
+
+		jQuery.noConflict();
+		jQuery(document).ready(function($){
+			$("a#").addClass("selected");
+			
+		});
+
+		
+
+	</script>
+    <script language="JavaScript" type="text/javascript">
+			function clear_enter_zip()
+			{
+				if (document.getElementById('zipCode').value == 'Enter Zip Code')
+				{
+					document.getElementById('zipCode').value = '';
+				}
+			}
+
+			function add_enter_zip()
+			{
+				if (document.getElementById('zipCode').value == '')
+				{
+					document.getElementById('zipCode').value = 'Enter Zip Code';
+				}
+			}
+
+			
+		function doMouseOver (id) {
+			jQuery.noConflict();
+			jQuery(document).ready(function($){
+				 				 
+				$('#'+id).show();
+			});		
+		}
+		
+		function doMouseOut (id) {
+		
+			jQuery.noConflict();
+			jQuery(document).ready(function($){ 
+				$('#'+id).hide();
+				
+				 
+			});		
+		}  
+	</script>
+    <link rel="stylesheet" type="text/css"
+	href="http://www.servicelive.com/ServiceLiveWebUtil/css/top-section.css" />
+    <link rel="stylesheet" type="text/css"
+	href="http://www.servicelive.com/ServiceLiveWebUtil/css/global.css" />
+    <link rel="stylesheet" type="text/css"
+	href="http://www.servicelive.com/ServiceLiveWebUtil/css/main.css" />
+    <link rel="stylesheet" type="text/css"
+	href="http://www.servicelive.com/ServiceLiveWebUtil/css/iehacks.css" />
+    <link rel="stylesheet" type="text/css"
+	href="http://www.servicelive.com/ServiceLiveWebUtil/css/acquity.css" />
+    <div id="auxNav">
+      <!-- This is the blue bar to the right of the main nav -->
+    </div></div>
+    <!-- /#header -->
+  </div>
+  <div id="hpWrap" class="clearfix">
+    <div id="hpContent">
+      <div id="hpHero">
+        <h1> Start crossing projects off your to-do list. </h1>
+      </div>
+      <!-- /#hpHero -->
+      <div id="hpEnterZip" class="clearfix">
+        <form 
+								id="homepage_submitZip" name="homepage_submitZip" 
+								onsubmit="return true;" 		
+								action="/MarketFrontend/homepage_submitZip.action" method="post">
+          <div id="hpEnterZipFieldWrapper">
+            <input type="text" class="hpEnterZipZip" id="zipCode" name="zipCode" value="Enter Zip Code" maxlength="5" />
+            <input type="image" class="hpEnterZipSibmit" id="hpEnterZipSibmit" src="http://www.servicelive.com/ServiceLiveWebUtil/images/homepage/search-simple.png" 
+            onclick="setNewZipFields('xxxx', '200', '', '', '', '1')"   />
+          </div>
+          <!-- /#hpEnterZipFieldWrapper -->
+        </form>
+      </div>
+      <!-- /#hpEnterZip -->
+      <div id="hpSteps" class="clearfix">
+        <div id="hpStepsInside">
+          <ol>
+            <li class="stepNum1">
+              <h2>Find providers</h2>
+			<div>Choose <a href="#" onclick="setDefineTermsCandidatesFields('xxxx', '200', '', '', '', '1')" title="Read what we mean by &ldquo;candidates.&rdquo;" class="modalDefineCandidates">candidates</a> from our <a href="#" onclick="setDefinePreScreenedFields('xxxx', '200', '', '', '', '1')" title="Read what we mean by &ldquo;pre-screened.&rdquo;" class="modalDefinePreScreened">pre-screened</a> service providers.</div>
+            </li>
+            <li class="stepNum2">
+              <h2>Set your price</h2>
+              <div><a href="#" onclick="setDefineTermsFundPayFields('xxxx', '200', '', '', '', '1')" title="Read about our &ldquo;fund&rdquo; and &ldquo;pay&rdquo; system." class="modalDefineFundPay">Fund</a> your account.<br /> 
+										<a href="#" onclick="setDefineTermsFundPayFields('xxxx', '200', '', '', '', '1')" title="Read about our &ldquo;fund&rdquo; and &ldquo;pay&rdquo; system." class="modalDefineFundPay">Pay</a> when it’s done.</div>
+            </li>
+            <li class="stepNum3">
+              <h2>Providers compete</h2>
+              <div>The first <a href="#" onclick="setDefineTermsCandidatesFields('xxxx', '200', '', '', '', '1')" title="Read what we mean by &ldquo;candidate.&rdquo;" class="modalDefineCandidates">candidate</a> to accept your price wins your project.</div>
+              <div class="learnmore"><a href="http://www.servicelive.com/MarketFrontend/joinNowBuyerSimpleAction.action" title="">Learn more</a></div>
+            </li>
+          </ol>
+          <div style="clear:both;"></div>
+        </div>
+        <!-- /#hpStepsInside -->
+      </div>
+      <!-- /#hpSteps -->
+      <div id="stepsShadow"></div>
+      <!-- FRONT END DEV NOTE: Frank asks the backed person to include "title" info in these links. -->
+      <div class="greyBoxBotL">
+        <div class="greyBoxBotR">
+          <div class="greyBoxHeaderTopL">
+            <div class="greyBoxHeaderTopR"  id="hpCategories">
+              <h3>Service Categories</h3>
+              <ul>
+                <li>
+                  <h4><a href="javascript:void(0);" onmouseover="doMouseOver('l1')" onmouseout="doMouseOut('l1')" onclick="setCategoryFields('Automotive', '1300', '', '', '', '1')">Automotive &raquo;</a></h4>
+                   <div class="catPosition"> 
+                    <ul class="homecat"  id='l1'>
+                  <li>
+                    <div>
+                          <p>
+                          &raquo; Towing &amp; Road Service<br />
+                          &raquo; Tires, Brakes &amp; Batteries<br />
+                          &raquo; Audio, Video &amp; Security Systems<br />
+                          &raquo; Window Repair<br />
+                          &raquo; Oil Changes &amp; Maintenance<br />
+                          &raquo; General Mechanic Service<br />
+                          &raquo; Detailing  <br />
+                          </p>
+                    </div>
+                    </li>
+                   </ul></div>
+                </li>
+                <li>
+                  <h4><a href="javascript:void(0);" onclick="setCategoryFields('Appliance Installation', '200', '', '', '', '1')" onmouseover="doMouseOver('l2')" onmouseout="doMouseOut('l2')">Appliance Installation &raquo;</a></h4>
+                  <div class="catPosition"> 
+                    <ul class="homecat"  id='l2'>
+                  <li>
+                    <div>
+                          <p>
+                          &raquo; Kitchen &amp; Laundry Appliance<br/>
+                          &raquo; Appliance Repair<br />
+                          </p>
+                    </div>
+                    </li>
+                   </ul></div>
+
+                </li>
+                <li>
+                  <h4><a href="javascript:void(0);" onclick="setCategoryFields('Carpentry and Woodworking', '400', '', '', '', '1')" 
+                   onmouseover="doMouseOver('l3')" onmouseout="doMouseOut('l3')">Carpentry &amp; Woodworking &raquo;</a></h4>
+                   <div class="catPosition"> 
+                    <ul class="homecat"  id='l3'>
+                  <li>
+                    <div>
+                          <p>
+                          &raquo; Custom Cabinets &amp; Shelving<br />
+                          &raquo; Media Centers<br />
+                          &raquo; Closets &amp; Organization<br />
+                          &raquo; Appliance Repair<br />
+                          &raquo; Trim &amp; Moldings<br />
+                          &raquo; Doors<br />
+                          &raquo; Decks<br />
+                          &raquo; Stairs &amp; Railings<br />
+                          &raquo; Fireplace Mantelsbr />
+                          </p>                          
+                    </div>
+                    </li>
+                   </ul> </div>                 
+                </li>
+                <li>
+                  <h4><a href="javascript:void(0);" onclick="setCategoryFields('Computer/Network Services', '100', '', '', '', '1')"  onmouseover="doMouseOver('l4')" onmouseout="doMouseOut('l4')">Computer/Network Services &raquo;</a></h4>
+                    <div class="catPosition"> 
+                    <ul class="homecat"  id='l4'>
+                  <li>
+                    <div>
+                          <p>
+                          &raquo; Wireless Networking<br />
+                          &raquo; PC Repair<br />
+                          &raquo; Security/Virus Removal<br />
+                          &raquo; Computer Upgrades<br />
+                          &raquo; Computer Training Classes<br />
+                          &raquo; Web Site Design Services<br />
+                          </p>  
+                    </div>
+                    </li>
+                   </ul> </div>     
+                </li>
+                <li class="last">
+                  <h4><a href="javascript:void(0);" onclick="setCategoryFields('Home Electronics', '1', '', '', '', '1')"  onmouseover="doMouseOver('l5')" onmouseout="doMouseOut('l5')">Home Electronics &amp; Service &raquo;;</a></h4>
+                   <div class="catPosition"> 
+                    <ul class="homecat"  id='l5'>
+                  <li>
+                    <div>
+                          <p style="position:absolute; top:-100px;">
+                          &raquo; Plasma &amp; LCD Installation<br />
+                          &raquo; Audio Specialist<br />
+                          &raquo; Home Theater Installation<br />
+                          &raquo; TV Repair<br />
+                          </p>
+                    </div>
+                    </li>
+                   </ul></div>
+                </li>
+              </ul>
+              <ul>
+                <li>
+                  <h4><a href="javascript:void(0);" onclick="setCategoryFields('Flooring', '800', '835', '', '', '1')" onmouseover="doMouseOver('m1')" onmouseout="doMouseOut('m1')">Flooring &raquo;</a></h4>
+                  <div class="catPosition"> 
+                    <ul class="homecat"  id='m1'>
+                  <li>
+                    <div>
+                   <p>
+                          &raquo; General Flooring Repair<br />
+                          &raquo; Carpeting &amp; Tile<br />
+                          &raquo; Laminate &amp; Wood Flooring<br />
+                          &raquo; Brick Pavers &amp; Stone Paths<br />
+                          &raquo; Driveways, Patios, Walks &amp; Steps<br />
+                          &raquo; Stamping<br />
+                          </p>                             
+                    </div>
+                    </li>
+                   </ul>  </div>
+                </li>
+                <li>
+                  <h4><a href="javascript:void(0);" onclick="setCategoryFields('Handyman Services', '800', '', '', '', '1')"  onmouseover="doMouseOver('m2')" onmouseout="doMouseOut('m2')">Handyman Service &raquo;</a></h4>
+                   <div class="catPosition"> 
+                    <ul class="homecat"  id='m2'>
+                  <li>
+                    <div>
+                          <p>
+                          &raquo; General Carpentry, Electrical or Plumbing<br />
+                          &raquo; Fence &amp; Yard Work<br />
+                          &raquo; Storm Doors &amp; Gutters<br />
+                          &raquo; Weather-stripping &amp; Winterizing<br />
+                          &raquo; Wallpaper &amp; Window Treatments<br />
+                          &raquo; Ceiling Fans, Light Switches<br />
+                          &raquo; Doors<br />
+                          &raquo; Disability Entrances<br />
+                          &raquo; Whole House &amp; Attic Fans<br />
+                          </p>   
+                    </div>
+                    </li>
+                   </ul>  </div>
+                 </li>
+                <li>
+                  <h4><a href="javascript:void(0);" onclick="setCategoryFields('Heating and Cooling', '600', '', '', '', '1')" onmouseover="doMouseOver('m3')" onmouseout="doMouseOut('m3')">Heating &amp; Cooling &raquo;</a></h4>
+                   <div class="catPosition"> 
+                    <ul class="homecat"  id='m3'>
+                  <li>
+                    <div>
+                          <p>
+                          &raquo; Heating &amp; Cooling Systems<br />
+                          &raquo; Window/Room Air Conditioners<br />
+                          &raquo; Ducts, Vents &amp; Insulation<br />
+                          &raquo; Humidifiers<br />
+                          &raquo; Thermostats<br />
+                          &raquo; Refrigeration &amp; Ice Making<br />
+                          &raquo; Heat Pumps<br />
+                          </p>                           
+                    </div>
+                    </li>
+                   </ul>  </div>                
+                </li>
+                <li>
+                  <h4><a href="javascript:void(0);" onclick="setCategoryFields('Kitchen', '500', '507', '', '', '1')" onmouseover="doMouseOver('m4')" onmouseout="doMouseOut('m4')">Kitchen &amp; Countertops &raquo;</a></h4>
+                    <div class="catPosition"> 
+                    <ul class="homecat"  id='m4'>
+                  <li>
+                    <div>
+                           <p>
+                          &raquo; Kitchen, Bathroom &amp; Garage Cabinets<br />
+                          &raquo; Countertops<br />
+                          &raquo; Sinks &amp; Faucets<br />
+                          &raquo; Garbage Disposals<br />
+                          </p>   
+                    </div>
+                    </li>
+                   </ul></div>
+                </li>
+                <li class="last">
+                  <h4><a href="javascript:void(0);" onclick="setCategoryFields('Lawn and Garden', '700', '', '', '', '1')" onmouseover="doMouseOver('m5')" onmouseout="doMouseOut('m5')">Lawn &amp; Garden &raquo;</a></h4>
+                   <div class="catPosition"> 
+                    <ul class="homecat"  id='m5'>
+                  <li>
+                    <div>
+                           <p style="position:absolute; top:-155px;">
+                          &raquo; Tree &amp; Shrub Service<br />
+                          &raquo; Landscaping<br />
+                          &raquo; Sprinkler Systems<br />
+                          &raquo; Lawn Care Service<br />
+                          &raquo; Snow Plowing Service<br />
+                          &raquo; Fence &amp; Retaining Walls<br />
+                          &raquo; Patios, Walkways &amp; Steps<br />
+                          &raquo; Pools<br />
+                          </p> 
+                    </div>
+                    </li>
+                   </ul> </div>
+                </li>
+              </ul>
+              <ul>
+                <li>
+                  <h4><a href="javascript:void(0);" onclick="setCategoryFields('Plumbing', '800', '816', '', '', '1')" onmouseover="doMouseOver('r1')" onmouseout="doMouseOut('r1')">Plumbing &raquo;</a></h4>
+                  <div class="catPosition"> 
+                    <ul class="homecat"  id='r1'>
+                  <li>
+                    <div>
+                           <p>
+                          &raquo; Faucets, Toilets, Sinks, Tubs &amp; Showers<br />
+                          &raquo; General Plumbing Repair &amp; Repiping<br />
+                          &raquo; Clogged Drains <br />
+                          &raquo; Water Heater Installation<br />
+                          &raquo; Drain &amp; Sewer Service<br />
+                          &raquo; Water Softener &amp; Treatment Systems<br />
+                          &raquo; Water Pumps<br />
+                          &raquo; Sprinkler Systems<br />
+                          &raquo; Hot Water Dispensers<br />
+                          </p> 
+                    </div>
+                    </li>
+                   </ul> 
+                 </div>
+                </li>
+                <li>
+                  <h4><a href="javascript:void(0);" onclick="setCategoryFields('Product Assembly', '300', '', '', '', '1')" onmouseover="doMouseOver('r2')" onmouseout="doMouseOut('r2')">Product Assembly &raquo;</a></h4>
+                     <div class="catPosition"> 
+                    <ul class="homecat"  id='r2'>
+                  <li>
+                    <div>
+                           <p>
+                          &raquo; Fitness Equipment<br />
+                          &raquo; Patio Furniture &amp; Grills<br />
+                          &raquo; Gazebos &amp; Play Sets<br />
+                          &raquo; Lawn Equipment<br />
+                          &raquo; Sheds<br />
+                          &raquo; Ready-to-Assemble Furniture<br />
+                          &raquo; Game Tables<br />
+                          </p>  
+                    </div>
+                    </li>
+                   </ul> 
+                   </div>
+ 
+                </li>
+                <li>
+                  <h4><a href="javascript:void(0);" onclick="setCategoryFields('Roofing and Siding', '1200', '', '', '', '1')" onmouseover="doMouseOver('r3')" onmouseout="doMouseOut('r3')" >Roofing &amp; Siding &raquo;</a></h4>
+                  <div style="position:absolute; z-index:9999" > 
+                      <div class="catPosition"> 
+                    <ul class="homecat"  id='r3'>
+                  <li>
+                    <div>
+                           <p>
+                          &raquo; General Roofing<br />
+                          &raquo; Gutters<br />
+                          &raquo; Sofits &amp; Facias <br />
+                          &raquo; Replacement Windows &amp; Skylights<br />
+                          &raquo; Vinyl Siding<br />
+                          &raquo; Wood Siding <br />
+                          &raquo; Attic Fans (Roof-Mounted)<br />
+                          </p> 
+                    </div>
+                    </li>
+                   </ul> 
+				</div>
+				</div>
+                </li>
+                <li>
+                  <h4><a href="javascript:void(0);" onclick="setCategoryFields('Walls and Ceilings', '800', '822', '', '', '1')" onmouseover="doMouseOver('r4')" onmouseout="doMouseOut('r4')">Walls &amp; Ceilings &raquo;</a></h4>
+                    <div style="position:absolute; z-index:9999" > 
+                      <div class="catPosition"> 
+                    <ul class="homecat"  id='r4'>
+                  <li>
+                    <div>
+                           <p>
+                          &raquo; General Painting<br />
+                          &raquo; Drywall &amp; Plaster<br />
+                          &raquo; Stucco<br />
+                          &raquo; Paint Removal &amp; Cleaning<br />
+                          &raquo; Specialty Painting<br />
+                          &raquo; Wallpapering<br />
+                          </p> 
+                    </div>
+				
+                    </li>
+                   </ul> </div>
+				</div>
+                </li>
+                <li class="last">
+                  <h4><a href="javascript:void(0);" onmouseover="doMouseOver('r5')" onmouseout="doMouseOut('r5')">Other Services &raquo;</a></h4>
+                    <div style="position:absolute; z-index:9999" > 
+                      <div class="catPosition"> 
+                    <ul class="homecat"  id='r5'>
+                  <li>
+                    <div>
+                           <p style="position:absolute; top:-240px;">
+                          &raquo; Driveway/Walkway Paving &amp; Resurfacing <br />
+                          &raquo; Home Inspection<br />
+                          &raquo; General Contractor<br />
+                          &raquo; Land Surveyor<br />
+                          &raquo; Foundation<br />
+                          &raquo; Structural Engineer<br />
+                          &raquo; Radon, Asbestos or Mold Removal<br />
+                          &raquo; Pest Control<br />
+                          &raquo; Interior Design<br />
+                          &raquo; Piers/Docks<br />
+                          &raquo; Interior Design<br />
+                          &raquo; Piers/Docks<br />
+                          </p> 
+                    </div>
+                    </li>
+                   </ul> </div>
+					</div>
+                </li>
+              </ul>
+              <div style="clear:both;" class="clearfix">&nbsp;</div>
+            </div>
+            <!-- /.greyBoxHeaderTopR #hpCategories -->
+          </div>
+          <!-- /.greyBoxHeaderTopL -->
+        </div>
+        <!-- /.greyBoxBotR -->
+      </div>
+      <!-- /.greyBoxBotL -->
+    </div>
+    <!-- /#hpContent -->
+    <div id="hpSidebar">
+      <div id="hpPromo"> <a id="promoLink" href="#"> <img src="../../images/homepage/free-posting-promo.png" alt="Free posting!" /> </a> </div>
+      <ul>
+        <li id="hpTestimonials">
+          <div class="greyBoxBotL hpSidebarBox">
+            <div class="greyBoxBotR hpSidebarBox">
+              <div class="greyBoxTopL hpSidebarBox" >
+                <div class="greyBoxTopR hpSidebarBox" id="hpTestimonialsInside">
+                  <!-- <h5>Testimonials</h5> -->
+                  <ul>
+                    <li>
+                      <div>Service live is a great service and we will use it for other projects in our house.</div>
+                      <div class="hpTestimonialsAuthor">&mdash; Vladimir D, Chicago, IL </div>
+                      <div class="hpTestimonialsStars"><img src="http://www.servicelive.com/ServiceLiveWebUtil/images/common/stars_19.gif" alt="Customer rating of 4.6 stars for Mike D." /></div>
+                    </li>
+                    <li>
+                      <div>Nice job done. Will call for other jobs. Will recommend to others. </div>
+                      <div class="hpTestimonialsAuthor">&mdash; Michael A, Algonquin, IL</div>
+                      <div class="hpTestimonialsStars"><img src="http://www.servicelive.com/ServiceLiveWebUtil/images/common/stars_20.gif" alt="Customer rating of 4.6 stars for Mike D." /></div>
+                    </li>
+                    <li>
+                      <div>Outstanding service. He was fast, professional, helpful, and explained everything so that I could understand it clearly.  I couldn’t be happier!</div>
+                      <div class="hpTestimonialsAuthor">&mdash; Sheila Parker, Rosemont, IL</div>
+                      <div class="hpTestimonialsStars"><img src="http://www.servicelive.com/ServiceLiveWebUtil/images/common/stars_20.gif" alt="Customer rating of 4.6 stars for Mike D." /></div>
+                    </li>
+                    <li>
+                      <div>Service provider really helped me out in a pinch! Super quality and service. I sincerely appreciate it!</div>
+                      <div class="hpTestimonialsAuthor">&mdash; George C, McKinney, TX</div>
+                      <div class="hpTestimonialsStars"><img src="http://www.servicelive.com/ServiceLiveWebUtil/images/common/stars_20.gif" alt="Customer rating of 4.6 stars for Mike D." /></div>
+                    </li>
+                    <li>
+                      <div>Allen B. was an amazing provider with his attention to detail. Thank you for all of your support! </div>
+                      <div class="hpTestimonialsAuthor">&mdash; Arlington, TX </div>
+                      <div class="hpTestimonialsStars"><img src="http://www.servicelive.com/ServiceLiveWebUtil/images/common/stars_20.gif" alt="Customer rating of 4.6 stars for Mike D." /></div>
+                    </li>
+                    <li>
+                      <div>Karl was great! Very nice, and helpful. A pleasure to work with. We will definately work with him... Read More again.</div>
+                      <div class="hpTestimonialsAuthor">&mdash; Erika K, Chicago, IL </div>
+                      <div class="hpTestimonialsStars"><img src="http://www.servicelive.com/ServiceLiveWebUtil/images/common/stars_20.gif" alt="Customer rating of 4.6 stars for Mike D." /></div>
+                    </li>
+                    <li>
+                      <div>Very nice and thorough job. Is a professional.</div>
+                      <div class="hpTestimonialsAuthor">&mdash; Will D, Atlanta, GA </div>
+                      <div class="hpTestimonialsStars"><img src="http://www.servicelive.com/ServiceLiveWebUtil/images/common/stars_20.gif" alt="Customer rating of 4.6 stars for Mike D." /></div>
+                    </li>
+                  </ul>
+                  <div class="clearfix"></div>
+                </div>
+                <!-- /.greyBoxHeaderTopL #hpTestimonialsInside -->
+              </div>
+              <!-- /.greyBoxHeaderTopR -->
+            </div>
+            <!-- /.greyBoxBotR -->
+          </div>
+          <!-- /.greyBoxBotL -->
+        </li></ul><ul>
+        <li id="hpJoinServiceProvider">
+          <div id="hpJoinServiceProviderInside">
+            <h5><a href="joinNowAction.action" title="Service Providers Join Now!">Are you a Service Provider?</a></h5>
+            <div class="hpJoinServiceProviderContent">Handymen, plumbers, information 
+              technologists, and other home services professionals...<br />
+              <strong><a href="joinNowAction.action" title="Service Providers Join Now!">Grow your business!</a></strong></div>
+            <div class="hpJoinServiceProviderContent">
+            <a href="https://www.servicelive.com/MarketFrontend/providerRegistrationAction.action" title="Service Providers Join Now!">
+            <img src="../../images/homepage/acquity/providersJoinNow.gif" alt="Service Providers JOIN NOW!" /></a></div>
+          </div>
+          <!-- /.hpJoinServiceProviderInside -->
+        </li>
+        <li id="hpAboutServiceProviders">
+          <div class="greyBoxBotL hpSidebarBox">
+            <div class="greyBoxBotR hpSidebarBox">
+              <div class="greyBoxHeaderTopL hpSidebarBox">
+                <div class="greyBoxHeaderTopR"  id="hpAboutServiceProvidersInside">
+                  <h5>About our Service Providers</h5>
+                  <ul>
+                    <li id="hpBackgroundCheck">
+                      <!-- <h6>Background Checks</h6> -->
+                      <div><img src="../../images/homepage/acquity/BGcheckSilhouette.gif" alt="Service Provider background checks." />All service providers have passed  criminal, civil and vehicle 
+                        background checks.</div>
+                      <div class="clearfix"></div>
+                    </li>
+                    <li id="hpAverageRating">
+                      <h6>Average rating</h6>
+                      <div>Average rating 4.6/5!</div>
+                      <div><img src="../../images/homepage/acquity/aveRatingStars_19.gif" alt="Average rating" /></div>
+                    </li>
+                    <li id="hpAboutNumOfProviders">
+                      <h6>Number of Service Providers</h6>
+                      <div>20,000+ Providers</div>
+                      <div><img src="../../images/homepage/acquity/NumOfProvidersIcons.gif" alt="Average rating" /></div>
+                    </li>
+                  </ul>
+                  <div class="clearfix" style="clear:both;"></div>
+                </div>
+                <!-- /.greyBoxHeaderTopL #hpAboutServiceProvidersInside -->
+              </div>
+              <!-- /.greyBoxHeaderTopR -->
+            </div>
+            <!-- /.greyBoxBotR -->
+          </div>
+          <!-- /.greyBoxBotL -->
+        </li>
+      </ul>
+    </div>
+    <!-- /#hpSidebar -->
+  </div>
+  <div id="theFooter">
+    <div id="footer">
+      <p class="lightBlue"> <a href="http://www.servicelive.com/MarketFrontend/joinNowBuyerSimpleAction.action">About Us</a> <span class="PIPES">|</span> <a href="http://www.servicelive.com/MarketFrontend/jsp/public/common/footer/terms_of_use.jsp">Terms
+        of Use</a> <span class="PIPES">|</span> <a href="https://transformco.com/privacy" target="_blank">Privacy
+        Policy</a> <span class="PIPES">|</span> <a href="https://transformco.com/privacy#_Toc31123888" target="_blank">California Privacy
+        Policy</a> <span class="PIPES">|</span> <a href="http://www.servicelive.com/MarketFrontend/termsAndConditions_displayProviderAgreement.action">Provider
+        Agreement</a> <span class="PIPES">|</span> <a href="http://www.servicelive.com/MarketFrontend/termsAndConditions_displayBuyerAgreement.action">Buyer
+        Agreement</a> </p>
+      <p class="faintgrey"> &copy; 2019 Transform ServiceLive LLC. (v 3.0) </p>
+      <p class="faintgrey">
+        <!-- FRONT END DEV NOTE 12/6: Changed "states" to "U.S. territories"-->
+        <!-- SL-21161: Removed "VT" from list of U.S. territories unable to fulfill buyer requests-->
+        <b>We are unable to fulfill buyer requests in the following states/U.S. Territories: </b> AS,
+        
+        FM,
+        
+        GU,
+        
+        MH,
+        
+        MP,
+        
+        PW,
+        
+        VI </p>
+    </div>
+  </div>
+</div>
+</div>
+</body>
+
+<div id="serviceFinder" class="jqmWindow"></div>
+<div id="modal123" class="jqmWindowSteps"></div>
+<div id="jqmWindowChooseType" class="jqmWindowChooseType"></div>
+<div class="jqmWindowThin" id="promoTerms">
+  <div class="modalHomepage"><a href="#" class="jqmClose">Close</a></div>
+  <div class="modalContent">
+    <center>
+      <img src="http://www.servicelive.com/ServiceLiveWebUtil/images/homepage/freePosting.png" style="margin: 10px;"/>
+    </center>
+    <p>Our usually low-price of $10.00 per service order Posting Fee is waived for all service orders posted between 7/22/08 thru 1/31/09 for all buyer accounts.</p>
+  </div>
+</div>
+<script type="text/javascript">
+		var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+		document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+<script type="text/javascript">
+		var pageTracker = _gat._getTracker("UA-2653154-6");
+		pageTracker._initData();
+		pageTracker._trackPageview();
+	</script>
+</html>

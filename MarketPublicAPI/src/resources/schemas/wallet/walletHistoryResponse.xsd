@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/wallethistory" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.servicelive.com/namespaces/wallethistory" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" elementFormDefault="qualified">
+<xs:include schemaLocation="../common.xsd" id="xcom"/>
+  <xs:element name="walletHistoryResponse">
+  	<xs:complexType>
+      	<xs:sequence>
+        	<xs:element ref="results"/>
+        	<xs:element minOccurs="0" ref="walletHistoryResults"/>
+        	<xs:element minOccurs="1" maxOccurs="1" ref="totalDeposit"/>
+        </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="walletHistoryResults">
+    <xs:complexType>
+      <xs:sequence>
+	    <xs:element minOccurs="0"  maxOccurs="unbounded"  name="recordCount" type="xs:integer"/>
+	    <xs:element minOccurs="0"  maxOccurs="unbounded"  name="recordsDisplayed" type="xs:integer"/>
+        <xs:element minOccurs="0"  maxOccurs="unbounded" ref="transactionDetail"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="transactionDetail">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" ref="transactionId"/>
+        <xs:element minOccurs="0" ref="entryDate"/>
+        <xs:element minOccurs="0" ref="status"/>
+        <xs:element minOccurs="0" ref="description"/>
+        <xs:element minOccurs="0" ref="type"/>
+        <xs:element minOccurs="0" ref="amount"/>
+        <xs:element minOccurs="0" ref="balance"/>
+        <xs:element minOccurs="0" ref="soId"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="transactionId" type="xs:integer"/>
+  <xs:element name="entryDate" type="xs:string"/>
+  <xs:element name="type" type="xs:string"/>
+  <xs:element name="status" type="xs:string"/>
+  <xs:element name="description" type="xs:string"/>
+  <xs:element name="amount" type="xs:decimal"/>
+  <xs:element name="balance" type="xs:decimal"/>
+  <xs:element name="totalDeposit" type="xs:decimal"/>
+  <xs:element name="soId" type="xs:string"/>
+</xs:schema>

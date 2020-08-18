@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<title>Tabs</title>
+
+
+<link rel="stylesheet" href="/ServiceLiveWebUtil/css/jqueryui/jquery-ui-1.7.2.custom.css" type="text/css"></link>
+<script type="text/javascript" src="/ServiceLiveWebUtil/javascript/jquery/jquery-1.3.2.min.js"></script>
+<script type="text/javascript" src="/ServiceLiveWebUtil/javascript/jquery/jqueryui/jquery-ui-1.7.2.custom.min.js"></script>
+
+
+<link rel="stylesheet" href="uicodesamples.css" type="text/css"></link>
+</head>
+
+<body>
+<div id="wrapper">
+<a id="home" href="/UICodeSamples">Home</a>
+<h1>Tabs</h1>
+
+<p>We use the tabs implementation provided in the jQueryUI library. The CSS theme we've selected for ServiceLive is called "Black Tie". 
+See the How To section below about what scripts and stylesheets to import.</p>
+
+
+
+<script type="text/javascript">
+	$(function() {
+		$("#tabs").tabs();
+	});
+	</script>
+
+
+
+<div id="tabs">
+	<ul>
+		<li><a href="#tabs-1">Tab One</a></li>
+		<li><a href="#tabs-2">Tab Two</a></li>
+		<li><a href="#tabs-3">Tab Three</a></li>
+	</ul>
+	<div id="tabs-1">
+		<p>The quick brown fox jumps over the lazy dog.</p>
+	</div>
+	<div id="tabs-2">
+		<p>The quick brown fox jumps over the lazy dog... again.</p>
+	</div>
+	<div id="tabs-3">
+		<p>The quick brown fox jumps over the lazy dog... again and again.</p></div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+========<br/>
+<h2>How to:</h2>
+<ol>
+<li>Put these in the &lt;head>&lt;/head> section of your document: <br/>
+<pre>
+&lt;link rel="stylesheet" href="${staticContextPath}/css/jqueryui/jquery-ui-1.7.2.custom.css" type="text/css">&lt;/link>
+&lt;script type="text/javascript" src="${staticContextPath}/javascript/jquery/jquery-1.3.2.min.js">&lt;/script>
+&lt;script type="text/javascript" src="${staticContextPath}/javascript/jquery/jqueryui/jquery-ui-1.7.2.custom.min.js">&lt;/script>
+
+</pre>
+<strong>Note:</strong> Don't insert duplicates if the above files have already been referenced on the page. 
+Also, the above code assumes that you've defined the "staticContextPath" variable in your JSP.
+</li>
+
+<li>Initialize the tabs: <br/>
+<pre>
+&lt;script type="text/javascript">
+	$(function() {
+		$("#tabs").tabs();
+	});
+&lt;/script>
+</pre>
+</li>
+
+<li>Create the navigation list items and the content containers: <br/>
+<pre>
+
+&lt;div id="tabs">
+	&lt;ul>
+		&lt;li>&lt;a href="#tabs-1">Tab One&lt;/a>&lt;/li>
+		&lt;li>&lt;a href="#tabs-2">Tab Two&lt;/a>&lt;/li>
+		&lt;li>&lt;a href="#tabs-3">Tab Three&lt;/a>&lt;/li>
+	&lt;/ul>
+	&lt;div id="tabs-1">
+		&lt;p>The quick brown fox jumps over the lazy dog.&lt;/p>
+	&lt;/div>
+	&lt;div id="tabs-2">
+		&lt;p>The quick brown fox jumps over the lazy dog... again.&lt;/p>
+	&lt;/div>
+	&lt;div id="tabs-3">
+		&lt;p>The quick brown fox jumps over the lazy dog... again and again.</p>&lt;/div>
+&lt;/div>
+
+</pre>
+</li>
+</ol>
+
+Complete documentation available <a href="http://jqueryui.com/demos/tabs/">here</a>. 
+<div class="ltCorner"></div>
+<div class="rtCorner"></div>
+<div class="lbCorner"></div>
+<div class="rbCorner"></div>
+</div>
+</body>
+</html>

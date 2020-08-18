@@ -1,0 +1,518 @@
+/**
+ * 
+ */
+package com.newco.marketplace.business.businessImpl.ledger;
+
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+
+import com.newco.marketplace.business.iBusiness.financeManager.IFinanceManagerBO;
+import com.newco.marketplace.business.iBusiness.ledger.ICreditCardBO;
+import com.newco.marketplace.constants.Constants;
+import com.newco.marketplace.dto.vo.CryptographyVO;
+import com.newco.marketplace.dto.vo.ledger.CreditCardVO;
+import com.newco.marketplace.exception.core.BusinessServiceException;
+import com.newco.marketplace.interfaces.CreditCardConstants;
+import com.newco.marketplace.interfaces.MPConstants;
+import com.newco.marketplace.persistence.iDao.ledger.ICreditCardDao;
+import com.newco.marketplace.persistence.iDao.provider.ILocationDao;
+import com.newco.marketplace.util.Cryptography;
+import com.newco.marketplace.util.PropertiesUtils;
+import com.newco.marketplace.utils.RandomGUID;
+import com.newco.marketplace.vo.provider.Location;
+import com.sears.os.business.ABaseBO;
+import com.sears.services.creditauth.CreditAuthServiceLocator;
+import com.sears.services.creditauth.CreditAuthServiceSoapBindingStub;
+import com.servicelive.common.vo.SLCreditCardVO;
+import com.servicelive.lookup.ILookupBO;
+import com.servicelive.lookup.vo.BuyerLookupVO;
+import com.servicelive.lookup.vo.CreditCardAccountVO;
+import com.servicelive.wallet.serviceinterface.IWalletBO;
+import com.servicelive.wallet.serviceinterface.requestbuilder.WalletRequestBuilder;
+import com.servicelive.wallet.serviceinterface.vo.WalletResponseVO;
+import com.servicelive.wallet.serviceinterface.vo.WalletVO;
+
+/**
+ * @author schavda
+ *
+ */
+public class CreditCardBOImpl  extends ABaseBO implements ICreditCardBO, MPConstants, CreditCardConstants {
+	
+	private static final Logger logger = Logger.getLogger(CreditCardBOImpl.class);
+	private Cryptography cryptography;
+	private ICreditCardDao creditCardDao;
+	private ILocationDao locationDao;
+	private IFinanceManagerBO financeManagerBO;
+	private AccountingTransactionMananagementBO accountingTransactionBO;
+	private String _creditCardAuthUrl = null;
+	private String _slStoreNo = null;
+	private String _slStoreNoWOZero = null;
+	
+	private IWalletBO walletBO;
+	private WalletRequestBuilder walletRequestBuilder = new WalletRequestBuilder();
+	private ILookupBO lookupBO;
+	
+	private String getCreditCardAuthUrl() {
+		if(_creditCardAuthUrl == null) {
+			_creditCardAuthUrl = PropertiesUtils.getPropertyValue(Constants.AppPropConstants.CREDIT_CARD_AUTH_URL);
+		}
+		return _creditCardAuthUrl;
+	}
+	private String getSlStoreNo() {
+		if(_slStoreNo == null) {
+			_slStoreNo = PropertiesUtils.getPropertyValue(Constants.AppPropConstants.SL_STORE_NO);
+		}
+		return _slStoreNo;
+	}
+	private String getSlStoreNoWOZero() {
+		if(_slStoreNoWOZero == null) {
+			_slStoreNoWOZero = PropertiesUtils.getPropertyValue(Constants.AppPropConstants.SL_STORE_NO_WO_ZERO);
+		}
+		return _slStoreNoWOZero;
+	}
+	
+	public CreditCardVO getCardDetails(CreditCardVO creditCardVO) throws BusinessServiceException {
+		logger.debug("CreditCardBOImpl-->getCardDetails()");
+		
+		try{
+			if(creditCardVO.isActive_ind()) {
+				creditCardVO = creditCardDao.getCardDetails(creditCardVO);
+			} else {
+				creditCardVO = creditCardDao.getCardDetailsAll(creditCardVO);
+			}
+			
+			CryptographyVO cryptographyVO = new CryptographyVO();
+			cryptographyVO.setInput(creditCardVO.getEncCardNo());
+			cryptographyVO.setKAlias(ENCRYPTION_KEY);
+			
+			cryptographyVO = cryptography.decryptKey(cryptographyVO);
+			logger.debug("CreditCardBOImpl-->getCardDetails()-->DecypteddNo="+cryptographyVO.getResponse());
+			creditCardVO.setCardNo(cryptographyVO.getResponse());
+			
+		}
+		catch (Throwable t) {
+			logger.error("CreditCardBOImpl-->getCardDetails()-->Exception-->" + t.getMessage(), t);
+			throw new BusinessServiceException("Exception occured in CreditCardBOImpl-->getCardDetails() due to "+t.getMessage());
+		}
+		return creditCardVO;
+	}
+
+	public void setWalletBO(IWalletBO walletBO) {
+		this.walletBO = walletBO;
+	}
+
+	public void setLookupBO(ILookupBO lookupBO) {
+		this.lookupBO = lookupBO;
+	}
+
+	public Long saveCardDetails(CreditCardVO creditCardVO) throws BusinessServiceException {
+		logger.debug("CreditCardBOImpl-->saveCardDetails()");
+		CreditCardVO oldCreditVO = new CreditCardVO();
+		Long cardId = null;
+		try{
+			if(creditCardVO != null && creditCardVO.getCardId() != null
+					&& creditCardVO.isActive_ind()){
+				oldCreditVO.setCardId(creditCardVO.getCardId());
+				oldCreditVO.setActive_ind(false);
+				//oldCreditVO.setEnabled_ind(true);
+				creditCardDao.updateDeactivateCreditCardAccountInfo(oldCreditVO);
+			}
+			CryptographyVO cryptographyVO = new CryptographyVO();
+			cryptographyVO.setInput(creditCardVO.getCardNo());
+			cryptographyVO.setKAlias(ENCRYPTION_KEY);
+			
+			cryptographyVO = cryptography.encryptKey(cryptographyVO);
+			logger.info("CreditCardBOImpl-->saveCardDetails()-->EncrypteddNo="+cryptographyVO.getResponse());
+			creditCardVO.setEncCardNo(cryptographyVO.getResponse());
+			
+			RandomGUID randomGUID = new RandomGUID();
+			cardId = randomGUID.generateGUID();
+			creditCardVO.setCardId(cardId);
+
+			java.util.Date today = new java.util.Date();
+	        Date now = new Date(today.getTime());
+	        creditCardVO.setCreatedDate(now);
+	        creditCardVO.setModifiedDate(now);
+	        
+	        try{
+	        	
+	        	Location location = new Location();
+	        	location.setStreet1(creditCardVO.getBillingAddress1());
+	        	location.setStreet2(creditCardVO.getBillingAddress2());
+	        	location.setAptNo(creditCardVO.getBillingAptNo());
+	        	location.setCity(creditCardVO.getBillingCity());
+	        	location.setStateCd(creditCardVO.getBillingState());
+	        	location.setZip(creditCardVO.getZipcode());
+	        	location.setLocnTypeId(creditCardVO.getLocationTypeId());
+	        	location.setLocnName(creditCardVO.getBillingLocationName());
+	        	Location returnlocation= locationDao.insert(location);
+	        	creditCardVO.setLocationId(returnlocation.getLocnId());
+			}
+			catch (Throwable t) {
+				logger.error("CreditCardBOImpl-->insertCardLocationDetails()-->Exception-->" + t.getMessage(), t);
+				throw new BusinessServiceException("Exception occured in CreditCardBOImpl-->saveCardDetails() due to "+t.getMessage());
+			}
+	        try{
+	        	creditCardDao.saveCardDetails(creditCardVO);
+	        }
+	        catch (Throwable t) {
+				logger.error("CreditCardBOImpl-->saveCardDetails()-->Exception-->" + t.getMessage(), t);
+				throw new BusinessServiceException("Exception occured in CreditCardBOImpl-->saveCardDetails() due to "+t.getMessage());
+			}
+	    }
+		catch (Throwable t) {
+			logger.error("CreditCardBOImpl-->saveCardDetails()-->Exception-->" + t.getMessage(), t);
+			throw new BusinessServiceException("Exception occured in CreditCardBOImpl-->saveCardDetails() due to "+t.getMessage());
+		}
+		return cardId;
+	}
+	
+	
+	public Long saveAsDefaultCard(CreditCardVO creditCardVO) throws BusinessServiceException {
+		logger.debug("CreditCardBOImpl-->saveCardDetails()");
+		CreditCardVO oldCreditVO = new CreditCardVO();
+		Long cardId = null;
+		try{
+			if(creditCardVO != null && creditCardVO.isActive_ind()){
+				oldCreditVO = creditCardDao.getActiveDefaultCardForBuyer(new Integer(creditCardVO.getEntityId()));
+				if (oldCreditVO != null){
+					oldCreditVO.setDefault_ind(false);
+					creditCardDao.resetDefaultCreditCard(oldCreditVO);
+				}
+			}
+			CryptographyVO cryptographyVO = new CryptographyVO();
+			cryptographyVO.setInput(creditCardVO.getCardNo());
+			cryptographyVO.setKAlias(ENCRYPTION_KEY);
+			
+			cryptographyVO = cryptography.encryptKey(cryptographyVO);
+			logger.info("CreditCardBOImpl-->saveCardDetails()-->EncrypteddNo="+cryptographyVO.getResponse());
+			creditCardVO.setEncCardNo(cryptographyVO.getResponse());
+			
+			RandomGUID randomGUID = new RandomGUID();
+			cardId = randomGUID.generateGUID();
+			creditCardVO.setCardId(cardId);
+
+			java.util.Date today = new java.util.Date();
+	        Date now = new Date(today.getTime());
+	        creditCardVO.setCreatedDate(now);
+	        creditCardVO.setModifiedDate(now);
+	        
+	        try{
+	        	
+	        	Location location = new Location();
+	        	location.setStreet1(creditCardVO.getBillingAddress1());
+	        	location.setStreet2(creditCardVO.getBillingAddress2());
+	        	location.setAptNo(creditCardVO.getBillingAptNo());
+	        	location.setCity(creditCardVO.getBillingCity());
+	        	location.setStateCd(creditCardVO.getBillingState());
+	        	location.setZip(creditCardVO.getZipcode());
+	        	location.setLocnTypeId(creditCardVO.getLocationTypeId());
+	        	location.setLocnName(creditCardVO.getBillingLocationName());
+	        	Location returnlocation= locationDao.insert(location);
+	        	creditCardVO.setLocationId(returnlocation.getLocnId());
+			}
+			catch (Throwable t) {
+				logger.error("CreditCardBOImpl-->insertCardLocationDetails()-->Exception-->" + t.getMessage(), t);
+				throw new BusinessServiceException("Exception occured in CreditCardBOImpl-->saveCardDetails() due to "+t.getMessage());
+			}
+	        try{
+	        	creditCardDao.saveCardDetails(creditCardVO);
+	        }
+	        catch (Throwable t) {
+				logger.error("CreditCardBOImpl-->saveCardDetails()-->Exception-->" + t.getMessage(), t);
+				throw new BusinessServiceException("Exception occured in CreditCardBOImpl-->saveCardDetails() due to "+t.getMessage());
+			}
+	    }
+		catch (Throwable t) {
+			logger.error("CreditCardBOImpl-->saveCardDetails()-->Exception-->" + t.getMessage(), t);
+			throw new BusinessServiceException("Exception occured in CreditCardBOImpl-->saveCardDetails() due to "+t.getMessage());
+		}
+		return cardId;
+	}
+
+	
+	public boolean updateDeactivateCreditCardAccountInfo(CreditCardVO creditCardVO) throws BusinessServiceException {
+		boolean isDeactivated;
+		try {
+			isDeactivated = creditCardDao.updateDeactivateCreditCardAccountInfo(creditCardVO);
+        }
+        catch (Throwable t) {
+			logger.error("CreditCardBOImpl-->updateDeactivateCreditCardAccountInfo()-->Exception-->" + t.getMessage(), t);
+			throw new BusinessServiceException("Exception occured in CreditCardBOImpl-->updateDeactivateCreditCardAccountInfo() due to "+t.getMessage());
+        }
+        
+        return isDeactivated;
+	}
+
+	public ArrayList<CreditCardVO> getCardsForEntity(CreditCardVO creditCardVO) throws BusinessServiceException{
+		logger.debug("CreditCardBOImpl-->getCardDetails()");
+		ArrayList alCards = null;
+		CreditCardVO cardVO = null;
+		try{
+			alCards = creditCardDao.getCardsForEntity(creditCardVO);
+			int iSize = alCards.size();
+			
+			for(int i=0; i<iSize; i++){
+				cardVO = (CreditCardVO)alCards.get(i);
+
+				CryptographyVO cryptographyVO = new CryptographyVO();
+				
+				cryptographyVO.setKAlias(ENCRYPTION_KEY);
+				cryptographyVO.setInput(cardVO.getEncCardNo());
+				cryptographyVO = cryptography.decryptKey(cryptographyVO);
+				
+				logger.debug("CreditCardBOImpl-->getCardsForEntity()-->DecypteddNo="+cryptographyVO.getResponse());
+				cardVO.setCardNo(cryptographyVO.getResponse());
+			}
+		}
+		catch (Throwable t) {
+			logger.error("CreditCardBOImpl-->getCardDetails()-->Exception-->" + t.getMessage(), t);
+			throw new BusinessServiceException("Exception occured in CreditCardBOImpl-->getCardsForEntity() due to "+t.getMessage());
+		}
+		return alCards;
+	}
+		
+	private String decrypt( String cypher ) {
+		CryptographyVO cryptographyVO = new CryptographyVO();
+		
+		cryptographyVO.setKAlias(ENCRYPTION_KEY);
+		cryptographyVO.setInput(cypher);
+		cryptographyVO = cryptography.decryptKey(cryptographyVO);
+		return cryptographyVO.getResponse();
+	}
+	
+	public CreditCardVO getActiveCreditCardDetails(Integer entityId) throws BusinessServiceException{
+		logger.debug("CreditCardBOImpl-->getCardDetails()");
+		CreditCardVO cardVO = null;
+		try{
+			cardVO = creditCardDao.getActiveCardsForBuyer(entityId);
+			if (cardVO != null){
+				CryptographyVO cryptographyVO = new CryptographyVO();
+				
+				cryptographyVO.setKAlias(ENCRYPTION_KEY);
+				cryptographyVO.setInput(cardVO.getEncCardNo());
+				cryptographyVO = cryptography.decryptKey(cryptographyVO);
+				
+				logger.debug("CreditCardBOImpl-->getCardsForEntity()-->DecypteddNo="+cryptographyVO.getResponse());
+				cardVO.setCardNo(cryptographyVO.getResponse());
+			}
+		}
+		catch (Throwable t) {
+			logger.error("CreditCardBOImpl-->getCardDetails()-->Exception-->" + t.getMessage(), t);
+			throw new BusinessServiceException("Exception occured in CreditCardBOImpl-->getActiveCreditCardDetails() due to "+t.getMessage());
+		}
+		return cardVO;
+	}
+	
+	/* 
+	 * Used by B2C API : This method returns all the active cards.Active cards are :
+	 * 1. Active_ind = true and enabled_ind = false , this means card is not authorized by thirdparty yet but passed mod10 
+	 * check on the client.
+	 * 2. Active_ind= true and enabled_ind = true and response code is one of the below.  
+	 * 
+	 */
+	public List<CreditCardVO> getActiveCardListForBuyer(Integer entityId) throws BusinessServiceException{
+		logger.debug("CreditCardBOImpl-->getCardDetails()");
+		List<CreditCardVO> listEnabledCardVO = new ArrayList<CreditCardVO>();
+		List<CreditCardVO> listAuthorizedCardVO = new ArrayList<CreditCardVO>();
+		List<CreditCardVO> listAllValidCardVO = new ArrayList<CreditCardVO>();
+		try{
+			listEnabledCardVO = creditCardDao.getAllEnabledCards(entityId);
+			listAuthorizedCardVO = creditCardDao.getAllActiveAndAuthorizedCards(entityId);
+			
+			//Filter the authorized list to remove all the unauthorized cards based on the response.
+			//This doesn't rely on authorized_ind from account_auth_resp as B2C requirement is different. 
+			for(CreditCardVO cleanVO: listAuthorizedCardVO){
+				if(!(cleanVO.getAnsiResponseCode().equalsIgnoreCase("00") || 
+						cleanVO.getAnsiResponseCode().equalsIgnoreCase("10") ||
+						cleanVO.getCidResponseCode().equalsIgnoreCase("M") ||
+						cleanVO.getCidResponseCode().equalsIgnoreCase("P") ||
+						cleanVO.getCidResponseCode().equalsIgnoreCase("S") ||
+						cleanVO.getCidResponseCode().equalsIgnoreCase("U"))){
+					listAuthorizedCardVO.remove(cleanVO);
+				}
+			}
+			
+			listAllValidCardVO.addAll(listEnabledCardVO);
+			listAllValidCardVO.addAll(listAuthorizedCardVO);
+			for(CreditCardVO ccVO: listAllValidCardVO){
+				
+				CryptographyVO cryptographyVO = new CryptographyVO();
+				
+				cryptographyVO.setKAlias(ENCRYPTION_KEY);
+				cryptographyVO.setInput(ccVO.getEncCardNo());
+				cryptographyVO = cryptography.decryptKey(cryptographyVO);
+				
+				logger.debug("CreditCardBOImpl-->getCardsForEntity()-->DecypteddNo="+cryptographyVO.getResponse());
+				ccVO.setCardNo(cryptographyVO.getResponse());
+			}
+		}
+		catch (Throwable t) {
+			logger.error("CreditCardBOImpl-->getCardDetails()-->Exception-->" + t.getMessage(), t);
+			throw new BusinessServiceException("Exception occured in CreditCardBOImpl-->getActiveCreditCardDetails() due to "+t.getMessage());
+		}
+		return listAllValidCardVO;
+	}
+	
+	public CreditCardVO saveAndAuthorizeCardTransaction(CreditCardVO creditCardVO, String soId) throws BusinessServiceException{
+		logger.debug("CreditCardBOImpl-->saveAndAuthorizeCardTransaction()");
+		Long cardId = null;
+		try{
+			cardId = saveCardDetails(creditCardVO);
+			
+			creditCardVO.setCardId(cardId);
+			
+			creditCardVO = authorizeCardTransaction(creditCardVO, soId);
+			
+		}catch (Exception e) {
+			logger.error("CreditCardBOImpl-->saveAndAuthorizeCardTransaction()-->Exception-->" + e.getMessage(), e);
+			
+			throw new BusinessServiceException("Exception occured in CreditCardBOImpl-->saveAndAuthorizeCardTransaction() due to "+e.getMessage());
+		}
+
+		return creditCardVO;
+	}
+
+	public CreditCardVO authorizeCardTransaction(CreditCardVO creditCardVO, String soId) throws BusinessServiceException{
+		Long buyerId = creditCardVO.getEntityId().longValue();
+		BuyerLookupVO buyerVO = lookupBO.lookupBuyer(buyerId);
+
+		CreditCardAccountVO ccVO = lookupBO.lookupCreditCard(creditCardVO.getCardId());
+		String cardNo = this.decrypt( ccVO.getEncCardNo() );
+		creditCardVO.setEntityId(buyerId.intValue());
+		creditCardVO.setCardNo(cardNo);
+		creditCardVO.setCardTypeId(ccVO.getCardTypeId());
+		creditCardVO.setExpireDate(ccVO.getExpireDate());
+		creditCardVO.setCardHolderName(ccVO.getCardHolderName());
+		
+		Long accountId = creditCardVO.getCardId();
+				
+		SLCreditCardVO slCreditCardVO = SLCreditCardVO.adapt(creditCardVO);
+						
+		WalletVO request = walletRequestBuilder.depositBuyerFundsWithCreditCard(creditCardVO.getUserName(), accountId, 
+				buyerId, buyerVO.getBuyerState(), buyerVO.getBuyerV1AccountNumber(), buyerVO.getBuyerV2AccountNumber(),
+				soId, "", creditCardVO.getTransactionAmount());
+
+		request.setCreditCard(slCreditCardVO);
+
+		WalletResponseVO response = walletBO.depositBuyerFundsWithCreditCard(request);
+		response.validateCreditCardResponse();
+		response.getCreditCard().setEntityId(buyerId.intValue());
+							
+		if( response.getCreditCard().isAuthorized() ) {
+			financeManagerBO.sendCCDepositConfirmationEmail(response.getCreditCard(), 
+					creditCardVO.getTransactionAmount(), response.getTransactionId().intValue());
+		}
+		
+		creditCardVO.setAnsiResponseCode(response.getCreditCard().getAnsiResponseCode());
+		creditCardVO.setCidResponseCode(response.getCreditCard().getCidResponseCode());
+		creditCardVO.setAuthorizationCode(response.getCreditCard().getAuthorizationCode());
+		creditCardVO.setAuthorizationAmount(response.getCreditCard().getAuthorizationAmount());
+		creditCardVO.setAuthorized(response.getCreditCard().isAuthorized());
+		creditCardVO.setAuthorizerRespCode(response.getCreditCard().getAuthorizerRespCode());
+		
+		return creditCardVO;
+	}
+
+	private void updateNoResponseDetails(CreditCardVO creditCardVO) {
+		creditCardVO.setAuthorized(false);
+		creditCardVO.setAnsiResponseCode("91");
+		creditCardVO.setAnsiResponseCode("We have encountered an error processing your credit card.  We apologize for the inconvenience.  Please try again later.");
+	}
+	
+	private CreditAuthServiceSoapBindingStub initializeRTCAWS() throws Exception {
+		
+		 CreditAuthServiceLocator locator = new CreditAuthServiceLocator();
+		 locator.setCreditAuthServiceEndpointAddress(getCreditCardAuthUrl());
+		 
+		 CreditAuthServiceSoapBindingStub binding = null;
+		 binding = (CreditAuthServiceSoapBindingStub)locator.getCreditAuthService();
+		 
+		 return binding;
+	}
+	
+	private boolean searsCard(int iCardTypeId){
+		boolean bSearsCard = false;
+		//check database table lu_card_types for more details
+		//SEARS CARD TYPEs = 0,1,2,3,4
+		//ThirdParty CARD TYPEs = 5,6,7,8
+		
+		if(iCardTypeId == CARD_ID_SEARS || iCardTypeId == CARD_ID_SEARS_PREMIER || iCardTypeId == CARD_ID_SEARS_PLUS 
+				|| iCardTypeId == CARD_ID_SEARS_COMMERCIAL || iCardTypeId == CARD_ID_SEARS_MASTERCARD){
+			bSearsCard = true;
+		}
+		else{
+			bSearsCard = false;
+		}
+		
+		return bSearsCard;
+	}
+	
+	/**
+	 * @return the creditCardDao
+	 */
+	public ICreditCardDao getCreditCardDao() {
+		return creditCardDao;
+	}
+
+	/**
+	 * @param creditCardDao the creditCardDao to set
+	 */
+	public void setCreditCardDao(ICreditCardDao creditCardDao) {
+		this.creditCardDao = creditCardDao;
+	}
+
+	/**
+	 * @return the cryptography
+	 */
+	public Cryptography getCryptography() {
+		return cryptography;
+	}
+
+	/**
+	 * @param cryptography the cryptography to set
+	 */
+	public void setCryptography(Cryptography cryptography) {
+		this.cryptography = cryptography;
+	}
+
+
+	/**
+	 * @return the accountingTransactionBO
+	 */
+	public AccountingTransactionMananagementBO getAccountingTransactionBO() {
+		return accountingTransactionBO;
+	}
+
+	/**
+	 * @param accountingTransactionBO the accountingTransactionBO to set
+	 */
+	public void setAccountingTransactionBO(
+			AccountingTransactionMananagementBO accountingTransactionBO) {
+		this.accountingTransactionBO = accountingTransactionBO;
+	}
+
+	public ILocationDao getLocationDao() {
+		return locationDao;
+	}
+
+	public void setLocationDao(ILocationDao locationDao) {
+		this.locationDao = locationDao;
+	}
+
+	public IFinanceManagerBO getFinanceManagerBO() {
+		return financeManagerBO;
+	}
+
+	public void setFinanceManagerBO(IFinanceManagerBO financeManagerBO) {
+		this.financeManagerBO = financeManagerBO;
+	}
+
+	public void commit() {
+		this.commitWork();
+		
+	}
+}

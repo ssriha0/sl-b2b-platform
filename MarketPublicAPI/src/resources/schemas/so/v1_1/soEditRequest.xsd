@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/soRequest" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" targetNamespace="http://www.servicelive.com/namespaces/soRequest" elementFormDefault="qualified" jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+	<xs:include schemaLocation="soEditCommon.xsd"/>
+	
+	
+	<!-- Root element -->
+	<xs:element name="soRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="serviceorder" type="ServiceOrderType" minOccurs="0" maxOccurs="50"/>
+				<xs:element name="providerRouteInfo" type="ProviderRouteInfoType" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:decimal"/>
+		</xs:complexType>
+	</xs:element>
+	
+	
+	<!-- ServiceOrder  -->
+	
+	<xs:complexType name="ServiceOrderType">
+		<xs:sequence>
+			<xs:element name="sectionGeneral" type="soSectionGeneralType" minOccurs="0"/>
+			<xs:element name="subStatus"  type="subStatusesEnum" minOccurs="0"/>
+			<xs:element name="scopeOfWork" type="soSectionSOWType" minOccurs="0"/>
+			<xs:element name="serviceLocation" type="LocationType" minOccurs="0"/>
+			<xs:element name="schedule" type="ScheduleType" minOccurs="0"/>
+			<xs:element name="pricing" type="SOPricingType" minOccurs="0"/>
+			<xs:element name="contacts" type="ContactsType" minOccurs="0"/>
+			<xs:element name="attachments" type="AttachmentsType" minOccurs="0"/>
+			<xs:element name="parts" type="PartsType" minOccurs="0"/>
+			<xs:element name="customReferences" type="CustomReferencesType" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="version" type="xs:decimal"/>
+		<xs:attribute name="template" type="xs:string" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="ProviderRouteInfoType">
+		<xs:sequence>
+			<xs:element name="maxDistance" nillable="true" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:enumeration value="5"/>
+						<xs:enumeration value="10"/>
+						<xs:enumeration value="15"/>
+						<xs:enumeration value="20"/>
+						<xs:enumeration value="25"/>
+						<xs:enumeration value="30"/>
+						<xs:enumeration value="35"/>
+						<xs:enumeration value="40"/>
+						<xs:enumeration value="50"/>
+						<xs:enumeration value="75"/>
+						<xs:enumeration value="100"/>
+						<xs:enumeration value="125"/>
+						<xs:enumeration value="150"/>
+						<xs:enumeration value="175"/>
+						<xs:enumeration value="200"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="minRating" nillable="true">
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal">
+						<xs:minInclusive value="1.0"/>
+						<xs:maxInclusive value="5.0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="languages" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="language" maxOccurs="50"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="specificProviders" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="resourceID" type="xs:int" maxOccurs="300"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="version" type="xs:decimal" use="required"/>
+		<xs:attribute name="template" type="xs:string" use="optional"/>
+	</xs:complexType>
+	<xs:element name="language" default="English">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="English"/>
+				<xs:enumeration value="French"/>
+				<xs:enumeration value="German"/>
+				<xs:enumeration value="Spanish"/>
+				<xs:enumeration value="Chinese"/>
+				<xs:enumeration value="Tagalog"/>
+				<xs:enumeration value="Vietnamese"/>
+				<xs:enumeration value="Italian"/>
+				<xs:enumeration value="Korean"/>
+				<xs:enumeration value="Russian"/>
+				<xs:enumeration value="Polish"/>
+				<xs:enumeration value="Arabic"/>
+				<xs:enumeration value="Portuguese"/>
+				<xs:enumeration value="Japanese"/>
+				<xs:enumeration value="French Creole"/>
+				<xs:enumeration value="Greek"/>
+				<xs:enumeration value="Hindi"/>
+				<xs:enumeration value="Persian"/>
+				<xs:enumeration value="Urdu"/>
+				<xs:enumeration value="Cantonese"/>
+				<xs:enumeration value="Hebrew"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	
+	<xs:simpleType name="subStatusesEnum">
+		<xs:restriction base="xs:string">
+		<!-- Substatuses for Accepted,Active -->
+				<xs:enumeration value="Job Done"/>
+				<xs:enumeration value="Part Back Ordered"/>
+				<xs:enumeration value="Part on Order"/>
+				<xs:enumeration value="Part Received - Hold for Pickup"/>
+				<xs:enumeration value="Part Received by End User"/>
+				<xs:enumeration value="Part Received by Provider"/>
+				<xs:enumeration value="Part Shipped"/>
+				<xs:enumeration value="Rescheduled by End User"/>
+				<xs:enumeration value="Rescheduled by Provider"/>
+				<xs:enumeration value="Rescheduled due to End User No Show"/>
+				<xs:enumeration value="Rescheduled due to Provider No Show"/>
+				<xs:enumeration value="Need additional parts"/>
+				<xs:enumeration value="Cancellation Request"/>
+		<!-- Substatuses for Active -->	
+				<xs:enumeration value="Provider On-site"/>
+				<xs:enumeration value="Scheduling Needed"/>
+				<xs:enumeration value="Customer Delayed Service"/>
+				<xs:enumeration value="Time Window Expired - Arrival"/>
+				<xs:enumeration value="Time Window Expired - Departure"/>
+				<xs:enumeration value="Validate POS Cancellation"/>
+		<!-- Substatuses for Accepted -->		
+				<xs:enumeration value="Follow-up Needed"/>
+				<xs:enumeration value="Research Needed"/>
+				<xs:enumeration value="Time Window"/>
+				<xs:enumeration value="Schedule Confirmed"/>
+				<xs:enumeration value="Needs Attention"/>
+		<!-- Substatuses for Active,Cancelled,Voided -->	
+				<xs:enumeration value="No Substatus"/>
+		<!-- Substatuses for Cancelled,Voided -->
+				<xs:enumeration value="Cancelled by Buyer"/>
+				<xs:enumeration value="Cancelled by End User"/>
+		<!-- Substatus for Cancelled-->
+				<xs:enumeration value="End User No Show"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- Response Filter -->
+	
+</xs:schema>

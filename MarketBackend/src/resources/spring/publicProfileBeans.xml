@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+    <!-- Start BO  Loading -->
+	<bean id="publicProfileBOImpl" class="com.newco.marketplace.business.businessImpl.provider.PublicProfileBOImpl">
+        <constructor-arg index="0" ref="businessinfoDaoImpl"/>
+		<constructor-arg index="1" ref="vendorResourceDaoImpl"/>
+		<constructor-arg index="2" ref="locationDaoImpl"/>
+		<constructor-arg index="3" ref="contactDaoImpl"/>
+		<constructor-arg index="4" ref="iTeamCredentialsDao"/>
+		<constructor-arg index="5" ref="skillAssignDAOImpl"/>
+		<constructor-arg index="6" ref="resourceScheduleDao"/>
+		<constructor-arg index="7" ref="marketPlaceDaoImpl"/>
+		<constructor-arg index="8" ref="lookupDAOImpl"/>
+		<constructor-arg index="9" ref="resourceStatusDaoImpl"/>
+	</bean>
+	<!-- End BO  Loading -->
+</beans>

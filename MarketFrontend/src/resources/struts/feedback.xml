@@ -1,0 +1,27 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="feedback" extends="ServiceLiveBase" >
+        <default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+        
+    	<global-results >
+			<result name="error" type="redirectAction">
+				<param name="actionName">errorAction</param>
+				<param name="errorMessage">${errorMessage}</param>
+				<param name="returnURL">${returnURL}</param>
+			</result>
+		</global-results>	   	
+        
+   		<action name="displayFeedbackPopup" class="feedbackAction" method="loadfeedBackCategory">
+			<result name="success">/jsp/feedback/feedback_form.jsp</result>
+		</action>
+		
+		<action name="saveFeedBack_*" class="feedbackAction" method="{1}">
+			 <result name="success">/jsp/feedback/feedback_result.jsp</result>
+		</action>
+	      
+
+    </package>
+    
+</struts>

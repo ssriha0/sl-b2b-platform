@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemadesigner version="6.5">
+<source>
+<database charset="latin1" collation="latin1_swedish_ci">supplier_prod</database>
+</source>
+<canvas zoom="100">
+<tables>
+<table name="lu_spnet_status_action_mapper" view="colnames">
+<left>189</left>
+<top>53</top>
+<width>214</width>
+<height>163</height>
+<sql_create_table>CREATE TABLE `lu_spnet_status_action_mapper` (
+  `action_mapping_id` int(5) NOT NULL AUTO_INCREMENT COMMENT 'action mapper identifier for spnet_state tables',
+  `modified_by_id` varchar(30) NOT NULL COMMENT 'used for storing reference to modified_by',
+  `spnet_status_id` varchar(30) NOT NULL COMMENT 'used as reference to spnet_status',
+  `descr` varchar(255) DEFAULT NULL,
+  `action_descr` varchar(255) NOT NULL,
+  `displayable_comments` varchar(255) DEFAULT NULL,
+  `action_type` varchar(255) NOT NULL,
+  PRIMARY KEY (`action_mapping_id`),
+  UNIQUE KEY `action_mapping_id` (`action_mapping_id`),
+  UNIQUE KEY `ssam_modified_by_id_spnet_status_id_action_type` (`modified_by_id`,`spnet_status_id`,`action_type`),
+  KEY `combo_spnet_status_modifier_index` (`modified_by_id`,`spnet_status_id`),
+  KEY `FK_lu_spnet_status_action_mapper_status` (`spnet_status_id`),
+  CONSTRAINT `FK_lu_spnet_status_action_mapper_modified_by` FOREIGN KEY (`modified_by_id`) REFERENCES `lu_spnet_status_action_modifier` (`modified_by_id`),
+  CONSTRAINT `FK_lu_spnet_status_action_mapper_status` FOREIGN KEY (`spnet_status_id`) REFERENCES `lu_spnet_workflow_state` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=latin1 COMMENT='used for storing action Mapping '</sql_create_table>
+</table>
+<table name="lu_spnet_workflow_state" view="colnames">
+<left>14</left>
+<top>345</top>
+<width>184</width>
+<height>158</height>
+<sql_create_table>CREATE TABLE `lu_spnet_workflow_state` (
+  `id` varchar(30) NOT NULL,
+  `descr` varchar(50) NOT NULL,
+  `membership_status` varchar(20) DEFAULT NULL,
+  `communication_subject` varchar(100) NOT NULL DEFAULT '',
+  `group_type` varchar(50) DEFAULT NULL,
+  `membership_status_index` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="spnet_provider_firm_state" view="colnames">
+<left>255</left>
+<top>588</top>
+<width>189</width>
+<height>323</height>
+<sql_create_table>CREATE TABLE `spnet_provider_firm_state` (
+  `spn_id` int(11) unsigned NOT NULL,
+  `provider_firm_id` int(11) unsigned NOT NULL,
+  `modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `modified_by` varchar(30) NOT NULL,
+  `provider_wf_state` varchar(30) NOT NULL,
+  `app_submission_date` timestamp NULL DEFAULT NULL,
+  `agreement_ind` int(1) DEFAULT '0',
+  `opt_out_reason_code` varchar(50) DEFAULT NULL,
+  `opt_out_comment` varchar(100) DEFAULT NULL,
+  `reviewed_date` timestamp NULL DEFAULT NULL,
+  `reviewed_by` varchar(50) DEFAULT NULL,
+  `comments` varchar(100) DEFAULT NULL,
+  `status_override_reason_id` int(5) DEFAULT NULL COMMENT 'store information about STATUS Override reason code',
+  `status_override_comments` varchar(250) DEFAULT NULL,
+  `status_override_flg` int(1) DEFAULT '0' COMMENT 'Checks if the STATUS currently  is a result of ovrride Action',
+  `status_update_action_id` int(5) DEFAULT NULL COMMENT 'reference to action taken to get to this STATUS',
+  PRIMARY KEY (`spn_id`,`provider_firm_id`),
+  KEY `FK_SPNET_PROVIDER_FIRM_STATE_VENDOR_ID` (`provider_firm_id`),
+  KEY `FK_SPNET_PROVIDER_FIRM_STATE_WF_ID` (`provider_wf_state`),
+  KEY `FK_SPNET_PF_STATE_REVIEWED_BY` (`reviewed_by`),
+  KEY `FK_PF_SPNET_STS_ACTION_REASON` (`status_update_action_id`),
+  KEY `FK_PF_SPNET_STS_OVERIDE_REASON` (`status_override_reason_id`),
+  CONSTRAINT `FK_PF_SPNET_STS_ACTION_REASON` FOREIGN KEY (`status_update_action_id`) REFERENCES `lu_spnet_status_action_mapper` (`action_mapping_id`),
+  CONSTRAINT `FK_PF_SPNET_STS_OVERIDE_REASON` FOREIGN KEY (`status_override_reason_id`) REFERENCES `lu_spnet_status_override_reasons` (`reason_id`),
+  CONSTRAINT `FK_SPNET_PF_STATE_REVIEWED_BY` FOREIGN KEY (`reviewed_by`) REFERENCES `user_profile` (`user_name`),
+  CONSTRAINT `FK_SPNET_PROVIDER_FIRM_STATE_SPN_ID` FOREIGN KEY (`spn_id`) REFERENCES `spnet_hdr` (`spn_id`),
+  CONSTRAINT `FK_SPNET_PROVIDER_FIRM_STATE_VENDOR_ID` FOREIGN KEY (`provider_firm_id`) REFERENCES `vendor_hdr` (`vendor_id`),
+  CONSTRAINT `FK_SPNET_PROVIDER_FIRM_STATE_WF_ID` FOREIGN KEY (`provider_wf_state`) REFERENCES `lu_spnet_workflow_state` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="spnet_serviceprovider_state" view="colnames">
+<left>730</left>
+<top>613</top>
+<width>193</width>
+<height>254</height>
+<sql_create_table>CREATE TABLE `spnet_serviceprovider_state` (
+  `spn_id` int(11) unsigned NOT NULL,
+  `service_provider_id` int(11) unsigned NOT NULL,
+  `modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `modified_by` varchar(30) NOT NULL,
+  `provider_wf_state` varchar(30) NOT NULL,
+  `perf_level` int(11) DEFAULT '4',
+  `status_override_reason_id` int(5) DEFAULT NULL COMMENT 'store information about STATUS Override reason code',
+  `status_override_comments` varchar(250) DEFAULT NULL,
+  `status_override_flg` int(1) DEFAULT '0' COMMENT 'Checks if the STATUS currently  is a result of ovrride Action',
+  `status_update_action_id` int(5) NOT NULL,
+  `pf_level_change_comments` varchar(250) DEFAULT NULL COMMENT 'FOR NETWORK GROUP updates',
+  PRIMARY KEY (`spn_id`,`service_provider_id`),
+  KEY `FK_SPNET_SERVICE_PROVIDER_STATE_VENDOR_ID` (`service_provider_id`),
+  KEY `FK_SPNET_SERVICE_PROVIDER_STATE_WF_ID` (`provider_wf_state`),
+  KEY `FK_perf_level` (`perf_level`),
+  KEY `FK_SPNET_STS_ACTION_REASON` (`status_update_action_id`),
+  KEY `FK_SPNET_STS_OVERIDE_REASON` (`status_override_reason_id`),
+  CONSTRAINT `FK_perf_level` FOREIGN KEY (`perf_level`) REFERENCES `lu_spnet_performance_level` (`performance_id`),
+  CONSTRAINT `FK_SPNET_SERVICE_PROVIDER_STATE_SPN_ID` FOREIGN KEY (`spn_id`) REFERENCES `spnet_hdr` (`spn_id`),
+  CONSTRAINT `FK_SPNET_SERVICE_PROVIDER_STATE_VENDOR_ID` FOREIGN KEY (`service_provider_id`) REFERENCES `vendor_resource` (`resource_id`),
+  CONSTRAINT `FK_SPNET_SERVICE_PROVIDER_STATE_WF_ID` FOREIGN KEY (`provider_wf_state`) REFERENCES `lu_spnet_workflow_state` (`id`),
+  CONSTRAINT `FK_SPNET_STS_ACTION_REASON` FOREIGN KEY (`status_update_action_id`) REFERENCES `lu_spnet_status_action_mapper` (`action_mapping_id`),
+  CONSTRAINT `FK_SPNET_STS_OVERIDE_REASON` FOREIGN KEY (`status_override_reason_id`) REFERENCES `lu_spnet_status_override_reasons` (`reason_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="lu_spnet_status_override_reasons" view="colnames">
+<left>483</left>
+<top>409</top>
+<width>227</width>
+<height>99</height>
+<sql_create_table>CREATE TABLE `lu_spnet_status_override_reasons` (
+  `reason_id` int(5) NOT NULL AUTO_INCREMENT COMMENT 'used as status override reason identifier to be stored in spnet_state tables',
+  `spnet_status_id` varchar(30) NOT NULL COMMENT 'used as ref to spnet_status also used to find out what status this reascon code id is belongs to',
+  `descr` varchar(255) DEFAULT NULL COMMENT 'will have expresion language in the description',
+  PRIMARY KEY (`reason_id`),
+  UNIQUE KEY `reason_id` (`reason_id`),
+  KEY `combo_spnet_status_overide_reason_index` (`reason_id`,`spnet_status_id`),
+  KEY `FK_lu_spnet_status_override_reasons_status` (`spnet_status_id`),
+  CONSTRAINT `FK_lu_spnet_status_override_reasons_status` FOREIGN KEY (`spnet_status_id`) REFERENCES `lu_spnet_workflow_state` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=latin1 COMMENT='used for storing action Mapping '</sql_create_table>
+</table>
+<table name="spnet_provider_firm_st_history" view="colnames">
+<left>1023</left>
+<top>305</top>
+<width>210</width>
+<height>356</height>
+<sql_create_table>CREATE TABLE `spnet_provider_firm_st_history` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `spn_id` int(11) unsigned NOT NULL,
+  `provider_firm_id` int(11) unsigned NOT NULL,
+  `modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `modified_by` varchar(30) NOT NULL,
+  `provider_wf_state` varchar(30) NOT NULL,
+  `app_submission_date` timestamp NULL DEFAULT NULL,
+  `agreement_ind` int(1) DEFAULT NULL,
+  `opt_out_reason_code` varchar(50) DEFAULT NULL,
+  `opt_out_comment` varchar(100) DEFAULT NULL,
+  `reviewed_date` timestamp NULL DEFAULT NULL,
+  `reviewed_by` varchar(50) DEFAULT NULL,
+  `archive_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `comments` varchar(100) DEFAULT NULL,
+  `status_override_reason_id` int(5) DEFAULT NULL COMMENT 'store information about STATUS Override reason code',
+  `status_override_comments` varchar(250) DEFAULT NULL,
+  `status_override_flg` int(1) DEFAULT '0' COMMENT 'Checks if the STATUS currently  is a result of ovrride Action',
+  `status_update_action_id` int(5) DEFAULT NULL COMMENT 'reference to action taken to get to this STATUS',
+  PRIMARY KEY (`id`,`spn_id`,`provider_firm_id`),
+  KEY `FK_SPNET_PF_ST_HIST_VENDOR_ID` (`provider_firm_id`),
+  KEY `FK_SPNET_PF_ST_HIST_WF_ID` (`provider_wf_state`),
+  KEY `FK_SPNET_PF_ST_HIST_RVWD_BY` (`reviewed_by`),
+  KEY `FK_SPNET_PF_ST_HIST_SPN_ID` (`spn_id`),
+  KEY `FK_PF_SPNET_STS_ACTION_REASON_HISTORY` (`status_update_action_id`),
+  KEY `FK_PF_SPNET_STS_OVERIDE_REASON_HISTORY` (`status_override_reason_id`),
+  CONSTRAINT `FK_PF_SPNET_STS_ACTION_REASON_HISTORY` FOREIGN KEY (`status_update_action_id`) REFERENCES `lu_spnet_status_action_mapper` (`action_mapping_id`),
+  CONSTRAINT `FK_PF_SPNET_STS_OVERIDE_REASON_HISTORY` FOREIGN KEY (`status_override_reason_id`) REFERENCES `lu_spnet_status_override_reasons` (`reason_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=41130 DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="spnet_serviceprov_st_history" view="colnames">
+<left>1016</left>
+<top>7</top>
+<width>205</width>
+<height>273</height>
+<sql_create_table>CREATE TABLE `spnet_serviceprov_st_history` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `spn_id` int(11) unsigned NOT NULL,
+  `service_provider_id` int(11) unsigned NOT NULL,
+  `modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `modified_by` varchar(30) NOT NULL,
+  `provider_wf_state` varchar(30) NOT NULL,
+  `archive_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `perf_level` int(11) DEFAULT '4',
+  `status_override_reason_id` int(5) DEFAULT NULL COMMENT 'store information about STATUS Override reason code',
+  `status_override_comments` varchar(250) DEFAULT NULL,
+  `status_override_flg` int(1) DEFAULT '0' COMMENT 'Checks if the STATUS currently  is a result of ovrride Action',
+  `status_update_action_id` int(5) NOT NULL,
+  `pf_level_change_comments` varchar(250) DEFAULT NULL COMMENT 'FOR NETWORK GROUP updates',
+  PRIMARY KEY (`id`,`spn_id`,`service_provider_id`),
+  KEY `FK_SPNET_SP_ST_HIST_VENDOR_ID` (`service_provider_id`),
+  KEY `FK_SPNET_SP_ST_HIST_WF_ID` (`provider_wf_state`),
+  KEY `FK_SPNET_SP_ST_HIST_SPN_ID` (`spn_id`),
+  KEY `FK_perf_level_history` (`perf_level`),
+  KEY `FK_SPNET_STS_ACTION_REASON_HISTORY` (`status_update_action_id`),
+  KEY `FK_SPNET_STS_OVERIDE_REASON_HISTORY` (`status_override_reason_id`),
+  CONSTRAINT `FK_perf_level_history` FOREIGN KEY (`perf_level`) REFERENCES `lu_spnet_performance_level` (`performance_id`),
+  CONSTRAINT `FK_SPNET_STS_ACTION_REASON_HISTORY` FOREIGN KEY (`status_update_action_id`) REFERENCES `lu_spnet_status_action_mapper` (`action_mapping_id`),
+  CONSTRAINT `FK_SPNET_STS_OVERIDE_REASON_HISTORY` FOREIGN KEY (`status_override_reason_id`) REFERENCES `lu_spnet_status_override_reasons` (`reason_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=488344 DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="lu_spnet_status_action_modifier" view="colnames">
+<left>703</left>
+<top>64</top>
+<width>214</width>
+<height>110</height>
+<sql_create_table>CREATE TABLE `lu_spnet_status_action_modifier` (
+  `modified_by_id` varchar(30) NOT NULL,
+  `system_user_ind` int(1) NOT NULL DEFAULT '1',
+  `descr` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`modified_by_id`),
+  UNIQUE KEY `modified_by_id` (`modified_by_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='used for storing action modifier'</sql_create_table>
+</table>
+<table name="buyer_provider_firm_note" view="colnames">
+<left>1041</left>
+<top>710</top>
+<width>181</width>
+<height>164</height>
+<sql_create_table>CREATE TABLE `buyer_provider_firm_note` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `buyer_id` int(11) unsigned NOT NULL,
+  `prov_firm_id` int(11) unsigned NOT NULL,
+  `comments` text COMMENT 'represents buyers note for provider firm ',
+  `created_date` datetime NOT NULL,
+  `modified_date` datetime NOT NULL,
+  `modified_by` varchar(50) NOT NULL COMMENT 'represents person/System who modified while fecthing name you go to USER_PROFILE table to get contact id',
+  PRIMARY KEY (`id`),
+  KEY `buyer_id_pro_firm_id_index` (`buyer_id`,`prov_firm_id`),
+  KEY `FK_buyer_provider_firm_note_vendorId` (`prov_firm_id`),
+  CONSTRAINT `FK_buyer_provider_firm_note_buyer_id` FOREIGN KEY (`buyer_id`) REFERENCES `buyer` (`buyer_id`),
+  CONSTRAINT `FK_buyer_provider_firm_note_vendorId` FOREIGN KEY (`prov_firm_id`) REFERENCES `vendor_hdr` (`vendor_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 COMMENT='SPN MM: used for buyer specific Note info for pro-Firm'</sql_create_table>
+</table>
+<table name="buyer_service_pro_note" view="colnames">
+<left>1231</left>
+<top>712</top>
+<width>173</width>
+<height>164</height>
+<sql_create_table>CREATE TABLE `buyer_service_pro_note` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `buyer_id` int(11) unsigned NOT NULL,
+  `service_pro_id` int(11) unsigned NOT NULL,
+  `comments` text COMMENT 'represents buyers note for Service provider  ',
+  `created_date` datetime NOT NULL,
+  `modified_date` datetime NOT NULL,
+  `modified_by` varchar(50) NOT NULL COMMENT 'represents person/System who modified while fecthing name you go to USER_PROFILE table to get contact id',
+  PRIMARY KEY (`id`),
+  KEY `buyer_id_pro_id_index` (`buyer_id`,`service_pro_id`),
+  KEY `FK_buyer_serivce_pro_note_pro_Id` (`service_pro_id`),
+  CONSTRAINT `FK_buyer_serivce_pro_note_buyer_id` FOREIGN KEY (`buyer_id`) REFERENCES `buyer` (`buyer_id`),
+  CONSTRAINT `FK_buyer_serivce_pro_note_pro_Id` FOREIGN KEY (`service_pro_id`) REFERENCES `vendor_resource` (`resource_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COMMENT='SPN MM: used for buyer specific Note info for pro-Firm'</sql_create_table>
+</table>
+<table name="user_profile" view="colnames">
+<left>496</left>
+<top>773</top>
+<width>190</width>
+<height>306</height>
+<sql_create_table>CREATE TABLE `user_profile` (
+  `user_name` varchar(30) NOT NULL DEFAULT '',
+  `vendor_id` int(10) unsigned DEFAULT NULL,
+  `password` varchar(255) NOT NULL DEFAULT '',
+  `question_id` int(10) unsigned DEFAULT NULL,
+  `answer_txt` varchar(255) DEFAULT NULL,
+  `contact_id` int(11) unsigned NOT NULL,
+  `created_date` datetime DEFAULT NULL,
+  `modified_date` datetime DEFAULT NULL,
+  `modified_by` varchar(30) DEFAULT NULL,
+  `generated_password_ind` tinyint(1) unsigned DEFAULT NULL,
+  `role_id` int(10) unsigned DEFAULT NULL,
+  `locked_ind` tinyint(1) unsigned DEFAULT '0',
+  `login_attempt_count` smallint(5) unsigned DEFAULT '0',
+  `active_ind` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `opt_in` tinyint(1) DEFAULT '1',
+  `verification_attempt_count` smallint(5) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`user_name`),
+  KEY `FK_vendor_id` (`vendor_id`),
+  KEY `FK_contact_id` (`contact_id`),
+  KEY `FK_question_id` (`question_id`),
+  KEY `FK_user_profile_role_id` (`role_id`),
+  KEY `FK487E2135F419E658` (`role_id`),
+  CONSTRAINT `FK487E2135F419E658` FOREIGN KEY (`role_id`) REFERENCES `user_roles` (`role_id`),
+  CONSTRAINT `FK_contact_id` FOREIGN KEY (`contact_id`) REFERENCES `contact` (`contact_id`),
+  CONSTRAINT `FK_user_profile_role_id` FOREIGN KEY (`role_id`) REFERENCES `user_roles` (`role_id`),
+  CONSTRAINT `FK_vendor_id` FOREIGN KEY (`vendor_id`) REFERENCES `vendor_hdr` (`vendor_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT</sql_create_table>
+</table>
+</tables>
+</canvas>
+</schemadesigner>

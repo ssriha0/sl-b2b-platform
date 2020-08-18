@@ -1,0 +1,522 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites>
+  <testsuite errors="0" failures="0" hostname="SHI58495EU1488D" id="0" name="ValueLinkRequestBuilderTest" package="com.servicelive.wallet.serviceinterface.requestbuilder" skipped="0" tests="1" time="0.015" timestamp="2017-03-24T08:03:45">
+      <properties>
+          <property name="file.encoding.pkg" value="sun.io" />
+
+          <property name="common.timestamp" value="2017-03-24 13:33" />
+
+          <property name="shell.USERDOMAIN" value="KMART" />
+
+          <property name="depends.alldeps" value="Wallet/ServiceLive.Common " />
+
+          <property name="java.home" value="C:\Dev_Tools\jdk1.5.0_16\jre" />
+
+          <property name="java-build.deployables-classpath.ref" value="C:\SVN\R16_3\SLCommonBuild\lib\deployables\activation-1.1.jar;C:\SVN\R16_3\SLCommonBuild\lib\deployables\commons-discovery-0.2.jar;C:\SVN\R16_3\SLCommonBuild\lib\deployables\commons-io-1.4.jar;C:\SVN\R16_3\SLCommonBuild\lib\deployables\commons-lang-2.3.jar;C:\SVN\R16_3\SLCommonBuild\lib\deployables\ibatis-common-2.jar;C:\SVN\R16_3\SLCommonBuild\lib\deployables\ibatis-sqlmap-2.jar;C:\SVN\R16_3\SLCommonBuild\lib\deployables\mail-1.4.jar;C:\SVN\R16_3\SLCommonBuild\lib\deployables\spring-2.0.8.jar;C:\SVN\R16_3\SLCommonBuild\lib\deployables\velocity-1.5.jar;C:\SVN\R16_3\SLCommonBuild\lib\deployables\velocity-dep-1.5.jar;C:\SVN\R16_3\SLCommonBuild\lib\deployables\xstream-1.3.jar;C:\SVN\R16_3\SLCommonBuild\lib\deployables\jaxb-api-2.1.jar;C:\SVN\R16_3\SLCommonBuild\lib\deployables\jaxb-impl-2.1.10.jar" />
+
+          <property name="ant.file.type.asl-java-build" value="file" />
+
+          <property name="java-build.dist-filename" value="Wallet.ServiceInterface.jar" />
+
+          <property name="java-war.dist-file" value="C:\SVN\R16_3\Wallet\Wallet.ServiceInterface\target\dist\Wallet.ServiceInterface.war" />
+
+          <property name="shell.COMPUTERNAME" value="SHI58495EU1488D" />
+
+          <property name="props.hostname" value="SKIPPING HOST PROPS: C:\Program Files (x86)\Common Files/SLCommonBuild/host.properties" />
+
+          <property name="java-report.test-dir" value="C:\SVN\R16_3\Wallet\Wallet.ServiceInterface\target\dist\reports\test-report" />
+
+          <property name="java.endorsed.dirs" value="C:\Dev_Tools\jdk1.5.0_16\jre\lib\endorsed" />
+
+          <property name="shell.PROMPT" value="$P$G" />
+
+          <property name="shell.LOGONSERVER" value="\\SHI58495PRAD01" />
+
+          <property name="java-build.jar-version" value="exported" />
+
+          <property name="ant.file.asl-common" value="C:\SVN\R16_3\SLCommonBuild\ant\opt\ant-script-library\asl-common.xml" />
+
+          <property name="java-build.dist-file" value="C:\SVN\R16_3\Wallet\Wallet.ServiceInterface\target\dist\Wallet.ServiceInterface.jar" />
+
+          <property name="shell.CommonProgramW6432" value="C:\Program Files\Common Files" />
+
+          <property name="asl-java-war.include-my-jar" value="false" />
+
+          <property name="shell.APPDATA" value="C:\Users\agawand\AppData\Roaming" />
+
+          <property name="ant.file.sl-test" value="C:\SVN\R16_3\SLCommonBuild\ant\sl-common\sl-test.xml" />
+
+          <property name="java-build.lib-dir" value="C:\SVN\R16_3\SLCommonBuild\lib" />
+
+          <property name="hostname" value="SHI58495EU1488D" />
+
+          <property name="sun.os.patch.level" value="Service Pack 1" />
+
+          <property name="java.vendor.url" value="http://java.sun.com/" />
+
+          <property name="ant.file.asl-java-build" value="C:\SVN\R16_3\SLCommonBuild\ant\opt\ant-script-library\asl-java-build.xml" />
+
+          <property name="java.version" value="1.5.0_16" />
+
+          <property name="java-test.src-dir" value="C:\SVN\R16_3\Wallet\Wallet.ServiceInterface\src\test\java" />
+
+          <property name="props.project" value="SKIPPING PROJECT PROPS: asl.properties" />
+
+          <property name="ant.file.type.sl-test" value="file" />
+
+          <property name="java-test.classpath" value="C:\SVN\R16_3\SLCommonBuild\lib\nondeployables\junit-4.3.1.jar;C:\SVN\R16_3\SLCommonBuild\lib\nondeployables\mockito-all-1.8.4.jar;C:\SVN\R16_3\SLCommonBuild\lib\nondeployables\spring-mock-2.0.8.jar;C:\SVN\R16_3\Wallet\Wallet.ServiceInterface\target\dist\Wallet.ServiceInterface.jar;C:\SVN\R16_3\SLCommonBuild\lib\deployables\activation-1.1.jar;C:\SVN\R16_3\SLCommonBuild\lib\deployables\commons-discovery-0.2.jar;C:\SVN\R16_3\SLCommonBuild\lib\deployables\commons-io-1.4.jar;C:\SVN\R16_3\SLCommonBuild\lib\deployables\commons-lang-2.3.jar;C:\SVN\R16_3\SLCommonBuild\lib\deployables\ibatis-common-2.jar;C:\SVN\R16_3\SLCommonBuild\lib\deployables\ibatis-sqlmap-2.jar;C:\SVN\R16_3\SLCommonBuild\lib\deployables\mail-1.4.jar;C:\SVN\R16_3\SLCommonBuild\lib\deployables\spring-2.0.8.jar;C:\SVN\R16_3\SLCommonBuild\lib\deployables\velocity-1.5.jar;C:\SVN\R16_3\SLCommonBuild\lib\deployables\velocity-dep-1.5.jar;C:\SVN\R16_3\SLCommonBuild\lib\deployables\xstream-1.3.jar;C:\SVN\R16_3\SLCommonBuild\lib\deployables\jaxb-api-2.1.jar;C:\SVN\R16_3\SLCommonBuild\lib\deployables\jaxb-impl-2.1.10.jar;C:\SVN\R16_3\SLCommonBuild\lib\nondeployables\log4j-1.2.8.jar;C:\SVN\R16_3\SLCommonBuild\lib\nondeployables\commons-logging-1.1.jar;C:\SVN\R16_3\SLCommonBuild\lib\generated\ServiceLive.Common.jar" />
+
+          <property name="java-war.web-xml" value="C:\SVN\R16_3\Wallet\Wallet.ServiceInterface\src\main\webapp\WEB-INF" />
+
+          <property name="shell.LOCALAPPDATA" value="C:\Users\agawand\AppData\Local" />
+
+          <property name="java.vendor.url.bug" value="http://java.sun.com/cgi-bin/bugreport.cgi" />
+
+          <property name="java-test.instrumented-classes-dir" value="C:\SVN\R16_3\Wallet\Wallet.ServiceInterface\target\instrumented-classes" />
+
+          <property name="ant.project.invoked-targets" value="dist" />
+
+          <property name="shell.ProgramData" value="C:\ProgramData" />
+
+          <property name="user.name" value="agawand" />
+
+          <property name="java-build.jar-compress" value="true" />
+
+          <property name="sun.io.unicode.encoding" value="UnicodeLittle" />
+
+          <property name="sun.jnu.encoding" value="Cp1252" />
+
+          <property name="java.runtime.name" value="Java(TM) 2 Runtime Environment, Standard Edition" />
+
+          <property name="shell.DEFLOGDIR" value="C:\ProgramData\McAfee\DesktopProtection" />
+
+          <property name="ant.file.asl-java-install" value="C:\SVN\R16_3\SLCommonBuild\ant\opt\ant-script-library\asl-java-install.xml" />
+
+          <property name="java-build.target-ver" value="1.5" />
+
+          <property name="shell.CommonProgramFiles" value="C:\Program Files (x86)\Common Files" />
+
+          <property name="common.timestamp-long" value="24-March-2017 13:33" />
+
+          <property name="shell.PROCESSOR_ARCHITECTURE" value="x86" />
+
+          <property name="shell.windows_tracing_flags" value="3" />
+
+          <property name="shell.OS" value="Windows_NT" />
+
+          <property name="java-report.jdepend-report-dir" value="C:\SVN\R16_3\Wallet\Wallet.ServiceInterface\target\dist\reports\jdepend-report" />
+
+          <property name="shell.=C:" value="C:\SVN\R16_3\MarketFrontend\build" />
+
+          <property name="java.specification.name" value="Java Platform API Specification" />
+
+          <property name="sl-test.unit-classes-dir" value="C:\SVN\R16_3\Wallet\Wallet.ServiceInterface\target\test-classes-unit" />
+
+          <property name="shell.PATHEXT" value=".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC" />
+
+          <property name="user.timezone" value="Asia/Calcutta" />
+
+          <property name="path.separator" value=";" />
+
+          <property name="shell._JAVACMD" value="C:\Dev_Tools\jdk1.5.0_16\bin\java.exe" />
+
+          <property name="java-report.javadoc-dir" value="C:\SVN\R16_3\Wallet\Wallet.ServiceInterface\target\dist\reports\javadoc" />
+
+          <property name="file.encoding" value="Cp1252" />
+
+          <property name="asl-java-install.basedir" value="C:\SVN\R16_3\SLCommonBuild\ant\opt\ant-script-library" />
+
+          <property name="ant.file.type.asl-java-sonar" value="file" />
+
+          <property name="ant.project.default-target" value="dist" />
+
+          <property name="java-ear.dist-filename" value="Wallet.ServiceInterface.ear" />
+
+          <property name="java-war.webapp-name" value="C:\SVN\R16_3\Wallet\Wallet.ServiceInterface\Wallet.ServiceInterface" />
+
+          <property name="dir.sonar.ant.task" value="C:\SVN\R16_3\SLCommonBuild\lib/nondeployables" />
+
+          <property name="sl-jboss.server.aliases" value="main, esb" />
+
+          <property name="java-test.classes-dir" value="C:\SVN\R16_3\Wallet\Wallet.ServiceInterface\target\test-classes" />
+
+          <property name="sl-jboss.server.main.default.deployables" value="MarketFrontend.war, ServiceLiveWebUtil.war" />
+
+          <property name="ant.file" value="C:\SVN\R16_3\Wallet\Wallet.ServiceInterface\build\build.xml" />
+
+          <property name="ant.file.sl-jboss" value="C:\SVN\R16_3\SLCommonBuild\ant\sl-common\sl-jboss.xml" />
+
+          <property name="shell._USE_CLASSPATH" value="no" />
+
+          <property name="sl-common.scratch-dir" value="C:\SVN\R16_3\SLCommonBuild\ant\scratch" />
+
+          <property name="java-report.jdepend-data-dir" value="C:\SVN\R16_3\Wallet\Wallet.ServiceInterface\target\jdepend-data" />
+
+          <property name="ant.file.asl-java-test" value="C:\SVN\R16_3\SLCommonBuild\ant\opt\ant-script-library\asl-java-test.xml" />
+
+          <property name="java.io.tmpdir" value="C:\Users\agawand\AppData\Local\Temp\" />
+
+          <property name="ant.file.type.sl-report" value="file" />
+
+          <property name="TODAY" value="March 24 2017" />
+
+          <property name="ant.file.type.asl-java-install" value="file" />
+
+          <property name="ant.file.asl-java-sonar" value="C:\SVN\R16_3\SLCommonBuild\ant\opt\ant-script-library\asl-java-sonar.xml" />
+
+          <property name="user.language" value="en" />
+
+          <property name="line.separator" value="&#xd;&#xa;" />
+
+          <property name="sl-jboss.explode-deployed" value="true" />
+
+          <property name="shell.ANT_OPTS" value="-Xms512m -Xmx1024m -XX:PermSize=128m -XX:MaxPermSize=256m -Djava.rmi.server.hostname=127.0.0.1-Dsl_app_lifecycle=dev" />
+
+          <property name="ant.file.type.sl-common" value="file" />
+
+          <property name="java-build.resources-dir" value="C:\SVN\R16_3\Wallet\Wallet.ServiceInterface\src\main\resources" />
+
+          <property name="common.target-dir" value="C:\SVN\R16_3\Wallet\Wallet.ServiceInterface\target" />
+
+          <property name="java-build.jar-title" value="Wallet.ServiceInterface" />
+
+          <property name="ant.file.type.Wallet.ServiceInterface" value="file" />
+
+          <property name="ant.file.type.asl-java" value="file" />
+
+          <property name="ant.file.type" value="file" />
+
+          <property name="shell.FP_NO_HOST_CHECK" value="NO" />
+
+          <property name="sl-svn.rev" value="exported" />
+
+          <property name="ant.file.type.asl-java-war" value="file" />
+
+          <property name="shell.Path" value="C:\Dev_Tools\apache-ant-1.9.7-bin\apache-ant-1.9.7\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\TortoiseSVN\bin;C:\Program Files\nodejs\;C:\Dev_Tools\jdk1.5.0_16\bin;C:\Program Files\McAfee\Solidcore\Tools\GatherInfo;C:\Program Files\McAfee\Solidcore\Tools\Scanalyzer;C:\Program Files\McAfee\Solidcore\;C:\Program Files\McAfee\Solidcore\Tools\ScGetCerts;C:\Dev_Tools\apache-ant-1.9.7-bin\apache-ant-1.9.7\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\TortoiseSVN\bin;C:\Program Files\nodejs\;C:\Dev_Tools\jdk1.8.0_11\bin" />
+
+          <property name="java.vm.info" value="mixed mode" />
+
+          <property name="sun.desktop" value="windows" />
+
+          <property name="java.vm.specification.name" value="Java Virtual Machine Specification" />
+
+          <property name="java-war.libs-dir" value="C:\SVN\R16_3\Wallet\Wallet.ServiceInterface\target\dist\war-libs" />
+
+          <property name="props.userhome" value="SKIPPING USER PROPS: C:\Users\agawand/asl.properties" />
+
+          <property name="ant.file.type.asl-java-report" value="file" />
+
+          <property name="sl-jboss.server.esb.nodes" value="default" />
+
+          <property name="shell.PROCESSOR_ARCHITEW6432" value="AMD64" />
+
+          <property name="asl-common.basedir" value="C:\SVN\R16_3\SLCommonBuild\ant\opt\ant-script-library" />
+
+          <property name="java.awt.printerjob" value="sun.awt.windows.WPrinterJob" />
+
+          <property name="asl-java-war.include-my-classes" value="true" />
+
+          <property name="common.year" value="2017" />
+
+          <property name="ant.version" value="Apache Ant(TM) version 1.9.7 compiled on April 9 2016" />
+
+          <property name="ant.file.type.asl-common" value="file" />
+
+          <property name="java-build.generated-classpath.ref" value="C:\SVN\R16_3\SLCommonBuild\lib\generated\ServiceLive.Common.jar" />
+
+          <property name="java-report.pmd-dir" value="C:\SVN\R16_3\Wallet\Wallet.ServiceInterface\target\dist\reports\pmd-report" />
+
+          <property name="ant.file.asl-java-report" value="C:\SVN\R16_3\SLCommonBuild\ant\opt\ant-script-library\asl-java-report.xml" />
+
+          <property name="shell.windir" value="C:\Windows" />
+
+          <property name="java-build.jar-vendor" value="" />
+
+          <property name="java-report.coverage-dir" value="C:\SVN\R16_3\Wallet\Wallet.ServiceInterface\target\dist\reports\coverage-report" />
+
+          <property name="Wallet.ServiceInterface.nondeployables" value="log4j-1.2.8 commons-logging-1.1 " />
+
+          <property name="shell.SESSIONNAME" value="Console" />
+
+          <property name="sl-test.int-src-dir" value="C:\SVN\R16_3\Wallet\Wallet.ServiceInterface\src\test\integration\java" />
+
+          <property name="shell.HOMEDRIVE" value="C:" />
+
+          <property name="shell.ANT_CMD_LINE_ARGS" value=" -f buildall.xml" />
+
+          <property name="ant.file.type.MarketFrontend-BuildAll" value="file" />
+
+          <property name="os.name" value="Windows Vista" />
+
+          <property name="sl-jboss.server.main.nodes" value="default" />
+
+          <property name="java.specification.vendor" value="Sun Microsystems Inc." />
+
+          <property name="shell.PUBLIC" value="C:\Users\Public" />
+
+          <property name="java.vm.name" value="Java HotSpot(TM) Client VM" />
+
+          <property name="shell.USERDOMAIN_ROAMINGPROFILE" value="KMART" />
+
+          <property name="java.library.path" value="C:\Dev_Tools\jdk1.5.0_16\bin;.;C:\Windows\system32;C:\Windows;C:\Dev_Tools\apache-ant-1.9.7-bin\apache-ant-1.9.7\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\TortoiseSVN\bin;C:\Program Files\nodejs\;C:\Dev_Tools\jdk1.5.0_16\bin;C:\Program Files\McAfee\Solidcore\Tools\GatherInfo;C:\Program Files\McAfee\Solidcore\Tools\Scanalyzer;C:\Program Files\McAfee\Solidcore\;C:\Program Files\McAfee\Solidcore\Tools\ScGetCerts;C:\Dev_Tools\apache-ant-1.9.7-bin\apache-ant-1.9.7\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\TortoiseSVN\bin;C:\Program Files\nodejs\;C:\Dev_Tools\jdk1.8.0_11\bin" />
+
+          <property name="asl-java.basedir" value="C:\SVN\R16_3\SLCommonBuild\ant\opt\ant-script-library" />
+
+          <property name="ant.java.version" value="1.5" />
+
+          <property name="Wallet.ServiceInterface.deployables" value="activation-1.1&#x9;&#x9;&#x9;&#x9;&#x9;                  commons-discovery-0.2&#x9;&#x9;&#x9;                  commons-io-1.4&#x9;&#x9;&#x9;&#x9;&#x9;                  commons-lang-2.3&#x9;&#x9;&#x9;&#x9;                  ibatis-common-2&#x9;&#x9;&#x9;&#x9;                      ibatis-sqlmap-2&#x9;&#x9;&#x9;&#x9;                      mail-1.4&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;                  spring-2.0.8&#x9;&#x9;&#x9;&#x9;&#x9;                  velocity-1.5&#x9;&#x9;&#x9;&#x9;&#x9;                  velocity-dep-1.5&#x9;&#x9;&#x9;&#x9;                  xstream-1.3                                       jaxb-api-2.1&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;          jaxb-impl-2.1.10&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;          " />
+
+          <property name="ant.file.Wallet.ServiceInterface" value="C:\SVN\R16_3\Wallet\Wallet.ServiceInterface\build\build.xml" />
+
+          <property name="basedir" value="C:\SVN\R16_3\Wallet\Wallet.ServiceInterface" />
+
+          <property name="java.class.version" value="49.0" />
+
+          <property name="shell.CommonProgramFiles(x86)" value="C:\Program Files (x86)\Common Files" />
+
+          <property name="ant.home" value="C:\Dev_Tools\apache-ant-1.9.7-bin\apache-ant-1.9.7" />
+
+          <property name="shell.JAVA_HOME" value="C:\Dev_Tools\jdk1.5.0_16" />
+
+          <property name="nondeployables" value="C:\SVN\R16_3\SLCommonBuild\lib\nondeployables" />
+
+          <property name="java-build.basedir" value="C:\SVN\R16_3\SLCommonBuild\ant\opt\ant-script-library" />
+
+          <property name="java-build.jar-lib-classpath" value="lib/activation-1.1.jar lib/commons-discovery-0.2.jar lib/commons-io-1.4.jar lib/commons-lang-2.3.jar lib/ibatis-common-2.jar lib/ibatis-sqlmap-2.jar lib/mail-1.4.jar lib/spring-2.0.8.jar lib/velocity-1.5.jar lib/velocity-dep-1.5.jar lib/xstream-1.3.jar lib/jaxb-api-2.1.jar lib/jaxb-impl-2.1.10.jar lib/log4j-1.2.8.jar lib/commons-logging-1.1.jar lib/ServiceLive.Common.jar" />
+
+          <property name="shell.VSEDEFLOGDIR" value="C:\ProgramData\McAfee\DesktopProtection" />
+
+          <property name="java-test.test-data-dir" value="C:\SVN\R16_3\Wallet\Wallet.ServiceInterface\target\test-data" />
+
+          <property name="dir.sonar.src" value="C:\SVN\R16_3\Wallet\Wallet.ServiceInterface\src\main\java" />
+
+          <property name="java-ear.dist-file" value="C:\SVN\R16_3\Wallet\Wallet.ServiceInterface\target\dist\Wallet.ServiceInterface.ear" />
+
+          <property name="java-report.basedir" value="C:\SVN\R16_3\SLCommonBuild\ant\opt\ant-script-library" />
+
+          <property name="sl-common.branch-dir" value="C:\SVN\R16_3" />
+
+          <property name="sun.boot.library.path" value="C:\Dev_Tools\jdk1.5.0_16\jre\bin" />
+
+          <property name="shell.TMP" value="C:\Users\agawand\AppData\Local\Temp" />
+
+          <property name="java-build.debug" value="on" />
+
+          <property name="common.dist-dir" value="C:\SVN\R16_3\Wallet\Wallet.ServiceInterface\target\dist" />
+
+          <property name="java-build.classpath" value="C:\SVN\R16_3\SLCommonBuild\lib\deployables\activation-1.1.jar;C:\SVN\R16_3\SLCommonBuild\lib\deployables\commons-discovery-0.2.jar;C:\SVN\R16_3\SLCommonBuild\lib\deployables\commons-io-1.4.jar;C:\SVN\R16_3\SLCommonBuild\lib\deployables\commons-lang-2.3.jar;C:\SVN\R16_3\SLCommonBuild\lib\deployables\ibatis-common-2.jar;C:\SVN\R16_3\SLCommonBuild\lib\deployables\ibatis-sqlmap-2.jar;C:\SVN\R16_3\SLCommonBuild\lib\deployables\mail-1.4.jar;C:\SVN\R16_3\SLCommonBuild\lib\deployables\spring-2.0.8.jar;C:\SVN\R16_3\SLCommonBuild\lib\deployables\velocity-1.5.jar;C:\SVN\R16_3\SLCommonBuild\lib\deployables\velocity-dep-1.5.jar;C:\SVN\R16_3\SLCommonBuild\lib\deployables\xstream-1.3.jar;C:\SVN\R16_3\SLCommonBuild\lib\deployables\jaxb-api-2.1.jar;C:\SVN\R16_3\SLCommonBuild\lib\deployables\jaxb-impl-2.1.10.jar;C:\SVN\R16_3\SLCommonBuild\lib\nondeployables\log4j-1.2.8.jar;C:\SVN\R16_3\SLCommonBuild\lib\nondeployables\commons-logging-1.1.jar;C:\SVN\R16_3\SLCommonBuild\lib\generated\ServiceLive.Common.jar" />
+
+          <property name="shell.PROCESSOR_IDENTIFIER" value="Intel64 Family 6 Model 23 Stepping 10, GenuineIntel" />
+
+          <property name="sun.management.compiler" value="HotSpot Client Compiler" />
+
+          <property name="ant.file.sl-common" value="C:\SVN\R16_3\SLCommonBuild\ant\sl-common\sl-common.xml" />
+
+          <property name="user.variant" value="" />
+
+          <property name="java.awt.graphicsenv" value="sun.awt.Win32GraphicsEnvironment" />
+
+          <property name="stderr" value="" />
+
+          <property name="sl-common.ant-dir" value="C:\SVN\R16_3\SLCommonBuild\ant" />
+
+          <property name="java-report.sqlplans-dir" value="C:\SVN\R16_3\Wallet\Wallet.ServiceInterface\src\test\sqlplans" />
+
+          <property name="sl-test.unit-src-dir" value="C:\SVN\R16_3\Wallet\Wallet.ServiceInterface\src\test\unit\java" />
+
+          <property name="shell.UATDATA" value="C:\Windows\CCM\UATData\D9F8C395-CAB8-491d-B8AC-179A1FE1BE77" />
+
+          <property name="os_family" value="windows" />
+
+          <property name="shell.NUMBER_OF_PROCESSORS" value="2" />
+
+          <property name="shell.windows_tracing_logfile" value="C:\BVTBin\Tests\installpackage\csilogfile.log" />
+
+          <property name="asl-java-war.basedir" value="C:\SVN\R16_3\SLCommonBuild\ant\opt\ant-script-library" />
+
+          <property name="shell.PROCESSOR_LEVEL" value="6" />
+
+          <property name="props.deps" value="READING  BUILD DEPENDENCY PROPS: C:\SVN\R16_3\Wallet\Wallet.ServiceInterface/build/build-deps.properties" />
+
+          <property name="props.hostname.dir" value="C:\Program Files (x86)\Common Files/SLCommonBuild/host.properties" />
+
+          <property name="ant.project.name" value="Wallet.ServiceInterface" />
+
+          <property name="shell.TEMP" value="C:\Users\agawand\AppData\Local\Temp" />
+
+          <property name="junit-jar.dir" value="C:\SVN\R16_3\SLCommonBuild/lib/nondeployables" />
+
+          <property name="java.vm.specification.version" value="1.0" />
+
+          <property name="ant.file.sl-report" value="C:\SVN\R16_3\SLCommonBuild\ant\sl-common\sl-report.xml" />
+
+          <property name="shell.ProgramW6432" value="C:\Program Files" />
+
+          <property name="awt.toolkit" value="sun.awt.windows.WToolkit" />
+
+          <property name="java-build.nondeployables-classpath.ref" value="C:\SVN\R16_3\SLCommonBuild\lib\nondeployables\log4j-1.2.8.jar;C:\SVN\R16_3\SLCommonBuild\lib\nondeployables\commons-logging-1.1.jar" />
+
+          <property name="shell.ProgramFiles(x86)" value="C:\Program Files (x86)" />
+
+          <property name="shell.ComSpec" value="C:\Windows\system32\cmd.exe" />
+
+          <property name="sun.cpu.isalist" value="pentium_pro+mmx pentium_pro pentium+mmx pentium i486 i386 i86" />
+
+          <property name="java-build.jar-main-class" value="" />
+
+          <property name="java-report.opt-dir" value="C:\SVN\R16_3\SLCommonBuild\ant\opt" />
+
+          <property name="java.ext.dirs" value="C:\Dev_Tools\jdk1.5.0_16\jre\lib\ext" />
+
+          <property name="java-test.basedir" value="C:\SVN\R16_3\SLCommonBuild\ant\opt\ant-script-library" />
+
+          <property name="os.version" value="6.1" />
+
+          <property name="ant.file.MarketFrontend-BuildAll" value="C:\SVN\R16_3\MarketFrontend\build\buildall.xml" />
+
+          <property name="ant.file.asl-java-war" value="C:\SVN\R16_3\SLCommonBuild\ant\opt\ant-script-library\asl-java-war.xml" />
+
+          <property name="user.home" value="C:\Users\agawand" />
+
+          <property name="java.vm.vendor" value="Sun Microsystems Inc." />
+
+          <property name="sl-common.relative-branch-dir" value="../.." />
+
+          <property name="java-build.classes-dir" value="C:\SVN\R16_3\Wallet\Wallet.ServiceInterface\target\classes" />
+
+          <property name="user.dir" value="C:\SVN\R16_3\MarketFrontend\build" />
+
+          <property name="shell.USERPROFILE" value="C:\Users\agawand" />
+
+          <property name="java-report.checkstyle-dir" value="C:\SVN\R16_3\Wallet\Wallet.ServiceInterface\target\dist\reports\checkstyle-report" />
+
+          <property name="build.compiler" value="javac1.5" />
+
+          <property name="shell.SystemRoot" value="C:\Windows" />
+
+          <property name="ant.file.sl-java-ear" value="C:\SVN\R16_3\SLCommonBuild\ant\sl-common\sl-java-ear.xml" />
+
+          <property name="sun.cpu.endian" value="little" />
+
+          <property name="ant.file.asl-java" value="C:\SVN\R16_3\SLCommonBuild\ant\opt\ant-script-library\asl-java.xml" />
+
+          <property name="java.rmi.server.hostname" value="127.0.0.1-Dsl_app_lifecycle=dev" />
+
+          <property name="ant.file.type.sl-jboss" value="file" />
+
+          <property name="shell.HOMEPATH" value="\Users\agawand" />
+
+          <property name="shell.ProgramFiles" value="C:\Program Files (x86)" />
+
+          <property name="generated" value="C:\SVN\R16_3\SLCommonBuild\lib\generated" />
+
+          <property name="java.vm.version" value="1.5.0_16-b02" />
+
+          <property name="sl-unit.resources-dir" value="C:\SVN\R16_3\Wallet\Wallet.ServiceInterface\src\test\resources" />
+
+          <property name="java.class.path" value="C:\Dev_Tools\apache-ant-1.9.7-bin\apache-ant-1.9.7\lib\ant-launcher.jar;C:\Dev_Tools\apache-ant-1.9.7-bin\apache-ant-1.9.7\lib\ant-antlr.jar;C:\Dev_Tools\apache-ant-1.9.7-bin\apache-ant-1.9.7\lib\ant-apache-bcel.jar;C:\Dev_Tools\apache-ant-1.9.7-bin\apache-ant-1.9.7\lib\ant-apache-bsf.jar;C:\Dev_Tools\apache-ant-1.9.7-bin\apache-ant-1.9.7\lib\ant-apache-log4j.jar;C:\Dev_Tools\apache-ant-1.9.7-bin\apache-ant-1.9.7\lib\ant-apache-oro.jar;C:\Dev_Tools\apache-ant-1.9.7-bin\apache-ant-1.9.7\lib\ant-apache-regexp.jar;C:\Dev_Tools\apache-ant-1.9.7-bin\apache-ant-1.9.7\lib\ant-apache-resolver.jar;C:\Dev_Tools\apache-ant-1.9.7-bin\apache-ant-1.9.7\lib\ant-apache-xalan2.jar;C:\Dev_Tools\apache-ant-1.9.7-bin\apache-ant-1.9.7\lib\ant-commons-logging.jar;C:\Dev_Tools\apache-ant-1.9.7-bin\apache-ant-1.9.7\lib\ant-commons-net.jar;C:\Dev_Tools\apache-ant-1.9.7-bin\apache-ant-1.9.7\lib\ant-jai.jar;C:\Dev_Tools\apache-ant-1.9.7-bin\apache-ant-1.9.7\lib\ant-javamail.jar;C:\Dev_Tools\apache-ant-1.9.7-bin\apache-ant-1.9.7\lib\ant-jdepend.jar;C:\Dev_Tools\apache-ant-1.9.7-bin\apache-ant-1.9.7\lib\ant-jmf.jar;C:\Dev_Tools\apache-ant-1.9.7-bin\apache-ant-1.9.7\lib\ant-jsch.jar;C:\Dev_Tools\apache-ant-1.9.7-bin\apache-ant-1.9.7\lib\ant-junit.jar;C:\Dev_Tools\apache-ant-1.9.7-bin\apache-ant-1.9.7\lib\ant-junit4.jar;C:\Dev_Tools\apache-ant-1.9.7-bin\apache-ant-1.9.7\lib\ant-launcher.jar;C:\Dev_Tools\apache-ant-1.9.7-bin\apache-ant-1.9.7\lib\ant-netrexx.jar;C:\Dev_Tools\apache-ant-1.9.7-bin\apache-ant-1.9.7\lib\ant-swing.jar;C:\Dev_Tools\apache-ant-1.9.7-bin\apache-ant-1.9.7\lib\ant-testutil.jar;C:\Dev_Tools\apache-ant-1.9.7-bin\apache-ant-1.9.7\lib\ant.jar;C:\Dev_Tools\jdk1.5.0_16\lib\tools.jar" />
+
+          <property name="DSTAMP" value="20170324" />
+
+          <property name="java-report.report-dir" value="C:\SVN\R16_3\Wallet\Wallet.ServiceInterface\target\dist\reports" />
+
+          <property name="ant.library.dir" value="C:\Dev_Tools\apache-ant-1.9.7-bin\apache-ant-1.9.7\lib" />
+
+          <property name="os.arch" value="x86" />
+
+          <property name="junit-report.dir" value="C:\SVN\R16_3\Wallet\Wallet.ServiceInterface/Wallet.ServiceInterfaceReports" />
+
+          <property name="dot_exe" value=".exe" />
+
+          <property name="asl-java-war.include-depends" value="true" />
+
+          <property name="sun.java.launcher" value="SUN_STANDARD" />
+
+          <property name="ant.file.sl-deps" value="C:\SVN\R16_3\SLCommonBuild\ant\sl-common\sl-deps.xml" />
+
+          <property name="deployables" value="C:\SVN\R16_3\SLCommonBuild\lib\deployables" />
+
+          <property name="java-build.jar-classpath" value="lib/activation-1.1.jar lib/commons-discovery-0.2.jar lib/commons-io-1.4.jar lib/commons-lang-2.3.jar lib/ibatis-common-2.jar lib/ibatis-sqlmap-2.jar lib/mail-1.4.jar lib/spring-2.0.8.jar lib/velocity-1.5.jar lib/velocity-dep-1.5.jar lib/xstream-1.3.jar lib/jaxb-api-2.1.jar lib/jaxb-impl-2.1.10.jar lib/log4j-1.2.8.jar lib/commons-logging-1.1.jar lib/ServiceLive.Common.jar" />
+
+          <property name="ant.core.lib" value="C:\Dev_Tools\apache-ant-1.9.7-bin\apache-ant-1.9.7\lib\ant.jar" />
+
+          <property name="java.vm.specification.vendor" value="Sun Microsystems Inc." />
+
+          <property name="TSTAMP" value="1333" />
+
+          <property name="java-report.findbugs-dir" value="C:\SVN\R16_3\Wallet\Wallet.ServiceInterface\target\dist\reports\findbugs-report" />
+
+          <property name="file.separator" value="\" />
+
+          <property name="ant.file.type.sl-java-ear" value="file" />
+
+          <property name="sl-jboss.server.esb.default.deployables" value="Wallet.ValueLink.EJB.ear, MDB.war" />
+
+          <property name="java.runtime.version" value="1.5.0_16-b02" />
+
+          <property name="ant.file.type.asl-java-test" value="file" />
+
+          <property name="sun.boot.class.path" value="C:\Dev_Tools\jdk1.5.0_16\jre\lib\rt.jar;C:\Dev_Tools\jdk1.5.0_16\jre\lib\i18n.jar;C:\Dev_Tools\jdk1.5.0_16\jre\lib\sunrsasign.jar;C:\Dev_Tools\jdk1.5.0_16\jre\lib\jsse.jar;C:\Dev_Tools\jdk1.5.0_16\jre\lib\jce.jar;C:\Dev_Tools\jdk1.5.0_16\jre\lib\charsets.jar;C:\Dev_Tools\jdk1.5.0_16\jre\classes" />
+
+          <property name="ant.file.sl-svn" value="C:\SVN\R16_3\SLCommonBuild\ant\sl-common\sl-svn.xml" />
+
+          <property name="ant.file.type.sl-deps" value="file" />
+
+          <property name="java-war.dist-filename" value="Wallet.ServiceInterface.war" />
+
+          <property name="shell.ALLUSERSPROFILE" value="C:\ProgramData" />
+
+          <property name="shell.ANT_HOME" value="C:\Dev_Tools\apache-ant-1.9.7-bin\apache-ant-1.9.7" />
+
+          <property name="Wallet.ServiceInterface.generated" value="Wallet/ServiceLive.Common                         " />
+
+          <property name="sl-svn.svnkit-dir" value="C:\SVN\R16_3\SLCommonBuild\ant\opt\svnkit" />
+
+          <property name="sl-test.int-classes-dir" value="C:\SVN\R16_3\Wallet\Wallet.ServiceInterface\target\test-classes-int" />
+
+          <property name="shell.PSModulePath" value="C:\Windows\system32\WindowsPowerShell\v1.0\Modules\" />
+
+          <property name="user.country" value="US" />
+
+          <property name="shell.=::" value="::\" />
+
+          <property name="sl-common.build-dir" value="C:\SVN\R16_3\SLCommonBuild" />
+
+          <property name="java-build.dist-ext" value=".jar" />
+
+          <property name="Wallet.ServiceInterface.testdeps" value="junit-4.3.1 mockito-all-1.8.4.jar spring-mock-2.0.8 " />
+
+          <property name="shell.SystemDrive" value="C:" />
+
+          <property name="java-war.web-content-dir" value="C:\SVN\R16_3\Wallet\Wallet.ServiceInterface\src\main\webapp" />
+
+          <property name="java-test.instrumented-datafile" value="C:\SVN\R16_3\Wallet\Wallet.ServiceInterface\target\instrumented-classes\cobertura.ser" />
+
+          <property name="shell.USERDNSDOMAIN" value="KIH.KMART.COM" />
+
+          <property name="java-build.source-ver" value="1.5" />
+
+          <property name="java-build.src-dir" value="C:\SVN\R16_3\Wallet\Wallet.ServiceInterface\src\main\java" />
+
+          <property name="shell.PROCESSOR_REVISION" value="170a" />
+
+          <property name="java.vendor" value="Sun Microsystems Inc." />
+
+          <property name="ant.file.type.sl-svn" value="file" />
+
+          <property name="shell.USERNAME" value="agawand" />
+
+          <property name="java.specification.version" value="1.5" />
+
+          <property name="sun.arch.data.model" value="32" />
+
+      </properties>
+
+      <testcase classname="com.servicelive.wallet.serviceinterface.requestbuilder.ValueLinkRequestBuilderTest" name="testActivateBuyer" time="0.0060" />
+
+      <system-out />
+
+      <system-err />
+
+  </testsuite>
+</testsuites>

@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="CREATE_SERVICE_ORDER" class="com.servicelive.orderfulfillment.remote.test.assertions.TestCommandAssertionValues">
+        <property name="activity" value="Draft"/>
+        <property name="soLogActionId" value="21"/>
+    </bean>
+
+    <bean id="EDIT_DRAFT_SERVICE_ORDER" class="com.servicelive.orderfulfillment.remote.test.assertions.TestCommandAssertionValues">
+        <property name="activity" value="Draft"/>
+        <property name="soLogActionId" value="27"/>
+    </bean>
+
+    <bean id="POST_SERVICE_ORDER" class="com.servicelive.orderfulfillment.remote.test.assertions.TestCommandAssertionValues">
+        <property name="activity" value="Posted"/>
+        <property name="templateIdList">
+            <list>
+                <value>58</value>
+                <value>119</value>
+                <value>213</value>
+            </list>
+        </property>
+        <property name="soLogActionId" value="3"/>
+    </bean>
+
+    <bean id="REJECT_POSTED_ORDER" class="com.servicelive.orderfulfillment.remote.test.assertions.TestCommandAssertionValues">
+        <property name="activity" value="Posted"/>
+        <property name="soLogActionId" value="7"/>
+    </bean>
+
+    <bean id="REJECT_POSTED_ORDER_BY_ALL" class="com.servicelive.orderfulfillment.remote.test.assertions.TestCommandAssertionValues">
+        <property name="activity" value="Posted"/>
+        <property name="templateIdList">
+            <list>
+                <value>24</value>
+            </list>
+        </property>
+        <property name="soLogActionId" value="7"/>
+    </bean>
+
+    <bean id="REJECT_BIDPOSTED_ORDER" class="com.servicelive.orderfulfillment.remote.test.assertions.TestCommandAssertionValues">
+        <property name="activity" value="BidPosted"/>
+        <property name="soLogActionId" value="7"/>
+    </bean>
+
+    <bean id="REJECT_BIDPOSTED_ORDER_BY_ALL" class="com.servicelive.orderfulfillment.remote.test.assertions.TestCommandAssertionValues">
+        <property name="activity" value="BidPosted"/>
+        <property name="templateIdList">
+            <list>
+                <value>24</value>
+            </list>
+        </property>
+        <property name="soLogActionId" value="7"/>
+    </bean>
+
+    <bean id="POST_SERVICE_ORDER_BID" class="com.servicelive.orderfulfillment.remote.test.assertions.TestCommandAssertionValues">
+        <property name="activity" value="BidPosted"/>
+        <property name="templateIdList">
+            <list>
+                <value>58</value>
+                <value>119</value>
+                <value>213</value>
+            </list>
+        </property>
+        <property name="soLogActionId" value="3"/>
+    </bean>
+
+    <bean id="CREATE_CONDITIONAL_OFFER_FOR_BID" class="com.servicelive.orderfulfillment.remote.test.assertions.TestCommandAssertionValues">
+        <property name="activity" value="BidPosted"/>
+        <property name="templateIdList">
+            <list>
+                <value>226</value>
+            </list>
+        </property>
+        <property name="soLogActionId" value="16"/>
+    </bean>
+
+    <bean id="VOID_SERVICE_ORDER" class="com.servicelive.orderfulfillment.remote.test.assertions.TestCommandAssertionValues">
+        <property name="activity" value="null"/>
+        <property name="soLogActionId" value="23"/>
+    </bean>
+
+    <bean id="ACCEPT_SERVICE_ORDER" class="com.servicelive.orderfulfillment.remote.test.assertions.TestCommandAssertionValues">
+        <property name="activity" value="Accepted"/>
+        <property name="templateIdList">
+            <list>
+                <value>25</value>
+            </list>
+        </property>
+        <property name="soLogActionId" value="8"/>
+        <property name="buyerTransactionList">
+            <list>
+                <value>LEDGER_ENTRY_RULE_ID_SO_POSTING_FEE</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="ACCEPT_SERVICE_ORDER_CONDITIONALLY" class="com.servicelive.orderfulfillment.remote.test.assertions.TestCommandAssertionValues">
+        <property name="activity" value="Accepted"/>
+        <property name="templateIdList">
+            <list>
+                <value>41</value>
+            </list>
+        </property>
+        <property name="soLogActionId" value="18"/>
+    </bean>
+
+    <bean id="CANCEL_SERVICE_ORDER" class="com.servicelive.orderfulfillment.remote.test.assertions.TestCommandAssertionValues">
+        <property name="activity" value="null"/>
+        <property name="templateIdList">
+            <list>
+                <value>51</value>
+            </list>
+        </property>
+        <property name="soLogActionId" value="2"/>
+    </bean>
+
+    <bean id="DELETE_SERVICE_ORDER" class="com.servicelive.orderfulfillment.remote.test.assertions.TestCommandAssertionValues">
+        <property name="activity" value="null"/>
+    </bean>
+
+    <bean id="ACTIVATE_SERVICE_ORDER" class="com.servicelive.orderfulfillment.remote.test.assertions.TestCommandAssertionValues">
+        <property name="activity" value="Active"/>
+    </bean>
+
+    <bean id="REQUEST_CANCEL_SERVICE_ORDER" class="com.servicelive.orderfulfillment.remote.test.assertions.TestCommandAssertionValues">
+        <property name="activity" value="Active"/>
+        <property name="templateIdList">
+            <list>
+                <value>52</value>
+            </list>
+        </property>
+        <property name="soLogActionId" value="22"/>
+    </bean>
+
+    <bean id="COMPLETE_SERVICE_ORDER" class="com.servicelive.orderfulfillment.remote.test.assertions.TestCommandAssertionValues">
+        <property name="activity" value="Completed"/>
+        <property name="templateIdList">
+            <list>
+                <value>34</value>
+            </list>
+        </property>
+        <property name="soLogActionId" value="15"/>
+    </bean>
+
+    <bean id="RECALL_COMPLETION" class="com.servicelive.orderfulfillment.remote.test.assertions.TestCommandAssertionValues">
+        <property name="soLogActionId" value="34"/>
+    </bean>
+
+    <bean id="CLOSE_SERVICE_ORDER" class="com.servicelive.orderfulfillment.remote.test.assertions.TestCommandAssertionValues">
+        <property name="activity" value="null"/>
+        <property name="templateIdList">
+            <list>
+                <value>56</value>
+            </list>
+        </property>
+        <property name="soLogActionId" value="1"/>
+    </bean>
+
+    <bean id="BUYER_REPORT_PROBLEM_IN_ACCEPTED" class="com.servicelive.orderfulfillment.remote.test.assertions.TestCommandAssertionValues">
+        <property name="activity" value="Problem"/>
+        <property name="templateIdList">
+            <list>
+                <value>26</value>
+            </list>
+        </property>
+        <property name="soLogActionId" value="10"/>
+    </bean>
+
+    <bean id="PROVIDER_REPORT_PROBLEM_IN_ACCEPTED" class="com.servicelive.orderfulfillment.remote.test.assertions.TestCommandAssertionValues">
+        <property name="activity" value="Problem"/>
+        <property name="templateIdList">
+            <list>
+                <value>26</value>
+            </list>
+        </property>
+        <property name="soLogActionId" value="10"/>
+    </bean>
+
+    <bean id="BUYER_RESOLVE_PROBLEM_BACK_TO_ACCEPTED" class="com.servicelive.orderfulfillment.remote.test.assertions.TestCommandAssertionValues">
+        <property name="activity" value="Accepted"/>
+        <property name="templateIdList">
+            <list>
+                <value>32</value>
+            </list>
+        </property>
+        <property name="soLogActionId" value="14"/>
+    </bean>
+
+    <bean id="PROVIDER_RESOLVE_PROBLEM_BACK_TO_ACCEPTED" class="com.servicelive.orderfulfillment.remote.test.assertions.TestCommandAssertionValues">
+        <property name="activity" value="Accepted"/>
+        <property name="templateIdList">
+            <list>
+                <value>32</value>
+            </list>
+        </property>
+        <property name="soLogActionId" value="14"/>
+    </bean>
+
+    <bean id="BUYER_REPORT_PROBLEM_IN_COMPLETED" class="com.servicelive.orderfulfillment.remote.test.assertions.TestCommandAssertionValues">
+        <property name="activity" value="Problem"/>
+        <property name="templateIdList">
+            <list>
+                <value>26</value>
+            </list>
+        </property>
+        <property name="soLogActionId" value="10"/>
+    </bean>
+
+    <bean id="PROVIDER_REPORT_PROBLEM_IN_COMPLETED" class="com.servicelive.orderfulfillment.remote.test.assertions.TestCommandAssertionValues">
+        <property name="activity" value="Problem"/>
+        <property name="templateIdList">
+            <list>
+                <value>26</value>
+            </list>
+        </property>
+        <property name="soLogActionId" value="10"/>
+    </bean>
+
+    <bean id="BUYER_RESOLVE_PROBLEM_BACK_TO_ACTIVE" class="com.servicelive.orderfulfillment.remote.test.assertions.TestCommandAssertionValues">
+        <property name="activity" value="Active"/>
+        <property name="templateIdList">
+            <list>
+                <value>32</value>
+            </list>
+        </property>
+        <property name="soLogActionId" value="14"/>
+    </bean>
+
+    <bean id="PROVIDER_RESOLVE_PROBLEM_BACK_TO_ACTIVE" class="com.servicelive.orderfulfillment.remote.test.assertions.TestCommandAssertionValues">
+        <property name="activity" value="Active"/>
+        <property name="templateIdList">
+            <list>
+                <value>32</value>
+            </list>
+        </property>
+        <property name="soLogActionId" value="14"/>
+    </bean>
+
+    <bean id="INDICATE_ONSITE_VISIT" class="com.servicelive.orderfulfillment.remote.test.assertions.TestCommandAssertionValues">
+        <property name="activity" value="Active"/>
+    </bean>
+
+    <bean id="PROVIDER_REQUEST_RESCHEDULE_IN_ACCEPTED" class="com.servicelive.orderfulfillment.remote.test.assertions.TestCommandAssertionValues">
+        <property name="activity" value="Accepted"/>
+        <property name="templateIdList">
+            <list>
+                <value>35</value>
+            </list>
+        </property>
+        <!--<property name="soLogActionId" value="13"/>-->
+        <property name="soLogActionId" value="36"/>
+    </bean>
+
+    <bean id="BUYER_REQUEST_RESCHEDULE_IN_ACCEPTED" class="com.servicelive.orderfulfillment.remote.test.assertions.TestCommandAssertionValues">
+        <property name="activity" value="Accepted"/>
+        <property name="templateIdList">
+            <list>
+                <value>35</value>
+            </list>
+        </property>
+        <!--<property name="soLogActionId" value="13"/>-->
+        <property name="soLogActionId" value="36"/>
+    </bean>
+
+    <bean id="PROVIDER_ACCEPT_RESCHEDULE_IN_ACCEPTED" class="com.servicelive.orderfulfillment.remote.test.assertions.TestCommandAssertionValues">
+        <property name="activity" value="Accepted"/>
+        <property name="templateIdList">
+            <list>
+                <value>45</value>
+            </list>
+        </property>
+        <property name="soLogActionId" value="19"/>
+    </bean>
+
+    <bean id="BUYER_ACCEPT_RESCHEDULE_IN_ACCEPTED" class="com.servicelive.orderfulfillment.remote.test.assertions.TestCommandAssertionValues">
+        <property name="activity" value="Accepted"/>
+        <property name="templateIdList">
+            <list>
+                <value>45</value>
+            </list>
+        </property>
+        <property name="soLogActionId" value="19"/>
+    </bean>
+
+    <bean id="PROVIDER_RELEASE_IN_ACCEPTED" class="com.servicelive.orderfulfillment.remote.test.assertions.TestCommandAssertionValues">
+        <property name="activity" value="Posted"/>
+        <property name="templateIdList">
+            <list>
+                <value>64</value>
+                <value>69</value>
+            </list>
+        </property>
+        <property name="soLogActionId" value="24"/>
+    </bean>
+
+    <bean id="PROVIDER_RELEASE_IN_ACTIVE" class="com.servicelive.orderfulfillment.remote.test.assertions.TestCommandAssertionValues">
+        <property name="activity" value="Posted"/>
+        <property name="templateIdList">
+            <list>
+                <value>66</value>
+                <value>251</value>
+            </list>
+        </property>
+        <property name="soLogActionId" value="26"/>
+    </bean>
+
+    <bean id="PROVIDER_RELEASE_IN_PROBLEM" class="com.servicelive.orderfulfillment.remote.test.assertions.TestCommandAssertionValues">
+        <property name="activity" value="Posted"/>
+        <property name="templateIdList">
+            <list>
+                <value>91</value>
+            </list>
+        </property>
+        <property name="soLogActionId" value="52"/>
+    </bean>
+
+    <bean id="BUYER_ADD_COMPLETION_NOTE" class="com.servicelive.orderfulfillment.remote.test.assertions.TestCommandAssertionValues">
+        <property name="activity" value="Completed"/>
+        <property name="templateIdList">
+            <list>
+                <value>13</value>
+            </list>
+        </property>
+        <!--<property name="soLogActionId" value="?"/>-->
+    </bean>
+</beans>

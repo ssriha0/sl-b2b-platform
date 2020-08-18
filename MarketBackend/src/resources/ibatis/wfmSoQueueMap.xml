@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="wfmSoQueue">
+
+      <typeAlias alias="wfmBuyerQueueVO" type="com.newco.marketplace.dto.vo.WFMBuyerQueueVO" />
+      <typeAlias alias="wfmSOTasksVO" type="com.newco.marketplace.dto.vo.WFMSOTasksVO" />
+      <typeAlias alias="claimVO" type="com.newco.marketplace.dto.vo.powerbuyer.ClaimVO" />
+       <typeAlias alias="requeueSOVO" type="com.newco.marketplace.dto.vo.powerbuyer.RequeueSOVO"/>
+
+<!-- This query is not longer in use.  TODO : will delete it some time later, after a complete check.-->
+      <select id="wfmSoQueue.query.wfmBuyerQueueSelect" parameterClass="java.util.HashMap" resultClass="wfmBuyerQueueVO">
+<!-- This query is no longer in use.  -->			
+						SELECT wfmBuyerQueue.buyer_id AS buyerId,
+							   wfmBuyerQueue.queue_id AS qId,
+						       wfmQueues.queue_name AS qName,
+						       wfmQueues.queue_desc AS qDesc,
+						       wfmTasks.task_id AS taskId,
+						       wfmTasks.task_code AS taskCode,
+						       wfmTasks.task_state AS taskState,
+						       wfmTasks.task_desc AS taskDesc,
+						       wfmSoQueues.queued_date AS queuedDate
+						  FROM wfm_buyer_queues wfmBuyerQueue,
+						       wfm_queues wfmQueues,
+						       wfm_tasks wfmTasks,
+						       wfm_so_queues wfmSoQueues
+						 WHERE wfmBuyerQueue.buyer_id = #buyerId#
+						   AND wfmBuyerQueue.queue_id = wfmSoQueues.queue_id
+							 AND wfmBuyerQueue.queue_id = wfmQueues.queue_id
+						   AND wfmQueues.queue_id = wfmTasks.queue_id
+						   AND wfmSoQueues.so_id = #soId#
+						   AND wfmSoQueues.queue_id = 
+									   (SELECT wfmSoQueues2.claimed_from_queue_id FROM wfm_buyer_queues wfmBuyerQueue,
+										       wfm_queues wfmQueues,
+										       wfm_tasks wfmTasks,
+										       wfm_so_queues wfmSoQueues2
+										 WHERE wfmBuyerQueue.buyer_id = #buyerId#
+										   AND wfmBuyerQueue.queue_id = wfmSoQueues2.queue_id
+											 AND wfmBuyerQueue.queue_id = wfmQueues.queue_id
+										   AND wfmQueues.queue_id = wfmTasks.queue_id
+										   AND wfmSoQueues2.so_id = #soId# limit 1 )
+					           
+					UNION
+						(
+						SELECT wfmBuyerQueue.buyer_id AS buyerId,
+							   wfmBuyerQueue.queue_id AS qId,
+						       wfmQueues.queue_name AS qName,
+						       wfmQueues.queue_desc AS qDesc,
+						       wfmTasks.task_id AS taskId,
+						       wfmTasks.task_code AS taskCode,
+						       wfmTasks.task_state AS taskState,
+						       wfmTasks.task_desc AS taskDesc,
+						       wfmSoQueues.queued_date AS queuedDate
+						  FROM wfm_buyer_queues wfmBuyerQueue,
+						       wfm_queues wfmQueues,
+						       wfm_tasks wfmTasks,
+						       wfm_so_queues wfmSoQueues
+						 WHERE wfmBuyerQueue.buyer_id = #buyerId#
+						   AND wfmBuyerQueue.queue_id = wfmSoQueues.queue_id
+							 AND wfmBuyerQueue.queue_id = wfmQueues.queue_id
+						   AND wfmQueues.queue_id = wfmTasks.queue_id
+						   AND wfmSoQueues.so_id = #soId#
+					  ORDER BY qId,taskId         
+					)
+					
+		</select>
+		
+		
+		 <select id="wfmSoQueue.query.buyerQueuesSelect" parameterClass="java.util.HashMap" resultClass="wfmBuyerQueueVO">
+				<!-- Put the primary queue on top (decided by claimed_from_queue_id)then union it with remaining queues -->	
+				
+				
+							select derivedTable.buyerId AS buyerId,
+										derivedTable.qId AS qId,
+											derivedTable.qName AS qName,
+											derivedTable.qDesc AS qDesc,
+											if(derivedTable.queuedDate='0000-00-00 00:00:00', now(), derivedTable.queuedDate ) AS queuedDate,
+											derivedTable.soQueueId AS soQueueId,
+											derivedTable.queueSeq AS queueSeq,
+											derivedTable.claimedFromQueueId AS claimedFromQueueId, 
+											soNts.note as note, derivedTable.completedInd as completedInd from (
+														SELECT max(wfmSoQueues.so_queue_id) as so_queue_id_max,
+															wfmBuyerQueue.buyer_id AS buyerId,
+																wfmBuyerQueue.queue_id AS qId,
+																	wfmQueues.queue_name AS qName,
+																	wfmQueues.queue_desc AS qDesc,
+																	wfmSoQueues.queued_date AS queuedDate,
+																	wfmSoQueues.so_queue_id as soQueueId,
+																	wfmSoQueues.queue_seq as queueSeq,
+																	wfmSoQueues.note_id as noteId,
+																	wfmSoQueues.claimed_from_queue_id AS claimedFromQueueId,
+																	wfmSoQueues.completed_ind as completedInd
+															FROM  wfm_buyer_queues wfmBuyerQueue,
+																	wfm_queues wfmQueues,
+																	wfm_so_queues wfmSoQueues
+														WHERE wfmBuyerQueue.buyer_id = #buyerId#
+															AND wfmBuyerQueue.queue_id = wfmSoQueues.queue_id
+															AND wfmBuyerQueue.queue_id = wfmQueues.queue_id
+															<isNotEmpty property="soId">
+															AND wfmSoQueues.so_id = #soId#
+										 					</isNotEmpty>
+										 					<isNotEmpty property="groupId">
+										 						<isEmpty property="soId">
+																AND wfmSoQueues.so_group_id = #groupId#
+																</isEmpty>
+										 					</isNotEmpty>
+															<!-- Select the primary queue and keep it in top -->
+															AND wfmSoQueues.claimed_from_queue_id = wfmBuyerQueue.queue_id
+															<!-- In case of the group service Order, pick the latest from the group of queues 
+															in order(wfmSoQueues.so_id) to show queue just once for group SOs -->
+															GROUP BY wfmSoQueues.queue_seq
+															 LIMIT 1
+														
+														<!-- Union it to select all the remaining queues besides CallBack queue -->
+															UNION
+															(																	
+															SELECT max(wfmSoQueues.so_queue_id) as so_queue_id_max, wfmBuyerQueue.buyer_id AS buyerId,
+																wfmBuyerQueue.queue_id AS qId,
+																	wfmQueues.queue_name AS qName,
+																	wfmQueues.queue_desc AS qDesc,
+																	wfmSoQueues.queued_date AS queuedDate,
+																	wfmSoQueues.so_queue_id as soQueueId,
+																	wfmSoQueues.queue_seq as queueSeq,
+																	wfmSoQueues.note_id as noteId,
+																	wfmSoQueues.claimed_from_queue_id AS claimedFromQueueId,
+																	wfmSoQueues.completed_ind as completedInd
+															FROM wfm_buyer_queues wfmBuyerQueue,
+																	wfm_queues wfmQueues,
+																	wfm_so_queues wfmSoQueues											
+														WHERE wfmBuyerQueue.buyer_id = #buyerId#
+															AND wfmBuyerQueue.queue_id = wfmSoQueues.queue_id
+															AND wfmBuyerQueue.queue_id = wfmQueues.queue_id
+															
+															<!-- 2 is the follow up queue in #followUpQueueId# -->
+															AND wfmSoQueues.queue_id != #followUpQueueId#
+														<isNotEmpty property="soId">
+															AND wfmSoQueues.so_id = #soId#
+									 					</isNotEmpty>
+									 					<isNotEmpty property="groupId">
+									 						<isEmpty property="soId">
+																AND wfmSoQueues.so_group_id = #groupId#
+															</isEmpty>
+									 					</isNotEmpty>
+															GROUP BY wfmSoQueues.queue_id
+															ORDER BY qId
+															)
+															<!-- Union it to select all the CallBack queues -->
+															UNION
+															(
+															 <!-- soNotes.note is only reqd in case of callback queues. -->
+																
+																SELECT max(wfmSoQueues.so_queue_id) as so_queue_id_max,wfmBuyerQueue.buyer_id AS buyerId,
+																wfmBuyerQueue.queue_id AS qId,
+																	wfmQueues.queue_name AS qName,
+																	wfmQueues.queue_desc AS qDesc,
+																	wfmSoQueues.queued_date AS queuedDate,
+																	wfmSoQueues.so_queue_id as soQueueId,
+																	wfmSoQueues.queue_seq as queueSeq,
+																	wfmSoQueues.note_id as noteId,
+																	wfmSoQueues.claimed_from_queue_id AS claimedFromQueueId,
+																	wfmSoQueues.completed_ind as completedInd
+																	FROM so_notes soNotes,wfm_buyer_queues wfmBuyerQueue,
+																			wfm_queues wfmQueues,
+																			wfm_so_queues wfmSoQueues
+																		WHERE wfmBuyerQueue.buyer_id = #buyerId#
+																	AND wfmBuyerQueue.queue_id = wfmSoQueues.queue_id
+																	AND wfmBuyerQueue.queue_id = wfmQueues.queue_id
+																  	AND wfmSoQueues.queue_id = #followUpQueueId#
+																  	AND wfmSoQueues.note_id=soNotes.note_id
+																  			<isNotEmpty property="soId">
+																				AND wfmSoQueues.so_id = #soId#
+														 					</isNotEmpty>
+														 					<isNotEmpty property="groupId">
+														 						<isEmpty property="soId">
+																					AND wfmSoQueues.so_group_id = #groupId#
+																				</isEmpty>
+														 					</isNotEmpty>
+																
+																	GROUP BY wfmSoQueues.queue_seq																		
+																		ORDER BY soNotes.created_date desc 
+																		LIMIT 10
+																		
+															
+																)
+																
+								) derivedTable left outer join so_notes soNts on derivedTable.noteId = soNts.note_id
+								
+					
+			</select>
+		
+				<!--  This sql query is no longer required. -->
+				<select id="wfmSoQueue.query.callUpQueuesToFetch" parameterClass="java.util.HashMap"
+					resultClass="java.lang.Integer">
+					SELECT count(distinct(wfmSoQueues.queue_seq))					
+								FROM wfm_buyer_queues wfmBuyerQueue,
+										wfm_queues wfmQueues,
+										wfm_so_queues wfmSoQueues
+							WHERE wfmBuyerQueue.buyer_id = #buyerId#
+								AND wfmBuyerQueue.queue_id = wfmSoQueues.queue_id
+								AND wfmBuyerQueue.queue_id = wfmQueues.queue_id
+							<isNotEmpty property="soId">
+								AND wfmSoQueues.so_id = #soId#
+							</isNotEmpty>
+		 					<isNotEmpty property="groupId">
+								AND wfmSoQueues.so_group_id = #groupId#
+		 					</isNotEmpty>
+		 					<!-- the FollowUpQueueId is 2 in wfm_queues table is for callback queue , which is nothing but follow up queue -->
+								AND wfmSoQueues.queue_id=#followUpQueueId#
+								GROUP BY wfmSoQueues.queue_seq
+													
+				</select>
+		
+		
+		
+						<select id="wfmSoQueue.query.buyerFollowUpQueuesSelect" parameterClass="java.util.HashMap" resultClass="wfmBuyerQueueVO">
+									SELECT wfmBuyerQueue.buyer_id AS buyerId,
+											wfmBuyerQueue.queue_id AS qId,
+												wfmQueues.queue_name AS qName,
+												wfmQueues.queue_desc AS qDesc,
+												wfmSoQueues.queued_date AS queuedDate,
+												wfmSoQueues.so_queue_id as soQueueId
+										FROM wfm_buyer_queues wfmBuyerQueue,
+												wfm_queues wfmQueues,
+												wfm_so_queues wfmSoQueues
+									WHERE wfmBuyerQueue.buyer_id = #buyerId#
+										AND wfmBuyerQueue.queue_id = wfmSoQueues.queue_id
+										AND wfmBuyerQueue.queue_id = wfmQueues.queue_id
+									<isNotEmpty property="soId">
+										AND wfmSoQueues.so_id = #soId#
+				 					</isNotEmpty>
+				 					<isNotEmpty property="groupId">
+				 						<isEmpty property="soId">
+										AND wfmSoQueues.so_group_id = #groupId#
+										</isEmpty>
+				 					</isNotEmpty>
+				 					<!-- the FollowUpQueueId is 2 in wfm_queues table is for callback queue , which is nothing but follow up queue -->
+										AND wfmSoQueues.queue_id=#FollowUpQueueId#
+										ORDER BY qId
+						</select>
+			
+		
+					   <select id="wfmSoQueue.query.wfmAllQueuesTasksSelect" parameterClass="java.util.List" resultClass="wfmSOTasksVO">
+						SELECT wfmTasks.queue_id AS qId,
+						       wfmTasks.task_id AS taskId,
+						       wfmTasks.task_code AS taskCode,
+						       wfmTasks.task_state AS taskState,
+						       wfmTasks.task_desc AS taskDesc,
+						       wfmTasks.requeue_hours AS requeueHours,
+						       wfmTasks.requeue_min AS requeueMins
+						 FROM  wfm_tasks wfmTasks 
+						 WHERE wfmTasks.queue_id IN
+	                           <iterate  open="(" close=")"  conjunction=",">
+				                             #[]#
+	                           </iterate>
+						 ORDER BY wfmTasks.task_code ASC
+						</select>
+
+					   <select id="wfmSoQueue.query.wfmCallBackQueueTasksSelect" parameterClass="java.util.HashMap" resultClass="wfmSOTasksVO">
+						SELECT 		wfmTasks.queue_id AS qId,
+									wfmQueues.queue_name AS qName,
+									wfmQueues.queue_desc AS qDesc,
+									wfmTasks.task_id AS taskId,
+									wfmTasks.task_code AS taskCode,
+									wfmTasks.task_state AS taskState,
+									wfmTasks.task_desc AS taskDesc,
+									wfmTasks.requeue_hours AS requeueHours,
+									wfmTasks.requeue_min AS requeueMins
+							
+						FROM  wfm_tasks wfmTasks, wfm_queues wfmQueues
+						WHERE wfmTasks.queue_id=wfmQueues.queue_id
+						AND wfmTasks.queue_id=#followUpQueueId# ORDER BY wfmTasks.task_id ASC
+						
+						</select>
+						
+							
+						<select id="wfmSoQueue.query.wfmQueueTasksSelect" parameterClass="java.util.HashMap" resultClass="wfmSOTasksVO">
+						SELECT wfmTasks.queue_id AS qId,
+						       wfmTasks.task_id AS taskId,
+						       wfmTasks.task_code AS taskCode,
+						       wfmTasks.task_state AS taskState,
+						       wfmTasks.task_desc AS taskDesc
+						 FROM  wfm_tasks wfmTasks
+						 WHERE wfm_queue_id = #queueId#
+						</select>
+						
+						<select id="wfmSoQueue.query.wfmSoClaimedInfoSelect" parameterClass="java.util.HashMap" resultClass="requeueSOVO">
+						 SELECT claimed_ind AS claimedInd, claimed_date AS claimedDate, claimed_by_id AS claimedById, 
+						 claimed_from_queue_id AS claimedFromQueueId
+						 FROM wfm_so_queues 
+						 	<dynamic prepend="WHERE">
+							  <isNotEmpty property="soId" prepend="AND">
+									 so_id = #soId#
+							   </isNotEmpty>
+							   <isNotEmpty property="groupSOId" prepend="AND">
+							      	<isEmpty property="soId"> 
+										so_group_id = #groupSOId#
+									</isEmpty>
+							    </isNotEmpty> 
+						    	AND claimed_from_queue_id = queue_id 
+						    	LIMIT 1
+						    </dynamic>
+						</select>
+						
+						
+						
+					 <insert id="wfmSoQueue.insert.NewCallBackSOQueue" parameterClass="requeueSOVO">
+						insert into wfm_so_queues 
+						(so_id, queue_seq, queue_id, queued_date, completed_ind, company_id, grouped_ind, so_group_id , 
+						sort_order, created_date, note_id , 
+						claimed_ind, claimed_date , claimed_by_id , 
+						 claimed_from_queue_id)
+						values ( #soId#, #queueSeq#, #queueId#, 
+							  <isNull property="requeueDate"> 
+							 	now(),
+							 </isNull>
+							 <isNotNull property="requeueDate">
+								#requeueDate#,
+						 	</isNotNull> 
+							 <isNull property="completedInd"> 
+							 	0,
+							 </isNull>
+							 <isNotNull property="completedInd">
+								#completedInd#,
+						 	</isNotNull>
+							    #buyerId#, #groupedInd#, #groupSOId#,
+							 <isEqual property="queueId" compareValue="72">
+							 	UNIX_TIMESTAMP(NOW()),
+							 </isEqual> 
+							 <isNotEqual property="queueId" compareValue="72">
+							 	0,
+							 </isNotEqual> 
+							 	#createdDate#, #noteId# ,
+							 <isNull property="claimedInd"> 
+							 	0,
+							 </isNull>
+							 <isNotNull property="claimedInd">
+								#claimedInd#,
+						 	  </isNotNull>
+							   #claimedDate#, #claimedById#, #claimedFromQueueId#)
+					 </insert>		
+						
+					 <select id="wfmSoQueue.query.SelectSOsForCallBackQueue" parameterClass="java.util.HashMap" resultClass="requeueSOVO">
+						select so_id as soId,#queueId# as queueId, #buyerId# as buyerId,if(so_group_id is null, 0, 1) as groupedInd,so_group_id as groupSOId, 
+						now() as modifiedDate, now() as createdDate,
+						(select if((max(queue_seq)+1) is null, 1, (max(queue_seq)+1)) from wfm_so_queues 
+						where company_id=#buyerId# 
+						and queue_id=#queueId# 
+						 <isNotEmpty property="soId">
+									AND so_id = #soId#
+						 </isNotEmpty>
+						 <isNotEmpty property="groupSOId">
+						    	<isEmpty property="soId"> 
+									AND so_group_id = #groupSOId#
+								</isEmpty>
+						  </isNotEmpty>
+						) as queueSeq, #noteId# as noteId 
+						from so_hdr WHERE
+						    <isNotEmpty property="soId">
+								 so_id = #soId#
+						   </isNotEmpty>
+						   <isNotEmpty property="groupSOId">
+						      	<isEmpty property="soId"> 
+									so_group_id = #groupSOId#
+								</isEmpty>
+						    </isNotEmpty>
+					 </select>	
+						
+						
+						
+	<update id="powerbuyer.update.completeIndicator" parameterClass="requeueSOVO">
+	 	UPDATE wfm_so_queues
+	 	   SET completed_ind = #completedInd#, note_id=#noteId# WHERE
+	 	   <isNotEmpty property="soId">
+			 so_id = #soId#
+		   </isNotEmpty>
+		   <isNotEmpty property="groupSOId">
+		      	<isEmpty property="soId"> 
+					so_group_id = #groupSOId#
+				</isEmpty>
+		    </isNotEmpty>
+	 	 
+	 	 AND company_id = #buyerId#
+	 	 AND queue_id = #queueId#
+	 	 AND queue_seq = #queueSeq#
+	 </update>
+	 						
+						
+	<update id="powerbuyer.update.completeIndicator.followUp" parameterClass="requeueSOVO">
+	 	UPDATE wfm_so_queues
+	 	   SET completed_ind = #completedInd#, 
+	 	       note_id=#noteId#
+	 	   WHERE
+	 	   <isNotEmpty property="soId">
+			 so_id = #soId#
+	 	 </isNotEmpty>
+	 	  <isNotEmpty property="groupSOId">
+		      	<isEmpty property="soId"> 
+					so_group_id = #groupSOId#
+				</isEmpty>
+		    </isNotEmpty>
+	 	 AND company_id = #buyerId#
+	 	 AND queue_id = #queueId#
+	 </update>
+	 
+	<update id="powerbuyer.update.posCancellationIndicator" parameterClass="java.lang.String">
+	 	UPDATE so_workflow_controls
+	 	   SET pos_cancellation_indicator = 0 WHERE so_id = #soId#
+	 </update>
+	 
+	 <select id ="powerbuyer.select.noteId" parameterClass="java.lang.String" resultClass="java.lang.Long">
+	 	SELECT MAX(note_id) FROM so_notes WHERE so_id = #soId#
+	 </select>
+	 
+	 <update id="powerbuyer.update.requeueDateTime" parameterClass="requeueSOVO">
+	 	UPDATE wfm_so_queues
+	 	   SET queued_date = #requeueDate#, note_id=#noteId#, completed_ind = #completedInd# WHERE
+	 	   <isNotEmpty property="soId">
+			 so_id = #soId#
+		   </isNotEmpty>
+		   <isNotEmpty property="groupSOId">
+		      	<isEmpty property="soId"> 
+					so_group_id = #groupSOId#
+				</isEmpty>
+		    </isNotEmpty>
+	 	 
+	 	 AND company_id = #buyerId#
+	 	 AND queue_id = #queueId#
+	 	 AND queue_seq = #queueSeq#
+	 </update>
+	 
+	 <update id="powerbuyer.update.requeueDateTime.followUp" parameterClass="requeueSOVO">
+	 	UPDATE wfm_so_queues
+	 	   SET queued_date = #requeueDate#, note_id=#noteId#, completed_ind = #completedInd# WHERE
+	 	   <isNotEmpty property="soId">
+			 so_id = #soId#
+		   </isNotEmpty>
+		   <isNotEmpty property="groupSOId">
+		      	<isEmpty property="soId"> 
+					so_group_id = #groupSOId#
+				</isEmpty>
+		    </isNotEmpty>
+	 	 
+	 	 AND company_id = #buyerId#
+	 	 AND queue_id = #queueId#
+	 </update>
+	 
+					<!-- return the max queue_seq -->	
+	<select id="wfmSoQueue.query.nextFollowUpQueueSequence" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+			SELECT 
+			if((max(queue_seq)+1) is null, 
+			1, 
+			(max(queue_seq)+1)) 
+			from wfm_so_queues 
+			where company_id=#buyerId# 
+			and queue_id=#queueId# 
+			 <isNotEmpty property="soId">
+				AND so_id = #soId#
+			 </isNotEmpty>
+			 <isNotEmpty property="groupSOId">
+		    	<isEmpty property="soId"> 
+					AND so_group_id = #groupSOId#
+				</isEmpty>
+			  </isNotEmpty>
+	 </select>
+				
+						
+					
+						
+						
+		
+		
+	</sqlMap>
+

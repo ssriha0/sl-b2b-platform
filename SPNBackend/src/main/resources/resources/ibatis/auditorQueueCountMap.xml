@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="network.auditorqueuecount">
+	<typeAlias alias="spnAuditorQueueCountVO" type="com.servicelive.spn.common.detached.SPNAuditorQueueCountVO"/>
+	
+	<resultMap id="spnAuditorQueueCountVOResultMap" class="spnAuditorQueueCountVO">
+		<result property="count" column="count1" />
+		<result property="state.id" column="state" />
+		<result property="spnId" column="spn_id" />
+		<result property="providerFirmId" column="provider_firm_id" />
+		<result property="modifiedDate" column="modified_date" />
+	</resultMap>
+
+	<select id="counts" parameterClass="java.util.Map" resultClass="spnAuditorQueueCountVO" resultMap="spnAuditorQueueCountVOResultMap">
+		<![CDATA[
+			select 
+			count(1) as count1, 
+			provider_wf_state as state, 
+			-1 as spn_id,
+			-1 as provider_firm_id,
+			-1 as modified_date
+			from 
+			spnet_provider_firm_state spfs, 
+			spnet_buyer sb
+			where 
+			spfs.spn_id = sb.spn_id
+			and sb.buyer_id = #buyerId#
+			and (spfs.reviewed_date is null or spfs.reviewed_date < #time#)
+			and spfs.provider_wf_state in ('PF SPN APPLICANT', 'PF SPN REAPPLICANT' , 'PF SPN MEMBERSHIP UNDER REVIEW')
+			group by provider_wf_state
+		]]>
+	</select>
+
+	<select id="countswithdetail" parameterClass="java.util.Map" resultClass="spnAuditorQueueCountVO" resultMap="spnAuditorQueueCountVOResultMap">
+		<![CDATA[
+			select
+			1 as count1,
+            spfs.spn_id,
+            spfs.provider_firm_id,
+			spfs.provider_wf_state as state,
+			spfs.modified_date
+			from 
+			spnet_provider_firm_state spfs, 
+			spnet_buyer sb
+			where 
+			spfs.spn_id = sb.spn_id
+			and sb.buyer_id = #buyerId#
+			and (spfs.reviewed_date is null or spfs.reviewed_date < #time#)
+            and spfs.provider_wf_state = #state#
+		]]>
+	</select>
+	
+	
+</sqlMap>

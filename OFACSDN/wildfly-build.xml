@@ -1,0 +1,135 @@
+<project name="OfacWebServiceClient" basedir="." default="distribute">
+	<property file="build.properties" />
+	<echo level="info">
+	===============================================================================
+	                                ${ant.project.name} 
+	===============================================================================</echo>	
+	<target name="package" depends="distribute"/>
+
+    <target name="init">
+    	<property name="dir.base" value="${basedir}" />
+    	<property name="dir.test" value="${dir.base}/test" />
+    	<property name="dir.dest" value="${dir.base}/bin" />
+    	<property name="dir.lib" value="${dir.base}/lib/axislib" />
+    	<!-- JUnit report dir path -->
+		<property name="junit-report.dir" value="${basedir}/${ant.project.name}Reports" />
+    	 <property name="dir.slCommonBuild.generated" value="../SLCommonBuild/lib/generated" />
+		<property name="dir.slCommonBuild.nondeployables" value="../SLCommonBuild/lib/nondeployables"/>
+    	<property name="nondeployables.lib" value="../ServiceLiveWebUtil/lib/nondeployables"/>
+    	
+    	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+			<classpath>
+				<pathelement location="${nondeployables.lib}/ant-contrib-1.0b3.jar"/>
+			</classpath>			 
+		</taskdef> 
+    	
+    	<path id="classpath.main">
+			<pathelement location="${classes.main}" />
+			<fileset dir="lib">
+				<include name="**/*.jar" />
+			</fileset>
+		</path>	
+		<taskdef resource="axis-tasks.properties" classpathref="classpath.main" />
+    	
+    	<path id="test.class.path">
+    		<pathelement location="${classpath.main}" />
+			<pathelement location="${dir.dest}"/>
+    		<fileset dir="${dir.slCommonBuild.nondeployables}">
+	    			<include name="junit.jar" />
+	    			<include name="hamcrest-core-1.1.jar" />
+	    			<include name="hamcrest-library-1.1.jar" />
+	    			<include name="mockito-all-1.8.4.jar"/>
+    		</fileset>
+    		<fileset dir="lib">
+    			<include name="*/*.jar" />
+    		</fileset>
+		</path>
+    </target>
+	
+	<target name="clean" depends="init">
+		<delete dir="${dir.dest}" failonerror="false"/>
+		<mkdir dir="${dir.dest}"/>
+		<delete dir="${junit-report.dir}" failonerror="false"/>
+		<mkdir dir="${junit-report.dir}"/>	
+	</target>
+	
+	<target name="wsdl2java" depends="clean" description="Generates new webservicesclient.jar based on the WSDL file.">
+		<axis-wsdl2java output="${wsdl.src.dir}" testcase="false" verbose="true" url="${wsdl.spec.dir}/OFACSDN.wsdl">
+			<mapping namespace="http://axis.apache.org/ns/interop" package="interop" />
+		</axis-wsdl2java>		
+	</target>	
+	
+	<target name="compile" depends="wsdl2java" >
+		<javac 
+				srcdir="${wsdl.src.dir}" 
+				destdir="${wsdl.classes.dir}" 
+				classpathref="classpath.main" 
+				target="1.8"
+				source="1.8"
+				debug="on"
+				deprecation="false" />
+		<jar basedir="${wsdl.src.dir}" destfile="${wsdl.lib.dir}/OFACWebServiceClient-src.jar" />
+		<jar basedir="${wsdl.classes.dir}" destfile="${wsdl.lib.dir}/OFACWebServiceClient.jar" />
+	</target>
+	
+    <target name="slcommonbuildcopy" depends="compile">
+        <copy file="${wsdl.lib.dir}/OFACWebServiceClient.jar" todir="${dir.slCommonBuild.generated}" />
+    </target>
+	
+	<target name="compile-test" depends="slcommonbuildcopy">
+		<if><available file="${dir.test}" type="dir" />
+			<then>
+				<javac
+					srcdir="${dir.test}"
+					destdir="${dir.dest}"
+					classpathref="classpath.main"
+					target="1.8"
+					source="1.8"
+					debug="on"
+					deprecation="false"
+				/>	
+			</then>
+		</if>
+	</target>
+	
+	<target name="junit-report" description="Runs the JUnit test cases" depends="compile-test">	
+		<if><available file="${dir.test}" type="dir" />
+			<then>
+				<junit fork="yes" haltonfailure="false" printsummary="withOutAndErr" showoutput="yes">		
+					<classpath>
+							<path refid="test.class.path"/>						  				
+					</classpath>
+			
+					<formatter type="xml" />
+						
+					<batchtest fork="yes" todir="${junit-report.dir}" >	 
+						<fileset dir="${dir.test}" >
+							<include name="**/*Test.java" />
+						</fileset>
+					</batchtest>	  
+				</junit>
+				<echo message="build date ">${DSTAMP}${TSTAMP}</echo>
+				<echo message="build.number ">${build.number}</echo>
+				<echo message="full tag ">${app.lastbuild.tag.auto}</echo>
+		
+				<echo message="Format the tests report" />
+				<junitreport todir="${junit-report.dir}">
+					<fileset dir="${junit-report.dir}">
+						<include name="TEST-*.xml" />
+					</fileset>
+					<report todir="${junit-report.dir}" />
+				</junitreport>
+			</then>
+		</if>
+	</target>
+
+	<target name="distribute" depends="junit-report">
+	</target>
+	
+	<!-- Sonar Integration -->
+	<property name="dir.sonar.src" value="${basedir}/src" />
+	<property name="dir.sonar.ant.task" value="../SLCommonBuild/lib/nondeployables"/>
+	<import file="../SLCommonBuild/ant/wildfly-opt/ant-script-library/asl-java-sonar.xml"/>
+	<target name="sonar" depends="sonar-init, sonar-run">
+	</target>
+</project>

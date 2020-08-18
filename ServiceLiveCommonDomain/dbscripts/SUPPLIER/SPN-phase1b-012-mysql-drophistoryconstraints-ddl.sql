@@ -1,0 +1,19 @@
+alter table spnet_uploaded_doc_st_history drop FOREIGN KEY spnet_pu_doc_hist_st_id;
+alter table spnet_uploaded_doc_st_history drop FOREIGN KEY spnet_pu_doc_hist_st_buyerid;
+alter table spnet_uploaded_doc_st_history drop FOREIGN KEY spnet_pu_doc_hist_st_doc_id;
+alter table spnet_uploaded_doc_st_history drop FOREIGN KEY spnet_pu_doc_hist_st_ud_id;
+alter table spnet_uploaded_doc_st_history drop FOREIGN KEY spnet_pu_doc_hist_st_ven_id;
+
+
+alter table spnet_provider_firm_st_history drop FOREIGN KEY FK_SPNET_PF_ST_HIST_WF_ID;
+alter table spnet_provider_firm_st_history drop FOREIGN KEY FK_SPNET_PF_ST_HIST_VENDOR_ID;
+alter table spnet_provider_firm_st_history drop  FOREIGN KEY FK_SPNET_PF_ST_HIST_SPN_ID;
+alter table spnet_provider_firm_st_history drop  FOREIGN KEY FK_SPNET_PF_ST_HIST_RVWD_BY;
+
+alter table spnet_serviceprov_st_history drop FOREIGN KEY FK_SPNET_SP_ST_HIST_WF_ID;
+alter table spnet_serviceprov_st_history drop FOREIGN KEY FK_SPNET_SP_ST_HIST_VENDOR_ID;
+alter table spnet_serviceprov_st_history drop FOREIGN KEY FK_SPNET_SP_ST_HIST_SPN_ID;
+
+alter table spnet_uploaded_electronic_doc_state_history drop FOREIGN KEY FK_spnet_uploaded_electronic_doc_state_history;
+alter table spnet_uploaded_electronic_doc_state_history drop FOREIGN KEY FK_spnet_uploaded_electronic_doc_state_history_id;
+alter table spnet_uploaded_electronic_doc_state_history drop FOREIGN KEY FK_spnet_uploaded_electronic_doc_state_history_vendor_id;

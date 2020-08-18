@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<!-- Root element -->
+	<xs:element name="withdrawCounterOfferRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="resourceIds" type="CounterOfferResources" minOccurs="0" maxOccurs="1" nillable="true"/>					
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+		
+	<xs:complexType name="CounterOfferResources">
+		 <xs:sequence>  
+      		<xs:element name="resourceId" type="xs:integer" minOccurs="1" maxOccurs="unbounded"/>  
+     	</xs:sequence>  
+	</xs:complexType>
+</xs:schema>
+
+

@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="document">
+
+	<typeAlias alias="document" type="com.newco.marketplace.dto.vo.DocumentVO"/>
+	<typeAlias alias="ap" type="com.newco.marketplace.dto.vo.ApplicationPropertiesVO"/>	
+			
+	<insert id="document.insert" parameterClass="document">
+		insert into document
+			(doc_category_id, 
+			vendor_id,
+			descr,
+			title,
+			file_name,
+			format,
+			source,
+			keywords,
+			expire_date,
+			purge_date,
+			role_id,
+			delete_ind, 
+			doc_path, 
+			doc_size,
+			entity_id,
+			created_date,
+			modified_date)			 
+		values(#docCategoryId#,
+			   #vendorId#,
+			   #description#,
+			   #title#,
+			   #fileName#,
+			   #format#,
+			   #source#,
+			   #keywords#,
+			   #expireDate#,
+			   #purgeDate#,
+			   #roleId#,
+			   0, 
+			   #docPath#, 
+			   #docSize#,
+			   #entityId#,
+			   now(),
+			   now())
+       <selectKey resultClass="int">
+            SELECT last_insert_id() as documentId
+        </selectKey>    
+	</insert>
+	
+	<update id="document.updateBlob" parameterClass="document">
+		update document
+			set document = #blobBytes#
+		where document_id = #documentId#
+	</update>
+	
+	<update id="document.update" parameterClass="document">
+		update document
+				<dynamic prepend="	set">
+				<isNotNull prepend=", " property="description">descr = #description#</isNotNull>
+				<isNotNull prepend=", " property="docCategoryId">doc_category_id = #docCategoryId#</isNotNull>
+				<isNotNull prepend=", " property="vendorId">vendor_id = #vendorId#</isNotNull>
+				<isNotNull prepend=", " property="title">title = #title#</isNotNull>
+				<isNotNull prepend=", " property="fileName">file_name = #fileName#</isNotNull>
+				<isNotNull prepend=", " property="format">format = #format#</isNotNull>
+				<isNotNull prepend=", " property="source">source = #source#</isNotNull>
+				<isNotNull prepend=", " property="keywords">keywords = #keywords#</isNotNull>
+				<isNotNull prepend=", " property="expireDate">expire_date = #expireDate#</isNotNull>
+				<isNotNull prepend=", " property="roleId">role_id = #roleId#</isNotNull>
+				<isNotNull prepend=", " property="entityId">entity_id = #entityId#</isNotNull>
+				<isNotNull prepend=", " property="delInd">del_ind = #delInd#</isNotNull>
+				<isNotNull prepend=", " property="docPath">doc_path = #docPath#</isNotNull>
+				<isNotNull prepend=", " property="docSize">doc_size = #docSize#</isNotNull>
+    		</dynamic>		
+		where document_id = #documentId#
+	</update>	
+	
+	<update id="document.delete" parameterClass="document">
+		UPDATE document
+		<dynamic prepend="	set">
+			<isNotNull prepend=", " property="documentId">delete_ind = 1</isNotNull>
+			<isNotNull prepend=", " property="docPath">doc_path = #docPath#</isNotNull>
+			<isNotNull prepend=", " property="fileName">file_name = #fileName#</isNotNull>
+		</dynamic>
+		WHERE document_Id = #documentId#
+	</update>
+	
+	<delete id="document.so_deleteAll" parameterClass="java.lang.String">
+		delete from so_document where so_id = #soId#
+	</delete>
+	
+	<delete id="document.so_delete" parameterClass="document">
+		delete from so_document where document_id= #documentId# and so_id = #soId#
+	</delete>
+	
+	<delete id="document.so_delete_docs" parameterClass="document">
+		delete from so_document where document_id= #documentId# and so_id = #soId# AND so_document_id != #maxDocId#
+	</delete>
+	
+	<select id="document.selectCount" parameterClass="document" resultClass="document">
+		SELECT COUNT(*) AS count,MAX(so_document_id) AS maxDocId FROM so_document where document_id = #documentId# and so_id = #soId#
+	</select>
+	
+	<select id="document.query_by_document_id" parameterClass="java.lang.Integer" resultClass="document">
+		
+		select doc_category_id as docCategoryId, 
+			   	document_id AS documentId,
+				vendor_id AS vendorId,
+				descr as description, 
+				title as title,
+				file_name as fileName,
+				format as format,
+				source as source, 
+				keywords as keywords, 
+				expire_date as expireDate, 
+				purge_date as purgeDate,
+				modified_date as  modifiedDate,
+				role_id as roleId,
+				delete_ind AS deleteInd,
+				doc_path as docPath,
+				doc_size as docSize,
+				created_date as createdDate,
+				entity_id as entityId
+		from document 
+		where document_id = #documentId#
+	</select>
+	
+	<select id="document.query_isvalid_extension" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT count(display_extension) from lu_document_formats_allowed where display_extension=#fileExtenstion#
+	</select>
+	
+	<select id="document.query_isvalid_extension.searsBuyer" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT count(display_extension) from document_formats_allowed where display_extension=#fileExtenstion#
+	</select>
+	
+	<select id="doc_application_properties.query" parameterClass="ap" resultClass="ap">
+		select app_key as appKey, 
+				app_value as appValue
+			from application_properties	
+	</select>
+	
+	<update id="document.updateDocPath" parameterClass="document">
+		update document
+			set doc_path = #docPath#
+		where document_id = #documentId#
+	</update>
+	
+	<select id="document.query_document_blob" parameterClass="java.lang.Integer" resultClass="document" >
+		SELECT document as blobBytes from document where document_id = #documentId#
+	</select>
+	
+	<select id="so.document.query_by_document_id" parameterClass="java.lang.Integer" resultClass="document">		
+		select d.doc_category_id as docCategoryId, 
+			   	d.document_id AS documentId,
+				d.vendor_id AS vendorId,
+				d.descr as description, 
+				d.title as title,
+				d.file_name as fileName,
+				d.format as format,
+				d.source as createdDate, 
+				d.keywords as keywords, 
+				d.expire_date as expireDate, 
+				d.purge_date as purgeDate,
+				d.modified_date as  modifiedDate,
+				d.role_id as roleId,
+				d.delete_ind AS deleteInd,
+				d.doc_path as docPath,
+				d.doc_size as docSize,
+				d.created_date as createdDate,
+				d.entity_id as entityId,
+				sd.so_id as soId,
+				so.buyer_id as companyId
+		from document d, so_document sd, so_hdr so
+		where d.document_id = #documentId#
+		and d.document_id = sd.document_id
+		and sd.so_id = so.so_id
+		and d.delete_ind = 0
+	</select>
+	
+	<select id="so.document.get_document_count" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		select count(document_id) from buyer_document where document_id = #documentId#
+	</select>
+	
+	<select id="buyer.document.query_by_document_id" parameterClass="java.lang.Integer" resultClass="document">		
+		select d.doc_category_id as docCategoryId, 
+			   	d.document_id AS documentId,
+				d.vendor_id AS vendorId,
+				d.descr as description, 
+				d.title as title,
+				d.file_name as fileName,
+				d.format as format,
+				d.source as createdDate, 
+				d.keywords as keywords, 
+				d.expire_date as expireDate, 
+				d.purge_date as purgeDate,
+				d.modified_date as  modifiedDate,
+				d.role_id as roleId,
+				d.delete_ind AS deleteInd,
+				d.doc_path as docPath,
+				d.doc_size as docSize,
+				d.created_date as createdDate,
+				d.entity_id as entityId,
+				bd.buyer_id as companyId
+		from document d, buyer_document bd
+		where d.document_id = #documentId#
+		and bd.document_id = bd.document_id
+		and d.delete_ind = 0
+	</select>
+	
+	<select id="spn.document.query_by_document_id" parameterClass="java.lang.Integer" resultClass="document">
+		
+		select doc_category_id as docCategoryId, 
+				document_id as documentId,
+				vendor_id as vendorId,
+				descr as description, 
+				title as title,
+				file_name as fileName,
+				format as format,
+				source as createdDate, 
+				keywords as keywords, 
+				expire_date as expireDate, 
+				purge_date as purgeDate,
+				modified_date as  lastUpdateTimestamp
+		from document 
+		where document_id = #documentId#
+	</select>
+	<select id="document.query_format" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT format from lu_document_formats_allowed where display_extension=#fileExtenstion#
+	</select>
+		
+	<!-- End of mappings for the buyer_document table -->
+</sqlMap>

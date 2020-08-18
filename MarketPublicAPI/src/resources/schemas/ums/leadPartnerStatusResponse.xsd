@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/ums/" 
+		xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+		targetNamespace="http://www.servicelive.com/namespaces/ums/" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		elementFormDefault="qualified">
+ <xs:include schemaLocation="../common.xsd"/>
+  <xs:element name="response">
+    <xs:complexType>
+      <xs:sequence>  
+        <xs:element name="result" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="partner_id" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="partner_name" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="partner_status" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="partner_status_reason" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="errors"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="errors">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="error" type="xs:string" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
+
+
+
+

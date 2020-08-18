@@ -1,0 +1,67 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+    <package name="releaseTiers" extends="selectProviderNetworkBase" >
+        <default-interceptor-ref name="SPNInterceptorStack"/>
+        
+	
+		<action name="spnReleaseTiers_display" class="spnReleaseTiersTabAction" method="display">
+			<!-- <result name="success">/jsp/spn/buyer/tiers/tab_release_tiers.jsp</result> -->
+			<result name="success">/jsp/spn/buyer/tiers/tab_routing_priority.jsp</result>
+		</action>
+		
+		<!--<action name="spnReleaseTiers_buttonAddTierAjax" class="spnReleaseTiersTabAction" method="buttonAddTierAjax">
+			<result name="success">/jsp/spn/buyer/tiers/subpanel_tier_results_ajax.jsp</result>
+		</action> 
+		
+		<action name="spnReleaseTiers_buttonDeleteAllAjax" class="spnReleaseTiersTabAction" method="buttonDeleteAllAjax">
+			<result name="success" type="redirectAction">
+					 <param name="actionName">spnReleaseTiers_buttonLoadTierAjax</param>
+					 <param name="spnId">${spnId}</param>
+					  <param name="spnBeingEdited">${spnBeingEdited}</param>
+					   <param name="deleteAllFlag">${deleteAllFlag}</param>
+					 <param name="parse">true</param>
+			</result>
+		</action>
+		
+		<action name="spnReleaseTiers_saveAndDone" class="spnReleaseTiersTabAction" method="saveAndDone">
+			<result name="success">/jsp/spn/buyer/tiers/save_and_done_message.jsp</result>
+		</action>
+			
+			<result name="input" type="redirectAction">
+					 <param name="actionName">spnReleaseTiers_display</param>
+					 <param name="validatefail">${validatefail}</param>
+					 <param name="parse">true</param>
+			</result>
+			<result name="success" type="redirectAction">
+	            <param name="actionName">spnMonitorNetwork_display</param>
+        	</result>   
+		</action>
+
+		<action name="spnReleaseTiers_buttonLoadTierAjax" class="spnReleaseTiersTabAction" method="buttonLoadTierAjax">
+			<result name="success">/jsp/spn/buyer/tiers/panel_edit_tiers.jsp</result>
+		</action>-->
+		
+		 <action name="spnReleaseTiers_buttonLoadTierAjax" class="spnReleaseTiersTabAction" method="buttonLoadTierAjax">
+			<result name="edit">/jsp/spn/buyer/tiers/panel_edit_priority.jsp</result>
+			<result name="view">/jsp/spn/buyer/tiers/panel_view_priority.jsp</result>
+		</action>
+		
+		<action name="spnReleaseTiers_buttonAddTierAjax" class="spnReleaseTiersTabAction" method="buttonAddTierAjax">
+			<result name="calculate">/jsp/spn/buyer/tiers/edit_routing_priority.jsp</result>
+			<result name="save">/jsp/spn/buyer/tiers/panel_view_priority.jsp</result>
+			<result name="update">/jsp/spn/buyer/tiers/get_json.jsp</result>
+			<result name="edit">/jsp/spn/buyer/tiers/panel_edit_priority.jsp</result>
+			<result name="view">/jsp/spn/buyer/tiers/panel_view_priority.jsp</result>
+			<result name="coverage">/jsp/spn/buyer/tiers/panel_coverage_details.jsp</result>
+		</action>
+		
+		<action name="spnReleaseTiers_buttonDeleteAllAjax" class="spnReleaseTiersTabAction" method="buttonDeleteAllAjax">
+			<result name="success">/jsp/spn/buyer/tiers/panel_coverage_details.jsp</result>
+			<result name="footer">/jsp/spn/buyer/tiers/panel_coverage_details_footer.jsp</result>
+		</action>
+
+    </package>
+</struts>

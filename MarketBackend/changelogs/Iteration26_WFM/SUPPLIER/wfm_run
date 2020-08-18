@@ -1,0 +1,9 @@
+mysql -usupply_usr -psupply QA_I26_1_SPN_SUPPLIER -h127.0.0.1 < wfm_tables.sql
+mysql -usupply_usr -psupply QA_I26_1_SPN_SUPPLIER -h127.0.0.1 < wfm_triggers.sql
+mysql -usupply_usr -psupply QA_I26_1_SPN_SUPPLIER -h127.0.0.1 < wfm_functions.sql
+mysql -usupply_usr -psupply QA_I26_1_SPN_SUPPLIER -h127.0.0.1 < wfm_stored_procedures.sql
+
+mysql -usupply_usr -psupply QA_I26_1_SPN_SUPPLIER -h127.0.0.1 < wfm_queue_def.sql
+mysql -usupply_usr -psupply QA_I26_1_SPN_SUPPLIER -h127.0.0.1 < wfm_updates.sql
+
+mysql -usupply_usr -psupply QA_I26_1_SPN_SUPPLIER -h127.0.0.1 -e 'call sp_wfm_queue_update_all();'

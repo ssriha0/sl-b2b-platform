@@ -1,0 +1,1 @@
+alter table buyer_reference_type add column private_ind boolean default 0;       

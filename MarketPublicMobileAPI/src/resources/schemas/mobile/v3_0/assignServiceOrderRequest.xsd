@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<!-- Root element -->
+	<xs:element name="assignOrderRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="requestFor" type="requestForType" minOccurs="1"/>
+				<xs:element name="resourceId" type="xs:integer" minOccurs="1"/>
+				<xs:element name="reassignComment" type="xs:string" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:simpleType name="requestForType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Assign" />
+			<xs:enumeration value="Reassign" />
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

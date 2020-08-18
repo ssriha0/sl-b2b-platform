@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+    <bean id="hsrOutBoundNotificationDao" class="com.newco.marketplace.persistance.daoImpl.inhomeOutBoundNotification.InHomeOutBoundNotificationDaoImpl"
+     	lazy-init="true">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	 
+    </bean>
+    
+    <bean id="inhomeOutBoundNotificationService" class="com.newco.marketplace.business.businessImpl.inhomeOutBoundNotification.InHomeOutBoundNotificationServiceImpl">
+		<property name="hsrOutBoundNotificationDao">
+			<ref bean="hsrOutBoundNotificationDao"/>
+		</property>
+	</bean>
+	
+    <bean id="inhomeOutBoundAPIService"	class="com.newco.marketplace.business.businessImpl.inhomeOutBoundNotification.InHomeOutBoundAPIServiceImpl">
+		<property name="inhomeOutBoundNotificationService">
+			<ref bean="inhomeOutBoundNotificationService"/>
+		</property>
+		<property name="inhomeOutboundNotificationClient">
+			<ref bean="inhomeOutboundNotificationClient"/>
+		</property>
+	</bean>
+	
+	<bean id="inhomeOutboundNotificationClient" class="com.newco.marketplace.inhomeoutboundnotification.service.InHomeOutBoundNotificationClient" />
+	
+	<bean id="notificationDao" class="com.newco.marketplace.persistance.daoImpl.inhomeOutBoundNotification.NotificationDaoImpl">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	 
+     </bean>	
+     
+     <bean id="notificationService" class="com.newco.marketplace.business.businessImpl.inhomeOutBoundNotification.NotificationServiceImpl">
+	 	<property name="notificationDao">
+			<ref bean="notificationDao" />
+	    </property>
+	    <property name="inhomeNotificationMapper">
+	       <ref bean="inhomeNotificationMapper"/>
+	    </property>
+	    <property name="inhomeNotificationValidator">
+	       <ref bean="inhomeNotificationValidator"/>
+	    </property>
+     </bean>
+     
+     <!-- for email -->
+     <bean id="inHomeNotificationFailureService" class="com.newco.marketplace.business.businessImpl.inhomeOutBoundNotification.InHomeNotificationFailureServiceImpl">
+		<property name="inHomeNotificationFailureDao">
+			<ref bean="inHomeNotificationFailureDao"/>
+		</property>
+	 </bean>
+	 
+	 <bean id="inHomeNotificationFailureDao" class="com.newco.marketplace.persistance.daoImpl.inhomeOutBoundNotification.InHomeNotificationFailureDaoImpl">
+		<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	
+	 </bean>
+	 
+     <bean id="inhomeNotificationMapper" class="com.servicelive.inhome.notification.mapper.NotificationServiceMapper">
+    	 <property name="notificationDao">
+			<ref bean="notificationDao" />
+	     </property>
+     </bean>
+     
+     <bean id="inhomeNotificationValidator" class="com.servicelive.inhome.notification.mapper.NotificationServiceValidator"/>
+       
+ </beans>

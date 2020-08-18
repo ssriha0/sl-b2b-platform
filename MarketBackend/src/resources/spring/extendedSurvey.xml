@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+
+	<bean id="extendedSurveyBO" class="com.newco.marketplace.business.businessImpl.survey.ExtendedSurveyBOImpl">
+		<property name="extendedSurveyDAO">
+			<ref bean="extendedSurveyDAO" />
+		</property>
+		<property name="iSystemGeneratedBO">
+			<ref bean="systemGeneratedEmailBO" />
+		</property>		
+		<property name="surveyCryptographyUtil">
+			<ref bean="surveyCryptographyUtil" />
+		</property>
+		<property name="buyerFeatureSetDAO">
+			<ref bean="buyerFeatureSetDAO" />
+		</property>
+		<property name="analyticalSurveyRating">
+			<ref bean="analyticalSurveyRating" />
+		</property>
+	</bean>
+	
+    <bean id="extendedSurveyDAO" class="com.newco.marketplace.persistence.daoImpl.survey.ExtendedSurveyDAOImpl"
+    	lazy-init="true">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	 
+    </bean>	
+    
+    <bean id="analyticalSurveyRating" class="com.newco.marketplace.business.businessImpl.survey.AnalyticalSurveyRatingBOImpl">
+		<property name="extendedSurveyDAO">
+			<ref bean="extendedSurveyDAO" />
+		</property>
+	</bean>
+</beans>

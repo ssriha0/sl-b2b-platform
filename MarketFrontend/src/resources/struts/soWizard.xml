@@ -1,0 +1,162 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="wizard" extends="ServiceLiveBase,json-default" >
+        <default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+        
+        
+    	<global-results >
+			<result name="gl_wizard_success" type="redirectAction">soWizardController?defaultTab=${defaultTab}&amp;previous=${previous}&amp;next=${next}&amp;soId=${soID}</result>
+			<result name="gl_power_buyer_success" type="redirectAction">pbController_execute?WorkFlowDisplayTab=${workFlowDisplayTab}</result>
+			<result name="error" type="redirectAction">
+				<param name="actionName">errorAction</param>
+				<param name="errorMessage">${errorMessage}</param>
+				<param name="returnURL">${returnURL}</param>
+			</result>
+		</global-results>
+		
+		<action name="sowAjaxAction" class="sowAjaxAction" method="validateZipCode"/>
+		
+		<action name="pbController_*" class="pbControllerAction" method="{1}">
+	        <result name="success"    type="tiles">base.servicelive.power_buyer</result>
+	    </action>
+			   	
+	    <action name="soWizardController" class="wizardControllerAction" >
+	        <result name="login" type="redirectAction">login.action</result>	
+	        <result name="redirectSimpleBuyerProviderSearch" type="redirectAction" >
+	        	<param name="parse">false</param>
+	        	<param name="actionName">ssoController_execute</param>
+	        	<param name="namespace">/</param>
+	        	<param name="appMode">edit_mode</param>
+	        	<param name="view">csoFindProviders</param>
+	        	<param name="SERVICE_ORDER_ID">${soID}</param>
+	        </result>   
+	        <result name="redirectSimpleBuyerProviderSearchCopy" type="redirectAction" >
+	        	<param name="parse">false</param>
+	        	<param name="actionName">ssoController_execute</param>
+	        	<param name="namespace">/</param>
+	        	<param name="appMode">copy_mode</param>
+	        	<param name="view">csoFindProviders</param>
+	        	<param name="SERVICE_ORDER_ID">${soID}</param>
+	        </result>
+	        <result type="tiles">base.servicelive.wizard</result>
+	        <result name="adminDashboard">/jsp/admin/sl_admin_dashboard.jsp</result>
+	    </action>
+	    
+	    <action name="soDocumentsAndPhotos_*" class="soDocumentsAndPhotos" method="{1}">
+	        <result name="success">/jsp/wizard/body/sections/modules/panels_scope_of_work/documentsAndPhotos_iFrame.jsp</result>	    	    
+	        <result name="wizard_review_tab">/jsp/wizard/body/sections/modules/panels_review/documentsAndPhotos_iFrame.jsp</result>	    	    
+	    </action>
+		<action name="soLoadSkuNameByCategory" class="soWizardScopeOfWorkAction" method="loadSKUNameByCategoryId">
+	       <result name="success">/jsp/wizard/body/sections/modules/panels_scope_of_work/panel_select_sku_category.jsp</result>	
+	        <result type="redirectAction" name="serviceOrderMonitor">serviceOrderMonitor?displayTab=Draft</result>  
+	        <result type="redirectAction" name="serviceOrderMonitorPosted">serviceOrderMonitor?displayTab=Posted</result>  
+	        <result type="redirectAction" name="dashboardAction">dashboardAction</result> 	    	    
+	    </action>
+	    
+	    
+	    <action name="soLoadSkuDetailsBySkuId" class="soWizardScopeOfWorkAction" method="loadSKUDetailsBySkuId">
+	       <result name="success">/jsp/wizard/body/sections/modules/panels_scope_of_work/panel_sku_detail_by_skuId.jsp</result>	
+	        <result type="redirectAction" name="serviceOrderMonitor">serviceOrderMonitor?displayTab=Draft</result>  
+	        <result type="redirectAction" name="serviceOrderMonitorPosted">serviceOrderMonitor?displayTab=Posted</result>  
+	        <result type="redirectAction" name="dashboardAction">dashboardAction</result> 	    	    
+	    </action>
+
+	    <action name="soWizardScopeOfWorkCreate_*" class="soWizardScopeOfWorkAction" method="{1}">
+	        <result name="success">/jsp/wizard/body/sections/modules/tab_scope_of_work.jsp</result>	
+	        <result type="redirectAction" name="serviceOrderMonitor">serviceOrderMonitor?displayTab=Draft</result>  
+	        <result type="redirectAction" name="serviceOrderMonitorPosted">serviceOrderMonitor?displayTab=Posted</result>  
+	        <result type="redirectAction" name="dashboardAction">dashboardAction</result>  
+	    </action>
+	    
+	    <action name="soWizardAdditionalInfoCreate_*" class="soWizardAdditionalInfoAction" method="{1}">
+	        <result name="success">/jsp/wizard/body/sections/modules/tab_additional_info.jsp</result>
+	        <result type="redirectAction" name="serviceOrderMonitor">serviceOrderMonitor?displayTab=Draft</result>  
+	        <result type="redirectAction" name="serviceOrderMonitorPosted">serviceOrderMonitor?displayTab=Posted</result>  
+	        <result type="redirectAction" name="dashboardAction">dashboardAction</result> 	        	    	    
+	    </action>
+	    <action name="soWizardPartsCreate_*" class="soWizardPartsAction" method="{1}">
+	        <result name="success">/jsp/wizard/body/sections/modules/tab_parts.jsp</result>
+	        <result type="redirectAction" name="serviceOrderMonitor">serviceOrderMonitor?displayTab=Draft</result>  
+	        <result type="redirectAction" name="serviceOrderMonitorPosted">serviceOrderMonitor?displayTab=Posted</result>  
+	        <result type="redirectAction" name="dashboardAction">dashboardAction</result> 	     
+	    </action>
+	    <action name="soWizardProvidersCreate_*" class="soWizardProvidersAction" method="{1}">
+	        <result name="success">/jsp/wizard/body/sections/modules/tab_providers.jsp</result>	 
+	        <result type="redirectAction" name="serviceOrderMonitor">serviceOrderMonitor?displayTab=Draft</result>  
+	        <result type="redirectAction" name="serviceOrderMonitorPosted">serviceOrderMonitor?displayTab=Posted</result>  
+	        <result type="redirectAction" name="dashboardAction">dashboardAction</result> 
+	    </action>
+	    <action name="soWizardPricingCreate_*" class="soWizardPricingAction" method="{1}">
+	        <result name="success">/jsp/wizard/body/sections/modules/tab_pricing.jsp</result>
+	        <result type="redirectAction" name="serviceOrderMonitor">serviceOrderMonitor?displayTab=Draft</result>  
+	        <result type="redirectAction" name="serviceOrderMonitorPosted">serviceOrderMonitor?displayTab=Posted</result>  
+	        <result type="redirectAction" name="dashboardAction">dashboardAction</result> 	  
+	    </action>
+	    <action name="soWizardReviewCreate_*" class="soWizardReviewAction" method="{1}">
+	        <result name="success">/jsp/wizard/body/sections/modules/tab_review.jsp</result>
+	        <result type="redirectAction" name="serviceOrderMonitor">serviceOrderMonitor</result>  
+	        <result type="redirectAction" name="serviceOrderMonitorDraft">serviceOrderMonitor?displayTab=Draft</result>  
+	        <result type="redirectAction" name="serviceOrderMonitorPosted">serviceOrderMonitor?displayTab=Posted</result>  
+	        <result type="redirectAction" name="dashboardAction">dashboardAction</result> 	   
+	    </action>
+	    	    
+
+
+	    <action name="soWizardScopeOfWork_*" class="soWizardScopeOfWorkAction" method="{1}">
+	        <result type="redirectAction">soWizardController&amp;soId=${soID}</result>  
+	        <result type="redirectAction" name="serviceOrderMonitor">serviceOrderMonitor</result>      
+	    </action>
+	    <action name="soWizardAdditionalInfo_*" class="soWizardAdditionalInfoAction"  method="{1}">
+	        <result type="redirectAction">soWizardController&amp;soId=${soID}</result> 
+	    </action>
+	    <action name="soWizardParts_*" class="soWizardPartsAction"  method="{1}">
+	        <result type="redirectAction">soWizardController&amp;soId=${soID}</result> 	    
+	    </action>
+	    <action name="soWizardProviders_*" class="soWizardProvidersAction"  method="{1}">
+	        <result type="redirectAction">soWizardController&amp;soId=${soID}</result>
+	    </action>
+	    <action name="soWizardPricing_*" class="soWizardPricingAction"  method="{1}">
+	        <result type="redirectAction">soWizardController&amp;soId=${soID}</result>     	    
+	    </action>
+	    <action name="soWizardReview_*" class="soWizardReviewAction" method="{1}">
+	        <result type="redirectAction">soWizardController&amp;soId=${soID}</result>    
+	    </action>
+	    
+	     <action name="refineProviderList_*" class="soWizardRefineProvidersAction" method="{1}">
+	        <result type="redirectAction">soWizardController&amp;soId=${soID}</result>
+	        <result name="input">soWizardController&amp;soId=${soID}</result>   
+	    </action> 
+	    
+	     <action name="credentialCategory" class="soWizardRefineProvidersAction" method="credentialCategory">
+	        <result>jsp/wizard/body/sections/modules/filter_available_providers.jsp</result>    
+	    </action>
+	    <action name="soWizardSupport" class="soWizardSupportAction" >
+	        <result name="success">/jsp/public/support/support_main.jsp</result>    
+	    </action>
+	    <action name="fetchRoutingPriorities" class="wizardControllerAction" method="fetchRoutingPriorities">
+			<result name="json" type="json">  
+			<param name="excludeProperties">
+			 		orderGroupDelegate,
+			 		soDetailsManager,
+			 		soMonitorDelegate,
+			 		buyerFeatureSetBO,
+			 		orderFulfillmentHelper
+			 	</param>
+			 	</result>  
+		</action>
+		<action name="isSOEdited" class="wizardControllerAction" method="isSOEdited">
+			<result name="json" type="json">  
+			<param name="excludeProperties">
+			 		orderGroupDelegate,
+			 		soDetailsManager,
+			 		soMonitorDelegate,
+			 		buyerFeatureSetBO,
+			 		orderFulfillmentHelper
+			 	</param>
+			 	</result>  
+		</action>
+    </package>
+    
+</struts>

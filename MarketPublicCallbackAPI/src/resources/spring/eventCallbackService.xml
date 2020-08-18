@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<bean id="eventCallbackService" class="com.newco.marketplace.api.service.EventCallbackService">
+	 	 <property name="eventCallbackBO">
+    		<ref bean="eventCallbackBO"/>
+  		</property>  
+
+    </bean>
+   
+	<bean id="eventCallbackBO" class="com.newco.marketplace.business.businessImpl.EventCallbackBOImpl">
+	    <property name="eventCallbackDao">
+	    	<ref bean="eventCallbackDao"/>
+	    </property>
+    </bean>    
+    
+    <bean id="eventCallbackDao" class="com.newco.marketplace.persistence.daoImpl.EventCallbackDaoImpl">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	 
+    </bean>
+	
+</beans>

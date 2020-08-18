@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+	"http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<bean id="LoggingProcess" class="com.newco.marketplace.api.mobile.security.LoggingProcess">
+		<property name="loggerBoImpl">
+			<ref bean="LoggerBoImpl" />
+		</property>
+	</bean>
+
+	<bean id="AuthenticationProcess" class="com.newco.marketplace.api.mobile.security.AuthenticationProcess">
+		<property name="loginBOImpl">
+			<ref bean="loginBOImpl" />
+		</property>
+	</bean>
+
+	<bean id="AuthorizationProcess" class="com.newco.marketplace.api.mobile.security.AuthorizationProcess">
+		<property name="loginBOImpl">
+			<ref bean="loginBOImpl" />
+		</property>
+	</bean>
+
+</beans>

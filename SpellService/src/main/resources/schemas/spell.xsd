@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by Shekhar (Servicelive) -->
+<xs:schema xmlns="http://www.servicelive.com/namespaces/spell" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.servicelive.com/namespaces/spell" elementFormDefault="qualified">
+	<!-- Root element -->
+	<xs:element name="spelling">
+		<xs:complexType>
+			<xs:sequence>		
+				<xs:element name="word" type="xs:string" minOccurs="0" maxOccurs="50"/>
+			</xs:sequence>
+			<xs:attribute name="correct" type="xs:boolean"/>
+		</xs:complexType>
+	</xs:element>	
+</xs:schema>

@@ -1,0 +1,2881 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="spn">
+
+	<typeAlias alias="spnHdr"
+		type="com.newco.marketplace.dto.vo.spn.SPNHeaderVO" />
+	<typeAlias alias="spnetHdr"
+		type="com.newco.marketplace.dto.vo.spn.SPNetHeaderVO" />
+	<typeAlias alias="spnNetworkResource"
+		type="com.newco.marketplace.dto.vo.spn.SPNNetworkResourceVO" />
+	<typeAlias alias="spnSummary"
+		type="com.newco.marketplace.dto.vo.spn.SPNSummaryVO" />
+	<typeAlias alias="spnBuyerModalDoc"
+		type="com.newco.marketplace.dto.vo.spn.SPNDocumentVO" />
+	<typeAlias alias="spnNoInvite"
+		type="com.newco.marketplace.dto.vo.spn.SPNInvitationNoInterestVO" />
+	<typeAlias alias="spnCampaign"
+		type="com.newco.marketplace.dto.vo.spn.SPNCampaignVO" />
+		
+	<typeAlias alias="document"
+		type="com.newco.marketplace.dto.vo.DocumentVO" />
+	<typeAlias alias="spnCriteria"
+		type="com.newco.marketplace.dto.vo.spn.SPNCriteriaDBVO" />
+	
+	<typeAlias alias="spnMemberSearchRequest"
+		type="com.newco.marketplace.dto.vo.spn.SPNMemberSearchRequestVO" />
+			
+	<typeAlias alias="spnMemberSearchResults"
+		type="com.newco.marketplace.dto.vo.spn.SPNMemberSearchResultVO" />
+			
+	<typeAlias alias="spnProProfileBuyer"
+		type="com.newco.marketplace.dto.vo.spn.SPNProviderProfileBuyerVO" />	
+		
+	<typeAlias alias="spnProProfile"
+		type="com.newco.marketplace.dto.vo.spn.SPNProviderProfileVO" />		
+	<typeAlias alias="spnMonitorVO"
+		type="com.newco.marketplace.dto.vo.spn.SPNMonitorVO" />
+	
+	<typeAlias alias="spnetComm"
+		type="com.newco.marketplace.dto.vo.spn.SPNetCommMonitorVO" />	
+	
+	<typeAlias alias="spnAprovalCriteria" type="com.newco.marketplace.dto.vo.spn.SPNApprovalCriteriaVO"/>	
+	<typeAlias alias="providerAprovalMatchCriteria" type="com.newco.marketplace.dto.vo.spn.ProviderMatchApprovalCriteriaVO"/>
+	<typeAlias alias="providercounts" type="com.newco.marketplace.dto.vo.spn.ProviderMatchingCountsVO"/>
+	<typeAlias alias="spnProviderRequirementsVO" type="com.newco.marketplace.dto.vo.spn.SPNProviderRequirementsVO"/>
+	<typeAlias alias="lookupVO"	type="com.newco.marketplace.dto.vo.LookupVO" />
+	<typeAlias alias="tierReleaseVO" type="com.newco.marketplace.dto.vo.spn.SPNetTierReleaseVO" />
+	<typeAlias alias="spnComplianceVO" type="com.newco.marketplace.dto.vo.spn.SPNComplianceVO"/>
+	<typeAlias alias="complianceCriteriaVO" type="com.newco.marketplace.dto.vo.spn.ComplianceCriteriaVO"/>
+	<typeAlias alias="spnExclusions" type="com.newco.marketplace.dto.vo.spn.SPNExclusionsVO"/>
+	
+	<typeAlias alias="searchBackgroundInformationVO"
+		type="com.newco.marketplace.dto.vo.spn.SearchBackgroundInfoProviderVO" />
+	<typeAlias alias="backgroundInformationVO"
+		type="com.newco.marketplace.dto.vo.spn.BackgroundInfoProviderVO" />
+	<typeAlias alias="backgroundHistVO" type="com.newco.marketplace.dto.vo.spn.BackgroundCheckHistoryVO"/>
+	
+	<parameterMap id="spn_id_and_prov_firm_id" class="java.util.Map">
+        <parameter property="spn_id"/>
+		<parameter property="prov_firm_id"/>
+    </parameterMap>
+	
+	<parameterMap id="spn_id_and_resource_id" class="java.util.Map">
+        <parameter property="spn_id"/>
+		<parameter property="resource_id"/>
+    </parameterMap>
+    
+    <parameterMap id="spn_id_and_status_id" class="java.util.Map">
+        <parameter property="spn_id"/>
+		<parameter property="spn_status_id"/>
+    </parameterMap>
+    
+    <parameterMap id="spn_id_and_document_id" class="java.util.Map">
+        <parameter property="spn_id"/>
+		<parameter property="document_id"/>
+    </parameterMap>
+    
+    <parameterMap id="spn_network_insert" class="java.util.Map">
+    	<parameter property="spn_id"/>
+		<parameter property="resource_id"/>
+		<parameter property="spn_status_id"/>
+    </parameterMap>
+    
+   <parameterMap id="pro_profile_spn" class="java.util.Map">
+		<parameter property="resource_id"/>
+		<parameter property="interested"/>
+		<parameter property="member"/>
+		<parameter property="inactive"/>
+    </parameterMap>
+    
+    <resultMap class="spnHdr" id="spnHdr.resultmap">
+		<result property="spnId" column="spnId" />
+		<result property="buyerId" column="buyerId" />
+		<result property="name" column="name" />
+		<result property="contactName" column="contactName" />
+		<result property="contactEmail" column="contactEmail" />
+		<result property="instruction" column="instruction" />
+		<result property="description" column="description" />
+		<result property="criteriaDescr" column="criteriaDescr"/>
+		<result property="spnLockedInt" column="spnLockedInt"/>
+		<result property="docRequiredInt" column="docRequiredInt" />		
+		<result property="spnRelatedDocumentIds" column="spnId" select="spn_ref_docs.query" />
+	</resultMap>
+	
+	<resultMap class="spnetHdr" id="spnetHdr.resultmap">
+		<result property="spnId" column="spn_id" />
+		<result property="contactEmail" column="contact_email" />
+		<result property="contactName" column="contact_name" />
+		<result property="contactPhone" column="contact_phone" />
+		<result property="spnDescription" column="spn_description" />
+		<result property="spnName" column="spn_name" />
+		<result property="effectiveDate" column="effective_date" />
+		<result property="isAlias" column="is_alias" />
+		<result property="aliasOrigSpnId" column="alias_original_spn_id" />
+		<result property="isMPOverflow" column="mp_overflow" />
+	</resultMap>
+	
+	<resultMap class="spnProProfileBuyer" id="spnProviderProfile.resultmap">
+		<result property="companyName" column="companyName" />
+		<result property="buyerId" column="buyerId" />
+		<result property="providerSPNList" column="{byrId=buyerId, proId=resourceId}" select="spn_pro.query" />
+	</resultMap>
+    
+    <resultMap class="spnMemberSearchResults" id="spnMemberResults.resultmap"> 
+	    <result property="vendorId" column="vendorId" />
+		<result property="resourceId" column="resourceId" />
+		<result property="spnNetworkId" column="spnNetworkId" />
+		<result property="firstName" column="firstName" />
+	    <result property="lastName" column="lastName" />
+	    <result property="spnStatusId" column="spnStatusId" />
+	    <result property="servideOrdersCompleted" column="servideOrdersCompleted" />
+	    <result property="resourceZip" column="resourceZip" />
+	    <result property="marketId" column="marketId" />
+	    <result property="hasDocsInt" column="spnNetworkId" select="spn_network_doc_cnt.query" />
+	    <result property="documents" column="spnNetworkId" select="spn_network_docs.query"/>
+	</resultMap>
+	
+	<typeAlias alias="spnMainMonitorVO"
+		type="com.newco.marketplace.dto.vo.spn.SPNMainMonitorVO" />
+	<typeAlias alias="spnDocuments"
+		type="com.newco.marketplace.dto.vo.spn.SPNDocumentVO" />
+	<typeAlias alias="spnAgreeDocuments"
+		type="com.newco.marketplace.dto.vo.spn.SPNAgreeDocumentVO" />
+	<typeAlias alias="spnSignAndReturnDocuments"
+		type="com.newco.marketplace.dto.vo.spn.SPNSignAndReturnDocumentVO" />
+	<typeAlias alias="spnApprovalCriteriaVO"
+		type="com.newco.marketplace.dto.vo.spn.SPNApprovalCriteriaVO" />
+	<typeAlias alias="spnProvUploadedDocsVO"
+		type="com.newco.marketplace.dto.vo.spn.SPNProvUploadedDocsVO" />
+	
+	<resultMap class="spnMainMonitorVO" id="spn.resultsmap">
+	   	<result property="spnId" column="sh.spn_id" />
+	   	<result property="vendorId" column="provider_firm_id" />
+		<result property="buyerName" column="business_name" />
+		<result property="spnName" column="spn_name" />
+		<result property="membershipStatus" column="membership_status" />
+		<result property="providerFirmState" column="lsws.id" />
+		<result property="message" column="descr" />
+		<result property="buyerId" column="sb.buyer_id" />
+		<result property="contactEmail" column="sh.contact_email" />
+		<result property="contactName" column="sh.contact_name" />
+		<result property="contactPhone" column="sh.contact_phone" />
+		<result property="agreementInd" column="spfs.agreement_ind" />
+		<result property="spnDescription" column="sh.spn_description" />
+		<result property="spnInstruction" column="sh.spn_instruction" />
+		<result property="aliasSPNId" column="aliasSPNId" />
+		<result property="aliasEffectiveDate" column="aliasEffectiveDate" />
+		<result property="isAliasEffective" column="isAliasEffective" />
+		<result property="hasAlias" column="hasAlias" />
+		<result property="isAlias" column="isAlias" />
+		<result property="aliasProviderFirmState" column="aliasProviderFirmState" />
+		<result property="membershipStatusIndex" column="membershipStatusIndex" />
+		<result property="auditRequired" column="spfs.audit_required"/>
+	</resultMap>
+	
+	
+	<resultMap class="spnMainMonitorVO" id="spn.resultsmap.all" extends="spn.resultsmap">
+		<result property="spnDocuments" column="sh.spn_id"
+				select="spndocuments.query" />
+		<result property="spnAgreeDocuments" column="{spnId =sh.spn_id,vendorId = provider_firm_id}"
+				select="spnAgreeDocuments.query" />
+		<result property="spnSignAndReturnDocuments" column="{spnId =sh.spn_id,vendorId = provider_firm_id,buyerId = sb.buyer_id}"
+				select="spnSignAndReturnDocuments.query" />
+		<result property="spnApprovalCriteria" column="sh.spn_id"
+				select="getApprovalCriteriaForSPN.query" />
+		<result property="spnProvUploadedDocs" column="{spnId =sh.spn_id,vendorId = provider_firm_id,buyerId = sb.buyer_id}"
+				select="getProviderUplDocForSPN.query" />	
+	</resultMap>
+	<resultMap class="spnDocuments" id="spnInfoDocs.resultsmap">
+		<result property="docId" column="doc.document_id" />
+		<result property="docDescr" column="doc.descr" />
+	   	<result property="documentTitle" column="doc.title" />
+		<result property="format" column="doc.format" />
+		<result property="docTypeId" column="spdoc.doc_type_id" />		
+	</resultMap>
+	
+	<resultMap class="spnDocuments" id="spndocuments.resultsmap">
+		<result property="docId" column="doc.document_id" />
+	   	<result property="spnId" column="sh.spn_id" />
+		<result property="docTypeId" column="spnetDoc.doc_type_id" />
+		<result property="docTypeDescription" column="luSpnDoctype.descr" />
+		<result property="documentTitle" column="doc.title" />
+		<result property="fileName" column="doc.file_name" />
+		<result property="format" column="doc.format" />		
+	</resultMap>
+	
+	<resultMap class="spnAgreeDocuments" id="spnAgreeDocuments.resultsmap">
+		<result property="docId" column="spnetDoc.document_id" />
+	   	<result property="spnId" column="spnetDoc.spn_id" />
+	   	<result property="documentTitle" column="doc.title" />
+		<result property="docStateId" column="spnetElecSig.doc_state_id" />
+		<result property="modifiedDate" column="spnetElecSig.modified_date" />
+	</resultMap>
+	
+	<resultMap class="spnSignAndReturnDocuments" id="spnSignAndReturndocuments.resultsmap">
+		<result property="docId" column="spnetDoc.document_id" />
+	   	<result property="spnId" column="spnetDoc.spn_id" />
+		<result property="documentTitle" column="doc.title" />
+		<result property="fileName" column="doc.file_name" />
+		<result property="format" column="doc.format" />
+		<result property="auditorComments" column="spnetDocState.comments" />
+		<result property="auditedDate" column="spnetDocState.audited_date" />
+		<result property="auditedBy" column="spnetDocState.audited_by" />
+		<result property="pageNo" column="spnetDocState.page_no" />
+		<result property="buyerDocFormatDescription" column="spnetDoc.document_id" 
+				select="spnDocumentFormatDescription.query"/>	
+	</resultMap>
+	
+	<resultMap class="spnApprovalCriteriaVO" id="spnapprovalcriteria.resultsmap">
+		<result property="id" column="cac.id" />
+	   	<result property="criteriaId" column="lc.id" />
+		<result property="criteriaDesc" column="lc.descr" />
+		<result property="criteriaLevel" column="lc.criteria_level" />
+		<result property="criteriaValue" column="cac.value" />
+		<result property="spnId" column="cac.spn_id" />	
+	</resultMap>
+	
+	<resultMap class="spnProvUploadedDocsVO" id="provuploadeddocforspn.resultsmap">
+		<result property="spnId" column="spnetDoc.spn_id" />
+	   	<result property="spnBuyerDocId" column="spnUplDocSt.spn_doc_id" />
+		<result property="provFirmUplDocId" column="spnUplDocSt.prov_firm_upld_doc_id" />
+		<result property="vendorId" column="spnUplDocSt.prov_firm_id" />
+		<result property="docStateId" column="spnUplDocSt.doc_state_id" />
+		<result property="docStateDesc" column="luSPNDocst.descr" />
+		<result property="docDescription" column="doc.descr" />
+		<result property="docFileName" column="doc.file_name" />
+		<result property="docTitle" column="doc.title" />
+		<result property="docFormat" column="doc.format" />
+		<result property="docFormatDescription" column="spnUplDocSt.prov_firm_upld_doc_id" 
+				select="spnDocumentFormatDescription.query"/>		
+	</resultMap>
+	
+	<resultMap class="spnMainMonitorVO" id="spnInvitationDetails.resultsmap">
+		<result property="spnId" column="hdr.spn_id" />
+		<result property="vendorId" column="spnetCampInv.prov_firm_id" />
+		<result property="buyerId" column="spnetBuy.buyer_id" />
+		<result property="spnName" column="hdr.spn_name" />
+		<result property="spnInstruction" column="hdr.spn_instruction" />
+		<result property="spnDescription" column="hdr.spn_description" />
+		<result property="contactName" column="hdr.contact_name" />
+		<result property="contactEmail" column="hdr.contact_email" />
+		<result property="contactPhone" column="hdr.contact_phone" />
+		<result property="spnDocuments" column="hdr.spn_id"
+				select="spnInvitationDocsDetails.query" />
+		<result property="spnSignAndReturnDocuments" column="{vendorId=spnetCampInv.prov_firm_id,buyerId =spnetBuy.buyer_id,spnId=hdr.spn_id}"
+				select="spnSignAndReturnDocuments.query" />
+		<result property="spnProvUploadedDocs" column="{vendorId=spnetCampInv.prov_firm_id,buyerId =spnetBuy.buyer_id,spnId=hdr.spn_id}"
+				select="getProviderUplDocForSPN.query" />
+	</resultMap>
+	
+	<resultMap class="spnDocuments" id="spnInvitationDocsDetails.resultsmap">
+		<result property="docId" column="doc.document_id" />
+		<result property="docDescr" column="doc.descr" />
+	   	<result property="documentTitle" column="doc.title" />
+		<result property="format" column="doc.format" />
+		<result property="docTypeId" column="spnetDoc.doc_type_id" />		
+	</resultMap>
+		
+	<resultMap id="spnApprovalCriteriaResultMap" class="spnAprovalCriteria">
+		<result property="spnId" column="spnId" />
+		<result property="criteriaValue" column="value" />
+		<result property="id" column="id" />
+		<result property="criteriaId" column="criteriaId" />
+		<result property="criteriaDesc" column="criteriaDesc" />
+		<result property="criteriaLevel" column="criteriaLevel" />
+	</resultMap>	
+	<sql id="networkResourceSelect">
+		select sn.spn_network_id as spnNetworkId,
+			   sn.spn_id as spnId,
+			   sn.resource_id as resourceId,
+			   sn.spn_status_id as spnStatusId,
+			   sn.invite_datetime as inviteDate,
+			   sn.application_datetime as applicationDate,
+			   sn.member_datetime as memberDate,
+			   sn.last_inactive_datetime as lastInactiveDate,
+			   sn.removed_datetime as removedDate,
+			   sn.skill_percent_match as skillPercentMatch,
+			   sn.resource_zipcode as resourceZip
+		  from spn_network sn
+	</sql>
+	
+	<sql id="spnHeaderSelect">
+		select sh.spn_id as spnId,
+		   	   sh.buyer_id as buyerId,
+			   sh.name as name, 
+			   sh.contact_name as contactName,
+			   sh.contact_email as contactEmail,
+			   sh.spn_instruction as instruction,
+			   sh.spn_descr as description,
+			   sh.doc_required_ind docRequiredInt,
+			   sh.spn_locked_ind as spnLockedInt,
+			   sh.criteria_descr as criteriaDescr
+		  from spn_hdr sh
+	</sql>
+	
+	<select id="spn_header_by_spn_id.query" parameterClass="java.lang.Integer" resultMap="spnHdr.resultmap">
+		<include refid="spnHeaderSelect"/>
+		where sh.spn_id = #spnId#
+	</select>
+	
+	<select id="spn_network_resource_by_spn_id_and_resource_id.query" parameterMap="spn_id_and_resource_id" resultClass="spnNetworkResource">
+		<include refid="networkResourceSelect"/>
+		where sn.spn_id = ?
+		  and sn.resource_id = ?
+	</select>
+	
+	<select id="spn_network_resource_by_spn_id_and_status.query" parameterMap="spn_id_and_status_id" resultClass="spnNetworkResource">
+		<include refid="networkResourceSelect"/>
+		where sn.spn_id = ?
+		  and sn.spn_status_id = ?
+	</select>
+	
+	<select id="spn_hdr_summary_by_buyer.query" parameterClass="java.lang.Integer" resultClass="spnSummary">
+		select sh.spn_id as spnId, 
+		       sh.name as name, 
+			   IFNULL(sns_10.cnt,0) as invitedCnt,
+	   		   IFNULL(sns_20.cnt,0) as applicantCnt,
+	   		   IFNULL(sns_30.cnt,0) as notInterestedCnt,
+	   		   IFNULL(sns_40.cnt,0) as memberCnt,
+	   		   IFNULL(sns_50.cnt,0) as inactiveCnt,
+	   		   IFNULL(sns_60.cnt,0) as removedCnt
+  		  from spn_hdr sh
+  		  left outer join spn_network_summary sns_10 on sh.spn_id = sns_10.spn_id and sns_10.spn_status_id = 10
+  		  left outer join spn_network_summary sns_20 on sh.spn_id = sns_20.spn_id and sns_20.spn_status_id = 20
+		  left outer join spn_network_summary sns_30 on sh.spn_id = sns_30.spn_id and sns_30.spn_status_id = 30
+		  left outer join spn_network_summary sns_40 on sh.spn_id = sns_40.spn_id and sns_40.spn_status_id = 40
+		  left outer join spn_network_summary sns_50 on sh.spn_id = sns_50.spn_id and sns_50.spn_status_id = 50
+		  left outer join spn_network_summary sns_60 on sh.spn_id = sns_60.spn_id and sns_60.spn_status_id = 60
+		 where sh.buyer_id = #buyerId#
+		 order by sh.spn_id
+	</select>
+	<select id="spn_no_invite.query" resultClass="spnNoInvite">
+		select id as reasonId,reason as reason from lu_spnet_opt_out_reasons
+	</select>
+	<select id="spn_buyer_agreement_document.query" parameterClass="java.lang.Integer" resultClass="spnBuyerModalDoc">
+		select hdr.spn_name as spnName,buy.business_name as buyerName ,doc.document_id as docId,doc.title as documentTitle, doc.file_name as fileName,sdoc.spn_id as spnId from spnet_document sdoc, document doc ,spnet_hdr hdr,spnet_buyer sbuyer,buyer buy where hdr.spn_id=sdoc.spn_id and sdoc.spn_id= #spnID# and 
+		sdoc.doc_type_id=2 and sdoc.document_id=doc.document_id and sbuyer.spn_id=hdr.spn_id and sbuyer.buyer_id=buy.buyer_id and 
+		doc.doc_category_id=6
+	</select>
+	<select id="spn_buyer_agreement_retrieve_document.query" parameterClass="java.lang.Integer" resultClass="spnBuyerModalDoc">
+		select document_id as docId, file_name as fileName, format as format from document where document_id=#docID#
+	</select>
+	<select id="spn_buyer_agreement_retrieve_state.query" parameterClass="spnBuyerModalDoc" resultClass="java.lang.String">
+		select provider_wf_state from spnet_provider_firm_state where spn_id = #spnId# and provider_firm_id=#firmId#
+	</select>
+	<insert id="spn_submit_buyer_agreement.insert" parameterClass="spnBuyerModalDoc">
+		insert into spnet_uploaded_electronic_doc_state (spn_doc_id, prov_firm_id, doc_state_id, modified_by, 
+			created_date, modified_date) values (#docId#, #firmId#, #state#, #modifiedBy#, #time#, #time#) 
+	</insert>
+	<delete id="spn_submit_buyer_agreement.delete" parameterClass="spnBuyerModalDoc">
+		delete from spnet_uploaded_electronic_doc_state where spn_doc_id = #docId# and prov_firm_id = #firmId#
+	</delete>
+	<update id="spn_provider_firm_state.update" parameterClass="spnBuyerModalDoc" >
+		update spnet_provider_firm_state set
+		  provider_wf_state = #state#,
+		  app_submission_date=#time#,
+		  agreement_ind=1
+		   <isNotNull prepend=", " property="actionMappingId">
+			status_update_action_id  = #actionMappingId#
+		  </isNotNull>
+		  where spn_id = #spnId# and provider_firm_id=#firmId#
+	</update>
+	<update id="spn_provider_firm_state_interested.update" parameterClass="spnBuyerModalDoc" >
+		update spnet_provider_firm_state set
+		  provider_wf_state = #state#
+		  <isNotNull prepend=", " property="actionMappingId">
+			status_update_action_id  = #actionMappingId#
+		  </isNotNull>
+		 where spn_id = #spnId# and provider_firm_id=#firmId#
+	</update>
+	<update id="spn_provider_firm_state_reject.update" parameterClass="spnBuyerModalDoc" >
+		update spnet_provider_firm_state set
+		  provider_wf_state = #state#,
+		  opt_out_reason_code=#rejectId#,
+		  opt_out_comment=#rejectReason#
+		   <isNotNull prepend=", " property="actionMappingId">
+			status_update_action_id  = #actionMappingId#
+		  </isNotNull>
+		  where spn_id = #spnId# and provider_firm_id=#firmId#
+	</update>
+	
+	<select id="spn_ref_docs.query" parameterClass="java.lang.Integer" resultClass="document">
+		select d.document_id as documentId,
+		       d.title as title,
+		       d.descr as description
+		  from spn_document sd
+		  join document d on sd.document_id = d.document_id
+		 where spn_id = #spnId#  
+	</select>
+	
+	<select id="spn_criteria_by_spn_id.query" parameterClass="java.lang.Integer" resultClass="spnCriteria">
+		select spn_id as spnId, 
+		       criteria_id as criteriaId, 
+		       spn_criteria_type_id as criteriaTypeId,
+		       field1 as field1, 
+		       field2 as field2, 
+		       field3 as filed3, 
+		       field4 as field4,
+		       field5 as field5,
+		       field6 as field6,
+		       field7 as field7,
+		       field8 as field8,
+		       field9 as field9,
+		       field10 as field10, 
+		       field11 as field11Int,
+		       field12 as field12Int,
+		       field13 as field13Int,
+		       field14 as field14Int,
+		       field15 as field15Int
+		  from spn_criteria
+		 where spn_id = #spnId#
+		 order by spn_criteria_type_id
+	</select>
+	
+	<select id="spn_campaigns.query" parameterClass="java.lang.Integer" resultClass="spnCampaign">
+	select spc.spn_id as spnId,
+		spc.market_id as marketId,
+		spc.start_date as campaignStateDate,
+		spc.end_date as campaignEndDate,
+		spc.provider_match_count as totalProviderCnt,
+		ifnull(lm.market_name,'All Markets') as marketName,
+		spc.all_markets as allMarkets,
+		spc.spn_campaign_id as campaignId
+	from
+		spn_campaigns spc
+			join spn_hdr sph 			  on(spc.spn_id = sph.spn_id)
+			left outer join lu_market lm  on(spc.market_id = lm.market_id)
+	where spc.spn_id 		= #spnId# and
+   		  spc.delete_ind	= 0  
+   		  order by spc.created_date desc
+	</select>
+	
+	<select id="spn_provider_network.query" resultClass="spnHdr">
+		select 
+			spn_hdr.spn_id as spnId,
+			CONCAT('(',buyer.business_name ,')',spn_hdr.name) as spnName
+		from 
+			spn_hdr
+			join buyer on (spn_hdr.buyer_id = buyer.buyer_id)
+	</select>
+	
+	<select id="spn_active_campaigns.query"  resultClass="spnCampaign">
+		select spc.spn_id as spnId,
+			spc.market_id as marketId,
+			spc.start_date as campaignStateDate,
+			spc.end_date as campaignEndDate,
+			spc.provider_match_count as totalProviderCnt,
+			spc.all_markets as allMarkets,
+			spc.spn_campaign_id as campaignId
+		from
+			spn_campaigns spc
+		where (now() >= spc.start_date and now() &lt;= spc.end_date)
+		  and spc.delete_ind = 0  
+	</select>
+	
+	<select id="spn_provider_profile_buyers.query" parameterClass="java.lang.Integer"  resultMap="spnProviderProfile.resultmap">
+		select sn.spn_id as spnId, 
+ 			   byr.business_name as companyName,
+ 			   byr.buyer_id as buyerId,
+ 			   sn.resource_id as resourceId,
+ 			   sn.member_datetime as membershipDate
+		from
+			spn_network sn
+			join spn_hdr sh on sn.spn_id = sh.spn_id
+			join buyer byr on byr.buyer_id = sh.buyer_id
+		where sn.resource_id = #id# 
+		group by sh.buyer_id
+		order by sh.buyer_id 
+	</select>	
+	
+	<select id="spn_member_search_by_status_count.query" parameterClass="spnMemberSearchRequest" resultClass="java.lang.Integer">
+		select count(sn.spn_network_id)
+		from spn_network sn
+		join vendor_resource vr on sn.resource_id = vr.resource_id
+		join location l on vr.locn_id = l.locn_id
+		join contact c on vr.contact_id = c.contact_id
+		join lu_zip_market lzm on sn.resource_zipcode = lzm.zip
+		where sn.spn_id = #spnId#
+		and  sn.spn_status_id in 
+		<iterate property="searchStatuses" open="(" close=")"  conjunction=",">
+			#searchStatuses[]#
+		</iterate>
+		<isNotNull property="marketId">
+			and lzm.market_id = #marketId#
+		</isNotNull>
+	</select>
+	
+	<select id="spn_member_search_by_status.query" parameterClass="spnMemberSearchRequest" resultMap="spnMemberResults.resultmap">
+		select vr.vendor_id as vendorId
+		       , sn.resource_id as resourceId
+		       , sn.spn_network_id as spnNetworkId
+		       , c.first_name as firstName
+		       , c.last_name as lastName
+		       , sn.spn_status_id as spnStatusId
+		       , vr.total_so_completed as servideOrdersCompleted
+		       , sn.resource_zipcode as resourceZip
+		       , lzm.market_id as marketId
+		  from spn_network sn
+		  join vendor_resource vr on sn.resource_id = vr.resource_id
+		  join location l on vr.locn_id = l.locn_id
+		  join contact c on vr.contact_id = c.contact_id
+		  join lu_zip_market lzm on sn.resource_zipcode = lzm.zip
+		  where sn.spn_id = #spnId#
+		  and  sn.spn_status_id in 
+		  <iterate property="searchStatuses" open="(" close=")"  conjunction=",">
+		  	#searchStatuses[]#
+		  </iterate>
+		  <isNotNull property="marketId">
+				and lzm.market_id = #marketId#
+		  </isNotNull>
+		  <isNotEmpty property="sortColumnName">
+				order by $sortColumnName$ $sortOrder$ 
+		  </isNotEmpty>
+		  <isNotNull property="startIndex" prepend="LIMIT ">
+				#startIndex#
+		  </isNotNull>
+		  <isNotNull property="numberOfRecords" prepend=",  ">
+				#numberOfRecords#
+		  </isNotNull>
+	</select>
+	
+	<select id="spn_network_doc_cnt.query" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		select count(document_id) from spn_network_document where spn_network_id = #spnNetworkId#
+	</select>
+	
+	<select id="spn_network_docs.query" parameterClass="java.lang.Integer" resultClass="document">
+		select snd.document_id as documentId, d.file_name as fileName
+		from spn_network_document snd
+		join document d on snd.document_id = d.document_id
+		where spn_network_id = #spnNetworkId#
+	</select>
+	
+	
+	<select id="spn_pro.query" resultClass="spnProProfile">
+	select sn.spn_id as spnId, 
+		sn.spn_network_id as spnNetworkId,
+		sn.spn_status_id as status,
+		sn.member_datetime as membershipDate,
+		sh.name as spnName
+	from
+		spn_network sn
+	join spn_hdr sh on sn.spn_id = sh.spn_id
+	join buyer byr on byr.buyer_id = sh.buyer_id
+	where sh.buyer_id = #byrId# and
+	sn.resource_id = #proId# and
+	sn.spn_status_id  in (20,40,50)
+	
+	</select>
+	
+	<insert id="spn_hdr_summary.insert">
+		insert into spn_network_summary (spn_id, spn_status_id, cnt)
+			select sn.spn_id, lss.spn_status_id, count(sn.spn_status_id)
+			  from lu_spn_status lss 
+			  join spn_network sn on lss.spn_status_id = sn.spn_status_id 
+			 group by sn.spn_id,lss.spn_status_id
+	</insert>
+	
+	<insert id="spn_campaign.insert" parameterClass="spnCampaign">
+		insert into spn_campaigns (
+		   		spn_id, 
+		   		start_date,
+		   		end_date
+		   		<isNotNull prepend=", " property="marketId">
+		   			market_id
+		   		</isNotNull>
+		   		<isNotNull prepend=", " property="allMarkets">
+		   			all_markets
+		   		</isNotNull>
+		   		,created_date
+		) values (
+		   #spnId#,
+		   #campaignStateDate#,
+		   #campaignEndDate#
+		   <isNotNull prepend=", " property="marketId">
+		   		#marketId#
+		   	</isNotNull>
+		   	<isNotNull prepend=", " property="allMarkets">
+		   		#allMarkets#
+		   	</isNotNull>
+		   ,now()
+		)
+		<selectKey resultClass="int">
+            SELECT last_insert_id() as spnId
+        </selectKey> 
+	</insert>
+	
+	<insert id="spn_header.insert" parameterClass="spnHdr">
+		insert into spn_hdr (
+		   buyer_id, name, contact_name,
+		   contact_email, spn_instruction,
+		   spn_descr, doc_required_ind
+		) values (
+		   #buyerId#, #name#, #contactName#,
+		   #contactEmail#, #instruction#,
+		   #description#, #docRequiredInt#
+		)
+		<selectKey resultClass="int">
+            SELECT last_insert_id() as spnId
+        </selectKey> 
+	</insert>
+	
+	<insert id="spn_ref_doc.insert" parameterMap="spn_id_and_document_id">
+		insert into spn_document (spn_id, document_id)
+		values (?, ?)
+	</insert>
+	
+	<insert id="spn_criteria.insert" parameterClass="spnCriteria">
+		insert into spn_criteria (spn_id, spn_criteria_type_id
+		<isNotNull prepend=", " property="field1">field1</isNotNull>
+		<isNotNull prepend=", " property="field2">field2</isNotNull>
+		<isNotNull prepend=", " property="field3">field3</isNotNull>
+		<isNotNull prepend=", " property="field4">field4</isNotNull>
+		<isNotNull prepend=", " property="field5">field5</isNotNull>
+		<isNotNull prepend=", " property="field6">field6</isNotNull>
+		<isNotNull prepend=", " property="field7">field7</isNotNull>
+		<isNotNull prepend=", " property="field8">field8</isNotNull>
+		<isNotNull prepend=", " property="field9">field9</isNotNull>
+		<isNotNull prepend=", " property="field10">,field10</isNotNull>
+		<isNotNull prepend=", " property="field11Int">field11</isNotNull>
+		<isNotNull prepend=", " property="field12Int">field12</isNotNull>
+		<isNotNull prepend=", " property="field13Int">field13</isNotNull>
+		<isNotNull prepend=", " property="field14Int">field14</isNotNull>
+		<isNotNull prepend=", " property="field15Int">field15</isNotNull>
+		) values (#spnId#, #criteriaTypeId#
+		<isNotNull prepend=", " property="field1">#field1#</isNotNull>
+		<isNotNull prepend=", " property="field2">#field2#</isNotNull>
+		<isNotNull prepend=", " property="field3">#field3#</isNotNull>
+		<isNotNull prepend=", " property="field4">#field4#</isNotNull>
+		<isNotNull prepend=", " property="field5">#field5#</isNotNull>
+		<isNotNull prepend=", " property="field6">#field6#</isNotNull>
+		<isNotNull prepend=", " property="field7">#field7#</isNotNull>
+		<isNotNull prepend=", " property="field8">#field8#</isNotNull>
+		<isNotNull prepend=", " property="field9">#field9#</isNotNull>
+		<isNotNull prepend=", " property="field10">#field10#</isNotNull>
+		<isNotNull prepend=", " property="field11Int">#field11Int#</isNotNull>
+		<isNotNull prepend=", " property="field12Int">#field12Int#</isNotNull>
+		<isNotNull prepend=", " property="field13Int">#field13Int#</isNotNull>
+		<isNotNull prepend=", " property="field14Int">#field14Int#</isNotNull>
+		<isNotNull prepend=", " property="field15Int">#field15Int#</isNotNull>
+	     )
+	</insert>
+	
+	<insert id="spn_network.insert" parameterMap="spn_network_insert">
+		insert into spn_network (spn_id, resource_id, spn_status_id)
+		values (?, ?, ?)
+		
+		<selectKey resultClass="int">
+            SELECT last_insert_id() as spnNetworkId
+        </selectKey> 
+	</insert>
+	
+	<delete id="spn_docs.delete" parameterClass="java.lang.Integer">
+		delete from spn_document where spn_id = #spnId#
+	</delete>
+	
+	<delete id="spn_header.delete" parameterClass="java.lang.Integer">
+		delete from spn_hdr where spn_id = #spnId#
+	</delete>
+	
+	<delete id="spn_criteria.delete" parameterClass="java.lang.Integer">
+		delete from spn_criteria where spn_id = #spnId#
+	</delete>
+	
+	<delete id="spn_network_summary.delete">
+		delete from spn_network_summary
+	</delete>
+	
+	<delete id="spn_network.delete" parameterClass="java.lang.Integer">
+		delete from spn_network where spn_id = #spnId#
+	</delete>
+	
+	<delete id="spn_campaigns.delete" parameterClass="java.lang.Integer">
+		delete from spn_campaigns where spn_id = #spnId#
+	</delete>
+
+	<update id="spn_header.update" parameterClass="spnHdr">
+		update spn_hdr set
+		  name = #name#,
+		  contact_name = #contactName#,
+		  contact_email = #contactEmail#, 
+		  spn_instruction = #instruction#,
+		  spn_descr = #description#, 
+		  doc_required_ind = #docRequiredInt#
+		where spn_id = #spnId#
+	</update>
+	
+	<update id="spn_header_lock.update" parameterClass="java.lang.Integer">
+		update spn_hdr set spn_locked_ind = 1 where spn_id = #spnId#
+	</update>
+	
+	<update id="spn_campaign_delete_campaign.update" parameterClass="java.lang.Integer">
+		update spn_campaigns spc
+			set spc.delete_ind = 1
+		where spc.spn_campaign_id = #campaignId#
+	</update>
+	
+	<update id="spn_network_interested_status.update" parameterClass="spnNetworkResource">
+		update spn_network spnNet
+		set  spnNet.spn_status_id = #spnStatusId#
+		 <isNotNull prepend=", " property="applicationDate">spnNet.application_datetime = #applicationDate#</isNotNull> 
+		where spnNet.spn_network_id = #spnNetworkId#
+	</update>
+	
+	<update id="spn_campaign_match_cnt.update" parameterClass="spnCampaign">
+		update spn_campaigns 
+		   set provider_match_count = #totalProviderCnt#
+		 where spn_campaign_id = #campaignId#
+	</update>
+		
+	<update id="approve_members.update" parameterClass="java.util.List">
+		update spn_network set spn_status_id = 40, member_datetime = now()
+		where spn_network_id in 
+			<iterate open="(" close=")"  conjunction=",">
+				#[]#
+			</iterate>
+	</update>
+	
+	<update id="remove_members.update" parameterClass="java.util.List">
+		update spn_network set spn_status_id = 60, removed_datetime = now()
+		where spn_network_id in 
+			<iterate open="(" close=")"  conjunction=",">
+				#[]#
+			</iterate>
+	</update>
+	
+	<update id="spn_network_zip.update" parameterClass="java.lang.Integer">
+		update spn_network sn, vendor_resource vr, location l
+		set resource_zipcode = l.zip
+		where sn.spn_network_id = #spnNetworkId#
+		and sn.resource_id = vr.resource_id
+		and vr.locn_id = l.locn_id
+	</update>
+	
+	<select id="spn_provider_network_by_resource.query" parameterClass="java.lang.Integer" resultClass="spnHdr">
+		select spn.spn_id as spnId,
+		
+		spn.spn_network_id as networkId, 
+		spnHr.name as spnName, 
+		spnHr.spn_descr as description, 
+		byr.business_name as businessName, 
+		spn.invite_datetime as inviteDate,
+		ct.first_name as inviteeFirstname, 
+        ct.last_name as inviteeLastName
+		from spn_network spn
+		join spn_hdr spnHr on spn.spn_id = spnHr.spn_id
+		join buyer byr on spnHr.buyer_id = byr.buyer_id
+		join vendor_resource vr on vr.resource_id = #resourceId#
+      	join contact ct on ct.contact_id = vr.contact_id 
+		where spn.resource_id = #resourceId#
+		and spn.spn_status_id = 10
+
+	</select>
+	
+	<select id="spn_provider_network_by_company.query" parameterClass="java.lang.Integer" resultClass="spnHdr">
+		select spn.spn_id as spnid, 
+			spn.spn_network_id as networkId,
+			spnHr.name as spnName, 
+			spnHr.spn_descr as description, 
+			byr.business_name as businessName,
+			spn.invite_datetime as inviteDate,
+			ct.first_name as inviteeFirstname, 
+	        ct.last_name as inviteeLastName
+			
+			from spn_network spn
+			
+			join vendor_resource vr on spn.resource_id = vr.resource_id and vr.vendor_id = #vendorId#
+			
+			join spn_hdr spnHr on spn.spn_id = spnHr.spn_id
+			
+            join buyer byr on spnHr.buyer_id = byr.buyer_id
+			join contact ct on  ct.contact_id = vr.contact_id
+
+			where spn.spn_status_id = 10
+
+	</select>
+	
+	<select id="select.providerResourceIsProviderAdmin" resultClass="java.lang.Integer" parameterClass="java.lang.Integer">
+		select vr.primary_ind  from vendor_resource vr 
+		where vr.resource_id = #resourceId#
+	</select>
+	
+	<select id="spnet_details_for_provider_admin.query" parameterClass="java.lang.Integer" resultClass="spnetComm">
+		select 
+		b.business_name as businessName, 
+		sci.spn_id as spnId,
+		lswfs.communication_subject as communicationSubject, 
+		sh.spn_name as spnName,
+		sch.start_date as campStartDate, 
+		sch.end_date as campEndDate,
+		scie.email_sent_time as invModifiedDate,
+		lswfs.id as pfInvStatus,
+		sch.campaign_name as campaignName,
+		sh_alias.effective_date as effectiveDate,
+		IFNULL(spfs_alias.spn_id, 0) > 0 as isMember,
+		spfs.modified_date as providerFirmStateModifiedDate
+		from 
+		spnet_provider_firm_state spfs
+		join spnet_hdr sh on (spfs.spn_id = sh.spn_id)
+		join spnet_buyer sb on (sh.spn_id = sb.spn_id)
+		join buyer b on (sb.buyer_id = b.buyer_id)
+		join spnet_campaign_invitation sci on (sci.spn_id = spfs.spn_id and sci.prov_firm_id = spfs.provider_firm_id)
+		join spnet_campaign_hdr sch on (sci.campaign_id = sch.campaign_id)
+		join spnet_campaign_invitation_email scie on (scie.invitation_id = sci.invitation_id)
+		join lu_spnet_workflow_state lswfs on (spfs.provider_wf_state = lswfs.id)
+		left outer join spnet_hdr sh_alias on ( sh.spn_id = sh_alias.alias_original_spn_id and sh_alias.is_alias = 1 and sh_alias.effective_date > CURDATE())
+		left outer join spnet_provider_firm_state spfs_alias on ( sh_alias.spn_id = spfs_alias.spn_id and spfs.provider_firm_id  = spfs_alias.provider_firm_id and spfs_alias.provider_wf_state in ('PF SPN MEMBER', 'PF FIRM OUT OF COMPLIANCE') )
+		where
+		sci.prov_firm_id = #vendorId#
+		and lswfs.id in ('PF INVITED TO SPN','PF APPLICANT INCOMPLETE','PF SPN DECLINED','PF SPN NOT INTERESTED')
+		and now() &lt; date_add(sch.end_date, INTERVAL 30 DAY)
+		and sh.is_alias = 0
+	</select>
+	
+	<select id="miniSPNMonitorList.select" resultClass="spnMonitorVO" parameterClass="java.lang.Integer">
+		SELECT sh.spn_id              AS spnid,
+	       sh.spn_name            AS spnname,
+	       sb.buyer_id            AS buyerid,
+	       b.business_name        AS buyername,
+	       lsws.membership_status AS membershipstatus,
+	       lsws.descr             AS message
+		FROM   spnet_hdr sh
+	       JOIN spnet_buyer sb
+	         ON ( sh.spn_id = sb.spn_id )
+	       JOIN buyer b
+	         ON ( sb.buyer_id = b.buyer_id )
+	       JOIN contact c
+	         ON ( c.contact_id = b.contact_id )
+	       JOIN spnet_provider_firm_state spfs
+	         ON ( sh.spn_id = spfs.spn_id )
+	       JOIN lu_spnet_workflow_state lsws
+	         ON ( lsws.id = spfs.provider_wf_state )
+		WHERE  spfs.provider_firm_id = #vendorid#
+	       AND sh.is_alias = 0
+	       AND spfs.provider_wf_state NOT IN ( 'PF INVITED TO SPN' )  
+	</select>
+
+	<select id="vendorSPNApplicantCount.select" resultClass="java.lang.Integer" parameterClass="java.lang.Integer">
+		select count(*) from spnet_provider_firm_state 
+			where provider_wf_state 
+			not in ('PF SPN DECLINED','PF INVITED TO SPN')  
+			and provider_firm_id= #vendorId#
+	</select>
+	<sql id="spnMainMonitorList.select.sql">
+		select
+		        sh.spn_id,
+		        sh.spn_name,
+		        sh.is_alias as isAlias,
+		        IFNULL(s_alias.spn_id, 0)  as aliasSPNId ,
+		        s_alias.effective_date as aliasEffectiveDate,
+		        IFNULL(s_alias.is_alias,0) as hasAlias,
+		        IFNULL(s_alias.effective_date > CURDATE(), 0) as isAliasEffective,
+		        spfs.provider_firm_id,
+		        sb.buyer_id,
+		        b.business_name,
+		        lsws.membership_status,
+		        lsws.membership_status_index as membershipStatusIndex,
+		        lsws.id,
+		        lsws.descr,
+		        sh.contact_email,
+		        sh.contact_name,
+		        sh.contact_phone,
+		        spfs.agreement_ind,
+		        sh.spn_description,
+		        sh.spn_instruction,
+		        lsws_alias.id as aliasProviderFirmState,
+		        spfs.audit_required
+		from spnet_hdr sh 
+		     join spnet_buyer sb on (   sh.spn_id = sb.spn_id  ) 
+		    join buyer b on (   sb.buyer_id = b.buyer_id )
+		    join contact c on (   c.contact_id = b.contact_id )
+		    join spnet_provider_firm_state spfs on (   sh.spn_id = spfs.spn_id )
+		    join lu_spnet_workflow_state lsws on ( lsws.id=spfs.provider_wf_state )
+		    left outer join spnet_hdr s_alias on (   sh.spn_id = s_alias.alias_original_spn_id   and s_alias.is_alias = 1 )
+		    left join spnet_provider_firm_state spfs_alias on (  s_alias.spn_id = spfs_alias.spn_id   and spfs.provider_firm_id  = spfs_alias.provider_firm_id )
+		    left join lu_spnet_workflow_state lsws_alias on ( lsws_alias.id=spfs_alias.provider_wf_state )
+		where spfs.provider_firm_id = #vendorId#
+			 <isNotPropertyAvailable property="spnId" prepend=" AND ">
+			 		 sh.is_alias = 0 
+			 </isNotPropertyAvailable>
+		     <isPropertyAvailable property="spnId">
+		     	<isNotNull property="spnId"  prepend=" AND ">
+		     		 sh.spn_id = #spnId#
+		     	</isNotNull>
+		     </isPropertyAvailable>
+		      <isPropertyAvailable property="selectedBuyerValues">
+		     	<isNotNull property="selectedBuyerValues"  prepend=" AND ">
+		     		business_name IN
+		     		<iterate property="selectedBuyerValues" open="(" close=")" conjunction=",">
+							#selectedBuyerValues[]#
+					</iterate>
+		     	</isNotNull>
+		     </isPropertyAvailable>
+		     <isPropertyAvailable property="selectedMemStatus">
+		     	<isNotNull property="selectedMemStatus"  prepend=" AND ">
+		     		lsws.membership_status  IN
+		     		<iterate property="selectedMemStatus" open="(" close=")" conjunction=",">
+							#selectedMemStatus[]#
+					</iterate>
+		     	</isNotNull>
+		     </isPropertyAvailable>
+		     and ((spfs.provider_wf_state in ('PF INVITED TO SPN') and s_alias.is_alias = 1 and IFNULL(s_alias.effective_date > CURDATE(), 0)) or (spfs.provider_wf_state not in ('PF INVITED TO SPN')))
+		order by business_name asc, spn_name asc
+	</sql>
+	<select id="spnMainMonitorList.select"  resultMap="spn.resultsmap">
+		<include refid="spnMainMonitorList.select.sql"/>
+	</select>
+	
+	<select id="spnMainMonitorList.select.all"  resultMap="spn.resultsmap.all">
+		<include refid="spnMainMonitorList.select.sql"/>
+	</select>
+	<select id="spndocuments.query" resultMap="spndocuments.resultsmap">
+	select doc.document_id,
+			sh.spn_id,
+			spnetDoc.doc_type_id,
+			luSpnDoctype.descr,	
+			doc.title,
+			doc.file_name,
+			doc.format
+	from spnet_hdr sh
+			join spnet_document spnetDoc on spnetDoc.spn_id = sh.spn_id
+			join document doc on doc.document_id = spnetDoc.document_id
+			join lu_spnet_document_type luSpnDoctype on luSpnDoctype.id = spnetDoc.doc_type_id 
+	where sh.spn_id = #spnId#
+			and sh.spn_id = spnetDoc.spn_id
+			and spnetDoc.doc_type_id in (1,2,3)
+			and doc.doc_category_id = 6
+	</select>
+	<select id="getApprovalCriteriaForSPN.query"  resultMap="spnapprovalcriteria.resultsmap" >
+		
+		select cac.id,
+				lc.id,
+		       	lc.descr,
+				lc.criteria_level,
+				cac.value,
+				cac.spn_id
+		from spnet_approval_criteria cac 
+				join lu_spnet_approval_criteria lc on lc.id = cac.criteria_id
+		where cac.spn_id = #spnId#
+	</select>
+	<insert id="spnet.uploaded.document.state.insert" parameterClass="spnProvUploadedDocsVO">
+		insert into spnet_uploaded_document_state
+			(spn_doc_id, 
+			prov_firm_upld_doc_id,
+			buyer_id,
+			prov_firm_id,
+			doc_state_id,
+			modified_by,
+			created_date,
+			modified_date
+			)			 
+		values(#spnBuyerDocId#,
+			   #provFirmUplDocId#,
+			   #buyerId#,
+			   #vendorId#,
+			   #docStateId#,
+			   #userName#,
+			   CURRENT_TIMESTAMP,
+			   CURRENT_TIMESTAMP
+			   ) 
+	    <selectKey resultClass="int">
+            SELECT last_insert_id() as spnBuyerDocId
+        </selectKey>       
+	</insert>	
+	
+	<insert id="spnet.provider.uploaded.document.insert" parameterClass="spnProvUploadedDocsVO">
+		insert into spnet_provider_firm_document
+			(spn_id, 
+			prov_firm_upld_doc_id,			
+			prov_firm_id,			
+			deleted_ind,
+			modified_by,
+			created_date,
+			modified_date
+			)			 
+		values(#spnId#,
+			   #provFirmUplDocId#,			   
+			   #vendorId#,
+			   #deletedInd#,
+			   #userName#,
+			   CURRENT_TIMESTAMP,
+			   CURRENT_TIMESTAMP
+			   )  
+	    <selectKey resultClass="int">
+            SELECT last_insert_id() as id
+        </selectKey>       
+	</insert>
+	
+	<update id="spnet.provider.uploaded.document.update" parameterClass="spnProvUploadedDocsVO">
+		update spnet_provider_firm_document
+		set deleted_ind = #deletedInd#,
+			modified_by = #userName#,
+			modified_date = CURRENT_TIMESTAMP
+		where prov_firm_upld_doc_id = #provFirmUplDocId#
+	</update>
+		
+	<update id="spnet.uploaded.document.state.update" parameterClass="spnProvUploadedDocsVO">
+		update spnet_uploaded_document_state
+		set doc_state_id = #docStateId#,
+			modified_by = #userName#,
+			modified_date = CURRENT_TIMESTAMP
+		where spn_doc_id = #spnBuyerDocId#
+		 and prov_firm_upld_doc_id = #provFirmUplDocId#
+		 and buyer_id = #buyerId#
+		 and prov_firm_id = #vendorId# 
+	</update>
+	
+	<update id="spnet.uploaded.document.id.and.state.update" parameterClass="spnProvUploadedDocsVO">
+		update spnet_uploaded_document_state
+		set 
+			prov_firm_upld_doc_id = #provFirmUplDocId#,
+			doc_state_id = #docStateId#,
+			modified_by = #userName#,
+			modified_date = CURRENT_TIMESTAMP
+		where spn_doc_id = #spnBuyerDocId#
+		 and buyer_id = #buyerId#
+		 and prov_firm_id = #vendorId# 
+		 and prov_firm_upld_doc_id = #provFirmUpldOldDocId#	
+	</update>	
+	
+	<select id="getProviderUplDocForSPN.query"  resultMap="provuploadeddocforspn.resultsmap" >
+		select spnUplDocSt.prov_firm_upld_doc_id,
+				spnUplDocSt.spn_doc_id,
+				spnetDoc.spn_id,
+				spnUplDocSt.buyer_id,
+				spnUplDocSt.prov_firm_id,
+				doc.descr,
+				doc.file_name,
+				doc.title,
+				doc.format,
+				spnUplDocSt.doc_state_id,
+				luSPNDocst.descr
+		from spnet_uploaded_document_state spnUplDocSt
+				join spnet_document spnetDoc on spnetDoc.document_id = spnUplDocSt.spn_doc_id
+				join document doc on doc.document_id = spnUplDocSt.prov_firm_upld_doc_id
+				join lu_spnet_document_state luSPNDocst on luSPNDocst.doc_state_id = spnUplDocSt.doc_state_id
+		where  spnUplDocSt.prov_firm_id = #vendorId#
+				and spnUplDocSt.buyer_id = #buyerId#
+				and spnetDoc.spn_id = #spnId#
+				and spnetDoc.doc_type_id = 3
+				and doc.doc_category_id = 6
+	</select>
+	<select id="spnAgreeDocuments.query" resultMap="spnAgreeDocuments.resultsmap" >
+		select spnetDoc.spn_id,
+				spnetDoc.document_id,
+				doc.title,
+				spnetElecSig.doc_state_id,
+				spnetElecSig.modified_date
+		from  spnet_document spnetDoc
+				join document doc on doc.document_id = spnetDoc.document_id
+				left outer join spnet_uploaded_electronic_doc_state spnetElecSig on spnetDoc.document_id = spnetElecSig.spn_doc_id and spnetElecSig.prov_firm_id = #vendorId#
+		where spnetDoc.spn_id = #spnId#
+				and spnetDoc.doc_type_id = 2
+				and doc.doc_category_id = 6
+	</select>
+	<select id="spnSignAndReturnDocuments.query"  resultMap="spnSignAndReturndocuments.resultsmap" >
+		select spnetDoc.spn_id,
+				spnetDoc.document_id,
+				doc.file_name,
+				doc.title,
+				doc.format,
+				spnetDocState.comments,
+				spnetDocState.audited_date,
+				spnetDocState.audited_by,
+				spnetDocState.page_no
+		from  spnet_document spnetDoc
+				join document doc on doc.document_id = spnetDoc.document_id 
+				left outer join spnet_uploaded_document_state spnetDocState on spnetDocState.spn_doc_id = spnetDoc.document_id
+					and spnetDocState.prov_firm_id = #vendorId#
+					and spnetDocState.buyer_id = #buyerId#
+		where spnetDoc.spn_id = #spnId#
+				and spnetDoc.doc_type_id = 3
+				and doc.doc_category_id = 6
+	</select>
+	<select id="spnInvitationDetails.query"   resultMap="spnInvitationDetails.resultsmap" >
+		select hdr.spn_id, hdr.spn_name, hdr.spn_instruction, hdr.spn_description, hdr.contact_name, hdr.contact_email, hdr.contact_phone, spnetCampInv.prov_firm_id, spnetBuy.buyer_id
+		from spnet_hdr hdr
+				join spnet_campaign_invitation spnetCampInv on spnetCampInv.spn_id = hdr.spn_id
+				join spnet_buyer spnetBuy on spnetBuy.spn_id = hdr.spn_id
+		where hdr.spn_id= #spn_id# and spnetCampInv.prov_firm_id = #prov_firm_id# limit 1
+	</select>
+	<select id="spnInvitationBuyerDocId.query"  parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		select spbuyerdoc.document_id from spnet_buyer spbuyer,buyer_document spbuyerdoc where spbuyer.spn_id=#spnId# and spbuyerdoc.buyer_id=spbuyer.buyer_id and spbuyerdoc.doc_category_id=1 limit 1
+	</select>
+	<select id="spnInvitationDocsDetails.query"  resultMap="spnInvitationDocsDetails.resultsmap" >
+		select doc.document_id,
+			doc.format,
+			doc.title,
+			doc.descr,
+			spnetDoc.doc_type_id
+		from spnet_document spnetDoc
+			join document doc on doc.document_id = spnetDoc.document_id
+		where spnetDoc.spn_id = #spnId#
+			and spnetDoc.doc_type_id in(1,3)
+			and doc.doc_category_id = 6
+	</select>
+	<select id="spnDocumentFormatDescription.query"  resultClass="java.lang.String">
+		select luDocformat.descr
+		from document doc
+				join lu_document_formats_allowed luDocformat on luDocformat.format = doc.format
+		where doc.document_id = #docId#
+	</select>
+	
+	<select id="spnet.getApprovalCriteriaForSPN.select"  parameterClass="java.lang.Integer" resultMap="spnApprovalCriteriaResultMap" >
+		select sac.id as id, lc.id as criteriaId,lc.descr as criteriaDesc, lc.criteria_level as criteriaLevel , sac.value,sac.spn_id as spnId from spnet_approval_criteria sac 
+			join lu_spnet_approval_criteria lc on lc.id = sac.criteria_id
+		where sac.spn_id = #spnId#
+	</select>
+	
+	<sql id="approvalcriteria.vednorfinance.salesvolume.join" >
+		<isPropertyAvailable property="model.selectedSalesVolume">
+		<isNotNull property="model.selectedSalesVolume">
+			<isGreaterThan prepend=" AND " property="model.selectedSalesVolume" compareValue="-1">
+	 				( join vendor_finance vf on vf.vendor_id = vw.vendor_id and vf.sale_volume =  #model.selectedSalesVolume# )
+	 		</isGreaterThan>
+		</isNotNull>
+		</isPropertyAvailable>
+	</sql>
+	
+	<sql id="approvalcriteria.languages.join">
+		<isPropertyAvailable property="languagesREGEXP">
+		<isNotNull property="languagesREGEXP">
+		 join  ( SELECT resource_id ,   CONCAT(CONCAT('@',GROUP_CONCAT(DISTINCT language_id  ORDER BY language_id SEPARATOR '@')),'@') as myCol  
+				FROM resource_languages  
+				GROUP BY resource_id
+				Having mycol REGEXP "$languagesREGEXP$" )  xlanguages	on xlanguages.resource_id = vw.resource_id 
+			</isNotNull>
+		</isPropertyAvailable>
+	</sql>
+	
+	<sql id="approvalcriteria.skills.join">
+		<isPropertyAvailable property="skillsREGEXP">
+		<isNotNull property="skillsREGEXP">
+		 join  (	SELECT resource_id ,   CONCAT(CONCAT('@',GROUP_CONCAT(DISTINCT node_id  ORDER BY node_id SEPARATOR '@')),'@') as myCol  
+				FROM resource_skill   
+				GROUP BY resource_id
+				Having mycol REGEXP "$skillsREGEXP$" )  xskills	on xskills.resource_id = vw.resource_id 
+			</isNotNull>
+		</isPropertyAvailable>
+	</sql>
+	
+	<sql id="approvalcriteria.serviceType.join">
+		<isPropertyAvailable property="serviceTypeREGEXP">
+		<isNotNull property="serviceTypeREGEXP">
+			join ( Select  rs.resource_id ,   CONCAT(CONCAT('@',GROUP_CONCAT(DISTINCT rsk.service_type_template_id  ORDER BY rsk.service_type_template_id  SEPARATOR '@')),'@') as myCol 
+  				from resource_skill_service_type rsk join resource_skill rs on rs.resource_skill_id = rsk.resource_skill_id
+				group by  resource_id 
+				having  mycol REGEXP "$serviceTypeREGEXP$" 
+		) xtemplate on xtemplate.resource_id = vw.resource_id
+		
+			</isNotNull>
+		</isPropertyAvailable>
+	</sql>
+	
+	<sql id="approvalcriteria.dynamic.where">
+		<include refid="approvalcriteria.dynamic.pf.level.where" />
+		<include refid="approvalcriteria.dynamic.sp.level.where" />
+	</sql>
+	
+	<sql id="approvalcriteria.dynamic.pf.level.where">
+		<isNotNull property="model.selectedCompanySize" >
+				<isGreaterThan prepend=" AND " property="model.selectedCompanySize" compareValue="-1">
+	 						vw.providerFirmEmpoyeeSizeId = #model.selectedCompanySize#
+	 				</isGreaterThan>
+	 	</isNotNull>
+	 	<isNotNull property="model.workersCompensationVerified" >
+	 			<isEqual prepend=" AND " property="model.workersCompensationVerified" compareValue="true">
+	 						vw.workerCompChecked = #model.workersCompensationVerified#
+	 			</isEqual>
+	 		</isNotNull>
+	 	
+	 		<isNotNull property="model.vehicleLiabilityVerified" >
+	 			<isEqual prepend=" AND " property="model.vehicleLiabilityVerified" compareValue="true">
+	 						vw.autoLiabilityChecked = #model.vehicleLiabilityVerified#
+	 			</isEqual>
+	 		</isNotNull>
+	 		
+	 		<isNotNull property="vehicleLiabilityAmtBD" >
+	 			<isGreaterThan prepend=" AND " property="vehicleLiabilityAmtBD" compareValue="0">
+	 				vw.autoLiabilityAmount >= #vehicleLiabilityAmtBD#
+	 			</isGreaterThan>
+	 		</isNotNull>
+
+	 		<isNotNull property="model.commercialGeneralLiabilityVerified" >
+	 			<isEqual prepend=" AND " property="model.commercialGeneralLiabilityVerified" compareValue="true">
+	 						vw.generalLiabilityChecked = #model.commercialGeneralLiabilityVerified#
+	 			</isEqual>
+	 		</isNotNull>
+	 		
+	 		
+	 		<isNotNull property="commercialGeneralLiabilityAmtBD" >
+	 			<isGreaterThan prepend=" AND " property="commercialGeneralLiabilityAmtBD" compareValue="0">
+	 				vw.generalLiabilityAmount >= #commercialGeneralLiabilityAmtBD#
+	 			</isGreaterThan>
+	 		</isNotNull>
+	 		
+	 		<isNotNull prepend=" AND "  property="vendorId" >	  		
+	 				vw.vendor_id = #vendorId# 	 		
+	 		</isNotNull> 
+	</sql>
+	
+	<sql id="approvalcriteria.dynamic.sp.level.where">
+	
+		<!--  TODO  talk with suganya about the rating score.. should be on ly single selcte on Front End -->
+	 		<!--  isNotNull property="model.selectedCompanySize" prepend="AND">
+	 			vw.aggregateRatingScore >=  #model.selectedCompanySize#
+	 		</isNotNull -->
+	 		<isNotNull property="model.minimumCompletedServiceOrders" >
+	 		    	<isGreaterThan prepend=" AND " property="model.minimumCompletedServiceOrders" compareValue="-1">
+	 						vw.totalSOcompleted >=  #model.minimumCompletedServiceOrders#
+	 				</isGreaterThan>
+	 		</isNotNull>
+	 		
+	 		<isNotNull property="model.selectedMarkets">
+	 			<isNotEmpty property="model.selectedMarkets" prepend=" AND " >
+	 				 vw.dispatchLocMarketId IN 
+	 					<iterate property="model.selectedMarkets" open="(" close=")" conjunction=",">
+							#model.selectedMarkets[]#
+						</iterate>
+				</isNotEmpty>
+	 		</isNotNull>
+	 		
+	 		<isNotNull property="model.selectedStates">
+	 			<isNotEmpty property="model.selectedStates" prepend=" AND " >
+	 				 vw.dispatchLocState IN 
+	 					<iterate property="model.selectedStates" open="(" close=")" conjunction=",">
+							#model.selectedStates[]#
+						</iterate>
+				</isNotEmpty>
+	 		</isNotNull>
+	
+	</sql>
+	
+	<select id="spnet.providerCountsForApprovalCriteria.select"  resultClass="providercounts" parameterClass="providerAprovalMatchCriteria">
+		select count( distinct  vw.resource_id) as providerCounts from vw_spnet_provider_match vw
+		join vendor_hdr vh on vh.vendor_id = vw.vendor_id and vh.wf_state_id not in ( 20,29,30) 
+		<include refid="approvalcriteria.vednorfinance.salesvolume.join"/>
+		<include refid="approvalcriteria.languages.join"/>
+		<include refid="approvalcriteria.skills.join"/>
+		<include refid="approvalcriteria.serviceType.join"/>
+		<dynamic prepend="WHERE">
+					<include refid="approvalcriteria.dynamic.where" />
+		</dynamic>		
+	</select>
+	
+	<select id="spnet.totalProvidersCount.select"  resultClass="java.lang.Integer" parameterClass="java.lang.Integer">
+		select count(*) from vendor_resource where vendor_id=#vendoId#
+	</select>
+	<select id="providerSPNApplicantCount.select" resultClass="java.lang.Integer" parameterClass="java.lang.Integer">
+		select  count(*)
+		from spnet_hdr sh,spnet_buyer sb, buyer b ,
+				contact c ,spnet_provider_firm_state spfs,lu_spnet_workflow_state lsws
+		where  sh.spn_id = sb.spn_id and sb.buyer_id = b.buyer_id 
+				and sh.spn_id = spfs.spn_id and provider_firm_id = #vendorId#
+				and c.contact_id = b.contact_id 
+				and provider_wf_state not in ('PF SPN DECLINED','PF INVITED TO SPN') 
+				and lsws.id=spfs.provider_wf_state
+	</select>
+	
+	<select id="spnet.criteriaMatchingProviders.select"  resultClass="spnProviderRequirementsVO" parameterClass="spnMainMonitorVO">
+	SELECT * FROM (
+	SELECT l.group_name AS groupName,l.descr AS criteriaDesc,
+	sss.criteria_value_name AS groupValue, st.node_id AS childNode,
+	st.parent_node AS parentNode,
+	SUM(IF(sss.wf_state_id = 'SP SPN CRED INCOMPLIANCE', 1, 0)) AS matchedProvidersCount,
+	SUM(IF(sss.wf_state_id = 'SP SPN CRED OVERRIDE', 1, 0)) AS
+	overridedProvidersCount
+	FROM supplier_prod.spnet_service_provider_credential_status sss
+	JOIN supplier_prod.vendor_resource vr ON vr.resource_id=sss.resource_id AND
+	vr.wf_state_id NOT IN (21,31,32) AND vr.resource_ind = 1
+	JOIN supplier_prod.lu_spnet_approval_criteria l ON
+	l.id=sss.lu_spnet_approval_criteria_id
+	JOIN skill_tree st ON st.node_id = sss.criteria_value
+	WHERE sss.spn_id=#spnId# AND vr.vendor_id=#vendorId#
+	AND sss.lu_spnet_approval_criteria_id IN (1,3,4)
+	AND sss.wf_state_id IN ('SP SPN CRED INCOMPLIANCE','SP SPN CRED OVERRIDE')
+	GROUP BY groupName, criteriaDesc, groupValue, childNode, parentNode
+
+	UNION ALL
+
+	SELECT l.group_name AS groupName,l.descr AS criteriaDesc,stt.descr AS
+	groupValue, NULL AS childNode, stt.node_id AS parentNode,
+	SUM(IF(sss.wf_state_id = 'SP SPN CRED INCOMPLIANCE', 1, 0)) AS
+	matchedProvidersCount,
+	SUM(IF(sss.wf_state_id = 'SP SPN CRED OVERRIDE', 1, 0)) AS overridedProvidersCount
+	FROM supplier_prod.spnet_service_provider_credential_status sss
+	JOIN supplier_prod.vendor_resource vr ON vr.resource_id=sss.resource_id AND
+	vr.wf_state_id NOT IN (21,31,32) AND vr.resource_ind = 1
+	JOIN supplier_prod.lu_spnet_approval_criteria l ON
+	l.id=sss.lu_spnet_approval_criteria_id
+	JOIN lu_service_type_template stt ON stt.service_type_template_id =
+	sss.criteria_value
+	WHERE sss.spn_id=#spnId# AND vr.vendor_id=#vendorId#
+	AND sss.lu_spnet_approval_criteria_id IN (2)
+	AND sss.wf_state_id IN ('SP SPN CRED INCOMPLIANCE','SP SPN CRED OVERRIDE')
+	GROUP BY groupName, criteriaDesc, groupValue, childNode, parentNode
+
+	UNION ALL
+
+	SELECT l.group_name AS groupName,l.descr AS criteriaDesc,lc.cred_type_desc AS
+	groupValue,sss.cred_type_id AS childNode, NULL AS parentNode,
+	SUM(IF(sss.wf_state_id = 'SP SPN CRED INCOMPLIANCE', 1, 0)) AS
+	matchedProvidersCount,
+	SUM(IF(sss.wf_state_id = 'SP SPN CRED OVERRIDE', 1, 0)) AS overridedProvidersCount
+	FROM supplier_prod.spnet_service_provider_credential_status sss
+	JOIN supplier_prod.vendor_resource vr ON vr.resource_id=sss.resource_id AND
+	vr.wf_state_id NOT IN (21,31,32) AND vr.resource_ind = 1
+	JOIN supplier_prod.lu_spnet_approval_criteria l ON
+	l.id=sss.lu_spnet_approval_criteria_id
+	JOIN lu_resource_credential_type lc ON lc.cred_type_id = sss.cred_type_id
+	WHERE sss.spn_id=#spnId# AND vr.vendor_id=#vendorId#
+	AND sss.lu_spnet_approval_criteria_id IN (16)
+	AND sss.wf_state_id IN ('SP SPN CRED INCOMPLIANCE','SP SPN CRED OVERRIDE')
+	GROUP BY groupName, criteriaDesc, groupValue, childNode, parentNode
+
+	UNION ALL
+
+	SELECT l.group_name AS groupName,l.descr AS criteriaDesc, lt.cred_category AS
+	groupValue,sss.cred_type_id AS childNode, lc.cred_type_desc AS
+	parentNode,
+	SUM(IF(sss.wf_state_id = 'SP SPN CRED INCOMPLIANCE', 1, 0)) AS matchedProvidersCount,
+	SUM(IF(sss.wf_state_id = 'SP SPN CRED OVERRIDE', 1, 0)) AS
+	overridedProvidersCount
+	FROM supplier_prod.spnet_service_provider_credential_status sss
+	JOIN supplier_prod.vendor_resource vr ON vr.resource_id=sss.resource_id AND
+	vr.wf_state_id NOT IN (21,31,32) AND vr.resource_ind = 1
+	JOIN supplier_prod.lu_spnet_approval_criteria l ON
+	l.id=sss.lu_spnet_approval_criteria_id
+	JOIN lu_resource_credential_type lc ON lc.cred_type_id = sss.cred_type_id
+	JOIN lu_resource_credential_category lt ON lt.cred_category_id =
+	sss.cred_category_id
+	WHERE sss.spn_id=#spnId# AND vr.vendor_id=#vendorId#
+	AND sss.lu_spnet_approval_criteria_id IN (17)
+	AND sss.wf_state_id IN ('SP SPN CRED INCOMPLIANCE','SP SPN CRED OVERRIDE')
+	GROUP BY groupName, criteriaDesc, groupValue, childNode, parentNode
+
+	UNION ALL
+
+	SELECT l.group_name AS groupName,l.descr AS criteriaDesc,sss.criteria_value
+	AS groupValue,NULL AS childNode,NULL AS parentNode,
+	SUM(IF(sss.wf_state_id = 'SP SPN CRED INCOMPLIANCE', 1, 0)) AS
+	matchedProvidersCount,
+	SUM(IF(sss.wf_state_id = 'SP SPN CRED OVERRIDE', 1, 0)) AS overridedProvidersCount
+	FROM supplier_prod.spnet_service_provider_credential_status sss
+	JOIN supplier_prod.vendor_resource vr ON vr.resource_id=sss.resource_id AND
+	vr.wf_state_id NOT IN (21,31,32) AND vr.resource_ind = 1
+	JOIN supplier_prod.lu_spnet_approval_criteria l ON
+	l.id=sss.lu_spnet_approval_criteria_id
+	WHERE sss.spn_id=#spnId# AND vr.vendor_id=#vendorId#
+	AND sss.lu_spnet_approval_criteria_id IN (5)
+	AND sss.wf_state_id IN ('SP SPN CRED INCOMPLIANCE','SP SPN CRED OVERRIDE')
+	GROUP BY groupName, criteriaDesc, groupValue, childNode, parentNode
+
+	UNION ALL
+
+	SELECT l.group_name AS groupName,l.descr AS criteriaDesc,sss.criteria_value
+	AS groupValue,NULL AS childNode,NULL AS parentNode,
+	SUM(IF(sss.wf_state_id = 'SP SPN CRED INCOMPLIANCE', 1, 0)) AS
+	matchedProvidersCount,
+	SUM(IF(sss.wf_state_id = 'SP SPN CRED OVERRIDE', 1, 0)) AS overridedProvidersCount
+	FROM supplier_prod.spnet_service_provider_credential_status sss
+	JOIN supplier_prod.vendor_resource vr ON vr.resource_id=sss.resource_id AND
+	vr.wf_state_id NOT IN (21,31,32) AND vr.resource_ind = 1
+	JOIN supplier_prod.lu_spnet_approval_criteria l ON
+	l.id=sss.lu_spnet_approval_criteria_id
+	WHERE sss.spn_id=#spnId# AND vr.vendor_id=#vendorId#
+	AND sss.lu_spnet_approval_criteria_id IN (7)
+	AND sss.wf_state_id IN ('SP SPN CRED INCOMPLIANCE','SP SPN CRED OVERRIDE')
+	GROUP BY groupName, criteriaDesc, groupValue, childNode, parentNode
+
+	UNION ALL
+
+	SELECT l.group_name AS groupName,l.descr AS criteriaDesc,sss.criteria_value
+	AS groupValue,NULL AS childNode,NULL AS parentNode,
+	SUM(IF(sss.wf_state_id = 'SP SPN CRED INCOMPLIANCE', 1, 0)) AS
+	matchedProvidersCount,
+	SUM(IF(sss.wf_state_id = 'SP SPN CRED OVERRIDE', 1, 0)) AS overridedProvidersCount
+	FROM supplier_prod.spnet_service_provider_credential_status sss
+	JOIN supplier_prod.vendor_resource vr ON vr.resource_id=sss.resource_id AND
+	vr.wf_state_id NOT IN (21,31,32) AND vr.resource_ind = 1
+	JOIN supplier_prod.lu_spnet_approval_criteria l ON
+	l.id=sss.lu_spnet_approval_criteria_id
+	WHERE sss.spn_id=#spnId# AND vr.vendor_id=#vendorId#
+	AND sss.lu_spnet_approval_criteria_id IN (20)
+	AND sss.wf_state_id IN ('SP SPN CRED INCOMPLIANCE','SP SPN CRED OVERRIDE')
+	GROUP BY groupName, criteriaDesc, groupValue, childNode, parentNode
+
+	UNION ALL
+
+
+	SELECT l.group_name AS groupName, lang.descr AS
+	criteriaDesc,sss.criteria_value AS groupValue,NULL AS childNode,NULL AS
+	parentNode,
+	SUM(IF(sss.wf_state_id = 'SP SPN CRED INCOMPLIANCE', 1, 0)) AS matchedProvidersCount,
+	SUM(IF(sss.wf_state_id = 'SP SPN CRED OVERRIDE', 1, 0)) AS
+	overridedProvidersCount
+	FROM supplier_prod.spnet_service_provider_credential_status sss
+	JOIN supplier_prod.vendor_resource vr ON vr.resource_id=sss.resource_id AND
+	vr.wf_state_id NOT IN (21,31,32) AND vr.resource_ind = 1
+	JOIN supplier_prod.lu_spnet_approval_criteria l ON
+	l.id=sss.lu_spnet_approval_criteria_id
+	JOIN lu_languages_spoken lang ON lang.id = sss.criteria_value
+	WHERE sss.spn_id=#spnId# AND vr.vendor_id=#vendorId#
+	AND sss.lu_spnet_approval_criteria_id IN (6)
+	AND sss.wf_state_id IN ('SP SPN CRED INCOMPLIANCE','SP SPN CRED OVERRIDE')
+	GROUP BY groupName, criteriaDesc, groupValue, childNode, parentNode
+
+	UNION ALL
+
+
+	SELECT l.group_name AS groupName, l.descr AS criteriaDesc,sss.criteria_value
+	AS groupValue,NULL AS childNode,NULL AS parentNode,
+	SUM(IF(sss.wf_state_id = 'SP SPN CRED INCOMPLIANCE', 1, 0)) AS
+	matchedProvidersCount,
+	SUM(IF(sss.wf_state_id = 'SP SPN CRED OVERRIDE', 1, 0)) AS overridedProvidersCount
+	FROM supplier_prod.spnet_service_provider_credential_status sss
+	JOIN supplier_prod.vendor_resource vr ON vr.resource_id=sss.resource_id AND
+	vr.wf_state_id NOT IN (21,31,32) AND vr.resource_ind = 1
+	JOIN supplier_prod.lu_spnet_approval_criteria l ON
+	l.id=sss.lu_spnet_approval_criteria_id
+	JOIN location loc ON loc.locn_id = sss.criteria_value
+	WHERE sss.spn_id=#spnId# AND vr.vendor_id=#vendorId#
+	AND sss.lu_spnet_approval_criteria_id IN (23)
+	AND sss.wf_state_id IN ('SP SPN CRED INCOMPLIANCE','SP SPN CRED OVERRIDE')
+	GROUP BY groupName, criteriaDesc, groupValue, childNode, parentNode
+	
+	UNION ALL
+
+
+		SELECT l.group_name AS groupName, l.descr AS criteriaDesc,lcn.descr
+		AS groupValue,NULL AS childNode,NULL AS parentNode,
+		SUM(IF(sss.wf_state_id = 'SP SPN CRED INCOMPLIANCE', 1, 0)) AS
+		matchedProvidersCount,
+		SUM(IF(sss.wf_state_id = 'SP SPN CRED OVERRIDE', 1, 0)) AS overridedProvidersCount
+		FROM supplier_prod.spnet_service_provider_credential_status sss
+		JOIN supplier_prod.vendor_resource vr ON vr.resource_id=sss.resource_id
+		AND
+		vr.wf_state_id NOT IN (21,31,32) AND vr.resource_ind = 1
+		JOIN supplier_prod.lu_spnet_approval_criteria l ON
+		l.id=sss.lu_spnet_approval_criteria_id
+		JOIN lu_spnet_approval_criteria_name lcn ON lcn.id = sss.lu_spnet_approval_criteria_id
+		WHERE sss.spn_id=#spnId# AND vr.vendor_id=#vendorId#
+		AND sss.lu_spnet_approval_criteria_id IN (29)
+		AND sss.wf_state_id IN ('SP SPN CRED INCOMPLIANCE','SP SPN CRED OVERRIDE')
+		GROUP BY groupName, criteriaDesc, groupValue, childNode, parentNode
+
+	) combinedTable ORDER BY groupName, childNode
+
+	</select>
+	
+	<select id="spnet.providerRequirementsCrteria.select"  resultClass="spnProviderRequirementsVO" parameterClass="java.lang.Integer">
+		select * from(
+			select lc.group_name as groupName,lc.descr as criteriaDesc, c.value ,st.node_name as groupValue, st.parent_node as parentNode
+			from spnet_approval_criteria c
+			                join lu_spnet_approval_criteria lc on lc.id = c.criteria_id  
+			                join skill_tree st on st.node_id = c.value 
+			where c.spn_id = #spnId# and  c.criteria_id  IN ( 1 ,3,4)
+			union all
+			select lc.group_name as groupName,lc.descr as criteriaDesc, c.value,st.descr as groupValue,st.node_id as parentNode
+			from spnet_approval_criteria c                 
+			                join lu_spnet_approval_criteria lc on lc.id = c.criteria_id  
+			                join lu_service_type_template st on st.service_type_template_id = c.value
+			where c.spn_id = #spnId# and  c.criteria_id  IN ( 2)
+			union all
+			select lc.group_name as groupName,lc.descr as criteriaDesc, c.value, lv.cred_type_desc as groupValue, null as parentNode
+			from spnet_approval_criteria c                 
+			                join lu_spnet_approval_criteria lc on lc.id = c.criteria_id 
+			                join lu_resource_credential_type lv on lv.cred_type_id = c.value
+			where c.spn_id = #spnId# and  c.criteria_id  IN ( 16)
+			union all
+			select lc.group_name as groupName,lc.descr as criteriaDesc, c.value, lv.cred_category as groupValue, lv1.cred_type_desc as parentNode
+			from spnet_approval_criteria c                 
+			                join lu_spnet_approval_criteria lc on lc.id = c.criteria_id 
+			                join lu_resource_credential_category lv on lv.cred_category_id = c.value
+					join lu_resource_credential_type lv1 on lv1.cred_type_id = lv.cred_type_id
+			where c.spn_id = #spnId# and  c.criteria_id  IN ( 17)
+			union all
+			select lc.group_name as groupName,lc.descr as criteriaDesc, c.value,lm.market_name as groupValue, null as parentNode
+			from spnet_approval_criteria c                 
+			                join lu_spnet_approval_criteria lc on lc.id = c.criteria_id 
+			                join lu_market lm on lm.market_id = c.value
+			where c.spn_id = #spnId# and  c.criteria_id  IN ( 20)
+			union all
+			select lc.group_name as groupName,lc.descr as criteriaDesc, c.value,lls.descr as groupValue, null as parentNode
+			from spnet_approval_criteria c                 
+			                join lu_spnet_approval_criteria lc on lc.id = c.criteria_id 
+			                join lu_languages_spoken lls on lls.id = c.value
+			where c.spn_id = #spnId# and  c.criteria_id  IN ( 6)
+			union all
+			select distinct lc.group_name as groupName,lc.descr as criteriaDesc, c.value, loc.state_cd as groupValue, null as parentNode
+			from spnet_approval_criteria c                 
+			                join lu_spnet_approval_criteria lc on lc.id = c.criteria_id 
+			                join location loc on loc.state_cd= c.value
+			where c.spn_id = #spnId# and  c.criteria_id  IN ( 23)
+			union all
+			select lc.group_name as groupName,lc.descr as criteriaDesc, c.value, c.value as groupValue, null as parentNode
+			from spnet_approval_criteria c                 
+			                join lu_spnet_approval_criteria lc on lc.id = c.criteria_id               
+			where c.spn_id =#spnId# and  c.criteria_id  IN ( 7)
+			union all
+			select lc.group_name as groupName,lc.descr as criteriaDesc, c.value, c.value as groupValue, null as parentNode
+			from spnet_approval_criteria c                 
+			                join lu_spnet_approval_criteria lc on lc.id = c.criteria_id               
+			where c.spn_id = #spnId# and c.criteria_id  IN ( 5)
+			
+			union all
+			select lc.group_name as groupName,lc.descr as criteriaDesc, c.value, lcn.descr
+			as groupValue, null as parentNode
+			from spnet_approval_criteria c
+			join lu_spnet_approval_criteria lc on lc.id = c.criteria_id
+			JOIN lu_spnet_approval_criteria_name lcn ON lcn.id = c.criteria_id
+			where c.spn_id = #spnId# and c.criteria_id IN (29)
+			
+		) combinedTable order by groupName
+
+	</select>
+	
+	<select id="spnet.matchingCompanyCriteria.select"  resultClass = "spnProviderRequirementsVO" parameterClass="spnMainMonitorVO">
+	SELECT
+	  p.spn_id AS spnId,
+	  c.group_name        AS groupName,
+	  IF (p.wf_state_id IN ('PF SPN CRED OVERRIDE'), 'ProviderFirmCredOverrided',IF (p.lu_spnet_approval_criteria_id IN (14), 'ProviderFirmCred',c.descr)) AS criteriaDesc,
+	  IF (p.lu_spnet_approval_criteria_id IN (8,9,10,11,12), p.liability_amount, IF (p.lu_spnet_approval_criteria_id IN (13),lc.cred_type_desc,CONCAT(lc.cred_type_desc,'  ',lvc.cred_category))) AS VALUE,
+	  IF (p.lu_spnet_approval_criteria_id IN (9,10,12),'TRUE','FALSE') AS groupValue,
+	  p.exception_type_id AS exceptionTypeId,
+	  cr.cred_state AS state,
+	  cr.cred_expiration_date AS expirationDate
+	FROM spnet_provider_firm_credential_status p
+	LEFT OUTER JOIN vendor_credentials cr ON cr.vendor_cred_id = p.credential_id
+	  JOIN lu_spnet_approval_criteria c
+	    ON p.lu_spnet_approval_criteria_id = c.id
+	  LEFT OUTER JOIN lu_vendor_credential_type lc
+	    ON p.cred_type_id = lc.cred_type_id
+	  LEFT OUTER JOIN lu_vendor_credential_category lvc
+	    ON p.cred_category_id = lvc.cred_category_id
+	  INNER JOIN vendor_resource resource
+	    ON (resource.vendor_id = p.vendor_id
+	        AND resource.primary_ind = 1)
+	  INNER JOIN location loc
+	    ON (loc.locn_id = resource.locn_id)
+	WHERE p.spn_id =#spnId#
+	 
+	    AND p.vendor_id =#vendorId#
+	 
+	    AND p.lu_spnet_approval_criteria_id NOT IN(5,6)
+	    
+	    AND p.wf_state_id IN ('PF SPN CRED INCOMPLIANCE','PF SPN CRED OVERRIDE')
+	</select>
+	
+	<select id="spnet.companyRequirementsCrteria.select"  resultClass="spnProviderRequirementsVO" parameterClass="java.lang.Integer">
+		select * from(
+			SELECT lc.group_name AS groupName,'ProviderFirmCred' AS criteriaDesc, c.value AS VALUE, CONCAT(lv.cred_type_desc,'  ',lvc.cred_category) AS groupValue,c.criteria_id AS criteria
+			FROM spnet_approval_criteria c                 
+			                JOIN lu_spnet_approval_criteria lc ON lc.id = c.criteria_id 
+			                JOIN lu_vendor_credential_category lvc ON lvc.cred_category_id = c.value
+			                JOIN lu_vendor_credential_type lv ON lv.cred_type_id = lvc.cred_type_id
+			WHERE c.spn_id = #spnId# AND  c.criteria_id  IN ( 14)
+			union all
+			SELECT lc.group_name AS groupName,lc.descr AS criteriaDesc, c.value AS VALUE, lv.cred_type_desc AS groupValue,c.criteria_id AS criteria
+			FROM spnet_approval_criteria c                 
+			                JOIN lu_spnet_approval_criteria lc ON lc.id = c.criteria_id 
+			                JOIN lu_vendor_credential_type lv ON lv.cred_type_id = c.value
+			WHERE c.spn_id = #spnId# AND  c.criteria_id  IN ( 13)
+			AND c.value NOT IN  (SELECT lvc.cred_type_id
+						FROM spnet_approval_criteria c1
+						JOIN lu_vendor_credential_category lvc ON lvc.cred_category_id = c1.value
+						WHERE c1.spn_id =#spnId# AND c1.criteria_id  IN ( 14))
+			union all
+			select lc.group_name as groupName,lc.descr as criteriaDesc, c.value as value, lv.cred_type_desc as groupValue,c.criteria_id as criteria
+			from spnet_approval_criteria c                 
+			                join lu_spnet_approval_criteria lc on lc.id = c.criteria_id 
+			                join lu_vendor_credential_type lv on lv.cred_type_id = c.value
+			where c.spn_id = #spnId# and  c.criteria_id  IN ( 15)
+			union all
+			select lc.group_name as groupName,lc.descr as criteriaDesc, c.value as value,  c.value as groupValue,c.criteria_id as criteria
+			from spnet_approval_criteria c                 
+			                join lu_spnet_approval_criteria lc on lc.id = c.criteria_id			                
+			where c.spn_id = #spnId# and  c.criteria_id  IN ( 8)
+			union all
+			select lc.group_name as groupName,lc.descr as criteriaDesc, c.value as value, c.value as groupValue,c.criteria_id as criteria
+			from spnet_approval_criteria c                 
+			                join lu_spnet_approval_criteria lc on lc.id = c.criteria_id			                
+			where c.spn_id = #spnId# and  c.criteria_id  IN ( 9)
+			union all
+			select lc.group_name as groupName,lc.descr as criteriaDesc, c.value as value,  c.value as groupValue,c.criteria_id as criteria
+			from spnet_approval_criteria c                 
+			                join lu_spnet_approval_criteria lc on lc.id = c.criteria_id			                
+			where c.spn_id = #spnId# and  c.criteria_id  IN ( 10,27)
+			union all
+			select lc.group_name as groupName,lc.descr as criteriaDesc, c.value as value,  c.value as groupValue,c.criteria_id as criteria
+			from spnet_approval_criteria c                 
+			                join lu_spnet_approval_criteria lc on lc.id = c.criteria_id			                
+			where c.spn_id = #spnId# and  c.criteria_id  IN ( 11)
+			union all
+			select lc.group_name as groupName,lc.descr as criteriaDesc, c.value as value,  c.value as groupValue,c.criteria_id as criteria
+			from spnet_approval_criteria c                 
+			                join lu_spnet_approval_criteria lc on lc.id = c.criteria_id			                
+			where c.spn_id = #spnId# and  c.criteria_id  IN ( 12)					
+		) combinedTable order by groupName		
+	</select>
+	
+	<select id="spnet_approved_prov_count.query" resultClass="java.util.HashMap">
+		SELECT 
+			spn_id AS spn_id, 
+			ifnull(COUNT(*),0) AS approved_prov_count
+		FROM 
+			spnet_serviceprovider_state
+		WHERE 
+			provider_wf_state = 'SP SPN APPROVED'
+		GROUP BY spn_id;
+	</select>
+	
+	<select id="spnet_buyer_all.query" parameterClass="java.lang.Integer"  resultClass="spnMonitorVO">
+		SELECT 
+			sb.spn_id AS spnId, 
+			spnHdr.spn_name AS spnName
+		FROM 
+			spnet_buyer sb
+            JOIN spnet_hdr spnHdr ON spnHdr.spn_id = sb.spn_id 
+            	AND spnHdr.is_alias = FALSE
+	        JOIN spnet_workflow_status spws ON spws.wf_entity_id = 'NETWORK' 
+	        	AND spws.entity_id = sb.spn_id
+        	LEFT JOIN spnet_hdr shAlias ON shAlias.alias_original_spn_id = spnHdr.spn_id 
+		WHERE 
+			sb.buyer_id = #buyerId#;
+	</select>
+	
+	<select id="spnet_buyer.query" parameterClass="java.lang.Integer"  resultClass="spnMonitorVO">
+		select sb.spn_id as spnId,
+       		   spnHdr.spn_name as spnName,
+       		   spnHdr.performance_criteria_level AS performanceCriteriaLevel,
+       		   spnHdr.routing_priority_status AS routingPriorityStatus
+		from 
+               spnet_buyer sb 
+	    join spnet_hdr spnHdr
+	       on 
+            spnHdr.spn_id = sb.spn_id and spnHdr.is_alias = false
+        join spnet_workflow_status spws
+           on spws.wf_entity_id = 'NETWORK' and spws.entity_id = sb.spn_id
+        where sb.buyer_id = #buyerId# and spws.wf_entity_state != 'SPN INCOMPLETE'
+        order by LTRIM(spnHdr.spn_name)      
+	</select>
+	
+	<select id="spnet_hdr.query" resultClass="lookupVO">
+		select spnHdr.spn_id as id,
+       		   concat(spnHdr.spn_name, ', ', con.first_name, con.last_name ) as descr
+		from 
+               spnet_hdr spnHdr
+	    join spnet_buyer sb 
+	       on spnHdr.spn_id = sb.spn_id  and spnHdr.is_alias = false
+        join buyer b
+           on b.buyer_id = sb.buyer_id
+        join contact con
+           on con.contact_id = b.contact_id
+        join spnet_workflow_status spws
+           on spws.wf_entity_id = 'NETWORK' and spws.entity_id = sb.spn_id
+        where spws.wf_entity_state != 'SPN INCOMPLETE'
+             
+	</select>
+	
+	<select id="spnet_hdr_info.query" resultMap="spnetHdr.resultmap">
+		select * from spnet_hdr where spn_id = #spnId#
+	</select>
+	
+	<select id="sp_firm_spn_tab_viewable.query" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(*) from spnet_provider_firm_state SPFState 
+         join spnet_buyer spnBuyer 
+        on spnBuyer.buyer_id = #buyerId# and 
+        spnBuyer.spn_id = SPFState.spn_id and
+        SPFState.provider_firm_id = #providerFirmId# and
+        SPFState.provider_wf_state in  ('PF SPN MEMBER', 'PF FIRM OUT OF COMPLIANCE', 'PF SPN REMOVED FIRM') 
+	</select>
+	
+	<select id="provider_spn_tab_viewable.query" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+				
+		select count(*) from spnet_serviceprovider_state SPState 
+		  join spnet_buyer spnBuyer 
+		  on spnBuyer.buyer_id = #buyerId# and 
+		     spnBuyer.spn_id = SPState.spn_id and
+		     SPState.service_provider_id = #providerId#  and
+		     SPState.provider_wf_state in  ('SP SPN APPROVED', 'SP SPN OUT OF COMPLIANCE', 'SP SPN REMOVED')
+	</select>
+	
+	<update id="spnet.provider.document.delete" parameterClass="spnProvUploadedDocsVO">
+		update document
+		set delete_ind = #deletedInd#,
+			modified_date = CURRENT_TIMESTAMP
+		where document_id = #provFirmUplDocId#
+	</update>	
+	
+	<select id="fetchRoutingPriorities.query" parameterClass="java.lang.Integer" resultClass="tierReleaseVO">
+		SELECT spn_id AS spnId,
+		  tier_id AS tierId,
+		  advanced_minutes AS tierWaitMinutes,
+		  advanced_hours AS tierWaitHours,
+		  advanced_days AS tierWaitDays,
+		  no_of_members AS noOfMembers
+		 from spnet_release_tier_minutes where spn_id = #spnId#
+	</select>
+	
+	
+	<select id="spnet.compliance.getFirmComplianceDate"  resultClass="java.util.Date">
+	SELECT MAX(modified_date) FROM spnet_provider_firm_credential_status
+	</select>
+	
+	<select id="spnet.compliance.getProviderComplianceDate"  resultClass="java.util.Date">
+	SELECT MAX(modified_date) FROM spnet_service_provider_credential_status
+	</select>
+	
+		<select id="spnet.compliance.getFirmCompliance"
+	resultClass="spnComplianceVO" parameterClass="complianceCriteriaVO">
+	SELECT luCredentialType.cred_type_desc    AS credType,
+       luCredentialCategory.cred_category AS credCategory,
+       spn.spn_name                       AS spnName,
+       buyer.business_name                AS buyerName,
+       cred_status.wf_state_id            AS wfState,
+       cred_status.liability_amount       AS liabilityAmount,
+       luCriteria.descr                   AS criteriaName
+FROM   spnet_provider_firm_credential_status cred_status
+       INNER JOIN vendor_hdr vendor
+               ON( vendor.vendor_id = cred_status.vendor_id )
+       INNER JOIN vendor_resource resource
+               ON( resource.vendor_id = vendor.vendor_id
+                   AND resource.primary_ind = 1 )
+       INNER JOIN spnet_hdr spn
+               ON spn.spn_id = cred_status.spn_id
+       INNER  JOIN spnet_provider_firm_state spfs
+          ON ( 
+               spfs.provider_firm_id = vendor.vendor_id AND spn.spn_id =spfs.spn_id
+              AND spfs.provider_wf_state IN ('PF SPN MEMBER', 'PF FIRM OUT OF COMPLIANCE')
+              )        
+       INNER JOIN spnet_buyer spn_buyer
+               ON spn.spn_id = spn_buyer.spn_id
+       INNER JOIN buyer buyer
+               ON buyer.buyer_id = spn_buyer.buyer_id
+       LEFT OUTER JOIN lu_vendor_credential_type luCredentialType
+ON( luCredentialType.cred_type_id = cred_status.cred_type_id AND cred_status.cred_type_id!=6)
+LEFT OUTER JOIN lu_vendor_credential_category luCredentialCategory
+ON( luCredentialCategory.cred_type_id = cred_status.cred_type_id AND cred_status.cred_type_id!=6
+    AND luCredentialCategory.cred_category_id =
+        cred_status.cred_category_id )
+LEFT OUTER JOIN lu_spnet_approval_criteria_name luCriteria
+ON( cred_status.lu_spnet_approval_criteria_id = luCriteria.id AND luCriteria.id NOT IN(13,14))
+WHERE  vendor.vendor_id =#vendorId#
+	<isNotNull property="sSearch">
+	AND( luCredentialType.cred_type_desc LIKE '%$sSearch$%' OR
+luCredentialCategory.cred_category LIKE '%$sSearch$%' OR
+spn.spn_name LIKE '%$sSearch$%' OR
+cred_status.wf_state_id  LIKE '%$sSearch$%' OR
+buyer.business_name LIKE '%$sSearch$%' OR
+cred_status.liability_amount LIKE '%$sSearch$%' OR
+ luCriteria.descr LIKE '%$sSearch$%')
+</isNotNull>
+   <isNotNull property="selectedBuyers">
+			<isNotEmpty property="selectedBuyers" prepend="AND  ">
+				buyer.business_name IN
+				<iterate property="selectedBuyers" open="(" close=")" conjunction=",">
+					#selectedBuyers[]#
+				</iterate>
+			</isNotEmpty>
+   </isNotNull>
+    <isNotNull property="selectedSPNs">
+			<isNotEmpty property="selectedSPNs" prepend="AND  ">
+				spn.spn_name IN
+				<iterate property="selectedSPNs" open="(" close=")" conjunction=",">
+					#selectedSPNs[]#
+				</iterate>
+			</isNotEmpty>
+   </isNotNull>
+   <isNotNull property="selectedComplianceStatus">
+			<isNotEmpty property="selectedComplianceStatus" prepend="AND  ">
+				cred_status.wf_state_id IN
+				<iterate property="selectedComplianceStatus" open="(" close=")" conjunction=",">
+					#selectedComplianceStatus[]#
+				</iterate>
+			</isNotEmpty>
+   </isNotNull>
+   <isNotNull property="selectedRequirements">
+			<isNotEmpty property="selectedRequirements" >
+				AND ( CONCAT(luCredentialType.cred_type_desc,' - ',luCredentialCategory.cred_category) IN
+				<iterate property="selectedRequirements" open="(" close=")" conjunction=",">
+					#selectedRequirements[]#
+				</iterate>
+				OR (luCredentialType.cred_type_desc IN
+				<iterate property="selectedRequirements" open="(" close=")" conjunction=",">
+					#selectedRequirements[]#
+				</iterate> AND luCredentialCategory.cred_category IS NULL)
+				OR luCriteria.descr IN 
+				<iterate property="selectedRequirements" open="(" close=")" conjunction=",">
+					#selectedRequirements[]#
+				</iterate>)
+			</isNotEmpty>
+   </isNotNull>
+  	<isEqual property="sortColumnName" compareValue="spn">
+	ORDER BY spnName
+	</isEqual>
+	<isEqual property="sortColumnName" compareValue="requirement">
+	ORDER BY CONCAT(IFNULL(credType,''),IFNULL(credCategory,''),IFNULL(criteriaName,''))
+	</isEqual>
+	<isEqual property="sortColumnName" compareValue="buyer">
+	ORDER BY buyerName
+	</isEqual>
+	<isEqual property="sortColumnName" compareValue="status">
+	ORDER BY wfState
+	</isEqual>
+	<isNotNull property="sortOrder">
+				   		$sortOrder$
+			      	</isNotNull>
+   <isNotNull property="startIndex" prepend="LIMIT ">
+				      			#startIndex#
+							</isNotNull>
+							<isNotNull property="numberOfRecords" prepend=",  ">
+				      			#numberOfRecords#
+							</isNotNull>
+	</select>
+	
+	<select id="spnet.compliance.getFirmComplianceCount"
+	resultClass="java.lang.Integer" parameterClass="complianceCriteriaVO">
+	SELECT COUNT(*)
+FROM   spnet_provider_firm_credential_status cred_status
+       INNER JOIN vendor_hdr vendor
+               ON( vendor.vendor_id = cred_status.vendor_id )
+       INNER JOIN vendor_resource resource
+               ON( resource.vendor_id = vendor.vendor_id
+                   AND resource.primary_ind = 1 )
+       INNER JOIN spnet_hdr spn
+               ON spn.spn_id = cred_status.spn_id
+       INNER  JOIN spnet_provider_firm_state spfs
+          ON ( 
+               spfs.provider_firm_id = vendor.vendor_id AND spn.spn_id =spfs.spn_id
+              AND spfs.provider_wf_state IN ('PF SPN MEMBER', 'PF FIRM OUT OF COMPLIANCE')
+              )          
+       INNER JOIN spnet_buyer spn_buyer
+               ON spn.spn_id = spn_buyer.spn_id
+       INNER JOIN buyer buyer
+               ON buyer.buyer_id = spn_buyer.buyer_id
+       LEFT OUTER JOIN lu_vendor_credential_type luCredentialType
+ON( luCredentialType.cred_type_id = cred_status.cred_type_id AND cred_status.cred_type_id!=6)
+LEFT OUTER JOIN lu_vendor_credential_category luCredentialCategory
+ON( luCredentialCategory.cred_type_id = cred_status.cred_type_id AND cred_status.cred_type_id!=6
+    AND luCredentialCategory.cred_category_id =
+        cred_status.cred_category_id )
+LEFT OUTER JOIN lu_spnet_approval_criteria_name luCriteria
+ON( cred_status.lu_spnet_approval_criteria_id = luCriteria.id  AND luCriteria.id NOT IN(13,14))
+WHERE  vendor.vendor_id =#vendorId#
+<isNotNull property="sSearch">
+	AND( luCredentialType.cred_type_desc LIKE '%$sSearch$%' OR
+luCredentialCategory.cred_category LIKE '%$sSearch$%' OR
+spn.spn_name LIKE '%$sSearch$%' OR
+cred_status.wf_state_id  LIKE '%$sSearch$%' OR
+buyer.business_name LIKE '%$sSearch$%' OR
+cred_status.liability_amount LIKE '%$sSearch$%' OR
+ luCriteria.descr LIKE '%$sSearch$%')
+</isNotNull>
+   <isNotNull property="selectedBuyers">
+			<isNotEmpty property="selectedBuyers" prepend="AND  ">
+				buyer.business_name IN
+				<iterate property="selectedBuyers" open="(" close=")" conjunction=",">
+					#selectedBuyers[]#
+				</iterate>
+			</isNotEmpty>
+   </isNotNull>
+    <isNotNull property="selectedSPNs">
+			<isNotEmpty property="selectedSPNs" prepend="AND  ">
+				spn.spn_name IN
+				<iterate property="selectedSPNs" open="(" close=")" conjunction=",">
+					#selectedSPNs[]#
+				</iterate>
+			</isNotEmpty>
+   </isNotNull>
+   <isNotNull property="selectedComplianceStatus">
+			<isNotEmpty property="selectedComplianceStatus" prepend="AND  ">
+				cred_status.wf_state_id IN
+				<iterate property="selectedComplianceStatus" open="(" close=")" conjunction=",">
+					#selectedComplianceStatus[]#
+				</iterate>
+			</isNotEmpty>
+   </isNotNull>
+   <isNotNull property="selectedRequirements">
+			<isNotEmpty property="selectedRequirements" >
+				AND ( CONCAT(luCredentialType.cred_type_desc,' - ',luCredentialCategory.cred_category) IN
+				<iterate property="selectedRequirements" open="(" close=")" conjunction=",">
+					#selectedRequirements[]#
+				</iterate>
+				OR (luCredentialType.cred_type_desc IN
+				<iterate property="selectedRequirements" open="(" close=")" conjunction=",">
+					#selectedRequirements[]#
+				</iterate> AND luCredentialCategory.cred_category IS NULL)
+				OR luCriteria.descr IN 
+				<iterate property="selectedRequirements" open="(" close=")" conjunction=",">
+					#selectedRequirements[]#
+				</iterate>)
+			</isNotEmpty>
+   </isNotNull>
+	</select>
+	
+	
+		<select id="spnet.compliance.getProviderComplianceCount"
+	resultClass="java.lang.Integer" parameterClass="complianceCriteriaVO">
+	SELECT COUNT(*)
+FROM   spnet_service_provider_credential_status cred_status
+       INNER JOIN vendor_resource resource
+               ON( resource.resource_id = cred_status.resource_id AND resource.wf_state_id=6)
+        INNER JOIN contact con
+               ON ( con.contact_id = resource.contact_id )
+       INNER JOIN spnet_hdr spn
+               ON spn.spn_id = cred_status.spn_id
+               INNER  JOIN spnet_provider_firm_state spfs
+          ON ( 
+               spfs.provider_firm_id = cred_status.vendor_id AND spn.spn_id =spfs.spn_id
+              AND spfs.provider_wf_state IN ('PF SPN MEMBER', 'PF FIRM OUT OF COMPLIANCE')
+              )        
+       INNER JOIN spnet_buyer spn_buyer
+               ON spn.spn_id = spn_buyer.spn_id
+       INNER JOIN buyer buyer
+               ON buyer.buyer_id = spn_buyer.buyer_id
+       LEFT OUTER JOIN lu_resource_credential_type luCredentialType
+ON( luCredentialType.cred_type_id = cred_status.cred_type_id )
+LEFT OUTER JOIN lu_resource_credential_category luCredentialCategory
+ON( luCredentialCategory.cred_type_id = cred_status.cred_type_id
+    AND luCredentialCategory.cred_category_id =
+        cred_status.cred_category_id ) 
+LEFT OUTER JOIN lu_spnet_approval_criteria_name luCriteria
+ON( cred_status.lu_spnet_approval_criteria_id = luCriteria.id AND luCriteria.id NOT IN(16,17))
+WHERE  cred_status.vendor_id = #vendorId#
+<isNotNull property="sSearch">
+AND (luCredentialType.cred_type_desc   LIKE '%$sSearch$%'
+    OR   luCredentialCategory.cred_category LIKE '%$sSearch$%'
+    OR   con.first_name                     LIKE '%$sSearch$%'
+    OR   con.last_name                      LIKE '%$sSearch$%'
+    OR   resource.resource_id               LIKE '%$sSearch$%'
+    OR   spn.spn_name                       LIKE '%$sSearch$%'
+    OR   buyer.business_name                LIKE '%$sSearch$%'
+    OR   cred_status.wf_state_id            LIKE '%$sSearch$%'
+    OR   luCriteria.descr                   LIKE '%$sSearch$%'
+    OR   cred_status.criteria_value_name LIKE '%$sSearch$%'
+
+)
+</isNotNull> 
+    <isNotNull property="selectedBuyers">
+			<isNotEmpty property="selectedBuyers" prepend="AND  ">
+				buyer.business_name IN
+				<iterate property="selectedBuyers" open="(" close=")" conjunction=",">
+					#selectedBuyers[]#
+				</iterate>
+			</isNotEmpty>
+   </isNotNull>
+    <isNotNull property="selectedSPNs">
+			<isNotEmpty property="selectedSPNs" prepend="AND  ">
+				spn.spn_name IN
+				<iterate property="selectedSPNs" open="(" close=")" conjunction=",">
+					#selectedSPNs[]#
+				</iterate>
+			</isNotEmpty>
+   </isNotNull>
+   <isNotNull property="selectedProviders">
+			<isNotEmpty property="selectedProviders" prepend="AND  ">
+				CONCAT(con.first_name,' ',con.last_name) IN
+				<iterate property="selectedProviders" open="(" close=")" conjunction=",">
+					#selectedProviders[]#
+				</iterate>
+			</isNotEmpty>
+   </isNotNull>
+   <isNotNull property="selectedComplianceStatus">
+			<isNotEmpty property="selectedComplianceStatus" prepend="AND  ">
+				cred_status.wf_state_id IN
+				<iterate property="selectedComplianceStatus" open="(" close=")" conjunction=",">
+					#selectedComplianceStatus[]#
+				</iterate>
+			</isNotEmpty>
+   </isNotNull>
+   <isNotNull property="selectedRequirements">
+			<isNotEmpty property="selectedRequirements" >
+				AND ( CONCAT(luCredentialType.cred_type_desc,' - ',luCredentialCategory.cred_category) IN
+				<iterate property="selectedRequirements" open="(" close=")" conjunction=",">
+					#selectedRequirements[]#
+				</iterate>
+				OR (luCredentialType.cred_type_desc IN
+				<iterate property="selectedRequirements" open="(" close=")" conjunction=",">
+					#selectedRequirements[]#
+				</iterate> AND luCredentialCategory.cred_category IS NULL)
+				OR luCriteria.descr IN 
+				<iterate property="selectedRequirements" open="(" close=")" conjunction=",">
+					#selectedRequirements[]#
+				</iterate>)
+			</isNotEmpty>
+   </isNotNull>
+	</select>
+	
+	
+	 
+	<select id="spnet.compliance.getProviderCompliance"
+	resultClass="spnComplianceVO" parameterClass="complianceCriteriaVO">
+	SELECT luCredentialType.cred_type_desc    AS credType,
+       luCredentialCategory.cred_category AS credCategory,
+       con.first_name                     AS providerFirstName,
+       con.last_name                      AS providerLastName,
+       resource.resource_id               AS id,
+       spn.spn_name                       AS spnName,
+       buyer.business_name                AS buyerName,
+       cred_status.wf_state_id            AS wfState,
+       luCriteria.descr                   AS criteriaName,
+       cred_status.criteria_value_name    AS criteriaValueName,
+       ssps.provider_wf_state             AS providerState
+FROM   spnet_service_provider_credential_status cred_status
+
+        INNER  JOIN spnet_provider_firm_state spfs
+          ON ( 
+               spfs.provider_firm_id = cred_status.vendor_id AND spfs.spn_id = cred_status.spn_id
+              AND spfs.provider_wf_state IN ('PF SPN MEMBER', 'PF FIRM OUT OF COMPLIANCE')
+              )   
+
+       INNER JOIN vendor_resource resource
+               ON( resource.resource_id = cred_status.resource_id AND resource.wf_state_id=6)
+        INNER JOIN contact con
+               ON ( con.contact_id = resource.contact_id )
+       INNER JOIN spnet_hdr spn
+               ON spn.spn_id = cred_status.spn_id
+     
+       INNER JOIN spnet_buyer spn_buyer
+               ON spn.spn_id = spn_buyer.spn_id
+       INNER JOIN buyer buyer
+               ON buyer.buyer_id = spn_buyer.buyer_id
+       LEFT OUTER JOIN lu_resource_credential_type luCredentialType
+		ON( luCredentialType.cred_type_id = cred_status.cred_type_id )
+	LEFT OUTER JOIN lu_resource_credential_category luCredentialCategory
+		ON( luCredentialCategory.cred_type_id = cred_status.cred_type_id
+			AND luCredentialCategory.cred_category_id =
+			cred_status.cred_category_id )
+	LEFT OUTER JOIN lu_spnet_approval_criteria_name luCriteria
+		ON( cred_status.lu_spnet_approval_criteria_id = luCriteria.id AND luCriteria.id NOT IN(16,17))
+        LEFT OUTER JOIN spnet_serviceprovider_state ssps
+           ON( cred_status.resource_id = ssps.service_provider_id AND cred_status.spn_id = ssps.spn_id)
+    WHERE  cred_status.vendor_id = #vendorId#
+<isNotNull property="sSearch">
+AND (luCredentialType.cred_type_desc   LIKE '%$sSearch$%'
+    OR   luCredentialCategory.cred_category LIKE '%$sSearch$%'
+    OR   con.first_name                     LIKE '%$sSearch$%'
+    OR   con.last_name                      LIKE '%$sSearch$%'
+    OR   resource.resource_id               LIKE '%$sSearch$%'
+    OR   spn.spn_name                       LIKE '%$sSearch$%'
+    OR   buyer.business_name                LIKE '%$sSearch$%'
+    OR   cred_status.wf_state_id            LIKE '%$sSearch$%'
+    OR   luCriteria.descr                   LIKE '%$sSearch$%'
+    OR   cred_status.criteria_value_name LIKE '%$sSearch$%'
+
+)
+</isNotNull> 
+    <isNotNull property="selectedBuyers">
+			<isNotEmpty property="selectedBuyers" prepend="AND  ">
+				buyer.business_name IN
+				<iterate property="selectedBuyers" open="(" close=")" conjunction=",">
+					#selectedBuyers[]#
+				</iterate>
+			</isNotEmpty>
+   </isNotNull>
+    <isNotNull property="selectedSPNs">
+			<isNotEmpty property="selectedSPNs" prepend="AND  ">
+				spn.spn_name IN
+				<iterate property="selectedSPNs" open="(" close=")" conjunction=",">
+					#selectedSPNs[]#
+				</iterate>
+			</isNotEmpty>
+   </isNotNull>
+   <isNotNull property="selectedProviders">
+			<isNotEmpty property="selectedProviders" prepend="AND  ">
+				CONCAT(con.first_name,' ',con.last_name) IN
+				<iterate property="selectedProviders" open="(" close=")" conjunction=",">
+					#selectedProviders[]#
+				</iterate>
+			</isNotEmpty>
+   </isNotNull>
+   <isNotNull property="selectedComplianceStatus">
+			<isNotEmpty property="selectedComplianceStatus" prepend="AND  ">
+				cred_status.wf_state_id IN
+				<iterate property="selectedComplianceStatus" open="(" close=")" conjunction=",">
+					#selectedComplianceStatus[]#
+				</iterate>
+			</isNotEmpty>
+   </isNotNull>
+   <isNotNull property="selectedRequirements">
+			<isNotEmpty property="selectedRequirements" >
+				AND ( CONCAT(luCredentialType.cred_type_desc,' - ',luCredentialCategory.cred_category) IN
+				<iterate property="selectedRequirements" open="(" close=")" conjunction=",">
+					#selectedRequirements[]#
+				</iterate>
+				OR (luCredentialType.cred_type_desc IN
+				<iterate property="selectedRequirements" open="(" close=")" conjunction=",">
+					#selectedRequirements[]#
+				</iterate> AND luCredentialCategory.cred_category IS NULL)
+				OR luCriteria.descr IN 
+				<iterate property="selectedRequirements" open="(" close=")" conjunction=",">
+					#selectedRequirements[]#
+				</iterate>)
+			</isNotEmpty>
+   </isNotNull>
+    	<isEqual property="sortColumnName" compareValue="spn">
+	ORDER BY spnName
+	</isEqual>
+	<isEqual property="sortColumnName" compareValue="buyer">
+	ORDER BY buyerName
+	</isEqual>
+	<isEqual property="sortColumnName" compareValue="status">
+	ORDER BY wfState
+	</isEqual>
+	<isEqual property="sortColumnName" compareValue="provider">
+	ORDER BY providerFirstName
+	<isNotNull property="sortOrder">
+				   		$sortOrder$
+	</isNotNull>,providerLastName
+	</isEqual>
+	<isEqual property="sortColumnName" compareValue="requirement">
+	ORDER BY CONCAT(IFNULL(credType,''),IFNULL(credCategory,''),IFNULL(criteriaValueName,''),IFNULL(criteriaName,''))
+	</isEqual>	
+	<isNotNull property="sortOrder">
+				   		$sortOrder$
+			      	</isNotNull>
+   <isNotNull property="startIndex" prepend="LIMIT ">
+				      			#startIndex#
+							</isNotNull>
+							<isNotNull property="numberOfRecords" prepend=",  ">
+				      			#numberOfRecords#
+							</isNotNull>
+	</select>
+	
+	 <select id="spnet.getRequirementsforFirmCompliance"
+	resultClass="spnComplianceVO" parameterClass="complianceCriteriaVO">
+   SELECT DISTINCT luCredentialType.cred_type_desc    AS credType,
+                luCredentialCategory.cred_category AS credCategory,
+                luCriteria.descr                   AS criteriaName
+FROM   spnet_provider_firm_credential_status cred_status
+       INNER JOIN vendor_hdr vendor
+               ON( vendor.vendor_id = cred_status.vendor_id )
+       INNER JOIN spnet_hdr spn ON spn.spn_id = cred_status.spn_id
+       INNER  JOIN spnet_provider_firm_state spfs
+          ON ( 
+               spfs.provider_firm_id = vendor.vendor_id AND spn.spn_id =spfs.spn_id
+              AND spfs.provider_wf_state IN ('PF SPN MEMBER', 'PF FIRM OUT OF COMPLIANCE')
+              )        
+       LEFT OUTER JOIN lu_vendor_credential_type luCredentialType
+ON( luCredentialType.cred_type_id = cred_status.cred_type_id AND cred_status.cred_type_id!=6)
+LEFT OUTER JOIN lu_vendor_credential_category luCredentialCategory
+ON( luCredentialCategory.cred_type_id = cred_status.cred_type_id AND cred_status.cred_type_id!=6
+    AND luCredentialCategory.cred_category_id =
+        cred_status.cred_category_id )
+LEFT OUTER JOIN lu_spnet_approval_criteria_name luCriteria
+ON( cred_status.lu_spnet_approval_criteria_id = luCriteria.id  AND luCriteria.id NOT IN(13,14))
+WHERE  vendor.vendor_id =#vendorId#
+ORDER BY CONCAT(IFNULL(credType,''),IFNULL(credCategory,''),IFNULL(criteriaName,''))
+	</select>
+	
+	<select id="spnet.getBuyersforFirmCompliance"
+	resultClass="java.lang.String" parameterClass="complianceCriteriaVO">
+	SELECT DISTINCT
+	buyer.business_name AS buyerName
+	FROM spnet_provider_firm_credential_status cred_status
+	INNER JOIN spnet_hdr spn ON spn.spn_id = cred_status.spn_id
+       INNER  JOIN spnet_provider_firm_state spfs
+          ON ( 
+               spfs.provider_firm_id = cred_status.vendor_id AND spn.spn_id =spfs.spn_id
+              AND spfs.provider_wf_state IN ('PF SPN MEMBER', 'PF FIRM OUT OF COMPLIANCE')
+              )
+	INNER JOIN spnet_buyer spn_buyer ON cred_status.spn_id = spn_buyer.spn_id
+	INNER JOIN buyer buyer ON buyer.buyer_id = spn_buyer.buyer_id
+	WHERE cred_status.vendor_id=#vendorId#
+	ORDER BY buyerName
+	</select>
+	
+	
+	<select id="spnet.getSPNforFirmCompliance"
+	resultClass="java.lang.String" parameterClass="complianceCriteriaVO">
+	SELECT
+	DISTINCT spn.spn_name AS spnName
+	FROM spnet_provider_firm_credential_status cred_status
+	INNER JOIN spnet_hdr spn ON spn.spn_id = cred_status.spn_id
+	INNER  JOIN spnet_provider_firm_state spfs
+          ON ( 
+               spfs.provider_firm_id = cred_status.vendor_id AND spn.spn_id =spfs.spn_id
+              AND spfs.provider_wf_state IN ('PF SPN MEMBER', 'PF FIRM OUT OF COMPLIANCE')
+              )
+	WHERE cred_status.vendor_id=#vendorId#
+	ORDER BY spnName
+	</select>
+	
+	<select id="spnet.getRequirementsforProviderCompliance"
+	resultClass="spnComplianceVO" parameterClass="complianceCriteriaVO">
+SELECT DISTINCT luCredentialType.cred_type_desc    AS credType,
+                luCredentialCategory.cred_category AS credCategory,
+                luCriteria.descr                   AS criteriaName
+FROM   spnet_service_provider_credential_status cred_status
+	INNER JOIN vendor_resource resource
+ON (cred_status.resource_id=resource.resource_id AND resource.wf_state_id=6)
+  INNER JOIN spnet_hdr spn
+               ON spn.spn_id = cred_status.spn_id
+        INNER  JOIN spnet_provider_firm_state spfs
+          ON ( 
+               spfs.provider_firm_id = cred_status.vendor_id AND spn.spn_id =spfs.spn_id
+              AND spfs.provider_wf_state IN ('PF SPN MEMBER', 'PF FIRM OUT OF COMPLIANCE')
+              )             
+       LEFT OUTER JOIN lu_resource_credential_type luCredentialType
+ON( luCredentialType.cred_type_id = cred_status.cred_type_id )
+LEFT OUTER JOIN lu_resource_credential_category luCredentialCategory
+ON( luCredentialCategory.cred_type_id = cred_status.cred_type_id
+    AND luCredentialCategory.cred_category_id =
+        cred_status.cred_category_id )
+LEFT OUTER JOIN lu_spnet_approval_criteria_name luCriteria
+ON( cred_status.lu_spnet_approval_criteria_id = luCriteria.id AND luCriteria.id NOT IN(16,17))
+WHERE  cred_status.vendor_id = #vendorId#
+ORDER BY CONCAT(IFNULL(credType,''),IFNULL(credCategory,''),IFNULL(criteriaName,''))
+	</select>
+	
+	<select id="spnet.getBuyersforProviderCompliance"
+	resultClass="java.lang.String" parameterClass="complianceCriteriaVO">
+	SELECT DISTINCT
+	buyer.business_name AS buyerName
+	FROM spnet_service_provider_credential_status cred_status
+	INNER JOIN vendor_resource resource
+        ON (cred_status.resource_id=resource.resource_id AND resource.wf_state_id=6)
+	INNER JOIN spnet_hdr spn
+               ON spn.spn_id = cred_status.spn_id
+        INNER  JOIN spnet_provider_firm_state spfs
+          ON ( 
+               spfs.provider_firm_id = cred_status.vendor_id AND spn.spn_id =spfs.spn_id
+              AND spfs.provider_wf_state IN ('PF SPN MEMBER', 'PF FIRM OUT OF COMPLIANCE')
+              ) 
+	INNER JOIN spnet_buyer spn_buyer
+	ON cred_status.spn_id = spn_buyer.spn_id
+	INNER JOIN buyer buyer
+	ON buyer.buyer_id = spn_buyer.buyer_id
+	WHERE cred_status.vendor_id =#vendorId#
+	ORDER BY buyerName
+	</select>
+	
+	<select id="spnet.getSPNforProviderCompliance"
+	resultClass="java.lang.String" parameterClass="complianceCriteriaVO">
+	SELECT DISTINCT
+	spn.spn_name AS spnName
+	FROM spnet_service_provider_credential_status cred_status
+	INNER JOIN vendor_resource resource
+        ON (cred_status.resource_id=resource.resource_id AND resource.wf_state_id=6)
+	INNER JOIN spnet_hdr spn
+	ON spn.spn_id = cred_status.spn_id
+	INNER  JOIN spnet_provider_firm_state spfs
+          ON ( 
+               spfs.provider_firm_id = cred_status.vendor_id AND spn.spn_id =spfs.spn_id
+              AND spfs.provider_wf_state IN ('PF SPN MEMBER', 'PF FIRM OUT OF COMPLIANCE')
+              )
+	WHERE cred_status.vendor_id =#vendorId#
+	ORDER BY spnName
+	</select>
+	
+		<select id="spnet.getProviderNamesforProviderCompliance"
+	resultClass="spnComplianceVO" parameterClass="complianceCriteriaVO">
+	SELECT DISTINCT con.first_name AS providerFirstName,
+                con.last_name  AS providerLastName
+FROM   spnet_service_provider_credential_status cred_status
+INNER JOIN spnet_hdr spn
+               ON spn.spn_id = cred_status.spn_id
+        INNER  JOIN spnet_provider_firm_state spfs
+          ON ( 
+               spfs.provider_firm_id = cred_status.vendor_id AND spn.spn_id =spfs.spn_id
+              AND spfs.provider_wf_state IN ('PF SPN MEMBER', 'PF FIRM OUT OF COMPLIANCE')
+              ) 
+       INNER JOIN vendor_resource resource
+               ON( resource.resource_id = cred_status.resource_id AND resource.wf_state_id=6)
+        INNER JOIN contact con
+               ON ( con.contact_id = resource.contact_id )
+WHERE  cred_status.vendor_id = #vendorId#
+ORDER BY providerFirstName,providerLastName
+	</select>
+	
+	<select id="spnCompanyExceptionsList.select"
+	resultClass="spnExclusions" parameterClass="java.util.Map">
+	SELECT lvct.cred_type_id      AS credentialTypeId,
+       lvct.cred_type_desc    AS credentialType,
+       lvcc.cred_category_id  AS credentialCategoryId,
+       lvcc.cred_category     AS credentialCategory,
+       expe.exception_type_id AS exceptionTypeId,
+       expe.exception_value   AS exceptionValue,
+       expe.modified_date     AS modifiedDate,
+       expe.spn_id             AS spnId,
+       expe.active_ind        AS activeInd,
+       expe.cred_exception_id AS credentialExceptionId
+	FROM   supplier_prod.spnet_credential_exception expe
+	      LEFT OUTER  JOIN supplier_prod.lu_vendor_credential_category lvcc
+	         ON lvcc.cred_category_id = expe.cred_category_id
+	       JOIN supplier_prod.lu_vendor_credential_type lvct
+	         ON lvct.cred_type_id = expe.cred_type_id
+	            
+	WHERE  expe.spn_id = #spnId# AND expe.credential_type = 'vendor'
+	</select>
+	
+	<select id="spnResourceExceptionsList.select"  resultClass="spnExclusions" parameterClass="java.util.Map">
+	SELECT lvct.cred_type_id      AS credentialTypeId,
+       lvct.cred_type_desc    AS credentialType,
+       lvcc.cred_category_id  AS credentialCategoryId,
+       lvcc.cred_category     AS credentialCategory,
+       expe.exception_type_id AS exceptionTypeId,
+       expe.exception_value   AS exceptionValue,
+       expe.modified_date     AS modifiedDate,
+       expe.spn_id             AS spnId,
+       expe.active_ind        AS activeInd,
+       expe.cred_exception_id AS credentialExceptionId
+	FROM   supplier_prod.spnet_credential_exception expe
+	      LEFT OUTER  JOIN supplier_prod.lu_vendor_credential_category lvcc
+	         ON lvcc.cred_category_id = expe.cred_category_id
+	       JOIN supplier_prod.lu_vendor_credential_type lvct
+	         ON lvct.cred_type_id = expe.cred_type_id
+	            
+	WHERE  expe.spn_id = #spnId# AND expe.credential_type = 'resource'
+	</select>
+	
+		<select id="monitor.provider.background.getBackgroundInformationCount"
+		resultClass="java.lang.Integer" parameterClass="searchBackgroundInformationVO">
+		SELECT COUNT(*) FROM
+		(SELECT vr.resource_id
+		FROM spnet_hdr sh 
+		JOIN
+		spnet_provider_firm_state spfs
+		ON (sh.spn_id = spfs.spn_id AND sh.is_alias = 0)
+		JOIN vendor_resource vr
+		ON(vr.vendor_id =spfs.provider_firm_id)
+		JOIN sl_pro_bkgnd_chk slbkchk
+		ON(vr.bg_check_id= slbkchk.bg_check_id)
+		JOIN contact con
+		ON(con.contact_id=vr.contact_id)
+		JOIN wf_states wf
+		ON(wf.wf_state_id=vr.background_state_id)
+		LEFT JOIN location locn
+		ON((locn.locn_id = vr.locn_id)
+		AND (locn.locn_type_id = 4))
+		LEFT OUTER JOIN
+		audit_cred_expiry_notification aud
+		ON(aud.resource_id=vr.resource_id AND
+		aud.credential_ind = 4 )
+		LEFT OUTER JOIN
+		spnet_approval_criteria criteria
+		ON(criteria.spn_id=spfs.spn_id AND
+		criteria.criteria_id = 29 )
+		WHERE
+		spfs.provider_firm_id = #vendorId# AND vr.wf_state_id NOT IN(21,31,32) AND spfs.provider_wf_state IN ('PF SPN MEMBER','PF FIRM OUT OF COMPLIANCE')
+       
+		<isNotNull property="spnId">
+			<isNotEqual prepend=" AND " property="spnId" compareValue="-1">
+				sh.spn_id = #spnId#
+			</isNotEqual>
+		</isNotNull>
+
+		<isNotNull property="sSearch">
+			AND (vr.resource_id LIKE '%$sSearch$%'
+			OR con.first_name LIKE '%$sSearch$%'
+			OR con.last_name LIKE '%$sSearch$%'
+			OR wf.wf_state LIKE '%$sSearch$%'
+			OR slbkchk.verification_date LIKE '%$sSearch$%'
+			OR slbkchk.reverification_date LIKE '%$sSearch$%'
+			OR aud.notification_30_sent_date LIKE '%$sSearch$%'
+			OR aud.notification_7_sent_date LIKE '%$sSearch$%'
+			OR aud.notification_0_sent_date LIKE '%$sSearch$%'
+			OR aud.notification_type LIKE '%$sSearch$%'
+			)
+		</isNotNull>
+
+		<isNotNull property="selectedSLBackgroundStatus">
+		<isNotEmpty property="selectedSLBackgroundStatus">
+			<isNotEqual prepend=" AND " property="selectedSLBackgroundStatus"
+				compareValue="-1">
+				wf.wf_state = #selectedSLBackgroundStatus#
+			</isNotEqual>
+			</isNotEmpty>
+		</isNotNull>
+
+		<isNotNull property="selectedSLBackgroundStatusAll">
+		<isNotEmpty property="selectedSLBackgroundStatusAll">
+			<isEqual prepend=" AND " property="selectedSLBackgroundStatusAll"
+				compareValue="SLBackgroundStatusAll">
+				wf.wf_state IN ('Clear','Not Cleared','Not Started','In Process','Pending Submission')
+			</isEqual>
+			</isNotEmpty>
+		</isNotNull>
+
+		<isNotNull property="selectedReCertification">
+		<isNotEmpty property="selectedReCertification">
+			<isNotEqual prepend=" AND " property="selectedReCertification"
+				compareValue="-1">
+				  <isEqual  property="selectedReCertification" compareValue="30">
+	    	 		 DATEDIFF(slbkchk.reverification_date,NOW()) <![CDATA[<=]]> 30 
+	    	 		 AND
+	    	 		 DATEDIFF(slbkchk.reverification_date,NOW()) <![CDATA[>]]> 7 
+	    		  </isEqual>
+	    		  <isEqual  property="selectedReCertification" compareValue="7">
+	    	 		 DATEDIFF(slbkchk.reverification_date,NOW()) <![CDATA[<=]]> 7 
+	    	 		 AND
+	    	 		 DATEDIFF(slbkchk.reverification_date,NOW()) <![CDATA[>]]> 0 
+	    		  </isEqual>
+	    		  <isEqual  property="selectedReCertification" compareValue="0">
+	    	 		 DATEDIFF(slbkchk.reverification_date,NOW()) = 0
+	    		  </isEqual>
+	    		  <isEqual  property="selectedReCertification" compareValue="InProcess">
+	    	 		 slbkchk.recertification_status = 'In Process'
+	    		  </isEqual>
+	    		   AND wf.wf_state = 'Clear'
+			</isNotEqual>
+			</isNotEmpty>
+		</isNotNull>
+
+		<isNotNull property="selectedReCertificationAll">
+		<isNotEmpty property="selectedReCertificationAll">
+			<isEqual prepend=" AND " property="selectedReCertificationAll"
+				compareValue="ReCertificationAll">
+				DATEDIFF(slbkchk.reverification_date,NOW()) <![CDATA[<=]]> 30 
+			</isEqual>
+			</isNotEmpty>
+		</isNotNull>
+
+
+		<isNotNull property="pastDue">
+		<isNotEmpty property="pastDue">
+			<isEqual prepend=" AND " property="pastDue" compareValue="Past">
+				DATEDIFF(slbkchk.reverification_date,NOW()) <![CDATA[< ]]>
+				0 AND wf.wf_state = 'Clear'
+			</isEqual>
+			</isNotEmpty>
+		</isNotNull>
+
+		<isNotNull property="selectedSystemAction">
+		<isNotEmpty property="selectedSystemAction">
+			<isNotEqual prepend=" AND " property="selectedSystemAction"
+				compareValue="-1">
+				aud.notification_type = #selectedSystemAction#
+			</isNotEqual>
+			</isNotEmpty>
+		</isNotNull>
+
+		<isNotNull property="selectedSystemActionAll">
+			<isNotEmpty property="selectedSystemActionAll">
+			<isEqual prepend=" AND " property="selectedSystemActionAll"
+				compareValue="SystemActionAll">
+				aud.notification_type IN (30,7,0)
+			</isEqual>
+			</isNotEmpty>
+		</isNotNull>
+		
+		GROUP BY vr.resource_id	
+			<isNotNull property="selectedReCertification">
+		    <isNotEmpty property="selectedReCertification">
+	   		<isNotEqual property="selectedReCertification" compareValue="-1">	
+			<isNotNull property="selectedSystemAction">
+			<isNotEmpty property="selectedSystemAction">
+	  		<isNotEqual property="selectedSystemAction" compareValue="-1">
+	   		 	HAVING COUNT(criteria.spn_id) <![CDATA[> ]]> 0
+			</isNotEqual>
+			</isNotEmpty>
+			</isNotNull>
+			</isNotEqual>
+	   		</isNotEmpty>
+	   		</isNotNull>
+
+
+			<isNotNull property="selectedReCertification">
+	     	<isNotEmpty property="selectedReCertification">
+	   		<isNotEqual property="selectedReCertification" compareValue="-1">	
+			<isNotNull property="selectedSystemAction">
+			<isNotEmpty property="selectedSystemAction">
+	  		<isEqual property="selectedSystemAction" compareValue="-1">
+	   		 	HAVING COUNT(criteria.spn_id) <![CDATA[> ]]> 0
+			</isEqual>
+			</isNotEmpty>
+			</isNotNull>
+			</isNotEqual>
+	   		</isNotEmpty>
+	   		</isNotNull>
+
+			<isNotNull property="selectedSystemAction">
+			<isNotEmpty property="selectedSystemAction">
+	  		<isNotEqual property="selectedSystemAction" compareValue="-1">	
+			<isNotNull property="selectedReCertification">
+		     <isNotEmpty property="selectedReCertification">
+	   		 <isEqual property="selectedReCertification" compareValue="-1">
+	
+				HAVING COUNT(criteria.spn_id) <![CDATA[> ]]> 0
+			</isEqual>
+	   		</isNotEmpty>
+	   		</isNotNull>
+			</isNotEqual>
+			</isNotEmpty>
+			</isNotNull>
+			
+		 	<isNotNull property="pastDue">
+		    <isNotEmpty property="pastDue">
+	   	    <isEqual property="pastDue" compareValue="Past">		
+	  		<isNotNull property="selectedSystemAction">
+			<isNotEmpty property="selectedSystemAction">
+	  		<isEqual property="selectedSystemAction" compareValue="-1">
+	   		 	HAVING COUNT(criteria.spn_id) <![CDATA[> ]]> 0
+			</isEqual>
+			</isNotEmpty>
+			</isNotNull>
+	   		</isEqual>
+	   	    </isNotEmpty>
+		    </isNotNull>
+		    
+		    <isNotNull property="pastDue">
+		    <isNotEmpty property="pastDue">
+	   	    <isEqual property="pastDue" compareValue="Past">		
+	  		<isNotNull property="selectedSystemAction">
+			<isNotEmpty property="selectedSystemAction">
+	  		<isNotEqual property="selectedSystemAction" compareValue="-1">
+	   		 	HAVING COUNT(criteria.spn_id) <![CDATA[> ]]> 0
+			</isNotEqual>
+			</isNotEmpty>
+			</isNotNull>
+	   		</isEqual>
+	   	    </isNotEmpty>
+		    </isNotNull>
+		    
+		 ) AS spnCount
+	</select>
+
+	<select id="monitor.provider.background.getBackgroundInformation"
+		resultClass="backgroundInformationVO" parameterClass="searchBackgroundInformationVO">
+
+		SELECT DISTINCT vr.resource_id AS resourceId,
+		COUNT(criteria.spn_id) as criteriaBg,
+		vr.vendor_id AS vendorId,
+		con.first_name AS providerFirstName,
+		con.last_name AS providerLastName,
+		wf.wf_state AS backgroundState,
+		slbkchk.overall AS overall,
+		slbkchk.driving AS driving,
+		slbkchk.criminal AS criminal,
+		slbkchk.civil AS civil,
+		slbkchk.verification_date AS verificationDate,
+		slbkchk.reverification_date AS reverificationDate,
+		aud.notification_30_sent_date AS notificationDateThirty,
+		aud.notification_7_sent_date AS notificationDateSeven,
+		aud.notification_0_sent_date AS notificationDateZero,
+		aud.notification_type AS notificationType,
+		DATEDIFF(slbkchk.reverification_date,NOW()) AS expiresIn,
+		slbkchk.recertification_status as recertificationStatus
+		FROM spnet_hdr sh
+		JOIN
+		spnet_provider_firm_state spfs
+		ON (sh.spn_id = spfs.spn_id AND sh.is_alias = 0)
+		JOIN vendor_resource vr
+		ON(vr.vendor_id =spfs.provider_firm_id)
+		JOIN sl_pro_bkgnd_chk slbkchk
+		ON(vr.bg_check_id= slbkchk.bg_check_id)
+		JOIN contact con
+		ON(con.contact_id=vr.contact_id)
+		JOIN wf_states wf
+		ON(wf.wf_state_id=vr.background_state_id)
+		LEFT JOIN location locn
+		ON((locn.locn_id = vr.locn_id)
+		AND (locn.locn_type_id = 4))
+		LEFT OUTER JOIN
+		audit_cred_expiry_notification aud
+		ON(aud.resource_id=vr.resource_id AND
+		aud.credential_ind = 4 )
+		LEFT OUTER JOIN
+		spnet_approval_criteria criteria
+		ON(criteria.spn_id=spfs.spn_id AND
+		criteria.criteria_id = 29 )
+		WHERE
+		spfs.provider_firm_id = #vendorId# AND vr.wf_state_id NOT IN(21,31,32) AND spfs.provider_wf_state IN ('PF SPN MEMBER','PF FIRM OUT OF COMPLIANCE')
+
+		<isNotNull property="spnId">
+			<isNotEqual prepend=" AND " property="spnId" compareValue="-1">
+				sh.spn_id = #spnId#
+			</isNotEqual>
+		</isNotNull>
+
+		<isNotNull property="sSearch">
+			AND (vr.resource_id LIKE '%$sSearch$%'
+			OR con.first_name LIKE '%$sSearch$%'
+			OR con.last_name LIKE '%$sSearch$%'
+			OR wf.wf_state LIKE '%$sSearch$%'
+			OR slbkchk.verification_date LIKE '%$sSearch$%'
+			OR slbkchk.reverification_date LIKE '%$sSearch$%'
+			OR aud.notification_30_sent_date LIKE '%$sSearch$%'
+			OR aud.notification_7_sent_date LIKE '%$sSearch$%'
+			OR aud.notification_0_sent_date LIKE '%$sSearch$%'
+			OR   slbkchk.recertification_status      LIKE '%$sSearch$%'
+			)
+		</isNotNull>
+
+		<isNotNull property="selectedSLBackgroundStatus">
+			<isNotEmpty property="selectedSLBackgroundStatus">
+			<isNotEqual prepend=" AND " property="selectedSLBackgroundStatus"
+				compareValue="-1">
+				wf.wf_state = #selectedSLBackgroundStatus#
+			</isNotEqual>
+			</isNotEmpty>
+		</isNotNull>
+
+		<isNotNull property="selectedSLBackgroundStatusAll">
+		<isNotEmpty property="selectedSLBackgroundStatusAll">
+			<isEqual prepend=" AND " property="selectedSLBackgroundStatusAll"
+				compareValue="SLBackgroundStatusAll">
+				wf.wf_state IN ('Clear','Not Cleared','Not Started','In Process','Pending Submission')
+			</isEqual>
+		</isNotEmpty>
+		</isNotNull>
+
+		<isNotNull property="selectedReCertification">
+			<isNotEmpty property="selectedReCertification">
+			<isNotEqual prepend=" AND " property="selectedReCertification"
+				compareValue="-1">
+				  <isEqual  property="selectedReCertification" compareValue="30">
+	    	 		 DATEDIFF(slbkchk.reverification_date,NOW()) <![CDATA[<=]]> 30 
+	    	 		 AND
+	    	 		 DATEDIFF(slbkchk.reverification_date,NOW()) <![CDATA[>]]> 7 
+	    		  </isEqual>
+	    		  <isEqual  property="selectedReCertification" compareValue="7">
+	    	 		 DATEDIFF(slbkchk.reverification_date,NOW()) <![CDATA[<=]]> 7 
+	    	 		 AND
+	    	 		 DATEDIFF(slbkchk.reverification_date,NOW()) <![CDATA[>]]> 0 
+	    		  </isEqual>
+	    		  <isEqual  property="selectedReCertification" compareValue="0">
+	    	 		 DATEDIFF(slbkchk.reverification_date,NOW()) = 0
+	    		  </isEqual>
+	    		  <isEqual  property="selectedReCertification" compareValue="InProcess">
+	    	 		 slbkchk.recertification_status = 'In Process'
+	    		  </isEqual>
+	    		    AND wf.wf_state = 'Clear'
+			</isNotEqual>
+			</isNotEmpty>
+		</isNotNull>
+
+		<isNotNull property="selectedReCertificationAll">
+		<isNotEmpty property="selectedReCertificationAll">
+			<isEqual prepend=" AND " property="selectedReCertificationAll"
+				compareValue="ReCertificationAll">
+				DATEDIFF(slbkchk.reverification_date,NOW()) <![CDATA[<=]]> 30 
+			</isEqual>
+			</isNotEmpty>
+		</isNotNull>
+
+		<isNotNull property="pastDue">
+		<isNotEmpty property="pastDue">
+			<isEqual prepend=" AND " property="pastDue" compareValue="Past">
+				DATEDIFF(slbkchk.reverification_date,NOW()) <![CDATA[< ]]>
+				0 AND wf.wf_state = 'Clear'
+			</isEqual>
+			</isNotEmpty>
+		</isNotNull>
+
+		<isNotNull property="selectedSystemAction">
+			<isNotEmpty property="selectedSystemAction">
+			<isNotEqual prepend=" AND " property="selectedSystemAction"
+				compareValue="-1">
+				aud.notification_type = #selectedSystemAction#
+			</isNotEqual>
+			</isNotEmpty>
+		</isNotNull>
+
+		<isNotNull property="selectedSystemActionAll">
+		<isNotEmpty property="selectedSystemActionAll">
+			<isEqual prepend=" AND " property="selectedSystemActionAll"
+				compareValue="SystemActionAll">
+				aud.notification_type IN (30,7,0)
+			</isEqual>
+			</isNotEmpty>
+		</isNotNull>
+
+		GROUP BY vr.resource_id
+		
+			<isNotNull property="selectedReCertification">
+		    <isNotEmpty property="selectedReCertification">
+	   		<isNotEqual property="selectedReCertification" compareValue="-1">	
+			<isNotNull property="selectedSystemAction">
+			<isNotEmpty property="selectedSystemAction">
+	  		<isNotEqual property="selectedSystemAction" compareValue="-1">
+	   		 	HAVING COUNT(criteria.spn_id) <![CDATA[> ]]> 0
+			</isNotEqual>
+			</isNotEmpty>
+			</isNotNull>
+			</isNotEqual>
+	   		</isNotEmpty>
+	   		</isNotNull>
+
+
+			<isNotNull property="selectedReCertification">
+	     	<isNotEmpty property="selectedReCertification">
+	   		<isNotEqual property="selectedReCertification" compareValue="-1">	
+			<isNotNull property="selectedSystemAction">
+			<isNotEmpty property="selectedSystemAction">
+	  		<isEqual property="selectedSystemAction" compareValue="-1">
+	   		 	HAVING COUNT(criteria.spn_id) <![CDATA[> ]]> 0
+			</isEqual>
+			</isNotEmpty>
+			</isNotNull>
+			</isNotEqual>
+	   		</isNotEmpty>
+	   		</isNotNull>
+
+			<isNotNull property="selectedSystemAction">
+			<isNotEmpty property="selectedSystemAction">
+	  		<isNotEqual property="selectedSystemAction" compareValue="-1">	
+			<isNotNull property="selectedReCertification">
+		     <isNotEmpty property="selectedReCertification">
+	   		 <isEqual property="selectedReCertification" compareValue="-1">
+	
+				HAVING COUNT(criteria.spn_id) <![CDATA[> ]]> 0
+			</isEqual>
+	   		</isNotEmpty>
+	   		</isNotNull>
+			</isNotEqual>
+			</isNotEmpty>
+			</isNotNull>
+			
+		 	<isNotNull property="pastDue">
+		    <isNotEmpty property="pastDue">
+	   	    <isEqual property="pastDue" compareValue="Past">		
+	  		<isNotNull property="selectedSystemAction">
+			<isNotEmpty property="selectedSystemAction">
+	  		<isEqual property="selectedSystemAction" compareValue="-1">
+	   		 	HAVING COUNT(criteria.spn_id) <![CDATA[> ]]> 0
+			</isEqual>
+			</isNotEmpty>
+			</isNotNull>
+	   		</isEqual>
+	   	    </isNotEmpty>
+		    </isNotNull>
+		    
+		    <isNotNull property="pastDue">
+		    <isNotEmpty property="pastDue">
+	   	    <isEqual property="pastDue" compareValue="Past">		
+	  		<isNotNull property="selectedSystemAction">
+			<isNotEmpty property="selectedSystemAction">
+	  		<isNotEqual property="selectedSystemAction" compareValue="-1">
+	   		 	HAVING COUNT(criteria.spn_id) <![CDATA[> ]]> 0
+			</isNotEqual>
+			</isNotEmpty>
+			</isNotNull>
+	   		</isEqual>
+	   	    </isNotEmpty>
+		    </isNotNull>
+	 		
+		
+		<isEqual property="sortColumnName" compareValue="provider">
+			ORDER BY providerFirstName
+			<isNotNull property="sortOrder">
+				   		$sortOrder$
+			</isNotNull>,providerLastName
+		</isEqual>
+		<isEqual property="sortColumnName" compareValue="slStatus">
+			ORDER BY backgroundState
+		</isEqual>
+		<isEqual property="sortColumnName" compareValue="certDate">
+			ORDER BY
+			CASE WHEN slbkchk.verification_date IS NULL THEN 1 
+				 WHEN COUNT(criteria.spn_id) = 0 THEN 1	
+				 ELSE 0 END, slbkchk.verification_date
+		</isEqual>
+		<isEqual property="sortColumnName" compareValue="reCertDate">
+			ORDER BY
+			CASE WHEN slbkchk.reverification_date IS NULL THEN 1 
+				 WHEN COUNT(criteria.spn_id) = 0 THEN 1	
+				 ELSE 0 END, slbkchk.reverification_date
+		</isEqual>
+		<isEqual property="sortColumnName" compareValue="reCertStatus">
+			ORDER BY CAST(REPLACE(recertificationStatus,'In Process',-30000) AS SIGNED)
+		</isEqual>
+
+		<isNotNull property="sortOrder">
+			$sortOrder$
+		</isNotNull>
+
+		<isNotNull property="startIndex" prepend="LIMIT ">
+			#startIndex#
+		</isNotNull>
+		<isNotNull property="numberOfRecords" prepend=",  ">
+			#numberOfRecords#
+		</isNotNull>
+
+	</select>
+
+	<select id="spn_provider_all.query" parameterClass="java.lang.Integer"
+		resultClass="spnMonitorVO">
+		SELECT DISTINCT sh.spn_id AS spnId,
+		sh.spn_name AS spnName
+		FROM spnet_hdr sh
+		JOIN
+		spnet_provider_firm_state spfs
+		ON (sh.spn_id = spfs.spn_id )
+		WHERE
+		spfs.provider_firm_id = #vendorId# AND spfs.provider_wf_state IN ('PF SPN MEMBER','PF FIRM
+		OUT OF COMPLIANCE')
+	</select>
+	<select id="spn_provider_backgroundCheckHistoryDetails.query" resultClass="backgroundHistVO" parameterClass="backgroundHistVO">
+			
+			SELECT  
+			slh.bg_check_id AS bgCheckId,
+			slh.created_date AS displayDate,
+			slh.verification_date AS verificationDate,
+			slh.reverification_date AS reverificationDate,
+			slh.chg_comments AS changingComments,
+		    slh.recertification_status AS recertificationStatus,
+			wf.wf_state AS backgroundStatus,
+			con.first_name AS providerFirstName,
+			con.last_name AS providerLastName,
+			COUNT(spc.criteria_id) AS criteriaIdCount
+		
+			FROM sl_pro_bkgnd_chk_history slh
+			JOIN vendor_resource vr  ON
+			(vr.bg_check_id = slh.bg_check_id
+			AND vr.resource_id = #resourceId#)
+			LEFT OUTER JOIN spnet_provider_firm_state spfs ON(spfs.provider_firm_id
+			 = vr.vendor_id)
+			LEFT OUTER  JOIN spnet_approval_criteria spc ON(spc.spn_id= spfs.spn_id
+			AND spc.criteria_id=29)
+			JOIN contact con ON(con.contact_id=vr.contact_id)
+			JOIN wf_states wf ON(wf.wf_state_id=slh.bg_state_id)
+			AND slh.chg_display_ind = 'Y'
+			GROUP BY vr.resource_id,slh.bg_check_history_id
+			ORDER BY displayDate DESC 
+	
+	</select>
+	<select id="spn_provider_getProviderName.query" parameterClass="java.lang.Integer" resultClass="java.lang.String">
+	SELECT CONCAT(first_name,' ',last_name) FROM contact WHERE contact_id IN (SELECT contact_id FROM vendor_resource WHERE resource_id = #resourceId#)
+	</select>
+	<!-- SL20014-new query added to fetch credential documents -->
+	<select id="spnet.getSPNDocDetailsList.select"  resultClass = "spnProviderRequirementsVO" parameterClass="spnMainMonitorVO">
+	SELECT MAX(vcd.document_id) AS docId, 
+				IF (lvc.cred_category_id IN (42),'TRUE','FALSE') AS autoInd,
+				IF (lvc.cred_category_id IN (43),'TRUE','FALSE') AS wcInd,
+				IF (lvc.cred_category_id IN (41),'TRUE','FALSE') AS generalInd,
+				lvt.cred_type_desc as credentialType,
+			IF (lvc.cred_category IS NULL,lvt.cred_type_desc,CONCAT(lvt.cred_type_desc,'  ',lvc.cred_category)) AS credential
+			FROM vendor_credentials vc 
+			JOIN lu_vendor_credential_type lvt ON vc.cred_type_id = lvt.cred_type_id
+			LEFT JOIN lu_vendor_credential_category lvc ON lvc.cred_category_id = vc.cred_category_id
+			JOIN vendor_credentials_document vcd ON vcd.vendor_cred_id = vc.vendor_cred_id
+			WHERE 
+			<isEqual property="checkCredInd" compareValue="true">
+			(
+			<isNotNull property="credCatTypes">
+				<isNotEmpty property="credCatTypes">
+					vc.cred_category_id IN 
+					<iterate property="credCatTypes" open="(" close=")" conjunction=",">
+						#credCatTypes[]#
+					</iterate> OR
+				</isNotEmpty> 
+			</isNotNull>
+			<isNotNull property="credTypes">
+				<isNotEmpty property="credTypes">
+					vc.cred_type_id IN 
+					<iterate property="credTypes" open="(" close=")" conjunction=",">
+						#credTypes[]#
+					</iterate> OR
+				</isNotEmpty>
+			</isNotNull>
+				 (vc.cred_type_id = 6 AND vc.cred_category_id =42)
+				OR (vc.cred_type_id = 6 AND vc.cred_category_id =43)
+				OR (vc.cred_type_id = 6 AND vc.cred_category_id =41)
+			)AND
+			</isEqual>	
+			vendor_id=#vendorId#
+			GROUP BY vc.vendor_cred_id
+	</select>
+	<!-- SL20014 end -->
+</sqlMap>

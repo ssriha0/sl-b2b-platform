@@ -1,0 +1,616 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="vendorResource">
+	<typeAlias alias="pvendorResource"
+		type="com.newco.marketplace.vo.provider.VendorResource" />
+	<typeAlias alias="buyerResourceVO"
+		type="com.newco.marketplace.dto.vo.serviceorder.BuyerResource" />
+	<typeAlias alias="ptmBackgroundCheckVO"
+		type="com.newco.marketplace.vo.provider.TMBackgroundCheckVO" />
+	<typeAlias alias="bckGrndChk"
+		type="com.newco.marketplace.vo.provider.BackgroundCheckVO" />
+	<typeAlias alias="backgroundCheckError"
+		type="com.newco.marketplace.vo.provider.BackgroundChkStatusVO" />	
+			
+		
+	<select id="vendorResource.queryP" parameterClass="pvendorResource"
+		resultClass="pvendorResource">
+		select resource_id as resourceId, 
+		vendor_id as vendorId,
+		user_name as userName,
+		contact_id as contactId, 
+		dispatch_id as dispatchId, 
+		ssn as ssn,
+		pri_contact_mthd as priContactMthd, 
+		alt_contact_mthd as altContactMthd, 
+		yrs_of_experience as yrsOfExperience, 
+		locn_id as locnId, 
+		insured as insured,
+		insurance_provider as insuranceProvider, 
+		picture_url as pictureUrl, 
+		picture_date as pictureDate, 
+		labor_type_id as laborTypeId, 
+		service_area_radius_id as serviceAreaRadiusId,
+		mkt_place_ind as mktPlaceInd, 
+		wf_state_id as wfStateId,
+		background_state_id as backgroundStateId,
+		created_date as createdDate,
+		modified_date as modifiedDate, 
+		no_cred_ind as noCredInd,
+		hourly_rate as hourlyRate	
+		from vendor_resource
+		<dynamic prepend="where">
+			<isNotNull prepend="AND " property="resourceId">
+				resource_id = #resourceId#
+			</isNotNull>
+		</dynamic>
+	</select>
+
+	<update id="vendorResource.updateP"
+		parameterClass="pvendorResource">
+		UPDATE vendor_resource
+		<dynamic prepend="set">
+			<isGreaterThan prepend=", " property="resourceId"
+				compareValue="-1">
+				resource_id = #resourceId#
+			</isGreaterThan>
+			<isGreaterThan prepend=", " property="vendorId"
+				compareValue="-1">
+				vendor_id = #vendorId#
+			</isGreaterThan>
+			<isGreaterThan prepend=", " property="contactId"
+				compareValue="-1">
+				contact_id = #contactId#
+			</isGreaterThan>
+			<isGreaterThan prepend=", " property="dispatchId"
+				compareValue="-1">
+				dispatch_id = #dispatchId#
+			</isGreaterThan>
+			<isNotNull prepend=", " property="ssn">
+				ssn = #ssn#
+			</isNotNull>
+			<isGreaterThan prepend=", " property="priContactMthd"
+				compareValue="-1">
+				pri_contact_mthd = #priContactMthd#
+			</isGreaterThan>
+			<isGreaterThan prepend=", " property="altContactMthd"
+				compareValue="-1">
+				alt_contact_mthd = #altContactMthd#
+			</isGreaterThan>
+			<isGreaterThan prepend=", " property="yrsOfExperience"
+				compareValue="-1">
+				yrs_of_experience = #yrsOfExperience#
+			</isGreaterThan>
+			<isGreaterThan prepend=", " property="locnId"
+				compareValue="-1">
+				locn_id = #locnId#
+			</isGreaterThan>
+			<isGreaterThan prepend=", " property="insured"
+				compareValue="-1">
+				insured = #insured#
+			</isGreaterThan>
+			<isNotNull prepend=", " property="insuranceProvider">
+				insurance_provider = #insuranceProvider#
+			</isNotNull>
+			<isNotNull prepend=", " property="pictureUrl">
+				picture_url = #pictureUrl#
+			</isNotNull>
+			<isNotNull prepend=", " property="pictureDate">
+				picture_date = #pictureDate#
+			</isNotNull>
+			<isGreaterThan prepend=", " property="wfStateId"
+				compareValue="-1">
+				wf_state_id = #wfStateId#
+			</isGreaterThan>
+			<isGreaterThan prepend=", " property="laborTypeId"
+				compareValue="-1">
+				labor_type_id = #laborTypeId#
+			</isGreaterThan>
+			<isGreaterThan prepend=", " property="serviceAreaRadiusId"
+				compareValue="-1">
+				service_area_radius_id = #serviceAreaRadiusId#
+			</isGreaterThan>
+			<isGreaterThan prepend=", " property="mktPlaceInd"
+				compareValue="-1">
+				mkt_place_ind = #mktPlaceInd#
+			</isGreaterThan>
+			<isGreaterThan prepend=", " property="backgroundStateId"
+				compareValue="-1">
+				background_state_id = #backgroundStateId#
+			</isGreaterThan>
+			<isNotNull prepend=", " property="noCredInd">no_cred_ind = #noCredInd#</isNotNull>					
+		</dynamic>
+		WHERE resource_id = #resourceId#
+	</update>
+
+	<insert id="vendorResource.insertP" parameterClass="pvendorResource">
+		INSERT INTO	vendor_resource (vendor_id, 
+									 contact_id,
+									 dispatch_id,
+									 pri_contact_mthd,
+									 alt_contact_mthd,
+									 yrs_of_experience,
+        <isGreaterThan property="locnId" compareValue="0">
+									 locn_id,
+		</isGreaterThan>
+									 insured,
+									 insurance_provider,
+									 picture_url,
+									 picture_date,
+									 wf_state_id,
+									 labor_type_id,
+									 ssn,
+									 service_area_radius_id,
+									 mkt_place_ind,
+									 background_state_id,
+	                                 primary_ind,
+                                     dispatch_ind,
+                                     owner_ind,
+                                     admin_ind,
+                                     resource_ind,
+                                     user_name,
+                                     manager_ind,
+                                     other_ind,
+                                     service_provider_ind
+									 )
+		VALUES	(#vendorId#, 
+                 #contactId#, 
+                 #dispatchId#,
+                 #priContactMthd#,
+                 #altContactMthd#,
+                 #yrsOfExperience#,
+        <isGreaterThan property="locnId" compareValue="0">
+                 #locnId#,
+		</isGreaterThan>
+                 #insured#,
+                 #insuranceProvider#,
+                 #pictureUrl#,
+                 #pictureDate#,
+                 #wfStateId#,
+                 #laborTypeId#,
+                 #ssn#,
+                 #serviceAreaRadiusId#,
+                 #mktPlaceInd#,
+                 #backgroundStateId#,
+                 #primaryInd#,
+			   	 #dispatchInd#,
+			     #ownerInd#,
+			     #adminInd#,
+			     #resourceInd#,
+			     #userName#,
+			     #managerInd#,
+			     #otherInd#,
+			     #sproInd#
+			     )
+        <selectKey resultClass="int">
+            SELECT last_insert_id() as resourceId
+        </selectKey>    
+	</insert>
+
+
+	<update id="vendorResource.updateBackgroundCheckStatus"
+		parameterClass="ptmBackgroundCheckVO">
+		update vendor_resource set background_state_id=(select wf_state_id from wf_states 
+		where  wf_entity=#wfEntity# and wf_state=#backgroundCheckStatus#)
+		where resource_id=#resourceId#
+	</update>
+	
+	<update id="vendorResource.updateBackgroundCheckStatusAndCertificationDate1"
+		parameterClass="ptmBackgroundCheckVO">
+		update vendor_resource 
+		<dynamic prepend="SET">
+	 		background_state_id=(select wf_state_id from wf_states 
+			where  wf_entity=#wfEntity# and wf_state=#backgroundCheckStatus#),
+			<isNotNull property="plusOneKey" prepend=", ">
+			plusone_key=#plusOneKey#
+			</isNotNull>
+			<isNotNull property="backgroundVerificationDate" prepend=", ">
+	 			background_verification_date = #backgroundVerificationDate#
+	 		</isNotNull>
+	 		<isNotNull property="backgroundRecertificationDate" prepend=", ">
+	 			background_reverification_date = #backgroundRecertificationDate#
+	 		</isNotNull>
+	 	</dynamic>
+			where ssn=#ssn# 
+			and contact_id in 
+			(select contact_id from contact where last_name=#lastName# and first_name=#firstName#)
+	</update>
+
+<update id="vendorResource.updateBackgroundCheckStatusAndCertificationDate"
+		parameterClass="ptmBackgroundCheckVO">
+		UPDATE vendor_resource resource,sl_pro_bkgnd_chk  bkgndchk,contact c
+		SET 
+	 		resource.background_state_id=#backgroundStateId#,
+			bkgndchk.bg_state_id=#backgroundStateId#,
+			bkgndchk.modified_date=NOW()
+			<isNotNull property="plusOneKey">
+			,bkgndchk.plusone_key=#plusOneKey#
+			</isNotNull>
+			<isNotNull property="backgroundVerificationDate">
+			,bkgndchk.verification_date = #backgroundVerificationDate#
+			</isNotNull>
+			<isNotNull property="backgroundRecertificationDate" >
+			,bkgndchk.reverification_date = #backgroundRecertificationDate#
+	 		</isNotNull>
+	 		<isNotNull property="overall">
+			,bkgndchk.overall = #overall#
+	 		</isNotNull>
+	 		<isNotNull property="criminal" >
+			,bkgndchk.criminal = #criminal#
+	 		</isNotNull>
+	 		<isNotNull property="driving" >
+			,bkgndchk.driving = #driving#
+	 		</isNotNull>
+	 		<isNotNull property="plusOneRecertificationInd" >
+	 		,bkgndchk.recertification_ind=#plusOneRecertificationInd#
+	 		</isNotNull>
+	 		<isNotNull property="backgroundConfirmInd" >
+	 		,bkgndchk.bg_confirm_ind=#backgroundConfirmInd#
+	 		</isNotNull>
+	 		<isNotNull property="firmId" >
+	 		,bkgndchk.bg_original_vendor_id=#firmId#
+	 		</isNotNull>
+	 	    <isNotNull property="backgroundStatusUpdateDate" >
+	 		,bkgndchk.bg_status_update_date=#backgroundStatusUpdateDate#
+	 		</isNotNull>
+	 		<isNotNull property="screeningStatus" >
+	 		,bkgndchk.screening_status=#screeningStatus#
+	 		</isNotNull>
+	 		<isNotNull property="requestType" >
+	 		,bg_request_type=#requestType#
+	 		</isNotNull>
+	 		<isNotNull property="updateRecertBeforeExpiry" >
+	 		,recert_before_expiry=#recertBeforeExpiry#
+	 		</isNotNull>
+			WHERE bkgndchk.bg_check_id=resource.bg_check_id AND 
+			c.contact_id=resource.contact_id  AND 
+			resource.ssn=#ssn#  AND c.first_name=#firstName#
+			AND  c.last_name=#lastName#
+	</update>
+
+
+
+	<select id="vendorResource.getBackgroundCheckStatus"
+		resultClass="java.lang.String">
+		select wf_state from wf_states where wf_state_id=(select background_state_id from vendor_resource where
+		resource_id=#resourceId#)
+	</select>
+	
+	<select id="vendorResource.getBackgroundCheckDates"
+		parameterClass="java.lang.String" resultClass="ptmBackgroundCheckVO">
+	SELECT background_verification_date as backgroundVerificationDate, 
+    background_reverification_date as backgroundRecertificationDate FROM vendor_resource WHERE resource_id=#resourceId#
+	</select>
+	
+	<select id="vendorResource.getPersonalInfoForResource"
+		parameterClass="java.lang.Integer" resultClass="ptmBackgroundCheckVO">
+	SELECT ssn_last4 AS ssn,
+	ssn AS encryptedSSN,
+	first_name AS firstName,
+	last_name AS lastName FROM vendor_resource r,
+	contact c WHERE r.contact_id=c.contact_id
+	AND r.resource_id=#resourceId#
+	</select>
+	
+	<update id="vendorResource.updateBackgroundCheckDates"
+		parameterClass="ptmBackgroundCheckVO">
+		update vendor_resource
+		<dynamic prepend="SET">
+			<isNotNull property="backgroundVerificationDate" prepend=", ">
+			background_verification_date = #backgroundVerificationDate#
+			</isNotNull>
+			<isNotNull property="backgroundRecertificationDate" prepend=", ">
+			background_reverification_date = #backgroundRecertificationDate#
+			</isNotNull>
+			where resource_id=#resourceId# 
+			</dynamic>	
+	</update>
+	
+	<select id="vendorResource.getTechnicianSsn"
+		parameterClass="java.lang.Integer"
+		resultClass="java.lang.String">
+		select ssn from vendor_resource where resource_id=#techId#
+	</select>
+	
+	<select id="vendorResource.getlastSsnFrmDB"
+		parameterClass="java.lang.Integer"
+		resultClass="java.lang.String">
+		select ssn_last4 from vendor_resource where resource_id=#techId#
+	</select>
+	
+	<select id="vendorResource.getResourceIdFromPlusOneKey"
+		parameterClass="java.lang.String"
+		resultClass="java.lang.Integer">
+		SELECT resource_id FROM vendor_resource resource, sl_pro_bkgnd_chk bkgndchk
+		WHERE resource.bg_check_id=bkgndchk.bg_check_id
+		AND bkgndchk.plusone_key=#plusOneKey# LIMIT 1	
+  </select>
+
+	<select id="vendorResource.getTeamMemberEmail"
+		resultClass="java.lang.String">
+		select c.email from vendor_resource vr, contact c where
+		vr.contact_id=c.contact_id and vr.resource_id=#resourceId#
+	</select>
+
+	<select id="vendorResource.getVendorEmail"
+		resultClass="java.lang.String">
+ 		select c.email from vendor_resource vr, vendor_resource vr1,
+		contact c where vr1.vendor_id = vr.vendor_id and vr1.primary_ind=1
+		and vr1.contact_id=c.contact_id and vr.resource_id=#resourceId#
+	</select>
+
+	<update id="vendorResource.updateResourceLocationTypeP"
+		parameterClass="pvendorResource">
+		update vendor_resource set locn_id = #locnId#,
+		service_area_radius_id = #serviceAreaRadiusId#,hourly_rate = #hourlyRate# where resource_id
+		= #resourceId#
+	</update>
+
+	<update id="vendorResource.updateWfStateId" parameterClass="pvendorResource">
+		UPDATE vendor_resource 
+		SET wf_state_id = #wfStateId#
+		WHERE resource_id = #resourceId#
+		AND   vendor_id = #vendorId#
+	</update>
+	
+	<update id="vendorResource.updateWfStateIdAndMarketInd" parameterClass="pvendorResource">
+		UPDATE vendor_resource 
+		<dynamic prepend="SET">
+			wf_state_id = #wfStateId#
+			<isGreaterThan property="mktPlaceInd"
+				compareValue="-1">
+				,mkt_place_ind = #mktPlaceInd#
+			</isGreaterThan>
+		</dynamic>
+		WHERE resource_id = #resourceId#
+		AND   vendor_id = #vendorId#
+	</update>
+	
+	<select id="vendorResource.getPrimaryIndicator"
+		resultClass="java.lang.String">
+		select primary_ind from vendor_resource where
+		vendor_id = #vendorId#
+	</select>
+	
+	<select id="vendorResourceByVendorId.queryP" 
+		resultClass="pvendorResource">
+		select resource_id as resourceId, 
+		user_name as userName,
+		contact_id as contactId, 		
+		dispatch_id as dispatchId, 
+		ssn as ssn,
+		locn_id as locnId, 
+		picture_url as pictureUrl, 
+		picture_date as pictureDate, 
+		labor_type_id as laborTypeId, 
+		mkt_place_ind as mktPlaceInd, 
+		wf_state_id as wfStateId,
+		background_state_id as backgroundStateId,
+		created_date as createdDate
+		from vendor_resource where vendor_id =#vendorId# and primary_ind=1		 
+	</select>
+	
+	<select id="BuyerResourceByBuyerId.queryP" 
+		resultClass="buyerResourceVO">
+		select resource_id as resourceId, 
+		user_name as userName,
+		contact_id as contactId 
+		from buyer_resource where buyer_id =#buyerId#		 
+	</select>
+	
+	<select id="getTeamMembersReadyForMarketPlace.query" resultClass="pvendorResource">
+		SELECT 
+		vr.resource_id as resourceId, 
+		vr.user_name as userName,
+		vr.contact_id as contactId, 		
+		vr.dispatch_id as dispatchId, 
+		vr.ssn as ssn,
+		vr.locn_id as locnId, 
+		vr.picture_url as pictureUrl, 
+		vr.picture_date as pictureDate, 
+		vr.labor_type_id as laborTypeId, 
+		vr.mkt_place_ind as mktPlaceInd, 
+		vr.wf_state_id as wfStateId,
+		vr.background_state_id as backgroundStateId,
+		vr.created_date as createdDate,
+		vr.vendor_id as vendorId
+		FROM vendor_resource vr 
+		WHERE vr.wf_state_id = 5 and vr.background_state_id = 9
+		and (select count(*) from resource_skill rs where rs.resource_id =  vr.resource_id) > 0
+		and vr.delete_ind IS NULL
+	</select>
+	
+	
+	<select id="getBackgroundCheckInfo.query" 
+		resultClass="bckGrndChk" parameterClass="java.lang.Integer">
+		SELECT bkgndchk.verification_date AS certificationDate,bkgndchk.reverification_date AS recertificationDate,wfstate.wf_state AS backgroundCheckStatus 
+		FROM vendor_resource resource,sl_pro_bkgnd_chk bkgndchk,wf_states wfstate
+		WHERE resource.bg_check_id=bkgndchk.bg_check_id AND resource.background_state_id NOT IN(7,28) AND resource.background_state_id IS NOT NULL
+		AND wfstate.wf_entity='Team Member Background Check'AND  wfstate.wf_state_id=bkgndchk.bg_state_id AND resource.resource_id!=#resourceId# AND resource.bg_check_id   IN(
+		SELECT bg_check_id FROM vendor_resource resource WHERE resource_id =#resourceId#)
+		LIMIT 1
+	</select>
+	
+	
+	<select id="isBackgroundCheckRecertification.query" 
+		resultClass="bckGrndChk" parameterClass="java.lang.Integer">
+		
+		SELECT DISTINCT bkgnd.reverification_date AS recertificationDate,
+	bkgnd.verification_date AS certificationDate FROM vendor_resource vr 
+	JOIN vendor_hdr vh ON(vr.vendor_id=vh.vendor_id) AND vh.wf_state_id IN (1,2,3,33,34)
+	JOIN spnet_hdr spn ON(spn.is_alias = 0)
+                 JOIN spnet_provider_firm_state f ON(vr.vendor_id=f.provider_firm_id AND spn.spn_id=f.spn_id)
+                JOIN spnet_approval_criteria cr ON(cr.spn_id=f.spn_id AND cr.criteria_id=29)
+                JOIN sl_pro_bkgnd_chk bkgnd ON( bkgnd.bg_check_id=vr.bg_check_id
+             AND vr.wf_state_id NOT IN(21,31,32) AND vr.background_state_id =9 AND bkgnd.overall!='P' 
+              AND DATEDIFF(bkgnd.reverification_date,NOW())<![CDATA[<=]]>30
+             )
+             AND f.provider_wf_state IN ('PF SPN MEMBER','PF FIRM OUT OF COMPLIANCE','PF SPN APPLICANT','PF SPN MEMBERSHIP UNDER REVIEW')
+             WHERE vr.resource_id=#resourceId#
+	</select>
+	
+	
+	
+	<select id="vendorResource.getBackgroundStateId"
+		resultClass="java.lang.Integer"
+		parameterClass="java.lang.String">
+		SELECT wf_state_id FROM wf_states 
+			WHERE  wf_entity='Team Member Background Check' AND wf_state=#bcStatus#
+	</select>
+	
+	
+	<insert id="backgroundHistory.insert" parameterClass="ptmBackgroundCheckVO">
+	INSERT INTO sl_pro_bkgnd_chk_history(bg_state_id 
+      ,plusone_key,verification_date      
+              ,reverification_date           
+                ,overall,criminal       
+                      ,driving,drug,recertification_ind,
+                      bg_status_update_date,
+                      bg_confirm_ind,chg_comments,
+                      bg_original_vendor_id,
+                      created_date,
+                      modified_date,bg_check_id, bg_request_type,bg_request_date,screening_status,recertification_status,chg_display_ind)
+                      (SELECT #backgroundStateId#,#plusOneKey#,#backgroundVerificationDate#,
+                      #backgroundRecertificationDate#,#overall#,
+                        #criminal#,#driving#,#drug#,
+                        #plusOneRecertificationInd#,
+                        #backgroundStatusUpdateDate#,#backgroundConfirmInd#,#changedComment#,
+                        vendor_id,NOW(),NOW(),bg_check_id,#requestType#,#requestDate#,#screeningStatus#,#recertificationStatus#,#displayInd# FROM 
+                        vendor_resource WHERE resource_id=#resourceId#)  
+	</insert>
+	
+	 
+	<insert id="backgroundChkError.insert" parameterClass="backgroundCheckError">
+	INSERT INTO sl_pro_bkgnd_chk_err(plusone_key,company_id,company_tech_id,client_tech_id,first_name,middle_name,last_name,suffix,
+	recertification_ind,overall,criminal,driving,verification_date,reverification_date,screening_status,
+	created_date,modified_date)VALUES(#plusoneKey#,#clientCompanyId#,#serviceOrganizationId#,#techId#,#techFname#,#techMiddleName#,#techLname#,
+	#techSuffix#,#recertificationInd#,#overall#,#crim#,#driv#,#verificationDate#,#recertificationDate#,#screeningStatus#,NOW(),NOW())
+	</insert>
+	
+	<select id="vendorResource.getBackgroundCheckInformation"
+		parameterClass="java.lang.String" resultClass="ptmBackgroundCheckVO">
+		SELECT chk.bg_state_id AS backgroundStateId
+		,chk.plusone_key AS plusOneKey,verification_date AS backgroundVerificationDate
+		,chk.reverification_date AS backgroundRecertificationDate
+		,chk.overall AS overall,chk.criminal AS criminal,
+		chk.driving AS driving,chk.drug AS drug,chk.recertification_ind AS
+		plusOneRecertificationInd,
+		chk.bg_status_update_date AS backgroundApproveDate,
+		chk.bg_confirm_ind AS backgroundConfirmInd,
+		chk.bg_original_vendor_id AS bcDoneForvendorId,
+		resource.vendor_id AS firmId,
+		recertification_ind AS recertificationInd,
+		bg_request_type AS requestType,
+		wfstate.wf_state AS backgroundCheckStatus,
+		chk.screening_status AS screeningStatus,
+		chk.recert_before_expiry AS recertBeforeExpiry
+		FROM
+		sl_pro_bkgnd_chk chk,vendor_resource resource,
+		wf_states wfstate
+		WHERE chk.bg_check_id=resource.bg_check_id
+		AND wfstate.wf_state_id=chk.bg_state_id AND wfstate.wf_entity='Team Member Background Check'
+		AND resource.resource_id=#resourceId#
+	</select>
+	
+	<update id="backgroundCheck.clearRecertificationstatus" parameterClass="pvendorResource">
+	UPDATE sl_pro_bkgnd_chk
+	SET recertification_status=NULL
+	</update>
+	
+	<update id="backgroundCheck.updateRecertStatus" parameterClass="pvendorResource">
+	UPDATE sl_pro_bkgnd_chk
+	SET recertification_status=DATEDIFF(reverification_date,NOW())
+	WHERE bg_state_id=9 
+	AND DATEDIFF(reverification_date,NOW()) <![CDATA[<=]]>  30
+	</update>
+	
+	<update id="backgroundCheck.updateRecertStatusInProcess" parameterClass="pvendorResource">
+	UPDATE sl_pro_bkgnd_chk
+	SET recertification_status='In Process'
+	WHERE bg_request_type='R' AND overall='P' AND bg_state_id=9
+	</update>
+	
+	<select id="vendorResource.getBgStateId"
+		resultClass="java.lang.Integer"
+		parameterClass="ptmBackgroundCheckVO">
+		SELECT bkgndchk.bg_check_id FROM  
+		vendor_resource resource FORCE INDEX(ssn),sl_pro_bkgnd_chk  bkgndchk,contact c
+		    WHERE bkgndchk.bg_check_id=resource.bg_check_id AND
+		    c.contact_id=resource.contact_id  AND
+		    resource.ssn=#ssn#
+		     AND c.first_name=#firstName#
+		     AND  c.last_name=#lastName# limit 1 
+	</select>
+	<update id="vendorResource.updateBgDetails"
+		parameterClass="ptmBackgroundCheckVO">
+		UPDATE vendor_resource resource,sl_pro_bkgnd_chk  bkgndchk,contact c
+		SET 
+	 		resource.background_state_id=#backgroundStateId#,
+			bkgndchk.bg_state_id=#backgroundStateId#,
+			bkgndchk.modified_date=NOW()
+			<isNotNull property="plusOneKey">
+			,bkgndchk.plusone_key=#plusOneKey#
+			</isNotNull>
+			<isNotNull property="backgroundVerificationDate">
+			,bkgndchk.verification_date = #backgroundVerificationDate#
+			</isNotNull>
+			<isNotNull property="backgroundRecertificationDate" >
+			,bkgndchk.reverification_date = #backgroundRecertificationDate#
+	 		</isNotNull>
+	 		<isNotNull property="overall">
+			,bkgndchk.overall = #overall# 
+	 		</isNotNull>
+	 		<isNotNull property="criminal" >
+			,bkgndchk.criminal = #criminal#
+	 		</isNotNull>
+	 		<isNotNull property="driving" >
+			,bkgndchk.driving = #driving#
+	 		</isNotNull>
+	 		<isNotNull property="plusOneRecertificationInd" >
+	 		,bkgndchk.recertification_ind=#plusOneRecertificationInd#
+	 		</isNotNull>
+	 		<isNotNull property="backgroundConfirmInd" >
+	 		,bkgndchk.bg_confirm_ind=#backgroundConfirmInd#
+	 		</isNotNull>
+	 		<isNotNull property="firmId" >
+	 		,bkgndchk.bg_original_vendor_id=#firmId#
+	 		</isNotNull>
+	 	    <isNotNull property="backgroundStatusUpdateDate" >
+	 		,bkgndchk.bg_status_update_date=#backgroundStatusUpdateDate#
+	 		</isNotNull>
+	 		<isNotNull property="screeningStatus" >
+	 		,bkgndchk.screening_status=#screeningStatus#
+	 		</isNotNull>
+	 		<isNotNull property="requestType" >
+	 		,bg_request_type=#requestType#
+	 		</isNotNull>
+	 		<isNotNull property="updateRecertBeforeExpiry" >
+	 		,recert_before_expiry=#recertBeforeExpiry#
+	 		</isNotNull> 
+			WHERE bkgndchk.bg_check_id=resource.bg_check_id AND 
+			bkgndchk.bg_check_id=#bgCheckId#
+	</update>
+	
+	<select id="getBackgroundInfo.query" 
+		resultClass="bckGrndChk" parameterClass="java.lang.Integer">
+		SELECT bkgndchk.verification_date AS certificationDate,bkgndchk.reverification_date AS recertificationDate,wfstate.wf_state AS backgroundCheckStatus 
+		FROM vendor_resource resource,sl_pro_bkgnd_chk bkgndchk,wf_states wfstate
+		WHERE resource.bg_check_id=bkgndchk.bg_check_id AND resource.background_state_id != 7 AND resource.background_state_id IS NOT NULL
+		AND wfstate.wf_entity='Team Member Background Check'AND  wfstate.wf_state_id=bkgndchk.bg_state_id AND resource.resource_id!=#resourceId# AND resource.bg_check_id   IN(
+		SELECT bg_check_id FROM vendor_resource resource WHERE resource_id =#resourceId#)
+		LIMIT 1
+	</select>
+	
+		<update id="vendorResource.updateResourceNoCred"
+		parameterClass="pvendorResource">
+		UPDATE vendor_resource
+		<dynamic prepend="set">
+			<isNotNull prepend=", " property="noCredInd">no_cred_ind = #noCredInd#</isNotNull>					
+		</dynamic>
+		WHERE resource_id = #resourceId#
+	</update>
+	
+</sqlMap>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="soActionPostProcessing">
+
+	<select id= "soActionPostProcessing.query_class_name_by_buyer_and_action" 
+		parameterClass="com.newco.marketplace.dto.vo.so.order.SOPostProcessingVO"
+		resultClass="java.lang.String">
+		SELECT class_name
+	      FROM so_action_post_processing
+	     WHERE buyer_id = #buyerId#
+	       AND action_id = #actionId#
+	</select>
+	
+</sqlMap>

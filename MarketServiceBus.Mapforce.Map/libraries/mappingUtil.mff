@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+xsi:noNamespaceSchemaLocation="mff.xsd" version="8" library="mappingUtil">
+	<implementations>
+		<implementation language="java">
+			<setting name="package" value="com.servicelive.common.util"/>
+			<setting name="class" value="CreditCardEncryptionUtility"/>
+		</implementation>
+	</implementations>
+	<group name="decryption functions">
+		<component name="decryptCreditCardNumber">
+			<sources>
+				<datapoint name="encrypted" type="xs:string"/>
+			</sources>
+			<targets>
+				<datapoint name="decrypted" type="xs:string"/>
+			</targets>
+			<implementations>
+				<implementation language="java">
+					<function name="decryptCreditCardNumber"/>
+				</implementation>
+			</implementations>
+			<description>
+				<short>decrypted = decryptCreditCardNumber(encrypted)</short>
+				<long>Returns the decrypted credit card number.</long>
+			</description>
+		</component>
+	</group>
+</mapping>

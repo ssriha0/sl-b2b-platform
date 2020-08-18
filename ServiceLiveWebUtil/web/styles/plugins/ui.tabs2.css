@@ -1,0 +1,63 @@
+/* Caution! Ensure accessibility in print and other media types... */
+@media projection, screen { /* Use class for showing/hiding tab content, so that visibility can be better controlled in different media types... */
+    .ui-tabs-hide {
+        display: none;
+    }
+}
+
+/* Hide useless elements in print layouts... */
+@media print {
+    .ui-tabs-nav {
+        display: none;
+    }
+}
+
+
+.ui-tabs-nav {
+	list-style-type:  none;
+	margin:  0;
+	padding:  0;
+	height:  28px;
+}
+
+.ui-tabs-nav li {
+	display: block;
+	padding:  2px;
+	float: left;
+	background: #EEE;
+	margin-right:  2px;
+}
+
+.ui-tabs-nav li a {
+	color:  #666;
+	font-weight: bold;
+	text-decoration: none;
+	outline: none;
+}
+
+.ui-tabs-nav li.ui-tabs-active {
+	background: #33393C;
+}
+
+.ui-tabs-nav li.ui-tabs-active a {
+	color: #FFF;
+}
+
+.ui-tabs-nav li.ui-tabs-selected a {
+    background: #33393C;
+}
+
+.ui-tabs-panel {
+	border:  1px solid #CCC;
+	padding:  10px;
+}
+
+ul.ui-tabs-nav li a {
+    background: #F4F4F4;
+    color: #58585A;
+    display: block;
+    float: left;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 1px;
+}

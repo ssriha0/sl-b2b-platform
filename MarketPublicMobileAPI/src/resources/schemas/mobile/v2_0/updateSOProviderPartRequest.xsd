@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="qualified">
+<xs:include schemaLocation="../../common.xsd"/>
+ 
+	<xs:element name="updateSOProviderPartRequest">
+		<xs:complexType>
+			<xs:sequence>
+			     <xs:element name="currentTripNo" type="xs:integer"	minOccurs="1"/>
+			     <xs:element name="tripStatus" type="xs:string"	minOccurs="0"/>
+			    <xs:element ref="partList"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="partList">
+		<xs:complexType>
+			<xs:sequence>
+			    <xs:element ref="partSupplier" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="partSupplier">
+		<xs:complexType>
+			<xs:sequence>
+			    <xs:element name="invoiceId" type="xs:integer" minOccurs="1"/>
+			    <xs:element name="partStatus" type="partStatusEnum" minOccurs="1"/>
+			    <xs:element name="supplierName" type="xs:string" minOccurs="0"/>
+			    <xs:element name="address1" type="xs:string" minOccurs="0"/>
+			    <xs:element name="address2" type="xs:string" minOccurs="0"/>
+			    <xs:element name="city" type="xs:string" minOccurs="0"/>
+			    <xs:element name="state" type="stateType" minOccurs="0" />
+			    <xs:element name="zip" type="xs:string" minOccurs="0"/>
+			    <xs:element name="phone" type="xs:string" minOccurs="0"/>
+			    <xs:element name="fax" type="xs:string" minOccurs="0"/>
+			    <xs:element name="latitude" type="xs:float" minOccurs="0"/>
+			    <xs:element name="longitude" type="xs:float" minOccurs="0"/>
+			    <xs:element name="distance" type="xs:double" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:simpleType name="stateType">
+	   <xs:restriction base="xs:string">
+	      <xs:maxLength value="2"/>
+	      <xs:minLength value="2"/>
+	   </xs:restriction>
+	</xs:simpleType>
+	 <!-- Invoice Part Status enum values -->
+    <xs:simpleType name="partStatusEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Available" />
+			<xs:enumeration value="Not Available" />
+			<xs:enumeration value="Ordered" />
+			<xs:enumeration value="Back Ordered" />
+			<xs:enumeration value="Received Hold for pickup" />
+			<xs:enumeration value="Received With provider" />
+			<xs:enumeration value="Installed" />
+			<xs:enumeration value="Returned" />
+			<xs:enumeration value="Not Installed" />
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

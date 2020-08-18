@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+      
+    <bean id="serviceOrderDao" class="com.newco.marketplace.persistence.daoImpl.so.order.ServiceOrderDaoImpl"  scope="prototype">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	 
+    </bean>
+    <bean id="socontactDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.ContactDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	 <bean id="buyerUserProfileDao" class="com.newco.marketplace.persistence.daoImpl.buyer.BuyerUserProfileDaoImpl"  scope="prototype">
+               <property name="sqlMapClient">
+                       <ref bean="sqlMapClient" />
+               </property>                
+    </bean>
+
+	<bean id="proBuyerBOFactory" class="com.newco.marketplace.business.businessImpl.so.order.ProBuyerBOFactory"/>
+    
+    <bean id="serviceOrderBOTarget"
+		class="com.newco.marketplace.business.businessImpl.so.order.ServiceOrderBO" 
+		lazy-init="true">
+		<property name="buyerDao">
+			<ref bean="buyerDao" />
+		</property>	
+		<property name="serviceOrderDao">
+			<ref bean="serviceOrderDao" />
+		</property>
+		<property name="loggingDao">
+			<ref bean="loggingDao" />
+		</property>
+		<property name="transBo">
+			<ref bean="accountingTransactionManagementBO" />
+		</property>	
+		<property name="documentDao"><ref bean="serviceOrderDocumentDAO"/></property>		
+		<property name="surveyDao">
+			<ref bean="surveyDAO" />
+		</property>
+		<property name="extendedSurveyDAO">
+			<ref bean="extendedSurveyDAO" />
+		</property>		
+		<property name="promoBO">
+			<ref bean="promoBO" />
+		</property>	
+		<property name="documentBO"><ref bean="documentBO"/></property>
+		<property name="serviceOrderUpdateBO"><ref bean="serviceOrderUpdateBO"/></property>
+		<property name="lookupBO"><ref bean="lookupBO"/></property>
+		
+        <property name="financeManagerBO">
+                <ref bean="fmBOAOP"/>
+        </property>
+        <property name="orderGroupDao">
+                <ref bean="orderGroupDAO"/>
+        </property>
+		<property name="proBuyerBOFactory">
+			<ref bean="proBuyerBOFactory"/>
+		</property>
+		<property name="soCloseBO">
+			<ref bean="soCloseBO"/>
+		</property>
+		<property name="serviceOrderUpsellBO">
+			<ref bean="soUpsellBO"/>
+		</property>
+		<property name="walletBO" ref="walletTx"/>
+		<property name="providerSearchDao">
+			<ref bean="providerSearchDao" />
+		</property>
+		<property name="providerInfoPagesBO">
+			<ref bean="providerInfoPagesBOImpl" />
+		</property>
+		<property name="creditCardDao">
+			<ref bean="creditCardDao" />
+		</property>
+		<property name="cryptography">
+			<ref bean="cryptography" />
+		</property>
+		<property name="buyerFeatureSetBO">
+			<ref bean="buyerFeatureSetBO" />
+		</property>
+		<property name="cryptography128">
+			<ref bean="cryptography128" />
+		</property>
+		<property name="warrantyDao">
+    		<ref bean="warrantyDaoImpl"/>
+    	</property> 
+    	<property name="lookupDAO">
+    		<ref bean="lookupDAOImpl"/>
+    	</property>
+    	<property name="relayNotificationService">
+			<ref bean="relayNotificationService" />
+		</property>
+			<property name="pushNotificationAlertTask">
+			<ref bean="pushNotificationAlertTask" />
+		</property>
+	</bean>	 
+	
+	
+	<bean id="hsTokenServiceCreditCardBo" class="com.newco.marketplace.tokenize.HSTokenizeServiceCreditCardBO">
+		<property name="applicationProperties" ref="applicationPropertiesWallet"/>
+		<property name="hsTokenServiceClient" ref="hsTokenServiceClient"/>
+		<property name="cryptography128">
+			<ref bean="cryptography128" />
+		</property>
+		<property name="vendorResourceDao">
+			<ref bean="vendorResourceDaoImpl" />
+		</property>
+	</bean>
+	
+	<bean id="hsTokenServiceClient" class="com.newco.marketplace.tokenize.HSTokenServiceClient">
+	</bean>
+	
+	<bean id="serviceOrderUpdateBO" class="com.newco.marketplace.business.businessImpl.so.order.ServiceOrderUpdateBO" >
+	 	<property name="serviceOrderDAO">
+			<ref bean="serviceOrderDao" />
+		</property>
+		<property name="loggingDAO">
+			<ref bean="loggingDao" />
+		</property>
+		<property name="serviceOrderBO">
+			<ref bean="soBOAOP" />
+		</property>
+		<property name="soTemplateBO">
+			<ref bean="buyerSOTemplateBO" />
+		</property>
+		<property name="buyerFeatureSetBO">
+			<ref bean="buyerFeatureSetBO" />
+		</property>
+		<property name="provSearchObj">
+			<ref bean="providerSearchBO" />
+		</property>
+		<property name="masterCalcObj">
+			<ref bean="masterCalculatorBO" />
+		</property>
+		<property name="clientBO">
+			<ref bean="clientBO" />
+		</property>
+		<property name="trSchedulerMgr">
+			<ref bean="tierroutingschedulermanager" />
+		</property> 
+		<property name="trRouteController">
+			<ref bean="trRouteController"/>
+		</property>
+    </bean>    
+	
+	<bean id="omsUpdateBO" class="com.newco.marketplace.business.businessImpl.so.order.OMSUpdateBO">
+		<property name="serviceOrderBO">
+			<ref bean="soBOAOP" />
+		</property>
+	 	<property name="serviceOrderDao">
+			<ref bean="serviceOrderDao" />
+		</property>
+		<property name="buyerFeatureSetBO">
+			<ref bean="buyerFeatureSetBO" />
+		</property>
+		<property name="soUpdateBO">
+			<ref bean="soUPBOAOP" />
+		</property>
+	</bean>
+	
+	<bean id="assurantUpdateBO" class="com.newco.marketplace.business.businessImpl.so.order.AssurantUpdateBO">
+		<property name="serviceOrderBO">
+			<ref bean="soBOAOP" />
+		</property>
+	 	<property name="serviceOrderDao">
+			<ref bean="serviceOrderDao" />
+		</property>
+		<property name="buyerFeatureSetBO">
+			<ref bean="buyerFeatureSetBO" />
+		</property>
+		<property name="soUpdateBO">
+			<ref bean="soUPBOAOP" />
+		</property>
+	</bean>
+	
+	<bean id="hsrUpdateBO" class="com.newco.marketplace.business.businessImpl.so.order.HSRUpdateBO">
+		<property name="serviceOrderBO">
+			<ref bean="soBOAOP" />
+		</property>
+		<property name="serviceOrderDao">
+			<ref bean="serviceOrderDao" />
+		</property>
+	</bean>
+
+	<bean id="soCloseBO" class="com.newco.marketplace.business.businessImpl.so.order.ServiceOrderCloseBO" autowire="byName">
+		<property name="serviceOrderDao">
+			<ref bean="serviceOrderDao" />
+		</property>
+		<property name="transBo">
+			<ref bean="accountingTransactionManagementBO" />
+		</property>
+
+		<property name="financeManagerBO">
+			<ref bean="fmBOAOP" />
+		</property>
+
+		<property name="stagingBO">
+			<ref bean="stagingBO" />
+		</property>
+		<property name="serviceOrderAddonDAO">
+			<ref bean="serviceOrderAddonDAO" />
+		</property>
+		<!-- AUTOWIRED omsStagingBridge
+		<property name="omsStagingBridge">
+			<ref bean="omsStagingBridge" />
+		</property>		 -->
+		<property name="walletBO" ref="walletTx" />
+		<property name="promoBO" ref="promoBO" />
+		
+	</bean>
+	
+	<bean id="feeDao" class="com.newco.marketplace.persistence.daoImpl.feemanager.FeeDaoImpl" >
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClientFinance"/>
+  		</property>	 
+    </bean>    
+
+	<bean id="soRoleBo" class="com.newco.marketplace.business.businessImpl.so.order.ServiceOrderRoleBOImpl" >
+		<property name="sodao">
+			<ref bean="roleSoDao"/>
+		</property>
+	
+	</bean>
+
+    <bean id="somAjaxBo"
+		class="com.newco.marketplace.business.businessImpl.so.ajax.ServiceOrderMonitorAjaxBO" autowire="byName">
+		<property name="serviceOrderDao">
+			<ref bean="serviceOrderDao" />
+		</property>
+		<!-- AUTOWIRED <property name="cacheManagerBO">
+			<ref bean="cacheManagerBO" />
+		</property>	-->
+		<property name="soSearchDAO">
+			<ref bean="soSearchDAO" />
+		</property>
+	</bean>	
+
+	<bean id="roleSoDao" class="com.newco.marketplace.persistence.daoImpl.so.order.ServiceOrderDaoImpl" >
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient"/>
+		</property>
+	</bean>
+	
+	<bean id="serviceOrderMonitorBO"
+		class="com.newco.marketplace.business.businessImpl.serviceorder.ServiceOrderMonitorBO"
+		scope="prototype">
+		<property name="serviceOrderMonitorDao">
+			<ref bean="serviceOrderMonitorDao" />
+		</property>
+		
+		<property name="soSearchDAO">
+			<ref bean="soSearchDAO" />
+		</property>
+	</bean>
+	
+	<bean id="serviceOrderMonitorDao"
+		class="com.newco.marketplace.persistence.daoImpl.so.order.ServiceOrderMonitorDaoImpl"
+		scope="prototype">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+	
+	<bean id="loggingDao"
+		class="com.newco.marketplace.persistence.daoImpl.logging.LoggingDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+
+ 	<bean id="securityBO"
+		class="com.newco.marketplace.business.businessImpl.security.SecurityBusinessBean">
+		<property name="securityAccess">
+			<ref bean="securityDAO" />
+		</property>
+		<property name="surveyBO">
+			<ref bean="surveyBO"/>
+		</property>
+	</bean>  
+
+
+	<bean id="soPostProcessingDao"
+		class="com.newco.marketplace.persistence.daoImpl.so.order.SOPostProcessDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+	
+	<bean id="soPostProcessingFactory"
+		class="com.newco.marketplace.business.businessImpl.serviceorder.SOPostProcessingFactoryImpl">
+		<property name="postProcDAO">
+			<ref bean="soPostProcessingDao" />
+		</property>
+	</bean>
+	
+	<bean id="serviceOrderAddonDAO" class="com.newco.marketplace.persistence.daoImpl.so.order.ServiceOrderAddonDAOImpl"  scope="prototype">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	 
+    </bean>
+
+
+	<bean id="serviceOrderAdditionalPaymentDAO"
+		class="com.newco.marketplace.persistence.daoImpl.so.order.ServiceOrderAdditionalPaymentDAOImpl"
+		scope="prototype">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+
+	<bean id="soUpsellBO"
+		class="com.newco.marketplace.business.businessImpl.so.order.ServiceOrderUpsellBO">
+		<property name="serviceOrderAddonDAO">
+			<ref bean="serviceOrderAddonDAO" />
+		</property>
+		<property name="serviceOrderAdditionalPaymentDAO">
+			<ref bean="serviceOrderAdditionalPaymentDAO" />
+		</property>
+		<property name="cryptography">
+			<ref bean="cryptography" />
+		</property>
+		<property name="cryptography128">
+			<ref bean="cryptography128" />
+		</property>
+
+	</bean>
+
+	<bean id="serviceOrderOutFileTrackingDAO" class="com.newco.marketplace.persistence.daoImpl.so.order.ServiceOrderOutFileTrackingDao" >
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	 
+    </bean>
+    
+    <bean id="serviceOrderOutFileTrackingBO"
+		class="com.newco.marketplace.business.businessImpl.serviceorder.ServiceOrderOutFileTrackingBO">
+		<property name="serviceOrderOutFileTrackingDAO">
+			<ref bean="serviceOrderOutFileTrackingDAO" />
+		</property>
+	</bean>
+	
+	<bean id="serviceOrderFeatureSetDAO" class="com.newco.marketplace.persistence.daoImpl.so.order.ServiceOrderFeatureSetDAOImpl" >
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	 
+    </bean>
+    
+    <bean id="serviceOrderFeatureSetBO"
+		class="com.newco.marketplace.business.businessImpl.so.order.ServiceOrderFeatureSetBOImpl">
+		<property name="serviceOrderFeatureSetDAO">
+			<ref bean="serviceOrderFeatureSetDAO" />
+		</property>
+	</bean>
+
+
+</beans> 

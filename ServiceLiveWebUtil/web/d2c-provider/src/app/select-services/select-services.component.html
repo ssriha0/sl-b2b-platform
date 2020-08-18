@@ -1,0 +1,169 @@
+<div class="modal-dialog modal-width-fix" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <a class="close-button clickable-hand-cursor" (click)="resetData()">
+                <div class="glyphicon glyphicon-remove"></div>
+            </a>
+            <div class="modal-title text-center modal-header-text">{{primaryIndustryName}}</div>
+        </div>
+        <div class="modal-body">
+            <wait-loader [showLoader]="showLoader"></wait-loader>
+            <div class="form-group add-margin-bottom">
+                <div class="row select-service-header">
+                    <div class="col-xs-4 text-center {{selectedClass(0)}} clickable-hand-cursor" (click)="changeSorting(0)">Select Services</div>
+                    <div class="col-xs-4 text-center {{selectedClass(1)}} clickable-hand-cursor" (click)="changeSorting(1)"> <span class="requiredField">*</span>List Price ($)</div>
+                    <div class="col-xs-4 text-center {{selectedClass(2)}} clickable-hand-cursor" (click)="changeSorting(2)" title="Maximum number of SKUs serviced by your firm per day."><span class="requiredField">*</span>Daily Limit</div>
+                </div>
+            </div>
+            <div class="form-group select-service-table">
+                <table class="table select-service-table" *ngIf="selectServiceDetail && selectServiceDetail.skus">
+                    <tbody>
+                        <tr *ngFor="let skuDetails of paginatedSkuDetails.skus; let i=index">
+                            <td class="sku-checkbox-col-width">
+                                <input class="checkbox checkbox-padding" type="checkbox" (change)="onCheckBoxChange(i)" [(ngModel)]="skuDetails.skuPrices[0].isSelected"
+                                    name="select" style="float: left; height: 22px;width: 21px;" />
+                            </td>
+                            <!-- <td class="sku-img-col-width">
+                            <img class="img-responsive select-image-size" src="../../assets/images/no-image.png" alt="" /></td> -->
+                            <td class="right-border">
+                                <div class="sku-header-text">{{skuDetails.skuName}}</div>
+                                <div>SKU: {{skuDetails.sku}}</div>
+                                <div class="sku-detail-link-text"><a href="#" style="text-decoration:none" data-toggle="modal" data-target="#serviceDetailPopUp"
+                                        (click)="passValueToModel(skuDetails)">Details ></a>
+                                </div>
+                            </td>
+
+                            <td class="text-center right-border fix-width-details-col">
+                                <div>
+                                    <!--<span class="requiredField" *ngIf="skuDetails.skuPrices[0].isSelected">*</span>-->
+                                    <input type="text" class="price {{ skuDetails.skuPrices[0].priceValid ? '' : 'error-field-border'}}" placeholder="Price"
+                                        (blur)="changePriceLimitValidation(i)" (focus)="focusListPrice($event, i)" (keypress)="keyPressListPrice($event, i)"
+                                        (keyup)="keyUpListPrice($event, i)" [(ngModel)]="skuDetails.skuPrices[0].price" size="8"
+                                        maxlength="8" title="Price should be between 0 to 99999.99" (contextmenu)="disableMouseRightClick()"
+                                    />
+                                </div>
+                            </td>
+                            <td class="text-center right-border fix-width-details-col">
+                                <div>
+                                    <!--<span class="requiredField" *ngIf="skuDetails.skuPrices[0].isSelected">*</span>-->
+                                    <input type="text" class="daily_limit {{ skuDetails.skuPrices[0].dailyLimitValid ? '' : 'error-field-border'}}" placeholder="Limit"
+                                        (change)="changeDailyLimitValidation(i)" (focus)="focusDailyLimit($event, i)" (keypress)="keyPressDailyLimit($event, i)"
+                                        (keyup)="keyupDailyLimit($event, i)" [(ngModel)]="skuDetails.skuPrices[0].dailyLimit"
+                                        size="2" maxlength="2" title="Limit should be between 1 to 99" (contextmenu)="disableMouseRightClick()"
+                                    />
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="btn-toolbar" *ngIf="paginatedSkuDetails.skus && paginatedSkuDetails.skus.length > 0" role="toolbar" style="margin: 0;">
+                <div class="btn-group">
+                    <!--<label style="margin-top:20px;font-weight: 400;">Page {{currentIndex}}/{{pageNumber}}</label>-->
+                    <label style="margin-top:20px;margin-left: 30px;font-weight: 400;">View 1 - {{curPageEndIndex}} of {{totalRecords}}</label>
+
+                </div>
+                <div class="btn-group pull-right">
+                    <ul class="pagination">
+                        <!--<li [ngClass]="{'disabled': (currentIndex == 1 || pageNumber == 0)}">
+                        <a class="glyphicon glyphicon-chevron-left" (click)="prevPage()" style="top:0px;" href="#" data-toggle="modal"
+                            data-target="#dummyModel"></a>
+                    </li>
+                    <li *ngFor="let page of pagesIndex" [ngClass]="{'active': (currentIndex == page)}">
+                        <a (click)="setPage(page)" href="#" data-toggle="modal" data-target="#dummyModel">{{page}} </a>
+                    </li>-->
+                        <li>
+                            <!--<a (click)="nextPage()" href="#" data-toggle="modal" style="top:0px;border: 0px solid;" data-target="#dummyModel">View more</a>-->
+                        </li>
+                        <li [ngClass]="{'disabled': (endIndex == totalRecords)}">
+                            <!--<label style="margin-top:6px;font-weight: 400;float:left;">View more</label>-->
+                            <a (click)="nextPage()" href="#" data-toggle="modal" style="top:0px;border: 0px solid;" data-target="#dummyModel">View more</a>
+                            <a class="glyphicon glyphicon-chevron-right" (click)="nextPage()" style="top:0px;border: 0px solid;float:none;" href="#"
+                                data-toggle="modal" data-target="#dummyModel"></a>
+
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <div class="text-center">
+                <button type="button" id="saveSkuDetails" style="margin-top:20px; margin-left: -10px;" class="btn btn-primary save-button-width corner-border"
+                    [disabled]="!paginatedSkuDetails || !paginatedSkuDetails.skus || paginatedSkuDetails.skus.length <= 0" (click)="saveSkuDetails()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- detail Modal -->
+<div class="modal fade modal-popup-custom" id="serviceDetailPopUp" role="dialog" #hideServiceDetailPopUp>
+    <div class="modal-dialog modal-width-fix" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a class="close-button cursor-pointer" (click)="closeServiceDetailPopUp()">
+                    <div class="glyphicon glyphicon-remove"></div>
+                </a>
+                <div class="modal-title text-center modal-header-text">Service Detail</div>
+            </div>
+            <div class="modal-body" *ngIf="selectedSkuDetails">
+                <!-- <div style="float:left;">
+                    <img class="img-responsive detail-image-size" src="../../assets/images/no-image.png" alt="" />
+                </div> -->
+                <div class="form-group">
+                    <div class="sku-detail-header-text"><label id="skuName">{{selectedSkuDetails.skuName}}</label></div>
+                    <table class="select-table">
+                        <tr>
+                            <td class="add-padding-right">
+                                <div class="sku-subheader-text text-center">SKU: <label id="sku">{{selectedSkuDetails.sku}}</label></div>
+                            </td>
+                            <td class="add-padding-right text-center vertical-line">
+                                <div class="sku-subheader-text">SKILL TYPE: <label id="skill_type">{{selectedSkuDetails.descr}}</label>
+                                </div>
+                            </td>
+                            <td class="add-padding-right text-center vertical-line">
+                                <div class="sku-subheader-text">CATEGORY: <label id="category">{{selectedSkuDetails.categoryName}}</label>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <br />
+                <div class="form-group">
+                    <strong>Description:</strong><br/>
+                    <div class="max-height-fix"><label id="description" [innerHTML]="sanitize(selectedSkuDetails.taskComments)"></label></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" class="btn btn-primary save-button-width corner-border" (click)="closeServiceDetailPopUp()">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- soft error modal -->
+<div class="modal fade modal-popup-custom" id="softValidationLimitPrice"  data-backdrop="static" data-keyboard="false" role="dialog">
+    <div class="modal-dialog warning-modal-width" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a class="close-button" (click)="closeSoftValidationPopUp(true)">
+                    <div class="glyphicon glyphicon-remove"></div>
+                </a>
+                <div class="modal-title text-center modal-header-text">Warning!</div>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <div class="form-group">
+                    <label *ngIf="validateSku">You have entered price as ${{validateSku.price}}<br/>Are you sure you want to continue?</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="form-group form-inline">
+                    <button class="btn btn-secondary footer-button corner-border" (click)="closeSoftValidationPopUp(false)">No</button>
+                    <button class="btn btn-primary footer-button corner-border" (click)="closeSoftValidationPopUp(true)">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

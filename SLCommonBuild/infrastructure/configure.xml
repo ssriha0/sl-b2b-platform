@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="configure" default="configure-jboss">
+    
+    <property file="${user.home}/.servicelive/common.properties"/>
+    <property file="${user.home}/.servicelive/configure.properties"/> 
+    <property file="common.properties"/>
+    <property file="configure.properties"/>
+    <property file="db/${db.environment}.properties"/>
+    <property name="jboss_as.config.dir" 
+        value="${jboss_as.install.dir}/server/${jboss_as.configuration}"/>
+    <property name="jboss_eap.config.dir" 
+        value="${jboss_eap.install.dir}/jboss-as/server/${jboss_eap.configuration}"/>
+
+
+    <target name="configure-jboss">
+        <copy file="jboss_conf/local.properties" todir="${jboss_as.config.dir}/conf/" overwrite="yes">
+            <filterset>
+                <filter token="APPL_INSTALL_DIRECTORY" value="${appl.install.dir}"/>
+            </filterset>
+        </copy>
+    	
+        <copy file="jboss_conf/mysql-ds.xml" todir="${jboss_as.config.dir}/deploy/" overwrite="yes">
+            <filterset>
+                <filter token="DATABASE_IP" value="${database.ip}"/>
+                <filter token="DATABASE_PORT" value="${database.port}"/>
+                <filter token="SECURE_DATABASE_IP" value="${secure.database.ip}"/>
+                <filter token="SECURE_DATABASE_PORT" value="${secure.database.port}"/>
+            </filterset>
+        </copy>
+        <copy file="jboss_conf/pojocache-config-service.xml" todir="${jboss_as.config.dir}/deploy/" overwrite="yes"/>
+        
+        <copy file="jboss_conf/mysql-ds.xml" todir="${jboss_eap.config.dir}/deploy/" overwrite="yes">
+            <filterset>
+                <filter token="DATABASE_IP" value="${database.ip}"/>
+                <filter token="DATABASE_PORT" value="${database.port}"/>
+                <filter token="SECURE_DATABASE_IP" value="${secure.database.ip}"/>
+                <filter token="SECURE_DATABASE_PORT" value="${secure.database.port}"/>
+            </filterset>
+        </copy>
+        
+    </target>
+	
+    <target name="install-appl">
+        <copy todir="${appl.install.dir}/">
+            <fileset dir="appl"/>
+        </copy>
+    </target>
+	
+</project>

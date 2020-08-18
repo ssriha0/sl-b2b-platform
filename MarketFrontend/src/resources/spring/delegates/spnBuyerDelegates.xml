@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+
+	<!-- Start DTO  Loading -->
+<!--	<bean id="teamProfileDTO" class="com.newco.marketplace.web.dto.provider.TeamProfileDTO" scope="prototype"/>
+	<bean id="backgroundCheckDTO" class="com.newco.marketplace.web.dto.provider.BackgroundCheckDTO" scope="prototype"/> -->
+	<!-- End DTO  Loading -->
+	
+	<!-- Start Mapper Loading -->
+<!--	<bean id="teamMemberMapper" class="com.newco.marketplace.web.utils.TeamMemberMapper" scope="prototype"/>  -->
+	<!-- End Mapper  Loading -->
+	
+
+	<!-- Start buyer SPN Delegate Loading -->
+	<bean id="spnBuyerDelegate" class="com.newco.marketplace.web.delegatesImpl.spn.SPNBuyerDelegateImpl" scope="prototype">	
+	    <constructor-arg index="0" ref="selectProviderNetworkBO"/>
+	    <constructor-arg index="1" ref="documentBO"/>
+	    <property name="spnetBO">
+			<ref bean="spnetworkBO" />
+		</property>
+		
+	</bean>	
+	<!-- End  Manage Users Delegate Loading -->
+</beans>	

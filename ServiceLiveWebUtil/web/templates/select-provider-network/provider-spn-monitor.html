@@ -1,0 +1,185 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<title>ServiceLive : SPN Monitor</title>
+	<!-- tiles:insertDefinition name="blueprint.base.meta"/ -->
+	<link rel="shortcut icon" href="../../images/favicon.ico" />
+	<link rel="stylesheet" type="text/css" href="../../styles/screen.css" media="screen, projection">
+	<link rel="stylesheet" type="text/css" href="../../styles/plugins/superfish.css" media="screen, projection">
+	<script type="text/javascript" src="../../scripts/jquery-1.2.6.min.js"></script>
+	<script type="text/javascript" src="../../scripts/plugins/jquery.flash.min.js"></script>
+	<script type="text/javascript" src="../../scripts/plugins/jquery.sifr.min.js"></script>
+	<script type="text/javascript" src="../../scripts/plugins/superfish.js"></script>
+	<script type="text/javascript" src="../../scripts/plugins/supersubs.js"></script>
+	<script type="text/javascript" src="../../scripts/plugins/jquery.hoverIntent.minified.js"></script>
+	<script type="text/javascript" src="../../scripts/plugins/jquery.bgiframe.pack.js"></script>
+	<script type="text/javascript" src="../../scripts/toolbox.js"></script>
+	<!-- end blueprint base include -->
+
+	<link rel="stylesheet" type="text/css" href="../../styles/plugins/spn-invitation.css" media="screen, projection">
+	<script type="text/javascript" src="../../scripts/plugins/ui.core.js"></script>
+	<script type="text/javascript" src="../../scripts/plugins/ui.tabs.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			
+			$('.tabs > ul').tabs();
+			
+		});
+	</script>
+</head>
+<body id="select-provider-network">
+	<div id="wrap" class="container">
+
+		<!-- tiles:insertDefinition name="blueprint.base.header"/ -->
+			<div id="header" class="span-24 clearfix">
+				<div id="title" class="span-6 first">
+					<h1><a href="#" title="ServiceLive">ServiceLive</a></h1>
+				</div>	
+				<div id="utilities" class="span-18 last">
+					<p class="textright">Welcome back, Mr. President</p>
+					<ul class="right landscape">
+						<li><a title="Community Forums" href="#" onclick="window.open(this.href); return false;" onkeypress="window.open(this.href); return false;">Community</a></li>
+						<li><a title="Support" href="#">Support</a></li>
+						<li><a title="Contact ServiceLive" href="#">Contact Us</a></li>
+							<li><a title="Logout of your Account" href="#">Logout</a></li>
+				</div>	
+			</div>
+		<!-- end header tile -->
+
+		<!-- tiles:insertDefinition name="blueprint.base.navigation"/ -->
+			<div id="navigation" class="span-24 clearfix">
+			</div>
+		<!-- end navigation tile -->
+
+		<div id="content" class="span-24 clearfix">
+
+			<div id="primary" class="span-24 first last">
+				<div class="content">
+					<div class="tableWrap">
+					<table cellpadding="6" cellspacing="0">
+						<thead>
+							<tr>
+								<th class="tc" style="width: 100px;">Membership<br />Status</th>
+								<th class="tl"><abbr title="Select Provider Network">SPN</abbr></th>
+								<th class="tc" style="width: 10 0px;">Qualified<br />Providers</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td class="tc">
+									<img src="../../images/common/status-red.png" alt="Membership Inactive" />
+									<p class="sm">Membership Inactive</p>
+								</td>
+								<td class="tl">
+								<a class="c-cat" href="#"><span>Buyer Name - SPN Name</span><span class="plus"></span><span class="minus"></span></a>
+								<div class="comment"><strong class="req">Out of compliance.</strong> Please check company and provider criteria for missing requirements.</div>
+								</td>
+								<td class="tc">
+									0/0
+								</td>
+							</tr>
+							<tr class="info">
+								<td colspan="3">
+									<h3>{BUYER NAME} {SPN NAME}</h3>
+				
+									<div class="content">
+										<h5>Apply for the <abbr title="Select Provider Network">SPN</abbr></h5>
+										<ol>
+											<li>Upload the required documents below.</li>
+											<li>Click "Continue" to view and respond to the business agreements and submit your application for approval.</li>
+											<li><a href="#">Go to your profile</a> to add company credentials.  Provider credentials will need to be managed within the individual provider profile.</a></li>
+										</ol>
+
+
+										<div class="tabs">
+											<ul>
+												<li><a href="tab-criteria.html">Criteria & Credentials</a></li>
+												<li><a href="tab-spn-info.html"><abbr title="Select Provider Network">SPN</abbr> Information</a></li>
+											</ul>
+										</div>
+										
+										
+										<div class="clearfix" style="padding-top: 15px;">
+											<p class="tr">
+											<input type="submit" class="action right" value="Continue">
+											<br />
+											Click "Continue" to go to Step 2 of the application.</p>
+										</div>
+									</div>					
+								</td>
+							</tr>
+							<tr>
+								<td class="tc">
+									<img src="../../images/common/status-yellow.png" alt="Incomplete" />
+									<p class="sm">Incomplete</p>
+								</td>
+								<td class="tl">
+									<a class="c-cat" href="#"><span>Buyer Name - SPN Name</span><span class="plus"></span><span class="minus"></span></a>
+									<div class="comment"><strong class="req">Need more information.</strong> Lore ipsum dolor sit amet.</div>
+								</td>
+								<td class="tc">
+									0/0
+								</td>
+							</tr>
+							<tr>
+								<td class="tc">
+									<img src="../../images/common/status-white.png" alt="Pending Approval" />
+									<p class="sm">Pending Approval</p>
+								</td>
+								<td class="tl">
+									<a class="c-cat" href="#"><span>Buyer Name - SPN Name</span><span class="plus"></span><span class="minus"></span></a>
+									<div class="nocomment"><strong>Your application has been submitted for approval.</strong>
+									Remember to go to your company profile to update any required credentials.</div>
+								</td>
+								<td class="tc">
+									0/0
+								</td>
+							</tr>
+							<tr>
+								<td class="tc">
+									<img src="../../images/common/status-black.png" alt="Membership Declined" />
+									<p class="sm">Membership Declined</p>
+								</td>
+								<td class="tl">
+									<a class="c-cat" href="#"><span>Buyer Name - SPN Name</span><span class="plus"></span><span class="minus"></span></a>
+									<div class="comment"><strong>Buyer has declined membership.</strong> Lorem ipsum dolor sit amet.</div>
+								</td>
+								<td class="tc">
+									0/0
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- tiles:insertDefinition name="blueprint.base.footer"/ -->
+			<div id="footer" class="span-24 clearfix">
+				<ul class="landscape">
+					<li><a href="#">About Us</a> </li>
+					<li><a href="#">Terms of Use</a> </li>
+					<li><a href="https://transformco.com/privacy" target="_blank">Privacy Policy</a> </li>
+					<li><a href="#">Provider Agreement</a> </li>
+					<li><a href="#">Buyer Agreement</a></li>
+				</ul>
+				
+				<p class="copyright">
+					&copy; 2019 Transform ServiceLive LLC. | v 3.0
+				</p>
+			
+				<p class="blackout">
+					<strong>During our BETA launch, we are not available for buyers in the following states: </strong> State 1, State 2, State 3		
+				</p>
+			</div>			
+		<!-- end blueprint footer include -->
+
+	</div>
+	<!-- jsp:include page="/jsp/public/common/omitInclude.jsp" flush="true" -->
+		<!-- jsp:param name="PageName" value="spn:provider spn monitor"/ -->
+	<!-- /jsp:include -->
+</body>
+</html>
+
+

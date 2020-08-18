@@ -1,0 +1,332 @@
+<project name="sl-common">
+    <description>
+        Common targets to be included by all ServiceLive project build.xml scripts.
+    </description>
+
+
+<!-- ===================================================================================
+        Properties
+     =================================================================================== -->
+
+    <!-- System-dependent shell environment variables -->
+    <property environment="shell"/>
+
+    <!-- Use the shell props to get our hostname in a system-independent way -->
+    <condition property="hostname" value="${shell.COMPUTERNAME}"><os family="windows" /></condition>
+    <exec executable="hostname" outputproperty="hostname" osfamily="unix" />
+
+    <condition property="dot_exe" value=".exe" else=""><os family="windows" /></condition>
+
+    <condition property="os_family" value="mac" ><os family="mac" /></condition>
+    <condition property="os_family" value="linux" ><os family="unix" /></condition>
+    <condition property="os_family" value="windows" ><os family="windows" /></condition>
+
+    <!-- sl-common.branch-dir is the topmost directory in the branch, where all code checks out to.
+         The CWD is where your build.xml file is including this file from, so 
+         look for branch-root above the CWD.  -->
+    <available property="sl-common.relative-branch-dir" value="." file="./SLCommonBuild/ant/sl-common/sl-common.xml" type="file" />
+    <available property="sl-common.relative-branch-dir" value=".." file="../SLCommonBuild/ant/sl-common/sl-common.xml" type="file" />
+    <available property="sl-common.relative-branch-dir" value="../.." file="../../SLCommonBuild/ant/sl-common/sl-common.xml" type="file" />
+    <available property="sl-common.relative-branch-dir" value="../../.." file="../../../SLCommonBuild/ant/sl-common/sl-common.xml" type="file" />
+    <available property="sl-common.relative-branch-dir" value="../../../.." file="../../../../SLCommonBuild/ant/sl-common/sl-common.xml" type="file" />
+    <!--fail unless="sl-common.branch-dir" message="Can't find your sl-common.branch-dir.  Consider setting it in your build file." /-->
+
+    <!-- We MUST base our props off of an absolute path.  Depending on context, relative paths can
+         be based off of the user.dir or the basedir.  -->
+    <property name="sl-common.branch-dir" location="${sl-common.relative-branch-dir}" />
+
+    <property name="sl-common.build-dir" location="${sl-common.branch-dir}/SLCommonBuild" />
+    <property name="sl-common.ant-dir" location="${sl-common.build-dir}/ant" />
+    <property name="sl-common.scratch-dir" location="${sl-common.ant-dir}/scratch" />
+
+    <!-- These properties can't be overridden since they're loaded first -->
+    <property file="${sl-common.ant-dir}/sl-common/sl-common.properties"/>
+
+    <!-- HOSTNAME properties are also loaded by us, not ASL. -->
+    <condition property="props.hostname.dir" value="${shell.CommonProgramFiles}/SLCommonBuild/host.properties"><os family="windows" /></condition>
+    <condition property="props.hostname.dir" value="/usr/local/etc/SLCommonBuild/host.properties"><os family="mac" /></condition>
+    <condition property="props.hostname.dir" value="/usr/local/etc/SLCommonBuild/host.properties"><os family="unix" /></condition>
+    <condition property="props.hostname" 
+            else= "SKIPPING HOST PROPS: ${props.hostname.dir}"
+            value="READING  HOST PROPS: ${props.hostname.dir}">
+        <available file="${props.hostname.dir}" />
+    </condition>
+    <property file="${props.hostname.dir}" />
+
+    <!-- User properties, loaded by ASL -->
+    <condition property="props.userhome" 
+            else= "SKIPPING USER PROPS: ${user.home}/asl.properties"
+            value="READING  USER PROPS: ${user.home}/asl.properties">
+        <available file="${user.home}/asl.properties" />
+    </condition>
+    
+    <!-- Project-specific properties, loaded by ASL -->
+    <condition property="props.project" 
+            else= "SKIPPING PROJECT PROPS: asl.properties"
+            value="READING  PROJECT PROPS: asl.properties">
+        <available file="asl.properties" />
+    </condition>
+
+
+    <!-- If '/repository/deployables' exists, use /repository as libdir instead of SLCB/lib -->
+    <available property="java-build.lib-dir" value="${sl-common.branch-dir}/repository" file="${sl-common.branch-dir}/repository/deployables" type="dir" />
+    <property name="java-build.lib-dir" location="${sl-common.build-dir}/lib" />
+
+    <property name="deployables"    location="${java-build.lib-dir}/deployables" />
+    <property name="nondeployables" location="${java-build.lib-dir}/nondeployables" />
+    <property name="generated"      location="${java-build.lib-dir}/generated" />
+    <!--JBOSS Upgrade-->
+    <property name="build.compiler" value="javac1.5" />
+    <property name="java-war.web-xml" location="src/main/webapp/WEB-INF" />
+
+    <!-- Add your JBoss server dir to this list if it's common, or specify in your HOSTNAME.properties file 
+    <available property="java-war.deploy-base" value="/shc/jboss/server" file="/shc/jboss/server" type="dir" />
+    <available property="java-war.deploy-base" value="/workspace/jboss/server" file="/workspace/jboss/server" type="dir" />
+    -->
+
+    <!-- If you use something other than default you'll need to override this in your
+         host.properties file.  Run echoenv to find out where that prop file lives.
+    <property name="java-war.jboss-server-name" value="default" />
+    -->
+
+    <!-- This one you should NOT need to change.  Look at the above two instead.
+    <property name="java-war.deploy-dir" value="${java-war.deploy-base}/${java-war.jboss-server-name}/deploy" />
+    -->
+
+<!-- ===================================================================================
+        Taskdefs
+        (Unless used globally, declare taskdefs within the target they're being used in)
+     =================================================================================== -->
+
+    <!-- http://ant-contrib.sourceforge.net/tasks/tasks -->
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties"
+             classpath="${sl-common.ant-dir}/opt/ant-contrib/ant-contrib-1.0b3.jar" />
+
+    <!-- http://groovy.codehaus.org/The+groovy+Ant+Task -->
+    <taskdef name="groovy" classname="org.codehaus.groovy.ant.Groovy"
+            classpath="${sl-common.ant-dir}/opt/groovy/groovy-all-1.6.5.jar" />
+
+    <!-- http://groovy.codehaus.org/The+groovyc+Ant+Task -->
+    <taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc"
+            classpath="${sl-common.ant-dir}/opt/groovy/groovy-all-1.6.5.jar" />
+
+
+<!-- ===================================================================================
+        Imports
+     =================================================================================== -->
+
+    <!-- This belongs upstairs with other props, but needs the ant-contrib taskdef first -->
+    <!-- All projects should have a deps file, unless they're purely JDK (which is ok) -->
+    <condition property="props.deps" 
+            else="SKIPPING BUILD DEPENDENCY PROPS: ${basedir}/build/build-deps.properties"
+            value="READING  BUILD DEPENDENCY PROPS: ${basedir}/build/build-deps.properties">
+        <available file="${basedir}/build/build-deps.properties" />
+    </condition>
+    <property file="build/build-deps.properties" />
+
+
+    <!-- import ASL *HERE*, which includes user and project properties. 
+         Do this *here*, *after* we've included ServiceLive and host-specific property files. -->
+    <import file="../opt/ant-script-library/asl-java.xml"/>
+    <import file="../opt/ant-script-library/asl-java-war.xml"/>
+
+    <!-- ================ SHC imports ================ -->
+
+    <!-- augment asl-java-test unit test targets to add groovy support -->
+    <import file="sl-test.xml" />
+
+    <!-- build-deps.properties parsing and xxx-generated targets -->
+    <import file="sl-deps.xml" />
+
+    <!-- augment ASL's reports with checkstyle, findbugs, and javadoc support -->
+    <import file="sl-report.xml" />
+
+    <!-- subversion handling -->
+    <import file="sl-svn.xml" />
+
+    <!-- jboss jar/war/ear deploy/undeploy -->
+    <import file="sl-jboss.xml" />
+
+    <!-- EAR creation -->
+    <import file="sl-java-ear.xml" />
+
+
+    <target name="echoenv" depends="-init">
+        <echo level="warning">
+---------------------------     PROPERTY FILES
+${props.deps}
+${props.userhome}
+${props.project}
+${props.hostname}
+    </echo><echo level="info">
+---------------------------     PROJECT PROPERTIES
+sl-common.branch-dir=           ${sl-common.branch-dir}
+sl-svn.rev (subversion rev#)=   ${sl-svn.rev}
+
+---------------------------     SYSTEM PROPERTIES
+time=                           ${common.timestamp-long}
+
+java.home=                      ${java.home}
+java.version=                   ${java.version}
+build.compiler=                 ${build.compiler}
+
+hostname=                       ${hostname}
+os.name, arch, family=          ${os.name}, ${os.arch}, ${os_family}
+
+ant.version=                    ${ant.version}
+basedir=                        ${basedir}
+user.dir=                       ${user.dir}
+user.home=                      ${user.home}
+
+---------------------------     COMMON PROPERTIES
+common.target-dir=              ${common.target-dir}
+common.dist-dir=                ${common.dist-dir}
+
+---------------------------     COMPILE / JAR
+java-build.src-dir=             ${java-build.src-dir}
+java-build.lib-dir=             ${java-build.lib-dir}
+java-build.classes-dir=         ${java-build.classes-dir}
+java-build.dist-filename=       ${java-build.dist-filename}
+java-build.dist-file=           ${java-build.dist-file}
+java-build.source-ver=          ${java-build.source-ver}
+java-build.target-ver=          ${java-build.target-ver}
+java-build.debug=               ${java-build.debug}
+
+---------------------------     WAR
+java-war.dist-filename=         ${java-war.dist-filename}
+java-war.dist-file=             ${java-war.dist-file}
+java-war.libs-dir=              ${java-war.libs-dir}
+java-war.web-content-dir=       ${java-war.web-content-dir}
+java-war.web-xml=               ${java-war.web-xml}
+java-war.webapp-name=           ${java-war.webapp-name}
+
+---------------------------     TEST
+java-test.src-dir=              ${java-test.src-dir}
+java-test.classes-dir=          ${java-test.classes-dir}
+java-test.test-data-dir=        ${java-test.test-data-dir}
+java-test.basedir=              ${java-test.basedir}
+java-test.classpath=            ${java-test.classpath}
+
+---------------------------     CLASSPATH 
+java-build.classpath=           ${java-build.classpath}
+
+NON-DEPLOYABLES=                ${java-build.nondeployables-classpath.ref}
+
+DEPLOYABLES=                    ${java-build.deployables-classpath.ref}
+
+GENERATED=                      ${java-build.generated-classpath.ref}
+    	
+---------------------------     JUNIT
+junit-report.dir=          	    ${junit-report.dir}
+junit-jar.dir=                  ${junit-jar.dir}
+    	
+        </echo>
+    </target>
+
+
+<!-- ===================================================================================
+        Overridden Targets
+     =================================================================================== -->
+
+    <!-- accumulate list of distributables to append to java-build.classpath so we don't have to declare.
+         This will only ever work if we call dist.dependencies every time.  Even then, not yet...
+
+    <target name="war" depends="asl-java-war.war, -depend-classpath" 
+        description="Create a war for this web project" />
+    -->
+
+    <target name="dist" depends="jar, junit-report"
+            description="Create jar in target/dist and copy it to SLCommonBuild/lib/generated">
+
+        <copy file="${java-build.dist-file}" todir="${generated}" overwrite="true" />
+    </target>
+	
+	<target name="war-junit" depends="war, junit-report" description="Create war and compile, run junits">
+    </target>
+
+    <!-- Override empty target, called before compilation -->
+    <target name="generate" depends="echoenv, -build-missing-generated" />
+
+
+    <target name="clean" description="Deletes files generated by the build, INCLUDING SLCommonBuild/lib/generated"
+            depends="-init, asl-common.clean">
+
+        <!-- Remove generated jar if it exists, and fail on error -->
+        <if> <available type="file" file="${generated}/${java-build.dist-filename}" />
+            <then><delete file="${generated}/${java-build.dist-filename}" failonerror="true" /></then>
+        </if>
+    </target>
+
+   
+<!-- ===================================================================================
+        Private Helper Targets do NOT include 'description' attr in target element
+          and (per ASL conventions) start with a hyphen.
+     =================================================================================== -->
+
+    <target name="-init" depends="-init-time, -init-java-build-classpath, -init-classpath, -init-jar-classpath, -svn-getrev">
+        <record name="build.log" emacsmode="true" />
+
+        <if><isreference refid="java-build.deployables-classpath" />
+            <then>
+                <property name="java-build.deployables-classpath.ref" refid="java-build.deployables-classpath" />
+                <pathtofileset name="java-build.deployables-classpath.fileset" dir="/"
+                    pathrefid="java-build.deployables-classpath" />
+            </then>
+        </if>
+
+        <if><isreference refid="java-build.nondeployables-classpath" />
+            <then><property name="java-build.nondeployables-classpath.ref" refid="java-build.nondeployables-classpath" /></then>
+        </if>
+
+
+        <if><isreference refid="java-build.generated-classpath" />
+            <then>
+                <property name="java-build.generated-classpath.ref" refid="java-build.generated-classpath" />
+                <pathtofileset name="java-build.generated-classpath.fileset" dir="/"
+                    pathrefid="java-build.generated-classpath" />
+                <path id="java-build.generated.unordered">
+                    <fileset refid="java-build.generated-classpath.fileset" />
+                </path>
+            </then>
+        </if>
+
+
+        <property name="java-build.classpath" refid="java-build.classpath" />
+        <property name="java-test.classpath" refid="java-test.classpath" />
+
+
+        <path id="java-build.classpath.unordered">
+            <fileset refid="java-build.deployables-classpath.fileset" />
+            <fileset refid="java-build.generated-classpath.fileset" />
+        </path>
+    </target>
+
+
+    <!-- Override from your project build[-asl].xml if you need to -->
+    <target name="-init-classpath" />
+
+
+    <!-- Create a java-build.classpath 'path', containing your deployable, nondeployable, and dependent project jars. -->
+    <target name="-init-java-build-classpath">
+        <echo level="info">
+===============================================================================
+                                ${ant.project.name} 
+===============================================================================</echo>
+        <groovy src="${sl-common.ant-dir}/sl-common/groovy/initJavaBuildClasspath.groovy" />
+    </target>
+
+
+    <!-- If any jarfiles are missing from SLCB/lib/generated, attempt to build them -->
+    <target name="-build-missing-generated">
+        <groovy src="${sl-common.ant-dir}/sl-common/groovy/depends.groovy" />
+    </target>
+	
+	<!-- Sonar Integration 	-->
+	<property name="dir.sonar.src" value="${java-build.src-dir}" />
+	<property name="dir.sonar.ant.task" value="${java-build.lib-dir}/nondeployables" />	
+	<import file="../opt/ant-script-library/asl-java-sonar.xml" />
+	<target name="sonar" depends="sonar-init, sonar-run">
+	</target>
+
+</project>
+

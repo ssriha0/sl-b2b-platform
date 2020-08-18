@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:jms="http://www.springframework.org/schema/jms"
+	xsi:schemaLocation="
+       http://www.springframework.org/schema/beans spring-beans-2.5.xsd
+       http://www.springframework.org/schema/aop spring-aop-2.5.xsd
+	   http://www.springframework.org/schema/jms spring-jms-2.5.xsd">
+
+    <bean id="propertyPlaceholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    	<property name="locations">
+    		<list>
+	    		<value>classpath:default.properties</value>
+	    		<value>classpath:local.properties</value>
+	    	</list>
+    	</property>
+    	<property name="ignoreResourceNotFound" value="true" />
+    </bean>
+
+	<bean id="jmsTemplateSOSender" class="org.springframework.jms.core.JmsTemplate102">
+		<property name="connectionFactory" ref="jmsQueueConnectionFactoryMQ" />
+		<property name="pubSubDomain" value="false" />
+		<property name="defaultDestination" ref="soDestinationMQ" />
+	</bean>
+
+	<!-- Direct to MQ -->
+	<bean id="const"
+		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+		<property name="staticField" value="${transport.type}" />
+	</bean>
+
+	<bean id="jmsQueueConnectionFactoryMQ" class="com.ibm.mq.jms.MQQueueConnectionFactory">
+		<property name="transportType" ref="const" />
+		<property name="queueManager" value="${wsmq.queue.manager}" />
+		<property name="hostName" value="${wsmq.host.name}" />
+		<property name="port" value="${wsmq.host.port}" />
+		<property name="channel" value="${wsmq.channel}" />
+	</bean>
+
+	<bean id="soDestinationMQ" class="com.ibm.mq.jms.MQQueue">
+		<property name="baseQueueManagerName" value="${wsmq.queue.manager}" />
+		<property name="baseQueueName" value="${wsmq.queue.name}" />
+	</bean>
+	
+	<bean id="messageCorrelationDistributor" class="com.servicelive.serviceordercreation.MessageCorrelationIDBaseDistributor" >
+	     <constructor-arg index="0" ><value>${all.valid.correlationids}</value></constructor-arg> 
+	</bean>
+</beans>        
+

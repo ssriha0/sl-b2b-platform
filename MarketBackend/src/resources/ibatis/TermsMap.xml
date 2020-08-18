@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Terms">
+	<typeAlias alias="termsVO"
+		type="com.newco.marketplace.vo.provider.TermsVO" />
+
+	<update id="updateTerms.update" parameterClass="termsVO">
+		UPDATE vendor_resource
+		<dynamic prepend="set">
+			<isGreaterThan prepend=", " property="acceptTerms"
+				compareValue="-1">
+				terms_cond_ind = #acceptTerms#
+			</isGreaterThan>
+		</dynamic>
+		WHERE resource_id = #resourceId#
+	</update>
+
+	<select id="selectTerms.query" parameterClass="termsVO"
+		resultClass="termsVO">
+		select resource_id as resourceId, 
+				case when terms_cond_ind is null
+				then 0 else terms_cond_ind 
+				end as acceptTerms from vendor_resource
+		where resource_id = #resourceId#
+	</select>
+
+</sqlMap>

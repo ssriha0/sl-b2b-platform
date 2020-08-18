@@ -1,0 +1,57 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="autoClose" extends="ServiceLiveBase" >
+        <default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+        
+    	<global-results >
+			<result name="error" type="redirectAction">
+				<param name="actionName">errorAction</param>
+				<param name="errorMessage">${errorMessage}</param>
+				<param name="returnURL">${returnURL}</param>
+			</result>
+		</global-results>	   	
+        
+		
+	    <action name="autoClose_displayPage" class="autoCloseManagerAction" method="displayPage">
+	        <result name="success">/jsp/autoclose/autoCloseManager.jsp</result>	    	   
+	        <result name="homepage" type="redirectAction">homepage</result>	         
+	    </action>
+	    
+	    <action name="autoClose_updateMaxprice" class="autoCloseManagerAction" method="updateMaxprice">
+	        <result name="success">/jsp/autoclose/autoCloseMaxpriceHistory.jsp</result>	    	   
+	        <result name="homepage" type="redirectAction">homepage</result>	         
+	    </action>
+	    
+	    <action name="autoClose_getFirmExclusionList" class="autoCloseManagerAction" method="getFirmExclusionList">
+	        <result name="excluded">/jsp/autoclose/autoCloseFirmExclusionList.jsp</result>
+	        <result name="removed">/jsp/autoclose/autoCloseFirmsRemovedFrmExclusionList.jsp</result>	    	   
+	        <result name="homepage" type="redirectAction">homepage</result>	         
+	    </action>
+	    
+	    <action name="autoClose_updateFirmExclusionList" class="autoCloseManagerAction" method="updateFirmExclusionList">
+	        <result name="excluded">/jsp/autoclose/autoCloseFirmExclusionList.jsp</result>
+	        <result name="removed">/jsp/autoclose/autoCloseFirmsRemovedFrmExclusionList.jsp</result>	    	   
+	        <result name="homepage" type="redirectAction">homepage</result>	         
+	    </action>	    
+	    
+	    <action name="autoClose_getProviderExclusionList" class="autoCloseManagerAction" method="getProviderExclusionList">
+	        <result name="excluded">/jsp/autoclose/autoCloseProviderExclusionList.jsp</result>
+	        <result name="removed">/jsp/autoclose/autoCloseProvidersRemovedFrmExclusionList.jsp</result>	    	   
+	        <result name="homepage" type="redirectAction">homepage</result>	         
+	    </action>
+	    
+	    <action name="autoClose_updateProviderExclusionList" class="autoCloseManagerAction" method="updateProviderExclusionList">
+	        <result name="excluded">/jsp/autoclose/autoCloseProviderExclusionList.jsp</result>
+	        <result name="removed">/jsp/autoclose/autoCloseProvidersRemovedFrmExclusionList.jsp</result>	    	   
+	        <result name="homepage" type="redirectAction">homepage</result>	         
+	    </action>
+	    
+	    <action name="autoClose_searchMembers" class="autoCloseManagerAction" method="searchMembers">
+			<result name="success">/jsp/autoclose/autoCloseSearchResults.jsp</result>
+		</action>		
+
+    </package>
+    
+</struts>

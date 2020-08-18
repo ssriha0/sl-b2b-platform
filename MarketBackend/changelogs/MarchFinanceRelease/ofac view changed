@@ -1,0 +1,85 @@
+ALTER ALGORITHM=UNDEFINED DEFINER=`supply_usr`@`%` SQL SECURITY DEFINER VIEW `vw_ofac_info` AS 
+SELECT `led`.`descr` AS `userType`,
+       `vh`.`vendor_id` AS `entityId`,
+       `vh`.`ein_no` AS `TaxPayerId`,
+       `vr`.`user_name` AS `userName`,
+       `vr`.`resource_id` AS `UserID`,
+       `vh`.`business_name` AS `businessName`,
+       `vh`.`bus_phone_no` AS `contactNumber`,
+       `c`.`first_name` AS `firstName`,
+       `c`.`last_name` AS `lastName`,
+       `c`.`email` AS `email`,
+       `l1`.`street_1` AS `street1`,
+       `l1`.`street_2` AS `street2`,
+       `l1`.`city` AS `city`,
+       `l1`.`state_cd` AS `state`,
+       `l1`.`zip` AS `zipCode`,
+       `l1`.`apt_no` AS `aptNo`,
+       `f1`.`v1_account_no` AS `V1Account`,
+      `f1`.`v2_account_no` AS `V2Account`,
+      `vh`.`created_date` AS `CreatedDate`
+  FROM (   (   (   (   (   (   `vendor_hdr` `vh`
+                            JOIN
+                               `vendor_location` `v2`
+                            ON ( (`v2`.`vendor_id` = `vh`.`vendor_id`)))
+                        JOIN
+                           `location` `l1`
+                        ON ( ( (`l1`.`locn_id` = `v2`.`locn_id`)
+                              AND (`l1`.`locn_type_id` = 1))))
+                    JOIN
+                       `vendor_resource` `vr`
+                    ON ( (`vr`.`vendor_id` = `vh`.`vendor_id`)))
+                JOIN
+                   `contact` `c`
+                ON ( ( (`c`.`contact_id` = `vr`.`contact_id`)
+                      AND (`vr`.`primary_ind` = 1))))
+            JOIN
+               `fullfillment_vlaccounts` `f1`
+            ON ( (`f1`.`ledger_entity_id` = `vh`.`vendor_id`)))
+        JOIN
+           `ledger_entity_type` `led`
+        ON ( (`led`.`ledger_entity_type_id` = 20)))
+UNION
+SELECT `led`.`descr` AS `userType`,
+       `b`.`buyer_id` AS `entityId`,
+       `b`.`ein_no` AS `SSNTaxPayerId`,
+       `b`.`user_name` AS `userName`,
+       `br`.`resource_id` AS `UserID`,
+       `b`.`business_name` AS `businessName`,
+       `b`.`bus_phone_no` AS `contactNumber`,
+       `c`.`first_name` AS `firstName`,
+       `c`.`last_name` AS `lastName`,
+       `c`.`email` AS `email`,
+       `l1`.`street_1` AS `street1`,
+       `l1`.`street_2` AS `street2`,
+       `l1`.`city` AS `city`,
+       `l1`.`state_cd` AS `state`,
+       `l1`.`zip` AS `zipCode`,
+       `l1`.`apt_no` AS `aptNo`,
+       `f1`.`v1_account_no` AS `V1Account`,
+       `f1`.`v2_account_no` AS `V2Account`,
+	`b`.`created_date` AS `CreatedDate`
+  FROM (   (   (   (   (   (   `buyer` `b`
+                            JOIN
+                               `buyer_locations` `bl`
+                            ON ( (`bl`.`buyer_id` = `b`.`buyer_id`)))
+                        JOIN
+                           `location` `l1`
+                        ON ( ( (`l1`.`locn_id` = `bl`.`locn_id`)
+                              AND (`l1`.`locn_type_id` = 1))))
+                    JOIN
+                       `buyer_resource` `br`
+                    ON ( (`br`.`buyer_id` = `b`.`buyer_id`)))
+                JOIN
+                   `contact` `c`
+                ON ( ( (`c`.`contact_id` = `br`.`contact_id`)
+                      AND (`br`.`company_role_id` = 1))))
+            JOIN
+               `fullfillment_vlaccounts` `f1`
+            ON ( (`f1`.`ledger_entity_id` = `b`.`buyer_id`)))
+        JOIN
+           `ledger_entity_type` `led`
+        ON ( (`led`.`ledger_entity_type_id` = 10)));
+
+
+

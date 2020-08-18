@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jboss-deployment-structure xmlns="urn:jboss:deployment-structure:1.2">
+	<deployment>
+		<exclude-subsystems>
+			<subsystem name="hibernate" />
+			<subsystem name="jpa" />
+		</exclude-subsystems>
+		<exclusions>
+			<module name="org.hibernate"/>
+			<module name="org.antlr" />
+		</exclusions>
+	</deployment>
+</jboss-deployment-structure>

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+        <!-- Root element -->
+		<xs:element name="approveFirmsRequest">
+			<xs:complexType>
+				<xs:sequence>
+					 <xs:element name="adminResourceId" type="firmsType" minOccurs="1"/>
+					 <xs:element ref="providerFirms"/>
+				</xs:sequence>					
+			</xs:complexType>
+		</xs:element>
+		<xs:element name="providerFirms">
+		   <xs:complexType>
+			   <xs:sequence>
+				  <xs:element ref="providerFirm" maxOccurs="unbounded"/>
+			   </xs:sequence>
+		   </xs:complexType>
+	    </xs:element>
+	    <xs:element name="providerFirm">
+	      <xs:complexType>
+			<xs:sequence>
+			   <xs:element name="providerFirmId" type="firmsType" minOccurs="1"/>
+			   <xs:element name="providerFirmStatus" type="providerFirmStatusType"  minOccurs="1" />
+			</xs:sequence>
+		  </xs:complexType>
+	    </xs:element>
+	    
+	     <xs:simpleType name="firmsType">
+		 <xs:restriction base="xs:integer">
+     	 <xs:minInclusive value="1"/>
+     	 <xs:maxInclusive value="9999999999"/>
+    	 </xs:restriction>
+		 </xs:simpleType>
+	    
+	    <xs:complexType name="providerFirmStatusType">
+		   <xs:sequence>
+			  <xs:element name="firmStatus" type="firmStatusType"/>	
+			  <xs:element name="emailIndicator" type="YesNoType"/>
+			  <xs:element ref= "reasonCodes" minOccurs="0"/>
+		   </xs:sequence>
+	    </xs:complexType>
+	    <xs:element name="reasonCodes">
+	       <xs:complexType>
+			  <xs:sequence>
+			    <xs:element name="reasonCode" type="reasonCodeType" minOccurs="0" maxOccurs="unbounded"/>
+			  </xs:sequence>
+		   </xs:complexType>
+		</xs:element>
+		<xs:simpleType name="firmStatusType">
+		   <xs:restriction base="xs:string">
+		      <xs:enumeration value="Pending Approval" />
+		      <xs:enumeration value="Out of Compliance" />
+			  <xs:enumeration value="Declined" />
+			  <xs:enumeration value="Suspended" />
+			  <xs:enumeration value="Terminated" />
+			  <xs:enumeration value="ServiceLive Approved" />
+			  <!-- <xs:enumeration value="Incomplete" /> -->					
+		   </xs:restriction>
+	   </xs:simpleType>
+	   <!-- ReasonCodes for 'Incomplete','Pending Approval','Out of Compliance','Declined','Suspended','Terminated','ServiceLive Approved' start -->
+		<xs:simpleType name="reasonCodeType">
+		   <xs:restriction base="xs:string">
+		      <!-- ReasonCodes for 'Pending Approval'-->
+			  <xs:enumeration value="Not Applicable"/>
+			  <!-- ReasonCodes for 'Out of Compliance'-->
+			  <xs:enumeration value="Invalid Tax ID"/>
+			  <xs:enumeration value="Invalid Duns #"/>
+			  <xs:enumeration value="Insurance information incomplete/invalid"/>
+			  <xs:enumeration value="Expired license"/>
+			  <xs:enumeration value="Invalid license"/>
+			  <xs:enumeration value="Erroneous documentation"/>
+			  <xs:enumeration value="Other"/>
+			  <!-- ReasonCodes for 'Declined'-->
+			  <xs:enumeration value="Failure to Update Application"/>
+			  <xs:enumeration value="Adverse Findings"/>
+			  <!-- ReasonCodes for 'Suspended'-->
+			  <xs:enumeration value="Failure to Update Marketplace"/>
+			  <xs:enumeration value="Core Parts Not Returned"/>
+			  <xs:enumeration value="Circumventing Process"/>
+			  <xs:enumeration value="State of Service"/>
+			  <xs:enumeration value="Under Investigation"/>
+			  <!-- ReasonCodes for 'Terminated'-->
+			  <xs:enumeration value="Terminate"/>
+			  <xs:enumeration value="Terminate with Prejudice"/>
+			  <xs:enumeration value="Other"/>
+			  <!-- ReasonCodes for 'ServiceLive Approved'-->
+			  <xs:enumeration value="Not Applicable"/>
+			  <!-- ReasonCodes for 'Declined'-->
+			  <xs:enumeration value="Invalid Contact Information"/>
+			  <xs:enumeration value="No Longer Interested"/>
+			  <xs:enumeration value="Required Background Check"/>
+			  <xs:enumeration value="No Longer in Business"/>
+			  <xs:enumeration value="Terms and Conditions"/>
+			  <xs:enumeration value="Required Social Security"/>
+			  <xs:enumeration value="No Internet Service"/>
+			  <xs:enumeration value="On-Line Only Option"/>
+			  <xs:enumeration value="Test File"/>
+			  <xs:enumeration value="Duplicate Application"/>
+			  <xs:enumeration value="Service Order Pricing"/>
+			  <xs:enumeration value="10% Fee"/>
+			  <xs:enumeration value="Service Order Volume"/>
+		    </xs:restriction>
+	     </xs:simpleType> 
+	     <!-- ReasonCodes for 'Terminated','Declined','Suspended','Out of Compliance' start -->
+	     <xs:simpleType name="reasonCodeTypeOld">
+		   <xs:restriction base="xs:int">
+			  <xs:enumeration value="5" />
+			  <xs:enumeration value="6" />
+			  <xs:enumeration value="7" />
+			  <xs:enumeration value="8" />
+			  <xs:enumeration value="9" />
+			  <xs:enumeration value="10" />
+			  <xs:enumeration value="11" />
+			  <xs:enumeration value="12" />
+			  <xs:enumeration value="13" />
+			  <xs:enumeration value="16" />
+			  <xs:enumeration value="17" />
+			  <xs:enumeration value="18" />
+			  <xs:enumeration value="19" />
+			  <xs:enumeration value="20" />
+			  <xs:enumeration value="21" />
+			  <xs:enumeration value="22" />
+			  <xs:enumeration value="23" />
+			  <xs:enumeration value="74" />
+			  <xs:enumeration value="75" />
+			  <xs:enumeration value="76" />
+			  <xs:enumeration value="77" />
+			  <xs:enumeration value="78" />
+			  <xs:enumeration value="79" />
+			  <xs:enumeration value="80" />
+			  <xs:enumeration value="81" />
+			  <xs:enumeration value="82" />
+			  <xs:enumeration value="83" />
+			  <xs:enumeration value="84" />
+			  <xs:enumeration value="85" />
+			  <xs:enumeration value="86" />
+		    </xs:restriction>
+	     </xs:simpleType> 
+	     <!-- ReasonCodes for 'Terminated','Declined','Suspended','Out of Compliance' End -->
+	     <xs:simpleType name="YesNoType">
+	       <xs:restriction base="xs:string">
+	          <xs:pattern value="[Yy][Ee][Ss]" />
+			  <xs:pattern value="[Nn][Oo]" />
+	       </xs:restriction>
+	     </xs:simpleType>
+	      
+</xs:schema>
+
+

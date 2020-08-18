@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="buyerCallbackNotification">
+	<typeAlias alias="buyerCallBackNotificationSchedulerVO" type="com.newco.marketplace.buyercallbacknotificationscheduler.vo.BuyerCallBackNotificationSchedulerVO" />
+	<select id="buyerCallbackNotification.getNotificationServiceOrderDetails"  parameterClass="java.util.Map" resultClass="buyerCallBackNotificationSchedulerVO">
+	  select 
+		notification.notification_id as notificationId, 
+		service.buyer_id as buyerId,
+		notification.so_id as soId,
+		notification.request_data as requestData,
+		notification.event_id as eventId,
+		event.action_id as actionId,
+		notification.no_of_retries as noOfRetries
+		from buyer_callback_notification notification
+		join buyer_callback_events event on event.event_id=notification.event_id 
+		join buyer_callback_service service on service.service_id=event.service_id
+		where status IN('WAITING_FOR_REQUEST_DATA','FAILED_REQUEST_DATA') 
+		and no_of_retries <![CDATA[ <]]> 4;
+	</select>	
+	
+	<update id="buyerCallbackNotification.updateNotification" parameterClass="java.util.HashMap">
+		UPDATE buyer_callback_notification SET request_data = #requestData#, status=#status#, no_of_retries = #noOfRetries#,  modified_date=NOW()
+		WHERE notification_id = #notificationId#;
+	</update>
+		<update id="buyerCallbackNotification.updateNotificationFailure" parameterClass="java.util.HashMap">
+		UPDATE buyer_callback_notification SET status=#status#, no_of_retries = #noOfRetries#,  modified_date=NOW()
+		WHERE notification_id = #notificationId#;
+	</update>
+	
+	<procedure id="buyerCallbackNotification.processCallbackNotificationHistory">
+             {call sp_process_callback_notification_history()} 
+	</procedure>
+</sqlMap>

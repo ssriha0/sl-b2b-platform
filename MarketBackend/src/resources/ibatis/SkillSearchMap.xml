@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="searchSkills">
+	<typeAlias alias="searchSkill" type="com.newco.marketplace.vo.provider.SkillNodeVO"/>	
+	<typeAlias alias="expressionSearch" type="com.newco.marketplace.vo.provider.SearchExpressionVO"/>
+	<typeAlias alias="skillNodeIds" type="com.newco.marketplace.dto.vo.skillTree.SkillNodeIdsVO"/>
+	<typeAlias alias="serviceType" type="com.newco.marketplace.vo.provider.ServiceTypesVO"/>
+	
+	<select id="getSkillParent.query" parameterClass="searchSkill" resultClass="searchSkill">
+		SELECT	node_id as nodeId,
+				parent_node as parentNodeId,
+				node_name as nodeName
+		FROM 	skill_tree
+		WHERE 	node_id = #parentNodeId#
+	</select>
+	<select id="getSkillChildren.query" parameterClass="searchSkill" resultClass="searchSkill">
+		SELECT	node_id as nodeId,
+				parent_node as parentNodeId,
+				node_name as nodeName
+		FROM 	skill_tree
+		WHERE 	parent_node = #nodeId#
+	</select>
+	<select id="getSkillNodes.query" parameterClass="expressionSearch" resultClass="searchSkill">
+		SELECT 	node_id as nodeId,
+				parent_id as parentNodeId,
+				node_name as nodeName
+		FROM	skill_tree
+		WHERE	node_name LIKE '%#searchExpression#%'
+	</select>
+	<select id="getSkillNodeNameById.query" parameterClass="searchSkill" resultClass= "searchSkill">
+		SELECT 	node_name as nodeName,
+				node_id as nodeId,
+				parent_node as parentNodeId
+		FROM	skill_tree
+		WHERE	node_id = #nodeId#
+	</select>
+	
+	<select id="getSkillTree.query" parameterClass="skillNodeIds" resultClass="searchSkill">
+	 	Select slevel1.node_id as nodeId, slevel1.node_name as nodeName, slevel1.parent_node as parentNodeId , slevel1.level as level,  slevel1.root_node_id  as rootNodeId
+		from skill_tree slevel1
+		<dynamic prepend="WHERE">
+	    	<isNotNull property="skillNodeIds"> 
+	 			slevel1.parent_node IN 
+				<iterate property="skillNodeIds" open="(" close=")"  conjunction=",">
+					#skillNodeIds[]#
+				</iterate>
+			</isNotNull>
+		</dynamic>	
+		union all
+		Select slevel2.node_id as nodeId, slevel2.node_name as nodeName, slevel2.parent_node as parentNodeId , slevel2.level as level,  slevel2.root_node_id  as rootNodeId
+		from skill_tree slevel2 
+		where slevel2.parent_node in ( Select node_id from skill_tree s2 where  s2.parent_node in 
+		<iterate property="skillNodeIds" open="(" close=")"  conjunction=",">
+					#skillNodeIds[]#
+		</iterate>)
+		order by level
+	</select>
+	
+	<select id="getServiceTypesForRoot.query" parameterClass="skillNodeIds" resultClass="serviceType">
+		SELECT 	descr AS description,
+				service_type_template_id AS serviceTypeId, node_id as rootNodeId
+				FROM 	lu_service_type_template
+				<dynamic prepend="WHERE">
+			    	<isNotNull property="skillNodeIds"> 
+			 			node_id IN 
+						<iterate property="skillNodeIds" open="(" close=")"  conjunction=",">
+							#skillNodeIds[]#
+						</iterate>
+					</isNotNull>
+				</dynamic>
+	</select>
+	<select id="getRootNodeId.query" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		SELECT root_node_id AS rootNodeId 
+			FROM skill_tree			
+				WHERE node_id =#nodeId#
+	</select>
+</sqlMap>

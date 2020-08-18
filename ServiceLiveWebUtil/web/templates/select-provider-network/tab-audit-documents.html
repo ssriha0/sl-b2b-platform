@@ -1,0 +1,122 @@
+<div class="clearfix">
+	<div class="tableInner">
+		<table border="0" cellpadding="0" cellspacing="0" style="margin-bottom: 0px;">
+			<thead>
+				<tr>
+					<th class="tc pending" style="width: 60px;">Status</th>
+					<th class="tl pending">Documents</th>
+					<th class="tl approved">Last Audit</th>
+					<th>&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- begin loop -->
+				<tr>
+					<td class="tc" rowspan="2">
+						<img src="../../images/common/status-yellow.png" alt="Incomplete" /><br />
+						<small>Incomplete</small>
+					</td>
+					<td class="tl nb">
+						<strong><a href="#">Document Title</a></strong>
+						<br /># Pages: 4
+					</td>
+					<td class="nb">
+						<small><strong>JunieJones</strong> #12345</small><br />
+						<small>1/1/2009, 1:14 PM CST</small>
+					</td>
+					<td class="carr" rowspan="2"><input type="submit" class="default" value="select"></td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<div class="comment">
+							<strong>Need More Information:</strong> Lorem ipsum dolor
+						</div>
+					</td>
+				</tr>
+				<!-- end loop -->
+
+				<tr>
+					<td class="tc" rowspan="2">
+						<img src="../../images/common/status-green.png" alt="Approved" /><br />
+						<small>Approved</small>
+					</td>
+					<td class="tl nb">
+						<strong><a href="#">Document Title</a></strong>
+					</td>
+					<td class="nb">
+						<small><strong>JunieJones</strong> #12345</small><br />
+						<small>1/1/2009, 1:14 PM CST</small>
+					</td>
+					<td class="carr" rowspan="2">On File</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						&nbsp;
+					</td>
+				</tr>
+
+
+
+				<tr class="selected">
+					<td class="tc" rowspan="2">
+						<img src="../../images/common/status-white.png" alt="Pending Approval" /><br />
+						<small>Pending Approval</small>
+					</td>
+					<td class="tl nb">
+						<strong><a href="#">Document Title</a></strong>
+					</td>
+					<td class="nb">
+						&nbsp;
+					</td>
+					<td class="carr" rowspan="2"><input type="submit" class="default button disabled" value="select"></td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						&nbsp;
+					</td>
+				</tr>
+
+
+				<tr>
+					<td class="tc" rowspan="2">
+						<img src="../../images/common/status-white.png" alt="Pending Approval" /><br />
+						<small>Pending Approval</small>
+					</td>
+					<td class="tl nb">
+						<strong><a href="#">Document Title</a></strong>
+					</td>
+					<td class="nb">
+						&nbsp;
+					</td>
+					<td class="carr" rowspan="2"><input type="submit" class="default" value="select"></td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						&nbsp;
+					</td>
+				</tr>
+			</tbody>
+		</table>		
+	</div>
+	
+	<div class="content" style="margin-left: 450px;">
+		An asterix (<span class="req">*</span>) indicates a required field.
+		<br />
+		<br />
+		<p>
+			<label>Action <span class="req">*</span>:</label>
+			<select class="select">
+				<option>Need More Information</option>
+			</select>
+			<br />
+			<label># Pages:</label>
+			<input type="text" class="text" style="width: 50px;">
+			<br />
+			<label>Comments <span class="req">*</span>:</label>
+			<textarea class="text" style="width: 195px;"></textarea>
+		
+			<input type="submit" value="submit" class="action button right">
+		
+	</div>
+	
+</div>

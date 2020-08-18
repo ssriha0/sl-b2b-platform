@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<bean id="conditionalAutoRoutingBO"
+		class="com.newco.marketplace.business.businessImpl.conditionalautorouting.ConditionalAutoRoutingBOImpl" autowire="byName">
+		<property name="routeOrderGroupBO">
+			<ref bean="routeOrderGroupBO"/>
+		</property>
+		<property name="serviceOrderDao">
+			<ref bean="serviceOrderDao" />
+		</property>
+		<property name="serviceOrderBO">
+			<ref bean="soBOAOP" />
+		</property>
+		<!-- AUTOWIRED orderProcessingService
+		<property name="orderProcessingService">
+			<ref bean="orderProcessingService" />
+		</property>
+		-->
+	</bean>
+		
+</beans>

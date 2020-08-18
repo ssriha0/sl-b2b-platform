@@ -1,0 +1,281 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<link rel="stylesheet" href="../uicodesamples.css" type="text/css"></link>
+<script type="text/javascript" src="/ServiceLiveWebUtil/javascript/jquery/jquery-1.3.2.min.js"></script>
+
+<script type="text/javascript">                                         
+  $(document).ready(function() {
+	$('#red_ex_1_link').click(function() {
+	  alert("Height of div with id 'red_ex_1': " + $('#red_ex_1').height());
+	});
+	$('#green_ex_1_link').click(function() {
+	  alert("Height of div with class 'green_ex_1': " + $('.green_ex_1').height());
+	});
+	$('.name_ex_1_link').live('click', function() {
+	  alert("Name attribute in text field: " + $('[name=firstName]').val());
+	});
+	$('#parent_child_ex_1_link').click(function() {
+	  alert("The width of the child is: " + $('#parent_ex_1').children('div').width());
+	});
+	
+	
+	$('#red_ex_2_show_link').click(function() {
+	  $('#red_ex_2').show();
+	});
+	$('#red_ex_2_hide_link').click(function() {
+	  $('#red_ex_2').hide();
+	});
+	$('#red_ex_2_toggle_link').click(function() {
+	  $('#red_ex_2').toggle();
+	});
+	$('#green_ex_2_show_link').click(function() {
+	  $('#green_ex_2').slideDown();
+	});
+	$('#green_ex_2_hide_link').click(function() {
+	  $('#green_ex_2').slideUp();
+	});
+	$('#orange_ex_2_show_link').click(function() {
+	  $('#orange_ex_2').fadeIn();
+	});
+	$('#orange_ex_2_hide_link').click(function() {
+	  $('#orange_ex_2').fadeOut();
+	});
+	
+	$('#ajax_load_ex_3_link').click(function() {
+	  $('#ajax_load_ex_3').load('ajax_load_ex_3.html');
+	});
+	
+	$('#ajax_post_ex_3_link').click(function() {
+	  $.post('ajax_post_ex_3.html', { 'firstName': 'test' }, function(data) {
+	  	alert("My name: " + data.myName + ", My Age: " + data.myAge);
+	  	if (data.myName == "chris") {
+	  	  $("#ajax_post_ex_3").html("I GOT THE RESPONSE!");
+	  	}
+	  }, "json");
+	});
+  });                        
+</script> 
+
+</head>
+
+
+<body style="font-family: helvetica;">
+<div id="wrapper">
+<a id="home" href="/UICodeSamples">Home</a>
+<div><a href="http://docs.jquery.com/Main_Page" style="font-size: 14px;">Jquery Documentation</a></div>
+<div style="font-size: 18px; font-weight: bold;">How to setup jQuery</div>
+<div>
+<textarea rows="9" cols="105" style="border: 1px dashed #666666;"><head>
+<script type="text/javascript" src="/ServiceLiveWebUtil/javascript/jquery/jquery-1.3.2.min.js"></script>
+
+<script type="text/javascript">                                         
+  $(document).ready(function() {
+    /// PUT YOUR JQUERY CODE HERE
+  });                        
+</script>
+ 
+</head></textarea>
+</div>
+
+<!-- EXAMPLE 1 -->
+<br/><br/>
+<div style="font-size: 18px;"><b>How to obtain an element</b> <span style="font-size: 11px;">(The two most common ways are with the element ID or element Class)</span></div>
+<div>
+<div id="red_ex_1" style="float: left; width: 200px; height: 200px; border: 5px solid red; background-color: #FFAA99; margin-right: 10px;">
+	ID: red_ex_1<br/>
+	<a href="javascript:" id="red_ex_1_link">Test Me</a>
+</div>
+<div class="green_ex_1" style="float: left; width: 200px; height: 100px; border: 5px solid green; background-color: #66EE88; margin-right: 10px;">
+	Class: green_ex_1<br/>
+	<a href="javascript:" id="green_ex_1_link">Test Me</a>
+</div>
+<div style="float: left; border: 1px solid black; margin-right: 10px; padding: 5px;">
+	Input has attribute name="firstName"<br/>
+	<input type="text" name="firstName" value="Joe Vine" /><br/>
+	<a href="javascript:" class="name_ex_1_link">Test Me</a>
+</div>
+<div id="parent_ex_1" style="float: left; width: 200px; border: 1px solid black; margin-right: 10px; padding: 5px;">
+	ID: parent_ex_1
+	<div id="child_ex_1" style="width: 100px; font-size: 10px; border: 1px solid black; margin-right: 10px; margin: 2px;">
+	  ID: child_ex_1
+	</div><br/>
+	<a href="javascript:" id="parent_child_ex_1_link">Test Me</a>
+</div>
+</div>
+
+<div style="clear: both;"></div>
+<div style="font-size: 10px; margin-top: 5px;">Obtaining the element using a jQuery Selector</div>
+<div>
+<textarea rows="7" cols="80" style="border: 1px dashed #666666;"><script type="text/javascript">                                         
+  $(document).ready(function() {
+    var red_height = $('#red_ex_1').height();
+    var green_height = $('.green_ex_1').height();
+    var first_name = $('[name=firstName]').val();
+    var child_width = $('#parent_ex_1').children('div').width();
+  });                        
+</script></textarea>
+</div>
+<div style="font-size: 10px; margin-top: 5px;">Attach an event to an element</div>
+<div>
+<textarea rows="15" cols="100" style="border: 1px dashed #666666;"><script type="text/javascript">                                         
+  $(document).ready(function() {
+    $('#red_ex_1_link').click(function() {
+      alert("Width of div with id 'red_ex_1': " + $('#red_ex_1').height());
+    });
+    $('#green_ex_1_link').click(function() {
+      alert("Width of div with class 'green_ex_1': " + $('.green_ex_1').height());
+    });
+    $('.name_ex_1_link').click(function() {
+      alert("Name attribute in text field: " + $('[name=firstName]').val());
+    });
+    $('#parent_child_ex_1_link').click(function() {
+      alert("The width of the child is: " + $('#parent_ex_1').children('div').width());
+    });
+  });                        
+</script></textarea>
+</div>
+<!-- END EXAMPLE 1 -->
+
+<!-- EXAMPLE 2 -->
+<br/><br/>
+<div style="font-size: 18px;"><b>How to show and hide elements</b></div>
+<div style="font-size: 11px;">
+<div style="float: left; width: 220px; height: 220px; ">
+  <a href="javascript:" id="red_ex_2_show_link">Show Me</a> | <a href="javascript:" id="red_ex_2_hide_link">Hide Me</a> | <a href="javascript:" id="red_ex_2_toggle_link">Toggle Me</a><br/>
+  <div id="red_ex_2" style="width: 200px; height: 200px; border: 5px solid red; background-color: #FFAA99;"></div>
+</div>
+<div style="float: left; width: 220px; height: 220px; ">
+  <a href="javascript:" id="green_ex_2_show_link">Show Me</a> | <a href="javascript:" id="green_ex_2_hide_link">Hide Me</a><br/>
+  <div id="green_ex_2" style="width: 200px; height: 200px; border: 5px solid green; background-color: #66EE88;"></div>
+</div>
+<div style="float: left; width: 220px; height: 220px; ">
+  <a href="javascript:" id="orange_ex_2_show_link">Show Me</a> | <a href="javascript:" id="orange_ex_2_hide_link">Hide Me</a><br/>
+  <div id="orange_ex_2" style="width: 200px; height: 200px; border: 5px solid orange; background-color: #FFDD77;"></div>
+</div>
+</div>
+
+<div style="clear: both;"></div>
+<div style="margin-top: 5px;">
+<textarea rows="24" cols="80" style="border: 1px dashed #666666;"><script type="text/javascript">                                         
+  $(document).ready(function() {
+    $('#red_ex_2_show_link').click(function() {
+      $('#red_ex_2').show();
+    });
+    $('#red_ex_2_hide_link').click(function() {
+      $('#red_ex_2').hide();
+    });
+    $('#red_ex_2_toggle_link').click(function() {
+      $('#red_ex_2').toggle();
+    });
+    $('#green_ex_2_show_link').click(function() {
+      $('#green_ex_2').slideDown();
+    });
+    $('#green_ex_2_hide_link').click(function() {
+      $('#green_ex_2').slideUp();
+    });
+    $('#orange_ex_2_show_link').click(function() {
+      $('#orange_ex_2').fadeIn();
+    });
+    $('#orange_ex_2_hide_link').click(function() {
+      $('#orange_ex_2').fadeOut();
+    });
+  });                        
+</script></textarea>
+</div>
+<!-- END EXAMPLE 2 -->
+
+<!-- EXAMPLE 3 -->
+<br/><br/>
+<div style="font-size: 18px;"><b>How to use jQuery for AJAX</b></div>
+<div style="font-size: 11px;">Using the <i>load</i> function.
+</div>
+<div style="border: 5px solid orange; background-color: #FFDD77; width: 500px; height: 150px; padding: 5px;">
+<a href="javascript:" id="ajax_load_ex_3_link">Click Here to See Ajax</a><br/>
+<div id="ajax_load_ex_3" style="border: 2px solid black; background-color: white; padding: 5px; margin: 5px; width: 300px; height: 100px;">Results Area</div>
+</div>
+<div style="clear: both;"></div>
+<div style="margin-top: 5px;">
+<textarea rows="6" cols="110" style="border: 1px dashed #666666;"><script type="text/javascript">                                         
+  $(document).ready(function() {
+    $('#ajax_load_ex_3_link').click(function() {
+      $('#ajax_load_ex_3').load('ajax_load_ex_3.html');
+    });
+  });                        
+</script></textarea>
+</div>
+<div style="margin-top: 5px; font-size: 12px;">Extra example code of how <i>load</i> can be used:</div>
+<div style="margin-top: 2px;">
+<textarea rows="18" cols="110" style="border: 1px dashed #666666;"><script type="text/javascript">                                         
+  $(document).ready(function() {
+    $('#ajax_load_ex_3_link').click(function() {
+
+      //You can pass parameters on the query string
+      $('#ajax_load_ex_3').load('ajax_load_ex_3.jsp?firstName=Joe&lastName=Vine');
+      
+      //You can pass parameters as a parameter
+      $('#ajax_load_ex_3').load('ajax_load_ex_3.jsp', { 'firstName': 'Joe', 'lastName': 'Vine'});
+      
+      //You can include a callback function to execute after the ajax response has come back
+      $('#ajax_load_ex_3').load('ajax_load_ex_3.jsp', { 'firstName': 'Joe', 'lastName': 'Vine'}, function(data) {
+        alert('Ajax returned!');
+      });
+
+    });
+  });                        
+</script></textarea>
+</div>
+<div style="margin-top: 5px; font-size: 12px;">Html response from the ajaxed file:</div>
+<div style="margin-top: 2px;">
+<textarea rows="3" cols="110" style="border: 1px dashed #666666;"><div style="background-color: #FFAA99; border: 1px solid black; padding: 5px; width: 250px; height: 50px;">
+  YAY - MY AJAX WAS LOADED!
+  <br/><a href="javascript:" class="name_ex_1_link">Test Me</a>
+</div></textarea>
+</div>
+<div style="margin-top: 5px; font-size: 12px;">Showcasing the <i>live</i> function available in the new version of jQuery:</div>
+<div style="margin-top: 2px;">
+<textarea rows="6" cols="110" style="border: 1px dashed #666666;"><script type="text/javascript">                                         
+  $(document).ready(function() {
+    $('.name_ex_1_link').live('click', function() {
+      alert("Name attribute in text field: " + $('[name=firstName]').val());
+    });
+  });
+</script></textarea> 
+</div>
+
+<div style="font-size: 11px; margin-top: 5px;">Using the <i>post</i> function.
+</div>
+<div style="border: 5px solid orange; background-color: #FFDD77; width: 500px; height: 150px; padding: 5px;">
+<a href="javascript:" id="ajax_post_ex_3_link">Click Here to See Ajax</a><br/>
+<div id="ajax_post_ex_3" style="border: 2px solid black; background-color: white; padding: 5px; margin: 5px; width: 300px; height: 100px;">Results Area</div>
+</div>
+<div style="margin-top: 5px; font-size: 12px;">Ajax Post with JSON response:</div>
+<div style="margin-top: 2px;">
+<textarea rows="11" cols="110" style="border: 1px dashed #666666;"><script type="text/javascript">                                         
+  $(document).ready(function() {
+    $('#ajax_post_ex_3_link').click(function() {
+      $.post('ajax_post_ex_3.html', { 'firstName': 'test' }, function(data) {
+        alert("My name: " + data.myName + ", My Age: " + data.myAge);
+        if (data.myName == "chris") {
+          $("#ajax_post_ex_3").html("I GOT THE RESPONSE!");
+        }
+      }, "json");
+    });
+  });
+</script></textarea> 
+</div>
+<div style="margin-top: 5px; font-size: 12px;">JSON Response:</div>
+<div style="margin-top: 2px;">
+<textarea rows="1" cols="110" style="border: 1px dashed #666666;">{ myName: 'chris', myAge: 'who knows?' }</textarea> 
+</div>
+
+<!-- END EXAMPLE 3 -->
+<div class="ltCorner"></div>
+<div class="rtCorner"></div>
+<div class="lbCorner"></div>
+<div class="rbCorner"></div>
+</div>
+</body>
+
+
+</html>

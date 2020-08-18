@@ -1,0 +1,10 @@
+<project name="StaticWeb" default="war-junit" basedir="..">
+	<property name="java-war.web-content-dir" location="WebRoot"/>
+
+	<import file="../../SLCommonBuild/ant/sl-common/sl-common.xml"/>
+
+	<target name="clean-build">		
+	  	<antcall target="war-junit">
+	  	</antcall>
+	</target>
+</project>

@@ -1,0 +1,61 @@
+<!DOCTYPE validators PUBLIC "-//Apache Struts//XWork Validator 1.0.2//EN"
+       "http://struts.apache.org/dtds/xwork-validator-1.0.2.dtd">
+
+       
+<validators>
+
+
+
+  <field name="spnHeader.spnName">
+     	<field-validator type="requiredstring" short-circuit="true">
+		<param name="trim">true</param>
+		<message key="errors.netwrok.name.required"/>
+	</field-validator>
+  </field>
+  
+  <field name="spnHeader.contactName">
+     	<field-validator type="requiredstring" short-circuit="true">
+		<param name="trim">true</param>
+		<message key="errors.netwrok.contact.name.required"/>
+		
+	</field-validator>
+  </field>
+  
+  <field name="spnHeader.contactEmail">
+  	<field-validator type="requiredstring" short-circuit="true">
+		<param name="trim">true</param>
+		<message key="errors.netwrok.contact.email.required"/>
+	</field-validator>
+  	<field-validator type="email" short-circuit="true">
+		<param name="trim">true</param>
+		<message key="errors.netwrok.contact.email.format"/>
+	</field-validator>
+  </field>
+  
+  <field name="spnHeader.contactPhone">
+     <field-validator type="regex">
+     		<param name="regex">[0-9-]*</param>
+     		<message key="errors.netwrok.phone.format"/>
+	 </field-validator>
+	 <field-validator type="requiredstring" short-circuit="true">
+		<param name="trim">true</param>
+		<message key="errors.netwrok.phone.format"/>
+	</field-validator>
+  </field>
+
+  <field name="spnHeader.spnDescription">
+     <field-validator type="requiredstring" short-circuit="true">
+		<param name="trim">true</param>
+		<message key="errors.netwrok.description.required"/>
+	</field-validator>
+  </field>
+
+  <field name="approvalItems.minimumCompletedServiceOrders">
+	
+	<field-validator type="regex" short-circuit="true">
+		<param name="trim">true</param>
+		<param name="regex">^\d+$</param>
+		<message key="errors.common.minimum.so.format"/>
+	 </field-validator>
+  </field>
+</validators>

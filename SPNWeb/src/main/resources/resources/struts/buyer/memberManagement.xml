@@ -1,0 +1,93 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+    <package name="memberManagement" extends="selectProviderNetworkBase" >
+            
+        <default-interceptor-ref name="SPNInterceptorStack"/>
+        	<!-- createNetwork -->
+
+
+		<action name="spnProviderDetails_displayNetworkInfoPageAjax" class="spnProviderDetailsNetworksAction"  method="displayNetworkInfoPageAjax">
+			<result name="success">/jsp/spn/buyer/providerdetails/page_display_network_info.jsp</result>
+		</action>
+
+		<action name="spnProviderDetails_displayFirmHistoryAjax" class="spnProviderDetailsFirmHistoryAction"  method="displayFirmHistoryAjax">
+			<result name="success_firm_history">/jsp/spn/buyer/providerdetails/panel_display_firm_history.jsp</result>
+		</action>
+
+
+		<action name="spnProviderDetails_displayNotesAjax" class="spnProviderDetailsNotesAction"  method="displayNotesAjax">
+			<result name="success_notes">/jsp/spn/buyer/providerdetails/panel_display_notes.jsp</result>
+		</action>
+		<action name="spnProviderDetails_addNoteAjax" class="spnProviderDetailsNotesAction"  method="addNoteAjax">
+			<result name="success_notes">/jsp/spn/buyer/providerdetails/panel_display_notes.jsp</result>
+		</action>
+		
+		<action name="spnProviderDetails_displayNetworksAjax" class="spnProviderDetailsNetworksAction"  method="displayNetworksAjax">
+			<result name="success_networks">/jsp/spn/buyer/providerdetails/panel_display_networks.jsp</result>
+		</action>
+		<action name="spnProviderDetails_changeNetworkStatusAjax" class="spnProviderDetailsNetworksAction"  method="changeNetworkStatusAjax">
+			<result name="success_network_status">/jsp/spn/buyer/providerdetails/panel_display_networks.jsp</result>
+		</action>
+		
+		<action name="spnProviderDetails_displayGroupsAjax" class="spnProviderDetailsGroupsAction"  method="displayGroupsAjax">
+			<result name="success_network_group">/jsp/spn/buyer/providerdetails/section_network_group.jsp</result>
+		</action>
+		<action name="spnProviderDetails_changeGroupsAjax" class="spnProviderDetailsGroupsAction"  method="changeGroupsAjax">
+			<result name="success_network_group">/jsp/spn/buyer/providerdetails/section_network_group.jsp</result>
+		</action>
+		<action name="spnProviderDetails_displayReasonsAjax" class="spnProviderDetailsNetworksAction"  method="displayReasonsAjax">
+			<result name="success_reasons">/jsp/spn/buyer/providerdetails/section_reason_dropdown_box.jsp</result>
+		</action>
+		
+		<!-- Provider Firm Details -->
+		<action name="spnProviderFirmDetails_displayNotesAjax" class="spnProviderFirmDetailsNotesAction" method="displayNotesAjax">
+			<result name="success_notes">/jsp/spn/buyer/providerdetails/panel_display_notes.jsp</result>
+		</action>
+		<action name="spnProviderFirmDetails_addNoteAjax" class="spnProviderFirmDetailsNotesAction" method="addNoteAjax">
+			<result name="success_notes">/jsp/spn/buyer/providerdetails/panel_display_notes.jsp</result>
+		</action>
+
+		<action name="spnProviderFirmDetails_displayNetworksAjax" class="spnProviderFirmDetailsNetworksAction" method="displayNetworksAjax">
+			<result name="success_networks">/jsp/spn/buyer/providerdetails/panel_display_networks.jsp</result>
+		</action>
+		<action name="spnProviderFirmDetails_changeNetworkStatusAjax" class="spnProviderFirmDetailsNetworksAction" method="changeNetworkStatusAjax">
+			<result name="success_network_status">/jsp/spn/buyer/providerdetails/panel_display_networks.jsp</result>
+			<result name="failure_network_status">/jsp/spn/buyer/providerdetails/section_change_network_error.jsp</result>
+		</action>
+		
+		<action name="spnProviderFirmDetails_displayGroupsAjax" class="spnProviderFirmDetailsGroupsAction" method="displayGroupsAjax">
+			<result name="success_network_group">/jsp/spn/buyer/providerdetails/section_network_group.jsp</result>
+		</action>
+		<action name="spnProviderFirmDetails_changeGroupsAjax" class="spnProviderFirmDetailsGroupsAction" method="changeGroupsAjax">
+			<result name="success_network_group">/jsp/spn/buyer/providerdetails/section_network_group.jsp</result>
+		</action>
+		<action name="spnProviderFirmDetails_displayReasonsAjax" class="spnProviderFirmDetailsNetworksAction" method="displayReasonsAjax">
+			<result name="success_reasons">/jsp/spn/buyer/providerdetails/section_reason_dropdown_box.jsp</result>
+		</action>
+		<action name="spnProviderFirmDetails_getProviderCountAjax" class="spnProviderFirmDetailsNetworksAction"  method="getProviderCountAjax">
+			<result name="success">/jsp/spn/buyer/providerdetails/hidden_provider_count.jsp</result>
+		</action>
+
+		
+		
+		<!-- Member Management Search Tab -->
+		<action name="spnMMSearchTabAction_display" class="spnMemberManageSearchTabAction"  method="display">
+			<result name="success">/jsp/spn/buyer/membermanage/mmSearchPanel.jsp</result>
+		</action>
+		
+		<action name="spnMMSearchTabAction_searchMembersAjax" class="spnMemberManageSearchTabAction" method="searchMembersAjax">
+			<result name="success">/jsp/spn/buyer/membermanage/mmSearchResults.jsp</result>
+		</action>
+		
+		
+		<action name="spnProviderFirmDetails_displayNetworkInfoTabAjax" class="spnProviderFirmDetailsAction"  method="displayNetworkInfoTabAjax">
+			<result name="success">/jsp/spn/buyer/providerdetails/page_display_network_info.jsp</result>
+		</action>
+		
+
+    </package>
+    
+</struts>

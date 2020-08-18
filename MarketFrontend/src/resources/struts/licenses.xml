@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+    
+<struts>
+   <package name="licenses" extends="ServiceLiveBase">
+      <default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+	<!-- Licenses & Certifications on File Form Configuration include in struts.xml-->
+
+	<action name="doLicenses*" class="com.newco.marketplace.web.action.provider.LicensesAction" method="{1}">
+		<result name="input">/jsp/providerRegistration/modules/tab_licenses.jsp</result>			
+		<result name="error">/jsp/providerRegistration/Error.jsp</result>
+		<result name="success" type="redirectAction">
+            <param name="actionName">allTabView?tabView=tab4</param>
+            <param name="namespace">/jsp/providerRegistration</param>
+       	</result>
+      	<result name="next" type="redirectAction">
+           <param name="actionName">allTabView?tabView=tab4</param>
+           <param name="namespace">/jsp/providerRegistration</param>
+      	</result>
+      	<result name="prev" type="redirectAction">
+            <param name="actionName">allTabView?tabView=tab2</param>
+            <param name="namespace">/jsp/providerRegistration</param>
+       	</result>
+       	<result name="updateProfile" type="redirectAction">
+	           <param name="actionName">regDashboarddoSubmitRegistration</param>
+	            <param name="namespace">/jsp/providerRegistration</param>
+        	</result>
+	</action>
+         <!-- Add actions here -->
+    </package>
+</struts>

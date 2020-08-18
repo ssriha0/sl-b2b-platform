@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="serviceOrderBOTarget"
+          class="com.newco.marketplace.business.businessImpl.so.order.ServiceOrderBO"
+          lazy-init="true">
+        <property name="buyerDao">
+            <ref bean="buyerDao" />
+        </property>
+        <property name="serviceOrderDao">
+            <ref bean="mktServiceOrderDao" />
+        </property>
+        <!--
+        <property name="loggingDao">
+            <ref bean="loggingDao" />
+        </property>
+        <property name="transBo">
+            <ref bean="accountingTransactionManagementBO" />
+        </property>
+        -->
+        <property name="documentDao"><ref bean="serviceOrderDocumentDAO"/></property>
+        <property name="surveyDao">
+			<ref bean="surveyDAO" />
+		</property>
+		<property name="extendedSurveyDAO">
+			<ref bean="extendedSurveyDAO" />
+		</property>
+        <property name="promoBO">
+            <ref bean="promoBO" />
+        </property>
+        <property name="documentBO"><ref bean="documentBO"/></property>
+        <property name="serviceOrderUpdateBO"><ref bean="serviceOrderUpdateBO"/></property>
+        <!--
+        <property name="lookupBO"><ref bean="lookupBO"/></property>
+
+        <property name="financeManagerBO">
+            <ref bean="fmBOAOP"/>
+        </property>
+        <property name="orderGroupDao">
+            <ref bean="orderGroupDAO"/>
+        </property>
+        <property name="proBuyerBOFactory">
+            <ref bean="proBuyerBOFactory"/>
+        </property>
+        <property name="soCloseBO">
+            <ref bean="soCloseBO"/>
+        </property>
+        <property name="serviceOrderUpsellBO">
+            <ref bean="soUpsellBO"/>
+        </property>
+        <property name="walletBO" ref="walletTx"/>
+        -->
+        <property name="providerSearchDao">
+            <ref bean="providerSearchDao" />
+        </property>
+        <!--
+        <property name="providerInfoPagesBO">
+            <ref bean="providerInfoPagesBOImpl" />
+        </property>
+        <property name="creditCardDao">
+            <ref bean="creditCardDao" />
+        </property>
+        <property name="cryptography">
+            <ref bean="cryptography" />
+        </property>
+        -->
+    </bean>
+
+    <bean id="serviceOrderUpdateBO" class="com.newco.marketplace.business.businessImpl.so.order.ServiceOrderUpdateBO" >
+        <property name="serviceOrderDAO">
+            <ref bean="mktServiceOrderDao" />
+        </property>
+        <!--
+        <property name="loggingDAO">
+            <ref bean="loggingDao" />
+        </property>
+        -->
+        <property name="serviceOrderBO">
+            <ref bean="serviceOrderBOTarget" />
+        </property>
+        <property name="soTemplateBO">
+            <ref bean="buyerSOTemplateBO" />
+        </property>
+        <!--
+        <property name="buyerFeatureSetBO">
+            <ref bean="buyerFeatureSetBO" />
+        </property>
+        -->
+        <property name="provSearchObj">
+            <ref bean="providerSearchBO" />
+        </property>
+        <property name="masterCalcObj">
+            <ref bean="masterCalculatorBO" />
+        </property>
+        <!--
+        <property name="clientBO">
+            <ref bean="clientBO" />
+        </property>
+        <property name="trSchedulerMgr">
+            <ref bean="tierroutingschedulermanager" />
+        </property>
+        <property name="trRouteController">
+            <ref bean="trRouteController"/>
+        </property>
+        -->
+    </bean>
+
+</beans>

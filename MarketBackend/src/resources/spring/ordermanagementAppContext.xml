@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+
+
+    <bean id="managementService"  class="com.servicelive.ordermanagement.services.OrderManagementService">
+        <property name="managementDao" ref="managementDao" />
+       <property name="relayNotificationService">
+			<ref bean="relayNotificationService" />
+		</property>
+		<property name="pushNotificationAlertTask">
+			<ref bean="pushNotificationAlertTask" />
+		</property>
+		<property name="serviceOrderDao">
+    		<ref bean="serviceOrderDao"/>
+  		</property>	
+    </bean>
+    
+    <bean id="omMapper"  class="com.newco.marketplace.api.utils.mappers.ordermanagement.v1_1.OrderManagementMapper">
+    </bean>
+    
+     <bean id="managementDao"  class="com.newco.marketplace.persistence.daoImpl.ordermanagement.OrderManagementDaoImpl"
+    	lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient"/>
+		</property>
+	</bean>
+    
+</beans>

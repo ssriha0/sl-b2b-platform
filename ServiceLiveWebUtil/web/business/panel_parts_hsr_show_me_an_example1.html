@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title>Pop Up Help Window for ServiceLive</title>
+
+<script src="/ServiceLiveWebUtil/javascript/inhomeParts/SpryAccordion.js" type="text/javascript"></script>
+<script>
+  /**
+   * Opens window screen centered.
+   * @param windowWidth the window width in pixels (integer)
+   * @param windowHeight the window height in pixels (integer)
+   * @param windowOuterHeight the window outer height in pixels (integer)
+   * @param url the url to open
+   * @param wname the name of the window
+   * @param features the features except width and height (status, toolbar, location, menubar, directories, resizable, scrollbars)
+   */
+  function CenterWindow(windowWidth, windowHeight, windowOuterHeight, url, wname, features) {
+    var centerLeft = parseInt((window.screen.availWidth - windowWidth) / 2);
+    var centerTop = parseInt(((window.screen.availHeight - windowHeight) / 2) - windowOuterHeight);
+ 
+    var misc_features;
+    if (features) {
+      misc_features = ', ' + features;
+    }
+    else {
+      misc_features = ', status=no, location=no, scrollbars=yes, resizable=yes';
+    }
+    var windowFeatures = 'width=' + windowWidth + ',height=' + windowHeight + ',left=' + centerLeft + ',top=' + centerTop + misc_features;
+    var win = window.open(url, wname, windowFeatures);
+    win.focus();
+    return win;
+  }
+</script>
+<link href="/ServiceLiveWebUtil/css/inhomeParts/popupStyles.css" rel="stylesheet" type="text/css" />
+<link href="/ServiceLiveWebUtil/css/inhomeParts/SpryAccordion.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+
+<div id="popupWrapper">
+  <div id="mainPageHeader">
+    <h2><span class="headerColorChange">Service Order Help |</span> Show me an Example</h2>
+  </div>
+  
+  <div id="mainContentFrame">
+    <div id="Accordion1" class="Accordion" tabindex="0"> 
+      <div class="AccordionPanel">
+        <div class="AccordionPanelTab">Copy &amp; Pasting the URL</div>
+        <div class="AccordionPanelContentForExample"><br />
+		<p></p>
+          <p class="hangingIndent">1. Click on <img src="/ServiceLiveWebUtil/images/inhomeParts/linkButton.jpg" width="160" height="20" alt="link button image" /> or enter the URL &quot;http://www.searspartsdirect.com&quot; into your browser address bar</p>
+          <p class="hangingIndent">2.  Click on the &quot;Part Number&quot; dropdown selection and enter in your Part  Number (e.g. 95405 )</p>
+          <p><img src="/ServiceLiveWebUtil/images/inhomeParts/partsSearchBar.jpg" align="center" alt="image of the parts seach menu bar" /></p>
+          <p class="hangingIndent">3. If more than one part number is  returned in the search, click on the part that you have used and display the  part details</p>
+          <p class="hangingIndent">4. On the part page, click and select the entire URL displayed in your browser&rsquo;s address bar. &ldquo;Copy&rdquo; the selected URL by pressing &ldquo;CTRL-C&rdquo;  or &ldquo;CMD-C&rdquo; on your keyboard</p>
+          <p><img src="/ServiceLiveWebUtil/images/inhomeParts/browserWindow1.jpg" alt="image of browser window one" /></p>
+          <p class="hangingIndent">5. Paste the copied URL into the field  provided on the parts page</p>
+          <p class="hangingIndent">6. Click on the &ldquo;Save URL&rdquo; button to save the Part Number, Division Number, and Source Number embedded in the URL</p>
+          <p class="hangingIndent">7. Complete the rest of the form and click  the &ldquo;Add&rdquo; button to finish entering the part</p>
+        </div>
+      </div>
+</div>
+  </div>
+  </div>
+<script type="text/javascript">
+var Accordion1 = new Spry.Widget.Accordion("Accordion1");
+</script>
+</body>
+</html>

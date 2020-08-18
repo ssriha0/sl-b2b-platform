@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/leadAddNoteRequest" 
+   xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+   xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
+   xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+   targetNamespace="http://www.servicelive.com/namespaces/leadAddNoteRequest"
+   elementFormDefault="qualified" jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+   <xs:include schemaLocation="../../common.xsd"/>
+	<!-- Root element -->
+	<xs:element name="leadAddNoteRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="vendorBuyerId" type="xs:integer" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="vendorBuyerResourceId" type="xs:integer" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="role" type="roleTypeEnum" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="leadId" type="xs:string" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="leadNoteId" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="leadNote" type="NoteType" minOccurs="1"/>
+				<xs:element name="emailAlert" type="emailAlertType" minOccurs="0"/>
+				<xs:element name="leadEmailTitle" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="leadEmailAuthor" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="leadName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="leadPhone" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:decimal"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="NoteType">
+		<xs:sequence>
+			<xs:element name="noteCategory" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="noteType" type="noteTypeEnum" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="noteBody" type="xs:string" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="roleTypeEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Provider"/> 
+			<xs:enumeration value="Buyer"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="noteTypeEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="PUBLIC"/> 
+			<xs:enumeration value="PRIVATE"/>
+		</xs:restriction>
+	</xs:simpleType>	
+	<xs:complexType name="emailAlertType">
+		<xs:sequence>
+			<xs:element name="emailAlertInd" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="emailAlertTos" type="sendToTypeEnum" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>	
+	<xs:simpleType name="sendToTypeEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="SLSUPPORT"/> 
+			<xs:enumeration value="PROVIDERS"/>
+			<xs:enumeration value="BOTH"/>
+			<xs:enumeration value="NONE"/>
+		</xs:restriction>
+	</xs:simpleType>	
+</xs:schema>

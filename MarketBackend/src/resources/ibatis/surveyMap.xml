@@ -1,0 +1,800 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="survey">
+
+	<typeAlias alias="survey"
+		type="com.newco.marketplace.dto.vo.survey.SurveyVO" />
+	<typeAlias alias="surveyQuesAns"
+		type="com.newco.marketplace.dto.vo.survey.SurveyQuesAnsVO" />
+	<typeAlias alias="surveyResponse"
+		type="com.newco.marketplace.dto.vo.survey.SurveyResponseVO" />
+	<typeAlias alias="surveyRatingSummary"
+		type="com.newco.marketplace.dto.vo.survey.SurveyRatingSummaryVO" />
+	<typeAlias alias="surveyRatingVO"
+		type="com.newco.marketplace.dto.vo.survey.SurveyRatingsVO" />
+	<typeAlias alias="SurveyRatingByQuestionVO"
+		type="com.newco.marketplace.dto.vo.survey.SurveyRatingByQuestionVO"/>
+	<typeAlias alias="customerFeedBackVO"
+		type="com.newco.marketplace.dto.vo.survey.CustomerFeedbackVO"/>
+	<typeAlias alias="westImportSummary"
+		type="com.newco.marketplace.dto.vo.survey.WestImportSummaryVO" />
+		<!-- 21513 -->	
+	<typeAlias alias="surveyCSATVO"
+		type="com.newco.marketplace.dto.vo.survey.SurveyCSATVO" />
+
+	<typeAlias alias="westImportDetails"
+		type="com.newco.marketplace.dto.vo.survey.WestImportDetailsVO" />
+	<typeAlias alias="so"
+		type="com.newco.marketplace.dto.vo.serviceorder.ServiceOrder" />
+		
+	<resultMap class="so" id="so.resultsmap">
+		<result property="soId" column="so_id" />
+		<result property="assocSoId" column="assoc_so_id" />
+		<result property="assocReasonId" column="assoc_reason_id" />
+		<result property="assocReasonDesc" column="assoc_reason_id"
+			select="soassocreason.query" />
+		<result property="creatorUserName" column="creator_user_name" />
+		<result property="closerUserName" column="closer_user_name" />
+		<result property="createdDate" column="created_date" />
+		<result property="initialRoutedDate" column="initial_routed_date" />
+		<result property="routedDate" column="routed_date" />
+		<result property="acceptedDate" column="accepted_date" />
+		<result property="cancelledDate" column="cancelled_date" />
+		<result property="voidedDate" column="voided_date" />
+		<result property="completedDate" column="completed_date" />
+		<result property="closedDate" column="closed_date" />
+		<result property="actArrivalStartDate"
+			column="act_arrival_start_date" />
+		<result property="actArrivalEndDate"
+			column="act_arrival_end_date" />
+		<result property="pricingTypeId" column="pricing_type_id" />
+		<result property="initialPrice" column="initial_price" />
+		<result property="sowTitle" column="sow_title" />
+		<result property="sowDs" column="sow_descr" />
+		<result property="spendLimitIncrComment"
+			column="spend_limit_incr_comment" />
+		<result property="accessFee" column="access_fee" />
+		<result property="providerServiceConfirmInd"
+			column="provider_service_confirm_ind" />
+		<result property="providerInstructions" column="provider_instr" />
+		<result property="buyerTermsCond" column="buyer_terms_cond" />
+		<result property="providerTermsCondResp"
+			column="provider_terms_cond_resp" />
+		<result property="providerTermsCondDate"
+			column="provider_terms_cond_date" />
+		<result property="soTermsCondId" column="so_terms_cond_id" />
+		<result property="soTermsCondContent" column="buyer_so_terms_cond_id"
+			select="sotermscond.query" />
+		<result property="soProviderTermsCondContent" column="provider_so_terms_cond_id"
+			select="soProvidertermscond.query" />
+		<result property="partsSupplier" column="parts_supplied_by_id" />
+		<result property="partsSupplierDesc"
+			column="parts_supplied_by_id" select="lu_so_parts_supplied_by.query" />
+		<result property="skill" column="primary_skill_category_id"
+			select="skill_by_so_id.query" />
+		<result property="resolutionDs" column="resolution_descr" />
+		<result property="modifiedDate" column="modified_date" />
+		<result property="modifiedBy" column="modified_by" />
+		<result property="wfStateId" column="wf_state_id" />
+		<result property="status" column="wf_state_id"
+			select="sostatusdesc.query" />
+		<result property="primarySkillCatId"
+			column="primary_skill_category_id" />
+		<result property="wfSubStatusId" column="so_substatus_id" />
+		<result property="subStatus" column="so_substatus_id"
+			select="sosubstatusdesc.query" />
+		<result property="spendLimitLabor" column="spend_limit_labor" />
+		<result property="spendLimitParts" column="spend_limit_parts" />
+		<result property="partsFinalPrice" column="final_price_parts" />
+		<result property="laborFinalPrice" column="final_price_labor" />
+		<result property="loctEditInd" column="lock_edit_ind" />
+		
+    	<result property="serviceDate1" column="service_date1" />
+		<result property="serviceDate2" column="service_date2" />
+		<result property="serviceTimeStart" column="service_time_start" />
+		<result property="serviceTimeEnd" column="service_time_end" />
+		<result property="serviceLocationTimeZone" column="service_locn_time_zone"/>
+		<result property="actualServiceLocationTimeZone" column="service_locn_time_zone"/>
+		<result property="serviceDateTypeId"
+			column="service_date_type_id" />
+		<result property="rescheduleServiceDate1"
+			column="resched_service_date1" />
+		<result property="rescheduleServiceDate2"
+			column="resched_service_date2" />
+		<result property="rescheduleServiceTimeStart"
+			column="resched_service_time_start" />
+		<result property="rescheduleServiceTimeEnd"
+			column="resched_service_time_end" />
+		<result property="rescheduleServiceDateTypeId"
+			column="resched_date_type_id" />
+		<result property="logoDocumentId"
+			column="logo_document_id" />			
+		<result property="acceptedVendorId" column="accepted_vendor_id" />
+		<result property="acceptedVendorName"
+			column="accepted_vendor_id" select="acceptedvendorname.query" />
+		<result property="lastChngStateId" column="last_status_id" />
+		<result property="lastStatus" column="last_status_id"
+			select="solaststatusdesc.query" />
+		<result property="fundingTypeId" column="funding_type_id" />
+		<result property="accountId" column="account_id" />
+		<result property="postingFee" column="posting_fee" />
+		<result property="cancellationFee" column="cancellation_fee" />
+		<result property="buyerResourceId" column="buyer_resource_id" />
+		<result property="buyerContactId" column="buyer_contact_id" />
+		<result property="retailPrice" column="retail_price" />
+		<result property="retailCancellationFee" column="retail_cancellation_fee" />
+		<result property="spnId" column="spn_id" />
+		<result property="priceModel" column="price_model" />
+		<result property="shareContactInd" column="share_contact_ind" />
+		
+		<result property="routedResources" column="so_id"
+			select="routedresource.query" />
+		<result property="tierRoutedResources" column="so_id"
+			select="tierRoutedresource.query" />
+		<result property="acceptedResourceId"
+			column="accepted_resource_id" />
+		<result property="acceptedResource"
+			column="accepted_resource_id" select="acceptedresource.query" />
+		<result property="soNotes" column="so_id" select="notes.query" />
+		<result property="tasks" column="so_id" select="tasks.query" />
+		<result property="parts" column="so_id" select="parts.query" />
+		<result property="invoiceParts" column="so_id" select="invoiceParts.query" />
+		<result property="soPartLaborPriceReason" column="so_id" select="soPartLaborPriceReason.query" />
+		<result property="selectedAltBuyerContact" column="so_id"
+			select="buyercontactalt.query" />
+		<result property="buyerTermsCond" column="buyer_terms_cond"/>
+		<result property="customRefs" column="so_id"
+			select="customReferences.query" />
+		<result property="mandatoryBuyerRefs" column="buyer_id"
+			select="mandatoryBuyerReferences.query" />
+		<result property="soDocuments" column="so_id" select="documents.query"/>
+
+		<!--result property="buyerSupportLocation" column="so_id"
+			select="buyersupportlocation.query" /-->
+		<!--result property="serviceLocation" column="so_id"
+			select="servicelocation.query" /-->
+		<!--result property="serviceContact" column="so_id"
+			select="servicecontact.query" /-->
+		<!--result property="serviceContactAlt" column="so_id"
+			select="servicecontactalt.query" /-->
+		<!--result property="serviceContactFax" column="so_id"
+			select="servicecontactfax.query" /-->
+		<!--result property="endUserContact" column="so_id"
+			select="endusercontact.query" /-->
+		<!--result property="altEndUserContact" column="so_id"
+			select="altendusercontact.query" /-->
+		<!--result property="altEndUserFax" column="so_id"
+			select="altenduserfax.query" /-->
+		<!--result property="buyerSupportContact" column="so_id"
+			select="buyersupportcontact.query" /-->
+		<result property="buyerId" column="buyer_id"/>	
+		<result property="buyer" column="buyer_id"
+			select="sobuyer.query" />
+		<result property="buyerResource" column="buyer_resource_id"
+			select="sobuyerresource.query" />
+		<result property="altBuyerResource" column="buyer_contact_id"
+			select="soaltbuyerresource.query" />
+
+		<!--result property="buyerAssociateLocation" column="so_id"
+			select="buyerassociatelocation.query" /-->
+		<!--result property="buyerAssociateContact" column="so_id"
+			select="buyerassociatecontact.query" /-->
+		<!--result property="vendorResourceLocation" column="so_id"
+			select="vendorresourcelocation.query" /-->
+		<!--result property="vendorResourceContact" column="so_id"
+			select="vendorresourcecontact.query" /-->
+
+		<result property="serviceproviderContactOnQuickLinks" column="so_id"
+			select="serviceprovider.telephonenumbers.query"/>
+		<!--result property="vendorResourceContactFax" column="so_id"
+			select="vendorresourcecontactfax.query" /-->
+		<result property="buyerToProviderResults" column="so_id"
+			select="buyerToProviderResults.query" />
+		<result property="providerToBuyerResults" column="so_id"
+			select="providerToBuyerResults.query" />
+
+		<result property="docSizeTotal" column="doc_size_total" />
+		<result property="groupId" column="so_group_id" />
+		<result property="orignalGroupId" column="so_orig_group_id" />
+		<result property="soPrice" column="so_id"
+			select="soPrice.query" />
+		<result property="upsellInfo" column="so_id" select="upsellAddons.query" />
+		
+		<result property="contactInfo" column="so_id" select="contactinfo.query" />
+		<result property="locationInfo" column="so_id" select="locationinfo.query" />
+		<result property="sealedBidInd" column="so_id" select="sealedBidInd.query" />	
+		<result property="carRuleId" column="so_id" select="assocCarRules.query" />	
+		<result property="buyerPendingCancelPrice" column="so_id"
+			select="soBuyerPendingCancelPrice.query" />
+		<result property="providerPendingCancelPrice" column="so_id"
+			select="soProviderPendingCancelPrice.query" />
+		<result property="priceType" column="price_type" />
+		<result property="assignmentType" column="assignment_type" />
+		<result property="schedule" column="so_id" select="schedule.query"/>
+		<result property="soWrkFlowControls" column="so_id" select="soWrkFlowControls.query"/>
+	</resultMap>
+
+	<select id="getSurveyResultsById.query" parameterClass="survey"
+		resultClass="surveyQuesAns">
+		select lsq.question_txt as questionText, lsq.question_descr as questionDescription, sr.answer_id as answerId,
+		lsa.answer_txt as answerText, lsa.score as score, sq.weight as weight, sq.required as required,
+		sq.instructions as instructionsQ, sq.sort_order as sortOrderQ, srh.comments as comments,
+		srh.overall_score as overallScore
+		from survey_response sr, lu_survey_questions lsq, lu_survey_answers lsa, survey_questions sq, survey_response_hdr srh
+		where sr.response_hdr_id =
+		(select srs.response_hdr_id from survey_response_so srs where so_id=#serviceOrderID# and entity_type_id=#entityTypeId#)
+		and srh.response_hdr_id = (select srs.response_hdr_id from survey_response_so srs where so_id=#serviceOrderID# and entity_type_id=#entityTypeId#)
+		and sr.question_id = lsq.question_id and sr.answer_id = lsa.answer_id and sq.survey_id = #entityTypeId#
+		and sq.question_id = sr.question_id order by sq.sort_order
+	</select>
+
+	<select id="getQuestionsBySurveyId.query" parameterClass="int"
+		resultClass="surveyQuesAns">
+		SELECT SH.survey_Id AS surveyId, SH.entity_type_Id AS
+		entityTypeId, SH.survey_type_Id AS surveyTypeId, SH.title AS
+		title, SH.survey_status_Id AS statusId, SH.author AS author,
+		SH.instructions AS instructions, LSQ.question_id AS questionId,
+		LSQ.question_category_id AS categoryId, LSQ.question_txt AS
+		questionText, LSQ.question_descr AS questionDescription,
+		SQ.weight AS weight, SQ.required AS required,
+		SQ.Instructions AS instructions, SQ.sort_order AS sortOrderQ,
+		LSA.answer_id AS answerId, LSA.answer_txt AS answerText,
+		LSA.priority_id AS priorityId, LSA.score AS score,
+		LSA.sort_order AS sortOrderA FROM survey_hdr SH,
+		lu_survey_questions LSQ, survey_questions SQ, lu_survey_answers
+		LSA WHERE SH.survey_id = SQ.survey_id AND LSQ.question_id =
+		SQ.question_id AND LSQ.question_id = LSA.question_id AND
+		SH.survey_id = #surveyId# ORDER BY SH.survey_id, SQ.sort_order,
+		LSA.sort_order
+	</select>
+
+	<select id="getQuestions.query" parameterClass="survey"
+		resultClass="surveyQuesAns">
+		SELECT SH.survey_Id AS surveyId, SH.entity_type_Id AS
+		entityTypeId, SH.survey_type_Id AS surveyTypeId, SH.title AS
+		title, SH.survey_status_Id AS statusId, SH.author AS author,
+		SH.instructions AS instructions, LSQ.question_id AS questionId,
+		LSQ.question_category_id AS categoryId, LSQ.question_txt AS
+		questionText, LSQ.question_descr AS questionDescription,
+		SQ.weight AS weight, SQ.required AS required,
+		SQ.Instructions AS instructions, SQ.sort_order AS sortOrderQ,
+		LSA.answer_id AS answerId, LSA.answer_txt AS answerText,
+		LSA.priority_id AS priorityId, LSA.score AS score,
+		LSA.sort_order AS sortOrderA FROM survey_hdr SH,
+		lu_survey_questions LSQ, survey_questions SQ, lu_survey_answers
+		LSA WHERE SH.survey_id = SQ.survey_id AND LSQ.question_id =
+		SQ.question_id AND LSQ.question_id = LSA.question_id AND
+		SH.survey_type_id = #surveyTypeId# AND SH.entity_type_id =
+		#entityTypeId# ORDER BY SH.survey_id, SQ.sort_order,
+		LSA.sort_order
+
+	</select>
+
+	<insert id="saveSurveyResponseHeader.insert"
+		parameterClass="surveyResponse">
+		INSERT INTO survey_response_hdr (response_hdr_id, survey_id,
+		entity_type_id, entity_id, overall_score, created_date,
+		modified_date, modified_by, comments) VALUES (#responseHdrId#, #surveyId#,
+		#entityTypeId#, #entityId#, #overallScore#, #createdDate#,
+		#modifiedDate#, #modifiedBy#, #comment#)
+	</insert>
+	<insert id="saveSurveyResponseSO.insert"
+		parameterClass="surveyResponse">
+		INSERT INTO survey_response_so (so_id, response_hdr_id,
+		entity_type_id, entity_id, buyer_id) VALUES (#serviceOrderID#,
+		#responseHdrId#, #entityTypeId#, #entityId#, #buyerId#)
+	</insert>
+	<insert id="saveSurveyResponseLead.insert"
+		parameterClass="surveyResponse">
+		INSERT INTO survey_response_lead (sl_lead_id, response_hdr_id,
+		entity_type_id, entity_id, buyer_id) VALUES (#leadId#,
+		#responseHdrId#, #entityTypeId#, #entityId#, #buyerId#)
+	</insert>	
+	<insert id="saveSurveyResponse.insert"
+		parameterClass="surveyResponse">
+		INSERT INTO survey_response (response_id, response_hdr_id,
+		question_id, answer_id, created_date, modified_date,
+		modified_by) VALUES (#responseId#, #responseHdrId#,
+		#questionId#, #answerId#, #createdDate#,
+		#modifiedDate#, #modifiedBy#)
+	</insert>
+	<select id="surveyResponseExists.query" parameterClass="survey"
+		resultClass="java.lang.Long">
+		SELECT response_hdr_Id as responseHdrId FROM survey_response_so
+		WHERE so_id = #serviceOrderID# AND entity_type_id =
+		#entityTypeId#
+	</select>
+<!--21513-->
+     <select id="getCSAData.query" parameterClass="java.lang.String"  resultClass="java.lang.Integer">
+		select count(*)
+		from  survey_response_so
+		where so_id = #soId#
+	 </select>
+	 
+	  <select id="getInHomeBuyer.query" parameterClass="java.lang.String"  resultMap="so.resultsmap">
+		select * from so_hdr where buyer_id=3000  and so_id=#serviceOrderId#;
+	 </select>
+	 
+     <insert id="saveCSATData.insert"
+		parameterClass="surveyCSATVO">
+		INSERT INTO csat_mapping (so_id, taken_date,q8_result) 
+		VALUES (#serviceOrderID#, #takenDate#,#q8result#)
+	 </insert>
+	 
+	 <select id="getAnswer.query"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT answer_id
+		FROM lu_survey_answers
+		WHERE
+		question_id = #questionId#
+		AND
+		score = #scoreValue#
+	</select>
+	 
+<!--21513-->
+	<select id="vendorResourceSurveyScore.query"
+		parameterClass="java.util.HashMap"
+		resultClass="surveyRatingSummary">
+		SELECT avg(srh.overall_score) as overallScore,srh.entity_type_id
+		as ratedBy FROM survey_response_hdr srh , survey_response_so srs
+		where srs.so_id in ( select so_id from so_hdr where
+		accepted_resource_id=#resourceId#)
+		<isNotNull property="entityTypeId" prepend="AND">
+			srh.entity_type_id=#entityTypeId#
+		</isNotNull>
+		<isNotNull property="createdDate" prepend="AND">
+			srh.created_date>#createdDate#
+		</isNotNull>
+		and srh.response_hdr_id=srs.response_hdr_id group by
+		srh.entity_type_id
+	</select>
+
+	<select id="vendorSurveyScore.query"
+		parameterClass="java.util.HashMap"
+		resultClass="surveyRatingSummary">
+		<!-- 
+		SELECT avg(srh.overall_score) as overallScore,srh.entity_type_id
+		as ratedBy FROM survey_response_hdr srh , survey_response_so srs
+		where srs.so_id in ( select so_id from so_hdr where
+		accepted_vendor_id=#vendorId#)
+		<isNotNull property="entityTypeId" prepend="AND">
+			srh.entity_type_id=#entityTypeId#
+		</isNotNull>
+		<isNotNull property="createdDate" prepend="AND">
+			srh.created_date>#createdDate#
+		</isNotNull>
+		and srh.response_hdr_id=srs.response_hdr_id group by
+		srh.entity_type_id
+		 -->
+		SELECT AVG(srh.overall_score) AS overallScore,
+		srh.entity_type_id   AS ratedBy FROM survey_response_hdr srh ,
+		survey_response_so srs,  so_hdr sh
+   		where sh.accepted_vendor_id=#vendorId# 
+   		and srs.so_id=sh.so_id 
+   		<isNotNull property="entityTypeId" prepend="AND">
+			srh.entity_type_id=#entityTypeId#
+		</isNotNull>
+		<isNotNull property="createdDate" prepend="AND">
+			srh.created_date>#createdDate#
+		</isNotNull>
+   		and srh.response_hdr_id=srs.response_hdr_id group by srh.entity_type_id
+	</select>
+
+	<!-- <select id="buyerSurveyScore.query"
+		parameterClass="java.util.HashMap"
+		resultClass="surveyRatingSummary">
+		SELECT 
+			avg(srh.overall_score) as overallScore,
+			srh.entity_type_id as ratedBy 
+		FROM
+			survey_response_hdr srh,
+			survey_response_so srs
+		WHERE 
+			srs.buyer_id=#buyerId#
+			<isNotNull property="entityTypeId" prepend="AND">
+				srh.entity_type_id=#entityTypeId#
+			</isNotNull>
+			<isNotNull property="createdDate" prepend="AND">
+				srh.created_date>#createdDate#
+			</isNotNull>
+			and srh.response_hdr_id=srs.response_hdr_id 
+		GROUP BY
+		srh.entity_type_id
+	</select>	 -->
+
+	<select id="numberOfRatingsReceived.query"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT count(so.so_id) as numberOfRatings from survey_response_so so, so_hdr sh
+		where so.so_id=sh.so_id 
+		<isEqual property="entityTypeId" compareValue="10" prepend="AND">
+			sh.buyer_id=#companyId#
+		</isEqual>
+		<isEqual property="entityTypeId" compareValue="20" prepend="AND">
+			sh.accepted_vendor_id=#companyId#
+		</isEqual>		
+		<isNotNull property="ratingProviderEntityTypeId" prepend="AND">
+			so.entity_type_id=#ratingProviderEntityTypeId#
+		</isNotNull>
+	</select>
+	<select id="numberOfRatingsGiven_forprovider.query"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(*) AS numberofratingsgiven
+		FROM   survey_response_hdr
+       	JOIN vendor_resource
+         ON survey_response_hdr.entity_id = vendor_resource.resource_id
+            AND vendor_resource.vendor_id = #companyId#
+		WHERE  entity_type_id = 20  
+	</select>
+	
+	<select id="numberOfRatingsGiven_forbuyer.query"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT COUNT(*) AS numberofratingsgiven
+		FROM   survey_response_hdr
+       	JOIN buyer_resource
+         	ON survey_response_hdr.entity_id = buyer_resource.resource_id
+            AND buyer_resource.buyer_id = #companyId#
+		WHERE  entity_type_id = 10  
+	</select>	
+	
+	<update id="updateBuyerTotalOrderComplete.update">
+		UPDATE 	
+			buyer, 
+			(SELECT COUNT(*) AS completedcount, buyer_id 
+			 FROM 
+			 	so_hdr
+			 WHERE
+			    wf_state_id=160
+			 GROUP BY 
+			 	buyer_id) AS temp
+		SET
+			buyer.total_so_completed = temp.completedcount,
+			buyer.modified_date = NOW(),
+			buyer.modified_by = 'COMPL_ORDERS Job'
+		WHERE 	
+			buyer.buyer_id = temp.buyer_id
+	</update>	
+	
+	<update id="updateBuyerTotalOrderCompleteThroughJob.update" parameterClass="java.lang.Integer">
+		UPDATE 	buyer
+		SET
+		total_so_completed = (coalesce(total_so_completed,0)+1),
+		modified_date = NOW(),
+		modified_by = #buyerID#
+		WHERE 	buyer_id = #buyerID#
+	</update>	
+
+	<update id="updateVendorResourceTotalOrderComplete.update" parameterClass="java.lang.Integer">
+		UPDATE 	vendor_resource
+		SET
+		total_so_completed = (coalesce(total_so_completed,0)+1),
+		modified_date = NOW(),
+		modified_by = #vendorResourceId#
+		WHERE 	resource_id = #vendorResourceId#
+	</update>
+
+	<select id="checkIfAlreadyRated.query"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT count(*)
+		FROM survey_response_summary
+		WHERE
+		buyer_id = #buyerID#
+		AND
+		vendor_resource_id = #vendorResourceId#
+
+	</select>
+
+	<insert id="insertBuyerVendorResourceTotalOrderComplete.insert"
+		parameterClass="java.util.HashMap">
+		INSERT INTO survey_response_summary (buyer_id, vendor_resource_id,
+		total_so_completed,created_date,modified_date,modified_by)
+		VALUES (#buyerID#, #vendorResourceId#,1,NOW(),NOW(),#buyerID#)
+	</insert>
+
+	<update id="updateBuyerVendorResourceTotalOrderComplete.update"
+		parameterClass="java.util.HashMap">
+		UPDATE survey_response_summary
+		SET
+		total_so_completed = (coalesce(total_so_completed,0)+1),
+		modified_date = NOW(),
+		modified_by = #buyerID#
+		WHERE
+		buyer_id = #buyerID#
+		AND vendor_resource_id = #vendorResourceId#
+	</update>
+
+	<update id="updateBuyerVendorResourceRatingByBuyer.update"
+		parameterClass="java.util.HashMap">
+		UPDATE survey_response_summary
+		SET
+		vendor_resource_rating_score = truncate((((coalesce(vendor_resource_rating_count,1) * coalesce(vendor_resource_rating_score,0))+#currentScore#)
+		 								/ (coalesce(vendor_resource_rating_count,0)+1)),3),
+		vendor_resource_rating_count = (coalesce(vendor_resource_rating_count,0)+1),
+		modified_date = NOW(),
+		modified_by = #buyerID#
+		WHERE
+		buyer_id = #buyerID#
+		AND vendor_resource_id = #vendorResourceId#
+	</update>
+
+	<insert id="insertVendorResourceRatingRollup.insert" parameterClass="java.util.Map">
+		insert into vendor_resource_rating_rollup (vendor_id, resource_id, question_id, average_score, survey_count, create_date, insert_date)
+		select vendor_Id, #resourceId#, #questionId#, score, 1, now(), now()
+		 from lu_survey_answers
+		 join vendor_resource vr on resource_id = #resourceId#
+		where answer_id = #answerId#
+	</insert>
+
+	<update id="updateVendorResourceRatingRollup.update" parameterClass="java.util.Map">
+		update vendor_resource_rating_rollup , lu_survey_answers
+		  set  average_score = truncate((((coalesce(survey_count,1) * coalesce(average_score,0))+score)
+											/ (coalesce(survey_count,0)+1)),3),
+			   survey_count = (coalesce(survey_count,0)+1)
+		 where answer_id = #answerId#
+		   and resource_id = #resourceId#
+		   and vendor_resource_rating_rollup.question_id = #questionId#
+	</update>
+
+	<select id="selectSummaryVendorRatings.select" parameterClass="java.lang.Integer" resultClass="SurveyRatingByQuestionVO">
+		select lq.question_id questionId,
+			lq.question_txt question,
+			truncate(avg(coalesce(average_score,0)),3) rating,
+			sum(coalesce(survey_count,0)) surveyCount
+		from lu_survey_questions lq
+		join survey_questions sq on lq.question_id = sq.question_id and survey_id = 10
+		left join vendor_resource_rating_rollup r on lq.question_id = r.question_id and vendor_id = #vendorId#
+		group by lq.question_id
+		union
+		select 9999 questionId, 'Overall' question, truncate(coalesce(avg(coalesce(average_score,0)),0),3) rating,
+		(
+			select coalesce(sum(coalesce(survey_count,0)),0) from (
+			Select resource_id, (coalesce(coalesce(sum(coalesce(survey_count,0)),0)/coalesce(count(coalesce(question_id,1)),1),0)) as survey_count
+			from vendor_resource_rating_rollup
+			where vendor_id =  #vendorId#
+			group by resource_id
+		) as tblX
+		) as  surveyCount
+		from vendor_resource_rating_rollup
+		where vendor_id = #vendorId#
+		order by 1
+	</select>
+
+	<select id="selectSummaryVendorResourceRatings.select" parameterClass="java.lang.Integer" resultClass="SurveyRatingByQuestionVO">
+		select lq.question_id questionId,
+			lq.question_txt question,
+			truncate(coalesce(average_score,0),3) rating,
+			coalesce(survey_count,0) surveyCount
+		from lu_survey_questions lq
+		join survey_questions sq on lq.question_id = sq.question_id and survey_id = 10
+		left join vendor_resource_rating_rollup r on lq.question_id = r.question_id and resource_id= #resourceId#
+		union
+		select 9999 questionId, 'Overall' question, truncate(coalesce(avg(coalesce(average_score,0)),0),3) rating, coalesce(coalesce(sum(coalesce(survey_count,0)),0)/coalesce(count(coalesce(question_id,1)),1),0)  surveyCount
+		from vendor_resource_rating_rollup
+		where resource_id = #resourceId#
+		order by 1
+	</select>
+
+	<update id="updateBuyerVendorResourceRatingByVendorResource.update"
+		parameterClass="java.util.HashMap">
+		UPDATE survey_response_summary
+		SET
+		buyer_rating_score = truncate((((coalesce(buyer_rating_count,1) * coalesce(buyer_rating_score,0))+#currentScore#)
+		 								/ (coalesce(buyer_rating_count,0)+1)),3),
+		buyer_rating_count = (coalesce(buyer_rating_count,0)+1),
+		modified_date = NOW(),
+		modified_by = #vendorResourceId#
+		WHERE
+		buyer_id = #buyerID#
+		AND vendor_resource_id = #vendorResourceId#
+	</update>
+
+	<update id="updateBuyerRatingByVendorResource.update"
+		parameterClass="java.util.HashMap">
+		UPDATE buyer
+		SET
+		aggregate_rating_score = truncate((((coalesce(aggregate_rating_count,1) * coalesce(aggregate_rating_score,0))+#currentScore#)
+									/ (coalesce(aggregate_rating_count,0)+1)),3),
+		aggregate_rating_count = (coalesce(aggregate_rating_count,0)+1),
+		modified_date = NOW(),
+		modified_by = #vendorResourceId#
+		WHERE
+		buyer_id = #buyerID#
+	</update>
+
+	<update id="updateVendorResourceRatingByBuyer.update"
+		parameterClass="java.util.HashMap">
+		UPDATE vendor_resource
+		SET
+		aggregate_rating_score = truncate((((coalesce(aggregate_rating_count,1) * coalesce(aggregate_rating_score,0))+#currentScore#)
+									/ (coalesce(aggregate_rating_count,0)+1)),3),
+		aggregate_rating_count = (coalesce(aggregate_rating_count,0)+1),
+		modified_date = NOW(),
+		modified_by = #buyerID#
+		WHERE
+		resource_id= #vendorResourceId#
+	</update>
+
+	<select id="getFastLookupRatingsReceived.query"
+		parameterClass="java.util.HashMap" resultClass="surveyRatingVO">
+		SELECT
+		res.total_so_completed as totalOrdersComplete,
+		res.aggregate_rating_count as numberOfRatingsReceived,
+		res.aggregate_rating_score as historicalRating,
+		summary.total_so_completed as myOrdersComplete,
+		summary.vendor_resource_rating_count as numberOfRatingsGiven,
+		summary.vendor_resource_rating_score as myRating,
+		summary.buyer_id as buyerID,
+		res.resource_id as vendorResourceID
+		FROM
+		vendor_resource res
+    	left outer join survey_response_summary summary
+    	on res.resource_id = summary.vendor_resource_id
+    	AND summary.buyer_id = #buyerId#
+    	<dynamic prepend="WHERE">
+	    	<isNotNull property="vendorResourceIds">
+	    		res.resource_id IN
+		    	<iterate property="vendorResourceIds" open="(" close=")"  conjunction=",">
+						#vendorResourceIds[]#
+				</iterate>
+			</isNotNull>
+	    	<isNull property="vendorResourceIds">
+	    		1=0
+			</isNull>			
+		</dynamic>
+	</select>	
+
+	<select id="getVendorResourceFeedback.query"
+		parameterClass="java.util.HashMap" resultClass="customerFeedBackVO">
+		SELECT
+		vr.resource_id as receivedByEntityId ,  srh.response_hdr_id as responseHdrId,
+		srs.so_id as serviceOrderId,
+		so.primary_skill_category_id as feedbackPrimaryCategoryId,
+		st.node_name as feedbackPrimaryCategory,
+		provc.last_name as receivedByLastName,
+		provc.first_name as receivedByFirstName ,
+		srh.overall_score as overallRatingScore,
+		srh.comments as comments,
+		srh.modified_date as modifiedDate,
+		DATEDIFF(NOW(), srh.modified_date ) as feedbackAge,
+		srh.entity_type_id as ratedByEntityTypeId,
+		b.resource_id as ratedByEntityId,
+		CASE up.role_id WHEN 5 THEN buyerc.first_name ELSE 'Buyer Id##' END as ratedByFirstName,
+        CASE up.role_id WHEN 5 THEN SUBSTRING(buyerc.last_name,1,1) ELSE b.buyer_id  END as ratedByLastName,
+		loc.city as ratedByCity,
+		loc.state_cd as ratedByState
+		FROM survey_response_hdr srh
+		inner join survey_response_so srs on srh.response_hdr_id=srs.response_hdr_id
+		inner join buyer_resource b on b.resource_id = srh.entity_id
+		inner join so_hdr so on so.so_id = srs.so_id
+		inner join contact buyerc on buyerc.contact_id = b.contact_id
+		inner join vendor_resource vr on so.accepted_resource_id = vr.resource_id
+		inner join contact provc on provc.contact_id = vr.contact_id
+		inner join skill_tree st on st.node_id = so.primary_skill_category_id
+		inner join so_location loc on loc.so_id = srs.so_id
+		inner join user_profile up on up.user_name = b.user_name
+		inner join survey_hdr sh on sh.survey_id = srh.survey_id
+		WHERE vr.resource_id = #vendorResourceId#
+		AND srh.entity_type_id= #entityTypeId#
+		AND loc.so_locn_type_id = #entityTypeId#
+		AND sh.sub_survey_type != 'NPS'
+		AND ( srh.comments is not null and TRIM(srh.comments) != '')
+		ORDER BY srh.modified_date desc
+		<isNotNull property="count">
+		 LIMIT #count#
+		</isNotNull>
+    </select>	
+    
+    <select id="getVendorResourceFeedback2.query"
+		parameterClass="java.util.HashMap" resultClass="customerFeedBackVO">
+		SELECT
+		vr.resource_id as receivedByEntityId ,srh.response_hdr_id as responseHdrId,
+		srs.so_id as serviceOrderId,
+		so.primary_skill_category_id as feedbackPrimaryCategoryId,
+		st.node_name as feedbackPrimaryCategory,
+		provc.last_name as receivedByLastName,
+		provc.first_name as receivedByFirstName ,
+		srh.overall_score as overallRatingScore,
+		srh.comments as comments,
+		srh.modified_date as modifiedDate,
+		DATEDIFF(NOW(), srh.modified_date ) as feedbackAge,
+		srh.entity_type_id as ratedByEntityTypeId,
+		b.resource_id as ratedByEntityId,
+		CASE up.role_id WHEN 5 THEN buyerc.first_name ELSE 'Buyer Id##' END as ratedByFirstName,
+        CASE up.role_id WHEN 5 THEN SUBSTRING(buyerc.last_name,1,1) ELSE b.buyer_id  END as ratedByLastName,
+		loc.city as ratedByCity,
+		loc.state_cd as ratedByState
+		FROM survey_response_hdr srh
+		inner join survey_response_so srs on srh.response_hdr_id=srs.response_hdr_id
+		inner join buyer_resource b on b.resource_id = srh.entity_id
+		inner join so_hdr so on so.so_id = srs.so_id
+		inner join contact buyerc on buyerc.contact_id = b.contact_id
+		inner join vendor_resource vr on so.accepted_resource_id = vr.resource_id
+		inner join contact provc on provc.contact_id = vr.contact_id
+		inner join skill_tree st on st.node_id = so.primary_skill_category_id
+		inner join so_location loc on loc.so_id = srs.so_id
+		inner join user_profile up on up.user_name = b.user_name
+		inner join survey_hdr sh on sh.survey_id = srh.survey_id
+		WHERE vr.resource_id = #vendorResourceId#
+		AND srh.entity_type_id= #entityTypeId#
+		AND loc.so_locn_type_id = #entityTypeId#
+		AND sh.sub_survey_type != 'NPS'
+		AND ( srh.comments is not null and TRIM(srh.comments) != '')
+		and srh.modified_date between #startDate# and #endDate#
+		<isNotNull property="maxRating">
+		and srh.overall_score &lt;=#maxRating#
+		</isNotNull>
+		<isNotNull property="minRating">
+		and srh.overall_score &gt;=#minRating#
+		</isNotNull>
+		ORDER BY srh.$sort$ $order$
+		LIMIT #limitStart# , #limitEnd#		
+    </select>	
+	  
+    <select id="getVendorResourceFeedbackCount.query"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+	 SELECT COUNT(vr.resource_id) AS COUNT				
+		FROM survey_response_hdr srh
+		INNER JOIN survey_response_so srs ON srh.response_hdr_id=srs.response_hdr_id		
+		INNER JOIN so_hdr so ON so.so_id = srs.so_id		
+		INNER JOIN vendor_resource vr ON so.accepted_resource_id = vr.resource_id			
+		INNER JOIN so_location loc ON loc.so_id = srs.so_id	
+		INNER JOIN survey_hdr sh on sh.survey_id = srh.survey_id		
+		WHERE vr.resource_id = #vendorResourceId#
+		AND srh.entity_type_id= #entityTypeId#
+		AND loc.so_locn_type_id = #entityTypeId#
+		AND sh.sub_survey_type != 'NPS'
+		AND ( srh.comments IS NOT NULL AND TRIM(srh.comments) != '')
+	</select>
+	    	
+	<parameterMap class="java.util.Map" id="retrieveSLRatingFromWestRating-paramMap">
+        <parameter property="questionId"/>
+		<parameter property="westRating"/>
+	</parameterMap>
+	<select id="retrieveSLRatingFromWestRating.query" parameterMap="retrieveSLRatingFromWestRating-paramMap" resultClass="java.lang.Integer">
+		select answer_id
+		from lu_survey_answers
+		where question_id = ? and score = ?
+	</select>
+
+	<insert id="saveWestImportSummary.insert" parameterClass="westImportSummary">
+		insert into west_import_summary (file_name, total_records, success_count, skip_count, failure_count, processed_time)
+		values (#westFileName#, #totalRecords#, #successCount#, #skipCount#, #failureCount#, #processedTime#)
+        <selectKey resultClass="int">
+            SELECT last_insert_id() as fileId
+        </selectKey>    
+	</insert>
+
+	<insert id="saveWestImportDetails.insert" parameterClass="westImportDetails">
+		insert into west_import_details (file_id, so_id)
+		values (#fileId#, #soId#)
+	</insert>
+	
+    <select id="getCompletedResourceIdForLead.query"
+		parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	SELECT resource_id FROM lead_matched_firm  lead_firm_status JOIN 
+	lead_hdr lead_hdr ON(lead_firm_status.sl_lead_id=lead_hdr.sl_lead_id)
+	JOIN lu_lead_firm_status lu_firm_status ON(lu_firm_status.lu_lead_firm_status_id
+	=lead_firm_status.lead_firm_status AND lu_firm_status.firm_status='completed')
+	JOIN lu_lead_status lu_leadStatus ON(lu_leadStatus.lu_lead_status_id=
+	lead_hdr.lead_wf_status AND lead_status='completed')
+	WHERE lead_hdr.sl_lead_id=#leadId#
+	</select>
+	
+	<select id="getCompletedLead.query"
+		parameterClass="java.lang.String" resultClass="java.lang.String">
+	SELECT lead_firm_status.sl_lead_id FROM lead_matched_firm  lead_firm_status JOIN 
+	lead_hdr lead_hdr ON(lead_firm_status.sl_lead_id=lead_hdr.sl_lead_id)
+	JOIN lu_lead_firm_status lu_firm_status ON(lu_firm_status.lu_lead_firm_status_id
+	=lead_firm_status.lead_firm_status AND lu_firm_status.firm_status='completed')
+	JOIN lu_lead_status lu_leadStatus ON(lu_leadStatus.lu_lead_status_id=
+	lead_hdr.lead_wf_status AND lead_status='completed')
+	WHERE lead_hdr.sl_lead_id=#leadId#
+	</select>  
+	   
+	<select id="getCSATDelimiter.query" resultClass="java.lang.String">
+		SELECT app_value FROM application_properties WHERE app_key = 'CSATDelimiter';
+	</select>
+
+</sqlMap>

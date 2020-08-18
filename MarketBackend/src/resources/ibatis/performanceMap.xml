@@ -1,0 +1,842 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="performance">
+	<typeAlias alias="performanceVO"
+		type="com.servicelive.domain.tier.performance.vo.PerformanceVO" />
+	<typeAlias alias="vendorResourcePerfVO"
+		type="com.newco.marketplace.vo.provider.VendorResource" />		
+	<typeAlias alias="firmResourcePerfVO"
+		type="com.newco.marketplace.vo.provider.FirmAndResource" />
+	<typeAlias alias="firmProvidersVO"
+		type="com.servicelive.domain.tier.performance.vo.FirmProvidersVO" />
+	<typeAlias alias="criteriaDTO" 
+		type="com.servicelive.domain.tier.performance.vo.PerformanceCriteria"/>
+	<resultMap id="criteria.resultMap" class="performanceVO" >
+		    <result property="vendorId" column="vendorId"/>
+		    <result property="resourceId" column="providerId"/>
+		    <result property="buyerId" column="buyerId"/>
+		    <result property="perfCountAll" column="perfCountAll"/>
+		    <result property="perfValueAll" column="perfValueAll"/>
+		    <result property="ninetyPerfCount" column="ninetyPerfCount"/>
+		    <result property="ninetyPerfVal" column="ninetyPerfVal"/>
+		    
+	</resultMap>
+	<resultMap id="criteriaValue.resultMap" class="performanceVO" >
+		    <result property="vendorId" column="vendorId"/>
+		    <result property="resourceId" column="providerId"/>
+		    <result property="buyerId" column="buyerId"/>
+		    <result property="perfValueAll" column="perfValueAll"/>
+		    <result property="ninetyPerfVal" column="ninetyPerfVal"/>
+		    
+	</resultMap>
+	<resultMap id="criteriaCount.resultMap" class="performanceVO" >
+		    <result property="vendorId" column="vendorId"/>
+		    <result property="resourceId" column="providerId"/>
+		    <result property="buyerId" column="buyerId"/>
+		    <result property="perfCountAll" column="perfCountAll"/>
+		    <result property="ninetyPerfCount" column="ninetyPerfCount"/>
+	</resultMap>
+	<resultMap id="perfScore.resultMap" class="performanceVO" >
+		    <result property="spnId" column="spnId"/>
+		    <result property="vendorId" column="vendorId"/>
+		    <result property="resourceId" column="resourceId"/>
+		    <result property="perfValue" column="score"/>
+	</resultMap>
+	<resultMap class="criteriaDTO" id="lookUpCriteria.resultMap">
+		<result property="criteriaId" column="performance_criteria_id" />
+		<result property="criteriaName" column="criteria_name" />
+		<result property="description" column="criteria_description" />			
+	</resultMap>
+	
+	<select id="getPerfScoreForFirm.query" resultMap="perfScore.resultMap" >
+		SELECT AVG(IF(tab.timeframe="LIFETIME",IF(fp.perf_value_lifetime IS NULL,0,fp.perf_value_lifetime),IF(fp.perf_value_ninety IS NULL,0,fp.perf_value_ninety))) AS score,NULL AS resourceId,tab.spn_id AS
+		spnId,tab.provider_firm_id AS vendorId FROM (SELECT sh.spn_id AS
+		spn_id,sh.performance_criteria_timeframe AS timeframe,
+		spc.performance_criteria_id AS
+		performance_criteria_id,spc.performance_criteria_scope AS
+		performance_criteria_scope,
+		sps.provider_firm_id AS provider_firm_id,
+		IF(spc.performance_criteria_scope="ALL",-1,sb.buyer_id) AS buyer_id
+		FROM spnet_hdr sh
+		JOIN spnet_performance_criteria spc ON sh.spn_id=spc.spn_id
+		JOIN spnet_provider_firm_state sps ON sh.spn_id=sps.spn_id AND sps.provider_wf_state!="PF SPN NOT INTERESTED"
+		JOIN  vendor_hdr  vr ON  vr.vendor_id = sps.provider_firm_id
+		JOIN spnet_buyer sb ON sb.spn_id = sh.spn_id
+		WHERE sh.performance_criteria_level = "FIRM" AND sh.performance_criteria_timeframe!="N/A" AND sh.performance_criteria_timeframe IS NOT NULL)tab
+		LEFT OUTER JOIN firm_performance fp ON fp.vendor_id=tab.provider_firm_id
+		AND fp.buyer_id=tab.buyer_id AND
+		fp.performance_criteria_id=tab.performance_criteria_id
+		AND fp.performance_criteria_scope = tab.performance_criteria_scope
+		GROUP BY tab.spn_id, tab.provider_firm_id
+	</select>
+	<select id="getPerfScoreForProvider.query" resultMap="perfScore.resultMap" >
+		SELECT AVG(IF(tab.timeframe="LIFETIME",IF(perf.perf_value_lifetime IS NULL,0,perf.perf_value_lifetime),IF(perf.perf_value_ninety IS NULL,0,perf.perf_value_ninety))) AS score,tab.spn_id AS
+		spnId,tab.resource_id AS resourceId,tab.vendorId AS vendorId FROM
+		(SELECT sh.spn_id AS spn_id,sh.performance_criteria_timeframe AS timeframe,
+		spc.performance_criteria_id AS
+		performance_criteria_id,spc.performance_criteria_scope AS
+		performance_criteria_scope,
+		sps.service_provider_id AS resource_id,vr.vendor_id AS vendorId,
+		IF(spc.performance_criteria_scope="ALL",-1,sb.buyer_id) AS buyer_id
+		FROM spnet_hdr sh
+		JOIN spnet_performance_criteria spc ON sh.spn_id=spc.spn_id
+		JOIN spnet_serviceprovider_state sps ON sh.spn_id=sps.spn_id
+		JOIN vendor_resource vr ON vr.resource_id = sps.service_provider_id AND vr.wf_state_id = 6
+		JOIN spnet_buyer sb ON sb.spn_id = sh.spn_id
+		WHERE sh.performance_criteria_level = "PROVIDER" AND sh.performance_criteria_timeframe!="N/A" AND sh.performance_criteria_timeframe IS NOT NULL)tab
+		LEFT OUTER JOIN provider_performance perf ON perf.resource_id=tab.resource_id
+		AND perf.buyer_id=tab.buyer_id AND
+		perf.performance_criteria_id=tab.performance_criteria_id
+		AND perf.performance_criteria_scope = tab.performance_criteria_scope
+		GROUP BY tab.spn_id, tab.resource_id
+	</select>
+	<update id="firmPerformanceScore.update" parameterClass="performanceVO">
+		UPDATE spnet_provider_firm_state SET performance_score=#perfValue#  WHERE spn_id=#spnId# AND provider_firm_id =#vendorId#
+	</update>
+	<update id="providerPerformanceScore.update" parameterClass="performanceVO">
+		UPDATE spnet_serviceprovider_state SET performance_score =#perfValue# WHERE spn_id=#spnId# AND service_provider_id =#resourceId#
+	</update>
+	<select id="getAppValue.query" resultClass="java.lang.String" parameterClass="java.lang.String">
+		SELECT app_value FROM application_properties WHERE app_key=#appKey#
+	</select>
+	<select id="fetchAllFirmsNew.query" resultClass="firmResourcePerfVO" >
+		SELECT DISTINCT sps.provider_firm_id AS vendorId, GROUP_CONCAT(DISTINCT vr.resource_id) AS resourceIdList FROM spnet_provider_firm_state sps
+		JOIN  vendor_resource  vr ON wf_state_id = 6 AND vr.vendor_id = sps.provider_firm_id  
+		WHERE sps.provider_wf_state="PF SPN MEMBER" GROUP BY vendorId
+	</select>
+	
+	<select id="getProvidersForFirm.query" resultClass="java.lang.Integer" parameterClass="java.lang.Integer" >
+		   SELECT resource_id FROM vendor_resource   WHERE wf_state_id = 6 AND vendor_id = #vendorId#
+	</select>
+	<select id="getCSATForBuyers.query" resultMap="criteria.resultMap" parameterClass="java.util.List">
+		SELECT SUM(score)AS perfValueAll,COUNT(score) AS
+		perfCountAll,SUM(ninetydaysind) AS ninetyPerfVal,COUNT(ninetydaysind) AS
+		ninetyPerfCount,
+		providerId, vendorId,
+		buyerId FROM (SELECT srh.overall_score AS score,
+		IF(DATEDIFF(NOW(),srh.modified_date) <![CDATA[ <= ]]>90,srh.overall_score,NULL) AS
+		ninetydaysind,
+		hdr.accepted_resource_id AS providerId,
+		vr.vendor_id AS
+		vendorId,hdr.buyer_id AS buyerId
+		FROM so_hdr hdr
+		JOIN survey_response_so srs
+		ON srs.so_id = hdr.so_id
+		JOIN survey_response_hdr srh
+		ON srh.response_hdr_id=srs.response_hdr_id
+		JOIN vendor_resource vr ON vr.resource_id=hdr.accepted_resource_id 
+		WHERE hdr.accepted_resource_id IN 
+		<iterate  open="("
+			close=")" conjunction=", ">
+			#providerIds[]#
+		</iterate> AND srs.entity_type_id = 10
+		) tab GROUP BY buyerId,providerId
+	</select>
+	<select id="getAcceptedIfRoutedCountForBuyers.query" resultMap="criteria.resultMap" parameterClass="java.util.List">
+		SELECT COUNT(resourceId) AS perfValueAll,
+		COUNT(resourceId) AS perfCountAll,
+		providerId,
+		vendorId,
+		buyerId,
+		COUNT(ninetydaysind) AS ninetyPerfVal,
+		COUNT(ninetydaysind) AS ninetyPerfCount 
+		FROM(SELECT hdr.accepted_resource_id AS resourceId,
+			hdr.accepted_resource_id AS providerId,
+			vr.vendor_id  AS vendorId,
+			hdr.buyer_id AS buyerId,
+			IF(DATEDIFF(NOW(),hdr.routed_date) <![CDATA[ <= ]]> 90, hdr.accepted_resource_id,NULL) AS ninetydaysind,
+			hdr.so_id
+			FROM so_hdr hdr
+			JOIN vendor_resource vr ON vr.resource_id=hdr.accepted_resource_id 
+			WHERE hdr.accepted_resource_id IN 
+			<iterate  open="("
+				close=")" conjunction=", ">
+				#providerIds[]#
+			</iterate>
+		)tab1 GROUP BY buyerId,providerId
+	</select>
+	<select id="getAcceptedCountForBuyers.query" resultMap="criteria.resultMap" parameterClass="java.util.List">
+		SELECT COUNT(resourceId) AS perfValueAll,
+		COUNT(resourceId) AS perfCountAll,
+		providerId,
+		vendorId,
+		buyerId,
+		COUNT(ninetydaysind) AS ninetyPerfVal,
+		COUNT(ninetydaysind) AS ninetyPerfCount 
+		FROM(SELECT hdr.accepted_resource_id AS resourceId,
+			hdr.accepted_resource_id AS providerId,
+			vr.vendor_id  AS vendorId,
+			hdr.buyer_id AS buyerId,
+			IF(DATEDIFF(NOW(),hdr.accepted_date) <![CDATA[ <= ]]> 90, hdr.accepted_resource_id,NULL) AS ninetydaysind,
+			hdr.so_id
+			FROM so_hdr hdr
+			JOIN vendor_resource vr ON vr.resource_id=hdr.accepted_resource_id 
+			WHERE hdr.accepted_resource_id IN 
+			<iterate  open="("
+				close=")" conjunction=", ">
+				#providerIds[]#
+			</iterate>
+		)tab1 GROUP BY buyerId,providerId
+	</select>
+	<select id="getAcceptedCountForFirmBuyers.query" resultMap="criteria.resultMap" parameterClass="java.util.List">
+		SELECT COUNT(vendorId) AS perfValueAll,
+		COUNT(vendorId) AS perfCountAll,
+		providerId,
+		vendorId,
+		buyerId,
+		COUNT(ninetydaysind) AS ninetyPerfVal,
+		COUNT(ninetydaysind) AS ninetyPerfCount 
+		FROM(SELECT hdr.accepted_vendor_id AS vendorId,
+			-1 AS providerId,
+			hdr.buyer_id AS buyerId,
+			IF(DATEDIFF(NOW(),hdr.accepted_date) <![CDATA[ <= ]]> 90,hdr.accepted_vendor_id,NULL) AS ninetydaysind,
+			hdr.so_id
+			FROM so_hdr hdr
+			WHERE hdr.accepted_vendor_id IN 
+			<iterate  open="("
+				close=")" conjunction=", ">
+				#providerIds[]#
+			</iterate> AND hdr.accepted_resource_id IS NULL
+		)tab1 GROUP BY buyerId,vendorId
+	</select>
+	<select id="getAcceptedIfRoutedCountForFirmBuyers.query" resultMap="criteria.resultMap" parameterClass="java.util.List">
+		SELECT COUNT(vendorId) AS perfValueAll,
+		COUNT(vendorId) AS perfCountAll,
+		providerId,
+		vendorId,
+		buyerId,
+		COUNT(ninetydaysind) AS ninetyPerfVal,
+		COUNT(ninetydaysind) AS ninetyPerfCount 
+		FROM(SELECT hdr.accepted_vendor_id AS vendorId,
+			-1 AS providerId,
+			hdr.buyer_id AS buyerId,
+			IF(DATEDIFF(NOW(),hdr.routed_date) <![CDATA[ <= ]]> 90,hdr.accepted_vendor_id,NULL) AS ninetydaysind,
+			hdr.so_id
+			FROM so_hdr hdr
+			WHERE hdr.accepted_vendor_id IN 
+			<iterate  open="("
+				close=")" conjunction=", ">
+				#providerIds[]#
+			</iterate> AND hdr.accepted_resource_id IS NULL
+		)tab1 GROUP BY buyerId,vendorId
+	</select>
+	<select id="getRoutedCountForBuyers.query" resultMap="criteriaCount.resultMap" parameterClass="java.util.List">
+		SELECT COUNT(providerId) AS perfCountAll,
+		providerId,
+		vendorId,
+		buyerId,COUNT(ninetydaysind) AS ninetyPerfCount FROM (SELECT
+		srp.resource_id AS providerId,
+		vr.vendor_id AS vendorId,
+		hdr.buyer_id AS buyerId,IF(DATEDIFF(NOW(),hdr.routed_date) <![CDATA[ <= ]]> 90,srp.resource_id,NULL) AS
+		ninetydaysind,
+		hdr.so_id
+		FROM so_hdr hdr
+		JOIN so_routed_providers srp
+		ON hdr.so_id = srp.so_id
+		JOIN vendor_resource vr ON vr.resource_id=srp.resource_id 
+		WHERE srp.resource_id IN 
+		<iterate  open="("
+			close=")" conjunction=", ">
+			#providerIds[]#
+		</iterate>
+		) tab GROUP BY buyerId,providerId
+	</select>
+	<select id="getCompletedRateForBuyers.query" resultMap="criteria.resultMap" parameterClass="java.util.List">
+		
+		SELECT COUNT(completedInd) AS perfValueAll,
+		COUNT(resourceId) AS perfCountAll,
+		COUNT(acceptedNinetyDays) AS ninetyPerfCount,
+		COUNT(completedNinetyDays) AS ninetyPerfVal,
+		buyerId,
+		providerId,
+		vendorId
+		FROM(SELECT hdr.completed_date AS completedDate,
+			hdr.accepted_resource_id AS resourceId,
+			IF(DATEDIFF(NOW(),hdr.accepted_date) <![CDATA[ <= ]]> 90,hdr.accepted_resource_id,NULL) AS acceptedNinetyDays,
+			IF((DATEDIFF(NOW(),hdr.completed_date) <![CDATA[ <= ]]> 90) 
+				AND (DATEDIFF(NOW(),hdr.accepted_date) <![CDATA[ <= ]]> 90),hdr.completed_date,NULL) AS completedNinetyDays,
+			IF(hdr.wf_state_id =160 OR hdr.wf_state_id =180,1,NULL) AS completedInd,
+			hdr.accepted_resource_id AS providerId,
+			vr.vendor_id AS vendorId,
+			hdr.buyer_id AS buyerId 
+			FROM so_hdr hdr
+			JOIN vendor_resource vr ON vr.resource_id=hdr.accepted_resource_id 
+			WHERE hdr.accepted_resource_id IN 
+			<iterate  open="(" close=")" conjunction=", ">
+				#providerIds[]#
+			</iterate>
+		) tab GROUP BY buyerId,providerId
+	</select>
+	<select id="getReleasedCountForBuyers.query" resultMap="criteriaValue.resultMap" parameterClass="java.util.List">
+		
+		SELECT COUNT(providerId) AS perfValueAll,
+		COUNT(releasedNinetyDays) AS ninetyPerfVal,
+		providerId, 
+		vendorId,
+		buyerId 
+		FROM(SELECT srp.resource_id AS providerId,
+			vr.vendor_id AS vendorId,
+			hdr.buyer_id AS buyerId,
+			IF((DATEDIFF(NOW(),srp.provider_resp_date) <![CDATA[ <= ]]> 90) AND (DATEDIFF(NOW(),hdr.accepted_date) <![CDATA[ <= ]]> 90),
+				srp.resource_id,NULL) AS releasedNinetyDays,
+			hdr.so_id
+			FROM so_hdr hdr
+			JOIN so_routed_providers srp ON hdr.so_id = srp.so_id
+			JOIN vendor_resource vr ON vr.resource_id=srp.resource_id 
+			WHERE srp.resource_id IN 
+			<iterate  open="(" close=")" conjunction=", ">
+				#providerIds[]#
+			</iterate>
+			AND srp.provider_resp_id = 5
+		)tab GROUP BY buyerId,providerId
+	</select>
+	<select id="getRejectedCountForBuyers.query" resultMap="criteriaValue.resultMap" parameterClass="java.util.List">
+		SELECT COUNT(providerId) AS perfValueAll,
+		COUNT(rejectedNinetyDays) AS ninetyPerfVal,
+		providerId, 
+		vendorId,
+		buyerId 
+		FROM(SELECT srp.resource_id AS providerId,
+			vr.vendor_id AS vendorId,
+			hdr.buyer_id AS buyerId,
+			IF((DATEDIFF(NOW(),srp.provider_resp_date) <![CDATA[ <= ]]> 90) AND (DATEDIFF(NOW(),hdr.routed_date) <![CDATA[ <= ]]> 90),
+				srp.resource_id,NULL) AS rejectedNinetyDays,
+			hdr.so_id
+			FROM so_hdr hdr
+			JOIN so_routed_providers srp ON hdr.so_id = srp.so_id
+			JOIN vendor_resource vr ON vr.resource_id=srp.resource_id 
+			WHERE srp.resource_id  IN 
+			<iterate  open="(" close=")" conjunction=", ">
+				#providerIds[]#
+			</iterate> 
+			AND srp.provider_resp_id = 3
+		)tab GROUP BY buyerId,providerId
+	</select>
+	<select id="getRescheduledCountForBuyers.query" resultMap="criteriaValue.resultMap" parameterClass="java.util.List">
+		SELECT COUNT(soId) AS perfValueAll,
+		COUNT(ninetyResched) AS ninetyPerfVal,
+		providerId, 
+		vendorId,
+		buyerId 
+		FROM(SELECT hdr.so_id AS soId,
+			hdr.accepted_resource_id AS providerId,
+			vr.vendor_id AS vendorId,
+			IF((DATEDIFF(NOW(),logging.created_date) <![CDATA[ <= ]]> 90) AND (DATEDIFF(NOW(),hdr.accepted_date) <![CDATA[ <= ]]> 90),
+				logging.so_id,NULL) AS ninetyResched,
+			hdr.buyer_id AS buyerId
+			FROM so_logging logging
+			JOIN so_hdr hdr ON logging.so_id = hdr.so_id
+			JOIN vendor_resource vr ON vr.resource_id=hdr.accepted_resource_id 
+			WHERE logging.action_id = 36
+			AND logging.chg_comment LIKE "PROVIDER requested reschedule.%" AND logging.role_id = 1
+			AND hdr.accepted_resource_id  IN 
+			<iterate  open="(" close=")" conjunction=", ">
+				#providerIds[]#
+			</iterate>
+			GROUP BY logging.so_id ORDER BY so_logging_id DESC
+		)c GROUP BY buyerId ,providerId
+	</select>
+	
+	<select id="getResponseRateForBuyers.query" resultMap="criteria.resultMap" parameterClass="java.util.List">
+		SELECT SUM(rate) AS perfValueAll,COUNT(rate) AS perfCountAll,SUM(ninetyResponse) AS ninetyPerfVal,
+		COUNT(ninetyResponse) AS ninetyPerfCount,
+		buyerId,providerId,vendorId FROM (SELECT 120-5*
+		(IF(TIME_TO_SEC(TIMEDIFF(srp.modified_date,srp.created_date))
+		/3600.0 <![CDATA[ < ]]> 4, 4 ,
+		IF(TIME_TO_SEC(TIMEDIFF(srp.modified_date,srp.created_date))/
+		3600.0 <![CDATA[ > ]]> 24, 24,
+		TIME_TO_SEC(TIMEDIFF(srp.modified_date,srp.created_date))/
+		3600.0))) AS rate,IF( DATEDIFF(NOW(),srp.modified_date) <![CDATA[ <= ]]>90,120-5*
+		(IF(TIME_TO_SEC(TIMEDIFF(srp.modified_date,srp.created_date))
+		/3600.0 <![CDATA[ < ]]> 4, 4 ,
+		IF(TIME_TO_SEC(TIMEDIFF(srp.modified_date,srp.created_date))/
+		3600.0 <![CDATA[ > ]]> 24, 24,
+		TIME_TO_SEC(TIMEDIFF(srp.modified_date,srp.created_date))/
+		3600.0))),NULL) AS ninetyResponse,
+		hdr.buyer_id AS buyerId,
+		srp.resource_id AS providerId,
+		vr.vendor_id AS vendorId
+		FROM so_routed_providers srp
+		JOIN so_hdr hdr
+		ON hdr.so_id = srp.so_id
+		JOIN vendor_resource vr ON vr.resource_id=srp.resource_id
+		WHERE provider_resp_id IN (1,2,3)
+		AND srp.resource_id  IN 
+		<iterate  open="("
+			close=")" conjunction=", ">
+			#providerIds[]#
+		</iterate>
+		) tab
+		GROUP BY buyerId,providerId
+	
+	</select>
+	<select id="getIVRRateForBuyers.query" resultMap="criteria.resultMap" parameterClass="java.util.List">
+		SELECT SUM(performanceValue) AS perfValueAll,2*COUNT(soId) AS perfCountAll,SUM(performanceNinety) AS ninetyPerfVal,
+		2*COUNT(soCountNinety) AS ninetyPerfCount,providerId,
+		vendorId,
+		buyerId FROM(SELECT IF(COUNT(visit.arrival_date)<![CDATA[ > ]]>1,1,COUNT(visit.arrival_date)) +
+		IF(COUNT(visit.departure_date)<![CDATA[ > ]]>1,1,COUNT(visit.departure_date)) AS
+		performanceValue,IF( DATEDIFF(NOW(),hdr.completed_date) <![CDATA[ <= ]]>90,IF(COUNT(visit.arrival_date)<![CDATA[ > ]]>1,1,COUNT(visit.arrival_date)) +
+		IF(COUNT(visit.departure_date)<![CDATA[ > ]]>1,1,COUNT(visit.departure_date)),NULL) AS performanceNinety,
+		IF( DATEDIFF(NOW(),hdr.completed_date) <![CDATA[ <= ]]> 90,hdr.so_id,NULL) AS soCountNinety,
+		hdr.accepted_resource_id AS providerId,
+		vr.vendor_id AS vendorId,
+		hdr.buyer_id AS buyerId,
+		hdr.so_id AS soId
+		FROM so_hdr hdr 
+		LEFT OUTER JOIN so_onsite_visit visit
+		ON visit.so_id = hdr.so_id
+		JOIN vendor_resource vr ON vr.resource_id=hdr.accepted_resource_id 
+		WHERE (hdr.wf_state_id = 160 OR hdr.wf_state_id = 180)
+		AND hdr.accepted_resource_id  IN 
+		<iterate  open="("
+			close=")" conjunction=", ">
+			#providerIds[]#
+		</iterate>
+		GROUP BY hdr.so_id)b GROUP BY buyerId,providerId
+		
+	</select>
+	<insert id ="providerPerformance.insert" parameterClass="java.util.List">
+		INSERT INTO provider_performance (resource_id,vendor_id, buyer_id,performance_criteria_id,perf_value_lifetime,perf_value_ninety,performance_criteria_scope,created_date,modified_date)
+		VALUES 
+		<iterate  conjunction=", ">
+			(#firms[].resourceId#,#firms[].vendorId#,#firms[].buyerId#,#firms[].perfCriteriaId#,
+			#firms[].perfValue#,#firms[].perfNinetyValue#,#firms[].perfCriteriaScope#,NOW(),NOW())
+		</iterate>
+		ON DUPLICATE KEY UPDATE
+		perf_value_lifetime= VALUES(perf_value_lifetime),perf_value_ninety= VALUES(perf_value_ninety);
+	</insert>
+	<insert id ="firmPerformance.insert" parameterClass="java.util.List">
+		INSERT INTO firm_performance (vendor_id, buyer_id,performance_criteria_id,perf_value_lifetime,perf_value_ninety,performance_criteria_scope,created_date,modified_date)
+		VALUES 
+		<iterate  conjunction=", ">
+			(#firms[].vendorId#,#firms[].buyerId#,#firms[].perfCriteriaId#,
+			#firms[].perfValue#,#firms[].perfNinetyValue#,#firms[].perfCriteriaScope#,NOW(),NOW())
+		</iterate>
+		ON DUPLICATE KEY UPDATE
+		perf_value_lifetime= VALUES(perf_value_lifetime),perf_value_ninety= VALUES(perf_value_ninety);
+		
+	</insert>
+	<insert id ="providerPerformanceHistory.insert" parameterClass="performanceVO" >
+		INSERT INTO provider_performance (resource_id,vendor_id, buyer_id,performance_criteria_id,perf_value_lifetime,perf_value_ninety,performance_criteria_scope,created_date,modified_date)
+		VALUES (#resourceId#,#vendorId#,#buyerId#,#perfCriteriaId#,
+		#perfValue#,#perfNinetyValue#,#perfCriteriaScope#,NOW(),NOW())
+		ON DUPLICATE KEY UPDATE
+		modified_date = IF( (perf_value_lifetime <![CDATA[ <> ]]> #perfValue# OR perf_value_ninety <![CDATA[ <> ]]> #perfNinetyValue#), now(),modified_date),
+		perf_value_lifetime = IF( perf_value_lifetime <![CDATA[ <> ]]> #perfValue#,#perfValue#,perf_value_lifetime),
+		perf_value_ninety = IF( perf_value_ninety <![CDATA[ <> ]]> #perfNinetyValue#,#perfNinetyValue#,perf_value_ninety);
+		
+	</insert>
+	<insert id ="firmPerformanceHistory.insert"  parameterClass="performanceVO">
+		INSERT INTO firm_performance (vendor_id, buyer_id,performance_criteria_id,perf_value_lifetime,perf_value_ninety,performance_criteria_scope,created_date,modified_date)
+		VALUES (#vendorId#,#buyerId#,#perfCriteriaId#,
+		#perfValue#,#perfNinetyValue#,#perfCriteriaScope#,NOW(),NOW())
+		ON DUPLICATE KEY UPDATE
+		modified_date = IF( (perf_value_lifetime <![CDATA[ <> ]]> #perfValue# OR perf_value_ninety <![CDATA[ <> ]]> #perfNinetyValue#), now(),modified_date),
+		perf_value_lifetime = IF( perf_value_lifetime <![CDATA[ <> ]]> #perfValue#,#perfValue#,perf_value_lifetime),
+		perf_value_ninety = IF( perf_value_ninety <![CDATA[ <> ]]>#perfNinetyValue#,#perfNinetyValue#,perf_value_ninety);
+		
+	</insert>
+	<delete id="deleteProviderPerfHistory">
+		DELETE FROM provider_performance_history
+		WHERE DATEDIFF(now(),created_date) <![CDATA[ > ]]>90
+	</delete>
+	<delete id="deleteFirmPerfHistory">
+		DELETE FROM firm_performance_history
+		WHERE DATEDIFF(now(),created_date) <![CDATA[ > ]]>90
+	</delete>
+	<delete id="deleteSPNCriteriaHistory">
+		DELETE FROM spnet_performance_criteria_history
+		WHERE DATEDIFF(now(),created_date) <![CDATA[ > ]]>90
+	</delete>
+	<delete id="deleteSPNHdrCriteriaHistory">
+		DELETE FROM spnet_hdr_tier_history
+		WHERE DATEDIFF(now(),created_date) <![CDATA[ > ]]>90
+	</delete>
+	<delete id="deleteSPNFirmHistory">
+		DELETE FROM spnet_firm_perf_score_history
+		WHERE DATEDIFF(now(),created_date) <![CDATA[ > ]]>90
+	</delete>
+	<delete id="deleteSPNProviderHistory">
+		DELETE FROM spnet_provider_perf_score_history
+		WHERE DATEDIFF(now(),created_date) <![CDATA[ > ]]>90
+	</delete>
+	<!-- 
+	<select id="getAcceptedRateForBuyers.query" resultMap="criteria.resultMap" parameterClass="java.util.List">
+		SELECT
+		b.acceptedCount AS perfValueAll,b.performanceValueNinety AS nintyPerfVal, b.buyerId AS buyerId,
+		d.routedCount AS perfCountAll,d.routedCountNinety AS nintyPerfCount,b.providerId AS providerId , b.vendorId AS vendorId
+		FROM
+		(SELECT COUNT(resourceId) AS acceptedCount,
+		providerId,
+		vendorId,
+		buyerId,COUNT(ninetydaysind) AS performanceValueNinety FROM(SELECT hdr.accepted_resource_id AS resourceId ,
+		hdr.accepted_resource_id AS providerId,
+		hdr. accepted_vendor_id AS vendorId,
+		hdr.buyer_id AS buyerId,
+		'ACCEPTED_RATE' AS performanceCriteria,IF(DATEDIFF(NOW(),hdr.accepted_date)<![CDATA[ <= ]]>90,hdr.accepted_resource_id,NULL) AS
+		ninetydaysind,
+		'SINGLE' AS performanceScope,
+		'LIFETIME' AS timeFrame,hdr.so_id
+		FROM so_hdr hdr
+		WHERE hdr.accepted_resource_id IN 
+		<iterate  open="("
+			close=")" conjunction=", ">
+			#providerIds[]#
+		</iterate>
+		)tab1 GROUP BY buyerId,providerId)b
+		JOIN
+		(SELECT COUNT(providerId) AS routedCount,
+		providerId,
+		vendorId,
+		buyerId,COUNT(ninetydaysind) AS routedCountNinety FROM (SELECT
+		srp.resource_id AS providerId,
+		srp.vendor_id AS vendorId,
+		hdr.buyer_id AS buyerId,IF(DATEDIFF(NOW(),hdr.routed_date) <![CDATA[ <= ]]>90,srp.resource_id,NULL) AS
+		ninetydaysind,
+		hdr.so_id
+		FROM so_hdr hdr
+		JOIN so_routed_providers srp
+		ON hdr.so_id = srp.so_id
+		WHERE srp.resource_id IN 
+		<iterate   open="("
+			close=")" conjunction=", ">
+			#providerIds[]#
+		</iterate>
+		) tab2 GROUP BY buyerId,providerId) d ON d.buyerId =b.buyerId AND d.providerId = b.providerId
+	</select>
+	
+	
+	<select id="getReleasedRateForBuyers.query" resultMap="criteria.resultMap" parameterClass="java.util.List">
+		SELECT
+		b.acceptedCount AS perfCountAll,b.buyerId AS buyerId,
+		d.releasedCount AS perfValueAll,b.providerId AS providerId,b.acceptedNintyCount AS
+		nintyPerfCount,
+		d.releasedNinety AS nintyPerfVal,b.providerId AS providerId,b.vendorId AS vendorId
+		FROM
+		(SELECT COUNT(resourceId) AS acceptedCount,COUNT(acceptedNinetyDays) AS
+		acceptedNintyCount,providerId, vendorId,
+		buyerId FROM (SELECT hdr.accepted_resource_id AS resourceId,
+		hdr.accepted_resource_id AS providerId,
+		hdr. accepted_vendor_id AS vendorId,
+		hdr.buyer_id AS buyerId,IF(DATEDIFF(NOW(),hdr.accepted_date)
+		<![CDATA[ <= ]]>90,hdr.accepted_resource_id,NULL) AS
+		acceptedNinetyDays,
+		hdr.so_id
+		FROM so_hdr hdr
+		WHERE hdr.accepted_resource_id  IN 
+		<iterate  open="("
+			close=")" conjunction=", ">
+			#providerIds[]#
+		</iterate>
+		)tab1 GROUP BY buyerId,providerId)b
+		LEFT OUTER JOIN
+		(SELECT COUNT(providerId) AS releasedCount,COUNT(releasedNinetyDays) AS
+		releasedNinety,providerId, vendorId,
+		buyerId FROM(SELECT
+		srp.resource_id AS providerId,
+		srp.vendor_id AS vendorId,
+		hdr.buyer_id AS buyerId,IF(DATEDIFF(NOW(),srp.provider_resp_date)
+		<![CDATA[ <= ]]>90,srp.resource_id,NULL) AS
+		releasedNinetyDays,
+		hdr.so_id
+		FROM so_hdr hdr
+		JOIN so_routed_providers srp
+		ON hdr.so_id = srp.so_id
+		WHERE srp.resource_id  IN 
+		<iterate  open="("
+			close=")" conjunction=", ">
+			#providerIds[]#
+		</iterate>
+		AND srp.provider_resp_id = 5
+		)tab GROUP BY buyerId,providerId) d ON d.buyerId =b.buyerId AND d.providerId = b.providerId
+	</select>
+	<select id="getRejectedRateForBuyers.query" resultMap="criteria.resultMap" parameterClass="java.util.List">
+		SELECT b.routedCount AS perfCountAll,b.nintyDaysRoutedCount AS nintyPerfCount,b.buyerId AS buyerId,d.rejectedCount AS perfValueAll,
+		d.nintyDaysRejectedCount AS nintyPerfVal,b.providerId AS providerId,b.vendorId AS vendorId 
+		FROM(SELECT COUNT(providerId) AS routedCount,COUNT(routedNinetyDays) AS nintyDaysRoutedCount ,providerId, vendorId,
+		buyerId FROM(SELECT 
+		srp.resource_id AS providerId,
+		srp.vendor_id AS vendorId,
+		hdr.buyer_id AS buyerId,IF(DATEDIFF(NOW(),srp.routed_date) <![CDATA[ <= ]]>90,srp.resource_id,NULL) AS
+		routedNinetyDays,
+		hdr.so_id FROM so_hdr hdr
+		JOIN so_routed_providers srp ON hdr.so_id = srp.so_id
+		WHERE srp.resource_id  IN 
+		<iterate  open="("
+			close=")" conjunction=", ">
+			#providerIds[]#
+		</iterate>
+		) tab GROUP BY buyerId,providerId)b
+		LEFT OUTER JOIN
+		(SELECT COUNT(providerId) AS rejectedCount,COUNT(rejectedNinetyDays) AS nintyDaysRejectedCount ,providerId, vendorId,
+		buyerId FROM(SELECT 
+		srp.resource_id AS providerId,
+		srp.vendor_id AS vendorId,
+		hdr.buyer_id AS buyerId,IF(DATEDIFF(NOW(),srp.provider_resp_date) <![CDATA[ <= ]]>90,srp.resource_id,NULL) AS
+		rejectedNinetyDays,
+		hdr.so_id
+		FROM so_hdr hdr
+		JOIN so_routed_providers srp
+		ON hdr.so_id = srp.so_id
+		WHERE srp.resource_id  IN 
+		<iterate  open="("
+			close=")" conjunction=", ">
+			#providerIds[]#
+		</iterate> AND srp.provider_resp_id = 3
+		) tab GROUP BY buyerId,providerId) d ON d.buyerId =b.buyerId AND d.providerId = b.providerId
+	</select>
+	<select id="getRescheduledRateForBuyers.query" resultMap="criteria.resultMap" parameterClass="java.util.List">
+		SELECT b.acceptedCount AS perfCountAll,
+		b.nintyDaysAcceptedCount AS nintyPerfCount,d.reschedCount AS perfValueAll,
+		d.nintyDaysReschedCount AS nintyPerfVal,b.providerId AS providerId,
+		b.buyerId AS buyerId,b.vendorId AS vendorId FROM
+		(SELECT COUNT(accepted_resource_id) AS acceptedCount,
+		COUNT(acceptedNinetyDays) AS nintyDaysAcceptedCount,providerId, vendorId,
+		buyerId FROM (SELECT hdr.accepted_resource_id,
+		hdr.accepted_resource_id AS providerId,
+		hdr. accepted_vendor_id AS vendorId,
+		hdr.buyer_id AS buyerId,IF(DATEDIFF(NOW(),hdr.accepted_date) <![CDATA[ <= ]]>90,hdr.accepted_resource_id,NULL) AS
+		acceptedNinetyDays,hdr.so_id FROM so_hdr hdr
+		WHERE hdr.accepted_resource_id  IN 
+		<iterate  open="("
+			close=")" conjunction=", ">
+			#providerIds[]#
+		</iterate> )c GROUP BY buyerId,providerId)b
+		LEFT OUTER JOIN
+		(SELECT COUNT(soId)  AS reschedCount,COUNT(nintyResched) AS nintyDaysReschedCount,providerId, vendorId,
+		buyerId FROM(SELECT hdr.so_id AS soId,
+		hdr.accepted_resource_id AS providerId,
+		hdr.accepted_vendor_id AS
+		vendorId,IF( DATEDIFF(NOW(),logging.created_date) <![CDATA[ <= ]]>90,logging.so_id,NULL) AS nintyResched,
+		hdr.buyer_id AS buyerId
+		FROM so_logging logging
+		JOIN so_hdr hdr ON logging.so_id = hdr.so_id
+		WHERE logging.action_id = 36
+		AND logging.chg_comment AND logging.role_id = 1
+		AND hdr.accepted_resource_id  IN 
+		<iterate  open="("
+			close=")" conjunction=", ">
+			#providerIds[]#
+		</iterate> 
+		GROUP BY logging.so_id ORDER BY so_logging_id DESC
+		)c GROUP BY buyerId ,providerId)d ON d.buyerId =b.buyerId AND d.providerId = b.providerId
+	</select>
+   <select id="getCSATForAll.query" resultMap="java.lang.Integer" parameterClass="java.lang.Integer">
+		SELECT 100*AVG (srh.overall_score)/5 AS performanceValue,
+		hdr.accepted_resource_id AS providerId,
+		hdr.accepted_vendor_id AS
+		vendorId,
+		hdr.buyer_id AS buyerId,
+		'CSAT' AS performanceCriteria,
+		'SINGLE' AS performanceScope,
+		'LIFETIME' AS timeFrame
+		FROM survey_response_so srs
+		JOIN survey_response_hdr srh
+		ON srh.response_hdr_id=srs.response_hdr_id
+		JOIN so_hdr hdr
+		ON srs.so_id = hdr.so_id
+		WHERE hdr.accepted_resource_id = #providerId#
+   </select>
+   <select id="getCSATForBuyersFor90.query" resultMap="java.lang.Integer" parameterClass="java.lang.Integer">
+		SELECT 100*AVG (srh.overall_score)/5 AS performanceValue,
+		hdr.accepted_resource_id AS providerId,
+		hdr.accepted_vendor_id AS
+		vendorId,
+		hdr.buyer_id AS buyerId,
+		'CSAT' AS performanceCriteria,
+		'SINGLE' AS performanceScope,
+		'90DAYS' AS timeFrame
+		FROM survey_response_so srs
+		JOIN survey_response_hdr srh
+		ON srh.response_hdr_id=srs.response_hdr_id
+		JOIN so_hdr hdr
+		ON srs.so_id = hdr.so_id
+		WHERE hdr.accepted_resource_id = #providerId#  
+		AND DATEDIFF(now(),hdr.closed_date) <![CDATA[ <= ]]>90
+		GROUP BY buyerId
+   </select>
+   <select id="getCSATForAllFor90.query" resultMap="java.lang.Integer" parameterClass="java.lang.Integer">
+		SELECT 100*AVG (srh.overall_score)/5 AS performanceValue,
+		hdr.accepted_resource_id AS providerId,
+		hdr.accepted_vendor_id AS
+		vendorId,
+		hdr.buyer_id AS buyerId,
+		'CSAT' AS performanceCriteria,
+		'SINGLE' AS performanceScope,
+		'90DAYS' AS timeFrame
+		FROM survey_response_so srs
+		JOIN survey_response_hdr srh
+		ON srh.response_hdr_id=srs.response_hdr_id
+		JOIN so_hdr hdr
+		ON srs.so_id = hdr.so_id
+		WHERE hdr.accepted_resource_id = #providerId#
+		AND DATEDIFF(now(),hdr.closed_date) <![CDATA[ <= ]]>90
+   </select>
+   <select id="getArchivedCSATForBuyers.query" resultMap="java.lang.Integer" parameterClass="java.lang.Integer">
+		SELECT 100*AVG (srh.overall_score)/5 AS performanceValue,
+		hdr.accepted_resource_id AS providerId,
+		hdr.accepted_vendor_id AS
+		vendorId,
+		hdr.buyer_id AS buyerId,
+		'CSAT' AS performanceCriteria,
+		'SINGLE' AS performanceScope,
+		'LIFETIME' AS timeFrame
+		FROM supplier_prod_archive.survey_response_so srs
+		JOIN supplier_prod_archive.survey_response_hdr srh
+		ON srh.response_hdr_id=srs.response_hdr_id
+		JOIN supplier_prod_archive.so_hdr hdr
+		ON srs.so_id = hdr.so_id
+		WHERE hdr.accepted_resource_id = #providerId#
+		GROUP BY buyerId
+   </select>
+   <select id="getArchivedCSATForAll.query" resultMap="java.lang.Integer" parameterClass="java.lang.Integer">
+		SELECT 100*AVG (srh.overall_score)/5 AS performanceValue,
+		hdr.accepted_resource_id AS providerId,
+		hdr.accepted_vendor_id AS
+		vendorId,
+		hdr.buyer_id AS buyerId,
+		'CSAT' AS performanceCriteria,
+		'SINGLE' AS performanceScope,
+		'LIFETIME' AS timeFrame
+		FROM supplier_prod_archive.survey_response_so srs
+		JOIN supplier_prod_archive.survey_response_hdr srh
+		ON srh.response_hdr_id=srs.response_hdr_id
+		JOIN supplier_prod_archive.so_hdr hdr
+		ON srs.so_id = hdr.so_id
+		WHERE hdr.accepted_resource_id = #providerId#
+   </select>
+   <select id="getAcceptedCountForBuyersWithArchived.query" resultMap="java.lang.Integer" parameterClass="java.lang.Integer">
+		SELECT SUM(performanceValue),buyerId, 'ACCEPTED_RATE' AS performanceCriteria,
+		'SINGLE' AS performanceScope,
+		'LIFETIME' AS timeFrame FROM (SELECT
+		COUNT(hdr.accepted_resource_id) AS performanceValue,
+		hdr.accepted_resource_id AS providerId,
+		hdr. accepted_vendor_id AS vendorId,
+		hdr.buyer_id AS buyerId,
+		'ACCEPTED_RATE' AS performanceCriteria,
+		'SINGLE' AS performanceScope,
+		'LIFETIME' AS timeFrame
+		FROM so_hdr hdr
+		WHERE hdr.accepted_resource_id = 23006
+		GROUP BY buyerId
+		UNION
+		SELECT COUNT(hdr.accepted_resource_id) AS performanceValue,
+		hdr.accepted_resource_id AS providerId,
+		hdr. accepted_vendor_id AS vendorId,
+		hdr.buyer_id AS buyerId,
+		'ACCEPTED_RATE' AS performanceCriteria,
+		'SINGLE' AS performanceScope,
+		'LIFETIME' AS timeFrame
+		FROM supplier_prod_archive.so_hdr  hdr
+		WHERE hdr.accepted_resource_id = 10254 GROUP BY buyerId)a
+		GROUP BY buyerId
+	   
+   </select>
+   <select id="getAcceptedCountForBuyers.query" resultMap="java.lang.Integer" parameterClass="java.lang.Integer">
+		SELECT SUM(performanceValue),buyerId FROM (SELECT
+		COUNT(hdr.accepted_resource_id) AS performanceValue,
+		hdr.accepted_resource_id AS providerId,
+		hdr. accepted_vendor_id AS vendorId,
+		hdr.buyer_id AS buyerId,
+		'ACCEPTED_RATE' AS performanceCriteria,
+		'SINGLE' AS performanceScope,
+		'LIFETIME' AS timeFrame
+		FROM so_hdr hdr
+		WHERE hdr.accepted_resource_id = #providerId#
+		GROUP BY buyerId
+		
+   </select>
+   <select id="getAcceptedCountForBuyersFor90.query" resultMap="java.lang.Integer" parameterClass="java.lang.Integer">
+		SELECT SUM(performanceValue),buyerId FROM (SELECT
+		COUNT(hdr.accepted_resource_id) AS performanceValue,
+		hdr.accepted_resource_id AS providerId,
+		hdr. accepted_vendor_id AS vendorId,
+		hdr.buyer_id AS buyerId,
+		'ACCEPTED_RATE' AS performanceCriteria,
+		'SINGLE' AS performanceScope,
+		'90DAYS'  AS timeFrame
+		FROM so_hdr hdr
+		WHERE hdr.accepted_resource_id = #providerId#
+		AND DATEDIFF(now(),hdr.accepted_date) <![CDATA[ <= ]]>90
+		GROUP BY buyerId
+		
+   </select>
+	   <select id="getAcceptedCountForBuyersEval.query" resultMap="java.lang.Integer" parameterClass="java.lang.Integer">
+		SELECT
+		b.acceptedCount,b.buyerId,d.routedCount1,b.acceptedCount/d.routedCount1*100,b.providerId
+		FROM
+		(SELECT SUM(performanceValue) AS acceptedCount,buyerId ,providerId
+		FROM (SELECT COUNT(hdr.accepted_resource_id) AS performanceValue,
+		hdr.accepted_resource_id AS providerId,
+		hdr. accepted_vendor_id AS vendorId,
+		hdr.buyer_id AS buyerId,
+		'ACCEPTED_RATE' AS performanceCriteria,
+		'SINGLE' AS performanceScope,
+		'LIFETIME' AS timeFrame,hdr.so_id
+		FROM so_hdr hdr
+		WHERE hdr.accepted_resource_id = 23006
+		UNION ALL 
+		SELECT COUNT(hdr.accepted_resource_id) AS performanceValue,
+		hdr.accepted_resource_id AS providerId,
+		hdr. accepted_vendor_id AS vendorId,
+		hdr.buyer_id AS buyerId,
+		'ACCEPTED_RATE' AS performanceCriteria,
+		'SINGLE' AS performanceScope,
+		'LIFETIME' AS timeFrame,hdr.so_id
+		FROM so_hdr hdr
+		WHERE hdr.accepted_resource_id = 10254 )a
+	
+		GROUP BY buyerId)b
+	
+		JOIN
+		(SELECT SUM(routedCount) AS routedCount1,providerId,buyerId,'SINGLE' AS
+		performanceScope,
+		'LIFETIME' AS timeFrame FROM(SELECT
+		COUNT(srp.resource_id) AS routedCount,
+		srp.resource_id AS providerId,
+		srp.vendor_id AS vendorId,
+		hdr.buyer_id AS buyerId,
+		hdr.so_id
+		FROM so_hdr hdr
+		JOIN so_routed_providers srp
+		ON hdr.so_id = srp.so_id
+		WHERE srp.resource_id = 10254
+		GROUP BY hdr.buyer_id
+		UNION ALL SELECT COUNT(srp.resource_id) AS routedCount,
+		srp.resource_id AS
+		providerId,
+		srp.vendor_id AS vendorId,
+		hdr.buyer_id AS buyerId,
+		hdr.so_id
+		FROM so_hdr hdr
+		JOIN so_routed_providers srp
+		ON hdr.so_id = srp.so_id
+		WHERE srp.resource_id = 23006
+		GROUP BY hdr.buyer_id) c GROUP BY buyerId)d ON d.buyerId =b.buyerId
+
+		
+   	</select>
+	<select id="getCompletedRate.query" resultMap="java.lang.Integer" parameterClass="java.lang.Integer">
+		SELECT 100*COUNT(hdr.completed_date)/
+		COUNT(hdr.accepted_resource_id) AS
+		performanceValue,
+		hdr.accepted_resource_id AS providerId,
+		hdr.accepted_vendor_id AS vendorId,
+		hdr.buyer_id AS buyerId,
+		'COMPLETED_RATE' AS performanceCriteria,
+		'SINGLE' AS
+		performanceScope,
+		'LIFETIME' AS timeFrame
+		FROM so_hdr hdr
+		WHERE hdr.accepted_resource_id = #providerId#
+		GROUP BY buyerId
+   </select> -->
+   
+   <select id="fetch_lookup_criteria.query" resultMap="lookUpCriteria.resultMap">
+		select performance_criteria_id,criteria_name,criteria_description from lu_performance_criteria
+	</select>
+</sqlMap>

@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:include schemaLocation="../common.xsd" />
+	<xs:element name="getFirmResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="results" />
+				<xs:element ref="firms" minOccurs="0" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="firms">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="firmDetails" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="firmDetails">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="firmId" type="xs:integer" minOccurs="0" maxOccurs="1" />
+				<xs:element name="businessName" type="xs:string" minOccurs="0" maxOccurs="1" />
+				<xs:element name="companyLogoUrl" type="xs:string" minOccurs="0" maxOccurs="1" />
+				<xs:element name="overView" type="xs:string" minOccurs="0" maxOccurs="1" />
+				<xs:element name="firmOwner" type="xs:string" minOccurs="0" maxOccurs="1" />
+				<xs:element name="firmAggregateRating" type="xs:double" minOccurs="0" maxOccurs="1" />
+				<xs:element name="firmAverageTimeToAccept" type="xs:string" minOccurs="0" maxOccurs="1" />
+				<xs:element name="firmAverageArrivalWindow" type="xs:string" minOccurs="0" maxOccurs="1" />
+				<xs:element name="reviewCount" type="xs:integer" minOccurs="0" maxOccurs="1" />
+				<xs:element name="numberOfEmployees" type="xs:integer" minOccurs="0" maxOccurs="1" />
+				<xs:element name="yearsOfService" type="xs:double" minOccurs="0" maxOccurs="1" />
+				<xs:element name="hourlyRate" type="xs:string" minOccurs="0" maxOccurs="1" />
+				
+				<xs:element ref="location" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="lastCompletedProject" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="contact" minOccurs="0" maxOccurs="1" />
+				<xs:element ref="statistics" maxOccurs="1" minOccurs="0" />
+				<xs:element ref="services" minOccurs="0" maxOccurs="1" />
+				<xs:element ref="warrantyList" minOccurs="0" maxOccurs="1" />
+				<xs:element ref="polAndProcList" maxOccurs="1" minOccurs="0" />
+				<xs:element ref="reviews" minOccurs="0" maxOccurs="1" />
+				<xs:element ref="insurances" minOccurs="0" maxOccurs="1" />
+				<xs:element ref="credentials" minOccurs="0" maxOccurs="1" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+
+	<xs:element name="location">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="street1" type="xs:string" minOccurs="0"  />
+				<xs:element name="street2" type="xs:string" minOccurs="0"  />
+				<xs:element name="city" type="xs:string" minOccurs="0"  />
+				<xs:element name="state" type="xs:string" minOccurs="0"  />
+				<xs:element name="zip" type="xs:string" minOccurs="0"  />
+				<xs:element name="zip4" type="xs:string" minOccurs="0"  />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+		
+	<xs:element name="lastCompletedProject">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="soId" type="xs:string" minOccurs="0" />
+				<xs:element name="title" type="xs:string" minOccurs="0" />
+				<xs:element name="overview" type="xs:string" minOccurs="0" />
+				<xs:element name="city" type="xs:string" minOccurs="0"  />
+				<xs:element name="state" type="xs:string" minOccurs="0"  />
+				<xs:element name="zip" type="xs:string" minOccurs="0"  />
+				<xs:element name="closedDate" type="xs:date" minOccurs="0"  />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="contact">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="email" type="xs:string" minOccurs="0"  />
+				<xs:element name="web" type="xs:string" minOccurs="0"  />
+				<xs:element name="altEmail" type="xs:string" minOccurs="0" />
+				<xs:element name="businessPhone" type="xs:string" minOccurs="0" />
+				<xs:element name="businessPhoneExt" type="xs:string" minOccurs="0" />
+				<xs:element name="businessFax" type="xs:string" minOccurs="0" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="statistics">
+		<xs:complexType>
+			<xs:sequence>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="services">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="service" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="service">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="serviceCategory" type="xs:string" minOccurs="0" maxOccurs="1" />
+				<xs:element name="projectType" type="xs:string" minOccurs="0" maxOccurs="1" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="warrantyList">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="warranty" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="warranty">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="warrantyType" type="xs:string" minOccurs="0" />
+				<xs:element name="warrantyValue" type="xs:string" minOccurs="0" />
+				<xs:element name="warrantyDays" type="xs:string" minOccurs="0" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="polAndProcList">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="polAndProc" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="polAndProc">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="policyType" type="xs:string"  minOccurs="0" />
+				<xs:element name="policyValue" type="xs:string"  minOccurs="0" />
+				<xs:element name="policyPlanType" type="xs:string"  minOccurs="0" />
+				<xs:element name="policyPlanValue" type="xs:string"  minOccurs="0" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	
+	<xs:element name="reviews">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="review" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="review">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="author" type="xs:string" minOccurs="0" maxOccurs="1" />
+				<xs:element name="comment" type="xs:string" minOccurs="0" maxOccurs="1" />
+				<xs:element name="rating" type="xs:double" minOccurs="0" maxOccurs="1" />
+				<xs:element name="date" type="xs:date" minOccurs="0" maxOccurs="1" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="insurances">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="insurance" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="insurance">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="name" type="xs:string" minOccurs="0" />
+				<xs:element name="verified" type="xs:string" minOccurs="0" />
+				<xs:element name="verificationDate" type="xs:date" minOccurs="0" />
+				<xs:element name="amount" type="xs:double" minOccurs="0" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="credentials">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="credential" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="credential">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="credentialType" type="xs:string"  minOccurs="0" />
+				<xs:element name="type" type="xs:string"  minOccurs="0" />
+				<xs:element name="category" type="xs:string"  minOccurs="0" />
+				<xs:element name="source" type="xs:string"  minOccurs="0" />
+				<xs:element name="name" type="xs:string" minOccurs="0" />
+				<xs:element name="status" type="xs:string" minOccurs="0" />
+				<xs:element name="no" type="xs:string" minOccurs="0" />
+				<xs:element name="issueDate" type="xs:string" minOccurs="0" />
+				<xs:element name="expiryDate" type="xs:string" minOccurs="0" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+</xs:schema>

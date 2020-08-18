@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+
+	<bean id="performanceEvaluationService" class="com.newco.marketplace.business.businessImpl.tier.performance.PerformanceEvaluationService">
+	 	<property name="performanceEvaluationDao">
+    		<ref bean="performanceEvaluationDao"/>
+  		</property>	 
+    </bean>	
+    <bean id="performanceEvaluationDao" class="com.newco.marketplace.persistence.daoImpl.tier.performance.PerformanceEvaluationDaoImpl"
+    	lazy-init="true">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	 
+    </bean>	
+    <bean id="performanceEvaluationArchiveService" class="com.newco.marketplace.business.businessImpl.tier.performance.PerformanceEvaluationArchiveService">
+	 	<property name="performanceEvaluationDao">
+    		<ref bean="performanceEvaluationArchiveDao"/>
+  		</property>	 
+    </bean>	
+    <bean id="performanceEvaluationArchiveDao" class="com.newco.marketplace.persistence.daoImpl.tier.performance.PerformanceEvaluationArchiveDaoImpl"
+    	lazy-init="true">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapArchiveClient"/>
+  		</property>	 
+    </bean>	
+    <bean id="deletePerformanceHistoryService" class="com.newco.marketplace.business.businessImpl.tier.performance.DeletePerformanceHistoryService">
+	 	<property name="deletePerformanceHistoryDao">
+    		<ref bean="deletePerformanceHistoryDao"/>
+  		</property>	 
+    </bean>	
+    <bean id="deletePerformanceHistoryDao" class="com.newco.marketplace.persistence.daoImpl.tier.performance.DeletePerformanceHistoryDaoImpl"
+    	lazy-init="true">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	 
+    </bean>	
+</beans>

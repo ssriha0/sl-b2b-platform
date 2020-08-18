@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="memberOffers">
+<typeAlias alias="memberOfferCriteriaVO" type ="com.newco.marketplace.dto.vo.memberOffer.MemberOffersCriteriaVO"/>
+<typeAlias alias="memberOfferVO" type ="com.newco.marketplace.dto.vo.memberOffer.MemberOfferVO"/>
+<typeAlias alias="memberOfferDetailsVO" type="com.newco.marketplace.dto.vo.memberOffer.MemberOfferDetailsVO"/>
+<resultMap class="memberOfferDetailsVO" id="detailsVOFetch">
+      <result property="staticImageOnePath" column="staticImageOnePath"/>
+      <result property="staticImageTwoPath" column="staticImageTwoPath"/>
+      <result property="staticImageThreePath" column="staticImageThreePath"/>
+      <result property="mainTextOne" column="mainTextOne"/>
+      <result property="mainTextTwo" column="mainTextTwo"/>
+      <result property="mainTextThree" column="mainTextThree"/>
+      <result property="listHeader" column="listHeader"/>
+      <result property="targetSite" column="targetSite"/>
+      <result property="companyName" column="companyName"/>
+      <result property="valueList" column="memberOfferId" 
+                                     select="fetchSpecificList.query" />
+</resultMap>
+<select id="fetchSpecificList.query" parameterClass="java.lang.Integer" resultClass="java.lang.String">
+   SELECT list_value FROM member_offer_list_values WHERE member_offer_id=#value#
+</select>	
+<select id="fetchAllOffers" parameterClass="memberOfferCriteriaVO" resultClass="memberOfferVO" >
+	SELECT member_offer_id AS offerId,
+		main_text_1 AS description,
+		mo_company_name AS companyName,
+		mo_banner_thambnail_path AS offerImagePath,
+		click_count AS clickCount,
+		deal_of_day_ind AS dealOfDayInd,
+		created_date AS createdDate
+	FROM member_offer_hdr 
+	<dynamic prepend="ORDER BY">
+	<isNotNull property="sortColumn" >
+		$sortColumn$
+	</isNotNull>
+	<isNotNull property="sortOrder" >
+		$sortOrder$
+	</isNotNull>
+	<isNotNull property="endPageIndex" >
+			<isNotNull property="startPageIndex" >
+					LIMIT #startPageIndex#,#endPageIndex#
+			</isNotNull>
+	</isNotNull>
+	</dynamic>
+</select>
+
+<select id="memberOffers.fetchSpecificDetails" parameterClass="java.lang.Integer" resultMap="detailsVOFetch">
+       SELECT mo_banner_path AS staticImageOnePath,
+              mo_second_image_path AS staticImageTwoPath,
+              mo_third_image_path AS staticImageThreePath,
+              main_text_1 AS mainTextOne,
+              main_text_2 AS mainTextTwo,
+              mo_list_hdr AS listHeader,
+              mo_target_site_url AS targetSite,
+              mo_company_name as companyName,
+              member_offer_id AS memberOfferId,
+              main_text_3 AS mainTextThree
+       FROM member_offer_hdr
+       WHERE member_offer_id=#value#
+</select>
+<select id="checkcount.check" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+   SELECT view_count FROM  member_offer_provider_views  WHERE provider_id =#providerId# AND member_offer_id=#memberOfferId#
+</select>
+<insert id="insertOrUpdateViewCount.insert" parameterClass="java.util.HashMap">
+        INSERT INTO member_offer_provider_views VALUES(#providerId#,#memberOfferId#,1)
+</insert>
+<update id="insertOrUpdateViewCount.update" parameterClass="java.util.HashMap">
+        UPDATE  member_offer_provider_views set view_count=#viewCount# 
+        WHERE provider_id =#providerId# AND member_offer_id=#memberOfferId#
+</update>
+
+<update id="updateViewCount.update" parameterClass="java.lang.Integer">
+        UPDATE member_offer_hdr SET click_count=click_count+1 WHERE member_offer_id=#value#
+</update>
+
+<select id="fetchDealOfTheDay" resultClass="memberOfferVO" >
+	SELECT click_count AS clickCount,
+		main_text_1 AS description,
+		member_offer_id AS offerId,
+		mo_company_name AS companyName,
+		mo_banner_thambnail_path AS offerImagePath,
+		deal_of_day_ind AS dealOfDayInd 
+		FROM member_offer_hdr WHERE click_count = (SELECT MAX(click_count) FROM member_offer_hdr) ORDER BY created_date DESC LIMIT 1
+</select>
+
+<select id="fetchDealOfDayUsingDodInd" resultClass="memberOfferVO">
+SELECT
+  click_count     AS clickCount,
+  main_text_1     AS description,
+  member_offer_id AS offerId,
+  mo_company_name AS companyName,
+  mo_banner_thambnail_path  AS offerImagePath,
+  deal_of_day_ind AS dealOfDayInd
+FROM member_offer_hdr
+WHERE deal_of_day_ind = 1
+ORDER BY created_date DESC
+LIMIT 1
+</select>
+
+<select id="getTotalOfferCount" resultClass="java.lang.Integer" >
+	SELECT COUNT(member_offer_id) FROM member_offer_hdr
+</select>
+
+</sqlMap>

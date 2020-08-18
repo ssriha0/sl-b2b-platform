@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+
+	<package name="licensesAndCert" extends="ServiceLiveBase">
+		<default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+		<action name="licensesAndCertAction*" class="licensesAndCertAction" method="{1}">		
+			<result name="load">/jsp/providerRegistration/modules/tab_licenses_add_edit.jsp</result>
+			<result name="error">/jsp/public/error/body/errorBody.jsp</result>
+			<result name="input" type="redirectAction">
+	             <param name="actionName">allTabView?tabView=tab3</param>
+	             <param name="namespace">/jsp/providerRegistration</param>
+	             <param name="nexturl">licensesAndCertActiondoInput.action</param>
+        	</result>	
+        	<result name="returnToPA" type="redirectAction">
+	             <param name="actionName">powerAuditorWorkflowControllerAction_refreshPage?auditTimeLoggingId=${auditTimeLoggingId}</param>
+        	</result>		 
+        	<result name="success" type="redirectAction">
+	            <param name="actionName">allTabView?tabView=tab3&amp;auditTimeLoggingId=${auditTimeLoggingId}</param>
+	            <param name="namespace">/jsp/providerRegistration</param>
+	            <param name="nexturl">licensesAndCertdoViewList.action?auditTimeLoggingId=${auditTimeLoggingId}</param> 
+	       	</result> 
+	       	<result name="forward" type="redirectAction">
+	             <param name="actionName">allTabView?tabView=tab3</param>
+	             <param name="namespace">/jsp/providerRegistration</param>
+	             <param name="nexturl">listLicenceAndCertdoViewList1.action</param>
+        	</result>
+        	
+        	<result name="next" type="redirectAction">
+	           <param name="actionName">allTabView?tabView=tab4</param>
+	           <param name="namespace">/jsp/providerRegistration</param>
+      		</result>
+	      	<result name="prev" type="redirectAction">
+	            <param name="actionName">allTabView?tabView=tab3</param>
+	            <param name="namespace">/jsp/providerRegistration</param>
+	       	</result>
+	       	
+	       	<result name="prevLic" type="redirectAction">
+            	<param name="actionName">allTabView?tabView=tab2</param>
+            	<param name="namespace">/jsp/providerRegistration</param>
+            </result>
+            
+            <result name="prevLic" type="redirectAction">
+            	<param name="actionName">allTabView?tabView=tab2</param>
+            	<param name="namespace">/jsp/providerRegistration</param>
+            </result>
+            
+            <result name="inputLic" type="redirectAction">
+	             <param name="actionName">allTabView?tabView=tab3</param>
+	             <param name="namespace">/jsp/providerRegistration</param>
+	             <param name="nexturl">listLicenceAndCertdoViewList1.action</param>
+        	</result>
+        	
+        	<result name="updateProfile" type="redirectAction">
+	           <param name="actionName">regDashboarddoSubmitRegistration</param>
+	            <param name="namespace">/jsp/providerRegistration</param>
+        	</result>
+
+	   </action>
+        <action name="licensesAndCert*" class="licensesAndCertAction" method="doViewList">
+			<result name="viewList">/jsp/providerRegistration/modules/tab_licenses_add_edit.jsp</result>
+			<result name="error">/jsp/public/error/body/errorBody.jsp</result>
+		</action> 
+        
+        <action name="listLicenceAndCert*" class="licensesAndCertAction" method="doViewList1">
+			<result name="viewList1">/jsp/providerRegistration/modules/tab_licenses_list.jsp</result>
+			<result name="error">/jsp/public/error/body/errorBody.jsp</result>
+		</action>
+		
+	</package>
+
+
+</struts>

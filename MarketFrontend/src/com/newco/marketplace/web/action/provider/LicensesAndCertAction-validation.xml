@@ -1,0 +1,28 @@
+<!DOCTYPE validators PUBLIC
+        "-//Apache Struts//XWork Validator 1.0.2//EN"
+        "http://struts.apache.org/dtds/xwork-validator-1.0.2.dtd">
+        
+<validators>
+
+	<field name="licensesAndCertDto.credentialTypeId">
+	 <field-validator type="int">
+     	<param name="min">0</param>
+     	<message key="provider.licensesaddedit.credentialTypeId.required"/> 
+	    </field-validator>
+	</field>
+
+ 	<field name="licensesAndCertDto.categoryId">
+	    <field-validator type="int">
+     	<param name="min">0</param>
+			<message key="provider.licensesaddedit.categoryId.required"/>	
+	    </field-validator>
+	</field>
+
+ 	<field name="licensesAndCertDto.licenseName">
+	   <field-validator type="requiredstring">
+			<param name="trim">true</param>
+			<message key="provider.licensesaddedit.licenseName.required"/>	
+	    </field-validator>
+	</field>
+	
+</validators>

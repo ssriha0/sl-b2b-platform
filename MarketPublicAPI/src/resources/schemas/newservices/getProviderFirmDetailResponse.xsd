@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/newservices" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" targetNamespace="http://www.servicelive.com/namespaces/newservices" elementFormDefault="qualified" jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+  <xs:include schemaLocation="leadsCommon.xsd" />
+    <!-- This is the new get Match Provider Response -->
+      <!-- Root Element -->
+      
+    <xs:element name="GetProviderFirmResponse">
+            <xs:complexType>
+                <xs:sequence>
+                   <xs:element ref="results"/>
+                   <xs:element ref="Firms" minOccurs="0"/>
+
+              </xs:sequence>
+            </xs:complexType>
+      </xs:element>
+      
+      <xs:element name="Firms">
+            <xs:complexType>
+                  <xs:sequence>
+                        <xs:element ref="FirmDetails"
+                         minOccurs="0" maxOccurs="unbounded"/>
+                  </xs:sequence>
+            </xs:complexType>
+      </xs:element>
+    <xs:element name="FirmDetails">
+      <xs:complexType>
+              <xs:sequence>
+                   <xs:element name="FirmId" type="xs:int" minOccurs="0" maxOccurs="1" />
+                   <xs:element name="FirmName" type="xs:string" minOccurs="0" maxOccurs="1" />
+                   <xs:element name="FirmOverview" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                   <xs:element name="FirmOwner" type="xs:string" minOccurs="0" maxOccurs="1" />
+                   <xs:element name="FirmRating" type="xs:double" minOccurs="0" maxOccurs="1" />
+                   <xs:element ref="Reviews" minOccurs="0" maxOccurs="1"/>
+                   <xs:element name="NumberEmployees" type="xs:int" minOccurs="0" maxOccurs="1"/>
+                   <xs:element name="YearsOfService" type="xs:double" minOccurs="0" maxOccurs="1"/>
+                   <xs:element name="Policy" maxOccurs="1" minOccurs="0">
+                     <xs:complexType>
+                        <xs:sequence>
+                         <xs:element name="WarrantyLaborMonths" type="xs:int" minOccurs="0" maxOccurs="1" />
+                         <xs:element name="WarrantyPartsMonths" type="xs:int" minOccurs="0" maxOccurs="1" />
+                         <xs:element name="FreeEstimates" type="xs:boolean" minOccurs="0" maxOccurs="1" />
+                        </xs:sequence>
+                    </xs:complexType>
+                   </xs:element>
+                   <xs:element ref="Insurances" minOccurs="0" maxOccurs="1"/>
+                   <xs:element ref="Credentials" minOccurs="0" maxOccurs="1"/>
+                   <xs:element ref="Services" minOccurs="0" maxOccurs="1"/>            
+             </xs:sequence>
+            </xs:complexType>
+      </xs:element>
+      <xs:element name="Reviews"> 
+            <xs:complexType>
+                  <xs:sequence>
+                        <xs:element ref="Review" minOccurs="0" maxOccurs="unbounded"/>
+                  </xs:sequence>
+            </xs:complexType>
+      </xs:element>
+      
+       
+
+	 <xs:element name="Review">
+      <xs:complexType>
+                  <xs:sequence>
+                        <xs:element name="Author" type="xs:string" minOccurs="0" maxOccurs="1" />
+                        <xs:element name="Comment" type="xs:string" minOccurs="0" maxOccurs="1" />
+                        <xs:element name="Rating" type="xs:double" minOccurs="0" maxOccurs="1" />
+                        <xs:element name="Date" type="xs:date" minOccurs="0" maxOccurs="1" />
+                  </xs:sequence>
+       </xs:complexType>
+      </xs:element>
+      <xs:element name="Insurances">
+         <xs:complexType>
+          <xs:sequence>
+            <xs:element name="Insurance" minOccurs="0" maxOccurs="unbounded">
+           		 <xs:complexType>
+            	<xs:sequence>
+           			 <xs:element type="xs:int" name="Amount" minOccurs="0"/>
+           			 <xs:element type="xs:date" name="VerificationDate" minOccurs="0"/>
+            	</xs:sequence>
+            		<xs:attribute type="xs:string" name="Name" use="optional"/>
+           		    <xs:attribute type="xs:string" name="Verified" use="optional"/>
+            	</xs:complexType>
+            </xs:element>
+           </xs:sequence>
+         </xs:complexType>
+      </xs:element>
+       
+     <xs:element name="Credentials">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Credential" minOccurs="0" maxOccurs="unbounded">
+                 	<xs:complexType>
+            			<xs:sequence>
+           			 		
+            				<xs:element type="xs:string" name="Type" minOccurs="0"/>
+           		    		<xs:element type="xs:string" name="Category" minOccurs="0"/>
+           		    		<xs:element type="xs:string" name="Source" minOccurs="0"/>
+           		   			 <xs:element type="xs:string" name="Name" minOccurs="0"/>
+            			</xs:sequence>
+            				<xs:attribute type="xs:string" name="Status" use="optional"/>
+           			 		<xs:attribute type="xs:string" name="CredentialType" use="optional"/>
+           			</xs:complexType>
+            	</xs:element>
+           		</xs:sequence>
+        	 </xs:complexType>
+      </xs:element>
+    
+               <xs:element name="Services">
+                 <xs:complexType>
+                   <xs:sequence>
+                     <xs:element ref="SubService" minOccurs="0" maxOccurs="unbounded"/>
+                   </xs:sequence>
+                 </xs:complexType>
+          </xs:element>
+         
+             <xs:element name="SubService">
+      <xs:complexType>
+                  <xs:sequence>
+                        <xs:element name="ServiceCategory" type="xs:string" minOccurs="0" maxOccurs="1" />
+                        <xs:element name="ProjectType" type="xs:string" minOccurs="0" maxOccurs="1" />              
+                        <xs:element name="ServiceScope" type="xs:string" minOccurs="0" maxOccurs="1" />
+                  </xs:sequence>
+      </xs:complexType></xs:element>
+      
+</xs:schema>

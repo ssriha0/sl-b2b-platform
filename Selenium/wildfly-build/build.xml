@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Build.xml file for Selenium -->
+
+<project name="Selenium" basedir="../" default="distribute">
+	<echo level="info">
+	===============================================================================
+	                                ${ant.project.name} 
+	===============================================================================</echo>
+	<!-- Initialize -->
+	<target name="init">
+			<!-- Create the time stamp -->
+			<tstamp/>
+			<!-- Create build number file -->
+			<buildnumber/>
+			<property name="dir.base"      value="${basedir}"/>
+			<property name="dir.source"    value="${dir.base}/src/main/java"/>
+			<property name="dir.resources" value="${dir.base}/src/main/resources"/>
+			<property name="dir.dest"      value="${dir.base}/bin"/>
+			<property name="dir.build"     value="${dir.base}/build"/>
+			<property name="dir.logs"      value="${dir.base}/logs"/>
+			<property name="dir.lib"       value="${dir.base}/lib"/>
+			<property name="dir.dist"      value="${dir.base}/dist"/>
+			<property name="target"        value="1.8"/>
+			<property name="source"        value="1.8"/>
+			<property name="jar.file"      value="${dir.dist}/${ant.project.name}.jar"/>
+			<property name="main-class"    value="com.servicelive.scenarios.SmokeTestMain"/>
+		
+			<path id="build.class.path">
+				<fileset dir="${dir.lib}">
+					 <include name="*.jar" />  
+				</fileset>
+			</path>
+	</target>
+	
+	<!-- Clean the folders -->
+	<target name="clean" depends="init">
+			<delete dir="${dir.dest}" failonerror="false"/>
+			<mkdir dir="${dir.dest}"/>
+			<mkdir dir="${dir.dest}/lib"/>
+			<delete dir="${dir.logs}" failonerror="false"/>
+			<mkdir dir="${dir.logs}"/>	
+			<delete dir="${dir.dist}" failonerror="false"/>
+			<mkdir dir="${dir.dist}"/>
+	</target>
+	
+	<!-- Compile java code -->
+	<target name="compile" depends="clean">
+			<javac
+					srcdir="${dir.source}"
+					destdir="${dir.dest}"
+					classpathref="build.class.path"
+					target="${target}"
+					source="${source}"
+					debug="on"
+					deprecation="false"
+			/>
+			<copy todir="${dir.dest}">
+					<fileset dir="${dir.resources}">
+						<include name="**/*.properties"/>
+					</fileset>					
+			</copy>				
+	</target>
+							
+	<!-- Create the JAR file -->
+	<target name="jar" depends="compile">
+	        <copy todir="${dir.dest}/lib" flatten="true">
+	            	<path refid="build.class.path"/>
+	        </copy>
+	
+	        <manifestclasspath property="manifest.classpath" jarfile="${jar.file}">
+	            	<classpath refid="build.class.path"/>
+	        </manifestclasspath>
+	
+	        <jar destfile="${jar.file}" basedir="${dir.dest}">
+		            <manifest>
+		            	<attribute name="Built-Date" value="${TODAY}"/>
+		                <attribute name="Main-Class" value="${main-class}"/>
+		                <attribute name="Class-Path" value="${manifest.classpath}"/>
+		            </manifest>
+	        </jar>  
+    </target>
+
+	<!-- Execute the JAR file -->
+    <target name="runjar" depends="jar">
+        	<java jar="${jar.file}" fork="true">
+				<arg line="${Env}"/>
+			</java>
+    </target>	
+	
+	<target name="distribute" depends="runjar">
+	</target>
+
+</project>
+			

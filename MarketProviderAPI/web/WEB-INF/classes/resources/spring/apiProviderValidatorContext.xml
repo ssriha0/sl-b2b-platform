@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd
+http://cxf.apache.org/jaxrs
+http://cxf.apache.org/schemas/jaxrs.xsd">
+	<bean id="RequestValidator" 
+		class="com.newco.marketplace.api.provider.utils.validators.RequestValidator">
+ 		<property name="loggingProcess">
+			<ref bean="LoggingProcess"/>
+	  	</property>	
+	 	<property name="authenticationProcess">
+			<ref bean="AuthenticationProcess"/>
+		</property>
+		<property name="authorizationProcess">
+			<ref bean="AuthorizationProcess"/>
+		</property>
+    </bean>
+
+	<bean id="ResponseValidator" 
+		class="com.newco.marketplace.api.provider.utils.validators.ResponseValidator">
+		<property name="loggingProcess">
+			<ref bean="LoggingProcess"/>
+	  	</property>	
+	  	
+		<property name="conversionUtility">
+			<ref bean="ConversionUtility"/>
+	  	</property>
+ 	</bean>  
+ 	
+ 	<bean id="reqResValidator"
+		class="com.newco.marketplace.api.provider.utils.validators.ReqResValidator">
+	</bean>
+	
+	<bean id="timeOnSiteValidator_v3_0" class="com.newco.marketplace.api.provider.utils.validators.v3_0.ProviderTimeOnSiteValidator">
+ 		<property name="manageScheduleBO">
+			<ref bean="manageScheduleBO" />
+		</property>	
+    </bean>
+  
+</beans>
+

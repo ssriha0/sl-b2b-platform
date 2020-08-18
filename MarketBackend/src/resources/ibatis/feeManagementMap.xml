@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<typeAlias alias="marketPlaceFee" type="com.newco.marketplace.dto.vo.ledger.MarketPlaceTransactionVO"/>
+	<typeAlias alias="ledgerFee" type="com.newco.marketplace.dto.vo.fee.FeeInfoVO"/>
+	<typeAlias alias="ledgerFeeDetails" type="com.newco.marketplace.dto.vo.fee.FeeInfoItemVO"/>
+	
+	<select id="ledger_fee.query" parameterClass= "marketPlaceFee" resultClass="ledgerFee">
+		SELECT  ledger_fee_id				as ledgerFeeId,
+				fee_type_id					as ledgerFeeTypeId,
+				ledger_entry_rule_id		as ledgerEntryRuleId,
+				fee_name					as feeName
+		FROM 	ledger_fee
+		WHERE 	ledger_entry_rule_id 		= #ledgerEntryRuleId#
+		AND		entity_type_id				=#userTypeID#
+	</select>
+
+	<select id="ledger_fee_type.query" parameterClass= "marketPlaceFee" resultClass="ledgerFee">
+		SELECT  ledger_fee_id				as ledgerFeeId,
+				fee_type_id					as ledgerFeeTypeId,
+				ledger_entry_rule_id		as ledgerEntryRuleId,
+				fee_name					as feeName
+		FROM 	ledger_fee
+		WHERE 	ledger_entry_rule_id 		=#ledgerEntryRuleId#
+		AND		entity_type_id				=#userTypeID#
+		AND 	fee_type_id					=#feeTypeID#
+	</select>	
+
+
+
+	<select id="ledger_fee_details.query" parameterClass= "java.lang.Integer" resultClass="ledgerFeeDetails">
+		SELECT  ledger_fee_detail_id		as ledgerFeeDetailsId,
+				fee_value_type_id			as calculatedBy,
+				fee_value					as feeValue,
+				time_period_hr 				as timePeriod
+		FROM 	ledger_fee_details
+		WHERE 	ledger_fee_id 				= #ledgerFeeId#				
+	</select>
+	
+	<select id="ledger_rule_pricing_expression.query"  resultClass="java.util.HashMap">
+
+		SELECT Concat(ledger_entry_rule_id ,'_',funding_type_id ) as ruleId, IFNULL( pricing_expression, ' ') as expression
+      
+  		FROM ledger_transaction_rule_funding	order by ruleId		
+	</select>	
+	
+	
+</sqlMap>	

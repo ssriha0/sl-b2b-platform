@@ -1,0 +1,283 @@
+<project name="sl-report">
+    <description>
+        Targets to generate reports, and integrate them into the API overview.
+        Some of these override targets in asl-java-report.xml.
+    </description>
+
+
+
+<!-- ===================================================================================
+        Properties and imports
+     =================================================================================== -->
+
+    <!-- taskdef jars and conf files -->
+    <property name="java-report.opt-dir" location="${sl-common.ant-dir}/opt" />
+
+    <!-- reports are generated to here -->
+    <property name="java-report.checkstyle-dir" location="${java-report.report-dir}/checkstyle-report"/>
+    <property name="java-report.findbugs-dir" location="${java-report.report-dir}/findbugs-report"/>
+
+    <property name="java-report.sqlplans-dir" location="src/test/sqlplans"/>
+
+
+<!-- ===================================================================================
+        Common Targets (stuff that ASL doesn't provide)
+     =================================================================================== -->
+
+    <target name="report-checkstyle" description="Generate a CheckStyle report">
+        <echo level="info" message="Generating CheckStyle report to ${java-report.checkstyle-dir} based on conf at ${java-report.opt-dir}/checkstyle/sl_java.xml" />
+
+        <path id="checkstyle.classpath">
+            <path refid="java-build.classpath"/>
+            <fileset dir="${sl-common.ant-dir}/opt/checkstyle">
+                <include name="*.jar"/>
+            </fileset>
+        </path>
+        <taskdef resource="checkstyletask.properties" classpathref="checkstyle.classpath" />
+
+
+        <mkdir dir="${java-report.checkstyle-dir}" />
+        <mkdir dir="${sl-common.scratch-dir}" />
+        
+        <delete file="${sl-common.scratch-dir}/checkstyle_report.xml" failonerror="false" />
+        <checkstyle config="${java-report.opt-dir}/checkstyle/sl_java.xml"
+                    failOnViolation="false"
+                    failureProperty="csErrors">
+          <fileset dir="${java-build.src-dir}" includes="**/*.java" />
+          <formatter type="xml" toFile="${sl-common.scratch-dir}/checkstyle_report.xml"/>
+        </checkstyle>
+        <delete file="${java-report.checkstyle-dir}/index.html" />
+        <xslt in="${sl-common.scratch-dir}/checkstyle_report.xml" style="${java-report.opt-dir}/checkstyle/checkstyle-simple.xsl" out="${java-report.checkstyle-dir}/index.html" />
+    </target>
+
+
+
+    <target name="report-findbugs" description="Generate a FindBugs report">
+
+        <echo level="info" message="Generating Findbugs report to ${java-report.findbugs-dir}" />
+        <path id="findbugs.classpath">
+            <path refid="java-build.classpath" />
+            <fileset dir="${sl-common.ant-dir}/opt/findbugs">
+                <include name="*.jar"/>
+            </fileset>
+        </path>
+
+        <taskdef name="findbugs" classpathref="findbugs.classpath" classname="edu.umd.cs.findbugs.anttask.FindBugsTask"/>
+
+        <mkdir dir="${java-report.findbugs-dir}" />
+
+        <findbugs home="${sl-common.ant-dir}/opt/findbugs" output="html" outputFile="${java-report.findbugs-dir}/index.html" debug="true">
+            <sourcePath path="${java-build.src-dir}" />
+            <class location="${java-build.classes-dir}" />
+        </findbugs>
+    </target>
+
+
+
+
+
+<!-- ===================================================================================
+        Overridden Targets
+     =================================================================================== -->
+    
+    <target name="report-all"
+            depends="compile, test-unit, report-tests, report-cobertura, report-pmd, report-checkstyle, report-findbugs, report-javadoc"
+            description="Unit test, coverage, PMD, checkstyle, findbugs, javadoc"/>
+
+
+    <target name="report-javadoc" depends="-init, -create-overview"
+        description="Build API doc ONLY - see report-all for the bacon">
+
+
+        <!-- Create package-level comments for gpm.version 
+        <echo file="${src.dir}/gpm/version/package.html" level="error">
+&lt;body&gt;${proj.jarname} MD5 checksum: &lt;tt&gt;${proj.jar.md5}&lt;/tt&gt;&lt;/body&gt;
+        </echo>-->
+
+    <!-- excludesfile="${build-excludes.file}" -->
+
+        <javadoc
+            sourcepath="${java-build.src-dir}"
+            packagenames="*"
+            destdir="${java-report.javadoc-dir}"
+            author="true"
+            version="true"
+            use="true"
+            windowtitle="${ant.project.name} API"
+            verbose="false"
+            source="${java-build.source-ver}"
+            classpathref="java-build.classpath"
+            nodeprecated="true"
+            nodeprecatedlist="true"
+            nohelp="true"
+            overview="${java-report.javadoc-dir}/overview.html"
+            doctitle="${ant.project.name} API &lt;br&gt;&lt;font size=-1&gt;SVN rev# ${sl-svn.rev} built ${common.timestamp-long} by ${shell.USERNAME}&lt;/font&gt;"
+            footer="&lt;a href=http://www.servicelive.com &gt; &lt;img border=0 src=http://www.servicelive.com/ServiceLiveWebUtil/images/artwork/common/service_live_logo.gif /&gt;&lt;/a&gt;"
+        >
+        <!--
+        -->
+
+            <!--fileset dir="${java-build.src-dir}" includes="**/*.java,**/package.html"/-->
+
+            <tag name="todo" scope="all" description="To do:"/>
+            <link href="http://java.sun.com/j2se/1.5.0/docs/api" />
+            <link href="http://static.springframework.org/spring/docs/2.0.8/api" />
+            <link href="http://ibatis.apache.org/docs/java/user" />
+            <link offline="true" href="http://java.sun.com/j2se/1.5.0/docs/api/" packagelistLoc="http://java.sun.com/j2se/1.5.0/docs/api/package-list" />
+        </javadoc>
+    </target>
+    <!-- 
+    <group title="ServiceLive" packages="com.newco"/>
+    <group title="Sears" packages="com.newco"/> 
+    <bottom><![CDATA[<i>Copyright &#169; ${common.year} Service Live.  All Rights Reserved.</i>]]></bottom> 
+    -->
+
+
+
+
+
+<!-- ===================================================================================
+        Private Helper Targets do NOT include 'description' attr in target element
+          and (per ASL conventions) start with a hyphen.
+     =================================================================================== -->
+
+    <!-- Consolidate generated reports into Javadoc API Overview page. -->
+    <target name="-create-overview">
+        <mkdir dir="${java-report.javadoc-dir}/api/resources/assets" />
+
+        <echo file="${java-report.javadoc-dir}/overview.html" level="error">
+            <![CDATA[
+            <body><B>Project Resources:</B>          
+            <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <a href="http://151.149.159.108:8080/hudson/">Hudson</a>
+            ]]>
+        </echo>
+
+        <if><available file="${java-report.sqlplans-dir}/index.html" />
+            <then>
+                <!-- copy from src.dir, or javadoc can't see them -->
+                <mkdir dir="${java-report.report-dir}/assets/plans" />
+                <copy todir="${java-report.report-dir}/assets/plans" verbose="true">
+                    <fileset dir="${java-report.sqlplans-dir}" />
+                </copy>
+                <echo file="${java-report.javadoc-dir}/overview.html" level="error" append="true">
+                    <![CDATA[
+                    <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="resources/assets/plans/">SQL Query Explain Plans</a>
+                    ]]>
+                </echo>
+                <echo level="info" message="Found SQL Plans..." />
+            </then>
+        </if>
+
+        <if><available file="${java-report.pmd-dir}/index.html" />
+            <then>
+                <echo file="${java-report.javadoc-dir}/overview.html" level="error" append="true">
+                    <![CDATA[
+                        <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <a href="../pmd-report/index.html">PMD report</a>
+                    ]]>
+                </echo>
+                <echo level="info" message="Found PMD results..." />
+            </then>
+        </if>
+
+        <if><available file="${java-report.checkstyle-dir}/index.html" />
+            <then>
+                <echo file="${java-report.javadoc-dir}/overview.html" level="error" append="true">
+                    <![CDATA[
+                        <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <a href="../checkstyle-report/index.html">Checkstyle report</a>
+                    ]]>
+                </echo>
+                <echo level="info" message="Found Checkstyle results..." />
+            </then>
+        </if>
+
+        <if><available file="${java-report.findbugs-dir}/index.html" />
+            <then>
+                <echo file="${java-report.javadoc-dir}/overview.html" level="error" append="true">
+                    <![CDATA[
+                        <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <a href="../findbugs-report/index.html">Findbugs report</a>
+                    ]]>
+                </echo>
+                <echo level="info" message="Found Findbugs results..." />
+            </then>
+        </if>
+
+        <if><available file="${java-report.speling-dir}/CheckDoc.txt" />
+            <then>
+                <echo file="${java-report.javadoc-dir}/overview.html" level="error" append="true">
+                    <![CDATA[
+                    <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="../speling-report/CheckDoc.txt">Javadoc Spelling Errors</a>
+                    ]]>
+                </echo>
+                <echo level="info" message="Found Speling report..." />
+            </then>
+        </if>
+
+        <if><available file="${java-report.coverage-dir}/index.html" />
+            <then>
+                <echo file="${java-report.javadoc-dir}/overview.html" level="error" append="true">
+                    <![CDATA[
+                    <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a target="_blank" href="../coverage-report/index.html">Cobertura Unit Test Coverage Report</a>
+                    ]]>
+                </echo>
+                <echo level="info" message="Found Coverage report..." />
+            </then>
+        </if>
+
+        <if><available file="${java-report.test-dir}/index.html" />
+            <then>
+                <echo file="${java-report.javadoc-dir}/overview.html" level="error" append="true">
+                    <![CDATA[
+                    <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a target="_blank" href="../test-report/index.html">JUnit Test Results</a>
+                    ]]>
+                </echo>
+                <echo level="info" message="Found junit results..." />
+            </then>
+        </if>
+
+        <if><available file="${java-report.report-dir}/${jmeter.reportname}.html" />
+            <then>
+                <echo file="${java-report.javadoc-dir}/overview.html" level="error" append="true">
+                    <![CDATA[
+                    <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="resources/jmeter_report.html">Jmeter report</a>
+                    ]]>
+                </echo>
+                <echo level="info" message="Found Jmeter report..." />
+            </then>
+        </if>
+
+        <echo file="${java-report.javadoc-dir}/overview.html" level="error" append="true">
+            <![CDATA[</body>]]>
+        </echo>
+
+    </target>
+
+
+
+    <target name="-copyJavadocToIntegrationServer" if="never">
+        <!-- Copy javadoc to apache drop area.
+             Javadoc uses this to create links to common api doc from dependent projects,
+             and it's just cool to have it all in one place.  
+             Also includes findbugs and spell check.
+             But slow, so only do this if running from integration server. -->
+
+        <antcall target="report-findbugs" />
+        <antcall target="report-spellcheck" />
+        <antcall target="report-javadoc" />
+
+        <antcall target="_copyIfUnix">
+            <param name="srcdir" value="${java-report.javadoc-dir}"/>
+            <param name="destdir" value="/www/html/kohler/javadoc/${ant.project.name}"/>
+        </antcall>
+    </target>
+
+</project>
+

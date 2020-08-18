@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<bean id="SOWizardFetchBean" class="com.newco.marketplace.web.delegatesImpl.SOWizardFetchDelegateImpl">
+        <property name="luDelegate" ref="lookupManager"/>
+        <property name="buyerBo" ref="buyerBo"/>
+        <property name="serviceOrderBO" ref="soBOAOP"/>
+        <property name="documentBO" ref="documentBO" />
+        <property name="providerSearchBO" ref="providerSearchBO"/>
+        <property name="masterCalculatorBO" ref="masterCalculatorBO"/>
+        <property name="orderGroupBO" ref="OrderGroupBOTarget"/>
+        <property name="orderFulfillmentHelper" ref="ofHelper" />
+        <property name="buyerFeatureSetBO">
+			<ref bean="buyerFeatureSetBO" />
+		</property>
+	</bean>
+</beans>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<!-- Start DAO  Loading -->
+	<bean id="lookupDAOImpl" class="com.newco.marketplace.persistence.daoImpl.provider.LookupDAOImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+	
+	<bean id="marketPlaceDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.MarketPlaceDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	<bean id="marketPlaceBOImplTarget" class="com.newco.marketplace.business.businessImpl.provider.MarketPlaceBOImpl" scope="prototype"
+		lazy-init="true">
+		<constructor-arg index="0" ref="lookupDAOImpl"/>
+		<constructor-arg index="1" ref="marketPlaceDaoImpl"/>
+		<constructor-arg index="2" ref="activityDaoImpl"/>
+		<constructor-arg index="3" ref="contactDaoImpl"/>
+		<property name="transactionManager">
+            <ref bean="dsTransactionManagerMain"/>
+        </property>
+	</bean>
+	
+	
+	<!-- End BO  Loading -->
+	
+</beans>

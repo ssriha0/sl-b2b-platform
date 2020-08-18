@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-2.0.xsd
+        http://www.springframework.org/schema/jee 
+        http://www.springframework.org/schema/jee/spring-jee-2.0.xsd">
+    
+    <bean id="com.servicelive.wallet.valuelink.ejb.placeholderConfig"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+			<value>classpath:/com/servicelive/wallet/valuelink/ejb/bootstrap.${sl_app_lifecycle}.properties</value>
+		</property>
+	</bean>
+	<bean id="jndiTemplate" class="org.springframework.jndi.JndiTemplate">
+    <property name="environment">
+        <props>
+            <prop key="java.naming.factory.initial">
+                ${java.naming.factory.initial}
+            </prop>
+            <prop key="java.naming.provider.url">
+                ${java.naming.provider.url}
+            </prop>
+            <prop key="java.naming.factory.url.pkgs">
+                ${java.naming.factory.url.pkgs}
+            </prop>
+        </props>
+    </property>
+	</bean>
+	<bean id="jmsQueueConnectionFactory"
+	      class="org.springframework.jndi.JndiObjectFactoryBean">
+	    <property name="jndiTemplate">
+	        <ref bean="jndiTemplate"/>
+	    </property>
+	    <property name="jndiName">
+	        <value>MQQueueConnectionFactory</value>
+	    </property>
+	</bean>
+	<bean id="SLRequestQueue"
+	    class="org.springframework.jndi.JndiObjectFactoryBean">
+	    <property name="jndiTemplate">
+	        <ref bean="jndiTemplate"/>
+	    </property>
+	    <property name="jndiName">
+	        <value>wsmq/RequestQueue</value>
+	    </property>
+	</bean>
+	
+	<bean id="SLResponseQueue"
+	    class="org.springframework.jndi.JndiObjectFactoryBean">
+	    <property name="jndiTemplate">
+	        <ref bean="jndiTemplate"/>
+	    </property>
+	    <property name="jndiName">
+	        <value>wsmq/ResponseQueue</value>
+	    </property>
+	</bean>
+	
+	
+	<bean id="dataSourceMySQL" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName"><value>jdbc/ServiceLiveMySqlDS</value></property>
+        <property name="resourceRef"><value>false</value></property>
+	</bean>	
+	
+	<bean id="dataSourceSecureMySQL" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName"><value>jdbc/ServiceLiveMySqlSecureDS</value></property>
+        <property name="resourceRef"><value>false</value></property>
+	</bean>	
+	
+	<bean id="dataSourceFinance" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName"><value>jdbc/ServiceLiveMySqlFinanceDS</value></property>
+        <property name="resourceRef"><value>false</value></property>
+	</bean>
+	
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource">
+			<ref bean="dataSourceMySQL" />
+		</property>
+	</bean>
+
+	<bean id="transactionManagerFinance"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource">
+			<ref bean="dataSourceFinance" />
+		</property>
+	</bean>
+	
+	<bean id="transactionAttributes" 
+	    class="org.springframework.transaction.interceptor.MatchAlwaysTransactionAttributeSource">
+	    <property name="transactionAttribute">
+	    		<value>PROPAGATION_REQUIRED,-Exception</value>
+	    </property>
+	</bean>
+	
+	<import resource="classpath:/com/servicelive/wallet/valuelink/valueLinkApplicationContext.xml" />
+	<import resource="classpath:/com/servicelive/wallet/alert/walletAlertApplicationContext.xml" />
+	<import resource="classpath:/com/servicelive/wallet/valuelink/ejb/valueLinkEJBApplicationContext.xml" />
+	
+	<bean id="valueLinkQueueSingleton" class="com.servicelive.wallet.valuelink.ejb.ValueLinkQueueSingleton">
+		<property name="requestHandler" ref="valueLinkRequestHandler"/>
+		<property name="valueLinkDao" ref="valueLinkDao"/>
+		<property name="useIPSocket" value="${valuelink.useipsockes}"></property>
+	</bean>
+	
+</beans>
+
+

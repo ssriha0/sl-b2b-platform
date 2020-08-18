@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="spn">
+
+	<typeAlias alias="piiThresholdVO"
+		type="com.newco.marketplace.dto.vo.PIIThresholdVO" />
+
+	<select id="get_pii_threshold_information.query" resultClass="piiThresholdVO" parameterClass="java.lang.String">
+		SELECT threshold_ind AS thresholdIndex, threshold AS thresholdValue FROM pii_threshold WHERE role= #role#
+	</select>
+	
+</sqlMap>

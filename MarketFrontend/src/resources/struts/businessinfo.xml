@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+
+	<package name="businessinfo" extends="ServiceLiveBase">
+		<default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+		
+		<action name="businessinfoAction*" class="businessinfoAction" method="{1}">
+			<result name="load">/jsp/providerRegistration/modules/tab_business_info.jsp</result>
+			<result name="refresh" type="redirectAction">
+			<param name="actionName">adminSearch_navigateToProviderPage</param>
+			 </result>
+			<result name="input" type="redirectAction">
+	             <param name="actionName">allTabView?tabView=tab1</param>
+	             <param name="namespace">/jsp/providerRegistration</param>
+	             <param name="nexturl">businessinfoActiondoInput.action</param>
+        	</result>
+			<!--<result name="success">/jsp/html/html_sections/modules/tab_business_info.jsp</result>-->
+			<result name="success" type="redirectAction">
+	             <param name="actionName">allTabView?tabView=tab1</param>
+	            <param name="namespace">/jsp/providerRegistration</param>
+        	</result>
+        	<result name="next" type="redirectAction">
+	            <param name="actionName">allTabView?tabView=tab2</param>
+	            <param name="namespace">/jsp/providerRegistration</param>
+        	</result>
+        	
+        	<result name="updateProfile" type="redirectAction">
+	           <param name="actionName">regDashboarddoSubmitRegistration</param>
+	            <param name="namespace">/jsp/providerRegistration</param>
+        	</result>
+		</action>
+		
+			<action name="firmLogoAction_*" class="firmLogoAction" method="{1}">
+			<result name="success">/jsp/providerRegistration/modules/tab_business_info_firm_logo.jsp</result>
+			<result name="uploadsuccess">/jsp/providerRegistration/modules/tab_business_info_firm_logo_upload_success.jsp</result>
+			<result name="error">/jsp/providerRegistration/modules/tab_business_info_firm_logo_upload_error.jsp</result>
+			<result name="loadPhoto">/jsp/providerRegistration/provider_logo.jsp</result> 		
+	   	</action>
+	   	
+	</package>
+
+</struts>

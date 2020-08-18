@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="campaign.monitor">
+
+	<typeAlias alias="campaignMonitorRow" type="com.servicelive.domain.spn.detached.CampaignMonitorRowVO"/>
+	<typeAlias alias="campaignHistory" type="com.servicelive.spn.common.detached.CampaignHistoryVO"/>
+	<typeAlias alias="campaignProviderMatchingCountVO" type="com.servicelive.domain.spn.detached.CampaignProviderMatchingCountVO"/>
+
+	<resultMap id="campaignProviderMatchingCountVOMap" class="campaignProviderMatchingCountVO">
+		<result property="campaignId" column="campaign_id" />
+		<result property="providerFirmCounts" column="provFirms" />
+		<result property="providerCounts" column="potentialServicePro" />
+	</resultMap>
+	
+	<sql id="only.criteria.based.join">
+		<isPropertyAvailable property="isCriteriabasedOnly">
+		 <isNotNull property="isCriteriabasedOnly" >
+	 					<isEqual  property="isCriteriabasedOnly" compareValue="true">
+	 						AND spnet_campaign_hdr.campaign_id NOT IN ( SELECT DISTINCT campaign_id FROM spnet_campaign_provider_firm )
+	 					</isEqual>
+	 				</isNotNull>
+		</isPropertyAvailable>
+	</sql>
+  
+	<select id="getSummaryInfoProvFirm" parameterClass="java.lang.Integer" resultClass="campaignProviderMatchingCountVO" >
+		SELECT 
+		 cmpi.campaign_id as campaignId,
+			COUNT(vh.vendor_id) as providerFirmCounts
+		FROM  
+		 vendor_hdr vh 
+			JOIN spnet_campaign_invitation cmpi ON (vh.vendor_id = cmpi.prov_firm_id) 
+			JOIN spnet_campaign_network cnet ON (cnet.spn_id = cmpi.spn_id  AND cnet.campaign_id = cmpi.campaign_id)
+			JOIN spnet_buyer b ON (b.spn_id = cmpi.spn_id)
+			WHERE  
+			b.buyer_id = #buyerId#
+			AND vh.wf_state_id NOT IN (20,29,30)
+		GROUP BY 
+			cmpi.campaign_id
+	</select>
+	
+	<select id="getSummaryInfoServicePro" parameterClass="java.lang.Integer" resultClass="campaignProviderMatchingCountVO" >
+		SELECT 
+		cmpi.campaign_id as campaignId,
+		COUNT(vr.resource_id) AS providerCounts
+		FROM  
+		 vendor_resource  vr 
+			JOIN vendor_hdr vh ON (vh.vendor_id = vr.vendor_id)
+			JOIN spnet_campaign_invitation cmpi ON (vh.vendor_id = cmpi.prov_firm_id) 
+			JOIN spnet_campaign_network cnet ON (cnet.spn_id = cmpi.spn_id  AND cnet.campaign_id = cmpi.campaign_id)
+			JOIN spnet_buyer b ON (b.spn_id = cmpi.spn_id)
+		WHERE
+			b.buyer_id = #buyerId#
+			AND vh.wf_state_id NOT IN (20,29,30) 
+			AND vr.resource_ind = 1
+			AND vr.wf_state_id NOT IN (21,31,32)  
+		GROUP BY 
+			cmpi.campaign_id
+	</select>
+	
+	<select id="getcampaigns"  parameterClass="java.util.Map" resultClass="campaignMonitorRow">
+		select
+		    spnet_buyer.buyer_id as buyerId,
+		    spnet_buyer.spn_id as spnId,
+		    spnet_campaign_network.campaign_id as campaignId,
+		    spnet_campaign_hdr.campaign_name as campaignName,
+		    spnet_hdr.spn_name as networkName,
+		    spnet_campaign_hdr.start_date as startDate,
+		    spnet_campaign_hdr.end_date as endDate,
+		    COALESCE(lu_spnet_workflow_state.id,'') as wfStatusId,
+		COALESCE(lu_spnet_workflow_state.descr,'') as wfStatus,
+		( CASE spnet_workflow_status.wf_entity_state 
+			WHEN 'CAMPAIGN PENDING' THEN 'yellow'
+			WHEN 'CAMPAIGN ACTIVE' THEN 'green'
+			WHEN 'CAMPAIGN APPROVED' THEN 'green'
+			WHEN 'CAMPAIGN INACTIVE' THEN 'red'
+			ELSE 'red' END) as wfStatusColor
+		from spnet_buyer
+		INNER JOIN spnet_campaign_network
+		on spnet_buyer.spn_id = spnet_campaign_network.spn_id
+		INNER JOIN spnet_hdr
+		on spnet_campaign_network.spn_id = spnet_hdr.spn_id
+		INNER JOIN spnet_campaign_hdr
+		on spnet_campaign_network.campaign_id = spnet_campaign_hdr.campaign_id
+		left outer join spnet_workflow_status  on spnet_campaign_network.campaign_id = spnet_workflow_status.entity_id  and spnet_workflow_status.wf_entity_id = 'CAMPAIGN'
+			left outer join lu_spnet_workflow_state on spnet_workflow_status.wf_entity_state  = lu_spnet_workflow_state.id
+		where buyer_id = #buyerId#
+		<include refid="only.criteria.based.join"/>
+		order by spnet_campaign_network.created_date desc
+        <isNotNull property="maxRows">
+        	limit #maxRows#
+        </isNotNull>		
+	</select>
+	
+	
+	<select id="getCampaignCount"  parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select
+			count(*)
+		from spnet_buyer
+		INNER JOIN spnet_campaign_network
+		on spnet_buyer.spn_id = spnet_campaign_network.spn_id
+		INNER JOIN spnet_hdr
+		on spnet_campaign_network.spn_id = spnet_hdr.spn_id
+		INNER JOIN spnet_campaign_hdr
+		on spnet_campaign_network.campaign_id = spnet_campaign_hdr.campaign_id
+		left outer join spnet_workflow_status  on spnet_campaign_network.campaign_id = spnet_workflow_status.entity_id  and spnet_workflow_status.wf_entity_id = 'CAMPAIGN'
+			left outer join lu_spnet_workflow_state on spnet_workflow_status.wf_entity_state  = lu_spnet_workflow_state.id
+		where buyer_id = #buyerId#
+		<include refid="only.criteria.based.join"/>
+	</select>
+	
+	<select id="getActiveCampaignCount"  parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select
+			count(*)
+		from spnet_buyer
+		INNER JOIN spnet_campaign_network
+		on spnet_buyer.spn_id = spnet_campaign_network.spn_id
+		INNER JOIN spnet_hdr
+		on spnet_campaign_network.spn_id = spnet_hdr.spn_id
+		INNER JOIN spnet_campaign_hdr
+		on spnet_campaign_network.campaign_id = spnet_campaign_hdr.campaign_id
+		left outer join spnet_workflow_status  on spnet_campaign_network.campaign_id = spnet_workflow_status.entity_id  and spnet_workflow_status.wf_entity_id = 'CAMPAIGN'
+			left outer join lu_spnet_workflow_state on spnet_workflow_status.wf_entity_state  = lu_spnet_workflow_state.id
+		where buyer_id = #buyerId# and
+		spnet_workflow_status.wf_entity_state  = "CAMPAIGN ACTIVE"
+		<include refid="only.criteria.based.join"/>
+	</select>
+	
+	<select id="getInactiveCampaignCount"  parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select
+			count(*)
+		from spnet_buyer
+		INNER JOIN spnet_campaign_network
+		on spnet_buyer.spn_id = spnet_campaign_network.spn_id
+		INNER JOIN spnet_hdr
+		on spnet_campaign_network.spn_id = spnet_hdr.spn_id
+		INNER JOIN spnet_campaign_hdr
+		on spnet_campaign_network.campaign_id = spnet_campaign_hdr.campaign_id
+		left outer join spnet_workflow_status  on spnet_campaign_network.campaign_id = spnet_workflow_status.entity_id  and spnet_workflow_status.wf_entity_id = 'CAMPAIGN'
+			left outer join lu_spnet_workflow_state on spnet_workflow_status.wf_entity_state  = lu_spnet_workflow_state.id
+		where buyer_id = #buyerId# and
+		spnet_workflow_status.wf_entity_state  = "CAMPAIGN INACTIVE"
+		<include refid="only.criteria.based.join"/>
+	</select>
+	
+	<select id="getPendingCampaignCount"  parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select
+			count(*)
+		from spnet_buyer
+		INNER JOIN spnet_campaign_network
+		on spnet_buyer.spn_id = spnet_campaign_network.spn_id
+		INNER JOIN spnet_hdr
+		on spnet_campaign_network.spn_id = spnet_hdr.spn_id
+		INNER JOIN spnet_campaign_hdr
+		on spnet_campaign_network.campaign_id = spnet_campaign_hdr.campaign_id
+		left outer join spnet_workflow_status  on spnet_campaign_network.campaign_id = spnet_workflow_status.entity_id  and spnet_workflow_status.wf_entity_id = 'CAMPAIGN'
+			left outer join lu_spnet_workflow_state on spnet_workflow_status.wf_entity_state  = lu_spnet_workflow_state.id
+		where buyer_id = #buyerId# and
+		spnet_workflow_status.wf_entity_state  = "CAMPAIGN PENDING"
+		<include refid="only.criteria.based.join"/>
+	</select>
+	
+	<select id="getCampaignHistory"  parameterClass="java.lang.Integer" resultClass="campaignHistory">
+		
+		Select chdr.campaign_id as campaignId,
+		        chdr.campaign_name as campaignName,
+		        chdr.start_date as campaignStartDate,
+		        chdr.end_date as campaignEndDate,
+		        ch.created_date as createdDate,
+		        ch.modified_date as modifiedDate,
+		        ch.modified_by as modifiedBy,
+		        ch.wf_entity_state as status,
+		        ch.comments as comments,
+		        l.descr as statusDescription
+		 from spnet_workflow_status_history  ch join lu_spnet_workflow_state l on l.id = ch.wf_entity_state join spnet_campaign_hdr chdr on chdr.campaign_id  = ch.entity_id
+		where ch.wf_entity_id = 'CAMPAIGN'  and ch.entity_id = #campaignId#
+	</select>
+
+
+
+
+
+</sqlMap>

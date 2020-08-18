@@ -1,0 +1,115 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="leadsManagement" extends="ServiceLiveBase,json-default" >
+        <default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+        
+    	<global-results >
+			<result name="error" type="redirectAction">
+				<param name="actionName">errorAction</param>
+				<param name="errorMessage">${errorMessage}</param>
+				<param name="returnURL">${returnURL}</param>
+			</result>
+		</global-results>	   	
+        <action name="leadsManagementController" class="leadsManagementControllerAction">
+			<result name="success">/jsp/leadsManagement/leads_management.jsp</result>
+			<result name="input">/jsp/leadsManagement/leads_management.jsp</result>
+			<result name="homepage" type="redirectAction">homepage</result>
+		</action>
+		
+		<action name="leadsManagementController_viewActiveLeads" class="leadsManagementControllerAction" method="viewActiveLeads">
+	        <result name="success">/jsp/leadsManagement/leads_dashboard_active.jsp</result>
+	        <result name="homepage" type="redirectAction">homepage</result>
+	    </action>
+	    
+	    <action name="leadsManagementController_viewInactiveLeads" class="leadsManagementControllerAction" method="viewInactiveLeads">
+	        <result name="success">/jsp/leadsManagement/leads_dashboard_inactive.jsp</result>
+	        <result name="homepage" type="redirectAction">homepage</result>
+	    </action>
+	   <action name="leadsManagementController_viewLeadDetails" class="leadsManagementControllerAction" method="viewLeadDetails">
+	        <result name="new">/jsp/leadsManagement/lead_details_new.jsp</result>
+	        <result name="working">/jsp/leadsManagement/lead_details_working.jsp</result>
+	    	<result name="scheduled">/jsp/leadsManagement/lead_details_scheduled.jsp</result>
+	    	<result name="scheduledProvider">/jsp/leadsManagement/lead_details_scheduled_pro_assigned.jsp</result>
+	    	<result name="completed">/jsp/leadsManagement/lead_details_completed.jsp</result>
+	    	<result name="cancelled">/jsp/leadsManagement/lead_details_cancelled.jsp</result>
+	    	<result name="stale">/jsp/leadsManagement/lead_details_stale.jsp</result>
+	        <result name="error">/jsp/public/error/body/errorBody.jsp</result>	    	    
+	    </action>
+	    
+	    <action name="leadsManagementController_addNote" class="leadsManagementControllerAction" method="addNote">
+	        <result name="json" type="json">
+	       <param name="excludeProperties">
+			 		providerLeadManagementService,
+			 		applicationProperties
+			</param>
+	       </result>
+	       <result name="input">/jsp/public/error/body/errorBody.jsp</result>
+	    </action>
+	    
+	    <action name="leadsManagementController_scheduleLead" class="leadsManagementControllerAction" method="scheduleLead">
+	       <result name="json" type="json">
+	       <param name="excludeProperties">
+			 		providerLeadManagementService,
+			 		applicationProperties
+			</param>
+	       </result>
+	       <result name="input">/jsp/public/error/body/errorBody.jsp</result>
+	    </action>
+	     <action name="leadsManagementController_assignProvider" class="leadsManagementControllerAction" method="assignProvider">
+	     <result name="json" type="json">
+	    	     <param name="excludeProperties">
+			 		providerLeadManagementService,
+			 		applicationProperties
+			 </param>
+			</result>
+			<result name="input">/jsp/public/error/body/errorBody.jsp</result>
+	     </action>
+	      <action name="leadsManagementController_cancelLead" class="leadsManagementControllerAction" method="cancelLead">
+	      <result name="success">/jsp/leadsManagement/get_json.jsp</result>
+	      <result name="input">/jsp/public/error/body/errorBody.jsp</result>
+	     </action>
+	      <action name="leadsManagementController_uploadDocument" class="leadsManagementControllerAction" method="uploadDocument">
+	          <result name="success">/jsp/leadsManagement/get_json.jsp</result>
+	          <result name="input">/jsp/public/error/body/errorBody.jsp</result>
+	    </action>
+	    <action name="leadsManagementController_viewDocument" class="leadsManagementControllerAction" method="viewDocument">
+	        <result name="new">/jsp/leadsManagement/lead_details_new.jsp</result>
+	        <result name="working">/jsp/leadsManagement/lead_details_working.jsp</result>
+	    	<result name="scheduled">/jsp/leadsManagement/lead_details_scheduled.jsp</result>
+	    	<result name="scheduledProvider">/jsp/leadsManagement/lead_details_scheduled_pro_assigned.jsp</result>
+	    	<result name="completed">/jsp/leadsManagement/lead_details_completed.jsp</result>
+	    	<result name="cancelled">/jsp/leadsManagement/lead_details_cancelled.jsp</result>
+	    	<result name="stale">/jsp/leadsManagement/lead_details_stale.jsp</result>
+	        <result name="error">/jsp/public/error/body/errorBody.jsp</result>	 	    
+	    </action>
+	    <action name="leadsManagementController_deleteDocument" class="leadsManagementControllerAction" method="deleteDocument">
+	          <result name="json" type="json">
+	    	     <param name="excludeProperties">
+			 		providerLeadManagementService,
+			 		applicationProperties
+			 </param>
+			</result> 
+			<result name="input">/jsp/public/error/body/errorBody.jsp</result> 	   
+	    </action>
+	    <action name="leadsManagementController_callCustomer" class="leadsManagementControllerAction" method="callCustomer">
+	         <result name="json" type="json">
+	    	     <param name="excludeProperties">
+			 		providerLeadManagementService,
+			 		applicationProperties
+			     </param>
+			</result>
+			<result name="input">/jsp/public/error/body/errorBody.jsp</result>
+	    </action>
+	     <action name="leadsManagementController_completeLead" class="leadsManagementControllerAction" method="completeLead">
+	      <result name="json" type="json">
+	    	     <param name="excludeProperties">
+			 		providerLeadManagementService,
+			 		applicationProperties
+			     </param>
+			</result>
+			<result name="input">/jsp/public/error/body/errorBody.jsp</result>
+	    </action>
+	 </package>
+</struts>

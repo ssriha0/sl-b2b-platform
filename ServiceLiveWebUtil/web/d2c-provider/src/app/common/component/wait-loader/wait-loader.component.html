@@ -1,0 +1,9 @@
+<div class="overlay" *ngIf="showLoader || showProfileLoader || showCoverageLoader || rateCardLoader">
+     <div class="loader"></div> 
+     <div class="text-loader" *ngIf="showLoader">Loading Skus...</div>
+     <div class="profile-text-loader" *ngIf="showProfileLoader">Loading...</div>
+     <div class="coverage-text-loader" *ngIf="showCoverageLoader">Loading Zipcodes...</div>
+      <div class="rate-card-loader" *ngIf="rateCardLoader">Loading Ratecard...</div>
+     
+     <!--<div class="text-loader">{{showCoverageLoader}} </div>-->
+</div>

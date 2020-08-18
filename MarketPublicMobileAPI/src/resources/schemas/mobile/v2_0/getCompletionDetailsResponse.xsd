@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified" >
+	<xs:include schemaLocation="../../common.xsd" />
+	<xs:include schemaLocation="../../soMobileCommon.xsd" />
+	<xs:element name="soResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="results"/>
+				<xs:element name="serviceOrder" type="serviceOrderType" minOccurs="0"/>		
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:decimal"/>
+		</xs:complexType>
+		</xs:element>
+		<xs:complexType name="serviceOrderType">
+	<xs:sequence>
+		<xs:element name="completionDetails" type="completionDetailsType" minOccurs="0"/>			
+	</xs:sequence>
+	</xs:complexType>		
+	<xs:complexType name="completionDetailsType">
+	<xs:sequence>
+	    <xs:element name="completionStatus" type="CompletionStatusType" minOccurs="0" /> 
+	    <xs:element name="currentTripNo" type="xs:decimal" minOccurs="0" />
+	    <xs:element name="latestTrip" type="LatestTripDetailsType" minOccurs="0" /> 			
+	    <xs:element name="resolutionComments" type="xs:string" minOccurs="0" />
+	    <xs:element name="cancellationReasonCodes" type="cancelReasonCodesType" minOccurs="0" />	    
+		<xs:element name="tasks" type="TasksType" minOccurs="0"/>
+		<xs:element name="price" type="priceType" minOccurs="0"/>
+		<xs:element name="providerRefPresentInd" type="mandatoryValueEnum" default="N" />
+		<xs:element name="providerReferences" type="providerReferencesType" minOccurs="0"/>		
+		<xs:element name="addons" type="addOnsType" minOccurs="0"/>				
+		<xs:element name="permits" type="permitsType" minOccurs="0"/>
+		<xs:element name="partsTracking" type="partsTrackType" minOccurs="0"/>	
+		<xs:element name="documentTypes" type="documentsTypeCompletion" minOccurs="0"/>	
+		<xs:element name="invoiceParts" type="invoicePartsTypeV2" minOccurs="0"/>
+		<!-- Add document/signature here -->
+		<xs:element name="documents" type="documentsCompletion" minOccurs="0"/>
+		<xs:element name="customerEmailRequired" type="mandatoryValueEnum" default="N" />
+		<xs:element name="signatures" type="signatureDocuments" minOccurs="0"/>
+		<!-- Add customer payment here -->
+		<xs:element name="addonPayment" type="addOnPaymentDetailsType" minOccurs="0"/>
+		<xs:element name="tripDetails" type="tripDetailsType" minOccurs="0"/>
+		
+	</xs:sequence>
+	</xs:complexType>
+	
+	<!-- addOnPaymentDetailsType -->
+	<xs:complexType name="addOnPaymentDetailsType">
+		<xs:sequence>
+			<xs:element name="paymentType" type="paymentSimpleType" minOccurs="0" />
+			<xs:element name="checkNumber" type="stringSixteenNumType" minOccurs="0"/>
+			<xs:element name="ccNumber" type="stringSixteenNumType" minOccurs="0" />
+			<xs:element name="ccType" type="stringHundredType" minOccurs="0"/>
+			<xs:element name="cardExpireMonth" type="expirationDateType" minOccurs="0"/>
+			<xs:element name="cardExpireYear" type="expirationDateType" minOccurs="0"/>
+			<xs:element name="preAuthNumber" type="preAuthNumberType" minOccurs="0" />
+			<xs:element name="amountAuthorized" type="price-format" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:simpleType name="stringSixteenNumType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="16"></xs:maxLength>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="stringHundredType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="100"></xs:maxLength>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="paymentSimpleType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Credit Card" />
+			<xs:enumeration value="Check" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="expirationDateType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="10"></xs:maxLength>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="preAuthNumberType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="20"></xs:maxLength>
+		</xs:restriction>
+	</xs:simpleType>
+	
+</xs:schema>

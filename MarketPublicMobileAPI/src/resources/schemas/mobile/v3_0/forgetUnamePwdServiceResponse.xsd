@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:include schemaLocation="../../common.xsd" />
+	
+	<!-- Root element -->
+	<xs:element name="forgetUnamePwdServiceResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="results" />
+				<xs:element name="requestFor"  minOccurs="0" maxOccurs="1">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="UserName" /> 
+							<xs:enumeration value="Password" /> 
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="userDetails" type="UserDetailList" minOccurs="0" maxOccurs="1" nillable="true" />
+				<xs:element name="securityQuestion" type="securityQuestionType" minOccurs="0" maxOccurs="1">
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+
+	<xs:complexType name="UserDetailList" >
+		<xs:sequence>
+			<xs:element name="userDetail"  type= "userDetailType" minOccurs="1" maxOccurs="unbounded" >
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="userDetailType">
+		<xs:sequence>
+			<xs:element name="userId" type="xs:integer" minOccurs="0" />
+			<xs:element name="contactName" type="xs:string" minOccurs="0" />
+			<xs:element name="email" type="xs:string" minOccurs="0" />
+			<xs:element name="userName" type="xs:string" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="securityQuestionType">
+		<xs:sequence>
+			<xs:element name="questionId" type="xs:integer" minOccurs="1" />
+			<xs:element name="questionText" type="xs:string" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	
+</xs:schema>

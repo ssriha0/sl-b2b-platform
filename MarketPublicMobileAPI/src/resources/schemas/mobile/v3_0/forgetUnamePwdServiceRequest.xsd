@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+<xs:include schemaLocation="../../common.xsd" />
+	<!-- Root element -->
+	<xs:element name="forgetUnamePwdServiceRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="requestFor"  minOccurs="1" maxOccurs="1">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="UserNamewithEmail" /> 
+							<xs:enumeration value="Password" /> 
+							<xs:enumeration value="UserNamewithUserId" /> 
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="email" type="emailType" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="userName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="userId" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
+
+

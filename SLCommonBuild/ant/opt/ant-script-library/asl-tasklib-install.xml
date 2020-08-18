@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!--
+********************************************************************************
+* Ant Script Library - task library installer
+* Targets that install jar libraries for optional tasks
+* Module property prefix: "tasklib-install"
+********************************************************************************
+* Copyright 2009 Joe Schmetzer
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+********************************************************************************
+ -->
+<project name="asl-tasklib-install" xmlns:ivy="antlib:org.apache.ivy.ant">
+    <dirname property="tasklib-install.basedir" file="${ant.file.asl-tasklib-install}"/>
+    <import file="${tasklib-install.basedir}/asl-repo-ivy.xml"/>
+
+    <!-- ***********************************************************************
+    * macrodef: asl-install-jars
+    ************************************************************************ -->
+    <macrodef name="asl-install-jars"
+              description="Installs jars for optional tasks">
+        <attribute name="libdir"/>
+        <attribute name="organisation"/>
+        <attribute name="module"/>
+        <attribute name="revision"/>
+        <sequential>
+            <mkdir dir="@{libdir}"/>
+            <ivy:retrieve pattern="@{libdir}/[artifact].[ext]"
+                organisation="@{organisation}" 
+                module="@{module}"
+                revision="@{revision}"
+                inline="true" />
+        </sequential>
+    </macrodef>
+
+    <!-- ***********************************************************************
+    * target: install-all
+    ************************************************************************ -->
+    <target name="install-all" depends="install-cobertura, install-pmd"
+            description="Installs all the optional libraries"/>
+    
+    <!-- ***********************************************************************
+    * target: install-pmd
+    ************************************************************************ -->
+    <target name="install-pmd" depends="-repo-configure-ivy"
+            description="Installs the libraries required by the pmd task">
+        <asl-install-jars libdir="${tasklib-install.basedir}/lib/pmd"
+            organisation="net.sf.pmd" module="pmd" revision="4.2.4"/>
+    </target>
+    
+    <!-- ***********************************************************************
+    * target: install-cobertura
+    ************************************************************************ -->
+    <target name="install-cobertura" depends="-repo-configure-ivy"
+            description="Installs the libraries required by the cobertura task">
+        <asl-install-jars libdir="${tasklib-install.basedir}/lib/cobertura"
+            organisation="net.sf.cobertura" module="cobertura" revision="1.9"/>
+    </target>
+    
+</project>

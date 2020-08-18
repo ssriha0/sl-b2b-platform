@@ -1,0 +1,27 @@
+{ items: [
+	{
+	  "thumb":"../../../images/support/tut4_step1.gif",
+	  "large":"../../../images/support/tut4_step1.gif"
+	},
+	{
+	  "thumb":"../../../images/support/tut4_step1.gif",
+	  "large":"../../../images/support/tut4_step2.gif"
+	},
+	{
+	  "thumb":"../../../images/support/tut4_step1.gif",
+	  "large":"../../../images/support/tut4_step3.gif"
+	},
+	{
+	 "thumb":"../../../images/support/tut4_step1.gif",
+	  "large":"../../../images/support/tut4_step4.gif"
+	},
+	{
+	  "thumb":"../../../images/support/tut4_step1.gif",
+	  "large":"../../../images/support/tut4_step5.gif"
+	},
+	{
+	  "thumb":"../../../images/support/tut4_step1.gif",
+	  "large":"../../../images/support/tut4_step6.gif"
+	}
+	//
+]}

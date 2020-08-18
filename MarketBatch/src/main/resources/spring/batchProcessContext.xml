@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<bean id="batchPlaceholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="classpath:properties/batch.properties" />
+		<property name="ignoreUnresolvablePlaceholders" value="true"/>
+		<property name="order" value="1"/>
+	</bean>
+	
+	<bean id="soEventProcessor" class="com.newco.batch.serviceorder.SOEventProcessor" scope="prototype">
+		<property name="eventBO" ref="soEventBOTarget" />
+		<property name="visitBO" ref="onsiteVisitBO" />
+		<property name="serviceOrderBO" ref="soBOAOP" />
+		<property name="ofHelper" ref="ofHelper" />
+		<property name="relayNotificationService" ref="relayNotificationService" />
+	</bean>
+	<bean id="updateSOBatchProcess" class="com.newco.batch.serviceorder.UpdateServiceOrderProcessor" 	
+		scope="prototype">
+		<property name="searchBO" ref="soSearchBO" />
+		<property name="soBO" ref="soBOAOP" />
+		<property name="orderGroupBO" ref="soGroupBO" />
+		<property name="powerBuyerBO" ref="powerBuyerBO" />
+<!--		<property name="ofHelper" ref="ofHelper" /> -->
+		<property name="emailTemplateBean" ref="emailTemplateBean" />
+	</bean>
+	
+	<bean id="orderGroupRoutingProcessor" class="com.newco.batch.serviceorder.OrderGroupRoutingProcessor">
+		<property name="searchBO">
+			<ref bean="soSearchBO" />
+		</property>
+		<property name="buyerBO">
+			<ref bean="buyerBo" />
+		</property>
+		<property name="orderGroupBO">
+			<ref bean="soOrderGroupBOAOP"/>
+		</property>
+		<property name="routeOrderGroupBO">
+			<ref bean="soOrderGroupRouteAOP" />
+		</property>
+		<property name="buyerFeatureSetBO">
+			<ref bean="buyerFeatureSetBO"/>
+		</property>
+		<property name="trRouteController">
+			<ref bean="trRouteController"/>
+		</property>
+		<property name="serviceOrderBO">
+			<ref bean="soBOAOP"/>
+		</property>
+		<property name="conditionalAutoRoutingBO">
+			<ref bean="conditionalAutoRoutingBO" />
+		</property>
+	</bean>
+
+	<bean id="westSurveyErrorHandler" class="com.newco.batch.westsurvey.WestSurveyErrorHandler" scope="singleton">
+	</bean>
+	<bean id="buyerSOMCountsProcessor" class="com.newco.batch.buyer.BuyerSOMCountsProcessor" scope="singleton">
+		<property name="buyerBO">
+			<ref bean="buyerBo"/>
+		</property>
+	</bean>	
+	<bean id="buyerCompletedOrdersCountsProcessor" class="com.newco.batch.buyer.BuyerCompletedOrdersCountsProcessor" scope="singleton">
+		<property name="buyerBO">
+			<ref bean="buyerBo"/>
+		</property>
+	</bean>	
+	
+	<bean id="vendorInfoCacheProcessor" class="com.newco.batch.vendor.VendorInfoCacheProcessor">
+		<property name="serviceProviderBO" ref="iServiceProviderBO" />
+	</bean>
+	
+	<bean id="vendorKPIProcessor" class="com.newco.batch.vendor.VendorKPIProcessor">
+		<property name="serviceProviderBO" ref="iServiceProviderBO" />
+	</bean>
+
+	<bean id="vendorResourceLocationProcessor" class="com.newco.batch.vendor.VendorResourceLocationProcessor">
+		<property name="vendorLocationResourceDao">
+			<ref bean="vendorResourceLocationDao" />
+		</property>
+	</bean>
+
+	<bean id="BFUTBOImpl" scope="prototype" class="com.newco.batch.serviceorder.BuyerFileUploadToolBOImpl">
+		<property name="BFUTDaoImpl" ref="BFUTDaoImpl"></property> 
+		<property name="BFUTValidatorImpl" ref="BFUTValidatorImpl"></property>                  
+		<property name="BFUTParserImpl" ref="BFUTParserImpl"></property>  
+		<property name="buyerFileUploadDao" ref="buyerFileUploadDaoImpl"></property>
+		<property name="integrationDaoImpl" ref="integrationDaoImpl"></property>
+		<property name="emailTemplateBean" ref="emailTemplateBean"></property>
+		<property name="ofHelper" ref="ofHelper" />	
+		<property name="applicationProperties" ref="applicationPropertiesWallet" />
+   	</bean>	
+   	
+   	<bean id="paymentReportExportProcessor" class="com.newco.batch.reporting.PaymentReportExportProcessor" scope="singleton">
+		<property name="financeManagerBO">
+			<ref bean="financeManagerBO"/>
+		</property>
+		<property name="cryptography">
+			<ref bean="cryptography" />
+		</property>
+		<property name="applicationProperties" ref="applicationPropertiesWallet" />
+	</bean>
+	<bean id="tierPerformanceProcess" class="com.newco.batch.tier.performance.PerformanceProcessor">
+	 	<property name="performanceEvaluationService">
+    		<ref bean="performanceEvaluationService"/>
+  		</property>	
+  		<property name="performanceEvaluationArchiveService">
+    		<ref bean="performanceEvaluationArchiveService"/>
+  		</property>	 
+    </bean>
+	<bean id="deletePerfHistoryProcess" class="com.newco.batch.tier.performance.DeletePerformanceHistoryProcessor">
+	 	<property name="deletePerformanceHistoryService">
+    		<ref bean="deletePerformanceHistoryService"/>
+  		</property>	 
+    </bean>
+	
+	<bean id="feedMailProcessor" class="com.newco.batch.feedback.FeedbackMailProcessor" scope="singleton">
+		<property name="feedbackService" ref="feedbackService" />		
+	</bean>
+
+</beans>

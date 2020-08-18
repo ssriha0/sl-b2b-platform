@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="eventcallback">
+
+<select id="getEventCallbackDetails.query" resultClass="java.util.HashMap" parameterClass = "java.util.List" >
+	         SELECT app_key as appKey,app_value as appValue FROM application_properties WHERE app_key IN
+	         <iterate open="(" close=")" conjunction=",">	
+					#[]#
+			</iterate>
+			
+</select>
+
+<!-- SLT-3841 -->
+	  <select id="getApiKey.query" resultClass="java.lang.String" parameterClass="java.lang.String">
+		SELECT bcs.api_key as apiKey FROM buyer_callback_service bcs WHERE bcs.buyer_id=#buyerID#;
+	  </select>
+
+</sqlMap>

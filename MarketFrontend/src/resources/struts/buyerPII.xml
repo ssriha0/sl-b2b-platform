@@ -1,0 +1,14 @@
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN" "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="buyerPII" extends="ServiceLiveBase">
+
+	    <action name="buyerEditPIIAction_*" class="buyerEditPIIAction" method="{1}">
+	        <result name="edit">/jsp/buyer_pers_identity/buyer_pers_ident.jsp</result>	 
+			<result name="error">/jsp/public/error/body/errorBody.jsp</result>
+		    <result name="success" type="redirectAction">buyerEditPIIAction_execute.action</result>
+		    <result name="success_history">/jsp/buyer_pers_identity/buyer_pers_ident_hist.jsp</result>
+		</action>
+
+    </package>
+    
+</struts>

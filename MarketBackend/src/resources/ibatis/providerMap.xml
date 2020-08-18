@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap>
+
+	<typeAlias alias="receivedAmount" type="com.newco.marketplace.dto.vo.ledger.ReceivedAmountVO" />
+	<typeAlias alias="vendorInfo" type="com.newco.marketplace.dto.vo.ajax.AjaxCacheVO" />
+	<typeAlias alias="vendorCoverage" type="com.newco.marketplace.dto.vo.d2c.d2cproviderportal.Coverage" />
+	<typeAlias alias="vendorCoverageLocationVO" type="com.newco.marketplace.dto.vo.d2c.d2cproviderportal.CoverageLocationVO" />
+	<typeAlias alias="dbSavedZipCodesData" type="com.newco.marketplace.dto.vo.d2c.d2cproviderportal.ZipCodesData" />
+	<typeAlias alias="d2CProviderAPIVO" type="com.newco.marketplace.beans.d2c.d2cproviderportal.D2CProviderAPIVO" />
+	<typeAlias alias="buyerSOTemplate" type="com.newco.marketplace.dto.vo.serviceorder.BuyerSOTemplateVO" />
+    
+	
+	<select id="received_amt.query" resultClass="receivedAmount" parameterClass="vendorInfo">
+		SELECT COALESCE(SUM(totalReceived),0) AS totalReceived, 110 AS stateId, #companyId# as vendorId
+		FROM
+		(SELECT DISTINCT s.so_id, COALESCE(spend_limit_labor,0)+COALESCE(spend_limit_parts,0) AS totalReceived
+		FROM so_hdr s JOIN so_routed_providers srp 
+		ON (srp.so_id = s.so_id AND (srp.provider_resp_id IS NULL OR srp.provider_resp_id !=3) AND srp.vendor_id = #companyId#)
+		WHERE s.wf_state_id = 110 AND s.price_model != 'ZERO_PRICE_BID'
+		) 
+		AS alias2
+	</select>
+
+	<procedure id="provider.updateVendorInfoCache">
+		{call sp_update_vendor_info_cache()}
+	</procedure>
+	
+	<procedure id="provider.updateVendorKPI">
+		{call sp_update_vendor_kpi()}
+	</procedure>
+
+ 	<select id="coverage.zipcodeList"  parameterClass="java.lang.Integer" resultClass="vendorCoverage">
+   select l.zip as zip ,vdl.coverage_radius as coverageRadius from 
+   vendor_dispatch_location vdl,vendor_location vl ,location l 
+   where vdl.vendor_id=#firmId# 
+   and vdl.loc_id = vl.locn_id and 
+   l.locn_id = vl.locn_id;
+ 	</select>
+ 	
+ 	<insert id="coverage.updateCoverageZipCodes" parameterClass="java.util.List">
+	INSERT INTO vendor_service_area
+	(vendor_loc_id,zip,distance)
+	VALUES
+	<iterate conjunction=",">
+		(#[].coverageId#,#[].zipCode#,#[].distance_miles#)
+	</iterate>
+</insert>
+
+	<delete id="coverage.deleteServiceZipCodes" parameterClass="vendorCoverage">
+	delete vsa from vendor_service_area vsa inner join vendor_coverage_area vca
+	on vsa.vendor_loc_id = vca.id
+	where  vca.loc_id=#locId#
+	</delete>
+	
+	<delete id="coverage.deleteCoverageArea" parameterClass="vendorCoverage">
+	delete from vendor_coverage_area where id=#id# and loc_id =#locId# and vendor_id=#vendorId# and coverage_radius=#coverageRadius#
+	</delete>
+
+	<insert id="coverage.saveZipCoverageRadius" parameterClass="vendorCoverage">
+		insert into vendor_coverage_area(vendor_id,loc_id,coverage_radius)
+		values(#vendorId#,#locId#,#coverageRadius#);
+	</insert>
+	
+	<update id = "coverage.updateCoverageRadius" parameterClass="vendorCoverage" >
+	update vendor_coverage_area set coverage_radius=#coverageRadius# where loc_id=#locId# and vendor_id =#vendorId#;
+	</update>
+	
+	<select id="coverage.getCoverageAreas"  parameterClass="java.lang.String" resultClass="vendorCoverageLocationVO">
+    select loc.city as city,loc.state_cd as state,loc.street_1 as street1 ,loc.locn_id locnId,
+	loc.street_2 as street2,loc.zip as zip,loc.locn_name as locName,vca.coverage_radius as coverageRadius,vca.id as id
+	from vendor_coverage_area vca 
+	inner join vendor_location vl
+	on vca.loc_id = vl.locn_id and 
+	vca.vendor_id = vl.vendor_id 
+    inner join vendor_hdr vhdr on vhdr.vendor_id = vl.vendor_id
+	inner join location loc on 
+	loc.locn_id = vl.locn_id 
+	where vca.vendor_id=#vendorIdStr#
+ 	</select >
+ 	
+ 	<select id = "coverage.getDBSavedServiceAreaZipCodes" parameterClass="vendorCoverage" resultClass="dbSavedZipCodesData">
+ 	
+		select vendservara.vendor_loc_id vendorLocId,vendservara.zip zipCode,
+		vendservara.distance Distance,vendservara.distance distance_miles,zipgcode.city City,
+		zipgcode.state_cd State,zipgcode.latitude Latitude,zipgcode.longitude Longitude
+		from vendor_service_area as vendservara
+		inner join zip_geocode as zipgcode on zipgcode.zip = vendservara.zip
+		inner join vendor_coverage_area as vendcvgarea on vendcvgarea.id = vendservara.vendor_loc_id 
+		inner join vendor_location as vendloc on vendcvgarea.loc_id = vendloc.locn_id and vendcvgarea.vendor_id = vendloc.vendor_id
+		inner join location as loc on loc.locn_id = vendloc.locn_id
+		inner join vendor_hdr as vendhdr on vendhdr.vendor_id = vendloc.vendor_id
+		where vendcvgarea.loc_id =#locId# and  vendcvgarea.vendor_id =#vendorId# ;
+ 	
+ 	</select>
+ 	
+ 	<select id="coverage.getServiceAreaCount"  parameterClass="java.lang.String" resultClass="java.lang.Integer">
+ 	    select  count(*) from vendor_service_area where vendor_loc_id = #id#;
+ 	</select>
+ 	
+ 	
+    
+    <select id="coverage.getCoverageById" parameterClass="vendorCoverage" resultClass="vendorCoverage" >
+    select id id,vendor_id vendorId,loc_Id locId,coverage_radius coverageRadius 
+		from  vendor_coverage_area where loc_id =#locId# and vendor_id=#vendorId#;
+ 
+    </select>
+    
+    <update id = "updateVendorData.businessName" parameterClass="java.util.HashMap" >
+	update vendor_hdr set business_name=#data# where vendor_id =#vendorId#;
+	</update>
+	
+	<update id = "updateVendorData.primaryIndustryName" parameterClass="java.util.HashMap" >
+	update vendor_hdr set primary_industry_id=#data# where vendor_id =#vendorId#;
+	</update>
+	
+	<update id = "updateVendorData.yearsInBusiness" parameterClass="java.util.HashMap" >
+	update vendor_hdr set business_start_date=#convertedDate# where vendor_id =#vendorId#;
+	</update>
+	
+	<update id = "updateVendorData.overview" parameterClass="java.util.HashMap" >
+	update vendor_hdr set business_descr=#data# where vendor_id =#vendorId#;
+	</update>
+ 	
+ 	<select id="firm.limitedListOfFirmsData" parameterClass="java.util.HashMap" resultClass="d2CProviderAPIVO">
+		select vhdr.vendor_id as firmId, vsop.price as price, vsop.daily_limit as dailyLimit
+		from supplier_prod.vendor_service_offering vso
+		inner join supplier_prod.vendor_serviceoffer_price vsop on vso.id = vsop.vendor_serviceoffering_id
+		inner join supplier_prod.vendor_hdr vhdr on vso.vendor_id = vhdr.vendor_id
+		inner join supplier_prod.buyer_sku bsku on vso.sku_id = bsku.sku_id
+		where
+		vhdr.wf_state_id in 
+			<iterate property="slApprovedState" open="(" close=")" conjunction=",">
+            	#slApprovedState[]#
+        	</iterate>		
+		AND bsku.buyer_id = #buyerId#
+		AND bsku.sku = #skuId#
+		AND vhdr.vendor_id in 
+		<iterate property="firmIds" open="(" close=")" conjunction=",">
+            	#firmIds[]#
+        	</iterate>
+    </select>
+    
+ 	<select id="firm.filterAndCountSOOrderforSKU" parameterClass="java.util.HashMap" resultClass="d2CProviderAPIVO">
+		select sohdr.accepted_vendor_id as firmId, count(sohdr.so_id) as
+		acceptedCount
+		from supplier_prod.so_hdr sohdr
+		left join supplier_prod.so_tasks sotask on sotask.so_id = sohdr.so_id
+		where
+		sohdr.accepted_vendor_id in
+		   	<iterate property="vendorList" open="(" close=")" conjunction=",">
+            	#vendorList[].firmId#
+        	</iterate>
+		and sohdr.buyer_id = #buyerId#
+		and sohdr.wf_state_id in 
+			<iterate property="wfStateId" open="(" close=")" conjunction=",">
+            	#wfStateId[]#
+        	</iterate>
+		and sohdr.service_date1_time like '%$date$%'
+		and sotask.sku =  #skuId# 
+		group by sohdr.accepted_vendor_id;
+	</select>
+	
+	<select id="coverage.getStates"  resultClass="java.lang.String">
+        SELECT state_cd  FROM lu_state_cds ORDER BY state_cd
+	</select>
+	
+	
+	<!-- START  Below code added for new API to get provider list(Standard+Non-Standard)-->
+	
+	<select id="firm.limitedListOfFirmsDataWithBuyerRetailPrice" parameterClass="java.util.HashMap" resultClass="d2CProviderAPIVO">
+		SELECT 
+			vhdr.vendor_id as firmId, vsop.price as price, vsop.daily_limit as dailyLimit,bsku.retail_price as buyerRetailPrice
+		FROM 
+			supplier_prod.vendor_service_offering vso
+			inner join supplier_prod.vendor_serviceoffer_price vsop on vso.id = vsop.vendor_serviceoffering_id
+			inner join supplier_prod.vendor_hdr vhdr on vso.vendor_id = vhdr.vendor_id
+			inner join supplier_prod.buyer_sku bsku on vso.sku_id = bsku.sku_id
+		WHERE
+			vhdr.wf_state_id in 
+			<iterate property="slApprovedState" open="(" close=")" conjunction=",">
+            	#slApprovedState[]#
+        	</iterate>		
+			AND bsku.buyer_id = #buyerId#
+			AND bsku.sku = #skuId#
+			<isNotNull property="firmId">
+				AND vhdr.vendor_id in 
+				<iterate property="firmId" open="(" close=")" conjunction=",">
+	            	#firmId[]#
+	        	</iterate>
+        	</isNotNull>
+			AND vsop.price <![CDATA[ <= ]]> (#marketIndex#*bsku.retail_price) 
+			AND vsop.price!=0.00
+		ORDER BY 
+			price, vhdr.vendor_id 
+		LIMIT 
+			#count#;
+    </select>
+    
+    <select id="firm.firmsDataWithBuyerRetailPrice" parameterClass="java.util.HashMap" resultClass="d2CProviderAPIVO">
+    SELECT 
+			DISTINCT (vhdr.vendor_id) as firmId, vsop.price as price, vsop.daily_limit as dailyLimit,bsku.retail_price as buyerRetailPrice
+		FROM 
+			supplier_prod.vendor_service_offering vso
+			inner join supplier_prod.vendor_serviceoffer_price vsop on vso.id = vsop.vendor_serviceoffering_id
+			inner join supplier_prod.vendor_hdr vhdr on vso.vendor_id = vhdr.vendor_id
+			inner join supplier_prod.buyer_sku bsku on vso.sku_id = bsku.sku_id
+		WHERE
+			bsku.buyer_id = #buyerId#
+			AND bsku.sku = #skuId#
+			AND vhdr.vendor_id in 
+			<iterate property="firmList" open="(" close=")" conjunction=",">
+            	#firmList[]#
+        	</iterate>
+        	AND vhdr.vendor_id in 
+				(SELECT 
+					DISTINCT (vca.vendor_id)
+				FROM 
+					supplier_prod.vendor_service_area vsa
+					INNER JOIN supplier_prod.vendor_coverage_area vca ON vsa.vendor_loc_id = vca.id
+				WHERE 
+					vsa.zip = #zipCode#) 
+   		LIMIT 
+			#count#;
+    </select>
+    
+    <!-- Below query to get marketIndex of as per zip and buyerid -->
+    <select id="firm.getMarketIndex" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+    	select bma.adjustment from buyer_market_adjustment bma, lu_zip_market luZip
+        where bma.market_id=luZip.market_id and luZip.zip = #zipCode# and bma.buyer_id = #buyerId#;
+    </select>
+    
+    <select id="firm.getBuyerRetailPrice"  parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+        select retail_price from buyer_sku where sku=#sku# and buyer_id=#buyerId#;
+    </select>
+    
+    <!-- Below Query is to get the list of Zero Price Providers and those are who are with good rating 
+    <select id="firm.getZeroPriceProviderList" parameterClass="java.util.HashMap" resultClass="d2CProviderAPIVO">
+    select vhdr.vendor_id as firmId, vsop.price as price, vsop.daily_limit as dailyLimit
+		from supplier_prod.vendor_service_offering vso
+		inner join supplier_prod.vendor_serviceoffer_price vsop on vso.id = vsop.vendor_serviceoffering_id
+		inner join supplier_prod.vendor_hdr vhdr on vso.vendor_id = vhdr.vendor_id
+		inner join supplier_prod.buyer_sku bsku on vso.sku_id = bsku.sku_id
+		where
+		vhdr.wf_state_id in 
+			<iterate property="slApprovedState" open="(" close=")" conjunction=",">
+            	#slApprovedState[]#
+        	</iterate>		
+		AND vhdr.primary_industry_id = (select primary_skill_category_id from buyer_so_template where template_id = bsku.template_id)
+		AND bsku.sku = #skuId#
+		AND vhdr.vendor_id in (SELECT DISTINCT (vca.vendor_id)
+		FROM supplier_prod.vendor_service_area vsa
+		INNER JOIN supplier_prod.vendor_coverage_area vca ON vsa.vendor_loc_id = vca.id
+		WHERE vsa.zip = #zipCode# 
+		<isNotNull property="firmId" prepend="AND">
+			vca.vendor_id = #firmId#
+		</isNotNull>
+		)
+		AND vsop.price = 0;
+    </select> -->
+    
+    <select id="firm.getSoCompletedList" parameterClass="java.util.List" resultClass="java.util.HashMap">
+         select vh.vendor_id as firmId, count(sh.so_id) as soCompleted from so_hdr sh
+         inner join vendor_resource vs on vs.resource_id = sh.accepted_resource_id
+		 inner join vendor_hdr vh on vh.vendor_id =  vs.vendor_id
+		 where vh.vendor_id in
+		 <iterate open="(" close=")" conjunction=",">
+				#[]#
+			</iterate>
+         and sh.wf_state_id = 160 and sh.completed_date <![CDATA[ >= ]]> now()-interval 3 month
+         group by vh.vendor_id 
+         order by soCompleted desc;    
+   		 <!-- select AVG(srs.buyer_rating_score) as rating, SUM(srs.total_so_completed)as soCompleted, vendor_id as firmId
+		 from survey_response_summary srs 
+         inner join vendor_resource vr on srs.vendor_resource_id = vr. resource_id
+         where vr.vendor_id in 
+		 <iterate property="firmIds" open="(" close=")" conjunction=",">
+            	#firmIds[]#
+         </iterate>
+         group by vr.vendor_id 
+         order by soCompleted desc; -->
+    </select>
+    
+    <select id="query.getBuyerSoTemplateBySkuBuyerId" parameterClass="java.util.HashMap" resultClass="buyerSOTemplate">
+		SELECT 
+			template_id as templateID
+			, template_name as templateName
+			, buyer_id as buyerID
+			, primary_skill_category_id as mainServiceCategory
+			, template_data as templateData
+		FROM 
+			buyer_so_template
+		WHERE 
+			buyer_id = #buyerId#
+    		AND template_id = (SELECT template_id FROM buyer_sku WHERE buyer_id = #buyerId# AND sku = #skuId# limit 1)
+		LIMIT 1;
+	</select>
+	
+	<select id="firm.spnMembers" parameterClass="java.util.HashMap" resultClass="d2CProviderAPIVO">
+		SELECT DISTINCT sp.provider_firm_id as firmId 
+		FROM spnet_buyer sb, spnet_provider_firm_state sp
+		WHERE sb.spn_id = sp.spn_id
+			AND sp.spn_id = #spnId#
+			AND sb.buyer_id = #buyerId#
+			AND sp.provider_wf_state = #providerWfState#
+			AND sp.provider_firm_id in
+				<iterate property="vendorList" open="(" close=")" conjunction=",">
+					#vendorList[].firmId#
+				</iterate>
+	</select>
+	
+	<select id="firms.provider.market.ready" parameterClass="java.util.HashMap" resultClass="d2CProviderAPIVO">
+		SELECT DISTINCT vendor_id as firmId 
+		FROM vendor_resource
+		WHERE wf_state_id = #providerWfState#
+			AND vendor_id in
+				<iterate property="vendorList" open="(" close=")" conjunction=",">
+					#vendorList[].firmId#
+				</iterate>
+	</select>
+    <!-- END -->
+    
+     <select id="getSkillNodeIdsForSku" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+	    SELECT category_node_id FROM supplier_prod.buyer_sku bsku JOIN supplier_prod.buyer_sku_task bst ON bsku.sku_id = bst.sku_id 
+		WHERE bsku.sku = #sku# AND bsku.buyer_id = #buyerId#
+    </select>
+	
+</sqlMap>

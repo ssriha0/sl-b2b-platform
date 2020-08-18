@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/soResponse" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" targetNamespace="http://www.servicelive.com/namespaces/soResponse" elementFormDefault="qualified" jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+	<xs:include schemaLocation="../../common.xsd"/>
+	<xs:include schemaLocation="../../om_common.xsd"/>
+	
+	<!--  This is the new get Release Info Response-->
+	<!-- Root Element -->
+	<xs:element name="getReleaseInfoResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="results"/>
+				<xs:element name="releaseDetails" type="releaseDetailsType"></xs:element>
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:decimal"/>
+			
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:complexType name="releaseDetailsType">
+			<xs:sequence>
+				<xs:element name="soId" type="xs:string"/>
+				<xs:element name="title" type="xs:string"></xs:element>
+				<xs:element name="status" type="xs:string"/>
+				<xs:element name="price" type="xs:double"/>
+				<xs:element name="assignedProvider" type="providerType"/>
+				<xs:element name="appointmentStartDate" type="xs:string"/>
+				<xs:element name="appointmentEndDate" type="xs:string"/>
+				<xs:element name="appointmentStartTime" type="xs:string"/>
+				<xs:element name="appointmentEndTime" type="xs:string"/>
+				<xs:element name="assignedProviderInd" type="xs:boolean"/>
+				<xs:element name="manageSOInd" type="xs:boolean"/>
+				<xs:element name="reasonCodes" type="reasonListType"/>
+			</xs:sequence>			
+	</xs:complexType>
+	
+</xs:schema>

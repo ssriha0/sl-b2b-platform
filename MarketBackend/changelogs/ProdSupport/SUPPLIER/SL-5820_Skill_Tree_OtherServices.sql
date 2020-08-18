@@ -1,0 +1,2 @@
+Insert into skill_tree (node_id,level, node_name, parent_node,sort_order,root,modified_by,leaf,job_classifier,description_content,match_weight_factor,depth_limit,root_node_id,created_date,modified_date) values (1429,2,'Locksmith',1400,1429,0,'Smitha',0,1,'',0,100,1400,now(),now());
+Insert into skill_tree (node_id,level, node_name, parent_node,sort_order,root,modified_by,leaf,job_classifier,description_content,match_weight_factor,depth_limit,root_node_id,created_date,modified_date) values (1430,2,'Glass Repair',1400,1430,0,'Smitha',0,1,'',0,100,1400,now(),now());

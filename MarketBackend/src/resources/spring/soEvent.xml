@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
+	default-lazy-init="true">
+	
+      
+    <bean id="soEventDao" class="com.newco.marketplace.persistence.daoImpl.so.SOEventDaoImpl">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	 
+    </bean>
+    
+    <bean id="soEventBOTarget" class="com.newco.marketplace.business.businessImpl.serviceorder.SOEventBOImpl">
+    	<property name="eventDao">
+    		<ref bean="soEventDao"/>
+    	</property>
+    	<property name="visitDao">
+    		<ref bean="onsiteVisitDao"/>
+    	</property>
+    	<property name="serviceOrderBO">
+    		<ref bean="soBOAOP"/>
+    	</property>
+    	<property name="serviceOrderDao">
+    		<ref bean="serviceOrderDao"/>
+    	</property>    	
+    </bean>
+
+	<bean id="soEventBO"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		lazy-init="true">
+		<property name="proxyInterfaces">
+			<list>
+				<value>
+					com.newco.marketplace.business.iBusiness.serviceorder.ISOEventBO
+				</value>
+			</list>
+		</property>
+		<property name="target">
+			<ref bean="soEventBOTarget" />
+		</property>
+		<property name="transactionManager">
+			<ref bean="dsTransactionManagerMain" />
+		</property>
+		<property name="transactionAttributeSource">
+			<ref bean="attributeSource" />
+		</property>
+	</bean>    
+</beans>

@@ -1,0 +1,109 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="admin" extends="ServiceLiveBase" >
+        <default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+
+    	<global-results >
+			<result name="admin_search_success" type="redirectAction">
+				adminSearchController_execute
+			</result>
+			<result name="error" type="redirectAction">
+				<param name="actionName">errorAction</param>
+				<param name="errorMessage">${errorMessage}</param>
+				<param name="returnURL">${returnURL}</param>
+			</result>
+		</global-results>
+
+
+	    <action name="adminDashboard_*" class="adminDashboardAction" method="{1}">
+	        <result name="success">/jsp/admin/sl_admin_dashboard.jsp</result>
+	    </action>
+
+	    <action name="adminSearchController_*" class="adminSearchControllerAction" method="{1}">
+	        <result name="success" type="tiles">base.servicelive.admin_search</result>
+	    </action>
+
+	    <action name="adminSearchOLD_*" class="adminSearchAction" method="{1}">
+	        <result name="success" type="tiles">base.servicelive.admin_search</result>
+	        <result name="iframe_results">/jsp/admin/search_results_iframe.jsp</result>
+	        <result name="search">/jsp/admin/member_search.jsp</result>
+	        <result name="gotoManageUsers" type="redirectAction">
+	            <param name="actionName">dashboardAction</param>
+        	</result>
+	    </action>
+
+	    <!-- action name="adminSearch_*" class="SearchPortalAction" method="{1}">
+	        <result name="search">/jsp/admin/member_search.jsp</result>
+	        <result name="searchBuyer">/jsp/admin/member_search_results_buyer.jsp</result>
+	        <result name="searchProviderFirm">/jsp/admin/member_search_results_provider_firm.jsp</result>
+	        <result name="searchServiceProvider">/jsp/admin/member_search_results_service_provider.jsp</result>
+	        <result name="secondarySkill1">/jsp/admin/member_search_secondarySkill1.jsp</result>
+	        <result name="secondarySkill2">/jsp/admin/member_search_secondarySkill2.jsp</result>
+	        <result name="gotoManageUsers" type="redirectAction">
+	            <param name="actionName">dashboardAction</param>
+        	</result>
+        	<result name="gotoEditProfile" type="redirectAction">
+	            <param name="actionName">serviceProAllTab?resourceId=${resourceId}</param>
+        	</result>
+        	<result name="gotoEditCompanyProfile" type="redirectAction">
+	            <param name="actionName">allTabView</param>
+        	</result>
+	    </action -->
+
+	    <action name="adminManageUsers_*" class="adminManageUsersAction" method="{1}">
+	        <result name="success">/jsp/admin/admin_manage_users.jsp</result>
+	        <result name="addedit">/jsp/admin/manage_users_add_edit.jsp</result>
+	    </action>
+
+		<action name="adminManageAPI_*" class="adminManageAPIAction" method="{1}">
+	        <result name="success">/jsp/admin/admin_manage_apis.jsp</result>
+	         <result name="showEditPage">/jsp/admin/modules/admin_edit_apis.jsp</result>
+	         <result name="showManageUser">/jsp/admin/modules/admin_manage_api_users.jsp</result>
+	    </action>
+
+	    <action name="adminAddEditUser_*" class="adminAddEditUserAction" method="{1}">
+	        <result name="success">/jsp/admin/admin_add_edit_user.jsp</result>
+	        <result name="save" type="redirectAction">
+	            <param name="actionName">adminManageUsers_execute</param>
+        	</result>
+	        <result name="remove_user" type="redirectAction">
+	            <param name="actionName">adminManageUsers_execute</param>
+        	</result>
+        	<result name="reset_password" type="redirectAction">
+	            <param name="actionName">adminManageUsers_execute</param>
+        	</result>
+	    </action>
+
+	    <action name="adminServicePro_*" class="adminServiceProAction" method="{1}">
+	        <result name="edit">/jsp/admin/edit_service_pro_all_tabs.jsp</result>
+	    </action>
+
+	    <action name="adminRatings_*" class="adminRatingsAction" method="{1}">
+	        <result name="success">/jsp/admin/ratings.jsp</result>
+	    </action>
+
+	    <action name="adminAudit_*" class="adminAuditAction" method="{1}">
+	        <result name="success">/jsp/admin/audit_main.jsp</result>
+	    </action>
+
+	    <action name="adminReports_*" class="adminReportsAction" method="{1}">
+	        <result name="success">/jsp/admin/reports.jsp</result>
+	    </action>
+
+	    <action name="adminCompanyProfile_*" class="adminCompanyProfileAction" method="{1}">
+	        <result name="success">/jsp/admin/edit_company_profile_all_tabs.jsp</result>
+	    </action>
+
+	    <action name="adminMarketAdj_*" class="adminMarketAdjAction" method="{1}">
+	        <result name="success">/jsp/admin/adminMarketAdj.jsp</result>
+	    </action>
+
+	    <action name="adminTripCharge_*" class="adminTripChargeAction" method="{1}">
+	        <result name="success">/jsp/admin/admin_trip_charge.jsp</result>
+	    </action>
+
+    </package>
+
+</struts>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="../" default="compile-dependencies" name="SPNWeb-BuildAll" >
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+	<target name="compile-dependencies"> 
+		<ant antfile="../ServiceLiveCommonDomain/wildfly-build/build.xml"   dir="../ServiceLiveCommonDomain" />
+		<ant antfile="../MarketCommon/wildfly-build/build.xml"   dir="../MarketCommon" inheritAll="false" />
+		<ant antfile="../MarketBusinessInterface/wildfly-build/build.xml" dir="../MarketBusinessInterface"/>
+		<ant antfile="../MarketDocument/wildfly-build/build.xml" dir="../MarketDocument"/>
+		<ant antfile="../ResponsysClient/wildfly-build/build.xml"   dir="../ResponsysClient"/>
+		<ant antfile="../ResponsysInteractClient/wildfly-build/build.xml"   dir="../ResponsysInteractClient"/>
+		<ant antfile="../MarketAlertsManager/wildfly-build/build.xml"   dir="../MarketAlertsManager"/>
+		<ant antfile="../CSRF/wildfly-build/build.xml"   dir="../CSRF"/>
+		<ant antfile="../SPNBackend/wildfly-build/build.xml"   dir="../SPNBackend"/>
+		<ant antfile="../SPNWeb/wildfly-build/build.xml" dir="../SPNWeb"/>
+	</target>
+</project>

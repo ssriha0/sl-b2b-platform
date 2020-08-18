@@ -1,0 +1,299 @@
+// Content Header
+// ======================================================================
+
+.content header.details-hero {
+	position: relative;
+	overflow: hidden;
+	text-align: center;
+	border-bottom: none;
+	@media only screen and (min-width : @screen-sm) {
+		text-align: left;
+	}
+}
+
+.content header .secondary-info {
+	#pxtoem > .font-size( 12, 14 );
+	position: relative;
+	overflow: hidden;
+	margin-top: -15px;
+	@media only screen and (min-width : @screen-sm) {
+		text-align: right;
+		margin-top: 0;
+	}
+}
+
+.content header .secondary-info p {
+	margin-bottom: 3px;
+}
+
+.content header .secondary-info .label {
+	#pxtoem > .font-size( 14, 14 );
+}
+
+.content header.details-hero .urgency {
+	-webkit-transform: 	rotate(-45deg); 
+	 -moz-transform: 	rotate(-45deg); 
+	  -ms-transform: 	rotate(-45deg); 
+	   -o-transform: 	rotate(-45deg); 
+	      transform: 	rotate(-45deg);
+    top: auto;
+    right: -70px;
+	bottom: -20px;
+    height: 60px;
+	#pxtoem > .font-size( 9, 14 );
+	padding: 5px 55px;
+}
+
+.details-hero .panel {
+	padding: 0;
+	margin: 0 -15px;
+	@media only screen and (min-width : @screen-sm) {
+		margin-top: 0;
+		margin-right: 0;
+		margin-bottom: 20px;
+		top: 15px;
+		position: absolute;
+		left: 50%;
+		margin-left: -22%;
+		width: 44%;
+	}
+	@media only screen and (min-width : @screen-md) {
+		margin-left: -25%;
+		width: 50%;
+	}
+}
+
+.details-hero .panel h2 small {
+	#pxtoem > .font-size( 12, 14 );
+}
+
+// Content CTA
+// ======================================================================
+
+.cta {
+	padding: 0;
+	clear: both;
+	//@media only screen and (min-width : @screen-md) {
+	//	display: none;
+	//}
+}
+.cta .btn:last-child {
+	border-left: none;
+}
+.cta .btn {
+//	border-left: none;
+	border-radius: 0;
+	padding: 12px;
+}
+
+// Content Details
+// ======================================================================
+
+.content section {
+	padding-top: 15px;
+	padding-bottom: 15px;
+}
+
+.content section p:last-child {
+	margin-bottom: 0;
+}
+
+section.lead-info {
+	border-top:    1px solid #eee;
+	border-bottom: 1px solid #eee;
+	@media only screen and (min-width : @screen-md) {
+		border: none; 
+	}
+}
+
+// Utility Tabs
+// ======================================================================
+.utilities .nav {
+    //width: 100%;
+    @media only screen and (min-width : @screen-md) { 
+    	width: 58.3333%;
+    	margin: 0 15px;
+    }
+}
+
+.utilities .nav li {
+    width: 33.333333%;
+    text-align: center;
+}
+
+.nav-tabs > li > a {
+	background: #F5F5F5;
+	border-bottom: 1px solid #ddd;
+}
+
+.tab-content {
+	border-bottom: 1px solid #ddd;
+	@media only screen and (min-width : @screen-md) { 
+		margin: -1px 15px 0; 
+		border: 1px solid #ddd;
+	}
+}
+
+.tab-pane form > ul,
+.tab-pane > ul {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+
+.tab-pane ul > li, .tab-pane section {
+	padding: 15px;
+	margin: 0;
+	border-bottom: 1px solid #ddd;
+}
+
+.tab-pane ul > li:last-child {
+	border: none;
+}
+
+.update-target {
+	float: right;
+	background-color: @servicelive-blue;
+	border-radius: 50px;
+	color: #fff;
+	#pxtoem > .font-size( 10, 14 );
+    padding: 3px 5px;
+}
+
+.update-target.tooltip-target {
+    border-bottom: medium none;
+    cursor: pointer;
+}
+
+
+// Call Customer Widget
+// ======================================================================
+.tab-content.form-panes {
+	margin: 0;
+	border: none;
+}
+
+// Schedule Widget
+// ======================================================================
+.hyphen:after {
+    content: "-";
+    position: absolute;
+    right: -3px;
+    top: 6px;
+}
+
+// Assign Widget
+// ======================================================================
+.media { 
+	margin-top: 10px; 
+}
+
+.media > a.pull-left {
+	border: 2px solid @servicelive-blue;
+    border-radius: 75px;
+    max-height: 75px;
+    max-width: 75px;
+    overflow: hidden;
+}
+
+.thm {
+	max-width: 75px;
+}
+
+.alert dl {
+	margin: 0;
+}
+
+@media only screen and (min-width : @screen-sm) {
+	.alert dt {
+		float: left;
+		margin-right: 5px;
+	}
+}
+
+option small { 
+	color: #ccc;
+	#pxtoem > .font-size( 10, 14 );
+}
+
+// Complete Widget
+// ======================================================================
+
+.total-cost {
+	font-weight: bold;
+	text-align: right;
+	margin-top: -15px;
+	margin-bottom: -5px;
+}
+
+.total-cost hr {
+	margin-top:10px;
+	margin-bottom: 10px;
+}
+
+// History
+// ======================================================================
+.tab-pane .table-responsive {
+	padding: 15px;
+	border: 0;
+}
+
+table tr td:first-child {
+	white-space: nowrap;
+}
+
+@media only screen and (min-width : @screen-md) {
+	table tr td:last-child {
+		white-space: nowrap;
+	}
+}	
+
+
+#history time span {
+	display: block;
+	@media only screen and (min-width : @screen-sm) {
+		display: inline;
+	}
+}
+
+// Notes
+// ======================================================================
+.edit-note:hover, 
+.edit-note:focus {
+	background-color: @link-hover;
+	color: #fff;
+}
+
+// Attachments/Files
+// ======================================================================
+#fileSelect {
+    border: 1px dashed #bbb;
+    border-radius: 5px;
+    color: #bbb;
+    padding: 25px;
+    width: 100%;
+    cursor: pointer;
+}
+/*
+#fileSelect.hover {
+	border-color: @servicelive-blue;
+	color: @servicelive-blue;
+	background-color: #eee;
+}*/
+
+#widget-add-attachment .progress {
+	display: none;
+	margin: 20px 0 0;
+}
+
+
+
+// Errors
+// ======================================================================
+.buyerLeadError { 
+	margin-bottom: 15px; 
+	padding: 15px; 
+	background: #FFEACC;
+    border: 1px solid #FF9600;
+    color: #FF0000;
+}

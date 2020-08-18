@@ -1,0 +1,70 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="market" extends="ServiceLiveBase">
+        <default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+
+    	<global-results >
+			<result name="error" type="redirectAction">
+				<param name="actionName">errorAction</param>
+				<param name="errorMessage">${errorMessage}</param>
+				<param name="returnURL">${returnURL}</param>
+			</result>
+		</global-results>
+		
+		<action name="errorAction" class="errorAction">
+		   	<result name="success">/jsp/public/common/commonError.jsp</result>
+		</action> 
+		
+		<action name="serviceOrderAddNoteWidget"
+			class="soMonitorWidgetAddNote" method="addNote">
+			<result type="tiles">template.base</result>
+		</action>
+
+		<action name="serviceOrderVoid"
+			class="serviceOrderVoidAction">
+			<result type="tiles">template.base</result>
+		</action>
+		
+		<action name="serviceOrderReject"
+			class="serviceOrderRejectAction">
+			<result type="tiles">template.base</result>
+	      	<result name="sod" type="redirectAction">soDetailsController?id=${detailsSOId}&amp;role=provider&amp;status=received&amp;msg=${errorMessage}</result>			
+	      	<result name="som" type="redirectAction">serviceOrderMonitor.action?displayTab=Received&amp;msg=${message}</result>
+		</action>
+		
+		
+		<action name="serviceOrderRejectWidget"
+			class="serviceOrderRejectAction" method="doWidgetServiceOrderReject">
+		</action>
+		
+		
+		
+		
+		<action name="incSpendLimitAction"
+			class="soIncreaseSpendLimitAction" method="increaseSpendLimit">
+			<result type="tiles">template.base</result>
+		</action>
+		
+		<action name="serviceOrderRejectReasons"
+			class="serviceOrderRejectAction"
+			method="getRejectReasons">
+			<result name="sod" type="redirectAction">
+				<param name="actionName">
+					soDetailsController.action
+				</param>
+			</result>
+		</action>
+		
+		<action name="serviceOrderWithdrawCondOffer"
+			class="serviceOrderWithdrawCondOfferAction">
+			<result type="tiles">template.base</result>
+		</action>
+
+		<action name="somDeleteDraft"
+			class="somDeleteDraft">
+			<result type="tiles">template.base</result>
+		</action>
+	</package>
+</struts>

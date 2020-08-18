@@ -1,0 +1,172 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<title>ServiceLive : SPN Auditor : New Applicants</title>
+	<!-- tiles:insertDefinition name="blueprint.base.meta"/ -->
+	<link rel="shortcut icon" href="../../images/favicon.ico" />
+	<link rel="stylesheet" type="text/css" href="../../styles/screen.css" media="screen, projection">
+	<link rel="stylesheet" type="text/css" href="../../styles/plugins/superfish.css" media="screen, projection">
+	<script type="text/javascript" src="../../scripts/jquery-1.2.6.min.js"></script>
+	<script type="text/javascript" src="../../scripts/plugins/jquery.flash.min.js"></script>
+	<script type="text/javascript" src="../../scripts/plugins/jquery.sifr.min.js"></script>
+	<script type="text/javascript" src="../../scripts/plugins/superfish.js"></script>
+	<script type="text/javascript" src="../../scripts/plugins/supersubs.js"></script>
+	<script type="text/javascript" src="../../scripts/plugins/jquery.hoverIntent.minified.js"></script>
+	<script type="text/javascript" src="../../scripts/plugins/jquery.bgiframe.pack.js"></script>
+	<script type="text/javascript" src="../../scripts/toolbox.js"></script>
+	<!-- end blueprint base include -->
+	
+	<link rel="stylesheet" type="text/css" href="../../styles/plugins/spn-auditor.css" media="screen, projection">
+	<script type="text/javascript" src="../../scripts/plugins/ui.core.js"></script>
+	<script type="text/javascript" src="../../scripts/plugins/ui.tabs.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('div.tabs > ul').tabs();
+		});
+	</script>
+</head>
+<body id="select-provider-network">
+	<div id="wrap" class="container">
+
+		<!-- tiles:insertDefinition name="blueprint.base.header"/ -->
+			<div id="header" class="span-24 clearfix">
+				<div id="title" class="span-6 first">
+					<h1><a href="#" title="ServiceLive">ServiceLive</a></h1>
+				</div>	
+				<div id="utilities" class="span-18 last">
+					<p class="textright">Welcome back, Mr. President</p>
+					<ul class="right landscape">
+						<li><a title="Community Forums" href="#" onclick="window.open(this.href); return false;" onkeypress="window.open(this.href); return false;">Community</a></li>
+						<li><a title="Support" href="#">Support</a></li>
+						<li><a title="Contact ServiceLive" href="#">Contact Us</a></li>
+							<li><a title="Logout of your Account" href="#">Logout</a></li>
+				</div>	
+			</div>
+		<!-- end header tile -->
+
+		<!-- tiles:insertDefinition name="blueprint.base.navigation"/ -->
+			<div id="navigation" class="span-24 clearfix">
+			</div>
+		<!-- end navigation tile -->
+
+		<div id="content" class="span-24 clearfix">
+
+			<div id="primary" class="span-24 first last">
+				<div class="content">
+					<ul class="ui-tabs-nav">
+						<li class="ui-tabs-selected"><a href="#">New Applicants<small style="font-weight: normal; margin-left: 10px">(13/14)</small></a></li>
+						<li><a href="#"><a href="#">Re-Applicants <small style="font-weight: normal; margin-left: 10px">(13/14)</small></a></a></li>
+						<li><a href="#">Search</a></li>
+					</ul>
+					<div class="ui-tabs-panel">
+
+							<div class="clearfix">
+								<div id="auditPanel">
+									<div class="clearfix">
+										<a class="right release" href="#">Release &amp; Get Next &raquo;</a>
+									</div>
+									<div class="clearfix titlebar">
+										<div class="left"><strong>Provider Firm Name</strong> #1234</div>
+										<div class="right"><strong>Auditing for: </strong> SPN Name / Campaign Name</div>
+									</div>
+									<div class="tableWrap">
+										<table id="information" border="0" cellpadding="0" cellspacing="0">
+											<tbody>
+												<tr>
+													<td valign="top">
+														<strong>Contact Information:</strong>
+														<br />Business Name
+														<br />DBA
+														<br />Joe Smith (#123456)
+														<br /><a href="mailto:jsmith@email.com">jsmith@email.com</a>
+														<br />(000) 000-0000
+													</td>
+													<td valign="top">
+														<strong>ServiceLive Status: 
+														<span class="approved">Approved</span> 
+														<!-- <span class="suspended">Suspended</span> -->
+														</strong>
+														<br /><br />
+														<strong>Invited:</strong>
+														<br />October 10, 2008, 2:08 PM EST
+														<br /><br />
+														<strong>Applied:</strong>
+														<br />October 14 2008, 4:56 PM EST
+													</td>
+													<td valign="top">
+														<strong>Other <abbr title="Select Provider Networks">SPNS</abbr> for this Provider:</strong>
+														<div class="scrollit">
+															SPN Name - Member
+															<br />SPN Name - Pending Approval
+															<br />SPN Name - Incomplete
+															<br />SPN Name - Member
+															<br />SPN Name - Pending Approval
+															<br />SPN Name - Incomplete
+															<br />SPN Name - Member															
+															<br />SPN Name - Pending Approval
+															<br />SPN Name - Incomplete
+															<br />SPN Name - Member
+														</div>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+						
+										<div class="tabs content">			
+											<ul>
+												<li><a href="tab-audit-documents.html"><span></span>Documents</a></li>
+												<li><a href="tab-audit-greet.html">Meet &amp; Greet</a></li>
+												<li><a href="tab-audit-criteria.html">Criteria &amp; Credentials</a></li>
+											</ul>
+										</div>
+										<div class="clearfix content buttonarea" style="text-align: right;">
+											<input type="submit" class="default button right" value="send notification">
+											<input type="submit" class="action button right" value="approve">
+											<input type="submit" class="default button right" value="decline">
+										</div>
+									</div>
+									
+								</div>
+									
+									<div class="content right spncol">
+										<div class="spninfo">
+											<h4><strong>View <abbr title="Select Provider Network">SPN</abbr> Criteria</strong></h4>
+											<label><abbr title="Select Provider Network">SPN</abbr>: </label> <select><option>SPN Name</option></select>
+												
+												<!-- include the widget from create SPN here -->
+										</div>
+									</div>											
+							</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- tiles:insertDefinition name="blueprint.base.footer"/ -->
+			<div id="footer" class="span-24 clearfix">
+				<ul class="landscape">
+					<li><a href="#">About Us</a> </li>
+					<li><a href="#">Terms of Use</a> </li>
+					<li><a href="https://transformco.com/privacy" target="_blank">Privacy Policy</a> </li>
+					<li><a href="#">Provider Agreement</a> </li>
+					<li><a href="#">Buyer Agreement</a></li>
+				</ul>
+				
+				<p class="copyright">
+					&copy; 2008 ServiceLive, Inc. | v 3.0
+				</p>
+			
+				<p class="blackout">
+					<strong>During our BETA launch, we are not available for buyers in the following states: </strong> State 1, State 2, State 3		
+				</p>
+			</div>			
+		<!-- end blueprint footer include -->
+
+	</div>
+	<!-- jsp:include page="/jsp/public/common/omitInclude.jsp" flush="true" -->
+		<!-- jsp:param name="PageName" value="spn:provider invitation"/ -->
+	<!-- /jsp:include -->
+</body>
+</html>
+
+

@@ -1,0 +1,726 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="16">
+	<component name="defaultmap1" blackbox="0" editable="1">
+		<properties AppName="NPSCloseAudit" JavaBasePackage="com.servicelive.esb.mapforce.npscloseaudit" ShowLibraryNameInHeader="1" SelectedLanguage="java"/>
+		<structure>
+			<children>
+				<component name="constant" library="core" uid="621" kind="2">
+					<properties/>
+					<targets>
+						<datapoint pos="0" key="12"/>
+					</targets>
+					<view ltx="493" lty="313" rbx="55" rby="-7"/>
+					<data>
+						<constant value="1" datatype="decimal"/>
+						<wsdl/>
+					</data>
+				</component>
+				<component name="constant" library="core" uid="622" kind="2">
+					<properties/>
+					<targets>
+						<datapoint pos="0" key="13"/>
+					</targets>
+					<view ltx="494" lty="341" rbx="14" rby="-16"/>
+					<data>
+						<constant value="2" datatype="decimal"/>
+						<wsdl/>
+					</data>
+				</component>
+				<component name="constant" library="core" uid="624" kind="2">
+					<properties/>
+					<targets>
+						<datapoint pos="0" key="14"/>
+					</targets>
+					<view ltx="309" lty="307" rbx="-10" rby="-22"/>
+					<data>
+						<constant value="00" datatype="string"/>
+						<wsdl/>
+					</data>
+				</component>
+				<component name="constant" library="core" uid="5" kind="2">
+					<properties/>
+					<targets>
+						<datapoint pos="0" key="7"/>
+					</targets>
+					<view ltx="546" lty="61" rbx="24" rby="-21"/>
+					<data>
+						<constant value="1" datatype="decimal"/>
+						<wsdl/>
+					</data>
+				</component>
+				<component name="if-else" library="core" uid="619" kind="4">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="15"/>
+						<datapoint pos="1" key="16"/>
+						<datapoint pos="2" key="17"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="18"/>
+					</targets>
+					<view ltx="554" lty="279" rbx="-48" rby="35"/>
+				</component>
+				<component name="equal" library="core" uid="623" kind="5">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="19"/>
+						<datapoint pos="1" key="20"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="21"/>
+					</targets>
+					<view ltx="380" lty="269" rbx="33" rby="-6"/>
+				</component>
+				<component name="concat" library="core" uid="618" kind="5" growable="1" growablebasename="value">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="9"/>
+						<datapoint pos="1" key="10"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="11"/>
+					</targets>
+					<view ltx="428" lty="180"/>
+				</component>
+				<component name="distinct-values" library="core" uid="656" kind="5">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="146"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="147"/>
+					</targets>
+					<view ltx="420" lty="380" rbx="30" rby="13"/>
+				</component>
+				<component name="now" library="lang" uid="657" kind="5">
+					<properties/>
+					<targets>
+						<datapoint pos="0" key="151"/>
+					</targets>
+					<view ltx="385" lty="-31" rbx="56" rby="29"/>
+				</component>
+				<component name="constant" library="core" uid="617" kind="2">
+					<properties/>
+					<targets>
+						<datapoint pos="0" key="8"/>
+					</targets>
+					<view ltx="620" lty="172" rbx="50" rby="59"/>
+					<data>
+						<constant value="9" datatype="decimal"/>
+						<wsdl/>
+					</data>
+				</component>
+				<component name="integrationId" library="core" uid="4" kind="6">
+					<properties/>
+					<sources>
+						<datapoint/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="1"/>
+					</targets>
+					<view ltx="80" lty="361" rbx="404" rby="-610"/>
+					<data>
+						<input datatype="long" previewvalue="9" usepreviewvalue="1"/>
+						<wsdl/>
+						<parameter usageKind="input" name="integrationId"/>
+					</data>
+				</component>
+				<component name="document" library="xml" uid="2" kind="14">
+					<properties XSLTTargetEncoding="UTF-8" AddSchemaLocation="0"/>
+					<view rbx="274" rby="267"/>
+					<data>
+						<root scrollposition="1">
+							<header>
+								<namespaces>
+									<namespace/>
+									<namespace uid="http://www.altova.com/mapforce"/>
+								</namespaces>
+							</header>
+							<entry name="FileInstance" ns="1" outkey="37" expanded="1">
+								<entry name="document" ns="1" expanded="1" casttotargettypemode="cast-in-subtree">
+									<entry name="InstallationServiceAudit" expanded="1">
+										<entry name="AuditRecord" outkey="70" expanded="1">
+											<entry name="SalesCheck" expanded="1">
+												<entry name="Number" outkey="38"/>
+												<entry name="Date" outkey="39"/>
+											</entry>
+											<entry name="ServiceUnitNumber" outkey="40"/>
+											<entry name="ServiceOrderNumber" outkey="41"/>
+											<entry name="Process" outkey="42"/>
+											<entry name="ReturnCode" outkey="43"/>
+											<entry name="Messages" expanded="1">
+												<entry name="Message" outkey="45"/>
+											</entry>
+										</entry>
+									</entry>
+								</entry>
+							</entry>
+						</root>
+						<document schema="..\file-formats\NPSCloseAudit.AUD.xsd" inputinstance="..\..\..\..\appl\sl\iss\13278-callclose.npsCallCloseAudit" outputinstance="..\sample-files\NPSCloseAudit.AUD.xml" instanceroot="{}InstallationServiceAudit" userdefinedschemalocation="C:/Projects/Sears/service_live/trunk/MarketServiceBus.Mapforce.Map/file-formats/NPSCloseAudit.AUD.xsd"/>
+						<wsdl/>
+					</data>
+				</component>
+				<component name="exists" library="core" uid="626" kind="5">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="96"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="97"/>
+					</targets>
+					<view ltx="437" lty="515" rbx="-42" rby="-53"/>
+				</component>
+				<component name="if-else" library="core" uid="642" kind="4">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="124"/>
+						<datapoint pos="1" key="125"/>
+						<datapoint/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="131"/>
+					</targets>
+					<view ltx="508" lty="713" rbx="-162" rby="115"/>
+				</component>
+				<component name="if-else" library="core" uid="627" kind="4">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="98"/>
+						<datapoint pos="1" key="99"/>
+						<datapoint/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="100"/>
+					</targets>
+					<view ltx="529" lty="593" rbx="-179" rby="-93"/>
+				</component>
+				<component name="db" library="db" uid="6" kind="15">
+					<properties JDBCDriver="sun.jdbc.odbc.JdbcOdbcDriver" JDBCDatabaseURL="jdbc:odbc:localhost" DBDataSource="localhost"/>
+					<view ltx="-2" lty="465" rbx="222" rby="937"/>
+					<data>
+						<root scrollposition="1">
+							<header>
+								<namespaces/>
+							</header>
+							<entry name="document" expanded="1">
+								<entry name="CURRENT_TIMESTAMP" type="table" expanded="1">
+									<entry name="NOW()" valuekeygeneration="databasegenerated"/>
+								</entry>
+								<entry name="buyer_notifications" type="table">
+									<entry name="buyerNotificationId" valuekeygeneration="databasegenerated"/>
+									<entry name="serviceorders|relatedServiceOrderId" type="table">
+										<entry name="serviceOrderId" valuekeygeneration="databasegenerated"/>
+										<entry name="transactions|transactionId" type="table">
+											<entry name="transactionId" valuekeygeneration="databasegenerated"/>
+										</entry>
+									</entry>
+									<entry name="transactions|transactionId" type="table">
+										<entry name="transactionId" valuekeygeneration="databasegenerated"/>
+										<entry name="serviceorders|transactionId" type="table">
+											<entry name="serviceOrderId" valuekeygeneration="databasegenerated"/>
+										</entry>
+									</entry>
+								</entry>
+								<entry name="transactions" type="table">
+									<entry name="transactionId" valuekeygeneration="databasegenerated"/>
+									<entry name="buyer_notifications|transactionId" type="table">
+										<entry name="buyerNotificationId" valuekeygeneration="databasegenerated"/>
+										<entry name="serviceorders|relatedServiceOrderId" type="table">
+											<entry name="serviceOrderId" valuekeygeneration="databasegenerated"/>
+										</entry>
+									</entry>
+									<entry name="serviceorders|transactionId" type="table">
+										<entry name="serviceOrderId" valuekeygeneration="databasegenerated"/>
+										<entry name="buyer_notifications|relatedServiceOrderId" type="table">
+											<entry name="buyerNotificationId" valuekeygeneration="databasegenerated"/>
+										</entry>
+									</entry>
+								</entry>
+								<entry name="vw_batches" type="table" expanded="1">
+									<entry name="integrationId" outkey="155"/>
+									<entry name="transactions|batchId" type="table" outkey="156" expanded="1">
+										<entry name="transactionId" valuekeygeneration="databasegenerated"/>
+										<entry name="buyer_notifications|transactionId" type="table" expanded="1">
+											<entry name="buyerNotificationId" outkey="157" valuekeygeneration="databasegenerated"/>
+											<entry name="serviceorders|relatedServiceOrderId" type="table" expanded="1">
+												<entry name="serviceOrderId" valuekeygeneration="databasegenerated"/>
+												<entry name="externalStatus" outkey="158"/>
+											</entry>
+										</entry>
+										<entry name="serviceorders|transactionId" type="table">
+											<entry name="serviceOrderId" valuekeygeneration="databasegenerated"/>
+											<entry name="buyer_notifications|relatedServiceOrderId" type="table">
+												<entry name="buyerNotificationId" valuekeygeneration="databasegenerated"/>
+											</entry>
+										</entry>
+									</entry>
+								</entry>
+							</entry>
+						</root>
+						<wsdl/>
+						<database>
+							<database_connection is_global_resource="Yes" global_resource_alias="ServiceLiveIntegrationDb" database_kind="MySQL" import_kind="ODBC" version="5.1.51-community" name="ServiceLiveIntegrationDb1" path="ServiceLiveIntegrationDb1">
+								<LocalViewStorage>
+									<LocalViewElement SQL="select NOW()">
+										<PathElement Name="ServiceLiveIntegrationDb1" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="CURRENT_TIMESTAMP" Kind="Select Statement"/>
+									</LocalViewElement>
+								</LocalViewStorage>
+								<LocalRelationsStorage>
+									<LocalRelationElement name="Untitled">
+										<SourceTable>
+											<PathElement Name="ServiceLiveIntegrationDb1" Kind="DataSource"/>
+											<PathElement Name="servicelive_integration" Kind="Database"/>
+											<PathElement Name="transactions" Kind="Table"/>
+										</SourceTable>
+										<SourceColumns>
+											<Column name="batchId"/>
+										</SourceColumns>
+										<DestinationTable>
+											<PathElement Name="ServiceLiveIntegrationDb1" Kind="DataSource"/>
+											<PathElement Name="servicelive_integration" Kind="Database"/>
+											<PathElement Name="vw_batches" Kind="View"/>
+										</DestinationTable>
+										<DestinationColumns>
+											<Column name="batchId"/>
+										</DestinationColumns>
+									</LocalRelationElement>
+								</LocalRelationsStorage>
+								<selections>
+									<selection>
+										<PathElement Name="ServiceLiveIntegrationDb1" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="CURRENT_TIMESTAMP" Kind="Select Statement"/>
+									</selection>
+									<selection>
+										<PathElement Name="ServiceLiveIntegrationDb1" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="buyer_notifications" Kind="Table"/>
+									</selection>
+									<selection>
+										<PathElement Name="ServiceLiveIntegrationDb1" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="serviceorders" Kind="Table"/>
+									</selection>
+									<selection>
+										<PathElement Name="ServiceLiveIntegrationDb1" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="transactions" Kind="Table"/>
+									</selection>
+									<selection>
+										<PathElement Name="ServiceLiveIntegrationDb1" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="vw_batches" Kind="View"/>
+									</selection>
+								</selections>
+							</database_connection>
+							<recordset/>
+						</database>
+					</data>
+				</component>
+				<component name="db" library="db" uid="3" kind="15">
+					<properties XSLTDefaultOutput="1" JDBCDriver="sun.jdbc.odbc.JdbcOdbcDriver" JDBCDatabaseURL="jdbc:odbc:Local SL Integration" DBDataSource="Local SL Integration" DBUseTransactions="1"/>
+					<view ltx="694" lty="-16" rbx="1050" rby="807"/>
+					<data>
+						<root scrollposition="1">
+							<header>
+								<namespaces/>
+							</header>
+							<entry name="document" expanded="1">
+								<entry name="batches" type="table" inpkey="105" expanded="1">
+									<entry name="batchId" valuekeygeneration="databasegenerated"/>
+									<entry name="integrationId" inpkey="22"/>
+									<entry name="fileName" inpkey="23"/>
+									<entry name="statusId" inpkey="24"/>
+									<entry name="createdOn" inpkey="25"/>
+									<entry name="transactions|batchId" type="table" inpkey="69" expanded="1">
+										<entry name="transactionId" valuekeygeneration="databasegenerated"/>
+										<entry name="transactionTypeId" inpkey="26"/>
+										<entry name="externalOrderNumber" inpkey="27"/>
+										<entry name="createdOn" inpkey="28"/>
+										<entry name="statusId" inpkey="29"/>
+										<entry name="buyer_notification_responses|transactionId" type="table" inpkey="111" expanded="1">
+											<entry name="buyerNotificationResponseId" valuekeygeneration="databasegenerated"/>
+											<entry name="buyerNotificationId" inpkey="86"/>
+											<entry name="returnCode" inpkey="30"/>
+											<entry name="responseStatusSuccess" inpkey="31"/>
+											<entry name="oms_buyer_notification_response_messages|buyerNotificationResponseId" type="table" inpkey="73" expanded="1">
+												<entry name="omsBuyerNotificationResponseMessageId" valuekeygeneration="databasegenerated"/>
+												<entry name="message" inpkey="74"/>
+											</entry>
+											<entry name="oms_buyer_notification_responses|buyerNotificationResponseId" type="table" expanded="1">
+												<entry name="omsBuyerNotificationResponseId" valuekeygeneration="databasegenerated"/>
+												<entry name="processId" inpkey="32"/>
+												<entry name="salesCheckNumber" inpkey="33"/>
+												<entry name="salesCheckDate" inpkey="34"/>
+												<entry name="npsStatus" inpkey="123"/>
+												<entry name="serviceOrderNumber" inpkey="134"/>
+												<entry name="serviceUnitNumber" inpkey="135"/>
+											</entry>
+											<entry name="oms_buyer_notification_response_messages|omsBuyerNotificationResponseId" type="table" expanded="1">
+												<entry name="omsBuyerNotificationResponseMessageId" valuekeygeneration="databasegenerated"/>
+											</entry>
+										</entry>
+									</entry>
+								</entry>
+							</entry>
+						</root>
+						<wsdl/>
+						<database>
+							<database_connection is_global_resource="Yes" global_resource_alias="ServiceLiveIntegrationDb" database_kind="MySQL" import_kind="ODBC" version="5.1.51-community" name="ServiceLiveIntegrationDb" path="ServiceLiveIntegrationDb">
+								<LocalViewStorage>
+									<LocalViewElement SQL="select NOW()">
+										<PathElement Name="ServiceLiveIntegrationDb" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="CURRENT_TIMESTAMP" Kind="Select Statement"/>
+									</LocalViewElement>
+								</LocalViewStorage>
+								<LocalRelationsStorage/>
+								<selections>
+									<selection>
+										<PathElement Name="ServiceLiveIntegrationDb" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="batches" Kind="Table"/>
+									</selection>
+									<selection>
+										<PathElement Name="ServiceLiveIntegrationDb" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="buyer_notification_responses" Kind="Table"/>
+									</selection>
+									<selection>
+										<PathElement Name="ServiceLiveIntegrationDb" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="oms_buyer_notification_response_messages" Kind="Table"/>
+									</selection>
+									<selection>
+										<PathElement Name="ServiceLiveIntegrationDb" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="oms_buyer_notification_responses" Kind="Table"/>
+									</selection>
+									<selection>
+										<PathElement Name="ServiceLiveIntegrationDb" Kind="DataSource"/>
+										<PathElement Name="servicelive_integration" Kind="Database"/>
+										<PathElement Name="transactions" Kind="Table"/>
+									</selection>
+								</selections>
+							</database_connection>
+							<recordset/>
+						</database>
+					</data>
+				</component>
+				<component name="transactions" library="db" uid="625" kind="21">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="81"/>
+						<datapoint pos="1" key="82"/>
+						<datapoint pos="2" key="93"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="84"/>
+					</targets>
+					<view ltx="297" lty="589" rbx="-411" rby="-97"/>
+					<data>
+						<where condition="externalOrderNumber = :externalOrderNumber and transactionTypeId = 6 and :integrationId IN (2,10) AND transactionid = 
+(
+SELECT t1.transactionid FROM transactions t1
+INNER JOIN batches b1 ON b1.batchid = t1.batchid
+WHERE t1.externalOrderNumber = :externalOrderNumber AND t1.transactionTypeId = 6 AND b1.integrationId in (2,10) 
+ORDER BY t1.createdOn DESC LIMIT 1)">
+							<parameters>
+								<parameter name="externalOrderNumber" type="string" auto-detect="0"/>
+								<parameter name="integrationId" type="short" auto-detect="0"/>
+							</parameters>
+						</where>
+						<wsdl/>
+					</data>
+				</component>
+			</children>
+			<graph directed="1">
+				<edges/>
+				<vertices>
+					<vertex vertexkey="1">
+						<edges>
+							<edge vertexkey="22" edgekey="46"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="7">
+						<edges>
+							<edge vertexkey="24" edgekey="50"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="8">
+						<edges>
+							<edge vertexkey="26" edgekey="51"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="11">
+						<edges>
+							<edge vertexkey="27" edgekey="52"/>
+							<edge vertexkey="82" edgekey="87"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="12">
+						<edges>
+							<edge vertexkey="16" edgekey="53"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="13">
+						<edges>
+							<edge vertexkey="17" edgekey="54"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="14">
+						<edges>
+							<edge vertexkey="20" edgekey="55"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="18">
+						<edges>
+							<edge vertexkey="29" edgekey="56"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="21">
+						<edges>
+							<edge vertexkey="15" edgekey="57"/>
+							<edge vertexkey="31" edgekey="58"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="37">
+						<edges>
+							<edge vertexkey="23" edgekey="59"/>
+							<edge vertexkey="105" edgekey="108"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="38">
+						<edges>
+							<edge vertexkey="33" edgekey="60"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="39">
+						<edges>
+							<edge vertexkey="34" edgekey="145"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="40">
+						<edges>
+							<edge vertexkey="9" edgekey="62"/>
+							<edge vertexkey="135" edgekey="136"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="41">
+						<edges>
+							<edge vertexkey="10" edgekey="63"/>
+							<edge vertexkey="134" edgekey="137"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="42">
+						<edges>
+							<edge vertexkey="32" edgekey="64"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="43">
+						<edges>
+							<edge vertexkey="19" edgekey="65"/>
+							<edge vertexkey="30" edgekey="66"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="45">
+						<edges>
+							<edge vertexkey="146" edgekey="148"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="70">
+						<edges>
+							<edge vertexkey="69" edgekey="71"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="84">
+						<edges>
+							<edge vertexkey="96" edgekey="102"/>
+							<edge vertexkey="111" edgekey="132"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="97">
+						<edges>
+							<edge vertexkey="98" edgekey="103"/>
+							<edge vertexkey="124" edgekey="128"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="100">
+						<edges>
+							<edge vertexkey="86" edgekey="104"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="131">
+						<edges>
+							<edge vertexkey="123" edgekey="133"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="147">
+						<edges>
+							<edge vertexkey="74" edgekey="149"/>
+							<edge vertexkey="73" edgekey="150"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="151">
+						<edges>
+							<edge vertexkey="25" edgekey="153"/>
+							<edge vertexkey="28" edgekey="154"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="155">
+						<edges>
+							<edge vertexkey="93" edgekey="159"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="156">
+						<edges>
+							<edge vertexkey="81" edgekey="160"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="157">
+						<edges>
+							<edge vertexkey="99" edgekey="161"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="158">
+						<edges>
+							<edge vertexkey="125" edgekey="162"/>
+						</edges>
+					</vertex>
+				</vertices>
+			</graph>
+		</structure>
+	</component>
+	<component name="create-datetime-from-date" library="user" blackbox="0" editable="1" inline="1">
+		<properties/>
+		<structure>
+			<children>
+				<component name="constant" library="core" uid="649" kind="2">
+					<properties/>
+					<targets>
+						<datapoint pos="0" key="42"/>
+					</targets>
+					<view ltx="220" lty="239" rbx="-32" rby="99"/>
+					<data>
+						<constant value="0" datatype="decimal"/>
+						<wsdl/>
+					</data>
+				</component>
+				<component name="time-from-datetime" library="lang" uid="647" kind="5">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="43"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="44"/>
+					</targets>
+					<view ltx="491" lty="196" rbx="65" rby="247"/>
+				</component>
+				<component name="datetime-from-parts" library="lang" uid="648" kind="5">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="34"/>
+						<datapoint pos="1" key="35"/>
+						<datapoint pos="2" key="36"/>
+						<datapoint pos="3" key="37"/>
+						<datapoint pos="4" key="38"/>
+						<datapoint pos="5" key="39"/>
+						<datapoint pos="6" key="40"/>
+						<datapoint/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="41"/>
+					</targets>
+					<view ltx="304" lty="156" rbx="-73" rby="89"/>
+				</component>
+				<component name="date-from-datetime" library="lang" uid="650" kind="5">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="59"/>
+					</sources>
+					<targets>
+						<datapoint/>
+					</targets>
+					<view ltx="451" lty="87"/>
+				</component>
+				<component name="datetime" library="core" uid="633" kind="7">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="2"/>
+					</sources>
+					<view ltx="1021" lty="120" rbx="-220" rby="20"/>
+					<data>
+						<output datatype="dateTime"/>
+						<wsdl/>
+						<parameter usageKind="output" name="datetime"/>
+					</data>
+				</component>
+				<component name="datetime-from-date-and-time" library="lang" uid="645" kind="5">
+					<properties/>
+					<sources>
+						<datapoint pos="0" key="45"/>
+						<datapoint pos="1" key="46"/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="47"/>
+					</targets>
+					<view ltx="629" lty="1" rbx="330" rby="-202"/>
+				</component>
+				<component name="date" library="core" uid="652" kind="6">
+					<properties/>
+					<sources>
+						<datapoint/>
+					</sources>
+					<targets>
+						<datapoint pos="0" key="66"/>
+					</targets>
+					<view ltx="75" lty="11"/>
+					<data>
+						<input datatype="date"/>
+						<wsdl/>
+						<parameter usageKind="input" name="date"/>
+					</data>
+				</component>
+			</children>
+			<graph directed="1">
+				<edges/>
+				<vertices>
+					<vertex vertexkey="41">
+						<edges>
+							<edge vertexkey="43" edgekey="49"/>
+							<edge vertexkey="59" edgekey="61"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="42">
+						<edges>
+							<edge vertexkey="37" edgekey="50"/>
+							<edge vertexkey="38" edgekey="51"/>
+							<edge vertexkey="39" edgekey="52"/>
+							<edge vertexkey="40" edgekey="53"/>
+							<edge vertexkey="36" edgekey="54"/>
+							<edge vertexkey="35" edgekey="55"/>
+							<edge vertexkey="34" edgekey="56"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="44">
+						<edges>
+							<edge vertexkey="46" edgekey="57"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="47">
+						<edges>
+							<edge vertexkey="2" edgekey="58"/>
+						</edges>
+					</vertex>
+					<vertex vertexkey="66">
+						<edges>
+							<edge vertexkey="45" edgekey="67"/>
+						</edges>
+					</vertex>
+				</vertices>
+			</graph>
+		</structure>
+	</component>
+</mapping>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<import resource="batchProcessContext.xml" />
+	<import resource="backgroundcheckContext.xml" />
+	<import resource="backgroundcheckRecertificationContext.xml" />
+	<import resource="buyerOutBoundNotificationContext.xml" />
+	<import resource="leadOutBoundNotificationContext.xml" />
+	<import resource="documentExpirationcheckContext.xml" />
+	<import resource="batchQuartzConfig.xml" />
+	<import resource="batchRoutingRuleNotificationContext.xml" />
+	<import resource="slPartsOrderFile.xml" />
+	<import resource="shipRegProcessContext.xml" />
+	<import resource="leadReminderProcessContext.xml" />
+	<import resource="mobileSoPdfGenerationBatchContext.xml" />
+	<import resource="inhomeOutBoundNotificationContext.xml"/>
+	<import resource="purchaseAmountMigrationBatchContext.xml"/>
+	<import resource="inhomeAutoCloseNotificationContext.xml" />
+	<import resource="inhomeAutoCloseContext.xml" />
+	<import resource="awsStatusRecordNotificationProcessorBatchContext.xml"/>
+	<import resource="updateRatingProcessorBatchContext.xml"/>
+	<import resource="FailedCommunicationToAwsNotificationBatchContext.xml"/>
+	<!-- SL-18979 -->
+	<import resource="smsDataSynchContext.xml" />
+	<import resource="externalCalendarSyncBatchContext.xml" />
+	<!-- SL -21142 -->
+	<import resource="lmsCredentialsIntegrationContext.xml" />
+	<import resource="csatMappingIntegrationContext.xml" />
+	<import resource="insideSalesDataLoadProcessContext.xml" />
+	
+	<!-- START: perfromance metric -->
+	<import resource="performanceMetricContext.xml" />
+	<!-- END: perfromance metric -->
+	
+</beans> 

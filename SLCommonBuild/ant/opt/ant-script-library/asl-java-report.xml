@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<!--
+********************************************************************************
+* Ant Script Library - Java reports module 
+* Contains ant targets related to the reports on java code
+* Module property prefix: "java-report"
+********************************************************************************
+* Copyright 2009 Joe Schmetzer
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+********************************************************************************
+ -->
+<project name="asl-java-report">
+    <dirname property="java-report.basedir" file="${ant.file.asl-java-report}"/>
+    <import file="${java-report.basedir}/asl-java-build.xml"/>
+    <import file="${java-report.basedir}/asl-java-test.xml"/>
+
+    <!-- ***********************************************************************
+    * Default values for java-report properties.
+    ************************************************************************ -->
+    <property name="java-report.report-dir"             location="${common.dist-dir}/reports"/>
+    <property name="java-report.javadoc-dir"            location="${java-report.report-dir}/javadoc"/>
+    <property name="java-report.test-dir"               location="${java-report.report-dir}/test-report"/>
+    <property name="java-report.coverage-dir"           location="${java-report.report-dir}/coverage-report"/>
+    <property name="java-report.pmd-dir"                location="${java-report.report-dir}/pmd-report"/>
+    <property name="java-report.jdepend-data-dir"       location="${common.target-dir}/jdepend-data"/>
+    <property name="java-report.jdepend-report-dir"     location="${java-report.report-dir}/jdepend-report"/>
+
+
+    <!-- ***********************************************************************
+    * target: report-tests
+    *   shunter: added depends - cobertura breaks without this
+    ************************************************************************ -->
+    <target name="report-tests"
+            description="Creates a test report">
+        <mkdir dir="${java-report.test-dir}"/>
+        <mkdir dir="${java-test.test-data-dir}"/>  <!-- shunter -->
+        
+        <junitreport todir="${java-report.test-dir}">
+            <fileset dir="${java-test.test-data-dir}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="frames" todir="${java-report.test-dir}"/>
+        </junitreport>
+    </target>
+    
+
+    <!-- ***********************************************************************
+    * target: report-cobertura
+    ************************************************************************ -->
+    <target name="report-cobertura" depends="-test-init-cobertura"
+            description="Generates a test coverage report">
+    
+        <cobertura-report
+            datafile="${java-test.instrumented-datafile}"
+            srcdir="${java-build.src-dir}"
+            destdir="${java-report.coverage-dir}"/>
+    
+    </target>
+
+    <!-- ***********************************************************************
+    * target: report-pmd
+    ************************************************************************ -->
+    <target name="report-pmd" depends="-report-init-pmd"
+            description="Generates the code quality report from PMD">
+        <mkdir dir="${java-report.pmd-dir}"/>
+        <pmd shortFilenames="true">
+            <ruleset>rulesets/favorites.xml</ruleset>
+            <ruleset>basic</ruleset>
+            <formatter type="html"
+                       toFile="${java-report.pmd-dir}/index.html"/>
+            <fileset dir="${java-build.src-dir}">
+                <include name="**/*.java"/>
+            </fileset>
+        </pmd>
+    </target>
+    
+    <!-- ***********************************************************************
+    * target: -report-init-pmd
+    ************************************************************************ -->
+    <target name="-report-init-pmd">
+        <property name="java-report.pmd-libdir" location="${java-report.basedir}/lib/pmd"/>
+        <asl-check-libs libname="pmd" jar="${java-report.pmd-libdir}/pmd.jar"/>
+        
+        <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask">
+            <classpath>
+                <fileset dir="${java-report.pmd-libdir}">
+                    <include name="*.jar"/>
+                </fileset>
+            </classpath>
+        </taskdef>
+    </target>
+    
+    <!-- ***********************************************************************
+    * target: report-jdepend
+    ************************************************************************ -->
+    <target name="report-jdepend" depends="compile"
+            description="Creates a package dependency report">
+        <mkdir dir="${java-report.jdepend-data-dir}"/>
+        <jdepend outputfile="${java-report.jdepend-data-dir}/jdepend.xml" format="xml">
+            <exclude name="java.*"/>
+            <exclude name="javax.*"/>
+            <classespath>
+                <pathelement location="${java-build.classes-dir}"/>
+            </classespath>
+        </jdepend>
+    
+        <mkdir dir="${java-report.jdepend-report-dir}"/>
+        <xslt basedir="${java-report.jdepend-data-dir}"
+               destdir="${java-report.jdepend-report-dir}"
+               includes="jdepend.xml"
+               style="${ant.home}/etc/jdepend.xsl"/>
+    </target>    
+    
+    
+</project>

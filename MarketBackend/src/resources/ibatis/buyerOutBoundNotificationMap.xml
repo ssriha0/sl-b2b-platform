@@ -1,0 +1,466 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="buyerOutBoundNotification">
+<typeAlias alias="buyerOutBoundNotificationVo" type="com.newco.marketplace.buyeroutboundnotification.vo.BuyerOutboundNotificationVO"/> 
+<typeAlias alias="customerInfoVo" type="com.newco.marketplace.buyeroutboundnotification.vo.CustomerInformationVO"/>
+<typeAlias alias="OutBoundTask" type="com.newco.marketplace.business.vo.buyerOutBoundNotification.Task"/> 
+<typeAlias alias="Omstask" type="com.newco.marketplace.business.vo.buyerOutBoundNotification.OmsTask"/>
+<typeAlias alias="soOutBoundtask" type="com.newco.marketplace.dto.vo.serviceorder.ServiceOrderTask"/> 
+<typeAlias alias="outBoundaddOn" type="com.newco.marketplace.dto.vo.serviceorder.ServiceOrderAddonVO"/> 
+<typeAlias alias="requestVO" type="com.newco.marketplace.buyeroutboundnotification.vo.RequestVO"/>
+<typeAlias alias="BuyerOutboundFailOverVO" type="com.newco.marketplace.buyeroutboundnotification.vo.BuyerOutboundFailOverVO"/> 
+<typeAlias alias="BuyerOutboundNotificationVO" type="com.newco.marketplace.buyeroutboundnotification.vo.BuyerOutboundNotificationVO"/>
+<typeAlias alias="SOLocationNotesOutboundNotificationVO" type="com.newco.marketplace.buyeroutboundnotification.vo.SOLocationNotesOutboundNotificationVO"/>
+<typeAlias alias="SOCustRefOutboundNotificationVO" type="com.newco.marketplace.buyeroutboundnotification.vo.SOCustRefOutboundNotificationVO"/>
+<resultMap class="BuyerOutboundNotificationVO" id="soSpecificDetails">
+	<result property="soId" column="soId"/>
+	<result property="serviceOrderScheduleFromDate" column="serviceOrderScheduleFromDate"/>
+	<result property="serviceOrderScheduleToDate" column="serviceOrderScheduleToDate"/>
+	<result property="serviceOrderScheduleFromTime" column="serviceOrderScheduleFromTime"/>
+	<result property="serviceOrderScheduleToTime" column="serviceOrderScheduleToTime"/>
+	<result property="timeZone" column="timeZone"/>
+	<result property="customerInfoVo" column="soId" select="getCustomerInfo.query"/>
+</resultMap> 
+<resultMap class="requestVO" id="requestVO">
+	<result property="serviceId" column="serviceId" />
+	<result property="url" column="url" />
+	<result property="method" column="method" />
+	<result property="httpHeaders" column="httpHeaders" />
+</resultMap>
+<resultMap class="SOLocationNotesOutboundNotificationVO" id="locationVO">
+	<result property="soId" column="soId"/>
+	<result property="locationNotes" column="locationNotes"/>
+</resultMap>
+<resultMap class="SOCustRefOutboundNotificationVO" id="CustRefVO">
+	<result property="refType" column="refType"/>
+	<result property="refValue" column="refValue"/>
+</resultMap>
+
+
+<typeAlias alias="customrefVO" type="com.newco.marketplace.buyeroutboundnotification.vo.CustomrefsOmsVO"/>
+<typeAlias alias="AlertTaskVO" type="com.newco.marketplace.dto.vo.alert.AlertTaskVO"/>
+<typeAlias alias="inHomeRescheduleVO" type="com.newco.marketplace.inhomeoutboundnotification.vo.InHomeRescheduleVO"/>
+<typeAlias alias="inHomeSODetailsVO" type="com.newco.marketplace.inhomeoutboundnotification.vo.InHomeSODetailsVO"/>
+
+
+<select id="getRequestdata.query" resultClass="requestVO" parameterClass="java.lang.Integer">
+    SELECT service_id as serviceId,
+    	url as url,
+    	method as method,
+    	http_header_parameters as httpHeaders
+		from buyer_outbound_service WHERE buyer_id=#buyerId#
+</select>
+    
+<insert id="insert_buyerFailover.query" parameterClass="BuyerOutboundFailOverVO">
+		INSERT INTO buyer_outbound_notification
+		 (seq_no,so_id,service_id,xml,status,no_of_retries,active_ind,created_date)
+		   VALUES (
+		          #seqNO#,
+		          #soId#,
+		          #serviceId#,
+		          #xml#,
+		          #status#,
+		          #noOfRetries#,
+		          #activeInd#,
+		          #createdDate#
+		       )
+</insert>
+
+<select id="generateSeqNo.query" resultClass="java.lang.Integer">
+	  SELECT MAX(notification_id) FROM buyer_outbound_notification 
+</select>
+
+<select id="getSoDetailsForReschedule.query" resultClass="inHomeRescheduleVO" parameterClass="inHomeRescheduleVO">
+SELECT 
+        h.so_id AS soId,
+        h.buyer_id AS buyerId,
+        h.service_date1 AS serviceDate1 ,
+        h.service_date2 AS serviceDate2,
+        h.service_time_start AS startTime,
+        h.service_time_end AS endTime,
+        h.service_locn_time_zone AS timeZone,
+        h.resched_service_date1 AS rescheduleServiceDate1,
+        h.resched_service_date2 AS rescheduleServiceDate2,
+        h.resched_service_time_start AS rescheduleStartTime,
+        h.resched_service_time_end AS rescheduleEndTime,
+        h.service_date_type_id AS serviceDateType,
+        sow.buyer_preferred_start_date AS buyerRescheduleServiceDate1,
+        sow.buyer_preferred_end_date AS buyerRescheduleServiceDate2,
+        sow.buyer_preferred_start_time AS buyerRescheduleStartTime,
+        sow.buyer_preferred_end_time AS buyerRescheduleEndTime,
+        sow.buyer_preferred_date_type_id AS buyerPreferredDateType
+   FROM  so_hdr h,so_workflow_controls sow WHERE h.so_id=sow.so_id
+ AND h.so_id = #soId#
+</select>
+
+
+<select id="getSoDetailsForNotes.query" resultClass="inHomeSODetailsVO" parameterClass="inHomeSODetailsVO">
+ SELECT so_id AS soId,accepted_vendor_id AS vendorId,
+  accepted_resource_id AS resourceId,buyer_id as buyerId FROM
+  so_hdr WHERE so_id=#soId#
+</select>
+
+<select id="getLocationNotes" resultMap="locationVO" parameterClass="java.lang.String">
+        SELECT sl.so_id AS soId,
+               sl.locn_notes AS locationNotes
+        FROM so_location sl
+        WHERE sl.so_id=#value#
+        AND sl.so_locn_type_id=10
+</select>
+
+<select id="getCustRefs" resultMap="CustRefVO" parameterClass="java.lang.String">
+        SELECT 
+        	b.ref_type as refType ,
+        	s.buyer_ref_value as refValue
+        FROM buyer_reference_type b, so_custom_reference s 
+        WHERE s.buyer_ref_type_id = b.buyer_ref_type_id 
+        	AND s.so_id = #value#
+        	AND b.ref_type_in('Model Number','Serial Number','Brand')
+</select>
+
+<select id="getScheduleDetails.query" resultClass="buyerOutBoundNotificationVo" parameterClass="java.lang.String">
+        SELECT   so_id AS soId,
+                 service_date1 AS  serviceOrderScheduleFromDate,
+                 service_date2 AS  serviceOrderScheduleToDate,
+                 service_time_start AS serviceOrderScheduleFromTime ,
+                 service_time_end AS serviceOrderScheduleToTime,
+                 service_locn_time_zone AS timeZone,
+                 resched_service_date1 AS serviceOrderRescheduleFromDate,
+                 resched_service_date2 AS serviceOrderRescheduleToDate,
+                 resched_service_time_start AS serviceOrderRescheduleFromTime,
+                 resched_service_time_end AS serviceOrderRescheduleToTime
+          FROM so_hdr WHERE so_id=#soId# and buyer_id=1000
+</select>
+
+<select id="getLoggingDetails.query" resultClass="buyerOutBoundNotificationVo" parameterClass="java.lang.String">
+        SELECT entity_id AS entityId,chg_comment AS reasonDescr FROM so_logging WHERE so_id=#soId# AND action_id=36 
+        ORDER BY created_date DESC LIMIT 1
+</select>
+
+
+<select id="getCounterOfferDetails.query" resultClass="buyerOutBoundNotificationVo" parameterClass="buyerOutBoundNotificationVo">
+        SELECT  
+                 provider.so_routed_provider_id AS routedProviderId,
+                 so.service_date1 AS  serviceOrderScheduleFromDate,
+                 so.service_date2 AS  serviceOrderScheduleToDate,
+                 so.service_time_start AS serviceOrderScheduleFromTime ,
+                 so.service_time_end AS serviceOrderScheduleToTime,
+                 so.service_locn_time_zone AS timeZone,
+                 provider.service_date1  AS serviceOrderRescheduleFromDate,
+                 provider.service_date2 AS serviceOrderRescheduleToDate,
+                 provider.service_time_start AS serviceOrderRescheduleFromTime,
+                 provider.service_time_end AS serviceOrderRescheduleToTime,
+                 lu.descr AS reasonCode
+          FROM so_hdr so,so_routed_providers provider,lu_so_provider_resp_reason lu
+           WHERE lu.resp_reason_id=provider.resp_reason_id AND lu.descr IN('Reschedule Service date','Service Date <![CDATA[&]]> Spend Limit') AND
+           so.so_id=provider.so_id AND  provider.vendor_id=#vendorId# AND provider.resource_id=#resourceId#
+            AND so.so_id=#soId#
+</select>
+
+
+
+<select id="getCounterOfferDetailsForGroup.query" resultClass="buyerOutBoundNotificationVo" parameterClass="buyerOutBoundNotificationVo">
+        SELECT  
+                provider.so_routed_provider_id AS routedProviderId,
+                 so.so_id AS soId,
+                 so.service_date1 AS  serviceOrderScheduleFromDate,
+                 so.service_date2 AS  serviceOrderScheduleToDate,
+                 so.service_time_start AS serviceOrderScheduleFromTime ,
+                 so.service_time_end AS serviceOrderScheduleToTime,
+                 so.service_locn_time_zone AS timeZone,
+                 provider.service_date1  AS serviceOrderRescheduleFromDate,
+                 provider.service_date2 AS serviceOrderRescheduleToDate,
+                 provider.service_time_start AS serviceOrderRescheduleFromTime,
+                 provider.service_time_end AS serviceOrderRescheduleToTime,
+                 lu.descr AS reasonCode
+          FROM so_hdr so,so_routed_providers provider,lu_so_provider_resp_reason lu
+           WHERE lu.resp_reason_id=provider.resp_reason_id AND lu.descr IN('Reschedule Service date','Service Date <![CDATA[&]]> Spend Limit') AND
+ 			 so.so_id=provider.so_id AND  provider.vendor_id=#vendorId# AND provider.resource_id=#resourceId#
+           AND so.so_id IN
+           <iterate  open="(" close=")" conjunction="," property="soIds">
+			#soIds[]#
+			</iterate>
+</select>
+
+<select id="getSoIdsForGroup.query" resultClass="java.lang.String" parameterClass="java.lang.String">
+        SELECT so_id FROM so_hdr WHERE so_group_id=#groupId#    
+</select>
+
+<select id="getResonCodeDetailsforCounterOffer.query" resultClass="java.lang.String" parameterClass="java.lang.Integer">
+SELECT lu.counter_offer_reason_desc FROM so_providers_counter_offer_reasons reasons,lu_so_counter_offer_reasons lu
+WHERE lu.counter_offer_reason_id=reasons.counter_offer_resp_reason_id
+AND reasons.so_routed_provider_id=#soRoutedProviderId#
+</select>
+
+<select id="getTierRoutedEligibleProviders.query" resultClass="java.lang.Integer" parameterClass="java.lang.String">
+SELECT resource_id FROM tier_route_eligilble_providers WHERE so_id=#soId#
+</select>
+
+<select id="getReasonCode.query" resultClass="java.lang.String" parameterClass="java.lang.Integer">
+SELECT descr FROM lu_so_substatus WHERE so_substatus_id=#reasonCodeId#
+</select>
+
+<select id="getRescheduleReasonCode.query" resultClass="java.lang.String" parameterClass="java.lang.Integer">
+SELECT descr FROM lu_reschedule_reason_codes WHERE res_reason_id=#reasonCodeId#
+</select>
+
+<select id="getServiceOrderSpecificDetails.query" resultMap="soSpecificDetails" parameterClass="java.util.HashMap">
+        SELECT   so_id AS soId,
+                 service_date1 AS  serviceOrderScheduleFromDate,
+                 service_date2 as serviceOrderScheduleToDate,
+                 service_date1 AS  serviceOrderScheduleFromDate,
+                 service_date2 AS  serviceOrderScheduleToDate,
+                 service_time_start AS serviceOrderScheduleFromTime ,
+                 service_time_end AS serviceOrderScheduleToTime,
+                 service_locn_time_zone as timeZone
+        FROM so_hdr WHERE so_id IN 
+        <iterate  open="(" close=")" conjunction="," property="soIdList">
+			#soIdList[]#
+		</iterate>
+                 
+</select>
+
+
+
+
+<select id="getCustomerInfo.query" parameterClass="java.lang.String" resultClass="customerInfoVo">
+SELECT        sl.street_1 AS customerAddress1,
+              sl.street_2  AS customerAddress2,
+              sl.city AS customerCity,
+              sl.state_cd AS customerState,
+              sl.zip AS  customerZipCode,
+              sl.zip4 AS customerZipSuffix,
+              scp.phone_no AS customerPrimaryPhoneNumber,
+              sc.phone_no AS customerAlternatePhoneNumber,
+              sl.apt_no AS apt
+FROM so_location sl LEFT OUTER JOIN so_contact_phones scp 
+              ON sl.so_id=scp.so_id
+              AND scp.phone_type_id=1
+              AND scp.so_phone_class_id=0
+LEFT OUTER JOIN so_contact_phones sc ON sl.so_id=sc.so_id
+              AND sc.phone_type_id=2
+              AND sc.so_phone_class_id=1
+              WHERE sl.so_locn_type_id=10 
+              AND sl.so_id=#value#             
+</select>
+
+
+
+<select id="getTasksByServiceOrderIdExcludingCoverage.query" parameterClass="java.lang.Integer" resultClass="OutBoundTask">
+        SELECT t.taskId AS taskId,t.serviceOrderId AS serviceOrderId,
+        t.title AS title,t.comments AS comments,
+        t.default AS defaultTask,t.externalSku AS externalSku,
+        t.specialtyCode AS specialtyCode,t.amount AS amount,
+        t.category AS category,t.subCategory AS subCategory,
+        t.serviceType AS serviceType, t.sequence_number AS sequenceNumber
+    	  FROM servicelive_integration.tasks t
+    	  JOIN servicelive_integration.tasks_oms toms
+    	    ON t.taskId = toms.taskId
+    	 WHERE t.serviceOrderId = #orderNo#
+    	 </select>
+
+    
+
+    
+    
+    <select id="getOmsTasksByTaskIds.query" parameterClass="java.util.List" resultClass="Omstask">
+  		SELECT taskOmsId AS omsTaskId,taskId AS taskId,
+ chargeCode AS chargeCode,coverage AS coverage,
+ TYPE AS TYPE,description AS description
+    FROM servicelive_integration.tasks_oms WHERE
+ 			taskId IN
+              <iterate  open="(" close=")"
+                        conjunction=",">
+                        #taksIds[]#
+                </iterate> 
+      ORDER BY taskOmsId ASC
+        </select>
+
+
+<select id="getserviceOrderId.query" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+  		SELECT so.serviceOrderId FROM servicelive_integration.transactions t
+    	  INNER JOIN servicelive_integration.serviceorders so ON t.transactionId = so.transactionId 
+     WHERE t.serviceLiveOrderId = #soId#
+    	  AND t.transactionTypeId IN (1, 2, 3, 4, 5) 
+    	ORDER BY t.createdOn DESC LIMIT 1
+        </select>
+    
+<select id="getAddonTaskList.query" parameterClass="java.lang.String" resultClass="outBoundaddOn">
+  		SELECT so_id AS soId,so_addon_id AS addonId,sku AS sku,
+	description AS description,retail_price AS retailPrice,
+	margin AS margin,misc_ind AS miscInd,qty AS quantity,
+	service_fee_final AS serviceFee,coverage AS coverage,
+	auto_gen_ind AS autoGenInd FROM so_addon WHERE
+	so_id=#soId#
+        </select>
+        
+   <select id="getTaskList.query" parameterClass="java.lang.String" resultClass="soOutBoundtask">
+  		SELECT task_name AS taskName,
+	price AS price,sku AS sku,
+	selling_price  AS sellingPrice,
+	sequence_number AS sequenceNumber,
+	task_status AS taskStatus,
+	manage_scope_id AS manageScopeInd
+	FROM so_tasks WHERE so_id=#soId#
+	AND task_status='ACTIVE'
+        </select>     
+            
+    
+    
+<select id="fetchCustomrefOms.query" resultClass="customrefVO" parameterClass="java.lang.Integer">
+	SELECT unitNumber,
+	orderNumber,
+	salesCheckNumber,
+	salesCheckDate 
+	FROM  servicelive_integration.customrefs_oms
+	WHERE serviceOrderId=#orderId#
+
+</select>
+<select id="insertSuccessInd.insert" parameterClass="BuyerOutboundFailOverVO">
+	UPDATE buyer_outbound_notification set
+	active_ind=#activeInd#
+	WHERE seq_no =#seqNO#
+</select>
+<select id="fetchRecords.query" resultClass="BuyerOutboundFailOverVO">
+	select seq_no AS seqNO,
+	so_id AS soId,
+	service_id AS serviceId,
+	xml AS xml,
+	no_of_retries AS noOfRetries,
+	active_ind AS activeInd
+	FROM buyer_outbound_notification
+	WHERE service_id = 1 and active_ind = 1 and no_of_retries > 0 
+</select>
+
+<update id="updateActiveIndFalse.query" parameterClass="java.lang.String">
+		UPDATE buyer_outbound_notification
+		SET active_ind=0
+		WHERE seq_no=#seqNo#
+	</update>
+
+<update id="updateActiveIndTrue.query" parameterClass="java.lang.String">
+		UPDATE
+		buyer_outbound_notification
+		no_of_retries=no_of_retries-1,
+		WHERE seq_no=#seqNo#
+
+	</update>
+	
+	
+
+<update id="update_activeIndicator.query" parameterClass="BuyerOutboundFailOverVO">
+		UPDATE buyer_outbound_notification
+		SET active_ind=0
+		WHERE active_ind=1 AND
+		xml LIKE #xml# AND 
+		so_id=#soId#
+	</update>
+
+	<select id="fetchBuyeOutboundNotificationXml.query" resultClass="BuyerOutboundFailOverVO">
+		select xml FROM buyer_outbound_notification
+		where serviceOrderId=#soId#
+	</select>
+	
+	<!--  <insert id="insertInAlertTask.query" parameterClass="AlertTaskVO">
+	INSERT INTO alert_task
+	VALUES()
+	</insert>-->
+
+
+<update id="updateBuyerNotification.query" parameterClass="BuyerOutboundFailOverVO">
+		UPDATE buyer_outbound_notification
+		SET
+			no_of_retries=no_of_retries - 1
+		<isNotNull property="activeInd" prepend=",">
+			active_ind=#activeInd#
+		</isNotNull>
+		<isNotNull property="response" prepend=",">
+			response=#response#
+		</isNotNull>
+		<isNotNull property="status" prepend=",">
+			status=#status#
+		</isNotNull>
+		<isNotNull property="exception" prepend=",">
+			exception=#exception#
+		</isNotNull>
+		WHERE seq_no=#seqNO#
+	</update>
+	
+	
+	
+	
+	<update id="updateSuccesIndForApi.query" parameterClass="BuyerOutboundFailOverVO">
+	UPDATE buyer_outbound_notification
+	SET active_ind=#activeInd#
+	where seq_no=#seqNO#
+	
+	</update>
+	
+	<select id="fetchNotification.query" resultClass="BuyerOutboundFailOverVO">
+		select seq_no AS seqNO,
+		so_id AS soId,
+		service_id AS serviceId,
+		xml AS xml,
+		no_of_retries AS noOfRetries,
+		active_ind AS activeInd
+		FROM buyer_outbound_notification
+		WHERE seq_no=#sequenceNo#
+	</select>
+
+<select id="getAppKeyValue.query" resultClass="java.lang.String" parameterClass="java.lang.String">
+SELECT app_value FROM application_properties WHERE app_key=#appKey#
+</select>
+<select id="getServiceLocationTimeZone.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+    select  service_locn_time_zone from so_hdr where so_id=#value#
+</select>
+
+<select id="getRequestWithoutNotes.query" resultClass="BuyerOutboundFailOverVO" parameterClass="BuyerOutboundFailOverVO">
+SELECT seq_no AS seqNO,xml AS xml FROM buyer_outbound_notification WHERE so_id=#soId#
+AND xml NOT LIKE #xml# AND active_ind=1 AND no_of_retries>0 ORDER BY created_date DESC LIMIT 1       
+</select>
+
+<update id="excludeNotification.query" parameterClass="BuyerOutboundFailOverVO">
+	UPDATE buyer_outbound_notification
+	SET 
+	active_ind=#activeInd#,
+	  status='EXCLUDED'
+	WHERE seq_no=#seqNO#
+	</update>
+	
+<!-- 	code change for SLT-2112 -->
+<select id="getBuyerIdForSo.query" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+SELECT buyer_id FROM so_hdr WHERE so_id=#soId#
+</select>
+
+<select id="getConstantValue.query" resultClass="java.lang.String" parameterClass="java.lang.String">
+SELECT app_constant_value FROM application_constants WHERE app_constant_key=#appkey#
+</select>
+
+<select id="getJobCodeForMainCateory.query" resultClass="java.lang.String" parameterClass="java.lang.String">
+ 	SELECT job_code 
+ 	FROM lu_jobcode lu JOIN so_hdr h 
+ 	ON h.so_id = #soId# AND lu.primary_skill_category_id = h.primary_skill_category_id
+</select>
+<insert id="logRelayServicesNotification.insert" parameterClass="java.util.HashMap">
+		INSERT into relay_services_notification_logging(
+				so_id,
+ 			    request,
+ 			    response,
+			    created_date
+			    ) 
+		VALUES(
+				#soId#,
+				#request#,
+				#response#,  
+				NOW()
+				)	
+</insert>
+
+
+
+
+
+</sqlMap>

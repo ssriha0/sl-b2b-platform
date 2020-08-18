@@ -1,0 +1,78 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="skuMaintenance" extends="ServiceLiveBase,json-default" >
+        <default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+        
+    	<global-results >
+			<result name="error" type="redirectAction">
+				<param name="actionName">errorAction</param>
+				<param name="errorMessage">${errorMessage}</param>
+				<param name="returnURL">${returnURL}</param>
+			</result>
+		</global-results>	   	
+        <action name="sku_maintenancePage" class="skuMaintenanceAction" method="displayPage">
+			<result name="success">/jsp/skuMaintenance/sku_maintenance.jsp</result>
+			<result name="homepage" type="redirectAction">homepage</result>
+		</action> 
+	      <action name="sku_maintenanceSkuName" class="skuMaintenanceAction" method="displaySkuNameByCategory">
+			<result name="success">/jsp/skuMaintenance/sku_name_by_categoryId.jsp</result>
+			<result name="homepage" type="redirectAction">homepage</result>
+		</action> 
+		<action name="sku_maintenanceSkuNameDetailsBySkuId" class="skuMaintenanceAction" method="skuDetailsBySkuIdAndCategoryId">
+			<result name="success">/jsp/skuMaintenance/sku_detail_sku_Id.jsp</result>
+			<result name="homepage" type="redirectAction">homepage</result>
+		</action>
+		<action name="skuCategory_validate" class="skuMaintenanceAction" method="validateSKUCategory">
+	        <result name="success">/jsp/skuMaintenance/updatingSkuCategoryDetails.jsp</result>	    	   
+	        <result name="homepage" type="redirectAction">homepage</result>	         
+	    </action>
+	    
+	    <action name="sku_validate" class="skuMaintenanceAction" method="validateSku"> 
+	            <result name="success">/jsp/skuMaintenance/get_json.jsp</result>
+	    </action>
+	    
+	  	<action name="existingCategory_validate" class="skuMaintenanceAction" method="validateExistingSkuCategory">  
+	  	       <result name="success">/jsp/skuMaintenance/get_json.jsp</result>
+	    </action>  
+	       
+	    <action name="skuCategory_update" class="skuMaintenanceAction" method="updateSkuCategory">
+		    	<result name="success" type="redirectAction">sku_maintenancePage</result>  	  	    
+			<result name="homepage" type="redirectAction">homepage</result>
+		</action>
+		<action name="assocSku_Delete" class="skuMaintenanceAction" method="deleteSKU">
+		    <result name="success" type="redirectAction">sku_maintenancePage</result>  	  	    
+			<result name="homepage" type="redirectAction">homepage</result>
+		</action>
+		<action name="chk_Sku_Delete" class="skuMaintenanceAction" method="checkForDeleteSKU">
+		    <result name="success">/jsp/skuMaintenance/deleteSkuModal.jsp</result>  	  	    
+			<result name="homepage" type="redirectAction">homepage</result>
+		</action>
+		<action name="skuCategory_add" class="skuMaintenanceAction" method="addSkuCategory">
+	    	<result name="success">/jsp/skuMaintenance/addSkuCategory.jsp</result>      	   
+			<result name="homepage" type="redirectAction">homepage</result>
+		</action>  
+        
+		 <action name="fetchCategory" class="skuMaintenanceAction" method="fetchCategory">
+		 	<result name="success">/jsp/skuMaintenance/get_json.jsp</result>
+		</action>    
+
+		 <action name="fetchSubCategory" class="skuMaintenanceAction" method="fetchSubCategory">
+		 	<result name="success">/jsp/skuMaintenance/get_json.jsp</result>
+		</action>  
+		
+		<action name="saveData" class="skuMaintenanceAction" method="saveData">
+		 	<result name="success">/jsp/skuMaintenance/get_json.jsp</result>
+		</action> 
+		
+		<action name="fetchCategoryHistory" class="skuMaintenanceAction" method="fetchSkuCategoryHistory">
+		<result name="success">/jsp/skuMaintenance/sku_category_hstry.jsp</result>
+		</action> 	
+		
+		<action name="fetchSkuHistory" class="skuMaintenanceAction" method="fetchSkuHistory">
+		<result name="success">/jsp/skuMaintenance/skuHistory.jsp</result>
+		</action> 	
+		
+	 </package>
+</struts>

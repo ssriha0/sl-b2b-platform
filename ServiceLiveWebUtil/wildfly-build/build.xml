@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="ServiceLiveWebUtil" basedir="../" default="distribute">
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+	<echo level="info">
+	===============================================================================
+	                                ${ant.project.name} 
+	===============================================================================</echo>
+	<target name="package" depends="distribute"/>
+
+	<target name="init">
+		<!-- Create the time stamp -->
+	    	<tstamp/>
+	    <!-- Create build number file -->
+			<buildnumber />
+		<property name="dir.base" value="${basedir}" />
+		<property name="dir.app" value="${dir.base}/web" />
+
+		<property name="env" value="dev" />
+		<property name="app.lastbuild.tag.auto" value="release_1_${build.number}_${env}_${DSTAMP}${TSTAMP}" />
+
+		<!-- Folder containing uncompressed final release software-->
+		<property name="dir.dist" value="${dir.base}/dist"/>
+
+	</target>
+
+	<target name="war" depends="init">
+			<!-- Build the WAR file -->
+	        <jar compress="yes" jarfile="${dir.base}/ServiceLiveWebUtil.war">
+	            <fileset dir="${dir.app}">
+	            	<include name="images/**"/>
+	        	</fileset>
+	        	<fileset dir="${dir.app}">
+	        		<include name="javascript/**"/>
+	        	</fileset>
+	        	<fileset dir="${dir.app}">
+	        		<include name="css/**"/>
+	        	</fileset>
+	        	<fileset dir="${dir.app}">
+	        		<include name="font/**"/>
+	        	</fileset>		        	
+	        	<fileset dir="${dir.app}">
+	        			<include name="styles/**"/>
+	        	</fileset>
+				<fileset dir="${dir.app}">
+	        			<include name="scripts/**"/>
+	        	</fileset>
+	        	<fileset dir="${dir.app}">
+	        			<include name="videos/**"/>
+	        	</fileset>
+	        	<fileset dir="${dir.app}">
+	        			<include name="business/**"/>
+	        	</fileset>
+	        	<fileset dir="${dir.app}">
+	        	 		<include name="provider/**"/>
+	        	</fileset>
+	        	<fileset dir="${dir.app}">
+	        	 		<include name="calendar/**"/>
+	        	</fileset>
+	        	<fileset dir="${dir.app}">
+	        	 		<include name="buyer-logo-uploader/dist/**"/>
+	        	</fileset>
+	        	<fileset dir="${dir.app}">
+	        		     <include name="esapi4js/**"/>
+	        	</fileset>
+	        	<fileset dir="${dir.app}">
+	        	 		<include name="d2c-provider/dist/**"/>
+	        	</fileset>
+	        </jar>
+	</target>
+	
+	<target name="distribute" depends="war">
+			<copy todir="${dir.dist}">
+				<fileset dir="${dir.base}" includes="*.war"/>
+			</copy>
+	</target>
+					
+	<!-- Called by CruiseControl -->
+	<target name="update-distribute" depends="update,distribute">
+	</target>
+
+	<target name="cleanWorkDir">
+		<delete dir="dist"/>
+	</target>
+
+  <!-- appease sl-dev.depends-clean target -->
+  <target name="clean" depends="cleanWorkDir" />
+
+	<target name="initWorkDir">
+		<mkdir dir="dist"/>
+	</target>
+
+	<!-- Target to refresh all the non-sources to be obtained from the repository -->
+		<target name="update" description="Refresh project from CVS repository" depends="init">
+			<cvs command="-q update -d -P" cvsroot=":pserver:ajain04:ajain04@chef.sears.com:2402/cvs/source"
+						package="." dest="${basedir}"/>
+	</target>
+
+
+	<!-- Target to refresh all the non-sources to be obtained from the repository -->
+	<target name="refresh" description="Refresh MarketWebServices from CVS repository" depends="init">
+		<cvs command="login" cvsroot="${app.CVSROOT}" />
+		<mkdir dir="."/>
+		<cvs command="update -A MarketWebServices" cvsroot="${app.CVSROOT}" dest="${source.dir.CVS}"/>
+	</target>
+
+	<!-- Tag the files that are just used in the build with the id of the build-->
+	<target name="tag" depends="init">
+		<cvs command="tag -R -c ${app.lastbuild.tag}" cvsroot="${app.CVSROOT}" package="."/>
+		<echo message="*****--- Tagged ALL modules with TAG ${app.lastbuild.tag} ---*****"/>
+	</target>
+
+	<!-- Target to refresh all tagged files -->
+	<target name="refreshtag" depends="init">
+		<cvs command="update -A" cvsroot="${app.CVSROOT}" tag="${app.build.tag}" dest="${source.dir.CVS}" />
+		<echo message="*****--- Refreshing ALL modules with TAG ${app.build.tag} ---*****"/>
+	</target>
+
+	<target name="autotag" depends="init">
+		<cvs command="tag -R -c ${app.lastbuild.tag.auto}" cvsroot="${app.CVSROOT}" package="."/>
+		<echo message="*****--- Tagged ALL modules with TAG ${app.lastbuild.tag} ---*****"/>
+	</target>
+
+    <!-- Publish the deployment units to the website -->
+    <target name="publish" depends="init">
+    	 <scp file="${deploy.local.filepath}/${deploy.local.filename}"
+    	       todir="${server.username}:${server.password}@${server.name}:${deploy.remote.dir}"
+    	 	   trust="true"
+    	 />
+    </target>
+
+	<!-- This target creates a milestone build -->
+	<target name="milestone" description="Perform a milestone build" depends="init">
+		<antcall target="refresh"/>
+		<antcall target="deploy"/>
+		<antcall target="mail"/>
+
+		<if>
+		 <equals arg1="${auto.publish}" arg2="on" />
+		 <then>
+		  	  <input
+		  	    message="Are you sure you wish to Publish to the ${env} server?"
+		  	    validargs="y,n"
+		  	    addproperty="do.publish"
+		  	  />
+		  	  <condition property="do.abort">
+		  	    <equals arg1="n" arg2="${do.publish}"/>
+		  	  </condition>
+		  	  <fail if="do.abort">Publish aborted by user.</fail>
+
+		 	  <if>
+			  	<equals arg1="${do.publish}" arg2="y"/>
+			  	<then>
+			  		<antcall target="publish"/>
+				 	<echo message="*****--- Successfully Published Milestone Build of ${app.product.name}  to ${env} server ---*****"/>
+			  	</then>
+			  </if>
+		 </then>
+		 <else>
+		 	<echo message="*****--- Auto Publish of Milestone Build of ${app.product.name} to ${env} server is currently turned off ---*****"/>
+		 </else>
+		</if>
+
+		<echo message="*****--- Successfully Completed Milestone Build of ${app.product.name}          ---*****"/>
+		<echo message="*****--- Please Note:                                                           ---*****"/>
+		<echo message="*****---              This build should be tagged after a successful smoke test ---*****"/>
+		<echo message="*****---              Update tag id in build.properties.                        ---*****"/>
+		<echo message="*****---              Run 'ant tag' to tag this build.                          ---*****"/>
+	</target>
+
+
+
+</project>

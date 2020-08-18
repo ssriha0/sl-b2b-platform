@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
+	default-lazy-init="true">
+	
+    <bean id="westSurveyDao" class="com.newco.marketplace.persistence.daoImpl.westsurvey.WestSurveyDaoImpl">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>
+    </bean>	
+	
+	<bean id="surveyMapper" class="com.newco.marketplace.util.westsurvey.WestSurveyMapper" scope="singleton">
+		<property name="westSurveyDaoImpl">
+			<ref bean="westSurveyDao"/>
+		</property>
+	</bean>
+	
+	<bean id="excelParser" class="com.newco.marketplace.utils.ExcelParser" scope="singleton">
+	</bean>
+	
+	<bean id="westSurveyBO" class="com.newco.marketplace.business.businessImpl.westsurvey.WestSurveyBO">
+	   	<property name="serviceOrderBO">
+	    	<ref bean="soBOAOP"/>
+	    </property>
+	    <property name="surveyBO">
+	    	<ref bean="surveyBO"/>
+	    </property>
+	    <property name="surveyMapper">
+	    	<ref bean="surveyMapper"/>
+	    </property>    	
+		<property name="westSurveyDaoImpl">
+			<ref bean="westSurveyDao"/>
+		</property>
+	</bean>
+	
+</beans>

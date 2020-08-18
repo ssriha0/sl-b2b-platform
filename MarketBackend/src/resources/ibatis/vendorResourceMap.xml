@@ -1,0 +1,727 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="vendorResource">
+	<typeAlias alias="vendorResourceVO" type="com.newco.marketplace.dto.vo.provider.VendorResource" />
+	<typeAlias alias="buyerResourceVO" type="com.newco.marketplace.dto.vo.serviceorder.BuyerResource" />
+	<typeAlias alias="pvendorResource" type="com.newco.marketplace.vo.provider.VendorResource" />
+	<typeAlias alias="tmBackgroundCheckVO" type="com.newco.marketplace.dto.vo.provider.TMBackgroundCheckVO" />
+	<typeAlias alias="generalInfoVendorResource" type="com.newco.marketplace.vo.provider.GeneralInfoVO" />
+	<typeAlias alias="publicProfile" type="com.newco.marketplace.vo.provider.PublicProfileVO" ></typeAlias>
+	<typeAlias alias="contact" type="com.newco.marketplace.dto.vo.serviceorder.Contact"/> 
+    <typeAlias alias="backgroundCheckProviderVO" type="com.newco.marketplace.vo.hi.provider.BackgroundCheckProviderVO"/>
+     
+	<select id="vendorResource.query" parameterClass="vendorResourceVO" resultClass="vendorResourceVO">
+		select resource_id as resourceId, 
+		vendor_id as vendorId,
+		contact_id as contactId, 
+		dispatch_id as dispatchId, 
+		ssn as ssn,
+		pri_contact_mthd as priContactMthd, 
+		alt_contact_mthd as altContactMthd, 
+		yrs_of_experience as yrsOfExperience, 
+		locn_id as locnId, 
+		insured as insured,
+		insurance_provider as insuranceProvider, 
+		picture_url as pictureUrl, 
+		picture_date as pictureDate, 
+		labor_type_id as laborTypeId, 
+		service_area_radius_id as serviceAreaRadiusId,
+		mkt_place_ind as mktPlaceInd, 
+		wf_state_id as wfStateId,
+		background_state_id as backgroundStateId,
+		created_date as createdDate,
+		modified_date as modifiedDate, 
+		no_cred_ind as noCredInd		
+		from vendor_resource
+		<dynamic prepend="where">
+			<isNotNull prepend="AND " property="resourceId">
+				resource_id = #resourceId#
+			</isNotNull>
+		</dynamic>
+	</select>
+	
+	<select id="vendorResourceList.query" parameterClass="java.util.ArrayList" resultClass="vendorResourceVO">
+		SELECT
+			vr.resource_id as resourceId, 
+			vr.vendor_id as vendorId,
+			vr.contact_id as contactId, 
+			vr.dispatch_id as dispatchId, 
+			vr.ssn as ssn,
+			vr.pri_contact_mthd as priContactMthd, 
+			vr.alt_contact_mthd as altContactMthd, 
+			vr.yrs_of_experience as yrsOfExperience, 
+			vr.locn_id as locnId, 
+			vr.insured as insured,
+			vr.insurance_provider as insuranceProvider, 
+			vr.picture_url as pictureUrl, 
+			vr.picture_date as pictureDate, 
+			vr.labor_type_id as laborTypeId, 
+			vr.service_area_radius_id as serviceAreaRadiusId,
+			vr.mkt_place_ind as mktPlaceInd, 
+			vr.wf_state_id as wfStateId,
+			vr.background_state_id as backgroundStateId,
+			vr.created_date as createdDate,
+			vr.modified_date as modifiedDate, 
+			vr.no_cred_ind as noCredInd		
+		FROM 
+			vendor_resource vr, vendor_hdr vh
+		WHERE
+			vr.vendor_id = vh.vendor_id	AND
+			vr.wf_state_id = 6 AND vh.wf_state_id IN (3,34) AND 
+			resource_id IN
+		<iterate  open="(" close=")"
+			conjunction=",">
+			#resourceIds[]#
+		</iterate>
+	</select>
+
+	<update id="vendorResource.update"
+		parameterClass="vendorResourceVO">
+		UPDATE vendor_resource
+		<dynamic prepend="set">
+			<isGreaterThan prepend=", " property="resourceId"
+				compareValue="-1">
+				resource_id = #resourceId#
+			</isGreaterThan>
+			<isGreaterThan prepend=", " property="vendorId"
+				compareValue="-1">
+				vendor_id = #vendorId#
+			</isGreaterThan>
+			<isGreaterThan prepend=", " property="contactId"
+				compareValue="-1">
+				contact_id = #contactId#
+			</isGreaterThan>
+			<isGreaterThan prepend=", " property="dispatchId"
+				compareValue="-1">
+				dispatch_id = #dispatchId#
+			</isGreaterThan>
+			<isNotNull prepend=", " property="ssn">
+				ssn = #ssn#
+			</isNotNull>
+			<isGreaterThan prepend=", " property="priContactMthd"
+				compareValue="-1">
+				pri_contact_mthd = #priContactMthd#
+			</isGreaterThan>
+			<isGreaterThan prepend=", " property="altContactMthd"
+				compareValue="-1">
+				alt_contact_mthd = #altContactMthd#
+			</isGreaterThan>
+			<isGreaterThan prepend=", " property="yrsOfExperience"
+				compareValue="-1">
+				yrs_of_experience = #yrsOfExperience#
+			</isGreaterThan>
+			<isGreaterThan prepend=", " property="locnId"
+				compareValue="-1">
+				locn_id = #locnId#
+			</isGreaterThan>
+			<isGreaterThan prepend=", " property="insured"
+				compareValue="-1">
+				insured = #insured#
+			</isGreaterThan>
+			<isNotNull prepend=", " property="insuranceProvider">
+				insurance_provider = #insuranceProvider#
+			</isNotNull>
+			<isNotNull prepend=", " property="pictureUrl">
+				picture_url = #pictureUrl#
+			</isNotNull>
+			<isNotNull prepend=", " property="pictureDate">
+				picture_date = #pictureDate#
+			</isNotNull>
+			<isGreaterThan prepend=", " property="wfStateId"
+				compareValue="-1">
+				wf_state_id = #wfStateId#
+			</isGreaterThan>
+			<isGreaterThan prepend=", " property="laborTypeId"
+				compareValue="-1">
+				labor_type_id = #laborTypeId#
+			</isGreaterThan>
+			<isGreaterThan prepend=", " property="serviceAreaRadiusId"
+				compareValue="-1">
+				service_area_radius_id = #serviceAreaRadiusId#
+			</isGreaterThan>
+			<isGreaterThan prepend=", " property="mktPlaceInd"
+				compareValue="-1">
+				mkt_place_ind = #mktPlaceInd#
+			</isGreaterThan>
+			<isGreaterThan prepend=", " property="backgroundStateId"
+				compareValue="-1">
+				background_state_id = #backgroundStateId#
+			</isGreaterThan>
+			<isNotNull prepend=", " property="noCredInd">no_cred_ind = #noCredInd#</isNotNull>					
+		</dynamic>
+		WHERE resource_id = #resourceId#
+	</update>
+
+	<insert id="vendorResource.insert" parameterClass="vendorResourceVO">
+		INSERT INTO	vendor_resource (vendor_id, 
+									 contact_id,
+									 dispatch_id,
+									 pri_contact_mthd,
+									 alt_contact_mthd,
+									 yrs_of_experience,
+        <isGreaterThan property="locnId" compareValue="0">
+									 locn_id,
+		</isGreaterThan>
+									 insured,
+									 insurance_provider,
+									 picture_url,
+									 picture_date,
+									 wf_state_id,
+									 labor_type_id,
+									 ssn,
+									 service_area_radius_id,
+									 mkt_place_ind,
+									 background_state_id,
+									 user_name)
+		VALUES	(#vendorId#, 
+                 #contactId#, 
+                 #dispatchId#,
+                 #priContactMthd#,
+                 #altContactMthd#,
+                 #yrsOfExperience#,
+        <isGreaterThan property="locnId" compareValue="0">
+                 #locnId#,
+		</isGreaterThan>
+                 #insured#,
+                 #insuranceProvider#,
+                 #pictureUrl#,
+                 #pictureDate#,
+                 #wfStateId#,
+                 #laborTypeId#,
+                 #ssn#,
+                 #serviceAreaRadiusId#,
+                 #mktPlaceInd#,
+                 #backgroundStateId#,
+                 #userName#)
+        <selectKey resultClass="int">
+            SELECT last_insert_id() as resourceId
+        </selectKey>    
+	</insert>
+
+	<insert id="buyerResource.insert" parameterClass="buyerResourceVO">
+		INSERT INTO	buyer_resource ( buyer_id,
+									 contact_id,
+									 user_name,
+		<isGreaterThan property="locnId" compareValue="0">
+									 locn_id,
+		</isGreaterThan>
+									 company_role_id,
+									 created_date,
+									 modified_date,
+									 modified_by,
+									 term_cond_date_accepted,
+									 term_cond_id,
+									 terms_cond_ind)
+		VALUES	(#buyerId#, 
+                 #contactId#, 
+                 #userName#,
+		<isGreaterThan property="locnId" compareValue="0">
+                 #locnId#,
+		</isGreaterThan>
+				#companyRoleId#,
+				#createdDate#,
+				#modifiedDate#,
+				#modifiedBy#,
+				#termCondAcceptedDate#,
+				#termCondId#,
+				#termCondInd#)
+        <selectKey resultClass="int">
+            SELECT last_insert_id() as resourceId
+        </selectKey>    
+	</insert>
+
+
+	<insert id="generalInfo.vendorResource.insert" parameterClass="generalInfoVendorResource">
+		INSERT INTO	vendor_resource (vendor_id,
+									owner_ind,
+									dispatch_ind,
+									manager_ind,
+									resource_ind,
+									admin_ind,
+									other_ind,
+									mkt_place_ind,
+									service_provider_ind,
+									ssn,
+									ssn_last4,
+									user_name
+							<isGreaterThan prepend=", " property="contactId" compareValue="0">
+									contact_id
+							</isGreaterThan>
+							<isGreaterThan prepend=", " property="locationId" compareValue="0">
+									 locn_id
+							</isGreaterThan>
+							<isGreaterThan  prepend=", " property="hourlyRate" compareValue="0">
+									hourly_rate
+							</isGreaterThan>									
+							<isNotNull prepend=", " property="dispAddGeographicRange">
+									service_area_radius_id
+							</isNotNull>
+									)
+		VALUES	(#vendorId#,
+				#ownerInd#,
+				#dispatchInd#,
+				#managerInd#,
+				#resourceInd#,
+				#adminInd#,
+				#otherInd#,
+				#marketPlaceInd#,
+				#sproInd#,
+				#ssn#,
+				#ssnLast4#,
+				#userName#
+		<isGreaterThan prepend=", " property="contactId" compareValue="0">
+				#contactId#
+		</isGreaterThan>
+		<isGreaterThan prepend=", " property="locationId" compareValue="0">
+				 #locationId#
+		</isGreaterThan>
+		<isGreaterThan prepend=", "  property="hourlyRate" compareValue="0">
+				#hourlyRate#
+		</isGreaterThan>
+		<isNotNull prepend=", " property="dispAddGeographicRange">
+				#dispAddGeographicRange#
+		</isNotNull>
+				)
+        <selectKey resultClass="int">
+            SELECT last_insert_id() as resourceId
+        </selectKey>    
+	</insert>
+	
+	<insert id="generalInfo.hi.vendorResource.insert" parameterClass="generalInfoVendorResource">
+		INSERT INTO	vendor_resource (vendor_id,
+									 owner_ind,
+									 dispatch_ind,
+									 manager_ind,
+									 resource_ind,
+									 admin_ind,
+									 other_ind,
+									 mkt_place_ind,
+									 service_provider_ind,
+									 ssn,
+									 ssn_last4,
+									 user_name,
+									 subcontractor_crew_id
+							<isGreaterThan prepend=", " property="contactId" compareValue="0">
+									contact_id
+							</isGreaterThan>
+							<isGreaterThan prepend=", " property="locationId" compareValue="0">
+									 locn_id
+							</isGreaterThan>
+							<isGreaterThan  prepend=", " property="hourlyRate" compareValue="0">
+									hourly_rate
+							</isGreaterThan>									
+							<isNotNull prepend=", " property="dispAddGeographicRange">
+									service_area_radius_id
+							</isNotNull>
+									)
+		VALUES	(#vendorId#,
+				#ownerInd#,
+				#dispatchInd#,
+				#managerInd#,
+				#resourceInd#,
+				#adminInd#,
+				#otherInd#,
+				#marketPlaceInd#,
+				#sproInd#,
+				#ssn#,
+				#ssnLast4#,
+				#userName#,
+				#subContractorCrewId#
+		<isGreaterThan prepend=", " property="contactId" compareValue="0">
+				#contactId#
+		</isGreaterThan>
+		<isGreaterThan prepend=", " property="locationId" compareValue="0">
+				 #locationId#
+		</isGreaterThan>
+		<isGreaterThan prepend=", "  property="hourlyRate" compareValue="0">
+				#hourlyRate#
+		</isGreaterThan>
+		<isNotNull prepend=", " property="dispAddGeographicRange">
+				#dispAddGeographicRange#
+		</isNotNull>
+				)
+        <selectKey resultClass="int">
+            SELECT last_insert_id() as resourceId
+        </selectKey>    
+	</insert>
+	
+	<update id="generalInfo.vendorResource.update"
+		parameterClass="generalInfoVendorResource">
+		UPDATE vendor_resource
+			set
+				owner_ind = #ownerInd#,
+				dispatch_ind = #dispatchInd#,
+				manager_ind = #managerInd#,
+				resource_ind = #resourceInd#,
+				admin_ind = #adminInd#,
+				other_ind = #otherInd#
+			<isGreaterThan prepend=", " property="locationId"
+				compareValue="0">
+				locn_id = #locationId#
+			</isGreaterThan>
+			<isGreaterThan prepend=", " property="contactId"
+				compareValue="0">
+				contact_id = #contactId#
+			</isGreaterThan>
+			<isNotNull prepend=", " property="hourlyRate">
+				hourly_rate = #hourlyRate#
+			</isNotNull>
+			<isNotNull prepend=", " property="ssn">
+				ssn = #ssn#
+			</isNotNull>
+			<isNotNull prepend=", " property="ssnLast4">
+				ssn_last4 = #ssnLast4#
+			</isNotNull>
+			<isNotNull prepend=", " property="marketPlaceInd">
+				mkt_place_ind = #marketPlaceInd#
+			</isNotNull>
+			<isNotNull prepend=", " property="sproInd">
+				service_provider_ind = #sproInd#
+			</isNotNull>
+			<isNotNull prepend=", " property="userName">
+				user_name = #userName#
+			</isNotNull>
+			<isNotNull prepend=", " property="dispAddGeographicRange">
+				service_area_radius_id = #dispAddGeographicRange#
+			</isNotNull>
+		WHERE resource_id = #resourceId#
+	</update>
+	
+	<select id="generalInfo.vendorResource.get" parameterClass="generalInfoVendorResource" resultClass="generalInfoVendorResource">
+		select resource_id as resourceId, 
+		IFNULL(contact_id,0) as contactId,
+		IFNULL(locn_id,0) as locationId,  
+		IFNULL(hourly_rate,0) as hourlyRate,
+		mkt_place_ind as marketPlaceInd,
+		user_name as userName,
+		ssn_last4 as ssnLast4,
+		vendor_id as vendorId,
+		service_area_radius_id as dispAddGeographicRange,
+		IFNULL(owner_ind,0) as ownerInd,
+		IFNULL(dispatch_ind,0) as dispatchInd,
+		IFNULL(manager_ind,0) as managerInd,
+		IFNULL(resource_ind,0) as resourceInd,
+		IFNULL(admin_ind,0) as adminInd,
+		IFNULL(service_provider_ind,0) as sproInd,
+		IFNULL(background_state_id,0) as bckStateId,
+		IFNULL(other_ind,0) as otherInd,
+		IFNULL(primary_ind,0) as primaryInd,
+		total_so_completed  as totalSoCompleted,
+		ws.wf_state as slStatus  
+		from vendor_resource
+		join wf_states ws on ws.wf_state_id =  vendor_resource.wf_state_id
+		<dynamic prepend="where">
+			<isNotNull prepend="AND " property="resourceId">
+				resource_id = #resourceId#
+			</isNotNull>
+		</dynamic>
+		
+	</select>
+	
+	<select id="generalInfo.vendorResource.getVendorResource" parameterClass="string" resultClass="generalInfoVendorResource">
+		select resource_id as resourceId, 
+		IFNULL(contact_id,0) as contactId,
+		IFNULL(locn_id,0) as locationId,  
+		IFNULL(hourly_rate,0) as hourlyRate,
+		mkt_place_ind as marketPlaceInd,
+		user_name as userName,
+		ssn_last4 as ssnLast4,
+		service_area_radius_id as dispAddGeographicRange,
+		IFNULL(owner_ind,0) as ownerInd,
+		IFNULL(dispatch_ind,0) as dispatchInd,
+		IFNULL(manager_ind,0) as managerInd,
+		IFNULL(resource_ind,0) as resourceInd,
+		IFNULL(admin_ind,0) as adminInd,
+		IFNULL(service_provider_ind,0) as sproInd,
+		IFNULL(background_state_id,0) as bckStateId,
+		IFNULL(other_ind,0) as otherInd 
+		from vendor_resource
+		where
+		user_name = #userName#
+	</select>
+	
+	<select id="get.resourcecount.withserviceinmarket" resultClass="int" parameterClass="pvendorResource">
+            SELECT count(*) as resource_count FROM vendor_resource where vendor_id=#vendorId# and mkt_place_ind=1 and (not resource_id = #resourceId#)
+    </select>
+    
+    <update id="vendorResource.updateplusonekey"
+		parameterClass="generalInfoVendorResource">
+		UPDATE vendor_resource	set	plusone_key = #plusOneKey# WHERE resource_id = #resourceId#
+	</update>
+	
+	<update id="vendorResource.updatebackgroundplusonekey"
+		parameterClass="generalInfoVendorResource">
+UPDATE vendor_resource resource,sl_pro_bkgnd_chk bkgndchk SET	bkgndchk.plusone_key = #plusOneKey#,bkgndchk.modified_date=NOW()
+ WHERE bkgndchk.bg_check_id=resource.bg_check_id AND  resource.resource_id = #resourceId#
+ 	</update>
+	
+	<select id="vendorResource.getplusonekey" parameterClass="string" resultClass="string">
+		select plusone_key as plusOneKey FROM vendor_resource WHERE resource_id = #resourceId#
+	</select>
+	
+	<select id="vendorResource.getBackgroundplusonekey" parameterClass="string" resultClass="string">
+		SELECT bkgndchk.plusone_key AS plusOneKey FROM vendor_resource resource,sl_pro_bkgnd_chk bkgndchk
+        WHERE bkgndchk.bg_check_id=resource.bg_check_id AND  resource.resource_id = #resourceId#
+	</select>
+	
+	<select id="vendorResource.getBackgroundSsnLastFour" parameterClass="string" resultClass="string">
+		SELECT resource.ssn_last4 AS ssnLastFour FROM vendor_resource resource 
+		WHERE resource.resource_id = #resourceId# AND resource.ssn_last4 IS NOT NULL 
+	</select>
+	
+	<select id="generalInfo.vendorResource.getUserNameAdmin" parameterClass="string" resultClass="string">
+		select user_name  from vendor_resource where primary_ind=1 and vendor_id=#vendorId#
+	</select>
+	<select id="generalInfo.vendorResource.getUserName" parameterClass="string" resultClass="string">
+		select user_name  from vendor_resource where resource_id  =#resourceId#
+	</select>
+	<select id="query.getServiceRadius" resultClass="java.lang.String">
+		select radius_miles from lu_service_area_radius where id=#id#
+	</select>
+	
+	<select id="query.getPublicProfile"  resultClass="publicProfile">
+		SELECT 
+		bkgnd.bg_request_date AS bgChkReqDate,
+		bkgnd.bg_status_update_date AS bgChkAppDate,
+		bkgnd.verification_date AS bgVerificationDate
+		FROM vendor_resource resource,sl_pro_bkgnd_chk bkgnd
+		WHERE bkgnd.bg_check_id=resource.bg_check_id AND 
+		 resource_id = #resourceId#
+	</select>
+	
+	<select id="getResource.primaryInd.query" parameterClass="string" resultClass="string">
+	    SELECT mkt_place_ind
+		FROM vendor_resource
+			WHERE resource_id = #resourceId#
+    </select>
+    
+    <select id="getResourceNameFromId.query" parameterClass="java.lang.Integer" resultClass="string">
+	    SELECT concat(concat(c.first_name," "),c.last_name) from vendor_resource vr,contact c 
+		WHERE vr.contact_id = c.contact_id and vr.resource_id = #resourceId#
+    </select>
+    <select id="serviceOrders.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+		select so_hdr.so_id from so_hdr where
+		accepted_resource_id=#resourceId# and 
+		wf_state_id IN (110,130,140,150,155,160,170)
+		order by so_id
+	</select>
+	
+	<!-- Value 32 in the below SQL is: select wf_state_id from wf_states where wf_entity='Team Member' and wf_state='Terminated' -->
+	<update id="disableUserNameProvider.update" parameterClass="java.lang.String">
+		update vendor_resource 
+		set resource_ind=0, mkt_place_ind=0, delete_ind=1, wf_state_id= 32 
+			where resource_id = #resourceId#
+	</update>
+	
+	<update id="disableUserNameProvider1.update" parameterClass="java.lang.String">
+		update user_profile 
+			set active_ind = 0
+			where user_name = #userName#
+	</update>
+	
+    <select id="vendorResource.getBackgroundChckStatus" parameterClass="java.lang.String" resultClass="java.lang.String">
+		select wf_state from wf_states where wf_state_id=(select background_state_id from vendor_resource where
+		resource_id=#resourceId#) 
+	</select>	
+	
+	<select id="vendorResource.getMarketPlaceInd" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		select resource_ind  from vendor_resource where resource_id=#resourceId#
+	</select>
+	
+	<update id="vendorResource.updateBackgroundChckStatus"
+		parameterClass="java.lang.String">
+		update vendor_resource set background_state_id=(select wf_state_id from wf_states 
+		where  wf_state='Pending Submission')
+		where resource_id=#resourceId# 
+	</update>
+	
+	<update id="vendorResource.updateBackgroundCheckStatusAsPending"
+		parameterClass="java.lang.String">
+	UPDATE vendor_resource resource
+	JOIN
+	sl_pro_bkgnd_chk bkgndchk
+	JOIN
+	(SELECT bg_check_id FROM vendor_resource resource
+	WHERE resource_id=#resourceId# ) tmp
+	SET bkgndchk.bg_state_id=28,
+	resource.background_state_id=28,
+	bkgndchk.bg_request_date=NOW(),
+	bkgndchk.modified_date=NOW()
+	WHERE bkgndchk.bg_check_id= tmp.bg_check_id
+	AND bkgndchk.bg_check_id=resource.bg_check_id
+	AND (bkgndchk.bg_state_id!=28 OR bkgndchk.bg_state_id IS NULL)  
+	</update>
+	
+	<update id="vendorResource.recertify"
+		parameterClass="java.lang.String">
+		UPDATE vendor_resource resource,sl_pro_bkgnd_chk bkgndchk SET 
+		bkgndchk.bg_request_date=NOW(),
+		bkgndchk.modified_date=NOW(),
+		bkgndchk.bg_request_type='R'
+		WHERE resource.resource_id=#resourceId#  
+		AND bkgndchk.bg_check_id=resource.bg_check_id
+ 	</update>
+	
+	
+	<!-- insert background check history -->
+		<insert id="vendorResource.insertBcHistory" parameterClass="generalInfoVendorResource">
+	INSERT INTO sl_pro_bkgnd_chk_history (bg_check_id,plusone_key,recertification_ind,
+ bg_request_type,bg_state_id,overall,criminal,driving,drug,civil,
+ verification_date,reverification_date,bg_request_date,
+ bg_status_update_date,bg_confirm_ind,no_bg_confirm_ind,
+ bg_original_vendor_id,created_date,modified_date,chg_comments,chg_display_ind)
+ (SELECT bkgndchk.bg_check_id,bkgndchk.plusone_key,bkgndchk.recertification_ind,
+ bkgndchk.bg_request_type,bkgndchk.bg_state_id,
+ bkgndchk.overall,bkgndchk.criminal,bkgndchk.driving,bkgndchk.drug,bkgndchk.civil,
+ bkgndchk.verification_date,bkgndchk.reverification_date,bkgndchk.bg_request_date,
+ bkgndchk.bg_status_update_date,bkgndchk.bg_confirm_ind,bkgndchk.no_bg_confirm_ind,
+ bkgndchk.bg_original_vendor_id,NOW(),NOW(),#changedComment#,#displayInd#
+  FROM sl_pro_bkgnd_chk bkgndchk,vendor_resource resource
+		WHERE  bkgndchk.bg_check_id=resource.bg_check_id AND resource.resource_id=#resourceId#)  
+	</insert>
+	
+	
+	
+	
+	 <select id="vendorResource.getTota" parameterClass="java.lang.String" resultClass="java.lang.String">
+		select wf_state from wf_states where wf_state_id=(select background_state_id from vendor_resource where
+		resource_id=#resourceId#) 
+	</select>	
+
+	 <select id="vendorContactInfoFromVendorId.select" parameterClass="java.lang.Integer" resultClass="contact">
+		select c.first_name as firstName, c.last_name as lastName,c.email as email 
+		from vendor_resource vr inner join contact c on (c.contact_id=vr.contact_id)
+		where vr.primary_ind=1 and vr.vendor_id=#vendorId#
+		Union
+		Select c.first_name as firstName, c.last_name as lastName,c.email as email 
+		from vendor_hdr vh, contact c
+		where vh.account_contact_id = c.contact_id 
+		and  vh.vendor_id = #vendorId# 
+	</select>	
+	<select id="generalInfo.vendorResource.getProviderAdminEmail" parameterClass="java.lang.String" resultClass="java.lang.String">
+		select c.email from contact c
+		join vendor_resource v on c.contact_id = v.contact_id
+		where v.vendor_id= #vendorId# and v.primary_ind = 1 limit 1
+	</select>
+    <select id="vendorResourceContactInfoFromResourceId.select" parameterClass="java.lang.Integer" resultClass="contact">
+        SELECT vr.contact_id as contactId, vh.business_name as businessName, ct.last_name as lastName, ct.first_name as firstName, 
+        	ct.mi, ct.suffix, ct.email, ct.honorific, vr.locn_id as locationId, vh.bus_phone_no AS phoneNo, vh.bus_fax_no AS faxNo, 
+			ct.mobile_no as cellNo, vh.bus_phone_no_ext AS phoneNoExt, lc.street_1, lc.street_2, lc.city, lc.state_cd as stateCd, lc.zip,
+            lc.zip4, lc.country, lc.locn_type_id as locnTypeId, lc.locn_name as locName, vr.vendor_id as vendorId, vr.resource_id as entityId
+        FROM vendor_resource vr JOIN contact ct ON vr.contact_id = ct.contact_id
+            JOIN vendor_hdr vh ON vr.vendor_id = vh.vendor_id
+            JOIN location lc ON vr.locn_id = lc.locn_id
+        WHERE vr.resource_id = #resourceId#;    
+    </select>
+	
+	<select id="isSameResourceExistForVendor.query"
+		resultClass="java.lang.Integer"
+		parameterClass="generalInfoVendorResource">
+    SELECT DISTINCT vendor_id FROM vendor_resource resource,contact contact
+    WHERE  resource.contact_id=contact.contact_id AND resource.vendor_id=#vendorId#
+    AND resource.ssn=#ssn# AND resource.delete_ind IS NULL
+    <isNotNull property="resourceId" >
+    <isNotEmpty property="resourceId" >
+     AND resource.resource_id!=#resourceId#
+     </isNotEmpty>
+    </isNotNull>
+	</select>
+	
+	
+	
+	
+	<select id="isRecertificationDateDisplay.query"
+		resultClass="java.lang.Integer"
+		parameterClass="java.lang.String">
+   SELECT COUNT(*) FROM(
+SELECT resource.resource_id
+FROM vendor_resource resource
+JOIN sl_pro_bkgnd_chk bkgndchk ON(resource.bg_check_id=bkgndchk.bg_check_id)
+JOIN wf_states wfstate ON(wfstate.wf_entity='Team Member Background Check'AND  wfstate.wf_state_id=bkgndchk.bg_state_id)
+JOIN spnet_hdr spn ON(spn.is_alias=0)
+               JOIN spnet_serviceprovider_state f ON(resource.resource_id=f.service_provider_id AND spn.spn_id=f.spn_id)
+                JOIN spnet_approval_criteria cr ON(cr.spn_id=f.spn_id AND cr.criteria_id=29)
+WHERE  resource.background_state_id NOT IN(7,28) AND resource.background_state_id IS NOT NULL
+             AND f.provider_wf_state IN ('SP SPN APPROVED', 'SP SPN OUT OF COMPLIANCE')
+AND resource.resource_id!=#resourceId#  AND resource.bg_check_id   IN(
+SELECT bg_check_id FROM vendor_resource resource WHERE resource_id =#resourceId#)
+UNION
+
+
+SELECT resource.resource_id
+FROM vendor_resource resource
+JOIN sl_pro_bkgnd_chk bkgndchk ON(resource.bg_check_id=bkgndchk.bg_check_id)
+JOIN wf_states wfstate ON(wfstate.wf_entity='Team Member Background Check'AND  wfstate.wf_state_id=bkgndchk.bg_state_id)
+JOIN spnet_hdr spn ON(spn.is_alias=0)
+               JOIN spnet_serviceprovider_state f ON(resource.resource_id=f.service_provider_id AND spn.spn_id=f.spn_id)
+                JOIN spnet_approval_criteria cr ON(cr.spn_id=f.spn_id AND cr.criteria_id=29)
+WHERE 
+resource.background_state_id IS NOT NULL
+             AND f.provider_wf_state IN ('SP SPN APPROVED', 'SP SPN OUT OF COMPLIANCE')
+AND resource.resource_id=#resourceId#
+) a
+
+	</select>
+	
+	<select id="vendorResource.getBgOriginalResourceId" parameterClass="string" resultClass="string">
+		SELECT sl.original_resource_id FROM vendor_resource vr,sl_pro_bkgnd_chk sl 
+		WHERE sl.bg_check_id=vr.bg_check_id AND vr.resource_id=#resourceId# 
+	</select>
+	
+	<select id="getValidVendors.query" parameterClass="java.util.ArrayList"
+	resultClass="java.lang.Integer">
+	SELECT
+	vh.vendor_id as vendorId
+	FROM
+	vendor_hdr vh
+	WHERE
+	vh.wf_state_id IN (3,34) AND
+	vh.vendor_id IN
+	<iterate open="(" close=")" conjunction=",">
+		#firmIds[]#
+	</iterate>
+</select>
+	<insert id="providerBackGroundCheck.insert" parameterClass="backgroundCheckProviderVO">
+		  INSERT INTO sl_pro_bkgnd_chk( verification_date, reverification_date, bg_request_date,created_date,modified_date) VALUES(#verificationDate#,#reverificationDate#,#requestDate#,NOW(),NOW())
+		  <selectKey resultClass="int">
+            SELECT last_insert_id() as bgCheckId
+        </selectKey>
+	</insert>
+	
+	<update id="vendorResourceBgCheckId.update"
+		parameterClass="backgroundCheckProviderVO">
+		UPDATE vendor_resource	set	bg_check_id = #bgcheckId#,modified_date=NOW() WHERE resource_id = #providerId#
+	</update>
+	<update id="updateAdditionalPayment.update" parameterClass = "java.util.HashMap">
+	   UPDATE so_additional_payment SET masked_acc_num=#maskeddAccNo#,token=#token#,modified_date= NOW() WHERE so_id =#soId#
+	</update>
+	<update id="updateAdditionalPaymentHistory.update" parameterClass = "java.util.HashMap">
+	   UPDATE so_additional_payment_history SET masked_acc_num=#maskeddAccNo#,token=#token#,response =#xml#,modified_date= NOW() WHERE so_id =#soId#
+	   ORDER BY created_date DESC LIMIT 1
+	</update>
+	<insert id="generalInfo.zipcode.insert" parameterClass="java.util.HashMap">
+		INSERT INTO vendor_resource_coverage (resource_id, zip, created_by)			
+		values (#resourceId#,REPLACE(#zipCode#,'"',''), #createdBy#)
+	</insert>
+	
+	
+	<delete id="generalInfo.delete.zip.all" parameterClass="java.lang.String" >
+		DELETE from vendor_resource_coverage where resource_id = #resourceId#
+	</delete>
+	
+	<update id="generalInfo.update.license" parameterClass="java.lang.String">
+		UPDATE vendor_resource set state_license_confirmation = #zipcodeConfirmed#
+	</update>
+	
+	<insert id="generalInfo.outofstatezipcode.insert" parameterClass="java.util.HashMap">
+		INSERT INTO vendor_resource_coverage_outof_states (resource_id, statecode, state_license_confirmation, created_by)
+		values (#resourceId#, #stateCode#, #licenseConfirmation#, #createdBy#)
+	</insert>
+	
+	<delete id="generalInfo.delete.outOfStateZipsForResource" parameterClass="java.lang.String" >
+		DELETE from vendor_resource_coverage_outof_states where resource_id = #resourceId#
+	</delete>
+</sqlMap>

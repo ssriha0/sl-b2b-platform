@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+    <package name="w9registration" extends="ServiceLiveBase" >
+    	<default-interceptor-ref name="ServiceLiveBaseInterceptorStack" />
+
+       	<action name="w9registrationAction_*" class="w9RegistrationAction" method="{1}">
+
+				<result name="success" type="tiles">base.servicelive.providerw9</result>
+				<result name="alertMessage">/jsp/providerRegistration/w9RegistrationAlert.jsp</result>
+				<result name="successbody">/jsp/providerRegistration/w9RegistrationFormBody.jsp</result>
+				<result type="redirectAction" name="dashboardAction">dashboardAction</result>
+				<result name="successexternal" type="tiles">base.servicelive.providerw9Modal</result>
+
+
+		</action>
+	</package>
+</struts>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/ums" 
+   xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+   xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
+   xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+   targetNamespace="http://www.servicelive.com/namespaces/ums"
+   elementFormDefault="qualified" jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+	<xs:include schemaLocation="../common.xsd" />
+		<!-- Root element -->
+		<xs:element name="authenticationResponse">
+			<xs:complexType>
+				<xs:sequence>
+					<xs:element ref="results"/>
+					<xs:element name="lastName" type="xs:string" minOccurs = "0"/>
+					<xs:element name="firstName" type="xs:string" minOccurs = "0"/>		
+        			<xs:element name="entityId" type="xs:string" minOccurs = "0"/>
+        			<xs:element name="resourceId" type="xs:string" minOccurs = "0"/>
+        			<xs:element name="profilePic" type="xs:string" minOccurs = "0"/>
+				</xs:sequence>					
+			</xs:complexType>
+		</xs:element>
+</xs:schema>
+
+

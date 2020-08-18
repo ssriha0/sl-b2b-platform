@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/newservices"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+	targetNamespace="http://www.servicelive.com/namespaces/newservices"
+	elementFormDefault="qualified" jaxb:version="1.0"
+	jaxb:extensionBindingPrefixes="xjc">
+    <xs:include schemaLocation="leadsCommon.xsd" />
+	<!-- Root Element -->
+    <xs:element name="LeadInfoResponse">
+		<xs:complexType>
+                <xs:sequence>
+                   <xs:element ref="results"/>
+                   <xs:element ref="LeadDetails" minOccurs="0"/>
+                </xs:sequence>
+       </xs:complexType>
+	</xs:element>
+	<xs:element name="LeadDetails">
+	   <xs:complexType>
+                  <xs:sequence>
+                        <xs:element ref="LeadDetail" minOccurs="0" maxOccurs="unbounded"/>
+                  </xs:sequence>
+            </xs:complexType>
+	</xs:element>
+	<xs:element name="LeadDetail">
+	   <xs:complexType>
+                  <xs:sequence>
+                        <xs:element name="LeadId" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="LeadStatus" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="Skill" type="skillTypeEnum" minOccurs="1" maxOccurs="1" />	
+                        <xs:element name="ProjectType" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="Urgency" type="urgencyTypeEnum" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="CustomerFirstName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="CustomerLastName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="CustomerPhoneNo" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                  </xs:sequence>
+            </xs:complexType>
+	</xs:element>
+</xs:schema>

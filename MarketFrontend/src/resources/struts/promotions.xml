@@ -1,0 +1,22 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="promotions" extends="ServiceLiveBase" >
+        <default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+
+    	<global-results >
+			<result name="error" type="redirectAction">
+				<param name="actionName">errorAction</param>
+				<param name="errorMessage">${errorMessage}</param>
+				<param name="returnURL">${returnURL}</param>
+			</result>
+		</global-results>	
+				
+	     <action name="promoAction_displayPromotion" class="promoAction" method="displayPromotion">
+	        <result name="success">/jsp/public/simple/common/providerPromo.jsp</result>
+	    </action>
+	    
+    </package>
+    
+</struts>

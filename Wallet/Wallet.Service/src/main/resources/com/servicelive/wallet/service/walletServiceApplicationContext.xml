@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-2.0.xsd">
+
+	<import resource="classpath:/com/servicelive/wallet/ach/wallet.ach.context.xml"/>
+	<import resource="classpath:/com/servicelive/wallet/alert/walletAlertApplicationContext.xml"/>
+	<import resource="classpath:/com/servicelive/wallet/common/walletCommonApplicationContext.xml"/>
+	<import resource="classpath:/com/servicelive/wallet/ledger/ledgerApplicationContext.xml"/>
+	<import resource="classpath:/com/servicelive/wallet/valuelink/valueLinkApplicationContext.xml"/>
+	<import resource="classpath:/com/servicelive/wallet/creditcard/creditCardApplicationContext.xml"/>
+	
+	<bean id="wallet" class="com.servicelive.wallet.service.WalletBO">
+		<property name="ach" ref="ach" />
+		<property name="creditCard" ref="creditCard" />
+		<property name="valueLink" ref="valueLink" />
+		<property name="ledger" ref="ledger" />
+		<property name="applicationProperties" ref="applicationPropertiesWallet" />
+		<property name="lookupBO" ref="lookup" />
+		<property name="hsAuthServiceCreditCardBo" ref="hsAuthServiceCreditCardBo" />
+	</bean>		
+		
+	<!-- TRANSACTION SUPPORT -->
+	<bean id="walletTx"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		lazy-init="true">
+		<property name="proxyInterfaces">
+			<list>
+				<value>
+					com.servicelive.wallet.serviceinterface.IWalletBO
+				</value>
+			</list>
+		</property>
+		<property name="target">
+			<ref bean="wallet" />
+		</property>
+		<property name="transactionManager">
+			<ref bean="dsTransactionManagerFinance" />
+		</property>
+		<property name="transactionAttributeSource">
+			<ref bean="attributeSource" />
+		</property>
+	</bean>	
+</beans>
+

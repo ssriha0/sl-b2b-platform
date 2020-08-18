@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<bean id="leadProcessingBO"
+		class="com.newco.marketplace.business.businessImpl.leadsmanagement.LeadProcessingBO">
+		<property name="fetchProviderDao">
+			<ref bean="fetchProviderDao" />
+		</property>
+		<property name="companyProfileBOImpl">
+	          <ref bean="companyProfileBOImpl" />
+	      </property>
+	      <property name="surveyDAO">
+			<ref bean="surveyDAO" />
+		  </property>
+		  <property name="applicationPropertiesDao">
+		     <ref bean="applicationPropertiesDao"/>
+		  </property>
+		  <property name="lookupBO">
+	          <ref bean="lookupBO"/>
+	      </property>
+	      <property name="alertDao">
+	          <ref bean="alertDao"/>
+	      </property>
+	      <property name="buyerLeadManagementDao">
+	          <ref bean="buyerLeadManagementDao"/>
+	      </property>
+	      
+	</bean>
+	<bean id="fetchProviderDao"
+		class="com.newco.marketplace.persistence.daoImpl.leadsmanagement.FetchProviderDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+	<bean id="buyerLeadManagementDao"
+		class="com.newco.marketplace.persistence.daoImpl.newservices.BuyerLeadManagementDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+	<bean id="leadManagementMapper" class="com.newco.marketplace.api.utils.mappers.leadsmanagement.LeadManagementMapper">
+	 	<property name="lmsApiKey" 
+			value="${servicelive.lms.api.key}" >
+ 		</property>
+	</bean> 		
+	</beans>

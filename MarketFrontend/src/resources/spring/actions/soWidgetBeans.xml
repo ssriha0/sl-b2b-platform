@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+     
+    <bean id="serviceOrderAddNoteAction" 
+          class="com.newco.marketplace.web.action.widgets.note.ServiceOrderAddNoteAction" 
+          scope="prototype">
+         <constructor-arg ref="serviceOrderManager"/>
+         <property name="buyerOutBoundNotificationService" ref="buyerOutBoundNotificationService"/>
+		 <property name="buyerOutBoundNotificationJMSService">
+			<ref bean="buyerOutBoundNotificationJMSService" />
+		</property>
+		<property name="notificationService">
+			<ref bean="notificationService" />
+		</property>
+	    <property name="relayNotificationService">
+			<ref bean="relayNotificationService" />
+		</property>			 
+    </bean>
+   
+    <bean id="serviceOrderVoidAction" 
+          class="com.newco.marketplace.web.action.widgets.sovoid.ServiceOrderVoidAction" 
+          scope="prototype">
+         <constructor-arg ref="serviceOrderManager"/>
+         
+		<property name="financeManagerDelegate">
+			<ref bean="FMDelegateBean" />
+		</property>			         
+    </bean> 
+    
+    <bean id="serviceOrderRejectAction" 
+          class="com.newco.marketplace.web.action.widgets.reject.ServiceOrderRejectAction" 
+          scope="prototype">
+         <constructor-arg ref="serviceOrderManager"/>    
+         
+         <property name="helper">
+			<ref bean="activityLogHelper"/>
+		</property>	     
+    </bean>
+    
+    <bean id="soIncreaseSpendLimitAction" 
+          class="com.newco.marketplace.web.action.widgets.spendlimit.ServiceOrderIncreaseSpendLimitAction" 
+          scope="prototype">
+         <constructor-arg ref="serviceOrderManager"/>
+    </bean>
+    
+    <bean id="serviceOrderWithdrawCondOfferAction" 
+          class="com.newco.marketplace.web.action.widgets.condoffer.ServiceOrderCondOfferAction" 
+          scope="prototype">
+         <constructor-arg ref="serviceOrderManager"/>
+    </bean>
+
+    <bean id="somDeleteDraft" 
+          class="com.newco.marketplace.web.action.widgets.delete.ServiceOrderDeleteDraftAction" 
+          scope="prototype">
+         <constructor-arg ref="serviceOrderManager"/>
+    </bean>  
+</beans>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.servicelive.com/namespaces/newservices" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+ targetNamespace="http://www.servicelive.com/namespaces/newservices"
+  elementFormDefault="qualified" jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+	<xs:include schemaLocation="leadsCommon.xsd" />
+    <!-- This is the new get Lead Request -->
+	<!-- Root Element -->     
+	
+<xs:element name="ScheduleAppointmentRequest">
+              <xs:complexType>
+                     <xs:sequence>
+                     		<xs:element name="identification" type="IdentificationType" minOccurs="0"/>
+                            <xs:element name="LeadId" type="xs:string" minOccurs="1" maxOccurs="1" ></xs:element>
+                            <xs:element name="FirmId" type="xs:int" minOccurs="1" maxOccurs="1" ></xs:element>
+                            <xs:element name="ServiceStartTime" type="xs:string" minOccurs="1" maxOccurs="1" ></xs:element>
+                            <xs:element name="ServiceEndTime" type="xs:string" minOccurs="1" maxOccurs="1" ></xs:element>
+                            <xs:element name="ServiceDate" type="xs:date" minOccurs="1" maxOccurs="1" ></xs:element>
+                            <xs:element name="rescheduleReason" type="rescheduleEnum" minOccurs="0" maxOccurs="1"/> 
+                            <xs:element name="recheduleIndicator" type="xs:string" minOccurs="0" maxOccurs="1"/>                           
+                        </xs:sequence>
+              </xs:complexType>            	        
+</xs:element>
+<xs:complexType name="IdentificationType">
+		<xs:sequence>		
+			<xs:element name="id" type="xs:integer" />  
+			<xs:element name="UserName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="FullName" type="xs:string"  minOccurs="0" maxOccurs="1"/>
+			<xs:element name="EntityId" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>
+		<xs:attribute name="type" type="identificationTypeEnum" use="required"/>
+	</xs:complexType>
+       
+</xs:schema>

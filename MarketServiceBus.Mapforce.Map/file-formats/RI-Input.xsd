@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="InstallationServiceOrders">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="InstallationServiceOrder" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:all>
+							<xs:element name="TransactionType" type="xs:string"/>
+							<xs:element name="ServiceUnitNumber" type="xs:string"/>
+							<xs:element name="ServiceOrderNumber" type="xs:string"/>
+							<xs:element name="OrderTakenTime" type="xs:time"/>
+							<xs:element name="OrderTakenDate" type="xs:date"/>
+							<xs:element name="PromisedDate" type="xs:string" minOccurs="0"/>
+							<xs:element name="PromisedTimeFrom" type="xs:string" minOccurs="0"/>
+							<xs:element name="PromisedTimeTo" type="xs:string" minOccurs="0"/>
+							<xs:element name="TechID" type="xs:string"/>
+							<xs:element name="ProcessID" type="xs:string" minOccurs="0" />
+							<xs:element name="OriginalScheduledDate" type="xs:date"/>
+							<xs:element name="OriginalTimeFrom" type="xs:string"/>
+							<xs:element name="OriginalTimeTo" type="xs:string"/>
+							<xs:element name="Customer">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Number" type="xs:int"/>
+										<xs:element name="Type" type="xs:string"/>
+										<xs:element name="FirstName" type="xs:string"/>
+										<xs:element name="LastName" type="xs:string"/>
+										<xs:element name="Phone" type="xs:string"/>
+										<xs:element name="AltPhone" type="xs:string"/>
+										<xs:element name="PreferredLanguage" type="xs:string"/>
+										<xs:element name="CellPhoneNumber" type="xs:string"/>
+										<xs:element name="SupplementalCustomerInformation" type="xs:string"/>
+										<xs:element name="Address">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="StreetAddress1" type="xs:string"/>
+													<xs:element name="StreetAddress2" type="xs:string"/>
+													<xs:element name="City" type="xs:string"/>
+													<xs:element name="State" type="xs:string"/>
+													<xs:element name="ZipCode" type="xs:string"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="RepairAt">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Phone" type="xs:string"/>
+										<xs:element name="AltPhone" type="xs:string"/>
+										<xs:element name="Address">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="StreetAddress1" type="xs:string"/>
+													<xs:element name="StreetAddress2" type="xs:string"/>
+													<xs:element name="City" type="xs:string"/>
+													<xs:element name="State" type="xs:string"/>
+													<xs:element name="ZipCode" type="xs:string"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="ServiceRequested" type="xs:string"/>
+							<xs:element name="ServiceOrderStatusCode" type="xs:string"/>
+							<xs:element name="ServiceOrderType" type="xs:string"/>
+							<xs:element name="SpecialInstructions1" type="xs:string"/>
+							<xs:element name="SpecialInstructions2" type="xs:string"/>
+							<xs:element name="PermanentInstructions" type="xs:string"/>
+							<xs:element name="Merchandise">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Code" type="xs:string"/>
+										<xs:element name="Description" type="xs:string"/>
+										<xs:element name="PurchaseDate" type="xs:date"/>
+										<xs:element name="Specialty" type="xs:string"/>
+										<xs:element name="Brand" type="xs:string"/>
+										<xs:element name="Model" type="xs:string"/>
+										<xs:element name="SerialNumber" type="xs:string"/>
+										<xs:element name="Division" type="xs:string"/>
+										<xs:element name="ItemNumber" type="xs:string"/>
+										<xs:element name="SearsSoldCode" type="xs:string"/>
+										<xs:element name="SystemItemSuffix" type="xs:string"/>
+										<xs:element name="SearsStoreNumber" type="xs:string"/>
+										<xs:element name="ResidentialOrCommercialUsage" type="xs:string"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="SalesCheck">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Number" type="xs:string"/>
+										<xs:element name="Date" type="xs:string"/>
+										<xs:element name="Time" type="xs:string"/>
+										<xs:element name="SellingAssociate" type="xs:string"/>
+										<xs:element name="SalesCheckItems">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="Item" maxOccurs="unbounded">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="LineNumber" type="xs:string"/>
+																<xs:element name="Division" type="xs:string"/>
+																<xs:element name="ItemNumber" type="xs:string"/>
+																<xs:element name="SKU" type="xs:string"/>
+																<xs:element name="PurchaseAmt" type="xs:string"/>
+																<xs:element name="Description" type="xs:string"/>
+																<xs:element name="Quantity" type="xs:string"/>
+																<xs:element name="GiftFlag" type="xs:string"/>
+																<xs:element name="GiftDate" type="xs:string"/>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="JobCodes">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="JobCode" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="SequenceNumber" type="xs:string"/>
+													<xs:element name="Number" type="xs:string"/>
+													<xs:element name="ChargeCode" type="xs:string"/>
+													<xs:element name="Type" type="xs:string"/>
+													<xs:element name="Coverage" type="xs:string"/>
+													<xs:element name="Description" type="xs:string"/>
+													<xs:element name="Amount" type="xs:decimal"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Messages">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Message" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="Date" type="xs:string"/>
+													<xs:element name="Time" type="xs:string"/>
+													<xs:element name="Text" type="xs:string"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Logistics">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Order">
+											<xs:complexType>
+												<xs:all>
+													<xs:element name="Number" type="xs:string"/>
+													<xs:element name="WarehouseNumber" type="xs:string"/>
+													<xs:element name="LastMaintenanceDate" type="xs:string"/>
+													<xs:element name="DeliveryStatus" type="xs:string"/>
+													<xs:element name="DeliveryDescription" type="xs:string"/>
+													<xs:element name="HoldCode" type="xs:string"/>
+													<xs:element name="HoldDescription" type="xs:string"/>
+													<xs:element name="PendCode" type="xs:string"/>
+													<xs:element name="PendDescription" type="xs:string"/>
+													<xs:element name="SpecialInstructions" type="xs:string"/>
+													<xs:element name="ItemInstructions" type="xs:string" minOccurs="0" />
+													<xs:element name="DeliveryDate" type="xs:string"/>
+													<xs:element name="PickupLocationCode" type="xs:string"/>
+													<xs:element name="ShipmentMethodCode" type="xs:string"/>
+													<xs:element name="ShipmentMethodDescription" type="xs:string"/>
+													<xs:element name="DeliveryTimeCode" type="xs:string"/>
+													<xs:element name="DeliveryTimeDescription" type="xs:string"/>
+													<xs:element name="Address">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="StreetAddress1" type="xs:string"/>
+																<xs:element name="StreetAddress2" type="xs:string"/>
+																<xs:element name="City" type="xs:string"/>
+																<xs:element name="State" type="xs:string"/>
+																<xs:element name="ZipCode" type="xs:string"/>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+												</xs:all>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="LogisticsMerchandise">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="PendCode" type="xs:string"/>
+													<xs:element name="PendDescription" type="xs:string"/>
+													<xs:element name="SCIMHandlingCode" type="xs:string"/>
+													<xs:element name="SCIMHandlingDescription" type="xs:string"/>
+													<xs:element name="LastMaintenanceDate" type="xs:string"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:all>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

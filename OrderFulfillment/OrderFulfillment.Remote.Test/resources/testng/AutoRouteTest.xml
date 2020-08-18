@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="OrderFulfillment.Remote.AutoRoute">
+    <test name="AutoRouteTest" >
+        <groups><run><include name="unit" /></run>
+        </groups>
+        <classes>
+            <class name="com.servicelive.orderfulfillment.remote.test.workflow.autoroute.CreateOrderTest">
+                <methods>
+                    <include name="createServiceOrder"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>

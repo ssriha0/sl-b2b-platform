@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<bean id="pushNotificationAlertTask"
+		class="com.newco.marketplace.business.businessImpl.vibePostAPI.PushNotificationAlertTask"
+		lazy-init="true">
+		<property name="alertDao">
+			<ref bean="alertDao" />
+		</property>
+
+		<property name="templateDao">
+			<ref bean="pTemplateDao" />
+		</property>
+
+		<property name="serviceOrderDao">
+			<ref bean="serviceOrderDao" />
+		</property>	
+
+	</bean>
+
+	<bean id="pTemplateDao"
+		class="com.newco.marketplace.persistence.daoImpl.provider.TemplateDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+	</bean>
+
+</beans>

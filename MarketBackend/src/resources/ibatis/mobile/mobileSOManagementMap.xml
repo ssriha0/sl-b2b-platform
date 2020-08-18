@@ -1,0 +1,1303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="mobileSoManagement">
+
+	<typeAlias alias="providerSearchSO" type="com.newco.marketplace.vo.mobile.ProviderSOSearchVO" />
+	<typeAlias alias="soStatus" type="com.newco.marketplace.vo.mobile.SOStatusVO" />
+	<typeAlias alias="soMobile" type="com.newco.marketplace.api.mobile.beans.sodetails.ServiceOrderDetails" />
+	<typeAlias alias="completeMobile" type="com.newco.marketplace.api.mobile.beans.sodetails.CompletionDetails" />	
+	<typeAlias alias="completionDetails" type="com.newco.marketplace.api.mobile.beans.sodetails.v2_0.CompletionDetails" />
+	<typeAlias alias="getSODetails" type="com.newco.marketplace.api.mobile.beans.sodetails.v2_0.ServiceOrderDetails" />
+	<typeAlias alias="providerDetails" type="com.newco.marketplace.api.mobile.beans.sodetails.Provider" />
+	<typeAlias alias="soAddons" type="com.newco.marketplace.api.mobile.beans.sodetails.AddOn" />
+    <typeAlias alias="providerReference" type="com.newco.marketplace.api.mobile.beans.sodetails.ProviderReference" />
+    <typeAlias alias="buyerReference" type="com.newco.marketplace.api.mobile.beans.sodetails.BuyerReference" />   
+    <typeAlias alias="documentsData" type="com.newco.marketplace.api.mobile.beans.sodetails.Document" />
+    <typeAlias alias="soServiceLocation" type="com.newco.marketplace.api.mobile.beans.sodetails.ServiceLocation" />
+    <typeAlias alias="soAltServiceLocation" type="com.newco.marketplace.api.mobile.beans.sodetails.AlternateServiceLocation" />
+    <typeAlias alias="buyerData" type="com.newco.marketplace.api.mobile.beans.sodetails.Buyer" />
+    <typeAlias alias="cardTypes" type="com.newco.marketplace.api.mobile.beans.sodetails.Card" />
+    <typeAlias alias="tasks" type="com.newco.marketplace.api.mobile.beans.sodetails.Task" />
+    <typeAlias alias="permits" type="com.newco.marketplace.api.mobile.beans.sodetails.PermitTask" />
+    <typeAlias alias="permitAddons" type="com.newco.marketplace.api.mobile.beans.sodetails.PermitAddon" />
+    <typeAlias alias="reasons" type="com.newco.marketplace.api.mobile.beans.sodetails.Reason" />
+    <typeAlias alias="docType" type="com.newco.marketplace.api.mobile.beans.sodetails.DocumentType" />
+    <typeAlias alias="doc" type="com.newco.marketplace.api.mobile.beans.sodetails.Document" />
+     <typeAlias alias="invoicedoc" type="com.newco.marketplace.api.mobile.beans.sodetails.InvoiceDocumentVO" />
+    <typeAlias alias="signature" type="com.newco.marketplace.api.mobile.beans.sodetails.SignatureDocument" />
+    <typeAlias alias="invoicePart" type="com.newco.marketplace.api.mobile.beans.sodetails.InvoiceParts" />
+    <typeAlias alias="partsSource" type="com.newco.marketplace.api.mobile.beans.sodetails.PartSource" />
+    <typeAlias alias="partsCoverage" type="com.newco.marketplace.api.mobile.beans.sodetails.PartCoverage" />
+    <typeAlias alias="cancellationReasonCode" type="com.newco.marketplace.api.mobile.beans.sodetails.CancellationReasonCode" />
+    <typeAlias alias="mobileParts" type="com.newco.marketplace.api.mobile.beans.sodetails.Part" />
+    <typeAlias alias="partTrack" type="com.newco.marketplace.api.mobile.beans.sodetails.PartTrack" />
+    <typeAlias alias="pickUpLocn" type="com.newco.marketplace.api.mobile.beans.sodetails.PickUpLocation" />
+    <typeAlias alias="orderNotes" type="com.newco.marketplace.api.mobile.beans.sodetails.Note" />
+    <typeAlias alias="supportNote" type="com.newco.marketplace.api.mobile.beans.sodetails.SupportNote" />
+    <typeAlias alias="partInvoice" type="com.newco.marketplace.api.mobile.beans.sodetails.PartInvoice" />
+    <typeAlias alias="addonPayment" type="com.newco.marketplace.api.mobile.beans.sodetails.AddonPayment" />
+    <typeAlias alias="soTrips" type="com.newco.marketplace.api.mobile.beans.sodetails.v2_0.SOTrip" />
+	<typeAlias alias="soTripDetails" type="com.newco.marketplace.api.mobile.beans.sodetails.v2_0.SOTripChangeLog" />	
+	<typeAlias alias="invoicePartForGetSO" type="com.newco.marketplace.api.mobile.beans.sodetails.v2_0.InvoicePart" />
+	<typeAlias alias="invoiceSupplier" type="com.newco.marketplace.api.mobile.beans.sodetails.v2_0.InvoiceSupplier" />
+	<typeAlias alias="merchandiseDetails" type="com.newco.marketplace.api.mobile.beans.sodetails.v2_0.Merchandise" />
+	<typeAlias alias="mobileFeedbackVO" type="com.newco.marketplace.vo.mobile.FeedbackVO" />
+	<typeAlias alias="latestTripDetails" type="com.newco.marketplace.api.mobile.beans.sodetails.v2_0.LatestTripDetails" />
+
+	<resultMap class="soMobile"	id="mobileAPI.resultmap">			
+	<result property="orderDetails.soId" column="so_id" />
+		<result property="orderDetails.soStatus" column="wf_state_id"
+				select="sostatusdescription.query" />
+		<result property="orderDetails.soSubStatus" column="so_substatus_id"
+				select="sosubstatusdescription.query"/>	
+		<result property="orderDetails.buyerTerms" column="buyer_terms_cond" />
+		<result property="orderDetails.overView" column="sow_descr" />
+		<result property="orderDetails.specialInstuctions" column="provider_instr" />
+		<result property="orderDetails.soTitle" column="sow_title" />		
+		<result property="appointment.serviceStartDate" column="service_date1" />
+		<result property="appointment.serviceEndDate" column="service_date2" />			
+		<result property="appointment.timeZone" column="service_locn_time_zone"/>
+	 	<result property="appointment.serviceWindowStartTime" column="service_time_start" />
+		<result property="appointment.serviceWindowEndTime" column="service_time_end" /> 
+		<result property="appointment.scheduleStatus" column="so_id"
+				select="scheduleStatus.query"/>				
+		<result property="provider" column="accepted_resource_id"
+				select="soRoutedResourceData.query" />	
+	    <result property="buyerReferences.buyerReference" column="so_id"
+	            select="buyerReference.query"/>	
+	   <result property="serviceLocation" column="so_id"
+	            select="soServiceLocationData.query"/>	
+	    <result property="alternateServiceLocation" column="so_id"
+	            select="soAlternateServiceLocationData.query"/>
+	    <result property="buyer" column="{buyerId=buyer_id,buyerResId=buyer_resource_id}"
+	            select="buyerData.query"/>
+	    <result property="scope.mainServiceCategory" column="primary_skill_category_id"
+	            select="soMainServiceCategory.query"/>
+	    <result property="scope.tasks.task" column="so_id"
+	            select="taskList.query"/>
+	    <result property="documents.maxUploadLimitPerSO" column="buyer_id" select ="maxDocUploadLimit.query"/>
+	    <result property="documents.remaininguploadLimitPerSO" column="so_id" select ="remainingDocSize.query"/>
+		<result property="documents.maxuploadlimitPerDoc" column="buyer_id" select ="docUploadLimit.query"/>
+	   	<result property="documents.document" column="so_id" select ="documentsData.query"/> 
+		<result property="notes.note" column="so_id" select ="soNotes.query"/>	
+		<result property="supportNotes.supportNote" column="so_id" select ="soSupportNotes.query"/>	
+		<result property="parts.part" column="so_id" select ="fetchParts.query"/>
+		<result property="addonList.addon" column="so_id"
+	            select="addonList.query"/>
+	</resultMap>
+	
+	<resultMap class="completeMobile" id="mobileCompleteAPI.resultmap">
+		<result property="buyerId" column="buyer_id"/>
+		<result property="resolutionComments" column="resolution_descr"/>
+		<result property="cancellationReasonCodes.cancellationReasonCode" column="buyer_id" select="fetchCancellationReasonCodes.query"/>
+		<result property="addons.addonList.addon" column="so_id"
+	            select="soAddons.query"/>
+	    <result property="addons.addonMailCheckAddress" column="so_id" select="soAddonsMailCheckAddress.query"/>
+	    <result property="addons.allowedCardTypes.card" column="buyer_id" select="creditCardTypes.query"/>  
+	   <!-- <result property="addons.addonPayment" column="so_id" select="addonPaymentDetails.query"/>    -->
+	    <result property="providerReferences.providerReference" column="so_id"
+	            select="providerReference.query"/>   
+	    <result property="tasks.task" column="so_id"
+	            select="taskListCompletion.query"/> 
+	    <result property="permits.permitTasks.permitTask" column="so_id"
+	            select="permitTasks.query"/> 
+	    <result property="permits.permitAddons.permitAddon" column="so_id"
+	            select="permitAddons.query"/>
+	    <result property="price.totalLaborMaximumPrice" column="spend_limit_labor" />	
+	    <result property="price.totalPartsMaximumPrice" column="spend_limit_parts" />	
+	    <result property="price.finalLaborPriceByProvider" column="so_id" select="soFinalPriceLabour.query"/>	
+	    <result property="price.finalPartsPriceByProvider" column="so_id" select="soFinalPriceParts.query"/>
+	     <result property="price.totalInvoicePartsMaximumPrice" column="so_id" select="soProviderInvoiceParts.query"/>
+	    <result property="price.reasons.reason" column="buyer_id" select ="reasonList.query"/>	
+		<result property="documentTypes.documentType" column="buyer_id" select ="completionDocs.query"/>
+		<result property="documentTypes.maxUploadLimitPerSO" column="buyer_id" select ="maxDocUploadLimit.query"/>
+		<result property="documentTypes.remaininguploadLimitPerSO" column="so_id" select ="remainingDocSize.query"/>
+		<result property="documentTypes.maxuploadlimitPerDoc" column="buyer_id" select ="docUploadLimit.query"/>
+		<result property="invoiceParts.partCoverage" column="so_id" select ="fetchInvoicePartsCoverage.query"/>
+		<result property="invoiceParts.partSource" column="so_id" select ="fetchInvoicePartsSource.query"/>
+		<result property="invoiceParts.invoicePartsList.partInvoice" column="so_id" select="invoicePartsList.query"/> 
+		<result property="partsTracking.part" column="so_id" select ="fetchPartsForCompletion.query"/>		
+	</resultMap>
+	
+	<!-- Added for getCompletionDetails API V2 -->
+		<resultMap class="completionDetails" id="mobileCompleteAPIWithTrip.resultmap">
+		<result property="currentTripNo" column="so_id" select="fetchSOtrip.query" nullValue="0"/>
+		<result property="buyerId" column="buyer_id"/>
+		<result property="resolutionComments" column="resolution_descr"/>
+		<result property="cancellationReasonCodes.cancellationReasonCode" column="buyer_id" select="fetchCancellationReasonCodes.query"/>
+		<result property="addons.addonList.addon" column="so_id"
+	            select="soAddons.query"/>
+	    <result property="addons.addonMailCheckAddress" column="so_id" select="soAddonsMailCheckAddress.query"/>
+	    <result property="addons.allowedCardTypes.card" column="buyer_id" select="creditCardTypes.query"/>  
+	   <!-- <result property="addons.addonPayment" column="so_id" select="addonPaymentDetails.query"/>    -->
+	    <result property="providerReferences.providerReference" column="so_id"
+	            select="providerReference.query"/>   
+	    <result property="tasks.task" column="so_id"
+	            select="taskListCompletion.query"/> 
+	    <result property="permits.permitTasks.permitTask" column="so_id"
+	            select="permitTasks.query"/> 
+	    <result property="permits.permitAddons.permitAddon" column="so_id"
+	            select="permitAddons.query"/>
+	    <result property="price.totalLaborMaximumPrice" column="spend_limit_labor" />	
+	    <result property="price.totalPartsMaximumPrice" column="spend_limit_parts" />	
+	    <result property="price.finalLaborPriceByProvider" column="so_id" select="soFinalPriceLabour.query"/>	
+	    <result property="price.finalPartsPriceByProvider" column="so_id" select="soFinalPriceParts.query"/>
+	    <result property="price.totalInvoicePartsMaximumPrice" column="so_id" select="soProviderInvoiceParts.query"/>
+	    <result property="price.reasons.reason" column="buyer_id" select ="reasonList.query"/>	
+		<result property="documentTypes.documentType" column="buyer_id" select ="completionDocs.query"/>
+		<result property="documentTypes.maxUploadLimitPerSO" column="buyer_id" select ="maxDocUploadLimit.query"/>
+		<result property="documentTypes.remaininguploadLimitPerSO" column="so_id" select ="remainingDocSize.query"/>
+		<result property="documentTypes.maxuploadlimitPerDoc" column="buyer_id" select ="docUploadLimit.query"/>
+		<result property="invoiceParts.partCoverage" column="so_id" select ="fetchInvoicePartsCoverage.query"/>
+		<result property="invoiceParts.partSource" column="so_id" select ="fetchInvoicePartsSource.query"/>
+		<result property="invoiceParts.invoicePartsList.invoicePart" column="so_id" select ="fetchInvoiceParts.query"/>
+		<result property="invoiceParts.invoicePartsList.noPartsRequiredInd" column="so_id" select ="fetchInvoicePartInd.query"/>
+		<result property="partsTracking.part" column="so_id" select ="fetchPartsForCompletion.query"/>
+		<result property="documents.document" column="so_id" select ="completionDocumentsData.query"/> 
+		<result property="signatures.signature" column="so_id" select ="completionSignatureDocumentsData.query"/>
+		<result property="appointment.serviceStartDate" column="service_date1" />
+		<result property="appointment.serviceEndDate" column="service_date2" />			
+		<result property="appointment.timeZone" column="service_locn_time_zone"/>
+	 	<result property="appointment.serviceWindowStartTime" column="service_time_start" />
+		<result property="appointment.serviceWindowEndTime" column="service_time_end" /> 
+		<result property="appointment.scheduleStatus" column="so_id" select="scheduleStatus.query"/>	
+		<result property="addonPayment" column="so_id" select="addonPaymentDetails.query"/>	
+		<result property="buyerEmailRequiredInd" column="buyer_id" select="customerEmailReqdInd.query"/>
+		<!-- Done as part of SL-20673: Edit Completion Details -->
+		<result property="tripDetails.trip" column="so_id" select ="fetchSOtrips.query"/>	
+		<result property="serviceLocation" column="so_id"
+	            select="soServiceLocationData.query"/>		
+	</resultMap>
+	
+	<!-- Added for getServiceOrderDetails API V2 -->
+	<resultMap class="getSODetails"	id="mobileSODetailsWithTrip.resultmap">
+		<result property="currentTripNo" column="so_id" select="fetchSOtrip.query" nullValue="0"/>			
+		<result property="orderDetails.soId" column="so_id" />
+		<result property="orderDetails.soStatus" column="wf_state_id"
+				select="sostatusdescription.query" />
+		<result property="orderDetails.soSubStatus" column="so_substatus_id"
+				select="sosubstatusdescription.query"/>	
+		<result property="orderDetails.buyerTerms" column="buyer_terms_cond" />
+		<result property="orderDetails.overView" column="sow_descr" />
+		<result property="orderDetails.specialInstuctions" column="provider_instr" />
+		<result property="orderDetails.soTitle" column="sow_title" />		
+		<result property="appointment.serviceStartDate" column="service_date1" />
+		<result property="appointment.serviceEndDate" column="service_date2" />			
+		<result property="appointment.timeZone" column="service_locn_time_zone"/>
+	 	<result property="appointment.serviceWindowStartTime" column="service_time_start" />
+		<result property="appointment.serviceWindowEndTime" column="service_time_end" /> 
+		<result property="appointment.scheduleStatus" column="so_id"
+				select="scheduleStatus.query"/>				
+		<result property="provider" column="accepted_resource_id"
+				select="soRoutedResourceData.query" />	
+	    <result property="buyerReferences.buyerReference" column="so_id"
+	            select="buyerReference.query"/>	
+	   <result property="serviceLocation" column="so_id"
+	            select="soServiceLocationData.query"/>	
+	    <result property="alternateServiceLocation" column="so_id"
+	            select="soAlternateServiceLocationData.query"/>
+	    <result property="buyer" column="{buyerId=buyer_id,buyerResId=buyer_resource_id}"
+	            select="buyerData.query"/>
+	    <result property="scope.mainServiceCategory" column="primary_skill_category_id"
+	            select="soMainServiceCategory.query"/>
+	    <result property="scope.tasks.task" column="so_id"
+	            select="taskList.query"/>
+	    <result property="documents.maxUploadLimitPerSO" column="buyer_id" select ="maxDocUploadLimit.query"/>
+	    <result property="documents.remaininguploadLimitPerSO" column="so_id" select ="remainingDocSize.query"/>
+		<result property="documents.maxuploadlimitPerDoc" column="buyer_id" select ="docUploadLimit.query"/>
+	   	<result property="documents.document" column="so_id" select ="documentsData.query"/> 
+		<result property="notes.note" column="so_id" select ="soNotes.query"/>	
+		<result property="supportNotes.supportNote" column="so_id" select ="soSupportNotes.query"/>	
+		<result property="parts.part" column="so_id" select ="fetchParts.excludingMerchandise.query"/>
+		<result property="merchandises.merchandise" column="so_id" select ="fetchMerchandises.query"/>
+		<result property="addonList.addon" column="so_id"
+	            select="addonList.query"/>
+	    <result property="tripDetails.trip" column="so_id" select ="fetchSOtrips.query"/>
+	    <result property="invoicePartsList.noPartsRequiredInd" column="so_id" select ="fetchInvoicePartInd.query"/>
+	    <result property="invoicePartsList.invoicePart" column="so_id" select ="fetchInvoiceParts.query"/>
+	</resultMap>	
+
+	
+	<resultMap class="soTrips" id="soTrip.resultMap">
+	  	<result property="tripNo" column="tripNo" />
+	  	<result property="currentApptStartDate" column="currentApptStartDate" nullValue=""/>
+	  	<result property="currentApptEndDate" column="currentApptEndDate" nullValue=""/>
+	  	<result property="currentApptStartTime" column="currentApptStartTime" nullValue=""/>
+	  	<result property="currentApptEndTime" column="currentApptEndTime" nullValue=""/>
+	  	<result property="checkInTime" column="trip_start_visit_id" select="fetchSOCheckIn.query" nullValue=""/>
+	  	<result property="checkOutTime" column="trip_end_visit_id" select="fetchSOCheckOut.query" nullValue=""/>
+	  	<result property="tripStatus" column="tripStatus" />
+	  	<result property="providerName" column="providerName" />
+	  	<result property="tripStartSource" column="tripStartSource" />
+	  	<result property="tripEndSource" column="tripEndSource" />
+	  	<result property="nextApptStartDate" column="nextApptStartDate" nullValue=""/>
+	  	<result property="nextApptEndDate" column="nextApptEndDate" nullValue=""/>
+	  	<result property="nextApptStartTime" column="nextApptStartTime" nullValue=""/>
+	  	<result property="nextApptEndTime" column="nextApptEndTime" nullValue=""/>
+	  	<result property="revisitReason" column="revisitReason" nullValue=""/>
+	  	<result property="workStartedIndicator" column="workStartedIndicator" />
+	  	<result property="merchandiseDeliveredIndicator" column="merchandiseDeliveredIndicator" />
+	  	<result property="revisitComments" column="revisitComments" nullValue=""/>
+	  	<result property="changeLogs.changeLog" column="so_trip_id" select="fetchSOTripDetails.query"/>
+	</resultMap>
+	
+	<resultMap class="soTripDetails" id="soTripChangeLog.resultMap">
+		<result property="updatedComponent" column="updatedComponent" />
+		<result property="changeComments" column="changeComments" />
+	</resultMap>
+	
+	<resultMap class="invoicePartForGetSO" id="invoicePart.resultMap">
+	  	<result property="invoicePartId" column="invoicePartId" />
+	  	<result property="partCoverage" column="partCoverage" nullValue=""/>
+	  	<result property="partSource" column="partSource" nullValue=""/>
+	  	<result property="partNumber" column="partNumber" nullValue=""/>
+	  	<result property="partDescription" column="partDescription" nullValue=""/>
+	  	<result property="invoiceNumber" column="invoiceNumber" />
+	  	<result property="unitCost" column="unitCost" />
+	  	<result property="retailPrice" column="retailPrice" />
+	  	<result property="qty" column="qty" />
+	  	<result property="nonSearsSource" column="nonSearsSource" nullValue=""/>
+	  	<result property="divisionNumber" column="divisionNumber" nullValue=""/>
+	  	<result property="sourceNumber" column="sourceNumber" nullValue=""/>
+	  	<result property="category" column="category" nullValue=""/>
+	  	<result property="partStatus" column="partStatus" nullValue=""/>
+	  	<result property="isManual" column="isManual" nullValue=""/>
+	  	<result property="invoiceSuppliers.invoiceSupplier" column="invoicePartId" select="fetchInvoicePartsSupplier.query"/>
+	  	<result property="invoiceDocuments.document" column="invoicePartId" select="fetchInvoiceDocuments.query"/>
+	</resultMap>
+	  <resultMap class="invoiceSupplier" id="invoicePartSupplier.resultMap">
+		<result property="supplierName" column="supplierName" />
+		<result property="address1" column="address1" />
+		<result property="address2" column="address2" />
+		<result property="city" column="city" />
+		<result property="state" column="state" />
+		<result property="zip" column="zip" />
+		<result property="phone" column="phone" />
+		<result property="fax" column="fax" />
+		<result property="latitude" column="latitude" />
+		<result property="longitude" column="longitude" />
+		<result property="distance" column="distance" />
+	</resultMap> 
+	
+	<resultMap class="mobileParts" id="parts.resultMap">
+	    <result property="partId" column="partId" />
+	    <result property="manufacturer" column="manufacturer" />
+	    <result property="partName" column="partName" />
+	    <result property="modelNumber" column="modelNumber" />
+	    <result property="serialNumber" column="serialNumber" />
+	    <result property="oemNumber" column="oemNumber" />
+	    <result property="orderNumber" column="orderNumber" />
+	    <result property="purchaseOrderNumber" column="purchaseOrderNumber" />
+	    <result property="size" column="size" />
+	    <result property="weight" column="weight" />
+	    <result property="vendorPartNumber" column="vendorPartNumber" />
+	    <result property="qty" column="qty" />
+	    <result property="partStatus" column="partStatus" />
+	    <result property="shippingCarrier" column="shippingCarrier" />
+	    <result property="coreReturnCarrier" column="coreReturnCarrier" />
+	    <result property="partDescription" column="partDescription" />
+	    <result property="additionalPartInfo" column="additionalPartInfo" />
+	    <result property="shippingTrackingNumber" column="shippingTrackingNumber" />
+	    <result property="shipDate" column="shipDate" />
+	    <result property="coreReturnTrackingNumber" column="coreReturnTrackingNumber" />
+	    <result property="coreReturnDate" column="coreReturnDate" />
+	   <!--   <result property="partType" column="partType" /> -->
+	    <result property="pickupLocation" column="so_locn_id=so_locn_id,so_id=so_id" select="pickupLocation.query"/>
+    </resultMap>
+    
+    <resultMap class="merchandiseDetails" id="merchandises.resultMap">
+    	<result property="partId" column="partId" />
+	    <result property="manufacturer" column="manufacturer" />
+	    <result property="modelNumber" column="modelNumber" />
+	    <result property="serialNumber" column="serialNumber" />
+    </resultMap>
+    
+    <resultMap class="mobileParts" id="parts.excludingMerchandise.resultMap">
+	    <result property="partId" column="partId" />
+	    <result property="partName" column="partName" />
+	    <result property="oemNumber" column="oemNumber" />
+	    <result property="orderNumber" column="orderNumber" />
+	    <result property="purchaseOrderNumber" column="purchaseOrderNumber" />
+	    <result property="size" column="size" />
+	    <result property="weight" column="weight" />
+	    <result property="vendorPartNumber" column="vendorPartNumber" />
+	    <result property="qty" column="qty" />
+	    <result property="partStatus" column="partStatus" />
+	    <result property="shippingCarrier" column="shippingCarrier" />
+	    <result property="coreReturnCarrier" column="coreReturnCarrier" />
+	    <result property="partDescription" column="partDescription" />
+	    <result property="additionalPartInfo" column="additionalPartInfo" />
+	    <result property="shippingTrackingNumber" column="shippingTrackingNumber" />
+	    <result property="shipDate" column="shipDate" />
+	    <result property="coreReturnTrackingNumber" column="coreReturnTrackingNumber" />
+	    <result property="coreReturnDate" column="coreReturnDate" />
+	   <!--   <result property="partType" column="partType" /> -->
+	    <result property="pickupLocation" column="so_locn_id=so_locn_id,so_id=so_id" select="pickupLocation.query"/>
+    </resultMap>
+    
+    <resultMap class="partTrack" id="partsCompletion.resultMap">
+	    <result property="partId" column="partId" />
+	    <result property="manufacturer" column="manufacturer" />
+	    <result property="partName" column="partName" />
+	    <result property="modelNumber" column="modelNumber" />	    
+	    <result property="returnCarrier" column="returnCarrier" />	    
+	    <result property="returnTrackingNumber" column="returnTrackingNumber" />	    
+    </resultMap>
+    
+    <select id="soProviderInvoiceParts.query" parameterClass="java.lang.String"
+		resultClass="java.lang.Double">
+		SELECT SUM(final_price) FROM so_provider_invoice_parts WHERE so_id = #so_id#;
+	</select>
+
+	<select id="providerSearchSO.query" parameterClass="java.util.HashMap"
+		resultClass="providerSearchSO">
+		SELECT s.sow_title AS soTitle,
+		s.so_id AS soId,
+		wf_alias.descr AS
+		soStatus,
+		s.service_date_type_id AS dateType,
+		s.service_locn_time_zone AS serviceLocationTimeZone,
+		lu_wf_substatus.descr AS soSubStatus,
+		s.service_date1 AS serviceDate1,
+		s.service_date2 AS
+		serviceDate2,
+		s.service_time_start AS serviceTime1,
+		s.service_time_end
+		AS serviceTime2,
+		cont.first_name AS custFirstName,
+		cont.last_name AS
+		custLastName,
+		loc.city AS city,
+		loc.state_cd AS state,
+		loc.zip AS zip,
+		loc.street_1 AS address1,
+		loc.street_2 AS address2,
+		s.buyer_id AS
+		buyerId,
+		b.business_name AS buyerName,
+		loc1.so_locn_type_id as
+		merchStatus,
+		sch.schedule_status as scheduleStatus,
+		schd.expected_time_of_arrival as eta,
+		d.doc_path AS buyerLogo,
+		now() as serverDateTime
+		FROM
+		so_hdr s
+		JOIN so_contact_locn cont_loc
+		ON s.so_id = cont_loc.so_id
+		LEFT OUTER JOIN buyer b 
+		ON s.buyer_id=b.buyer_id
+		JOIN
+		lu_so_contact_locn_type lu_cont_loc
+		ON
+		lu_cont_loc.so_contact_locn_type_id =
+		cont_loc.so_contact_locn_type_id
+		JOIN so_location loc
+		ON loc.so_id = s.so_id
+		AND loc.so_locn_type_id = 10
+		LEFT OUTER JOIN so_location loc1
+		ON loc1.so_id = s.so_id
+		AND
+		loc1.so_locn_type_id = 40
+		LEFT OUTER JOIN so_contact cont
+		ON cont.so_id
+		= cont_loc.so_id
+		AND cont.so_contact_id = cont_loc.so_contact_id
+		AND
+		s.so_id = cont.so_id
+		JOIN lu_wf_states_alias
+		wf_alias
+		ON wf_alias.wf_state_id = s.wf_state_id
+		AND wf_alias.user_type
+		= 'Provider'
+		LEFT OUTER JOIN lu_so_substatus lu_wf_substatus
+		ON
+		lu_wf_substatus.so_substatus_id = s.so_substatus_id
+		JOIN
+		so_workflow_controls swc
+		ON swc.so_id = s.so_id
+		LEFT OUTER JOIN document d
+		ON s.logo_document_id=d.document_id
+		LEFT OUTER JOIN
+		so_routed_providers srp
+		ON s.so_id = srp.so_id
+		LEFT OUTER JOIN
+		so_schedule schd
+		ON schd.so_id = s.so_id
+		LEFT OUTER JOIN
+		lu_schedule_status sch
+		ON sch.schedule_status_id =
+		schd.schedule_status_id
+		WHERE s.accepted_resource_id = #resourceId#
+		<isNotNull property="workFlowStatusIds" prepend=" AND s.wf_state_id in ">
+			<iterate property="workFlowStatusIds" open="(" close=")"
+				conjunction=",">
+				#workFlowStatusIds[]#
+			</iterate>
+		</isNotNull>
+		GROUP BY s.so_id
+		<isNotNull property="sortFlag">
+		ORDER BY
+		<isNotNull property="sortBy">
+		<isEqual property="sortBy" compareValue="AppointmentDate">
+										CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%l:%i %p') HOUR_SECOND), 'GMT', s.service_locn_time_zone)
+										ASC, s.so_id ASC
+		</isEqual>
+		</isNotNull>
+		</isNotNull>
+		<isNotNull property="startIndex" prepend="LIMIT">
+			#startIndex#
+		</isNotNull>
+		<isNotNull property="numberOfRecords" prepend=",">
+			#numberOfRecords#
+		</isNotNull>
+	</select>
+	
+	<select id="getServiceOrderDetails.query" parameterClass= "java.util.HashMap"  resultMap="mobileAPI.resultmap">
+		select * from so_hdr where so_id = #soId#
+	</select> 	
+	<select id="getCompletionDetails.query" parameterClass= "java.util.HashMap"  resultMap="mobileCompleteAPI.resultmap">
+		select * from so_hdr where so_id = #soId#
+	</select>
+	
+	<select id="getCompletionDetailsWithTrip.query" parameterClass= "java.util.HashMap"  resultMap="mobileCompleteAPIWithTrip.resultmap">
+		select * from so_hdr where so_id = #soId#
+	</select>
+	
+	<select id="getTaxDiscountPrice.query" parameterClass= "java.util.HashMap" resultClass="java.util.HashMap">
+		select discount_percent_parts_spend_limit as partsDiscount, 
+		discount_percent_labor_spend_limit as laborDiscount, 
+		tax_percent_parts_spend_limit as partsTax , 
+		tax_percent_labor_spend_limit as laborTax 
+		from so_price where so_id = #soId#
+	</select>
+	
+	
+	
+		<select id="getServiceOrderDetailsWithTrip.query" parameterClass= "java.util.HashMap"  resultMap="mobileSODetailsWithTrip.resultmap">
+		select * from so_hdr where so_id = #soId#
+	</select>
+	
+	<select id="isProviderAuthToViewSO.query" resultClass="java.lang.Integer"
+		parameterClass="java.util.HashMap">
+		SELECT COUNT(so_id)
+		FROM so_hdr	
+		WHERE
+		accepted_resource_id=#resourceId#
+		AND so_id=#soId#
+	</select>
+
+	<select id="providerSearchSOCount.query" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT COUNT(DISTINCT(s.so_id))
+		FROM so_hdr s
+		WHERE s.accepted_resource_id = #resourceId#
+		<isNotNull property="workFlowStatusIds" prepend=" AND s.wf_state_id in ">
+			<iterate property="workFlowStatusIds" open="(" close=")"
+				conjunction=",">
+				#workFlowStatusIds[]#
+			</iterate>
+		</isNotNull>
+	</select>
+
+	<select id="providerSearchSOStatus.query" resultClass="soStatus">
+		SELECT
+		wf_state_id as statusId, wf_state as statusString
+		FROM wf_states
+		WHERE
+		wf_entity='Service Order'
+	</select>
+	<select id="sostatusdescription.query" resultClass="java.lang.String" >
+		select wf_state from wf_states where wf_state_id = #wf_state_id#
+	</select>
+	<select id="sosubstatusdescription.query" resultClass="java.lang.String">
+		select descr from lu_so_substatus where so_substatus_id =
+		#wf_substate_id#
+	</select>
+		
+	<select id="scheduleStatus.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT lusch.schedule_status AS scheduleStatus
+		FROM so_schedule sh  JOIN lu_schedule_status lusch 
+		ON lusch.schedule_status_id =  sh.schedule_status_id 
+		WHERE sh.so_id = #soId#;	
+	</select>
+	
+	<select id="getFirmIdForResource.query" resultClass="java.lang.Integer"
+		parameterClass="java.util.HashMap">
+		SELECT v.vendor_id 
+		FROM vendor_resource v
+		WHERE v.resource_id=#resourceId#
+	</select>
+	
+	<select id="isValidProviderFirm.query" resultClass="java.lang.Integer"
+		parameterClass="java.lang.String">
+		SELECT COUNT(vh.vendor_id)
+		FROM vendor_hdr vh
+		WHERE vh.vendor_id=#firmId#
+	</select>
+	
+<!-- 	code change for SLT-2112 -->
+	<select id="isValidServiceOrder.query" resultClass="java.lang.Integer"
+		parameterClass="java.util.HashMap">
+		SELECT COUNT(h.so_id)
+		FROM so_hdr h
+		WHERE h.so_id=#soId#
+	</select>
+
+<!-- 	code change for SLT-2112 -->
+	<select id="getDocumentPath.query" parameterClass= "java.util.HashMap" resultClass = "java.lang.String">
+	   SELECT d.doc_path FROM document d WHERE d.document_id=#documentId# AND d.delete_ind = 0 AND d.file_name NOT LIKE '%_Thumb%'
+	</select>
+	
+	<select id="wfStatusServiceOrder.query" resultClass="java.lang.Integer"
+		parameterClass="java.lang.String">
+		SELECT wf_state_id
+		FROM so_hdr 
+		WHERE so_id=#soId#
+	</select>
+	
+	<select id="soRoutedResourceData.query" resultClass="providerDetails" parameterClass="java.lang.String">
+	SELECT 
+ 	c.first_name AS providerFirstName ,
+ 	c.last_name AS providerLastName ,
+ 	vr.resource_id AS providerId ,
+	c.phone_no AS providerPrimaryPhone ,
+ 	c.mobile_no AS providerAltPhone,
+    vr.vendor_id  AS firmId,
+	vh.business_name AS firmName,
+	l.street_1 AS streetAddress1,
+ 	l.street_2 AS streetAddress2,
+	l.city AS city,
+	l.state_cd state,
+ 	l.zip  AS zip,
+ 	vh.bus_phone_no AS firmPrimaryPhone,
+ 	c1.phone_no  AS firmAltPhone,
+ 	c.email AS primaryEmail,
+	c.email_alt AS alternateEmail,
+	c.sms_no AS smsNumber 
+	FROM vendor_resource vr 
+	JOIN contact c    ON vr.contact_id = c.contact_id    
+	JOIN vendor_resource vr1  ON vr.vendor_id = vr1.vendor_id  AND vr1.primary_ind = 1 
+	JOIN contact c1   ON vr1.contact_id = c1.contact_id 
+	JOIN location l ON vr.locn_id =l.locn_id 
+	JOIN vendor_hdr vh ON  vh.vendor_id =vr.vendor_id 
+	AND vr.resource_id= #accepted_resource_id#
+	</select>
+	<!--For completion details  -->
+	<select id="soAddons.query" parameterClass="java.lang.String" resultClass="soAddons">
+        SELECT 
+        	so_addon_id AS soAddonId, sku AS addonSKU, description AS description
+        	, retail_price AS customerCharge, IF(misc_ind=1,'Y','N') AS miscInd
+        	, qty AS qty, margin AS margin, coverage AS coverageType, tax_percentage AS taxPercentage
+        FROM 
+        	so_addon 
+        WHERE so_id = #so_Id#  AND sku !=99888;
+    </select>
+    <!--For so details  -->
+    <select id="addonList.query" parameterClass="java.lang.String" resultClass="soAddons">   
+        SELECT so_addon_id AS soAddonId, sku AS addonSKU, description AS
+        description, retail_price AS customerCharge, IF(misc_ind=1,'Y','N') AS miscInd
+        FROM so_addon WHERE so_id = #so_Id# AND auto_gen_ind!=1 ;  
+     </select>
+    <select id="providerReference.query" parameterClass="java.lang.String" resultClass="providerReference">    
+    SELECT 
+                buyerRef.ref_type AS refName,
+		        custRef.buyer_ref_value AS refValue,	
+		        IF(buyerRef.required=1,'Y','N') AS mandatoryInd,
+                IF(buyerRef.scanable=1,'Y','N') AS scanEnabled		
+		FROM 
+			so_custom_reference custRef,
+			buyer_reference_type buyerRef
+		WHERE custRef.so_id=#so_Id#
+		AND  custRef.buyer_ref_type_id = buyerRef.buyer_ref_type_id
+		AND buyerRef.provider_input=1 
+       <!--  SELECT b.ref_type AS refName , b.buyer_ref_type_id AS refValue, b.required AS mandatoryInd, b.scanable AS scanEnabled FROM
+        buyer_reference_type b WHERE provider_input=1 AND b.buyer_id = #buyer_id# ; -->
+    </select>
+    
+    <select id="mandatoryProviderReference.query" parameterClass="java.lang.Integer" resultClass="providerReference">    
+      	SELECT b.ref_type AS refName ,
+      	IF(b.required=1,'Y','N') AS mandatoryInd,
+        IF(b.scanable=1,'Y','N') AS scanEnabled
+      	FROM
+        buyer_reference_type b WHERE provider_input=1 AND b.buyer_id = #buyerId# AND active_ind=1; 
+    </select>
+   
+    <select id="buyerReference.query" parameterClass="java.lang.String" resultClass="buyerReference">
+        SELECT buyerRef.ref_type AS refName,
+		custRef.buyer_ref_value AS refValue FROM 
+			so_custom_reference custRef,
+			buyer_reference_type buyerRef
+		WHERE custRef.so_id=#so_Id#
+		AND  custRef.buyer_ref_type_id = buyerRef.buyer_ref_type_id AND buyerRef.private_ind!=1
+        <!--  SELECT b.ref_type AS refName, b.buyer_ref_type_id AS refValue FROM
+        buyer_reference_type b WHERE buyer_input=1 AND b.buyer_id = #buyer_id# ;-->
+    </select>
+    
+    <select id="getFirmId.query" parameterClass= "java.lang.String" resultClass = "java.lang.Integer">
+	   SELECT vendor_id FROM vendor_resource WHERE resource_id = #providerId#
+	</select>
+    <select id="soServiceLocationData.query" parameterClass="java.lang.String" resultClass="soServiceLocation">
+    SELECT 
+			sc.business_name AS businessName,
+			sc.first_name AS customerFirstName,
+			sc.last_name AS customerLastName,
+			sc.email AS email,			
+			sl.street_1 AS streetAddress1,
+			sl.street_2 AS streetAddress2,
+			sl.city AS city,
+			sl.state_cd AS state,
+			sl.zip AS zip,
+			sl.locn_notes AS serviceLocationNotes,
+			sc.so_contact_id AS soContactId
+	FROM so_contact sc 
+	JOIN so_contact_locn scl ON sc.so_id = scl.so_id AND sc.so_contact_id = scl.so_contact_id 
+	JOIN so_location sl ON sl.so_id = scl.so_id AND sl.so_locn_id = scl.so_locn_id 
+	JOIN so_hdr sh ON sh.so_id=sl.so_id
+	WHERE scl.so_contact_locn_type_id = 10 AND sc.so_contact_type_id=10 AND sc.so_id=#so_Id# LIMIT 1	 
+    </select>
+    <select id="soAlternateServiceLocationData.query" parameterClass="java.lang.String" resultClass="soAltServiceLocation">
+    SELECT 
+			sc.first_name AS customerFirstName,
+			sc.last_name AS customerLastName,
+			sc.email AS email,				
+			sl.street_1 AS streetAddress1,
+			sl.street_2 AS streetAddress2,
+			sl.city AS city,
+			sl.state_cd AS state,
+			sl.zip AS zip,
+			sc.so_contact_id AS soContactId
+    FROM so_contact sc 
+	JOIN so_contact_locn scl ON sc.so_id = scl.so_id AND sc.so_contact_id = scl.so_contact_id 
+	LEFT OUTER JOIN so_location sl ON sl.so_id = scl.so_id AND sl.so_locn_id = scl.so_locn_id
+	WHERE scl.so_contact_locn_type_id = 20 AND sc.so_contact_type_id=20 AND sc.so_id=#so_Id# LIMIT 1
+	</select>
+   <select id="buyerData.query" resultClass="buyerData">  		
+	SELECT 
+	b.business_name AS businessName,
+	c.first_name AS firstName,
+	c.last_name AS lastName,
+	b.buyer_id AS buyerUserId,
+	br.resource_id AS resourceId,
+	IF(l.street_1 IS NULL ,w.street_1,l.street_1) AS streetAddress1, 
+	IF(l.street_2 IS NULL ,w.street_2,l.street_2) AS streetAddress2, 
+	IF(l.city IS NULL ,w.city,l.city) AS city, 
+	IF(l.state_cd IS NULL ,w.state_cd,l.state_cd) AS state, 
+	IF(l.zip IS NULL ,w.zip,l.zip) AS zip,
+	c.phone_no AS primaryphone,
+	c.mobile_no AS alternatePhone, 
+	c.fax_no AS fax,
+	c.email AS email ,
+	up.role_id AS roleId,
+	b.min_time_window AS minTimeWindow,
+	b.max_time_window AS maxTimeWindow
+	FROM user_profile up 
+	JOIN buyer  b  ON(b.user_name = up.user_name )	
+	JOIN buyer_resource br ON  br.resource_id =#buyerResId# AND br.buyer_id=b.buyer_id	
+	LEFT OUTER JOIN location l ON(br.locn_id=l.locn_id)	
+	LEFT OUTER JOIN location w ON(b.pri_locn_id = w.locn_id)	
+	JOIN contact c ON( br.contact_id=c.contact_id )
+	WHERE b.buyer_id=#buyerId#
+  </select>	
+   <select id="creditCardTypes.query" resultClass="cardTypes">
+         SELECT card_id AS cardId, card_type AS cardType FROM lu_credit_card_types ;
+   </select>
+   
+   <select id="taskList.query" parameterClass="java.lang.String" resultClass="tasks">
+         SELECT			 
+			st.task_name AS taskName,
+			st.task_status AS taskStatus,
+			st.task_comments AS taskComments,
+			ltt.task_type AS taskType,
+			IF(st.task_type = 1,st.selling_price,NULL) AS custPrePaidAmount,
+			lst.descr AS taskSkill, 
+			CASE skt.level 
+				WHEN 2 THEN skt.node_name 
+				WHEN 3 THEN (SELECT par.node_name FROM skill_tree par WHERE par.node_id = skt.parent_node) 
+			END AS taskCategory,
+			CASE skt.level 
+				WHEN 3 THEN skt.node_name 
+			END AS tasksubCategory
+		FROM 
+			so_tasks st 
+				LEFT JOIN lu_service_type_template lst ON st.service_type_template_id = lst.service_type_template_id
+				LEFT JOIN skill_tree skt ON st.skill_node_id = skt.node_id
+				JOIN lu_task_type ltt ON st.task_type = ltt.task_type_id
+		WHERE st.so_id = #so_id# AND st.task_status != 'DELETED'
+		ORDER BY st.sort_order ,st.sequence_number ,st.final_price DESC;
+   </select>
+   <select id="invoicePartsList.query" parameterClass="java.lang.String" resultClass="partInvoice">
+	SELECT
+	part_coverage AS partCoverage,
+	IF (source = "Non Sears", "Non-sears", source ) AS partSource,
+	part_no AS partNumber,
+	description AS partDescription,
+	invoice_no AS invoiceNumber,
+	unit_cost AS unitCost,
+	retail_price AS retailPrice,
+	qty AS qty ,
+	so_provider_invoice_parts_id AS invoiceId,
+	source_non_sears AS nonSearsSource,
+	division_number AS divisionNumber,
+	source_number AS sourceNumber
+	FROM so_provider_invoice_parts WHERE so_id=#so_id# 
+    </select>
+   <select id="permitTasks.query" parameterClass="java.lang.String" resultClass="permits">
+         SELECT 
+			st.so_task_id AS taskId, 
+			st.task_name AS taskName,
+			st.task_status AS taskStatus,
+			st.task_comments AS taskComments,
+			ltt.task_type AS taskType,
+			st.selling_price AS custPrePaidAmount,
+			st.final_price AS finalPermitPriceByProvider,
+			lpt.type AS permitType,
+			lst.descr AS taskSkill, 
+			CASE skt.level 
+				WHEN 2 THEN skt.node_name 
+				WHEN 3 THEN (SELECT par.node_name FROM skill_tree par WHERE par.node_id = skt.parent_node) 
+			END AS taskCategory,
+			CASE skt.level 
+				WHEN 3 THEN skt.node_name 
+			END AS tasksubCategory
+		FROM 
+			so_tasks st 
+				LEFT JOIN lu_service_type_template lst ON st.service_type_template_id = lst.service_type_template_id
+				LEFT JOIN skill_tree skt ON st.skill_node_id = skt.node_id
+				LEFT OUTER JOIN lu_permit_type lpt ON lpt.id=st.permit_type_id
+				JOIN lu_task_type ltt ON st.task_type = ltt.task_type_id
+		WHERE st.task_type = 1 AND st.so_id = #so_id# AND st.task_status != 'DELETED'
+		ORDER BY st.sort_order ,st.sequence_number ,st.final_price DESC;
+   </select>
+   
+   <select id="permitAddons.query" parameterClass="java.lang.String" resultClass="permitAddons">
+        SELECT so_addon_id AS soAddonId, sku AS addonSKU, description AS
+        description, retail_price AS customerCharge, 
+        IF(misc_ind=1,'Y','N') AS miscInd, qty AS qty,
+        auto_gen_ind AS autogenAddon
+        FROM so_addon WHERE sku = 99888 AND so_id = #so_Id# AND auto_gen_ind!=1 ; 
+   </select>
+   
+   <select id="reasonList.query" parameterClass="java.lang.String" resultClass="reasons">
+        SELECT reason_id AS resonCodeId, reason_descr AS reasonCode FROM lu_completion_reasons 
+   </select>
+    <select id="soFinalPriceLabour.query" parameterClass="java.lang.String"  resultClass="java.lang.Double">
+		SELECT final_price_labor FROM so_workflow_controls WHERE so_id =#so_Id# ;
+	</select>
+	<select id="soFinalPriceParts.query" parameterClass="java.lang.String"  resultClass="java.lang.Double">
+		SELECT final_price_parts FROM so_workflow_controls WHERE so_id =#so_Id# ;
+	</select>
+   <select id="documentsData.query" parameterClass="java.lang.String" resultClass="doc">
+        SELECT
+         d.document_id AS documentId,
+         d.title AS documentType,
+         d.file_name AS fileName,
+         d.descr AS documentDescription, d.created_date AS uploadDateTime,
+         IF(d.role_id = 1,'Provider','Buyer') AS uploadedBy, 
+         sd.modified_by AS uploadedbyName,
+         d.format AS fileType,
+         d.doc_size AS docSize
+        FROM so_document sd, document d
+        WHERE sd.document_id = d.document_id AND sd.so_id = #so_Id#
+        AND d.delete_ind = 0
+        AND d.file_name NOT LIKE '%_Thumb%'
+        ORDER BY d.created_date DESC
+    </select> 
+   
+   <select id="soMainServiceCategory.query" parameterClass="java.lang.Integer" resultClass="java.lang.String">
+        SELECT node_name FROM skill_tree WHERE node_id = #primary_skill_category_id#;
+   </select>
+   
+   <select id="completionDocs.query" parameterClass="java.lang.Integer" resultClass="docType">
+		SELECT
+		buyer_upload_doc_type_id AS docTypeId,
+		document_title AS documentTitle,
+		IF(mandatory_ind=1,'Y','N') AS mandatoryInd
+		FROM buyer_upload_doc_types
+		WHERE buyer_id = #buyer_id#
+		AND source = 1 
+		AND (delete_ind = 0
+       OR delete_ind IS NULL);
+		
+   </select>
+   
+   <select id="docUploadLimit.query" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		SELECT
+		app_value 
+		FROM application_properties
+		WHERE app_key = 'so_total_doc_size_limit'
+   </select>
+   
+   <select id="maxDocUploadLimit.query" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		SELECT
+		app_value 
+		FROM application_properties
+		WHERE app_key = 'so_max_doc_size_upload_limit'
+   </select>
+   
+   <select id="remainingDocSize.query" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT (a.app_value-s.doc_size_total) FROM so_hdr s, application_properties a 
+		WHERE s.so_id = #so_Id# AND a.app_key = 'so_max_doc_size_upload_limit';   
+   </select>
+	
+   <select id="fetchInvoicePartsCoverage.query" parameterClass="java.lang.String" resultClass="partsCoverage">
+		SELECT part_coverage_type_id AS partCoverageId,part_coverage_type AS partCoverageValue 
+		FROM lu_part_coverage_type 
+	</select>
+   
+   <select id="fetchInvoicePartsSource.query" parameterClass="java.lang.String" resultClass="partsSource">
+		SELECT part_sourcing_level_id AS partSourceId,part_sourcing_type AS partSourceValue 
+		FROM lu_part_sourcing_level
+	</select>
+
+    <!-- SL-21414  Exclude the deleted/archived reason codes -->
+	<select id="fetchCancellationReasonCodes.query" parameterClass="java.lang.String" resultClass="cancellationReasonCode">
+		SELECT reason_code_id AS reasonCodeId, reason_code AS reasonCode FROM reason_codes rc
+	          WHERE rc.reason_code_status = 'Active' AND rc.reason_code_type = 'Cancellation'   
+	          AND ((rc.general_ind = 1  AND rc.reason_code_id 
+	          NOT IN(SELECT rh.reason_code_id FROM reason_code_history rh WHERE rh.buyer_id =#buyer_id# 
+	          AND rh.action IN('Archived','Deleted'))) 
+	          OR (rc.general_ind = 0 AND rc.buyer_id = #buyer_id#)) 
+        ORDER BY reason_code ASC
+	</select>
+	
+	<select id="fetchParts.query" parameterClass="java.lang.String" resultMap="parts.resultMap">
+		SELECT p.part_id AS partId,
+			p.manufacturer AS manufacturer,
+			CONCAT(p.manufacturer," ",p.model_no)AS partName,
+			p.model_no AS modelNumber,
+			p.serial_number AS serialNumber,
+			p.manufacturer_part_number AS oemNumber,
+			p.order_number AS orderNumber,
+			p.purchase_order_number AS purchaseOrderNumber,
+			CONCAT(p.length,'X',p.width,'X',p.height) AS size,
+			p.weight AS weight,
+			p.vendor_part_number AS vendorPartNumber,
+			 p.quantity AS qty,
+			 lup.part_status_name AS partStatus,
+			 lus.descr AS shippingCarrier,
+			 lusc.descr AS coreReturnCarrier, 
+			 p.part_descr AS partDescription,
+			 p.additional_part_info AS additionalPartInfo,
+			 p.ship_track_no AS shippingTrackingNumber,
+			 p.ship_date AS shipDate,
+			 p.return_track_no AS coreReturnTrackingNumber, 
+			 p.return_track_date AS coreReturnDate,
+			 p.so_id AS so_id,
+			 so_locn_id AS so_locn_id   
+			FROM so_parts p
+			JOIN so_hdr h ON p.so_id=h.so_id and h.parts_supplied_by_id =1
+			LEFT OUTER JOIN lu_part_status lup ON p.part_status_id = lup.part_status_id
+			LEFT JOIN lu_shipping_carrier lus ON p.ship_carrier_id = lus.shipping_carrier_id
+			LEFT JOIN lu_shipping_carrier lusc ON p.return_carrier_id = lusc.shipping_carrier_id
+			WHERE p.so_id = #so_id#;
+	</select>
+	<select id="fetchParts.excludingMerchandise.query" parameterClass="java.lang.String" resultMap="parts.excludingMerchandise.resultMap">
+		SELECT p.part_id AS partId,
+			CONCAT(p.manufacturer," ",p.model_no)AS partName,
+			p.manufacturer_part_number AS oemNumber,
+			p.order_number AS orderNumber,
+			p.purchase_order_number AS purchaseOrderNumber,
+			CONCAT(p.length,'X',p.width,'X',p.height) AS size,
+			p.weight AS weight,
+			p.vendor_part_number AS vendorPartNumber,
+			 p.quantity AS qty,
+			 lup.part_status_name AS partStatus,
+			 lus.descr AS shippingCarrier,
+			 lusc.descr AS coreReturnCarrier, 
+			 p.part_descr AS partDescription,
+			 p.additional_part_info AS additionalPartInfo,
+			 p.ship_track_no AS shippingTrackingNumber,
+			 p.ship_date AS shipDate,
+			 p.return_track_no AS coreReturnTrackingNumber, 
+			 p.return_track_date AS coreReturnDate,
+			 p.so_id AS so_id,
+			 so_locn_id AS so_locn_id   
+			FROM so_parts p
+			JOIN so_hdr h ON p.so_id=h.so_id and h.parts_supplied_by_id =1
+			LEFT OUTER JOIN lu_part_status lup ON p.part_status_id = lup.part_status_id
+			LEFT JOIN lu_shipping_carrier lus ON p.ship_carrier_id = lus.shipping_carrier_id
+			LEFT JOIN lu_shipping_carrier lusc ON p.return_carrier_id = lusc.shipping_carrier_id
+			WHERE p.so_id = #so_id#;
+	</select>
+	
+	<select id="fetchMerchandises.query" parameterClass="java.lang.String" resultMap="merchandises.resultMap">
+		SELECT p.part_id AS partId,
+			p.manufacturer AS manufacturer,
+			p.model_no AS modelNumber,
+			p.serial_number AS serialNumber
+			FROM so_parts p
+			WHERE p.so_id = #so_id#;
+	</select>
+
+	<select id="fetchPartsForCompletion.query" parameterClass="java.lang.String" resultMap="partsCompletion.resultMap">
+		SELECT p.part_id AS partId,
+			p.manufacturer AS manufacturer,
+			CONCAT(p.manufacturer," ",p.model_no)AS partName,
+			p.model_no AS modelNumber,
+			lusc.descr AS returnCarrier, 
+			p.return_track_no AS returnTrackingNumber  
+			FROM so_parts p
+			JOIN so_hdr h ON h.so_id=p.so_id AND h.parts_supplied_by_id=1
+			AND ((p.manufacturer!='' AND p.model_no!='') OR (p.serial_number!=''))
+			LEFT JOIN lu_shipping_carrier lusc ON p.return_carrier_id = lusc.shipping_carrier_id
+			WHERE p.so_id = #so_id#;
+	</select>
+	
+   <select id="pickupLocation.query" resultClass="pickUpLocn">
+		SELECT 
+		sl.street_1 AS pickupLocationStreet1, 
+		sl.street_2 AS pickupLocationStreet2,
+		sl.city AS pickupLocationCity,
+		sl.state_cd AS pickupLocationState,
+		sl.zip AS pickupLocationZip,
+		slc.descr as pickupLocationName 
+		FROM so_location sl
+		JOIN so_contact_locn scl on sl.so_id = scl.so_id and
+		sl.so_locn_id = scl.so_locn_id left outer join
+		lu_so_location_class slc on sl.so_locn_class_id =
+		slc.so_locn_class_id 
+		WHERE scl.so_contact_locn_type_id = 40 AND
+		sl.so_locn_id=#so_locn_id# and sl.so_id =#so_id#
+	</select>
+	
+	<select id="soNotes.query" parameterClass="java.lang.String" resultClass="orderNotes">
+		SELECT 
+		s.note_id AS noteId, 
+		s.note_subject AS noteSubject,
+		s.note AS noteBody,
+		lu.descr AS noteType,
+		s.created_by_name AS author,
+        s.created_date AS createdDate 
+		FROM so_notes s
+		JOIN lu_so_note_type lu ON lu.note_type_id = s.note_type_id 
+		WHERE s.so_id = #so_id# AND s.note_type_id != 1 AND ((role_id IN (3,2) AND private_ind = 0) OR role_id=1) ORDER BY modified_date DESC;
+	</select>
+	
+	<select id="soSupportNotes.query" parameterClass="java.lang.String" resultClass="supportNote">
+		SELECT 
+		s.note_id AS noteId, 
+		s.note_subject AS noteSubject,
+		s.note AS note
+		FROM so_notes s		
+		WHERE s.so_id = #so_id# AND s.note_type_id = 1 AND s.note_subject !='Market Maker Response' ORDER BY modified_date DESC;
+	</select>
+	 <select id="docTypeList.query" parameterClass="java.lang.Integer" resultClass="docType">
+		SELECT
+		buyer_upload_doc_type_id AS docTypeId,
+		document_title AS documentTitle,
+		mandatory_ind AS mandatoryInd
+		FROM buyer_upload_doc_types
+		WHERE buyer_id = #value#
+		AND source = 1;
+   </select>
+   <select id="getSoContactPrimaryPhone.query" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+    SELECT 	phone_no AS custPrimaryPhone		
+	FROM  so_contact_phones 
+	WHERE phone_type_id=1
+	AND so_id =#soid# 
+	AND so_contact_id =#socontactid#
+   </select>
+   <select id="getSoContactalternatePhone.query" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+    SELECT 	phone_no AS custAlternatePhone		
+	FROM  so_contact_phones 
+	WHERE phone_type_id=2
+	AND so_id =#soid# 
+	AND so_contact_id =#socontactid#
+   </select>
+   
+   <select id="soAddonsMailCheckAddress.query" resultClass="java.lang.String">
+		SELECT
+		app_constant_value 
+		FROM application_constants
+		WHERE app_constant_key = 'addon_mail_check_address';
+   </select>
+     <select id="taskListCompletion.query" parameterClass="java.lang.String" resultClass="tasks">
+         SELECT 
+			st.so_task_id AS taskId, 
+			st.task_name AS taskName,
+			st.task_status AS taskStatus,
+			st.task_comments AS taskComments,
+			ltt.task_type AS taskType,
+			lst.descr AS taskSkill, 
+			CASE skt.level 
+				WHEN 2 THEN skt.node_name 
+				WHEN 3 THEN (SELECT par.node_name FROM skill_tree par WHERE par.node_id = skt.parent_node) 
+			END AS taskCategory,
+			CASE skt.level 
+				WHEN 3 THEN skt.node_name 
+			END AS tasksubCategory
+		FROM 
+			so_tasks st 
+				LEFT JOIN lu_service_type_template lst ON st.service_type_template_id = lst.service_type_template_id
+				LEFT JOIN skill_tree skt ON st.skill_node_id = skt.node_id
+				JOIN lu_task_type ltt ON st.task_type = ltt.task_type_id
+		WHERE st.task_type != 1 AND st.so_id = #so_id# AND st.task_status != 'DELETED'
+		ORDER BY st.sort_order ,st.sequence_number ,st.final_price DESC;
+   </select>
+     <select id="isValidDocumentAssociation.query" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+	   SELECT COUNT(so_id) FROM so_document WHERE document_id=#docId# AND so_id=#soId#
+	</select>
+	
+<!-- 	code change for SLT-2112 -->
+	<select id="validateResourceIdDoc.query" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		    SELECT COUNT(vr.resource_id) FROM vendor_resource vr WHERE vr.resource_id=#providerIdInt#
+    </select>
+    
+    <select id="getDocumentId.query" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+    	select d.document_id as documentId, d.created_date as uploadedTime, @@system_time_zone AS dbTimeZone, sh.service_locn_time_zone AS soTimeZone 
+    	from document d
+    	join so_document sd on d.document_id = sd.document_id 
+    	join so_hdr sh ON sd.so_id = sh.so_id
+    	where file_name = #documentName#
+    	and sd.so_id = #soId#
+   </select>
+   <select id="isValidDocument.query" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+		   SELECT COUNT(document_id) FROM document WHERE document_id=#value#
+    </select>
+   <select id="addonPaymentDetails.query" parameterClass="java.lang.String" resultClass="addonPayment">
+	SELECT  sap.payment_type AS paymentType,
+	sap.payment_amount AS amountAuthorized,
+	lcc.card_type AS ccType,
+	sap.card_expire_month AS cardExpireMonth,
+	sap.card_expire_year AS cardExpireYear,
+	sap.cc_no AS ccNumber,
+	sap.masked_acc_num AS maskedAccNumber,
+	sap.check_no AS checkNumber,
+	sap.auth_no AS preAuthNumber 
+	FROM so_additional_payment sap 
+	LEFT OUTER JOIN lu_credit_card_types lcc ON lcc.card_id =sap.card_type
+    WHERE so_id=#so_id# ;	
+ </select>   
+ 
+ 	<select id="fetchSOtrip.query" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+ 		SELECT trip_no FROM so_trip WHERE so_id = #so_id# AND trip_status = 'OPEN' ORDER BY trip_no DESC LIMIT 1;
+ 	</select>
+ 	
+ 	<select id="fetchSOtrips.query" parameterClass="java.lang.String" resultMap="soTrip.resultMap">
+		SELECT 
+			so_trip_id AS so_trip_id,
+			trip_no AS tripNo,
+			current_appt_start_date AS currentApptStartDate,
+			current_appt_end_date AS currentApptEndDate,
+			current_appt_start_time AS currentApptStartTime,
+			current_appt_end_time AS currentApptEndTime,
+			trip_start_visit_id AS trip_start_visit_id,
+			trip_end_visit_id AS trip_end_visit_id,
+			trip_status AS tripStatus,
+			trip_start_source AS tripStartSource,
+			trip_end_source AS tripEndSource,
+			next_appt_start_date AS nextApptStartDate,
+			next_appt_end_date AS nextApptEndDate,
+			next_appt_start_time AS nextApptStartTime,
+			next_appt_end_time AS nextApptEndTime,
+			revisit_reason AS revisitReason,
+			merch_delivered AS merchandiseDeliveredIndicator,
+			work_started AS workStartedIndicator,
+			trip_comments AS revisitComments,
+			revisit_needed_created_by AS providerName
+		FROM so_trip s 
+ 		WHERE so_id = #so_id#;
+ 	</select>
+ 	
+ 	<select id="fetchInvoiceParts.query" parameterClass="java.lang.String" resultMap="invoicePart.resultMap">
+			SELECT so_provider_invoice_parts_id AS invoicePartId,
+			       part_coverage                AS partCoverage,
+			       source                       AS partSource,
+			       part_no                      AS partNumber,
+			       description                  AS partDescription,
+			       invoice_no                   AS invoiceNumber,
+			       unit_cost                    AS unitCost,
+			       retail_price                 AS retailPrice,
+			       qty                          AS qty,
+			       source_non_sears             AS nonSearsSource,
+			       division_number              AS divisionNumber,
+			       source_number                AS sourceNumber,
+			       category                     AS category,
+			       part_status                  AS partStatus,
+			       IF(part_source = 'MANUAL', 'YES','NO') AS isManual	
+			FROM   so_provider_invoice_parts
+			WHERE  so_id = #so_id#
+			<!--  and delete_ind = 0;-->  		 
+ 	</select>
+ 	<select id="fetchInvoicePartsSupplier.query" parameterClass="java.lang.String" resultMap="invoicePartSupplier.resultMap">
+			SELECT supplier_name AS supplierName,
+			       street_1      AS address1,
+			       street_2      AS address2,
+			       city          AS city,
+			       state_cd      AS state,
+			       zip           AS zip,
+			       phone         AS phone,
+			       fax           AS fax,
+			       latitude      AS latitude,
+			       longitude     AS longitude,
+			       distance      AS distance
+			FROM   so_provider_invoice_part_location
+			WHERE  invoice_part_id = #so_provider_invoice_parts_id#
+			<!--  and delete_ind = 0;-->  		 
+ 	</select>  
+ 	
+ 	
+ 	<select id="fetchSOCheckIn.query" parameterClass="java.lang.Long" resultClass="java.lang.String">
+		SELECT arrival_date FROM so_onsite_visit WHERE visit_id = #trip_start_visit_id#;
+ 	</select>
+ 	
+ 	<select id="fetchSOCheckOut.query" parameterClass="java.lang.Long" resultClass="java.lang.String">
+		SELECT departure_date FROM so_onsite_visit WHERE visit_id = #trip_end_visit_id#;
+ 	</select>
+ 	
+ 	<select id="fetchSOTripDetails.query" parameterClass="java.lang.Integer" resultMap="soTripChangeLog.resultMap">
+		SELECT change_type AS updatedComponent,
+			   GROUP_CONCAT(change_comments) AS changeComments 
+		FROM so_trip_details WHERE so_trip_id = #so_trip_id# 
+		GROUP BY change_type;
+ 	</select>
+    
+     <select id="completionDocumentsData.query" parameterClass="java.lang.String" resultClass="doc">
+        SELECT
+         d.document_id AS documentId,
+         d.title AS documentType,
+         d.file_name AS fileName,
+         d.descr AS documentDescription, d.created_date AS uploadDateTime,
+         IF(d.role_id = 1,'Provider','Buyer') AS uploadedBy, 
+         sd.modified_by AS uploadedbyName,
+         d.format AS fileType,
+         d.doc_size AS docSize
+        FROM so_document sd, document d
+        WHERE sd.document_id = d.document_id AND sd.so_id = #so_Id#
+        AND d.delete_ind = 0
+        AND d.file_name NOT LIKE '%_Thumb%'
+        AND d.title NOT IN ('Provider Signature','Customer Signature','Parts Invoice')
+        ORDER BY d.created_date DESC
+    </select> 
+    
+    
+    <select id="completionSignatureDocumentsData.query" parameterClass="java.lang.String" resultClass="signature">
+        SELECT
+         d.title AS documentType,
+         d.file_name AS fileName,
+         d.descr AS documentDescription, 
+         d.created_date AS uploadDateTime,
+         IF(d.role_id = 1,'Provider','Buyer') AS uploadedBy, 
+         ms.resource_name AS uploadedbyName,
+         d.format AS fileType,
+         d.doc_size AS docSize,
+         ms.customer_email AS customerEmail
+        FROM  mobile_so_signature ms,document d,so_document sd
+        WHERE ms.document_id = d.document_id 
+        AND sd.document_id = d.document_id  
+        AND sd.so_id = #so_Id#
+        AND d.delete_ind = 0
+        AND d.file_name NOT LIKE '%_Thumb%'
+        AND d.title IN ('Provider Signature','Customer Signature')
+        ORDER BY sd.document_id   DESC
+    </select> 
+    
+    <select id="getCovType.query" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT buyer_ref_value FROM so_custom_reference 
+			WHERE so_id = #soId# AND buyer_ref_type_id = 
+				(SELECT buyer_ref_type_id FROM buyer_reference_type WHERE buyer_id = 3000 AND ref_type = #custRefType#)
+	</select>
+	
+	<select id="fetchInvoiceDocuments.query" parameterClass="java.lang.String" resultClass="doc">
+	 SELECT
+         d.document_id AS documentId,
+         d.title AS documentType,
+         d.file_name AS fileName,
+         d.descr AS documentDescription, d.created_date AS uploadDateTime,
+         IF(d.role_id = 1,'Provider','Buyer') AS uploadedBy, 
+         sd.modified_by AS uploadedbyName,
+         d.format AS fileType,
+         d.doc_size AS docSize
+        FROM so_document sd, document d,so_provider_invoice_doc sipd 
+        WHERE sd.document_id = d.document_id AND sd.document_id = sipd.invoice_document_id
+	AND sipd.invoice_part_id = #invoicePartId#
+        AND d.delete_ind = 0
+        AND d.file_name NOT LIKE '%_Thumb%'
+        AND d.title = 'Parts Invoice'
+        ORDER BY d.created_date DESC
+ 	 </select> 
+ 	 
+ 	
+ 	 
+ 	 <select id="fetchInvoiceDocumentsList.query" parameterClass="java.util.ArrayList" resultClass="invoicedoc">
+	 SELECT
+	  sipd.invoice_part_id AS invoicePartId,
+         d.document_id AS documentId,
+         d.title AS documentType,
+         d.file_name AS fileName,
+         d.descr AS documentDescription, d.created_date AS uploadDateTime,
+         IF(d.role_id = 1,'Provider','Buyer') AS uploadedBy, 
+         sd.modified_by AS uploadedbyName,
+         d.format AS fileType,
+         d.doc_size AS docSize
+        FROM so_document sd, document d,so_provider_invoice_doc sipd 
+        WHERE sd.document_id = d.document_id AND sd.document_id = sipd.invoice_document_id
+	AND sipd.invoice_part_id IN
+	
+	<iterate  open="(" close=")"
+			conjunction=",">
+			#invoiceIds[]#
+		</iterate>
+        AND d.delete_ind = 0
+        AND d.file_name NOT LIKE '%_Thumb%'
+        AND d.title = 'Parts Invoice'
+        ORDER BY d.created_date DESC
+ 	 </select> 
+ 	 
+ 	 
+ 	 <select id="fetchInvoicePartInd.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+	   SELECT
+       CAST(invoice_parts_ind AS CHAR(50))
+       FROM so_workflow_controls
+       WHERE so_id = #soId#
+ 	 </select> 
+ 	 
+ 	 <select id="customerEmailReqdInd.query" parameterClass="java.lang.String" resultClass="java.lang.Boolean">
+	   SELECT
+       email_reqd_ind as buyerEmailRequiredInd
+       FROM buyer
+       WHERE buyer_id = #buyerId#
+ 	 </select> 
+ 	 <insert id="appFeedbackDetails.insert" parameterClass="mobileFeedbackVO">
+		INSERT into mobile_feedback_details(
+		comments,
+		email,
+		source_version,
+		device_version,
+		user_name,
+		company_id,
+		created_by,
+		created_date)
+		values(
+		#comments#,
+		#email#,
+		#sourceVersion#,
+		#deviceVersion#,
+		#userName#,
+		#firmId#,
+		#resourceId#,
+		NOW()
+		)
+	</insert>
+
+	<select id="getLatestTripDetails.query" parameterClass="java.util.HashMap"
+		resultClass="latestTripDetails">
+		SELECT
+		s.trip_no AS tripNo,
+		s.trip_status AS tripStatus,
+		v1.arrival_date AS checkInTime,
+		v2.departure_date AS checkOutTime
+		FROM so_trip s
+		LEFT OUTER JOIN so_onsite_visit v1 ON s.so_id = v1.so_id AND
+		v1.visit_id=s.trip_start_visit_id
+		LEFT OUTER JOIN so_onsite_visit v2 ON s.so_id=v2.so_id AND
+		v2.visit_id=s.trip_end_visit_id
+		WHERE s.so_id = #soId#
+		ORDER BY s.trip_no DESC
+		LIMIT 1;
+	</select>
+</sqlMap>

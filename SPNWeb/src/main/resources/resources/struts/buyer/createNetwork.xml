@@ -1,0 +1,88 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+    <package name="createNetwork" extends="selectProviderNetworkBase" >
+        <default-interceptor-ref name="SPNInterceptorStack"/>
+        	<!-- createNetwork -->
+		<action name="spnCreateNetwork_display" class="spnCreateNetworkAction"  method="display" >
+			<result name="success">/jsp/spn/buyer/network/create/create_network.jsp</result>
+		</action>
+
+		<action name="spnCreateNetwork_saveAndDone" class="spnCreateNetworkAction"  method="saveAndDone" >
+			<result name="input" type="redirectAction">
+					 <param name="actionName">spnCreateNetwork_display</param>
+					  <param name="vf">true</param>
+			</result>
+			
+			<result name="spn_monitor_tab" type="redirectAction">
+	            <param name="actionName">spnMonitorNetwork_display</param>
+        	</result>  
+			<result name="routing_tiers_tab" type="redirectAction">
+	            <param name="actionName">spnReleaseTiers_display</param>
+        	</result> 
+        	<result name="exceptions_tab" type="redirectAction">
+	            <param name="actionName">spnMonitorNetwork_display</param>
+				<param name="expIncludedInd">true</param>
+				<param name="spnId">${spnId}</param>
+        	</result>  
+		</action>
+		
+		<action name="spnCreateNetwork_checkEffectiveDateAjax" class="spnCreateNetworkAction"  method="checkEffectiveDateAjax" >
+			<result name="success">/jsp/spn/buyer/network/create/create_network_check_effectivedate.jsp</result>
+		</action>
+		<action name="spnCreateNetwork_checkNetworkEditableAjax" class="spnCreateNetworkAction"  method="checkNetworkEditableAjax" >
+			<result name="success">/jsp/spn/buyer/network/create/create_network_check_networkeditable.jsp</result>
+		</action>
+		<action name="spnCreateNetwork_checkMembershipStatusAffectAjax" class="spnCreateNetworkAction"  method="checkMembershipStatusAffectAjax" >
+			<result name="success">/jsp/spn/buyer/network/create/create_network_confirmation.jsp</result>
+		</action>
+		<action name="spnCreateNetwork_uploadDocument" class="spnCreateNetworkAction"  method="uploadDocument" >
+			<result name="success">/jsp/spn/buyer/network/create/create_network.jsp</result>
+		</action>
+		
+<!--  PLEASE TRY TO PUT ALL THE AJAX CALLS UNDERNEATH HERE -->
+		<action name="spnCreateNetwork_getMainServicesWithSkillsAjax" class="spnCreateNetworkAction"  method="getMainServicesWithSkillsAjax">
+			<result name="servicesWithSkills">/jsp/spn/common/checkbox_services_with_skills.jsp</result>
+		</action>
+		
+		<action name="spnCreateNetwork_getSubCategoriesAjax" class="spnCreateNetworkAction"  method="getSubCategoriesAjax">
+			<result name="subServices2">/jsp/spn/buyer/network/create/subServices2.jsp</result>
+			<result name="subCategories">/jsp/spn/buyer/network/create/create_network_subcategories.jsp</result>
+		</action>
+		
+		<action name="spnCreateNetwork_getSub2CategoriesAjax" class="spnCreateNetworkAction"  method="getSub2CategoriesAjax">
+			<result name="subServices2">/jsp/spn/buyer/network/create/subServices2.jsp</result>
+			<result name="subCategories">/jsp/spn/buyer/network/create/create_network_subcategories.jsp</result>
+		</action>
+		
+		
+		
+		<action name="spnCreateNetwork_viewNetworkDetailsAjax" class="spnCreateNetworkAction"  method="viewNetworkDetailsAjax">
+			<result name="success">/jsp/spn/buyer/campaign/monitor/expanded_details/tab_network_details.jsp</result>
+		</action>
+
+		<action name="spnCreateNetwork_viewRoutingTiersAjax" class="spnCreateNetworkAction"  method="viewRoutingTiersAjax">
+			<result name="success">/jsp/spn/buyer/campaign/monitor/expanded_details/tab_routing_tiers.jsp</result>
+		</action>
+		
+		<action name="spnCreateNetworkUploadDocument_uploadDocumentAjax" class="spnCreateNetworkUploadDocumentAction"  method="uploadDocumentAjax">
+			<result name="uploadDocument">/jsp/spn/buyer/network/create/document_item.jsp</result>
+		</action>
+		
+		<action name="spnCreateNetworkUploadDocument_deleteSPNDocumentAjax" class="spnCreateNetworkUploadDocumentAction"  method="deleteSPNDocumentAjax">
+			<result name="deleteDoc">/jsp/spn/buyer/network/create/delete_doc.jsp</result>
+		</action>
+		
+		<action name="spnCreateNetwork_getResCredTypesWithCategoriesAjax" class="spnCreateNetworkAction"  method="getResCredTypesWithCategoriesAjax">
+			<result name="resCredTypesWithCategories">/jsp/spn/common/checkbox_res_cred_categories_with_types.jsp</result>
+		</action>
+		
+		<action name="spnCreateNetwork_getVendorCredTypesWithCategoriesAjax" class="spnCreateNetworkAction"  method="getVendorCredTypesWithCategoriesAjax">
+			<result name="vendorCredTypesWithCategories">/jsp/spn/common/checkbox_vendor_cred_categories_with_types.jsp</result>
+		</action>
+
+    </package>
+    
+</struts>

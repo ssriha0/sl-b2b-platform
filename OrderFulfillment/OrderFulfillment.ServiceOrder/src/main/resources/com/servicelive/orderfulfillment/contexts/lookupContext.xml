@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="quickLookupCollection" class="com.servicelive.orderfulfillment.lookup.QuickLookupCollection">
+        <constructor-arg index="0">
+            <list>
+                <ref bean="skillTreeLookup" />
+                <ref bean="buyerFeatureLookup" />
+                <ref bean="buyerHoldTimeLookup" />
+                <ref bean="serviceTypeLookup" />
+                <ref bean="tierReleaseInfoLookup" />
+                <ref bean="applicationPropertyLookup" />
+                <ref bean="timeZoneLookup" />
+                <ref bean="applicationFlagLookup" />
+                <ref bean="inHomeOutboundNotificationMessageLookup" />
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="timeZoneLookup" class="com.servicelive.orderfulfillment.lookup.TimeZoneLookup">
+        <property name="marketPlatformCommonLookupBO" ref="marketPlatformRemoteService" />    
+    </bean>
+
+    <bean id="skillTreeLookup" class="com.servicelive.orderfulfillment.lookup.SkillTreeLookup">
+        <property name="initializer">
+            <bean id="skillTreeLookupInitializer" class="com.servicelive.orderfulfillment.lookup.SkillTreeLookupInitializer">
+                <property name="marketPlatformProviderBO" ref="marketPlatformRemoteService" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="buyerHoldTimeLookup" class="com.servicelive.orderfulfillment.lookup.BuyerHoldTimeLookup">
+        <property name="initializer">
+            <bean id="buyerHoldTimeLookupInitializer" class="com.servicelive.orderfulfillment.lookup.BuyerHoldTimeLookupInitializer">
+                <property name="marketPlatformBuyerBO" ref="marketPlatformRemoteService" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="buyerFeatureLookup" class="com.servicelive.orderfulfillment.lookup.BuyerFeatureLookup">
+        <property name="initializer">
+            <bean id="buyerFeatureLookupInitializer" class="com.servicelive.orderfulfillment.lookup.BuyerFeatureLookupInitializer">
+                <property name="marketPlatformBuyerBO" ref="marketPlatformRemoteService" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="serviceTypeLookup" class="com.servicelive.orderfulfillment.lookup.ServiceTypeLookup">
+        <property name="initializer">
+            <bean id="serviceTypeLookupInitializer" class="com.servicelive.orderfulfillment.lookup.ServiceTypeLookupInitializer">
+                <property name="serviceOrderDao" ref="serviceOrderDao" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="tierReleaseInfoLookup" class="com.servicelive.orderfulfillment.lookup.TierReleaseInfoLookup">
+        <property name="initializer">
+            <bean id="tierReleaseInfoInitializer" class="com.servicelive.orderfulfillment.lookup.TierReleaseInfoLookupInitializer">
+                <property name="marketPlatformRoutingRulesBO" ref="marketPlatformRemoteService" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="applicationPropertyLookup" class="com.servicelive.orderfulfillment.lookup.ApplicationPropertyLookup">
+        <property name="initializer">
+            <bean id="applicationPropertyoInitializer" class="com.servicelive.orderfulfillment.lookup.ApplicationPropertyLookupInitializer">
+                <property name="marketPlatformCommonLookupBO" ref="marketPlatformRemoteService" />
+            </bean>
+        </property>
+    </bean>
+    <bean id="applicationFlagLookup" class="com.servicelive.orderfulfillment.lookup.ApplicationFlagLookup">
+        <property name="initializer">
+            <bean id="applicationFlagoInitializer" class="com.servicelive.orderfulfillment.lookup.ApplicationFlagLookupInitializer">
+                <property name="marketPlatformCommonLookupBO" ref="marketPlatformRemoteService" />
+            </bean>
+        </property>
+    </bean>
+    <bean id="inHomeOutboundNotificationMessageLookup" class="com.servicelive.orderfulfillment.lookup.InHomeOutboundNotificationMessageLookup">
+         <property name="initializer">
+            <bean id="inHomeOutboundNotificationMessageoInitializer" class="com.servicelive.orderfulfillment.lookup.InHomeOutboundNotificationMessageLookupInitializer">
+                <property name="marketPlatformCommonLookupBO" ref="marketPlatformRemoteService" />
+            </bean>
+        </property>
+    </bean>
+</beans>

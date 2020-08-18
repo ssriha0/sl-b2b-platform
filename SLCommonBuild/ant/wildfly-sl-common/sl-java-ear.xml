@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<project name="sl-java-ear">
+    <description>
+        Targets to build an EAR file - see Wallet.ValueLink.EJB for example.
+    </description>
+
+
+    <property name="java-ear.dist-filename" value="${ant.project.name}.ear"/>
+    <property name="java-ear.dist-file" location="${common.dist-dir}/${java-ear.dist-filename}"/>
+    <!-- 
+    <property name="java-ear.deploy-dir" location="${java-war.deploy-dir}"/>
+    -->
+    
+    <target name="ear" depends="dist"
+            description="Build an EAR for this project">
+
+        <ear destfile="${java-ear.dist-file}" filesonly="true" appxml="src/main/ear/META-INF/application.xml">
+
+            <!-- zipfilesets courtesy initJavaBuildClasspath.groovy -->
+            <zipfileset refid="java-build.ear-lib-fileset.generated" />
+            <zipfileset refid="java-build.ear-lib-fileset.deployables" />
+
+            <zipfileset dir="${common.dist-dir}" prefix="lib">
+                <include name="${java-build.dist-filename}"/>
+                <include name="${java-war.dist-filename}"/>
+            </zipfileset>
+
+            <manifest>
+                <attribute name="Build-Id" value="${java-ear.build-id}"/>
+                <attribute name="Implementation-Vendor"	 value="${java-build.jar-vendor}"/>
+                <attribute name="Implementation-Title"   value="${ant.project.name}"/>
+                <attribute name="Implementation-Version" value="${java-build.jar-version}"/>
+                <attribute name="Build-Date" value="${common.timestamp-long}" />
+                <attribute name="Build-Username" value="${shell.USERNAME}"/>
+                <attribute name="Build-Hostname" value="${hostname}"/>
+                <attribute name="Build-java-version" value="${java.version}" />
+                <attribute name="Build-java-class-version" value="${java.class.version}" />
+                <attribute name="Build-java-home" value="${java.home}" />
+                <attribute name="Build-os-arch" value="${os.arch}" />
+                <attribute name="Build-os-name" value="${os.name}" />
+                <attribute name="Build-os-version" value="${os.version}" />
+				        <attribute name="Class-Path" value="${java-build.jar-classpath} lib/${java-build.dist-filename}"/>
+            </manifest>
+        </ear>
+    </target>
+
+</project>
+

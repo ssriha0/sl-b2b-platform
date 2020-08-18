@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<title>Accordion</title>
+
+
+<link rel="stylesheet" href="/ServiceLiveWebUtil/css/jqueryui/jquery-ui-1.7.2.custom.css" type="text/css"></link>
+<script type="text/javascript" src="/ServiceLiveWebUtil/javascript/jquery/jquery-1.3.2.min.js"></script>
+<script type="text/javascript" src="/ServiceLiveWebUtil/javascript/jquery/jqueryui/jquery-ui-1.7.2.custom.min.js"></script>
+
+
+<link rel="stylesheet" href="uicodesamples.css" type="text/css"></link>
+</head>
+
+<body>
+<div id="wrapper">
+<a id="home" href="/UICodeSamples">Home</a>
+<h1>Accordion</h1>
+
+<p>We use the accordion implementation provided in the jQueryUI library. The CSS theme we've selected for ServiceLive is called "Black Tie". 
+See the How To section below about what scripts and stylesheets to import.</p>
+
+
+
+<script type="text/javascript">
+	$(function() {
+		$("#accordion").accordion();
+	});
+	</script>
+
+<div id="accordion">
+	<h3><a href="#">Section 1</a></h3>
+	<div>
+		<p>The quick brown fox jumps over the lazy dog.</p>
+	</div>
+	<h3><a href="#">Section 2</a></h3>
+	<div>
+		<p>The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.</p>
+	</div>
+	<h3><a href="#">Section 3</a></h3>
+	<div>
+		<p>The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. 
+		The quick brown fox jumps over the lazy dog.</p>
+	</div>
+	<h3><a href="#">Section 4</a></h3>
+	<div>
+		<p>
+		The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+		</p>
+		<p>
+		The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.</p>
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+========<br/>
+<h2>How to:</h2>
+<ol>
+<li>Put these in the &lt;head>&lt;/head> section of your document: <br/>
+<pre>
+&lt;link rel="stylesheet" href="${staticContextPath}/css/jqueryui/jquery-ui-1.7.2.custom.css" type="text/css">&lt;/link>
+&lt;script type="text/javascript" src="${staticContextPath}/javascript/jquery/jquery-1.3.2.min.js">&lt;/script>
+&lt;script type="text/javascript" src="${staticContextPath}/javascript/jquery/jqueryui/jquery-ui-1.7.2.custom.min.js">&lt;/script>
+
+</pre>
+<strong>Note:</strong> Don't insert duplicates if the above files have already been referenced on the page. 
+Also, the above code assumes that you've defined the "staticContextPath" variable in your JSP.
+</li>
+
+<li>Initialize the accordion: <br/>
+<pre>
+&lt;script type="text/javascript">
+	$(function() {
+		$("#accordion").accordion();
+	});
+&lt;/script>
+</pre>
+</li>
+
+<li>Create the section labels and content containers: <br/>
+<pre>
+&lt;div id="accordion">
+	&lt;h3>&lt;a href="#">Section 1&lt;/a>&lt;/h3>
+	&lt;div>
+		&lt;p>The quick brown fox jumps over the lazy dog.&lt;/p>
+	&lt;/div>
+	&lt;h3>&lt;a href="#">Section 2&lt;/a>&lt;/h3>
+	&lt;div>
+		&lt;p>The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.&lt;/p>
+	&lt;/div>
+	&lt;h3>&lt;a href="#">Section 3&lt;/a>&lt;/h3>
+	&lt;div>
+		&lt;p>The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. 
+		The quick brown fox jumps over the lazy dog.&lt;/p>
+	&lt;/div>
+	&lt;h3>&lt;a href="#">Section 4&lt;/a>&lt;/h3>
+	&lt;div>
+		&lt;p>
+		The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+		&lt;/p>
+		&lt;p>
+		The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.&lt;/p>
+	&lt;/div>
+&lt;/div>
+
+</pre>
+</li>
+</ol>
+
+Complete documentation available <a href="http://jqueryui.com/demos/accordion/">here</a>. 
+<div class="ltCorner"></div>
+<div class="rtCorner"></div>
+<div class="lbCorner"></div>
+<div class="rbCorner"></div>
+</div>
+</body>
+</html>

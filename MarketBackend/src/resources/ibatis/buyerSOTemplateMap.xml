@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="buyerSOTemplate">
+
+	<cacheModel type="LRU" id="buyerTemplateCache">
+		<flushInterval hours="4" />
+		<flushOnExecute statement="buyerSOTemplate.insert"/>
+		<flushOnExecute statement="buyerSOTemplate.update"/>
+		<property name="size" value="10000" />
+	</cacheModel>
+
+ 	<typeAlias alias="buyerSOTemplate"	type="com.newco.marketplace.dto.vo.serviceorder.BuyerSOTemplateVO" />
+
+	<select id="buyerSOTemplate.query" parameterClass="buyerSOTemplate" resultClass="buyerSOTemplate" cacheModel="buyerTemplateCache">
+		select 	template_id as templateID,
+		template_name as templateName,
+		buyer_id as buyerID,
+		primary_skill_category_id as mainServiceCategory,
+		template_data as templateData
+		from buyer_so_template
+		where buyer_id = #buyerID# and template_name = #templateName#
+	</select>
+	
+	<select id="buyerSOTemplate.query.templateId" parameterClass="java.lang.Integer" resultClass="buyerSOTemplate">
+		select 	template_id as templateID,
+		template_name as templateName,
+		buyer_id as buyerID,
+		primary_skill_category_id as mainServiceCategory,
+		template_data as templateData
+		from buyer_so_template
+		where template_id = #templateID#
+	</select>
+	
+	<select id="buyerSOTemplate.query.buyerId" parameterClass="java.lang.Integer" resultClass="buyerSOTemplate">
+		select 	template_id as templateID,
+		template_name as templateName,
+		buyer_id as buyerID,
+		primary_skill_category_id as mainServiceCategory,
+		template_data as templateData
+		from buyer_so_template
+		where buyer_id = #buyerID# ORDER BY template_name
+	</select>
+
+	<insert id="buyerSOTemplate.insert"
+		parameterClass="buyerSOTemplate">
+		INSERT INTO buyer_so_template (
+		buyer_id,
+		template_name,
+		primary_skill_category_id,
+		template_data
+		) VALUES (
+		#buyerID#,
+		#templateName#,
+		#mainServiceCategory#,
+		#templateData#
+		)
+	</insert>
+
+	<update id="buyerSOTemplate.update" parameterClass="buyerSOTemplate">
+		update buyer_so_template 
+		set
+		primary_skill_category_id = #mainServiceCategory#,
+		template_data = <![CDATA[#templateData#]]> 			
+		WHERE buyer_id = #buyerID# AND template_name = #templateName#
+	</update>
+	
+	<update id="buyerSOTemplateDocList.update" parameterClass="buyerSOTemplate">
+		update buyer_so_template 
+		set
+		template_data = <![CDATA[#templateData#]]> 			
+		WHERE buyer_id = #buyerID# AND template_name = #templateName#
+	</update>
+	
+	<select id="buyerSOTemplate.queryByBuyerIdAndTemplateId" parameterClass="buyerSOTemplate" resultClass="buyerSOTemplate" cacheModel="buyerTemplateCache">
+		select 	template_id as templateID,
+		template_name as templateName,
+		buyer_id as buyerID,
+		primary_skill_category_id as mainServiceCategory,
+		template_data as templateData
+		from buyer_so_template
+		where template_id = #templateID#
+		and buyer_id = #buyerID#
+	</select>
+</sqlMap> 
+
+	
+
+	

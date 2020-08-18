@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<bean id="licensesAndCertDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.LicensesAndCertDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>
+		<property name="activityRegistryDao">
+			<ref bean="activityDaoImpl"/>
+		</property>		
+	</bean>
+	
+	<bean id="vendorCredentialsDocumentDAOImpl" class="com.newco.marketplace.persistence.daoImpl.provider.VendorCredentialsDocumentDAOImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+<!--	<bean id="documentBOImpl" class="com.newco.marketplace.business.businessImpl.document.DocumentBO"/> -->
+	
+	<bean id="licensesAndCertBOImplTarget" class="com.newco.marketplace.business.businessImpl.provider.LicensesAndCertBOImpl">
+		<constructor-arg index="0" ref="licensesAndCertDaoImpl"/>
+		<constructor-arg index="1" ref="vendorCredentialsDocumentDAOImpl"/>
+		<constructor-arg index="2" ref="documentBO"/>
+		<property name="transactionManager">
+            <ref bean="dsTransactionManagerMain"/>
+        </property>
+	</bean>
+ 	
+</beans>

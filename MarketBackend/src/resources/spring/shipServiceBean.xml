@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<bean id="providerRegistrationService" class="com.servicelive.shipregistration.services.impl.SHIPProviderRegistrationService">
+		<property name="vendorHdrDao">
+			<ref bean="vendorHdrDaoImpl"/>
+		</property>
+		<property name="contactDao">
+			<ref bean="contactDaoImpl"/>
+		</property>
+		<property name="userProfileDao">
+			<ref bean="userProfileDaoImpl"/>
+		</property>
+		<property name="securityDao">
+			<ref bean="securityDAO"/>
+		</property>
+		<property name="locationDao">
+			<ref bean="locationDaoImpl"/>
+		</property>
+		<property name="vendorLocationDao">
+			<ref bean="vendorLocationDaoImpl"/>
+		</property>
+		<property name="vendorResourceDao">
+			<ref bean="vendorResourceDaoImpl"/>
+		</property>
+		<property name="resourceLocationDao">
+			<ref bean="resourceLocationDaoImpl"/>
+		</property>
+		<property name="vendorPolicyDao">
+			<ref bean="vendorPolicyImpl"/>
+		</property>
+		<property name="vendorFinanceDao">
+			<ref bean="vendorFinanceImpl"/>
+		</property>
+		<property name="activityRegistryDao">
+			<ref bean="activityDaoImpl"/>
+		</property>
+		<property name="auditBO">
+			<ref bean="auditBoImpl"/>
+		</property>
+		<property name="registrationDao">
+			<ref bean="registrationDao"/>
+		</property>
+		<property name="providerEmailBO">
+			<ref bean="providerEmailBOImpl"/>
+		</property>
+		<property name="applicationProperties" ref="applicationPropertiesWallet" />
+	</bean>
+	<bean id="registrationDao" class="com.servicelive.shipregistration.dao.impl.SHIPRegistrationDao">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>	
+	</bean>
+</beans>

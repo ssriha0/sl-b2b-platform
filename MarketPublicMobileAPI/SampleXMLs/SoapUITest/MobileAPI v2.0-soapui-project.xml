@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project name="MobileAPI v2.0" soapui-version="4.5.0" abortOnError="false" runType="SEQUENTIAL" resourceRoot="${projectDir}" activeEnvironment="Default" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:RestService" wadlVersion="http://wadl.dev.java.net/2009/02" name="GetProviderSOList" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints><con:endpoint>http://10.60.3.52:8980</con:endpoint><con:endpoint>http://151.149.118.30:13980</con:endpoint><con:endpoint>http://10.60.3.47:8980</con:endpoint><con:endpoint>http://148.162.216.135:8080</con:endpoint><con:endpoint>http://localhost:8080</con:endpoint><con:endpoint>http://10.60.3.52:8980</con:endpoint><con:endpoint>http://151.149.118.30:8480</con:endpoint><con:endpoint>http://10.60.3.50:8780</con:endpoint><con:endpoint>http://10.60.3.49:8180</con:endpoint><con:endpoint>http://10.60.3.47:8980</con:endpoint></con:endpoints><con:resource name="Timeonsite_v2_0" path="mobile/v2.0/provider/54366/serviceorder/533-6604-4198-12/timeonsite"><con:settings/><con:parameters/><con:method name="timeonsite" method="POST"><con:settings/><con:parameters/><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/xml</con:mediaType><con:status>500 404</con:status><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:tim="http://10.60.3.47/mobile/v1.0/provider/10027/serviceorder/500-1040-8401-17/timeonsite">tim:Response</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=utf-8</con:mediaType><con:status>404 401</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/xml</con:mediaType><con:params/><con:element>soTimeOnSiteRequest</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/plain</con:mediaType><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Request 1" mediaType="application/json" postQueryString="false" accept="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>{
+   "soTimeOnSiteRequest":{
+      "eventType":"2",
+      "latitude":"41.148125",
+      "longitude":"-88.056609",
+      "currentTripNo": "4",
+      "reasonCode": "Service Completed"
+   }
+}</con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="UpdateSOCompletion_v2_0" path="/mobile/v2.0/provider/54366/serviceorder/589-7105-0673-91/updateSOCompletion"><con:settings/><con:parameters/><con:method name="updateSOcompletion" method="POST"><con:settings/><con:parameters/><con:representation type="FAULT"><con:mediaType>text/xml</con:mediaType><con:status>500</con:status><con:params/><con:element xmlns:xfor="http://cxf.apache.org/bindings/xformat">xfor:XMLFault</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/xml</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:upd="http://10.60.3.47/mobile/v1.0/provider/23006/serviceorder/541-8870-1668-10/updateSOCompletion">upd:Response</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=utf-8</con:mediaType><con:status>500 404 401</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Request 1" mediaType="application/json" postQueryString="false" accept="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>{
+  "soCompletionRequest": {
+    "completionStatus": "Partial",
+    "updateAction": "Work Started",
+    "currentTripNo": "4",
+    "tasks": {
+      "task": {
+        "taskId": "6680186",
+        "taskStatus": "Active"
+      }
+    },
+    "resolutionComments": "resolutionComments",
+    "permits": {
+      "permitTasks": {
+        "permitTask": {
+          "taskId": "52818507",
+          "taskStatus": "Active",
+          "custPrePaidAmount": "100.0",
+          "finalPermitPriceByProvider": "150.0",
+          "permitType": "Building"
+        }
+      },
+      "permitAddons": {
+        "permitAddon": {
+          "soAddonId": "563214",
+          "addonSKU": "99888",
+          "description": "Building",
+          "customerCharge": "20.0",
+          "miscInd": "N",
+          "qty": "1"          
+        }
+      }
+    },
+    "references": {
+      "reference": {
+        "referenceName": "Serial Number",
+        "referenceValue": "123456"
+      }
+    },
+    "partsTracking": {
+      "part": {
+        "partId": "12364",
+        "partName": "partName",
+        "carrier": "UPS",
+        "trackingNumber": "09654123"
+      }
+    },
+    "providerSignature": {
+      "documentId": "987456",
+      "name": "Rob Stark"
+    },
+    "customerSignature": {
+      "documentId": "563214",
+      "name": "daenerys targaryen",
+      "customerEmail": tar@domain.com
+    },
+ 
+    "addOnPaymentDetails": {
+      "paymentType": "Credit Card",
+      "checkNumber": "checkNumber",
+      "ccNumber": "123456987456",
+      "ccType": "MasterCard",
+      "expirationDate": "19/2024",
+      "preAuthNumber": "63254",
+      "amountAuthorized": "30.0"
+    },
+    "pricing": {
+      "labour": "60.0",
+      "materials": "0.0",
+      "originalLabour": "60.0",
+      "originalMaterials": "0.0",
+      "labourChangeReasonCodeId": "1",
+      "labourChangeReasonComments": "labourChangeReasonComments",
+      "partChangeReasonCodeId": "1",
+      "partChangeReasonComments": "partChangeReasonComments"
+    }
+  }
+}</con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="GetSOCompletionDetailsPro" path="/mobile/v2.0/provider/54366/serviceorders/557-7295-9547-10/getSOCompletionDetails"><con:settings/><con:parameters/><con:method name="getSOCompletionDetails" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:ns="http://10.60.3.47/mobile/v1.0/provider/68765/serviceorders/576-2264-2822-99">ns:Response</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html</con:mediaType><con:status>401</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=utf-8</con:mediaType><con:status>500 401 404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/xml</con:mediaType><con:status>500 404</con:status><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Request 1" mediaType="application/xml" accept="application/JSON"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="GetSODetailsPro" path="/mobile/v2.0/provider/54366/serviceorders/533-6604-4198-12/getSODetailsPro"><con:settings/><con:parameters/><con:method name="getSODetailsPro" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:ns="http://10.60.3.47/mobile/v1.0/provider/68765/serviceorders/576-2264-2822-99">ns:Response</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html</con:mediaType><con:status>401</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=utf-8</con:mediaType><con:status>500 401 404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/xml</con:mediaType><con:status>500 404</con:status><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Request 1" mediaType="application/xml" accept="application/JSON" timeout="500000"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="UploadDocument_v2_0" path="mobile/v2.0/provider/54366/serviceorder/533-6604-4198-12/uploadDocument"><con:settings/><con:parameters/><con:method name="uploadDocument" method="POST"><con:settings/><con:parameters/><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/xml</con:mediaType><con:status>500 404</con:status><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:tim="http://10.60.3.47/mobile/v1.0/provider/10027/serviceorder/500-1040-8401-17/timeonsite">tim:Response</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=utf-8</con:mediaType><con:status>404 401</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/xml</con:mediaType><con:params/><con:element>soTimeOnSiteRequest</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/plain</con:mediaType><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Request 1" mediaType="multipart/form-data" postQueryString="false" accept="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request/><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="SORevisitNeeded_v2_0" path="mobile/v2.0/provider/54366/serviceorder/533-6604-4198-12/submitSORevisit"><con:settings/><con:parameters/><con:method name="submitSORevisit" method="POST"><con:settings/><con:parameters/><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/xml</con:mediaType><con:status>500 404</con:status><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:tim="http://10.60.3.47/mobile/v1.0/provider/10027/serviceorder/500-1040-8401-17/timeonsite">tim:Response</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=utf-8</con:mediaType><con:status>404 401</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/xml</con:mediaType><con:params/><con:element>soTimeOnSiteRequest</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/plain</con:mediaType><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Request 1" mediaType="application/json" postQueryString="false" accept="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>{
+  "soRevisitNeededRequest": {
+    "tripNumber": "2",
+    "nextApptDate": "2014-11-20",
+    "nextApptStartTime": "09:00 AM",
+    "nextApptEndTime": "05:00 PM",
+    "revisitReason": "revisitReason",
+    "workStartedInd": "N",
+    "merchDeliveredInd": "N",
+    "revisitComments": "revisitComments"
+  }
+}
+</con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource></con:interface><con:properties/><con:wssContainer/><con:sensitiveInformation/></con:soapui-project>

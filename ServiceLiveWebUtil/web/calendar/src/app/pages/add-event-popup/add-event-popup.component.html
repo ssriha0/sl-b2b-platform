@@ -1,0 +1,82 @@
+<div id="add-event-action" class="modal fade" role="dialog">
+    <div class="modal-dialog add-event-model">
+        <div class="modal-content">
+            <!-- <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">{{header}}</h4>
+            </div> -->
+            <div class="modal-body">
+                <button type="button" class="close" (click)="closePopup()" aria-hidden="true">x</button>
+                <table>
+                    <tr>
+                        <th colspan="4">
+                          <div class="h4">Add New Job</div>
+                        </th>
+                    </tr>
+                    <tr>
+                        <td>
+                          <div class="h5">Title</div>
+                        </td>
+                        <td colspan="3">
+                            <div class="h5">
+                               <input type="text" placeholder="Enter JOB Title" [(ngModel)]="newEvent.title"/>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="h5">Time</div>
+                        </td>
+                        <td>
+                            <div class="h5">
+                                <input type="time" class="add-event-time" [(ngModel)]="newEvent.startTime"/>
+                                to
+                            </div>
+                        </td>
+                        <td>
+                            <div class="h5">
+                                <input type="time" class="add-event-time" [(ngModel)]="newEvent.endTime"/>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="h5">
+                                <input type="checkbox"/> All Day
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="h5">AssignTo</div>
+                        </td>
+                        <td colspan="3">
+                            <div class="h5"> 
+                                <select  #technicianSelected (change)="onSelect(technicianSelected)"
+                                    [ngClass]="{'effect-blur': techSelected == ''}" >
+                                        <option class="effect-blur" value="" selected>Choose Technician</option>
+                                        <option class="techNames" *ngFor="let provider of providerList;" value={{provider.id}}>{{provider.name}}</option>
+                                </select>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                             <div class="h5">Member</div>
+                        </td>
+                        <td colspan="3">
+                            <div class="h5">
+                                <input type="text" placeholder="Member Details" [(ngModel)]="newEvent.memberFirstName"/>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                   <!-- <textarea class="reject-reason-box" *ngIf="rejectSO" [(ngModel)]="rejectReason"></textarea>-->
+                <div style="min-height:10px;"></div>
+                <div class="button-style">
+                    <span>
+                    <button type="button" class="btn action-button" (click)="createEvent()" >Create</button>
+                </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

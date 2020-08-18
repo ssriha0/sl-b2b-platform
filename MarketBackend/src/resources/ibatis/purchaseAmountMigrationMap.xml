@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="purchaseAmountMigration">
+<typeAlias alias="soTaskVo" type="com.newco.marketplace.purchaseAmountMigration.vo.SoTaskVo"/> 
+
+<select id="getSalesCheckItems.query" resultClass="java.lang.String" parameterClass="java.lang.String">
+   		 SELECT xml_fragment AS xml FROM shc_order_transaction t 
+		 JOIN shc_order o ON t.shc_order_id = o.shc_order_id 
+		 WHERE o.order_no = (SELECT buyer_ref_value FROM so_custom_reference WHERE so_id = #value#  AND buyer_ref_type_id = 2) 
+		 AND o.unit_no = (SELECT buyer_ref_value FROM so_custom_reference WHERE so_id = #value#  AND buyer_ref_type_id = 1) 
+		 ORDER BY t.modified_date DESC LIMIT 1
+</select>
+
+<select id="getSoCountInDateRange.query" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+	 select count(so_id) as count from so_hdr where buyer_id = 1000 and created_date  <![CDATA[ >= ]]> #startdate#  and created_date  <![CDATA[ <= ]]> #enddate#
+</select>
+	
+<select id="getChunkSoInDateRange.query" parameterClass="java.util.HashMap" 
+		resultClass="java.lang.String">
+		select so_id as soId from so_hdr where buyer_id = 1000 and created_date  <![CDATA[ >=]]> #startdate#
+		and created_date  <![CDATA[ <= ]]>  #enddate#	limit #limit#   offset #offset#	    
+</select>
+
+<select id="getAapplicationPropertyDate.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+		select app_value as appValue	from application_properties	where app_key = #value#			
+</select>
+		
+<select id="getSoTaskData.query" parameterClass="java.lang.String" 
+		resultClass="soTaskVo">
+        select so_task_id as soTaskId, sku as sku from so_tasks where so_id =#value#    
+</select>
+<update id="updatePurchaseAmountSoTasks.query" parameterClass="soTaskVo">
+        update so_tasks set purchase_amount = #purchaseAmount#
+        where so_task_id = #soTaskId#
+</update>	
+
+</sqlMap>

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+	<!-- ibatis mapping for DB sql statements -->
+	<sqlMap namespace="Warranty">
+
+	<typeAlias alias="warrantyVO" type="com.newco.marketplace.vo.provider.WarrantyVO"/>
+	<typeAlias alias="luWarrantyPeriodsVO" type="com.newco.marketplace.vo.provider.LuWarrantyPeriodsVO"/>
+
+		<insert id="saveWarrantyData.insert" parameterClass="warrantyVO">
+	      INSERT INTO vendor_policy (
+	      vendor_id,
+	      warr_period_labor,
+	      free_estimate,
+	      conduct_drug_test,
+	      consider_drug_test,
+	      has_ethics_policy,
+	      require_badge,
+	      consider_badge,
+	      require_us_doc,
+	      consider_impl_policy,
+	      consider_ethic_policy,
+	      warr_offered_labor,
+	      warr_offered_parts,
+	      warr_period_parts
+	      ) VALUES (
+	      #vendorID#,
+	      #warrPeriodLabor#,
+	      #freeEstimate#,
+	      #conductDrugTest#,
+	      #considerDrugTest#,
+	      #hasEthicsPolicy#,
+	      #requireBadge#,
+	      #considerBadge#,
+	      #requireUsDoc#,
+	      #considerImplPolicy#,
+	      #considerEthicPolicy#,
+	      #warrOfferedLabor#,
+	      #warrOfferedParts#,
+	      #warrPeriodParts#
+	      )
+	   </insert>
+
+	   <update id="updateWarrantyData.update" parameterClass="com.newco.marketplace.vo.provider.WarrantyVO">
+			UPDATE vendor_policy
+			SET 
+			warr_period_labor = #warrPeriodLabor#,
+			warranty_measure = '0',
+			free_estimate = #freeEstimate#,
+			conduct_drug_test = #conductDrugTest#,
+			consider_drug_test = #considerDrugTest#,
+			has_ethics_policy = #hasEthicsPolicy#,
+			require_badge = #requireBadge#,
+			consider_badge = #considerBadge#,
+			require_us_doc = #requireUsDoc#,
+			consider_impl_policy = #considerImplPolicy#,
+			modified_by = 'MTedder',
+			consider_ethic_policy = #considerEthicPolicy#,
+			warr_offered_labor = #warrOfferedLabor#,
+			warr_offered_parts = #warrOfferedParts#,
+			warr_period_parts = #warrPeriodParts#
+			WHERE 
+			vendor_id = #vendorID#
+		</update>
+		
+		
+		
+		 <update id="updateWarrantyPartialData.update" parameterClass="com.newco.marketplace.vo.provider.WarrantyVO">
+			UPDATE vendor_policy
+			SET 
+			warranty_measure = '0'
+			<isNotNull  property="warrPeriodLabor">
+			,warr_period_labor = #warrPeriodLabor#
+			</isNotNull>
+			<isNotNull  property="freeEstimate">
+			,free_estimate = #freeEstimate#
+			</isNotNull>
+			<isNotNull  property="conductDrugTest">
+			,conduct_drug_test = #conductDrugTest#
+			</isNotNull>
+			<isNotNull  property="considerDrugTest">
+			,consider_drug_test = #considerDrugTest#
+			</isNotNull>
+			<isNotNull  property="hasEthicsPolicy">
+			,has_ethics_policy = #hasEthicsPolicy#
+			</isNotNull>
+			<isNotNull  property="requireBadge">
+			,require_badge = #requireBadge#
+			</isNotNull>
+			<isNotNull  property="considerBadge">
+			,consider_badge = #considerBadge#
+			</isNotNull>
+			<isNotNull  property="requireUsDoc">
+			,require_us_doc = #requireUsDoc#
+			</isNotNull>
+			<isNotNull  property="considerImplPolicy">
+			,consider_impl_policy = #considerImplPolicy#
+			</isNotNull>
+			,modified_by = 'MTedder'
+			<isNotNull  property="considerEthicPolicy">
+			,consider_ethic_policy = #considerEthicPolicy#
+			</isNotNull>
+			<isNotNull  property="warrOfferedLabor">
+			,warr_offered_labor = #warrOfferedLabor#
+			</isNotNull>
+			<isNotNull  property="warrOfferedParts">
+			,warr_offered_parts = #warrOfferedParts#
+			</isNotNull>
+			<isNotNull  property="warrPeriodParts">
+			,warr_period_parts = #warrPeriodParts#
+			</isNotNull>
+			WHERE 
+			vendor_id = #vendorID#
+		</update>
+		
+		
+		
+		
+
+		<select id="getWarrantyData.query" parameterClass="warrantyVO" resultClass="warrantyVO">
+			SELECT
+			MAX(vendor_id) as maxVendorID,
+			vendor_id as vendorID,
+			warr_period_labor as warrPeriodLabor,
+			warr_offered_labor as warrOfferedLabor,
+			warr_offered_parts as warrOfferedParts,
+			warr_period_parts as warrPeriodParts,
+			warranty_measure as warrantyMeasure,
+			free_estimate as freeEstimate,
+			conduct_drug_test as conductDrugTest,
+			consider_drug_test as considerDrugTest,
+			has_ethics_policy as hasEthicsPolicy,
+			require_badge as requireBadge,
+			consider_badge as considerBadge,
+			require_us_doc as requireUsDoc,
+			consider_impl_policy as considerImplPolicy,
+			created_date as createdDate,
+			modified_date as modifiedDate,
+			modified_by as modifiedBy,
+			consider_ethic_policy as considerEthicPolicy
+			FROM 
+			vendor_policy
+			WHERE 
+			vendor_id = #vendorID#
+			GROUP BY vendorID
+	   </select>
+
+	   <!--  Get values for jsp page drop down list -->
+		<select id="getLuWarrantyPeriods.query" parameterClass="warrantyVO" resultClass="java.util.HashMap">
+			SELECT
+			id,
+			descr
+			FROM 
+			lu_warranty_periods
+			ORDER BY sort_order
+	   </select>
+
+		<delete id="deleteWarrantyData.delete" parameterClass="warrantyVO">
+			DELETE FROM vendor_policy WHERE vendor_id = #vendorID#
+		</delete>
+
+	</sqlMap>

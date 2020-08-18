@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<!-- Root element -->
+	<xs:element name="mobileSOAcceptRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="acceptedResource" type="xs:integer" minOccurs="0" maxOccurs="1"></xs:element>
+				<xs:element name="acceptByFirmInd" type="xs:boolean" maxOccurs="1"></xs:element>
+		        <xs:element name="preferenceInd" type="xs:integer" minOccurs="0" maxOccurs="1"></xs:element>
+		    </xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

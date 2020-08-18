@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+<xs:include schemaLocation="../../common.xsd"/>
+ 
+	<!-- Root element -->
+	<xs:element name="findSupplierResponse">
+	   <xs:complexType>
+			<xs:sequence>
+			    <xs:element ref="results"/>
+			    <xs:element name="correlationId" type="xs:string" minOccurs="0"/>
+			    <xs:element name="responseCode" type="xs:string" minOccurs="0"/>
+			    <xs:element name="responseMessage" type="xs:string" minOccurs="0"/>
+			    <xs:element name="messages" type="messages" minOccurs="0"/>
+			    <xs:element ref="suppliers" minOccurs="0"/>
+			 
+			</xs:sequence>
+	   </xs:complexType>
+	</xs:element>
+	<xs:element name="suppliers">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="supplier" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="supplier">
+		<xs:complexType>
+			<xs:sequence>
+			    <xs:element name="name" type="stringFiftyType" minOccurs="0"/>
+			    <xs:element name="address1" type="stringFiftyType" minOccurs="0"/>
+			    <xs:element name="address2" type="stringFiftyType" minOccurs="0"/>
+			    <xs:element name="city" type="stringFiftyType" minOccurs="0"/>
+			    <xs:element name="state" type="stateType" minOccurs="0" />
+			    <xs:element name="zip" type="xs:string" minOccurs="0"/>
+			    <xs:element name="phone" type="xs:string" minOccurs="0"/>
+			    <xs:element name="fax" type="xs:string" minOccurs="0"/>
+			    <xs:element name="latitude" type="xs:float" minOccurs="0"/>
+			    <xs:element name="longitude" type="xs:float" minOccurs="0"/>
+			    <xs:element name="distance" type="xs:double" minOccurs="0"/>
+			    <xs:element ref="parts" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="parts">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="part" maxOccurs="unbounded" minOccurs="0" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="part">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="div" type="stringThreeType" minOccurs="0"/>
+				<xs:element name="pls" type="stringThreeType"  minOccurs="0"/>
+				<xs:element name="partNumber" type="xs:string"  minOccurs="0" />
+				<xs:element name="description" type="stringThirtyType"  minOccurs="0" />
+				<xs:element name="onHandQuantity" type="qtyType"  minOccurs="0" />
+				<xs:element name="brand" type="stringThirtyType" minOccurs="0" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="messages">
+		<xs:sequence>
+				<xs:element name="message" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+	    </xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="partNumType">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[a-zA-Z0-9]*"/>
+			<xs:maxLength value="24"/>
+		</xs:restriction>
+	</xs:simpleType>
+    
+    <xs:simpleType name="qtyType">
+		<xs:restriction base="xs:integer">
+			<xs:minInclusive value="1"/>
+			<xs:maxInclusive value="999999"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="stringThirtyType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="30"/>
+		</xs:restriction>
+	</xs:simpleType>
+    
+    <xs:simpleType name="stringFiftyType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="50"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+    <xs:simpleType name="stringThreeType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="3"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="stringTwoType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="2"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="stateType">
+	   <xs:restriction base="xs:string">
+	      <xs:maxLength value="2"/>
+	      <xs:minLength value="2"/>
+	   </xs:restriction>
+	</xs:simpleType>
+	
+</xs:schema>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+     http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd"
+   default-autowire="byName" >
+
+    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+
+    <tx:annotation-driven transaction-manager="jpaTransactionManagerMain" proxy-target-class="true"/>
+	
+	<!-- ######################DAO ############################################ -->
+
+	<bean id="autoCloseRuleHdrDao" class="com.servicelive.autoclose.dao.impl.AutoCloseRuleHdrDaoImpl" />
+
+
+	<!-- ######################Services ####################################### -->
+	<bean id="autoCloseService" class="com.servicelive.autoclose.services.impl.AutoCloseServiceImpl" />
+	
+	
+	<!-- ######################InHome Services ####################################### -->
+	<bean id="inHomeAutoCloseService" class="com.servicelive.inhome.autoclose.servicesImpl.InHomeAutoCloseServiceImpl" />
+
+ 	<!-- ###################### InHome DAO ############################################ -->
+ 	<bean id="hsrAutoCloseDao" class="com.servicelive.inhome.autoclose.daoImpl.HSRAutoCloseDaoImpl" />
+ 
+</beans>

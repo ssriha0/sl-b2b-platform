@@ -1,0 +1,788 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="buyer">
+
+	<cacheModel type="LRU" id="buyerRefCache">
+		<flushOnExecute statement="new_buyer_ref.insert"/>
+		<flushOnExecute statement="buyer_ref.update"/>
+		<flushOnExecute statement="buyer_ref_active.update"/>
+		<flushInterval hours="24" />
+		<property name="size" value="10000" />
+	</cacheModel>
+
+
+	<typeAlias alias="buyerResourceVO"
+		type="com.newco.marketplace.dto.vo.serviceorder.BuyerResource" />
+	<typeAlias alias="soCustRef"
+		type="com.newco.marketplace.dto.vo.serviceorder.ServiceOrderCustomRefVO" />
+	<typeAlias alias="locationvo" 
+     type="com.newco.marketplace.dto.vo.LocationVO" />
+     <typeAlias alias="contact" 
+     type="com.newco.marketplace.dto.vo.serviceorder.Contact"/> 
+      <typeAlias alias="contLocn"
+		type="com.newco.marketplace.dto.vo.serviceorder.ContactLocationVO" /> 
+	<typeAlias alias="buyer" type="com.newco.marketplace.dto.vo.serviceorder.Buyer" />
+	<typeAlias alias="soEntityInfoVO" type="com.newco.marketplace.dto.vo.serviceorder.SOEntityInfoVO" />
+	<typeAlias alias="buyerDtl"	type="com.newco.marketplace.dto.vo.serviceorder.BuyerDetail" />
+	<typeAlias alias="buyerResource" type="com.newco.marketplace.dto.vo.serviceorder.BuyerResource" />
+	<typeAlias alias="buyerReferenceType" type="com.newco.marketplace.dto.vo.buyer.BuyerReferenceVO" />
+	<typeAlias alias="buyerRegVO" type="com.newco.marketplace.vo.buyer.BuyerRegistrationVO"/>
+	<typeAlias alias="entityInfo" type="com.newco.marketplace.dto.vo.ach.OFACProcessQueueVO"/>
+	<typeAlias alias="piiVO" type="com.newco.marketplace.vo.buyer.PersonalIdentificationVO" />	
+	<typeAlias alias="workOrderVO" type="com.newco.marketplace.vo.buyer.WorkOrderVO" />	
+	<typeAlias alias="manageTaskVO" type="com.newco.marketplace.dto.vo.ManageTaskVO" />	
+	<typeAlias alias="reasoncodeVO" type="com.newco.marketplace.dto.vo.reasonCode.ReasonCodeVO"/>
+	<typeAlias alias="spnHdrVO" type="com.newco.marketplace.dto.vo.spn.SPNetHeaderVO"/>
+	<typeAlias alias="buyerAuthenticationDetailsVO" type="com.newco.marketplace.dto.vo.buyerauthenticationdetails.BuyerAuthenticationDetailsVO"/>
+	
+	<select id="buyer.query" parameterClass="buyer" resultClass="buyer">
+	select
+	  buyer_id as buyerId, 
+	  buyer_source_id as sourceId,
+	  funding_type_id as fundingTypeId,
+	  contact_id as contactId, 
+	  user_name as userName,
+	  pri_locn_id as primaryLocId,  
+	  bill_locn_id as billingLocId,
+	  created_date as createdDate,
+	  modified_date as modifiedDate, 
+	  modified_by as modifiedBy,
+	  business_name as businessName,
+	  posting_fee as postingFee,
+	  cancellation_fee as cancellationFee
+	from buyer
+	<dynamic prepend="where">
+		<isGreaterThan prepend="" property="buyerId" compareValue="-1">buyer_id = #buyerId#</isGreaterThan>
+		<isNotNull prepend="AND " property="userName">user_name = #userName#</isNotNull>
+	</dynamic>		
+	</select>
+	
+	<select id="buyer.queryByIdOrName" parameterClass="buyer" resultClass="buyer">
+	select
+	  buyer_id as buyerId, 
+	  buyer_source_id as sourceId,
+	  funding_type_id as fundingTypeId,
+	  contact_id as contactId, 
+	  user_name as userName,
+	  pri_locn_id as primaryLocId,  
+	  bill_locn_id as billingLocId,
+	  created_date as createdDate,
+	  modified_date as modifiedDate, 
+	  modified_by as modifiedBy,
+	  business_name as businessName,
+	  posting_fee as postingFee,
+	  cancellation_fee as cancellationFee
+	from buyer
+	<dynamic prepend="where">
+		<isNotNull prepend="AND" property="buyerId">
+			<isGreaterThan prepend="" property="buyerId" compareValue="-1">
+				buyer_id like concat('%',#buyerId#,'%')
+			</isGreaterThan>
+		</isNotNull> 
+		<isNotNull prepend="OR" property="businessName">
+			business_name like concat('%',#businessName#,'%')
+		</isNotNull>
+	</dynamic>		
+	</select>
+	
+
+	<resultMap class="contLocn" id="buyer.resultmap">
+		<result property="buyerPrimaryLocation" column="pri_locn_id"
+			select="location.querry" />
+		<result property="buyerPrimaryContact" column="contact_id"
+			select="contact.querry" />
+		<result property="listLocation" column="buyer_id"
+			select="locationList.querry" />
+		<result property="listContact" column="buyer_id"
+			select="contactList.query" />
+	</resultMap>
+
+	<resultMap class="contLocn" id="buyerResource.resultmap">
+		<result property="buyerPrimaryLocation" column="locn_id"
+			select="buyerResource.location.query" />
+		<result property="buyerPrimaryContact" column="contact_id"
+			select="buyerResource.contact.query" />
+		<result property="listLocation" column="buyer_id"
+			select="locationList.querry" />
+		<result property="listContact" column="buyer_id"
+			select="contactList.query" />
+		<result property="maxSpendLimitPerSO" column="max_spend_limit_per_so" />
+	</resultMap>
+
+	<resultMap class="contLocn" id="buyerResource.defaultLocContact.resultmap">
+		<result property="buyerPrimaryLocation" column="locn_id"
+			select="buyerResource.location.query" />
+	</resultMap>
+	
+	<select id="buyer.querry" parameterClass="sobuyer" resultMap="buyer.resultmap">
+	select * from buyer where buyer_id=#buyerId#
+	</select>
+
+	<select id="buyerResource.query" parameterClass="buyerResource" resultMap="buyerResource.resultmap">
+	select * from buyer_resource where resource_id=#resourceId# and buyer_id=#buyerId#
+	</select>
+	
+	    <select id="adminBuyerContactByResourceId.query" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+	       SELECT contact_id FROM buyer WHERE buyer_id IN (SELECT buyer_id FROM buyer_resource WHERE resource_id=#resource_id#)
+    </select>
+    
+	<select id="buyerResource.defaultLoc.query" parameterClass="java.lang.Integer" 
+								resultMap="buyerResource.defaultLocContact.resultmap">
+		select locn_id from buyer_resource_locations where resource_id = #resourceId# and default_locn = 1
+	</select>
+		
+	<select id="location.querry" resultClass="locationvo">
+	select locn_id as priLocnId,
+	street_1 as street1,
+	street_2 as street2,
+	city as city,
+	country as country,
+	state_cd as state,
+	zip as zip from location where locn_id=#priLocnId#
+	</select>
+	
+	<select id="contact.querry" resultClass="contact">
+	select 
+	co.contact_id as contactId,
+	co.first_name as firstName,
+	co.last_name as lastName,
+	co.phone_no as phoneNo,
+	co.phone_no_ext as phoneNoExt,
+	co.mobile_no as cellNo,
+	co.fax_no as faxNo,
+	buy.business_name as businessName,
+	co.email as email,
+	buy.aggregate_rating_score as rating,
+	buy.user_name as userName 
+	from contact co,buyer buy 
+	where co.contact_id=#contactId# 
+	and buy.contact_id=co.contact_id
+	</select>
+	
+	<select id="buyerResource.location.query" resultClass="locationvo">
+	select locn_id as priLocnId,
+	street_1 as street1,
+	street_2 as street2,
+	city as city,
+	country as country,
+	state_cd as state,
+	zip as zip,
+	locn_name as locName,
+	apt_no as aptNo
+	from location where locn_id=#locnId#
+	</select>
+		<select id="BuyerResourceBybuyerId.query" 
+		resultClass="buyerResource">
+		select resource_id as resourceId, 
+		user_name as userName,
+		contact_id as contactId, 		
+		created_date as createdDate
+	</select>
+	
+	<select id="buyerResource.contact.query" resultClass="contact">
+	select 
+	br.resource_id as resourceId, 
+	co.contact_id as contactId,
+	co.first_name as firstName,
+	co.last_name as lastName,
+	co.phone_no as phoneNo,
+	co.phone_no_ext as phoneNoExt,
+	co.mobile_no as cellNo,
+	co.fax_no as faxNo,
+	buy.business_name as businessName,
+	co.email as email,
+	buy.aggregate_rating_score as rating from contact co,buyer buy, buyer_resource br 
+	where co.contact_id=#contactId# and br.contact_id=co.contact_id and buy.buyer_id=br.buyer_id 
+	</select>
+	
+	<select id="select.buyer_reference_types" resultClass="buyerReferenceType" parameterClass="java.lang.Integer" cacheModel="buyerRefCache">
+		 select
+	        buyer_ref_type_id as buyerRefTypeId,
+	        buyer_id as buyerId,
+	        ref_type as referenceType,
+	        ref_descr as referenceDescription,
+	        so_identifier as soIdentifier
+	        
+	    from
+	        buyer_reference_type
+	    where buyer_id = #buyerId#
+	    	
+	</select>
+
+	<select id="select.buyer_references" resultClass="buyerReferenceType" parameterClass="java.lang.Integer">
+		 select
+	        buyer_ref_type_id as buyerRefTypeId,
+	        buyer_id as buyerId,
+	        ref_type as referenceType,
+	        ref_descr as referenceDescription,
+	        so_identifier as soIdentifier,
+	        active_ind as  activeInd,
+			buyer_input as  buyerInput,
+			provider_input as  providerInput,
+			required as  required,
+			searchable as  searchable,
+			private_ind as privateInd,
+			editable as editable,
+			pdf_ref_ind AS pdfRefInd,
+			display_no_value as displayNoValue
+	    from
+	        buyer_reference_type
+	    where buyer_id = #buyerId# and	active_ind = 1 and buyer_managed = true ORDER BY LTRIM(ref_type)
+	</select>
+
+	<select id="select.all_buyer_references" resultClass="buyerReferenceType">
+		 select
+	        buyer_ref_type_id as buyerRefTypeId,
+	        buyer_id as buyerId,
+	        ref_type as referenceType,
+	        ref_descr as referenceDescription,
+	        so_identifier as soIdentifier,
+	        active_ind as  activeInd,
+			buyer_input as  buyerInput,
+			provider_input as  providerInput,
+			required as  required,
+			searchable as  searchable,
+			private_ind as privateInd,
+			editable as editable,
+			display_no_value as displayNoValue
+	    from
+	        buyer_reference_type
+	    where active_ind = 1
+	    order by buyer_id, buyer_ref_type_id
+	</select>
+
+	<select id="select.provider_custom_references" resultClass="buyerReferenceType" parameterClass="java.lang.String">
+		SELECT
+			brt.buyer_ref_type_id as buyerRefTypeId,
+			brt.buyer_id as buyerId,
+			brt.ref_type as referenceType,
+			brt.ref_descr as referenceDescription,
+			brt.so_identifier as soIdentifier,
+			brt.active_ind as  activeInd,
+			brt.buyer_input as  buyerInput,
+			brt.provider_input as  providerInput,
+			brt.required as  required,
+			brt.searchable as  searchable,
+			brt.private_ind as privateInd,
+			brt.editable as editable
+	   FROM buyer_reference_type brt
+	      INNER JOIN
+	         so_hdr soh
+	      ON soh.buyer_id = brt.buyer_id			
+		 WHERE soh.so_id = #soId#
+			 AND brt.provider_input = 1
+			 AND brt.active_ind = 1	  			 
+	</select>
+
+	<select id="select.provider_custom_ref_vals" resultClass="buyerReferenceType" parameterClass="java.lang.String">
+		SELECT
+			brt.buyer_ref_type_id as buyerRefTypeId,
+			brt.buyer_id as buyerId,
+			brt.ref_type as referenceType,
+			brt.ref_descr as referenceDescription,
+			brt.so_identifier as soIdentifier,
+			brt.active_ind as  activeInd,
+			brt.buyer_input as  buyerInput,
+			brt.provider_input as  providerInput,
+			brt.required as  required,
+			brt.searchable as  searchable,
+			brt.private_ind as privateInd,
+			brt.editable as editable,
+			socr.buyer_ref_value as referenceValue
+	   FROM buyer_reference_type brt
+			RIGHT OUTER JOIN
+			so_custom_reference socr
+	          ON socr.buyer_ref_type_id = brt.buyer_ref_type_id		
+		 WHERE socr.so_id = #soId#
+			 AND brt.provider_input = 1
+			 AND brt.active_ind = 1
+	</select>
+	
+	<insert id="saveBlackoutNotification.insert"
+		parameterClass="java.util.HashMap">
+		INSERT INTO buyer_service_not_available (buyer_id,
+		<isNotNull property="resourceId">
+			resource_id,
+		</isNotNull>
+		node_id, zip, modified_by) VALUES (#buyerId#,
+		<isNotNull property="resourceId">
+			#resourceId#,
+		</isNotNull>
+		#nodeId#, #zip#, #modifiedBy#)
+	</insert>
+	
+	<select id="select.buyerResourceIsBuyerAdmin" resultClass="java.lang.Integer" parameterClass="java.lang.String">
+		select count(b.buyer_id)
+		  from buyer b
+         where b.user_name = #userName#
+	</select>
+	
+	<insert id="new_buyer.insert" parameterClass="buyer">
+        insert into buyer (business_name,business_start_date,bus_phone_no,bus_fax_no,buyer_source_id,user_name,created_date,
+        modified_date,modified_by,business_type_id,primary_industry_id,company_size_id,sales_volume_id,web_address,promo_cd,bus_phone_no_ext,funding_type_id,posting_fee,cancellation_fee,aggregate_rating_score,
+        servicelive_bucks_ind,servicelive_bucks_date_accepted,terms_cond_ind,term_cond_date_accepted,terms_cond_id)
+        values(#businessName#,#businessStarted#,#busPhoneNo#,#busFaxNo#,#howDidYouHear#,#userName#,#createdDate#,#modifiedDate#,
+        #modifiedBy#,#businessType#,#primaryIndustry#,#companySize#,#salesVolume#,#webAddress#,#promotionCode#,#busExtn#,#fundingTypeId#,#postingFee#,#cancellationFee#,#aggregateRatingScore#,
+        #serviceLiveBucksInd#,#serviceLiveBucksAcceptedDate#,#termsAndCondition#,#termsAndConditionAcceptedDate#,#termsAndConditionId#)
+        <selectKey resultClass="int">
+            SELECT last_insert_id() as buyer_id
+        </selectKey>    
+    </insert>
+
+	<insert id="new_buyer_ref.insert" parameterClass="buyerReferenceType">
+		INSERT   INTO buyer_reference_type
+		              (buyer_ref_type_id,
+		               buyer_id,
+		               ref_type,
+		               ref_descr,
+		               created_date,
+		               modified_date,
+		               modified_by,
+		               active_ind,
+		               buyer_input,
+		               provider_input,
+		               required,
+		               searchable,
+		               private_ind,
+		               editable,
+		               pdf_ref_ind,
+		               display_no_value)
+		   VALUES (
+		          #buyerRefTypeId#,
+		          #buyerId#,
+		          #referenceType#,
+		          #referenceDescription#,
+		          #createdDate#,
+		          #modifiedDate#,
+		          #modifiedBy#,
+		          #activeInd#,
+		          #buyerInput#,
+		          #providerInput#,
+		          #required#,
+		          #searchable#,
+		          #privateInd#,
+		          #editable#,
+		          #pdfRefInd#,
+		          #displayNoValue#
+		       )
+        <selectKey resultClass="int">
+            SELECT last_insert_id() as buyer_ref_type_id
+        </selectKey>    
+    </insert>
+
+	<update id="buyer_ref.update" parameterClass="buyerReferenceType">
+		UPDATE buyer_reference_type 
+		SET 
+			ref_type = #referenceType#, 
+			ref_descr = #referenceDescription#, 
+			modified_date = #modifiedDate#, 
+			modified_by = #modifiedBy#, 
+			buyer_input = #buyerInput#, 
+			provider_input = #providerInput#, 
+			required = #required#, 
+			searchable = #searchable# ,
+			private_ind = #privateInd#,
+			editable = #editable#,
+			pdf_ref_ind = #pdfRefInd#,
+			display_no_value =#displayNoValue#
+		WHERE buyer_ref_type_id = #buyerRefTypeId#
+	</update>
+
+	<update id="buyer_ref_active.update" parameterClass="buyerReferenceType">
+		UPDATE buyer_reference_type 
+		SET 
+			modified_date = #modifiedDate#, 
+			modified_by = #modifiedBy#, 
+			active_ind = #activeInd# 
+		WHERE buyer_ref_type_id = #buyerRefTypeId#
+	</update>
+
+	<update id="soCustRef.update" parameterClass="soCustRef">
+		UPDATE so_custom_reference 
+		SET 
+			modified_date = #modifiedDate#, 
+			modified_by = #modifiedBy#, 
+			buyer_ref_value = #refValue# 
+	  WHERE so_id = #soId#
+		AND buyer_ref_type_id = #refTypeId#
+	</update>
+
+	<insert id="soCustRef.insert" parameterClass="soCustRef">
+		INSERT INTO so_custom_reference
+	      (so_id,
+	       buyer_ref_type_id,
+	       created_date,
+	       modified_date,
+	       modified_by,
+	       buyer_ref_value)
+	   VALUES (
+	       #soId#,
+	       #refTypeId#,
+	       #createdDate#,
+	       #modifiedDate#,
+	       #modifiedBy#,
+	       #refValue#
+	       )
+	</insert>	
+
+    
+    <update id="buyer.updateCardLocation" parameterClass="buyer">
+		update buyer set
+			bill_locn_id=#billLocnId#
+			where buyer_id=#buyerId#;
+	</update>
+       
+	<update id="buyer.update" parameterClass="buyer">
+		update buyer
+		<dynamic prepend="set">
+			<isNotNull property="userName">
+			user_name=#userName#,
+			</isNotNull>
+			<isGreaterThan prepend=", " property="billLocnId" compareValue="-1">bill_locn_id = #billLocnId#</isGreaterThan>
+			<isGreaterThan prepend=", " property="priLocnId" compareValue="0">pri_locn_Id = #priLocnId#</isGreaterThan>
+			<isGreaterThan prepend=", " property="contactId" compareValue="0">contact_id = #contactId#</isGreaterThan>
+			<isGreaterThan prepend=", " property="accountContactId" compareValue="0">account_contact_id = #accountContactId#</isGreaterThan>
+		</dynamic>
+		where buyer_id = #buyerId#
+	</update>
+	
+	<update id="buyerCompanyProfile.update" parameterClass="buyer">
+		update buyer set
+			bus_phone_no=#busPhoneNo#,
+			bus_phone_no_ext=#busExtn#,
+			bus_fax_no=#busFaxNo#,
+			modified_date=#modifiedDate#,
+			modified_by=#modifiedBy#,
+			primary_industry_id=#primaryIndustry#,
+			company_size_id=#companySize#,
+			sales_volume_id=#salesVolume#,
+			web_address=#webAddress#
+		where buyer_id = #buyerId#
+	</update>
+	
+	<update id="buyer_mailing_location.update" parameterClass="buyer">
+		update buyer
+		<dynamic prepend="set">
+			<isGreaterThan prepend=", " property="billLocnId" compareValue="-1">bill_locn_id = #billLocnId#</isGreaterThan>
+		</dynamic>
+		where buyer_id = #buyerId#
+	</update>
+
+	
+	<select id="buyer_company_profile.query" parameterClass="buyer" resultClass="buyer">
+		select
+		  buyer_id as buyerId, 
+		  business_start_date as businessStarted,
+		  business_name as businessName,
+		  buyer_source_id as sourceId,
+		  contact_id as contactId,
+		  bus_phone_no as busPhoneNo,
+		  bus_phone_no_ext as busExtn,
+		  bus_fax_no as busFaxNo,
+		  primary_industry_id as primaryIndustry,
+		  business_type_id as  businessType,
+		  company_size_id as  companySize,
+		  sales_volume_id as salesVolume,
+		  web_address as webAddress,
+		  pri_locn_id as priLocnId,  
+		  bill_locn_id as billLocnId
+		from buyer
+		<dynamic prepend="where">
+			<isGreaterThan prepend="" property="buyerId" compareValue="-1">buyer_id = #buyerId#</isGreaterThan>
+		</dynamic>		
+	</select>
+	
+	<update id="buyerEIN.update" parameterClass="buyer">
+		UPDATE buyer
+		SET ein_no =  #einNoEnc#
+		, ssn_ind =0
+		,date_of_birth = null
+		,alt_id_type = null
+		,alt_id_country = null
+		WHERE buyer_id = #buyerId#
+	</update>
+	
+	<select id="select.buyerEIN" parameterClass="java.lang.Integer" resultClass="java.lang.String">
+		select ein_no from buyer where buyer_id = #buyerId#
+	</select>
+	
+	<select id="select.buyerPII" parameterClass="java.lang.Integer" resultClass="buyer">
+		SELECT ein_no AS einNoEnc, ssn_ind AS piiIndex, date_of_birth AS dob, 
+		alt_id_type AS altIDDocType, alt_id_country AS altIDCountryIssue FROM buyer WHERE buyer_id = #buyerId#
+	</select>
+	
+	<select id="select.buyerName" parameterClass="java.lang.Integer" resultClass="buyer">
+		SELECT user_name AS userName, business_name AS businessName FROM buyer WHERE buyer_id = #buyerId#
+	</select>
+	
+	
+	<select id="blackoutState.count" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		select count(*) from lu_state_cds where state_cd=#value# and blackout_ind=1
+	</select>
+	
+	<insert id="blackout_buyerLead.insert" parameterClass="buyerRegVO">
+		insert into buyer_leads (email, first_name, last_name, state_cd, zip) 
+		values
+		(#email#, #firstName#, #lastName#, #businessState#, #businessZip#)
+	</insert>
+	
+	<select id="blackoutStates.select" resultClass="java.lang.String">
+		select state_cd from lu_state_cds where blackout_ind=1
+	</select>
+	
+<!-- 	code change for SLT-2112 -->
+		<select id="buyerRole.query" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		select role_id from user_profile where user_name = #username#
+	</select>
+	
+	<select id="buyerRoutingDistance.query" resultClass="java.util.HashMap">
+		select buyer_id as buyerId, so_route_criteria_distance as distance from buyer_routing_distance
+	</select>
+	
+	<select id="buyerContactInfoFromBuyerId.select" 
+		resultClass="contact">
+			Select c.first_name as firstName, c.last_name as lastName, c.email as email 
+			from buyer b inner join contact c on (b.contact_id = c.contact_id) 
+			where b.buyer_id = #buyerId#
+			Union
+			Select c.first_name as firstName, c.last_name as lastName, c.email as email 
+			from buyer b inner join contact c on (b.account_contact_id = c.contact_id)
+			where b.buyer_id = #buyerId#
+			
+	</select>
+	
+	<select id="buyerResourceInfo.select" parameterClass="java.lang.Integer" resultClass="buyerResource">
+		select resource_id as resourceId, 
+		user_name as userName,
+		contact_id as contactId,
+		buyer_id as buyerId,
+		locn_id as locnId, 		
+		created_date as createdDate
+		from buyer_resource where resource_id =#resourceId# and company_role_id=5	
+	</select>
+	
+	<update id="buyerSSN.update" parameterClass="buyer">	
+		UPDATE buyer
+		SET ein_no = #einNoEnc#
+		,ssn_ind =1
+		,date_of_birth = #dob#
+		,alt_id_type = null
+		,alt_id_country = null
+		WHERE buyer_id = #buyerId#
+	</update>
+	
+	<update id="buyerAltId.update" parameterClass="buyer">	
+		UPDATE buyer
+		SET ein_no = #einNoEnc#
+		,ssn_ind =2
+		,alt_id_type = #altIDDocType#
+		,alt_id_country = #altIDCountryIssue#
+		,date_of_birth = #dob#
+		WHERE buyer_id = #buyerId#
+	</update>
+		
+	<select id="entityStateCodeBuyer.query" parameterClass="entityInfo" resultClass="entityInfo">
+		 select 'Buyer' AS userType,b.buyer_id AS entityId,
+		 b.ein_no AS SSNTaxPayerId,b.user_name AS userName,br.resource_id AS UserID,b.business_name AS businessName,b.bus_phone_no AS contactNumber,
+		 c.first_name AS firstName,c.last_name AS lastName,c.email AS email,l1.street_1 AS street1,l1.street_2 AS street2,l1.city AS city,
+		 l1.state_cd AS state,l1.zip AS zipCode,l1.apt_no AS aptNo,
+		 b.created_date AS CreatedDate from (((((buyer b join vw_buyer_firstlocation tblBl on((tblBl.buyer_id = b.buyer_id))) 
+		 join location l1 on((l1.locn_id = tblBl.first_location))) join buyer_resource br on(((br.buyer_id = b.buyer_id) 
+		 and (br.user_name = b.user_name))))) join contact c on((c.contact_id = b.contact_id)))
+		 where (b.buyer_id > 10 and b.buyer_id=#entityId#)
+	</select>
+	
+	<select id="entityStateCodeProvider.query" parameterClass="entityInfo" resultClass="entityInfo">
+	select 'Provider' AS userType,vh.vendor_id AS entityId,vh.ein_no AS TaxPayerId,vr.user_name AS 
+		userName,vr.resource_id AS UserID,vh.business_name AS businessName,vh.bus_phone_no AS contactNumber,
+		c.first_name AS firstName,c.last_name AS lastName,c.email AS email,l1.street_1 AS street1,l1.street_2 AS
+		 street2,l1.city AS city,l1.state_cd AS state,l1.zip AS zipCode,l1.apt_no AS aptNo,vh.created_date AS CreatedDate from (((((vendor_hdr vh join vendor_location 
+		v2 on((v2.vendor_id = vh.vendor_id))) join location l1 on(((l1.locn_id = v2.locn_id) and (l1.locn_type_id = 1)))) 
+		join vendor_resource vr on(((vr.vendor_id = vh.vendor_id) and (vr.primary_ind = 1)))) 
+		join contact c on((c.contact_id = vr.contact_id)))) where vh.vendor_id=#entityId#
+	</select>
+	
+	<select id="entityStateCodeNoPan.query" parameterClass="entityInfo" resultClass="entityInfo">
+		select state from vw_ofac_info_finance where entityId=#entityId# and userType=#userType#
+	</select>
+	
+	<select id="soBuyerVendorEntities.query" parameterClass="java.lang.String" resultClass="soEntityInfoVO">
+		select buyer_id as buyerId, vendor_id as vendorId from so_hdr,vendor_resource where so_hdr.accepted_resource_id=vendor_resource.resource_id and so_id=#soId#
+	</select>
+	
+	<select id="entityStateCodeForActivation.query" parameterClass="entityInfo" resultClass="entityInfo">
+		select state from vw_ofac_info_finance where entityId=#entityId# and userType=#userType#
+	</select>
+	<select id="buyer.getBuyerResContactLocationForSO" parameterClass="java.lang.String" resultMap="buyerResource.resultmap">
+		SELECT br.* FROM buyer_resource br, so_hdr sh  WHERE br.contact_id= sh.buyer_contact_id AND sh.so_id=#soId#
+	</select>
+<!-- 	code changes for SLT_2112 -->
+	<select id="buyer.getBuyerResContactLocationForContactId" parameterClass="java.util.HashMap" resultMap="buyerResource.resultmap">
+		SELECT * FROM buyer_resource WHERE contact_id= #contactId#
+	</select>
+	<select id="soBuyerId.query" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		select buyer_id as buyerId from so_hdr where so_hdr.so_id=#soId#
+	</select>	
+	
+<!-- 	code change for SLT-2112 -->
+	<insert id="replace.lockBuyer" parameterClass="java.util.HashMap">
+		replace into buyer_lock(buyer_id, locked_date) values(#buyerId#, now())
+	</insert>
+	
+		
+	<select id="pii.getHistory" parameterClass="java.lang.Integer" resultClass="piiVO">
+		SELECT 
+		pii.pii_hist_id AS version,
+		pii.business_name AS businessName,
+		pii.id_type AS idType,
+		pii.id_no AS idNumber,
+		pii.country AS country,
+		pii.date_of_birth AS dateOfBirth,
+		pii.created_date AS createdDate,
+		pii.modified_by AS modifiedBy
+		FROM buyer_pii_history pii where buyer_id = #buyerId# order by pii.pii_hist_id DESC
+	</select>
+	
+	<select id="buyer.getBuyerResource" resultClass="buyerResourceVO" parameterClass="java.util.HashMap">
+	SELECT
+		resource_id AS resourceId,
+		buyer_id AS buyerId,
+		contact_id AS contactId,
+		user_name AS userName,
+		locn_id AS locnId,
+		company_role_id AS companyRoleId,
+		created_date AS createdDate,
+		modified_date AS modifiedDate,
+		modified_by AS modifiedBy,
+		max_spend_limit_per_so AS maxSpendLimitPerSO,
+		terms_cond_ind AS termCondInd,
+		term_cond_date_accepted AS  termCondAcceptedDate,
+		term_cond_id AS termCondId 
+		FROM buyer_resource WHERE buyer_id = #buyerId# AND resource_id = #resourceId#;
+	</select>
+	
+	<select id="buyer.getValidSKUs" resultClass="java.lang.String" parameterClass="workOrderVO">
+		SELECT  sku 
+		FROM buyer_sku 
+		WHERE sku IN
+			<iterate  open="(" close=")" conjunction="," property="workOrderSKUs" >
+				#workOrderSKUs[]#
+			</iterate> 
+		AND buyer_id = #buyerId#  
+		AND manage_scope_ind=1;
+	</select>
+	
+	<select id="buyer.populateTaskFromSKUs" resultClass="manageTaskVO" parameterClass="workOrderVO">
+		SELECT sk.sku AS sku, 
+		sk.retail_price AS finalPrice, 
+		task.task_name AS taskName, 
+		task.task_comments AS taskComments, 
+		task.service_type_template_id AS serviceTypeTemplateId,
+		task.category_node_id AS skillNodeId,
+		task.sku_id as skuId 
+		FROM buyer_sku sk, 
+		buyer_sku_task task 
+		WHERE sku = #skuName#
+		 AND sk.buyer_id =#buyerId#
+		 AND sk.sku_id=task.sku_id
+		 AND manage_scope_ind=1;
+	</select>
+	
+	<select id="getDefaultReasonCodeId.query" resultClass="java.lang.Integer" parameterClass="reasoncodeVO">
+		SELECT rc.reason_code_id
+		FROM reason_codes rc
+		WHERE rc.reason_code = #reasonCode# 		            
+		AND rc.reason_code_type = #reasonCodeType#       
+		AND rc.general_ind = 2 
+	</select>
+	
+	<select id="fetchFirmCompletedDate.query" parameterClass="java.util.HashMap" resultClass="java.util.Date">
+		SELECT completed_date 
+		FROM so_hdr 
+		WHERE accepted_vendor_id = #firmId# 
+			and buyer_id = #buyerId# and wf_state_id >= 160
+		order by completed_date desc limit 1
+	</select>
+	
+	<select id="fetchProvCompletedDate.query" parameterClass="java.util.HashMap" resultClass="java.util.Date">
+		select completed_date 
+		from so_hdr 
+		where accepted_resource_id = #provId# 
+			and buyer_id = #buyerId# and wf_state_id >= 160
+		order by completed_date desc limit 1
+	</select>
+	
+	<select id="fetchPerfCriteriaLevel.query" parameterClass="java.lang.Integer" resultClass="spnHdrVO">
+		SELECT 
+			performance_criteria_level AS perfCriteriaLevel,
+			routing_priority_status AS priorityStatus,
+			mp_overflow AS isMPOverflow
+		FROM 
+			spnet_hdr 
+		WHERE 
+			spn_id = #spnId#;
+	</select>
+	
+	<delete id="deleteRoutedResources.query" parameterClass="java.lang.String">
+		DELETE 
+		FROM 
+			tier_route_eligilble_providers 
+		WHERE 
+			so_id = #soId#;
+	</delete>
+	
+	<select id="getValueForRef.query" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		SELECT buyer_ref_value FROM so_custom_reference 
+			WHERE so_id = #soId# AND buyer_ref_type_id = 
+				(SELECT buyer_ref_type_id FROM buyer_reference_type WHERE buyer_id = 3000 AND ref_type = #refType#)
+	</select>
+	
+	<select id="select.all_buyer_references_display_no_value" parameterClass="java.lang.Integer" resultClass="buyerReferenceType">
+		 select
+	        buyer_ref_type_id as buyerRefTypeId,
+	        buyer_id as buyerId,
+	        ref_type as referenceType,
+	        ref_descr as referenceDescription,
+	        so_identifier as soIdentifier,
+	        active_ind as  activeInd,
+			buyer_input as  buyerInput,
+			provider_input as  providerInput,
+			required as  required,
+			searchable as  searchable,
+			private_ind as privateInd,
+			editable as editable,
+			display_no_value as displayNoValue
+	    from
+	        buyer_reference_type
+	    where buyer_id = #buyerId#
+	    AND display_no_value=1 AND buyer_input=1 AND active_ind=1
+	</select>
+	<select id="fetchBuyerAuthenticationDetails.query" resultClass="buyerAuthenticationDetailsVO">
+		select 
+	    resource.resource_id as buyerResourceId,
+	    ap.consumer_key as consumerKey,
+	    oc.consumer_secret as secretKey
+		from supplier_prod.api_user_permission ap
+		join supplier_prod.buyer buy on (buy.buyer_id = ap.user_id)
+		join supplier_prod.oauth_consumer oc on (oc.consumer_key = ap.consumer_key)
+        join supplier_prod.buyer_resource resource on buy.buyer_id=resource.buyer_id
+        and buy.user_name=resource.user_name
+        where buy.buyer_id = #buyerId#
+			
+	</select>
+	<!-- SLT-1805 -->
+	<insert id="insertBuyerFeatureDfltValue.insert" parameterClass="java.lang.Integer">
+		INSERT INTO buyer_feature_set(buyer_id,feature,feature_set_id,created_date,modified_date,active_ind)
+		SELECT #buyerId# AS buyer_id,
+		feature_name AS feature,
+		feature_set_id AS feature_set_id,
+		NOW() AS created_date,
+		NOW() AS modified_date,
+		1 AS active_ind
+		FROM lu_feature_set
+		WHERE is_default=1
+	</insert>
+	
+</sqlMap> 

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by Shekhar (Servicelive) -->
+<xs:schema xmlns="http://www.servicelive.com/namespaces/byzip" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.servicelive.com/namespaces/byzip" elementFormDefault="qualified">
+	<xs:include schemaLocation="searchCommon.xsd" id="xcom"/>
+	<xs:include schemaLocation="../common.xsd" id="xxc"/>
+	<!-- Root element -->
+	<xs:element name="providerResults">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="results"/>				
+				<xs:element name="provider" minOccurs="0" type="providerType" maxOccurs="unbounded"/>
+				<xs:element name="facet" type="facetType" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="pageSize" type="xs:int"/>
+			<xs:attribute name="pageNum" type="xs:int"/>
+			<xs:attribute name="recordCount" type="xs:int"/>
+		</xs:complexType>
+	</xs:element>	
+</xs:schema>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="OrderFulfillment.Remote.ReleaseSO">
+    <test name="ProviderReleaseInAcceptedTest" >
+        <groups><run><include name="init" /></run></groups>
+        <classes>
+            <class name="com.servicelive.orderfulfillment.remote.test.workflow.ReleaseTests">
+                <methods>
+                    <include name="createServiceOrder"/>
+                    <include name="postServiceOrder"/>
+                    <include name="acceptServiceOrder"/>
+                    <include name="providerReleasedOrderInAccepted" />
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="ProviderReleaseInActiveTest" >
+        <groups><run><include name="init" /></run></groups>
+        <classes>
+            <class name="com.servicelive.orderfulfillment.remote.test.workflow.ReleaseTests">
+                <methods>
+                    <include name="createServiceOrder"/>
+                    <include name="postServiceOrder"/>
+                    <include name="acceptServiceOrder"/>
+                    <include name="activateOrder"/>
+                    <include name="providerReleasedOrderInActive" />                    
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="ProviderReleaseInProblemTest" >
+        <groups><run><include name="init" /></run></groups>
+        <classes>
+            <class name="com.servicelive.orderfulfillment.remote.test.workflow.ReleaseTests">
+                <methods>
+                    <include name="createServiceOrder"/>
+                    <include name="postServiceOrder"/>
+                    <include name="acceptServiceOrder"/>
+                    <include name="buyerReportProblemInAccept"/>
+                    <include name="providerReleasedOrderInProblem" />                    
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>

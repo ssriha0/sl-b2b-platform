@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="inhomeoutbound">
+
+<typeAlias alias="custRefVo" type="com.newco.marketplace.inhomeoutboundnotification.vo.CustomReferenceVO" />
+<typeAlias alias="notificationVO" type="com.newco.marketplace.inhomeoutboundnotification.vo.InHomeOutBoundNotificationVO"/>
+<typeAlias alias="notificationOwnerVO" type="com.newco.marketplace.inhomeoutboundnotification.vo.NotificationOwnerDetails"/>
+
+<select id="getAppFlagValue.query" resultClass="java.lang.String" parameterClass="java.lang.String">
+	SELECT app_value FROM application_flags WHERE app_key = #value#
+</select>
+
+<select id="getAppValueForKey.query" resultClass="java.lang.String" parameterClass="java.lang.String">
+	SELECT app_value FROM application_properties WHERE app_key = #value#
+</select>
+
+<select id="getMessageForStatusAndSubStatus.query" resultClass="java.lang.String" parameterClass="java.util.HashMap">
+	SELECT message FROM lu_inhome_outbound_notification_messages WHERE status_id=#statusId# AND substatus_id=#subStatusId#
+</select>
+
+<select id="getNpsIndicator.query" resultClass="java.lang.Integer" parameterClass="java.lang.String">
+	SELECT nps_inactive_ind FROM so_workflow_controls WHERE so_id=#value#
+</select>
+
+<select id="getOutboundRecordsCount.query" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+	SELECT COUNT(*) FROM buyer_outbound_notification 
+	WHERE status IN ('WAITING','RETRY')
+	and service_id = #serviceId# 
+	and no_of_retries <![CDATA[ < ]]> #noOfRetries#
+</select>
+
+<select id="fetchOutboundRecords.query" resultClass="notificationVO" parameterClass="java.util.HashMap">
+	select so_id AS soId,
+	xml AS xml,
+	no_of_retries AS retryCount,
+	status AS status,
+	notification_id AS notificationId,
+	seq_no AS seqNo
+	FROM buyer_outbound_notification
+	WHERE status IN ('WAITING','RETRY') 
+	and service_id = #serviceId#
+	and no_of_retries <![CDATA[ < ]]> #noOfRetries#
+	ORDER BY created_date
+	LIMIT #recordsProcessingLimit#
+</select>
+
+<update id="updateNotificationStatus.query" parameterClass="java.util.List">
+	UPDATE buyer_outbound_notification
+	SET status='STARTED'
+	WHERE notification_id IN
+	<iterate open="(" close=")" conjunction=",">	
+		#[]#
+	</iterate>
+</update>
+
+<select id="getDetailsOfSo.query" parameterClass="java.util.HashMap" resultClass="custRefVo">
+	SELECT brt.ref_type AS customReferenceName,scr.buyer_ref_value AS customeReferenceValue  
+    FROM buyer_reference_type brt,so_custom_reference scr 
+    WHERE brt.buyer_ref_type_id= scr.buyer_ref_type_id
+    AND scr.so_id=#soId# AND brt.ref_type IN(#orderNumber#,#unitNumber#,#techId#);	
+</select>
+
+<select id="getDetailsOfInHomeSo.query" parameterClass="java.util.HashMap" resultClass="custRefVo">
+	SELECT brt.ref_type AS customReferenceName,scr.buyer_ref_value AS customeReferenceValue  
+    FROM buyer_reference_type brt,so_custom_reference scr 
+    WHERE brt.buyer_ref_type_id= scr.buyer_ref_type_id
+    AND scr.so_id=#soId# AND brt.ref_type 
+    IN(#orderNumber#,#unitNumber#,#techId#,#coverageTypeLabor#,#brand#,#modelNo#);	
+</select>
+
+<insert id="insertinHomeOutBoundDetails.query" parameterClass="notificationVO">
+	INSERT INTO buyer_outbound_notification(seq_no,so_id,service_id,xml,status,no_of_retries,created_date,modified_date,exception,active_ind)
+	VALUES (#seqNo#,#soId#,#serviceId#,#xml#,#status#, #retryCount#,#createdDate#,#modifiedDate#,#exception#,#activeInd#)
+</insert>
+
+<select id="fetchApiDetails.query" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+	SELECT url AS url, http_header_parameters AS header FROM buyer_outbound_service WHERE service_id = #serviceId#
+</select>
+
+<update id="updateInhomeNotification.query" parameterClass="notificationVO">
+	UPDATE buyer_outbound_notification
+	SET no_of_retries = #retryCount#,
+	modified_date = #modifiedDate#,
+	status = #status#,
+	exception = #exception#,
+	response = #response#
+	WHERE notification_id = #notificationId#
+</update>
+
+<select id="fetchFailedInHomeRecords.query" resultClass="notificationVO" parameterClass="java.lang.Integer">
+	select notification_id AS notificationId,
+	seq_no as seqNo,
+	so_id AS soId,
+	service_id as serviceId,
+	xml AS xml,
+	no_of_retries AS retryCount,
+	modified_date as modifiedDate,
+	status as status,
+	exception as exception,
+	response as response
+	FROM buyer_outbound_notification
+	WHERE status IN ('ERROR','FAILURE') 
+	AND service_id IN (2,3)
+	AND email_ind=0 LIMIT #recordsProcessingLimit#
+</select>
+
+<select id="fetchWaitingInHomeRecords.query" resultClass="notificationVO" parameterClass="java.lang.Integer">
+	select notification_id AS notificationId,
+	seq_no as seqNo,
+	so_id AS soId,
+	service_id as serviceId,
+	xml AS xml,
+	no_of_retries AS retryCount,
+	modified_date as modifiedDate,
+	status as status,
+	exception as exception,
+	response as response
+	FROM buyer_outbound_notification
+	WHERE status IN ('WAITING') 
+	AND service_id IN (2,3)
+	LIMIT #recordsProcessingLimit#
+</select>
+
+<update id="updateInHomeEmailIndicator.query" parameterClass="java.util.List">
+	UPDATE buyer_outbound_notification
+	SET email_ind = 1
+	WHERE notification_id IN 
+	<iterate open="(" close=")" conjunction=",">	
+					#[]#
+	</iterate>
+</update>
+
+<select id="getNotificationOwnerDetails.query" resultClass="notificationOwnerVO">
+	SELECT 	notification_owner_id 	AS ownerId,
+			owner_name 				AS ownerName,
+			error_code 				AS errorCode,
+			email_ids 				AS emailIds,
+			active_ind 				AS activeInd
+	FROM lu_notification_owners;
+</select>
+
+<update id="updateNpsIndicator.query" parameterClass="java.lang.String">
+	UPDATE so_workflow_controls SET nps_inactive_ind = 1 WHERE so_id=#soId#
+</update>
+
+
+<select id="getRecordCountForEmail.query" resultClass="java.lang.Integer">
+	select count(*) 
+	FROM buyer_outbound_notification
+	WHERE status IN ('ERROR','FAILURE') 
+	AND service_id IN (2,3)
+	AND email_ind = 0;
+</select>
+
+<select id="getWaitingRecordCountForEmail.query" resultClass="java.lang.Integer">
+	select count(*) 
+	FROM buyer_outbound_notification
+	WHERE status IN ('WAITING') 
+	AND service_id IN (2,3);
+</select>
+
+<select id="getOutboundEmailSystemDown.query" parameterClass="java.lang.String" resultClass="notificationOwnerVO">
+	SELECT 	notification_owner_id 	AS ownerId,
+			owner_name 				AS ownerName,
+			error_code 				AS errorCode,
+			email_ids 				AS emailIds,
+			active_ind 				AS activeInd
+	FROM lu_notification_owners 
+	where error_code = #errorCode#;
+</select>
+
+<update id="updateSystemDownStatus.query" parameterClass="java.util.List">
+	UPDATE buyer_outbound_notification
+	SET status='WAITING'
+	WHERE status='STARTED'
+	AND notification_id IN
+	<iterate open="(" close=")" conjunction=",">	
+		#[]#
+	</iterate>
+</update>
+
+
+</sqlMap>

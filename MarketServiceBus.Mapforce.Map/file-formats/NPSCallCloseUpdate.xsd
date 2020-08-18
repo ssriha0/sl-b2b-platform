@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="CallCloseInstallationServiceOrders">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="CallCloseInstallationServiceOrder" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="ServiceUnitNumber" type="xs:string"/>
+							<xs:element name="ServiceOrderNumber" type="xs:string"/>
+							<xs:element name="SalesCheck">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Number" type="xs:string"/>
+										<xs:element name="Date" type="xs:date"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="RouteDate" type="xs:date"/>
+							<xs:element name="InstalledDate" type="xs:date"/>
+							<xs:element name="TechID" type="xs:string"/>
+							<xs:element name="CallCode" type="xs:string"/>
+							<xs:element name="ServiceOrderStatusCode" type="xs:string"/>
+							<xs:element name="ServiceOrderType" type="xs:string"/>
+							<xs:element name="TechComments" type="xs:string"/>
+							<xs:element name="LastModifiedByEmployeeID" type="xs:string" />
+							<xs:element name="SubAccountCode" type="xs:string" />
+							<xs:element name="ChargeStoreNumber" type="xs:string" />
+							<xs:element name="Monetary">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="AmountCollected" type="xs:string"/>
+										<xs:element name="PrimaryAmountCollected" type="xs:string"/>
+										<xs:element name="SecondaryAmountCollected" type="xs:string" />
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Discounts">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="LaborAssociateDiscount" type="xs:string" />
+										<xs:element name="LaborPromotionDiscount" type="xs:string" />
+										<xs:element name="LaborCouponDiscount" type="xs:string" />
+										<xs:element name="CouponNumber" type="xs:string" />
+										<xs:element name="DiscountReasonCode1" type="xs:string" />
+										<xs:element name="DiscountReasonCode2" type="xs:string" />
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Payment">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="PaymentMethodIndicator" type="xs:string"/>
+										<xs:element name="PaymentAccountNumber" type="xs:string"/>
+										<xs:element name="PrimaryAccountToken" type="xs:string"/>
+										<xs:element name="PaymentExpirationDate" type="xs:string"/>
+										<xs:element name="AuthorizationNumber" type="xs:string"/>
+										<xs:element name="SecondaryPaymentMethodIndicator" type="xs:string" />
+										<xs:element name="SecondaryPaymentAccountNumber" type="xs:string" />
+										<xs:element name="SecondaryAccountToken" type="xs:string" />
+										<xs:element name="SecondaryPaymentExpirationDate" type="xs:string" />
+										<xs:element name="SecondaryAuthorizationNumber" type="xs:string" />
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Merchandise">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Brand" type="xs:string"/>
+										<xs:element name="Model" type="xs:string"/>
+										<xs:element name="SerialNumber" type="xs:string"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="JobCodes">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="JobCode" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="SequenceNumber" type="xs:int"/>
+													<xs:element name="Number" type="xs:string"/>
+													<xs:element name="ChargeCode" type="xs:string"/>
+													<xs:element name="Type" type="xs:string"/>
+													<xs:element name="Coverage" type="xs:string"/>
+													<xs:element name="Description" type="xs:string"/>
+													<xs:element name="Amount" type="xs:string"/>
+													<xs:element name="Status" type="xs:string"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="MerchandiseDisposition">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="DateModified" type="xs:string" />
+										<xs:element name="MerchandisePickupStatus" type="xs:string" />
+										<xs:element name="MerchandisePickupDate" type="xs:string"/>
+										<xs:element name="FinalMerchandiseStatus" type="xs:string"/>
+										<xs:element name="FinalMerchandiseLocation" type="xs:string" />
+										<xs:element name="MerchandisePrimaryDisposition" type="xs:string" />
+										<xs:element name="MerchandiseDescriptiveDisposition" type="xs:string" />
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

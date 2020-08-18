@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jboss-web>
+
+	<context-root>spn</context-root>
+ 	<class-loading java2ClassLoadingCompliance="false">
+		<loader-repository>
+			com.servicelive:loader=spn.war
+			<loader-repository-config>java2ParentDelegation=false</loader-repository-config>
+		</loader-repository>
+	</class-loading>
+ 
+ <!-- 
+  <security-domain>java:/jaas/ServiceLiveJAAS</security-domain>
+
+  <depends>jboss.jca:service=DataSourceBinding,name=jdbc/ServiceLiveMySqlDS</depends>
+   -->
+  <!--
+	<replication-config>
+		<replication-trigger>SET_AND_GET</replication-trigger>
+		<replication-granularity>ATTRIBUTE</replication-granularity>
+		<replication-field-batch-mode>true</replication-field-batch-mode>
+	</replication-config>  
+-->
+</jboss-web>

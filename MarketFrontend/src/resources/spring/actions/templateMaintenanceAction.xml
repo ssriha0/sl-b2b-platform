@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
+	default-lazy-init="true">
+
+	<bean id="templateMaintenanceAction"  
+			class="com.newco.marketplace.web.action.templatemaintenance.SoTemplateMaintenanceAction" 
+			scope="prototype">
+		<property name="lookupManager">
+			<ref bean="lookupManager" />
+		</property>	
+		<property name="templateMaintenanceDelegate">
+			<ref bean="templateMaintenanceDelegate" />
+		</property>	
+		<property name="jobCodeDelegate">
+			<ref bean="jobCodeDelegate" />				
+		</property>
+		<property name="spnBuyerDelegate">
+			<ref bean="spnBuyerDelegate" />				
+		</property>
+		<property name="soWizardFetchDelegate">
+			<ref bean="SOWizardFetchBean" />				
+		</property>	
+		<property name="buyerFeatureSetBO">
+			<ref bean="buyerFeatureSetBO" />
+		</property>	
+	</bean>
+	
+	
+</beans>	

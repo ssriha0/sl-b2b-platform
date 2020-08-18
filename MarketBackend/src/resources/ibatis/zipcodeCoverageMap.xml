@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="zipcodeCoverage">
+<typeAlias alias="stateNameDTO" type="com.newco.marketplace.dto.vo.zipcoverage.StateNameDTO" />
+<typeAlias alias="zipcodeDTO" type="com.newco.marketplace.dto.vo.zipcoverage.ZipcodeDTO" />
+<typeAlias alias="providerListDTO" type="com.newco.marketplace.dto.vo.zipcoverage.ProviderListDTO" />
+<typeAlias alias="buyerSpnListDTO" type="com.newco.marketplace.dto.vo.zipcoverage.BuyerSpnListDTO" />
+<typeAlias alias="faqtDTO" type="com.newco.marketplace.dto.vo.zipcoverage.QuestionsAnswersDTO" />
+<typeAlias alias="stateZipcodeVO" type="com.newco.marketplace.dto.vo.provider.StateZipcodeVO"/>	
+			   
+
+<select id="zipcodeCoverage.zipcodecoverageByFirmIdAndFilter" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+    SELECT DISTINCT vrc.zip 
+    FROM vendor_resource res
+	JOIN vendor_resource_coverage vrc ON res.resource_id=vrc.resource_id
+	<isNotNull  property="stateCode">
+		JOIN zip_geocode zip ON zip.zip=vrc.zip
+	    JOIN lu_state_cds state ON state.state_cd=zip.state_cd
+	</isNotNull>
+	<isNotNull  property="buyerSpnId">
+		JOIN spnet_provider_firm_state spfs ON res.vendor_id=spfs.provider_firm_id
+		JOIN spnet_serviceprovider_state sss ON res.resource_id=sss.service_provider_id  AND spfs.spn_id= sss.spn_id 
+	</isNotNull>
+	WHERE res.vendor_id=#firmId#
+	AND wf_state_id = (SELECT wf_state_id FROM wf_states WHERE wf_state='Approved (Market Ready)') AND mkt_place_ind = 1
+	<isNotNull  prepend="AND" property="stateCode">
+		state.state_cd=#stateCode#
+	</isNotNull>
+	<isNotNull prepend="AND" property="resourceId">
+		res.resource_id=#resourceId#
+	</isNotNull>
+	<isNotNull prepend="AND" property="zipCode">
+		vrc.zip=#zipCode#
+	</isNotNull>
+	<isNotNull prepend="AND" property="buyerSpnId">
+		<isNull  property="buyerSpnProvId">
+			res.resource_id=sss.service_provider_id AND spfs.spn_id=#buyerSpnId#
+		</isNull>
+	</isNotNull>
+	<isNotNull prepend="AND" property="buyerSpnProvId">
+		 sss.service_provider_id=#buyerSpnProvId# 
+	</isNotNull>
+	
+</select>	
+
+<select id="zipcodeCoverage.vendorResource.getState" parameterClass="java.lang.String" resultClass="stateNameDTO">
+       SELECT DISTINCT state.state_cd as stateCode, state.state_name as stateName
+       FROM vendor_resource res
+       JOIN vendor_resource_coverage vrc ON res.resource_id=vrc.resource_id
+       JOIN zip_geocode zip ON zip.zip=vrc.zip
+       JOIN lu_state_cds state ON state.state_cd=zip.state_cd
+       WHERE res.vendor_id = #vendorId#  AND wf_state_id = (SELECT wf_state_id FROM wf_states WHERE wf_state='Approved (Market Ready)') AND mkt_place_ind = 1
+       ORDER BY  stateName                                    
+
+</select>
+
+<select id="zipcodeCoverage.vendorResource.getZip" parameterClass="java.util.HashMap" resultClass="zipcodeDTO">
+
+         SELECT DISTINCT vrc.zip as zipCode
+         FROM vendor_resource res
+         JOIN vendor_resource_coverage vrc ON res.resource_id=vrc.resource_id
+         JOIN zip_geocode zip ON zip.zip=vrc.zip
+         JOIN lu_state_cds state ON state.state_cd=zip.state_cd
+         WHERE res.vendor_id = #vendorId# AND wf_state_id = (SELECT wf_state_id FROM wf_states WHERE wf_state='Approved (Market Ready)') AND mkt_place_ind = 1
+         <isNotNull prepend="AND" property="stateCd">
+              state.state_cd = #stateCd#
+         </isNotNull>
+		 ORDER BY zipCode
+</select>
+
+<select id="zipcodeCoverage.vendorResource.getServicePros" parameterClass="java.util.HashMap" resultClass="providerListDTO">
+
+       SELECT DISTINCT res.resource_id AS providerId, CONCAT(c.last_name, ', ', c.first_name) AS providerName
+       FROM vendor_resource res
+       JOIN vendor_resource_coverage vrc ON res.resource_id=vrc.resource_id
+       JOIN zip_geocode zip ON zip.zip=vrc.zip
+       JOIN lu_state_cds state ON state.state_cd=zip.state_cd
+       JOIN contact c ON c.contact_id=res.contact_id
+       WHERE wf_state_id = (SELECT wf_state_id FROM wf_states WHERE wf_state='Approved (Market Ready)')
+       AND mkt_place_ind = 1 
+       AND res.vendor_id = #vendorId#
+       <isNotNull prepend="AND" property="stateCd">
+                       state.state_cd = #stateCd#
+       </isNotNull>
+       <isNotNull prepend="AND" property="zip">
+                       zip.zip = #zip#
+       </isNotNull>
+       ORDER BY providerName
+       
+</select>
+
+<select id="zipcodeCoverage.vendorResource.getBuyerSPN" parameterClass="java.util.HashMap" resultClass="buyerSpnListDTO">
+	SELECT DISTINCT sh.spn_id AS spnId, spn_name AS spnName
+	FROM vendor_resource res 
+	JOIN vendor_resource_coverage vrc ON res.resource_id=vrc.resource_id
+	JOIN spnet_provider_firm_state spfs ON res.vendor_id=spfs.provider_firm_id
+	JOIN spnet_serviceprovider_state sss ON res.resource_id=sss.service_provider_id  AND spfs.spn_id= sss.spn_id 
+	JOIN spnet_hdr sh ON sss.spn_id = sh.spn_id
+	WHERE res.vendor_id = #vendorId# AND sss.provider_wf_state = 'SP SPN APPROVED' 
+	AND wf_state_id = (SELECT wf_state_id FROM wf_states WHERE wf_state='Approved (Market Ready)') AND mkt_place_ind = 1
+	ORDER BY spnName
+</select>
+
+<select id="zipcodeCoverage.vendorResource.getBuyerSPNServicePros" parameterClass="java.util.HashMap" resultClass="providerListDTO">
+	SELECT DISTINCT res.resource_id AS providerId, CONCAT(c.last_name, ', ', c.first_name) AS providerName
+	FROM vendor_resource res 
+	JOIN contact c ON res.contact_id = c.contact_id
+	JOIN vendor_resource_coverage vrc ON res.resource_id=vrc.resource_id
+	JOIN spnet_provider_firm_state spfs ON res.vendor_id=spfs.provider_firm_id
+	JOIN spnet_serviceprovider_state sss ON res.resource_id=sss.service_provider_id  AND spfs.spn_id= sss.spn_id 
+	WHERE res.vendor_id = #vendorId#  AND sss.spn_id = #spnId# 
+	AND wf_state_id = (SELECT wf_state_id FROM wf_states WHERE wf_state='Approved (Market Ready)') AND mkt_place_ind = 1
+	ORDER BY providerName
+</select>
+
+<select id="zipcodeCoverage.getFaqAnswers"  parameterClass="java.lang.String" resultClass="faqtDTO">
+	SELECT id as questionId,question as question,answer as answer FROM sl_faq_answers WHERE category=#faqCategory# ORDER BY id
+</select>
+
+
+<select id="zipcodeCoverage.vendorResource.getSpnState" parameterClass="java.util.HashMap" resultClass="stateNameDTO">
+	SELECT DISTINCT state.state_cd AS stateCode, state.state_name AS stateName
+	FROM vendor_resource res 
+	JOIN contact c ON res.contact_id = c.contact_id
+	JOIN vendor_resource_coverage vrc ON res.resource_id=vrc.resource_id
+	JOIN spnet_provider_firm_state spfs ON res.vendor_id=spfs.provider_firm_id
+	JOIN spnet_serviceprovider_state sss ON res.resource_id=sss.service_provider_id  AND spfs.spn_id= sss.spn_id 
+	JOIN zip_geocode zip ON zip.zip=vrc.zip
+	JOIN lu_state_cds state ON state.state_cd=zip.state_cd
+	WHERE res.vendor_id = #vendorId# AND sss.spn_id = #spnId# 
+	AND wf_state_id = (SELECT wf_state_id FROM wf_states WHERE wf_state='Approved (Market Ready)') AND mkt_place_ind = 1
+	<isNotNull prepend="AND" property="buyerSpnProvId">
+	 	res.resource_id=#buyerSpnProvId# AND sss.service_provider_id=#buyerSpnProvId#
+	</isNotNull>
+	ORDER BY stateName                               
+
+</select>
+
+<select id="zipcodeCoverage.vendorResource.getSpnZip" parameterClass="java.util.HashMap" resultClass="zipcodeDTO">
+
+	SELECT DISTINCT  vrc.zip AS zipCode
+	FROM vendor_resource res 
+	JOIN contact c ON res.contact_id = c.contact_id
+	JOIN vendor_resource_coverage vrc ON res.resource_id=vrc.resource_id
+	JOIN spnet_provider_firm_state spfs ON res.vendor_id=spfs.provider_firm_id
+	JOIN spnet_serviceprovider_state sss ON res.resource_id=sss.service_provider_id  AND spfs.spn_id= sss.spn_id 
+	<isNotNull property="stateCd">
+        JOIN zip_geocode zip ON zip.zip=vrc.zip
+		JOIN lu_state_cds state ON state.state_cd=zip.state_cd
+    </isNotNull>
+	WHERE res.vendor_id = #vendorId# AND sss.spn_id = #spnId# 
+	AND wf_state_id = (SELECT wf_state_id FROM wf_states WHERE wf_state='Approved (Market Ready)') AND mkt_place_ind = 1
+	<isNotNull prepend="AND" property="buyerSpnProvId">
+	 	res.resource_id=#buyerSpnProvId# AND sss.service_provider_id=#buyerSpnProvId#
+	</isNotNull>
+	<isNotNull prepend="AND" property="stateCd">
+	 	state.state_cd=#stateCd#
+	</isNotNull>
+
+</select>
+
+<select id="zipcodeCoverage.vendorResource.getutOfStates" parameterClass="java.util.HashMap" resultClass="stateZipcodeVO">
+	SELECT statecode as stateCd, state_license_confirmation as licenseConfirmation 
+	FROM vendor_resource_coverage_outof_states WHERE resource_id=#resourceId#
+</select>
+
+<select id="zipcodeCoverage.zipcodecoverageByFirmIdAndResourceId" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+    SELECT DISTINCT vrc.zip 
+    FROM vendor_resource res
+	JOIN vendor_resource_coverage vrc ON res.resource_id=vrc.resource_id
+	WHERE res.vendor_id=#firmId#
+	AND	res.resource_id=#resourceId#
+	
+</select>
+
+</sqlMap>

@@ -1,0 +1,95 @@
+package com.servicelive.wallet.alert;
+
+// TODO: Auto-generated Javadoc
+/**
+ * Class EmailConstants.
+ */
+public class EmailConstants {
+
+	/** EMAIL_PROFESSIONAL_FIRM_REGISTRATION. */
+	public static final int EMAIL_PROFESSIONAL_FIRM_REGISTRATION = 33850;
+
+	/** EMAIL_PROVIDER_REGISTRATION. */
+	public static final int EMAIL_PROVIDER_REGISTRATION = 90037;
+
+	/** EMAIL_SLADMIN_REGISTRATION. */
+	public static final int EMAIL_SLADMIN_REGISTRATION = 33861;
+
+	/** EMAIL_TEMPLATE_ACH_DEPOSIT_FUNDS. */
+	public static final int EMAIL_TEMPLATE_ACH_DEPOSIT_FUNDS = 33847;
+
+	/** EMAIL_TEMPLATE_ACH_PROVIDER_WITHDRAW_FUNDS. */
+	public static final int EMAIL_TEMPLATE_ACH_PROVIDER_WITHDRAW_FUNDS = 33848;
+
+	/** EMAIL_TEMPLATE_BUYER_CANCEL_PENALTY. */
+	public static final int EMAIL_TEMPLATE_BUYER_CANCEL_PENALTY = 215;
+
+	/** EMAIL_TEMPLATE_BUYER_CLOSE_SO. */
+	public static final int EMAIL_TEMPLATE_BUYER_CLOSE_SO = 214;
+
+	/** EMAIL_TEMPLATE_BUYER_DEPOSIT_FUNDS. */
+	public static final int EMAIL_TEMPLATE_BUYER_DEPOSIT_FUNDS = 114;
+
+	/** EMAIL_TEMPLATE_BUYER_DEPOSIT_FUNDS_FAILURE. */
+	public static final int EMAIL_TEMPLATE_BUYER_DEPOSIT_FUNDS_FAILURE = 116;
+
+	/** EMAIL_TEMPLATE_BUYER_DEPOSIT_FUNDS_WARNING. */
+	public static final int EMAIL_TEMPLATE_BUYER_DEPOSIT_FUNDS_WARNING = 115;
+
+	/** EMAIL_TEMPLATE_BUYER_POSTING_FEE. */
+	public static final int EMAIL_TEMPLATE_BUYER_POSTING_FEE = 213;
+
+	/** EMAIL_TEMPLATE_BUYER_PROVIDER_ISSUE_REFUNDS. */
+	public static final int EMAIL_TEMPLATE_BUYER_PROVIDER_ISSUE_REFUNDS = 112;
+
+	/** EMAIL_TEMPLATE_BUYER_SLBUCKS_CREDIT. */
+	public static final int EMAIL_TEMPLATE_BUYER_SLBUCKS_CREDIT = 216;
+
+	/** EMAIL_TEMPLATE_BUYER_SLBUCKS_DEBIT. */
+	public static final int EMAIL_TEMPLATE_BUYER_SLBUCKS_DEBIT = 218;
+
+	/** EMAIL_TEMPLATE_BUYER_WITHDRAW_FUNDS. */
+	public static final int EMAIL_TEMPLATE_BUYER_WITHDRAW_FUNDS = 113;
+
+	/** EMAIL_TEMPLATE_CC_BUYER_WITHDRAW_FUNDS. */
+	public static final int EMAIL_TEMPLATE_CC_BUYER_WITHDRAW_FUNDS = 114;
+
+	/** EMAIL_TEMPLATE_CC_DEPOSIT_FUNDS. */
+	public static final int EMAIL_TEMPLATE_CC_DEPOSIT_FUNDS = 54544;
+
+	/** EMAIL_TEMPLATE_GLFEED_FAILED. */
+	public static final int EMAIL_TEMPLATE_GLFEED_FAILED = 91;
+
+	/** EMAIL_TEMPLATE_ISSUE_REFUNDS. */
+	public static final int EMAIL_TEMPLATE_ISSUE_REFUNDS = 55184;
+
+	/** EMAIL_TEMPLATE_PROVIDER_CLOSE_SO. */
+	public static final int EMAIL_TEMPLATE_PROVIDER_CLOSE_SO = 221;
+
+	/** EMAIL_TEMPLATE_PROVIDER_SLBUCKS_CREDIT. */
+	public static final int EMAIL_TEMPLATE_PROVIDER_SLBUCKS_CREDIT = 217;
+
+	/** EMAIL_TEMPLATE_PROVIDER_SLBUCKS_DEBIT. */
+	public static final int EMAIL_TEMPLATE_PROVIDER_SLBUCKS_DEBIT = 219;
+
+	/** EMAIL_TEMPLATE_PROVIDER_SO_CANCELLED. */
+	public static final int EMAIL_TEMPLATE_PROVIDER_SO_CANCELLED = 220;
+
+	/** SERVICE_LIVE_MAILID. */
+	public static final String SERVICE_LIVE_MAILID = "noreply@servicelive.com";
+
+	/** SERVICE_LIVE_MAILID_SO_SUPPORT. */
+	public static final String SERVICE_LIVE_MAILID_SO_SUPPORT = "serviceordersupport@servicelive.com";
+
+	/** SERVICE_LIVE_MAILID_SUPPORT. */
+	public static final String SERVICE_LIVE_MAILID_SUPPORT = "support@servicelive.com";
+
+	/** TEMPLATE_PROVIDER_REMOVE_USER. */
+	public static final int TEMPLATE_PROVIDER_REMOVE_USER = 64686;
+	
+	/**Alert Constants **/
+	public static final String INCOMPLETE_INDICATOR = "1";
+	public static final String AOP_USER_EMAIL = "USER_EMAIL";
+	public static final String AOP_TEMPLATE_ID = "TEMPLATE_ID";
+	
+}

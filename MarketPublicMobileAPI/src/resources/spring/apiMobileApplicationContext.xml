@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd
+http://cxf.apache.org/jaxrs
+http://cxf.apache.org/schemas/jaxrs.xsd">
+
+	<import resource="classpath:resources/spring/apiSecurityContext.xml" />
+	<import resource="classpath:resources/spring/apiMobileMapperContext.xml" />
+	<import resource="classpath:resources/spring/apiMobileServiceContext.xml" />
+	<import resource="classpath:resources/spring/apiMobileValidatorContext.xml" />
+	<jaxrs:server id="mobileOrderService" address="/">
+	<jaxrs:properties>
+            <entry key="org.apache.cxf.propagate.exception" value="false" />
+        </jaxrs:properties>
+		<jaxrs:serviceBeans>		      
+			<!-- Version 1.0 Request Processors starts here-->
+			<bean id="mobileGenericRequestProcessor"  class="com.newco.marketplace.api.mobile.processor.MobileGenericRequestProcessor" parent="baseRequestProcessor" scope="prototype">
+				<property name="loginProviderService">
+					<ref bean="loginProviderService"/>
+				</property>					
+				<property name="providerUploadDocumentService">
+					<ref bean="providerUploadDocumentService"/>
+				</property>			
+				<property name="timeOnSiteService">
+					<ref bean="timeOnSiteService" />
+				</property>
+				<property name="updateAppointmentTimeService">
+					<ref bean="updateAppointmentTimeService" />
+				</property>
+				<property name="soDetailsRetrieveService">
+					<ref bean="soDetailsRetrieveService"/>
+				</property>	
+				<property name="getProviderSOListService">
+					<ref bean="getProviderSOListService"/>
+				</property>	
+				<property name="soDocDownloadService">
+				     <ref bean="soDocDownloadService"/>
+				</property>
+				<property name="providerAddNoteService">
+					<ref bean="providerAddNoteService"/>
+				</property>	
+				<property name="updateSOCompletionService">
+					<ref bean="updateSOCompletionService"/>
+				</property>		
+				<property name="createNewPasswordForUserService">
+					<ref bean="createNewPasswordForUserService"/>
+				</property>
+				<property name="getEstimateService">
+					<ref bean="getEstimateService_v1_0" />
+				</property>
+				<property name="addEstimateService">
+					<ref bean="addEstimateService" />
+				</property>
+				<property name="mobilePlaceBidService">
+					<ref bean="mobilePlaceBidService"/>
+				</property>
+				<property name="providerProfileService">
+					<ref bean="providerProfileService"/>
+				</property>
+				<property name="providerProfileImageService">
+					<ref bean="providerProfileImageService"/>
+				</property>
+				<property name="providerProfileImageUploadService">
+					<ref bean="providerProfileImageUploadService"/>
+				</property>
+				<property name="updateProviderProfileService">
+					<ref bean="updateProviderProfileService"/>
+				</property>
+				
+				<property name="addCalendarEventService">
+					<ref bean="addCalendarEventService"/>
+				</property>
+				<property name="updateCalendarEventService">
+					<ref bean="updateCalendarEventService"/>
+				</property>
+				<property name="providerCalendarEventService">
+					<ref bean="providerCalendarEventService"/>
+				</property>
+				<property name="deleteCalendarEventService">
+					<ref bean="deleteCalendarEventService"/>
+				</property>
+				<property name="getDispositionCodesService">
+					<ref bean="getDispositionCodesService"/>
+				</property>
+				
+			</bean>
+            <!-- Version 1.0 Request Processors ends here--> 
+            
+            <!-- Version 2.0 Request Processors starts here-->
+            <bean id="mobileGenericRequestProcessor_v2_0"  class="com.newco.marketplace.api.mobile.processor.v2_0.MobileGenericRequestProcessor" parent="baseRequestProcessor" scope="prototype">
+            	<property name="timeOnSiteService">
+					<ref bean="timeOnSiteService_v2_0" />
+				</property>
+				<property name="revisitNeededService">
+					<ref bean="revisitNeededService_v2_0" />
+				</property>
+				
+				<property name="soCompletionDetailsRetrieveService">
+					<ref bean="soCompletionDetailsRetrieveService_v2_0"/>
+				</property>
+				<property name="soDetailsRetrieveService">
+					<ref bean="soDetailsRetrieveService_v2_0"/>
+				</property>
+				<property name="loginProviderService">
+					<ref bean="loginProviderService_v2_0"/>
+				</property>					
+				<property name="providerUploadDocumentService">
+					<ref bean="providerUploadDocumentService_v2_0"/>
+				</property>	
+				<property name="addSOProviderPartService">
+                      <ref bean="addSOProviderPartService"/>
+                </property>
+				<property name="addInvoiceSOProviderPartService">
+					<ref bean="addInvoiceSOProviderPartService"/>
+				</property>	
+				<property name="updateSOProviderPartService">
+					<ref bean="updateSOProviderPartService"/>
+				</property>	
+				<property name="deleteSOProviderPartService">
+					<ref bean="deleteSOProviderPartService"/>
+				</property>	
+				<property name="findSupplierService">
+				     <ref bean="findSupplierService"/>
+				</property>	
+				<property name="feedbackService">
+				     <ref bean="feedbackService"/>
+				</property>
+				<property name="authenticateMobileVersionService">
+				     <ref bean="authenticateMobileVersionService"/>
+				</property>
+				<property name="updateMobileAppVersionService">
+				     <ref bean="updateMobileAppVersionService"/>
+				</property>
+				<property name="partDirectWrapperService">
+					<ref bean="partDirectWrapperService" />
+				</property>	
+            </bean>
+            <!-- Version 2.0 Request Processors ends here-->	
+           
+            <!-- Version 3.0 Request Phase 1 Processors starts here-->
+            <bean id="mobileGenericRequestProcessor_v3_0"  class="com.newco.marketplace.api.mobile.processor.v3_0.MobileGenericRequestProcessor" parent="baseRequestProcessor" scope="prototype">
+            	<property name="soEligibleProviderListService">
+					<ref bean="soEligibleProviderListService_v3_0" />
+				</property>
+				<property name="mobileSearchSOService">
+					<ref bean="mobileSearchSOService_v3_0" />
+				</property>
+				<property name="assignOrReassignSOService">
+					<ref bean="assignOrReassignSOService_v3_0" />
+				</property>
+				<!-- <property name="reportAProblemService">
+					<ref bean="reportAProblemService_v3_0" />
+				</property> -->
+				<property name="mobileSOAcceptService">
+					<ref bean="mobileSOAcceptService_v3_0" />
+				</property>
+				<property name="rejectOrderService">
+					<ref bean="rejectOrderService" />
+				</property>
+				<property name="reasonCodesService">
+				     <ref bean="reasonCodeService_v3_0"/>
+				</property>
+				<property name="counterOfferService">
+					<ref bean="counterOfferService" />
+				</property>
+				<property name="mobileSOSubmitRescheduleService">
+					<ref bean="mobileSOSubmitRescheduleService_v3_0" />
+				</property>
+				<property name="respondRescheduleService">
+					<ref bean="respondRescheduleService_v3_0" />
+				</property>
+				<property name="withdrawCounterOfferService">
+					<ref bean="withdrawCounterOfferService" />
+				</property>
+				<property name="forgetUnamePwdService">
+					<ref bean="forgetUnamePwdService" />
+				</property> 
+				<property name="validateSecQuestAnsService">
+				     <ref bean="validateSecQuestAnsService_v3_0"/>
+				</property>
+				<!-- <property name="resolveProblemService">
+					<ref bean="resolveProblemService_v3_0" />
+				</property>
+				<property name="counterOfferService">
+					<ref bean="counterOfferService" />
+				</property>
+				<property name="withdrawCounterOfferService">
+					<ref bean="withdrawCounterOfferService" />
+				</property>
+				<property name="releaseOrderService">
+					<ref bean="releaseOrderService" />
+				</property>				
+				<property name="respondRescheduleService">
+					<ref bean="respondRescheduleService_v3_0" />
+				</property>
+				<property name="updateScheduleDetailsService">
+					<ref bean="updateScheduleDetailsService_v3_0" />
+				</property>
+				<property name="mobileSOSubmitRescheduleService">
+					<ref bean="mobileSOSubmitRescheduleService_v3_0" />
+				</property> -->
+				<property name="updateServiceOrderFlagService">
+					<ref bean="updateServiceOrderFlagService_v3_0" />
+				</property>
+				<property name="getProviderSOListService">
+					<ref bean="getProviderSOListService_v3_0" />
+				</property>
+				<!--<property name="dashboardDetailsRetrieveService">
+					<ref bean="dashboardDetailsRetrieveService_v2_0" />
+				</property> -->	
+				<property name="recievedOrdersService">
+					<ref bean="recievedOrdersService" />
+				</property>
+				<property name="deleteFilterService">
+					<ref bean="deleteFilterService" />
+				</property>
+				<property name="soDetailsRetrieveService">
+					<ref bean="soDetailsRetrieveService_v3_0" />
+				</property>
+				<property name="mobileAdvanceSearchSOService">
+					<ref bean="mobileAdvanceSearchSOService_v3_0" />
+				</property>
+				<property name="getFilterService">
+					<ref bean="getFilterService_v3_0" />
+				</property>
+				<property name="saveFilterService">
+					<ref bean="saveFilterService" />
+				</property>
+				<property name="searchCriteriaService">
+					<ref bean="searchCriteriaService_v3_0" />
+				</property>
+				<property name="retriveCountService">
+					<ref bean="retriveCountService_v3_0" />
+				</property>
+				<property name="timeOnSiteV3Service">
+					<ref bean="timeOnSiteService_v3_0" />
+				</property>
+				<property name="mobileSOSubmitWarrantyHomeReasonCodeService">
+					<ref bean="mobileSOSubmitWarrantyHomeReasonCodeService_v3_0" />
+				</property>
+				
+				<property name="updateSOCompletionService">
+					<ref bean="updateSOCompletionService_v3_0"/>
+				</property>
+				
+				
+            </bean>
+            <!-- Version 3.0 Phase 1 Request Processors ends here-->
+            <!-- Version 3.1 Request Phase 1 Processors starts here-->
+            <bean id="mobileGenericRequestProcessor_v3_1"  class="com.newco.marketplace.api.mobile.processor.v3_1.MobileGenericRequestProcessor" parent="baseRequestProcessor" scope="prototype">
+            	<property name="reportProblemService" ref ="reportProblemService_v3_1"/>
+            	<property name="resolveProblemService" ref ="resolveProblemService_v3_1"/>
+            	<property name="releaseOrderService" ref ="mobileSOReleaseService_v3_1"/>
+            	<property name="updateScheduleDetailsService" ref ="updateScheduleDetailsService_v3_1"/>
+            	<property name="viewDashboardService" ref ="viewDashboardService_v3_1"/>
+            	<property name="viewCompanyProfileService" ref ="viewCompanyProfile_v3_1"/>
+            	<property name="viewTeamMembersService" ref ="viewTeamMembers_v3_1"/>
+            	<property name="updateTimeWindowService" ref ="updateTimeWindowService_v3_1"/>
+            </bean>
+            <!-- Version 3.1 Request Processors ends here-->	
+		</jaxrs:serviceBeans>
+		<jaxrs:providers>
+        	<bean class="com.newco.marketplace.api.mobile.handler.ExceptionHandler"/>
+    	</jaxrs:providers>
+	</jaxrs:server>
+	<!-- Base Request Processor -->   
+	<bean id="baseRequestProcessor" abstract="true" class="com.newco.marketplace.api.server.MobileBaseRequestProcessor" scope="prototype">
+				<property name="responseValidator">
+					<ref bean="ResponseValidator"/>
+				</property>
+				<property name="commonUtility">
+					<ref bean="commonUtility"/>
+				</property>	
+	</bean>
+    
+	<bean id="ConversionUtility"
+		class="com.newco.marketplace.api.utils.xstream.XStreamUtility">
+	</bean>	
+	
+	
+   
+	<bean id="apiSecurityAndOAuth"
+		class="com.newco.marketplace.api.mobile.security.APISecurityAndOAuth"> 	
+		<constructor-arg ref="mobileApiSecurityDAO"/>
+	  	<property name="oAuthFilter" value="${oauth.authentication}" />  	
+	</bean>
+	<!--  required by OAuth -->
+	<alias name="apiSecurityAndOAuth" alias="OAuthConsumerImpl"/>
+	<bean id="apiFieldMasker" class="com.newco.marketplace.api.mobile.security.APIFieldMasker">
+		<property name="apiSecurity">
+			<ref bean="apiSecurityAndOAuth"/>
+		</property>
+	</bean>
+	
+	<bean id="commonUtility"
+		class="com.newco.marketplace.api.utils.utility.CommonUtility">
+	</bean>
+    
+</beans>
+	 	

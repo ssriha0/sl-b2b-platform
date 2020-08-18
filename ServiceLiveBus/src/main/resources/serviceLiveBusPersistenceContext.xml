@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+	"
+	xmlns:tx="http://www.springframework.org/schema/tx">
+	<!-- JTA transaction manager is provided by OrderFulfillment.ServiceOrder.orderfulfillmentContext.xml
+  	<bean id="serviceLiveBusTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="serviceLiveBusDataSource"/>
+	</bean>
+  		 
+  	<tx:annotation-driven transaction-manager="serviceLiveBusTransactionManager" />
+  	 -->
+	<bean id="serviceLiveBusJdbcTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
+        <constructor-arg index="0" ref="serviceLiveBusDataSource" />
+    </bean>
+    
+    <bean id="serviceLiveBusEventLogDao" class="com.servicelive.bus.event.log.ServiceLiveBusEventLogDao">
+		<property name="jdbcTemplate" ref="serviceLiveBusJdbcTemplate" />
+	</bean>
+    
+    <bean id="serviceLiveBusEventLogBO" class="com.servicelive.bus.event.log.ServiceLiveBusEventLogBO">
+        <property name="serviceLiveBusEventLogDao" ref="serviceLiveBusEventLogDao" />
+    </bean>
+</beans>

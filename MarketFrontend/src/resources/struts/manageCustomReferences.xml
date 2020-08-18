@@ -1,0 +1,21 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="customRefs" extends="ServiceLiveBase" >
+    	<default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+	    <action name="manageCustomRefs_*" class="manageCustomReferences" method="{1}">
+	        <!-- result name="input">/jsp/buyerRegistration/edit_buyer_company_profile.jsp</result>	 
+			<result name="error">/jsp/public/error/body/errorBody.jsp</result>
+			<result name="invalidState">/jsp/providerRegistration/provider_congrats_invalid_state.jsp</result>
+		    <result name="edit">/jsp/buyerRegistration/edit_buyer_company_profile.jsp</result-->
+		    <result name="success">/jsp/buyer_admin/buyer_manage_refs.jsp</result>
+		    <result name="error">/jsp/buyer_admin/buyer_manage_refs.jsp</result>
+		    <result name="dashboard" type="redirectAction">
+				<param name="actionName">dashboardAction</param>
+			</result>
+		</action>
+
+    </package>
+    
+</struts>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jboss>
+	<enterprise-beans> 
+		 
+		<message-driven>
+			<ejb-name>NotificationTaskConsumerBean</ejb-name>
+			<local-jndi-name>ejb/NotificationTaskConsumerBean</local-jndi-name>
+			<destination-jndi-name>java:/wsmq/SLNotificationServiceQueue</destination-jndi-name>
+			<resource-ref>				
+				<res-ref-name>jdbc/ServiceLiveMySqlDS</res-ref-name>
+				<jndi-name>jdbc/ServiceLiveMySqlDS</jndi-name>
+			</resource-ref>
+		</message-driven>
+		<message-driven>
+			<ejb-name>BuyerDocumentTaskConsumerBean</ejb-name>
+			<local-jndi-name>ejb/BuyerDocumentTaskConsumerBean</local-jndi-name>
+			<destination-jndi-name>java:/wsmq/SLNotificationServiceQueue</destination-jndi-name>
+			<resource-ref>				
+				<res-ref-name>jdbc/ServiceLiveMySqlDS</res-ref-name>
+				<jndi-name>jdbc/ServiceLiveMySqlDS</jndi-name>
+			</resource-ref>
+		</message-driven>
+	</enterprise-beans>
+</jboss>

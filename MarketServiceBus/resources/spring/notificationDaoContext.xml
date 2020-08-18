@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd" xmlns:tx="http://www.springframework.org/schema/tx">
+
+	<bean id="notificationServiceCoordinator" class="com.servicelive.notification.NotificationServiceCoordinator">
+		<property name="notificationBO" ref="notificationBO" />
+		<property name="notificationMapper" ref="notificationMapper" />
+		<property name="notificationValidator" ref="notificationValidator" />
+    </bean>
+
+	<bean id="notificationBO" class="com.servicelive.notification.bo.NotificationBO">
+        <property name="notificationDao" ref="notificationsDao" />
+    </bean>
+    
+    <bean id="notificationMapper" class="com.servicelive.notification.mapper.NotificationServiceMapper">
+        <property name="notificationBO" ref="notificationBO" />
+    </bean>
+    
+    <bean id="notificationValidator" class="com.servicelive.notification.mapper.NotificationServiceValidator">
+        <property name="notificationBO" ref="notificationBO" />
+    </bean>
+    
+    <bean id="notificationsDao" class="com.servicelive.notification.dao.NotificationDao">
+		<property name="jdbcTemplate" ref="notificationJdbcTemplate" />
+	</bean>
+	
+	<bean class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate" id="notificationJdbcTemplate">
+        <constructor-arg index="0" ref="notificationDataSource" />
+    </bean>
+    
+    <bean id="notificationDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName" value="jdbc/ServiceLiveMySqlDS" />
+	</bean>
+
+</beans>

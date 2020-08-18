@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd" xmlns:tx="http://www.springframework.org/schema/tx">
+	
+  	<tx:annotation-driven transaction-manager="jpaTransactionManagerMain" />
+
+	<bean id="shcOrderDAO" 
+		class="com.newco.marketplace.webservices.dao.ShcOrderDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="shcOrderSkuDAO" 
+		class="com.newco.marketplace.webservices.dao.ShcOrderSkuDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="shcOrderTransactionDAO" 
+		class="com.newco.marketplace.webservices.dao.ShcOrderTransactionDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="shcMerchandiseDAO" 
+		class="com.newco.marketplace.webservices.dao.ShcMerchandiseDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="shcErrorLoggingDAO" 
+		class="com.newco.marketplace.webservices.dao.ShcErrorLoggingDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="shcSkuAccountAssocDAO"
+		class="com.newco.marketplace.webservices.dao.ShcSkuAccountAssocDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="shcUpsellPaymentDAO" 
+		class="com.newco.marketplace.webservices.dao.ShcUpsellPaymentDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="shcNPSProcessLogDAO"
+		class="com.newco.marketplace.webservices.dao.ShcNPSProcessLogDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="specialtyAddOnDAO"
+		class="com.newco.marketplace.webservices.dao.SpecialtyAddOnDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="shcOrderAddOnDAO"
+		class="com.newco.marketplace.webservices.dao.ShcOrderAddOnDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	
+	<bean id="omsStagingBridge" class="com.newco.marketplace.oms.OMSStagingBridge">
+		<property name="stageDispatch">
+			<ref bean="stageDispatchRequestor" />
+		</property>
+	</bean>
+	
+	<bean id="stageDispatchRequestor" class="com.newco.marketplace.webservices.seiImpl.StageDispatchRequestor">
+		<property name="shcOrderDAO" ref="shcOrderDAO" />
+		<property name="shcOrderSkuDAO" ref="shcOrderSkuDAO" />
+		<property name="shcMerchandiseDAO" ref="shcMerchandiseDAO" />
+		<property name="shcOrderTransactionDAO" ref="shcOrderTransactionDAO" />
+		<property name="shcErrorLoggingDAO" ref="shcErrorLoggingDAO" />
+		<property name="shcNPSProcessLogDAO" ref="shcNPSProcessLogDAO" />
+		<property name="shcUpsellPaymentDAO" ref="shcUpsellPaymentDAO" />
+		<property name="txManager" ref="jpaTransactionManagerMain" />
+		<property name="specialtyAddOnDAO" ref="specialtyAddOnDAO" />
+		<property name="shcOrderAddOnDAO" ref="shcOrderAddOnDAO" />
+	</bean>
+	
+	<!--  HSR Staging DAO -->
+	<bean id="hsrStagingOrderDAO" 
+		class="com.servicelive.staging.dao.hsr.HSRStagingOrderDao">
+		<property name="entityManager" ref="entityManagerMain" />
+		
+	</bean>
+	
+	<bean id="npsAuditOrdersDAO"
+		class="com.newco.marketplace.webservices.dao.NpsAuditOrdersDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="luAuditOwnersDAO"
+		class="com.newco.marketplace.webservices.dao.LuAuditOwnersDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="npsAuditOrderMessagesDAO"
+		class="com.newco.marketplace.webservices.dao.NpsAuditOrderMessagesDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="npsAuditFilesDAO"
+		class="com.newco.marketplace.webservices.dao.NpsAuditFilesDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	<bean id="luAuditMessagesDAO"
+		class="com.newco.marketplace.webservices.dao.LuAuditMessagesDAO">
+		<property name="entityManagerFactory"
+			ref="entityManagerFactoryMain" />
+	</bean>
+	
+</beans>

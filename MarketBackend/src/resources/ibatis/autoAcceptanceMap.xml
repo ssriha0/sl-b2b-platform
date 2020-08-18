@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="autoAcceptance">
+ 	<typeAlias alias="autoAcceptanceDTO" type="com.newco.marketplace.dto.vo.autoAcceptance.ManageAutoOrderAcceptanceDTO" />
+
+	<resultMap id="autoAcceptanceResultMap" class="autoAcceptanceDTO">
+		<result property="buyer" column="buyer" />
+		<result property="buyerId" column="buyerId" />
+		<result property="vendorId" column="vendorId" />
+		<result property="ruleName" column="ruleName" />
+		<result property="routingRuleId" column="routingRuleId" />
+		<result property="createdDate" column="createdDate" />
+		<result property="updatedInd" column="updatedInd" />
+		<result property="autoAcceptStatus" column="autoAcceptStatus" />
+		<result property="ruleStatus" column="ruleStatus" />
+		
+		<result property="turnOffReason" column="{vendorId = vendorId, routingRuleId = routingRuleId}"
+				select="getTurnOffReason.query"/>
+		<result property="userName" column="{vendorId = vendorId, routingRuleId = routingRuleId}"
+				select="getUserName.query"/>
+	</resultMap>
+	
+		<resultMap id="autoAcceptanceResultMapProvider" class="autoAcceptanceDTO">
+		<result property="buyer" column="buyer" />
+		<result property="buyerId" column="buyerId" />
+		<result property="vendorId" column="vendorId" />
+		<result property="ruleName" column="ruleName" />
+		<result property="routingRuleId" column="routingRuleId" />
+		<result property="createdDate" column="createdDate" />
+		<result property="updatedInd" column="updatedInd" />
+		<result property="autoAcceptStatus" column="autoAcceptStatus" />
+		<result property="ruleStatus" column="ruleStatus" />
+		<result property="opportunityEmailInd" column="opportunityEmailInd" />
+		
+		<result property="turnOffReason" column="{vendorId = vendorId, routingRuleId = routingRuleId}"
+				select="getTurnOffReason.query"/>
+		<result property="userName" column="{vendorId = vendorId, routingRuleId = routingRuleId}"
+				select="getUserName.query"/>
+	</resultMap>
+
+	<resultMap id="emailResultMap" class="autoAcceptanceDTO">
+		<result property="buyerId" column="buyerId" />
+		<result property="emailId" column="emailId" />
+	</resultMap>
+	
+	<resultMap id="buyerResultMap" class="autoAcceptanceDTO">
+		<result property="buyerId" column="buyerId" />
+		<result property="buyer" column="buyer" />
+	</resultMap>
+	
+	<resultMap id="providerResultMap" class="autoAcceptanceDTO">
+		<result property="providerName" column="providerName" />
+		<result property="primaryPhNo" column="primaryPhNo" />
+		<result property="altPhNo" column="altPhNo" />
+	</resultMap>
+	
+ 	<select id="fetchNewCARRuleList"  parameterClass="java.lang.Integer" resultMap="autoAcceptanceResultMapProvider">
+ 		select buyer.business_name as buyer, 
+ 			buyer.buyer_id as buyerId,
+ 			vendor.vendor_id as vendorId,
+ 			vendor.opportunity_email_ind as opportunityEmailInd,
+ 			hdr.rule_name as ruleName, 			
+ 			hdr.routing_rule_hdr_id as routingRuleId,
+ 			hdr.created_date as createdDate,
+ 			false as updatedInd,
+ 			null as autoAcceptStatus,
+ 			null as ruleStatus
+ 			from  routing_rule_hdr hdr 
+ 			
+			join  routing_rule_vendor vendor
+			on hdr.routing_rule_hdr_id = vendor.routing_rule_hdr_id
+			and vendor.vendor_id = #vendorId# and hdr.rule_status = 'ACTIVE' and vendor.auto_accept_status = 'PENDING'
+
+			join  auto_accept_history history
+			on vendor.routing_rule_hdr_id = history.routing_rule_hdr_id 
+			and (vendor.vendor_id = history.vendor_id or history.vendor_id is null)
+
+			join routing_rule_buyer_assoc assoc
+			on hdr.routing_rule_buyer_assoc_id = assoc.routing_rule_buyer_assoc_id
+			
+			join buyer buyer
+			on assoc.buyer_id = buyer.buyer_id
+
+			join  buyer_feature_set feature
+			on buyer.buyer_id = feature.buyer_id
+			and feature.feature = 'AUTO_ACCEPTANCE' and feature.active_ind = 1
+			
+			group by history.routing_rule_hdr_id
+			having count(history.routing_rule_hdr_id) = 1
+			order by history.created_date desc, hdr.rule_name
+ 	</select>
+ 	
+ 	 <select id="fetchUpdatedCARRuleList"  parameterClass="java.lang.Integer" resultMap="autoAcceptanceResultMapProvider">
+ 		select buyer.business_name as buyer,
+ 			buyer.buyer_id as buyerId,
+ 			vendor.vendor_id as vendorId, 
+ 			vendor.opportunity_email_ind as opportunityEmailInd,
+ 			hdr.rule_name as ruleName, 			
+ 			hdr.routing_rule_hdr_id as routingRuleId,
+ 			hdr.modified_date as createdDate,
+ 			true as updatedInd,
+ 			null as autoAcceptStatus,
+ 			null as ruleStatus
+			from routing_rule_hdr hdr 
+			
+			join routing_rule_vendor vendor
+			on hdr.routing_rule_hdr_id = vendor.routing_rule_hdr_id
+			and vendor.vendor_id = #vendorId# and hdr.rule_status = 'ACTIVE' and vendor.auto_accept_status = 'PENDING'
+
+			join auto_accept_history history
+			on vendor.routing_rule_hdr_id = history.routing_rule_hdr_id 
+			and (vendor.vendor_id = history.vendor_id or history.vendor_id is null)
+
+			join routing_rule_buyer_assoc assoc
+			on hdr.routing_rule_buyer_assoc_id = assoc.routing_rule_buyer_assoc_id
+			
+			join buyer buyer
+			on assoc.buyer_id = buyer.buyer_id
+
+			join buyer_feature_set feature
+			on buyer.buyer_id = feature.buyer_id
+			and feature.feature = 'AUTO_ACCEPTANCE' and feature.active_ind = 1
+			
+			group by history.routing_rule_hdr_id
+			having count(history.routing_rule_hdr_id) >1
+			order by history.created_date desc, hdr.rule_name
+ 	</select>
+	
+	<update id="update_ruleVendor" parameterClass="autoAcceptanceDTO">
+		update routing_rule_vendor set modified_date = NOW(),auto_accept_status = #autoAcceptStatus#, modified_by = #userName#, opportunity_email_ind=#opportunityEmailInd#
+			where routing_rule_hdr_id = #routingRuleId# AND vendor_id = #vendorId#
+	</update>
+	
+	<insert id="insert_history" parameterClass="autoAcceptanceDTO">
+		insert into auto_accept_history(routing_rule_hdr_id, auto_accept_status, action, role_id, vendor_id, modified_by, created_date, turn_off_reason, adopted_by, opportunity_email_ind)
+			values
+			(#routingRuleId#, #autoAcceptStatus#, 'RULE Updated', '1', #vendorId#, #userName#, NOW(), #turnOffReason#, #adoptedBy#, #opportunityEmailInd# )
+	</insert>
+	
+	<select id="fetchCARBuyers" parameterClass="java.lang.Integer" resultMap="buyerResultMap">
+		select distinct buyer.business_name as buyer,
+			buyer.buyer_id as buyerId
+			from routing_rule_hdr hdr
+			
+			join routing_rule_vendor vendor 
+			on hdr.routing_rule_hdr_id = vendor.routing_rule_hdr_id and vendor.vendor_id = #vendorId#
+			and hdr.rule_status in ('ACTIVE','INACTIVE') 
+			and vendor.auto_accept_status in ('ON', 'OFF')
+			
+			join routing_rule_buyer_assoc assoc
+			on hdr.routing_rule_buyer_assoc_id = assoc.routing_rule_buyer_assoc_id
+			
+			join buyer buyer
+			on assoc.buyer_id = buyer.buyer_id
+			
+			join buyer_feature_set feature 
+			on buyer.buyer_id = feature.buyer_id and feature.feature = 'CONDITIONAL_ROUTE' and feature.active_ind = 1
+			
+			join buyer_feature_set ftr
+			on buyer.buyer_id = ftr.buyer_id and ftr.feature = 'AUTO_ACCEPTANCE' and ftr.active_ind = 1
+			order by buyer.business_name
+	</select>
+	
+	<select id="fetchRulesForBuyer" parameterClass="java.util.HashMap" resultMap="autoAcceptanceResultMapProvider">
+		select buyer.business_name as buyer, 
+			buyer.buyer_id as buyerId,
+ 			vendor.vendor_id as vendorId,
+ 			hdr.rule_name as ruleName, 			
+ 			hdr.routing_rule_hdr_id as routingRuleId,
+ 			vendor.modified_date as createdDate,
+ 			false as updatedInd,
+ 			vendor.auto_accept_status as autoAcceptStatus,
+ 			hdr.rule_status as ruleStatus,vendor.opportunity_email_ind as opportunityEmailInd
+ 			from routing_rule_hdr hdr 
+ 			
+			join  routing_rule_vendor vendor
+			on hdr.routing_rule_hdr_id = vendor.routing_rule_hdr_id
+			and vendor.vendor_id = #vendorId# and hdr.rule_status in ('ACTIVE','INACTIVE') 
+			and vendor.auto_accept_status in ('ON', 'OFF')
+
+			join routing_rule_buyer_assoc assoc
+			on hdr.routing_rule_buyer_assoc_id = assoc.routing_rule_buyer_assoc_id
+			
+			join buyer buyer
+			on assoc.buyer_id = buyer.buyer_id where buyer.buyer_id = #buyerId#
+			order by vendor.auto_accept_status desc, hdr.rule_name
+	</select>
+	
+	<select id="getTurnOffReason.query" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		select turn_off_reason as turnOffReason from auto_accept_history 
+			where vendor_id = #vendorId# and routing_rule_hdr_id = #routingRuleId# order by created_date desc limit 1
+	</select>
+	
+	<select id="getUserName.query" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+		select modified_by as userName from auto_accept_history 
+			where vendor_id = #vendorId# and routing_rule_hdr_id = #routingRuleId# order by created_date desc limit 1
+	</select>
+	
+	<select id="checkIfMailRequired" parameterClass="java.util.List" resultMap="emailResultMap">
+		select distinct assoc.buyer_id as buyerId,
+			assoc.email_id as emailId 
+			from routing_rule_buyer_assoc assoc
+			join routing_rule_hdr hdr
+			on assoc.routing_rule_buyer_assoc_id = hdr.routing_rule_buyer_assoc_id
+			where hdr.routing_rule_hdr_id in 
+			<iterate  open="(" close=")" conjunction=",">
+				#ruleIds[]#
+			</iterate>
+			and assoc.auto_accept_email_required = 1
+	</select>
+	
+	<insert id="insert_alertTask" parameterClass="alertTask">
+		insert into alert_task
+			(alerted_timestamp, completion_indicator, alert_type_id, template_id, priority, alert_from, 
+			alert_to, alert_cc, alert_bcc, created_date, modified_date, template_input_value)
+			values
+			(#alertedTimestamp#, #completionIndicator#, #alertTypeId#, #templateId#, #priority#, #alertFrom#, 
+			#alertTo#, #alertCc#, #alertBcc#, #createdDate#, #modifiedDate#, #templateInputValue#)
+	</insert>
+	
+	<select id="getServiceLiveStatus" parameterClass="java.lang.Integer" resultClass="java.lang.String">
+		select wf_state from wf_states where wf_state_id in (select wf_state_id from vendor_resource where resource_id = #resourceId#)
+	</select>
+	
+	<select id="getProviderDetails" parameterClass="java.lang.Integer" resultMap="providerResultMap">
+		select concat(first_name,' ',last_name) as providerName,
+			phone_no as primaryPhNo,
+			mobile_no as altPhNo
+		from contact where contact_id in (select contact_id from vendor_resource where resource_id = #resourceId#)
+	</select>
+	
+	<select id="getBuyerName" parameterClass="java.lang.Integer" resultClass="java.lang.String">
+		select concat(first_name,' ',last_name) from contact where contact_id in (select contact_id from buyer where buyer_id = #buyerId#)
+	</select>
+ 		
+</sqlMap>

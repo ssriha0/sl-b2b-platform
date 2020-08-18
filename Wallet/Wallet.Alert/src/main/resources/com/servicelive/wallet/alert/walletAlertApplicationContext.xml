@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<bean id="walletAlertSQLMap" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation">
+			<value>classpath:/com/servicelive/wallet/alert/walletAlertSqlMapConfig.xml</value>
+		</property>
+		<property name="dataSource">
+			<ref bean="${datasource.main.bean.id}" />
+		</property>
+	</bean>
+	
+	<bean id="emailTemplateBO"
+		class="com.servicelive.wallet.alert.EmailTemplateBO"
+		lazy-init="true">
+		<property name="templateDao">
+			<ref bean="emailTemplateDaoWallet" />
+		</property>
+		<property name="applicationProperties">
+			<ref bean="applicationPropertiesWallet" />
+		</property>
+		<property name="contactDao">
+			<ref bean="contactDaoWallet" />
+		</property>
+		<property name="velocityEngine">
+			<ref bean="velocityEngineWallet" />
+		</property>
+		<property name="mailSender">
+			<ref bean="mailSenderWallet" />
+		</property>
+		<property name="alertDao">
+			<ref bean="alertDaoWallet" />
+		</property>
+	</bean>
+	
+	<bean id="alertBO"
+		class="com.servicelive.wallet.alert.AlertBO"
+		lazy-init="true">
+		<property name="templateDao">
+			<ref bean="emailTemplateDaoWallet" />
+		</property>
+		<property name="applicationProperties">
+			<ref bean="applicationPropertiesWallet" />
+		</property>
+		<property name="contactDao">
+			<ref bean="contactDaoWallet" />
+		</property>
+		<property name="alertDao">
+			<ref bean="alertDaoWallet" />
+		</property>
+	</bean>
+
+	<bean id="emailTemplateDaoWallet"
+		class="com.servicelive.wallet.alert.dao.TemplateDao"
+		lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="walletAlertSQLMap" />
+		</property>
+	</bean>
+
+	<bean id="alertDaoWallet"
+		class="com.servicelive.wallet.alert.dao.AlertDao"
+		lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="walletAlertSQLMap" />
+		</property>
+	</bean>
+
+	<bean id="contactDaoWallet"
+		class="com.servicelive.wallet.alert.dao.ContactDao"
+		lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="walletAlertSQLMap" />
+		</property>
+	</bean>
+
+	<bean id="velocityEngineWallet"
+    	class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
+    	<property name="velocityProperties">
+    		<value>
+    			resource.loader=class
+    			class.resource.loader.class=org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+    		</value>
+    	</property>
+    </bean>
+	
+	<bean id="mailSenderWallet"
+		class="org.springframework.mail.javamail.JavaMailSenderImpl" lazy-init="true" >
+		<property name="host">
+			<value>${email.smtp.address}</value>
+		</property>
+	</bean>
+
+</beans>

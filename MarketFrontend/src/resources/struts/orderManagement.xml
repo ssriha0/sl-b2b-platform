@@ -1,0 +1,178 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="orderManagement" extends="ServiceLiveBase,json-default" >
+        <default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+        
+    	<global-results >
+			<result name="error" type="redirectAction">
+				<param name="actionName">errorAction</param>
+				<param name="errorMessage">${errorMessage}</param>
+				<param name="returnURL">${returnURL}</param>
+			</result>
+		</global-results>	   	
+        <action name="orderManagementController" class="orderManagementControllerAction">
+			<result name="success">/jsp/orderManagement/order_management.jsp</result>
+			<result name="homepage" type="redirectAction">homepage</result>
+		</action> 
+		<action name="omLoadPreCall" class="orderManagementControllerAction" method="loadDataForPreCall">
+			<result name="success">/jsp/orderManagement/order_management_pre_call.jsp</result>
+		</action>	
+		 <action name="loadDataForEditNotes" class="orderManagementControllerAction" method="loadDataForEditNotes">
+			<result name="success">/jsp/orderManagement/order_management_blank.jsp</result>
+		</action> 
+		<action name="loadDataForRequestReschedule" class="orderManagementControllerAction" method="loadDataForRequestReschedule">
+			<result name="success">/jsp/orderManagement/order_management_reschedule_popup.jsp</result>
+		</action> 	
+		<action name="fetchSOList" class="orderManagementControllerAction" method="fetchSOList">
+			<result name="success">/jsp/orderManagement/order_management_data_grid.jsp</result>
+			<result name="homepage" type="redirectAction">homepage</result>
+		</action> 
+		<action name="loadTabData" class="orderManagementControllerAction" method="loadTabData">
+			<result name="success">/jsp/orderManagement/order_management_filtersandgrid.jsp</result>
+		</action> 
+		 <action name="viewAsPDF" class="orderManagementControllerAction" method="printPaperwork">
+			<result>/jsp/orderManagement/pdf_popup.jsp</result>
+		</action>
+		<action name="omDisplayRejectSo" class="orderManagementControllerAction" method="displayRejectPopup">
+			<result name="success">/jsp/orderManagement/order_management_reject_popup.jsp</result>
+		</action> 	
+		
+		<action name="updateSOPriority" class="orderManagementControllerAction" method="updateSOPriority">
+			<result name="success">/jsp/orderManagement/get_json.jsp</result>
+		</action> 
+		<action name="addNotes" class="orderManagementControllerAction" method="addNotes">
+			<result name="json" type="json">
+				<param name="excludeProperties">
+			 		luDelegate,
+			 		managementService,
+			 		applicationProperties,
+			 		soDetailsManager
+			 	</param>
+			</result> 
+		</action>
+		<action name="refreshCount" class="orderManagementControllerAction" method="refreshCount">
+			<result name="success">/jsp/orderManagement/order_management_tabs.jsp</result>
+		</action> 
+		<action name="updateSOLocationNotes" class="orderManagementControllerAction" method="updateSOLocationNotes">
+			<result name="json" type="json">
+				<param name="excludeProperties">
+			 		luDelegate,
+			 		managementService,
+			 		applicationProperties,
+			 		soDetailsManager
+			 	</param>
+			 </result> 
+		</action>
+		
+		<action name="assignProvider" class="orderManagementControllerAction" method="assignProvider">
+			<result name="json" type="json">
+				<param name="excludeProperties">
+			 		luDelegate,
+			 		managementService,
+			 		applicationProperties,
+			 		soDetailsManager
+			 	</param>
+			 </result>
+		</action>
+		
+		<action name="loadAssignProviderWidget" class="orderManagementControllerAction" method="loadAssignProviderWidget">
+			<result name="success">/jsp/orderManagement/order_management_assign.jsp</result>
+		</action>
+		<action name="loadPrintPaperWorkPopUp" class="orderManagementControllerAction" method="loadPrintPaperWork">
+			<result name="success">/jsp/orderManagement/order_management_print_paper_work_popup.jsp</result>
+		</action>
+		<action name="loadUpdateTimeWidget" class="orderManagementControllerAction" method="loadUpdateTimeWidget">
+			<result name="success">/jsp/orderManagement/order_management_update_time_popup.jsp</result>
+		</action>
+		<action name="updateTime" class="orderManagementControllerAction" method="updateTime">
+			<result name="json" type="json">
+				<param name="excludeProperties">
+			 		luDelegate,
+			 		managementService,
+			 		applicationProperties,
+			 		soDetailsManager
+			 	</param>
+			 </result>
+		</action>
+		<action name="rejectServiceOrder" class="orderManagementControllerAction" method="rejectServiceOrder">
+			<result name="json" type="json"> 
+			<param name="excludeProperties">
+			 	luDelegate,
+			 	managementService,
+			 	applicationProperties,
+			 	soDetailsManager
+			 </param>
+			 </result>
+		</action>
+		<action name="displayAcceptSOPopUp" class="orderManagementControllerAction" method="displayAcceptSOPopUp">
+			<result name="success">/jsp/orderManagement/order_management_accept_so.jsp</result>
+		</action>
+		<action name="acceptServiceOrder" class="orderManagementControllerAction" method="acceptServiceOrder">
+			<result name="json" type="json"> 
+			<param name="excludeProperties">
+			 	luDelegate,
+			 	managementService,
+			 	applicationProperties,
+			 	soDetailsManager
+			 </param>
+			 </result>
+		</action> 
+		
+		<action name="cancelReschedule" class="orderManagementControllerAction" method="cancelReschedule">
+			<result name="json" type="json"> 
+			<param name="excludeProperties">
+			 	luDelegate,
+			 	managementService,
+			 	applicationProperties,
+			 	soDetailsManager
+			 </param>
+			 </result>
+		</action> 
+		<action name="updateDataForRequestReschedule" class="orderManagementControllerAction" method="updateDataForRequestReschedule">
+			<result name="json" type="json"> 
+			<param name="excludeProperties">
+			 	luDelegate,
+			 	managementService,
+			 	applicationProperties,
+			 	soDetailsManager
+			 </param>
+			 </result>
+		</action> 
+		<action name="savePrecallDetails" class="orderManagementControllerAction" method="savePrecallDetails">
+			<result name="json" type="json"> 
+			<param name="excludeProperties">
+			 	luDelegate,
+			 	managementService,
+			 	applicationProperties,
+			 	soDetailsManager
+			 </param>
+			 </result>
+		</action>
+		<action name="serviceOrderListSort" class="orderManagementControllerAction" method="sortServiceOrders">
+			<result name="inbox">/jsp/orderManagement/order_management_data_grid.jsp</result>
+			<result name="assign">/jsp/orderManagement/order_management_second_data_grid.jsp</result>
+			<result name="cancellations">/jsp/orderManagement/order_management_third_data_grid.jsp</result>
+		</action>
+		<action name="loadTimer" class="orderManagementControllerAction" method="loadTimer">
+			<result name="success">/jsp/orderManagement/order_management_panel_accept.jsp</result>
+		</action>
+		<!-- SL-21645 -->
+		<action name="displayAddEstimateSOPopUp" class="orderManagementControllerAction" method="displayAddEstimateSOPopUp">
+			<result name="success">/jsp/orderManagement/order_management_add_estimate_so.jsp</result>
+		</action>
+		
+		<action name="saveSOEstimate" class="orderManagementControllerAction" method="saveSOEstimate">
+			<result name="success" type="redirectAction">orderManagementController</result>
+			<result name="estimateDetails" type="redirectAction">
+			<param name="actionName">soDetailsController</param>
+			<param name="soId">${estimateVO.soId}</param>
+		    <param name="resId">${estimateVO.resourceId}</param>
+	        <param name="displayTab">EstimateDetails</param>
+	        <param name="cameFromOrderManagement">cameFromOrderManagementui-tabs-5</param>
+			</result>
+		</action> 
+		
+	 </package>
+</struts>

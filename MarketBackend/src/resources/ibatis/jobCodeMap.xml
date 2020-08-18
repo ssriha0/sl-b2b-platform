@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="jobcode">
+	<typeAlias alias="buyerSkuTaskVO" type="com.newco.marketplace.dto.vo.buyerskutask.BuyerSkuTaskVO" />
+	<typeAlias alias="buyerSkuTaskMappingVO" type="com.newco.marketplace.dto.vo.buyerskutask.BuyerSkuTaskMappingVO" />
+	
+	<insert id="buyerSkuTaskAssoc.insert"
+		parameterClass="buyerSkuTaskVO">
+		INSERT INTO buyer_sku_task_assoc 
+			(sku,node_id,service_type_template_id, created_date, buyer_id,template_id, specialty_cd) 
+		VALUES 
+			(#sku#,#nodeId#,#skillId#, NOW(),#buyerId#,#templateId#,#specCode#)
+	</insert>
+	
+	
+	<select id="buyerSkuCategory.select" parameterClass="buyerSkuTaskVO"
+		resultClass="java.lang.Integer">
+		SELECT category_id as categoryId FROM buyer_sku_category WHERE
+		category_name=#specCode# and buyer_id=#buyerId# 
+	</select>
+
+	<insert id="buyerSkuCategory.insert"
+		parameterClass="buyerSkuTaskVO">
+		INSERT INTO buyer_sku_category
+		(buyer_id,category_name,created_date,modified_date,category_descr) VALUES
+		(#buyerId#, #specCode#, NOW(),NOW(),#specCode#)
+		<selectKey resultClass="int">
+			SELECT last_insert_id() as categoryId
+		</selectKey>
+	</insert>
+
+
+	<select id="buyerSku.select" parameterClass="buyerSkuTaskVO"
+		resultClass="java.lang.Integer">
+		SELECT sku_id as skuId FROM buyer_sku WHERE buyer_id=#buyerId#
+		and sku_category=#skuCategoryId# and sku=#sku#
+	</select>
+
+	<insert id="buyerSku.insert" parameterClass="buyerSkuTaskVO">
+		INSERT INTO buyer_sku
+		(sku,buyer_id,created_date,modified_date,sku_category,sku_description)
+		VALUES (#sku#, #buyerId#,NOW(),NOW(), #skuCategoryId#,
+		#specCode#)
+		<selectKey resultClass="int">
+			SELECT last_insert_id() as skuId
+		</selectKey>
+	</insert>
+
+	<insert id="buyerSkuTask.insert" parameterClass="buyerSkuTaskVO">
+		INSERT INTO
+		buyer_sku_task(sku_id,category_node_id,service_type_template_id,task_name,task_comments)VALUES
+		(#skuId#,#nodeId#,#skillId#,#specCode#,#specCode#)
+	</insert>
+
+	<resultMap class="buyerSkuTaskVO" id="sku.tasks.resultsmap">
+		<result property="skuTaskId" column="sku_task_id" />
+		<result property="sku" column="sku" />
+		<result property="nodeId" column="node_id" />
+		<result property="skillId" column="service_type_template_id" />		
+		<result property="skillLevel" column="level" />
+		<result property="createdDate" column="created_date" />
+		<result property="buyerId" column="buyer_id" />
+		<result property="templateId" column="template_id" />
+		<result property="specCode" column="specialty_cd" />
+		
+		<result property="skillName" column="service_type_template_id"
+			select="serviceTypes.query" />
+		<result property="subCategoryName" column="node_id"
+			select="skillsubcategoryname.query" />
+		<result property="categoryName" column="node_id"
+			select="skillcategoryname.query" />	
+			
+	</resultMap>
+	
+	<select id="buyerSkuTask.queryby.sku" resultMap="sku.tasks.resultsmap" parameterClass="java.lang.String">
+		SELECT
+		
+			sta.sku_task_id AS sku_task_id,
+			sta.sku AS sku,
+			sta.node_id AS node_id,
+			sta.service_type_template_id AS service_type_template_id,
+			sta.created_date AS created_date,
+			sta.buyer_id as buyer_id,
+			sta.template_id as template_id,
+			sta.specialty_cd as specialty_cd,
+			st.level AS level		
+		FROM 
+			buyer_sku_task_assoc sta
+			join skill_tree st on st.node_id = sta.node_id
+        WHERE
+        	sta.sku = #sku#
+	</select>	
+	
+	<select id="buyerSkuTask.queryby.sku.specCode.buyerId" resultMap="sku.tasks.resultsmap" parameterClass="java.util.Map">
+		SELECT bst.sku_task_id AS sku_task_id,
+			bs.sku AS sku,
+				bst.category_node_id AS node_id,
+			bst.service_type_template_id AS service_type_template_id,
+			st.level AS level,
+			bs.created_date AS created_date,
+			bsc.buyer_id AS buyer_id,
+			bs.template_id AS template_id,
+			bsc.category_name AS specialty_cd
+	FROM buyer_sku bs
+	JOIN buyer_sku_category bsc ON bs.sku_category=bsc.category_id
+	JOIN buyer_sku_task bst ON bst.sku_id=bs.sku_id
+	JOIN skill_tree st ON st.node_id = bst.category_node_id
+    WHERE
+        	<isNotNull property="sku">
+				bs.sku = #sku#
+			</isNotNull>
+        	<isNotNull property="specCode" prepend="AND">
+				bs.sku_description = #specCode#
+			</isNotNull>
+			<isNotNull property="buyerId" prepend="AND">
+				bs.buyer_id = #buyerId#
+			</isNotNull>
+	</select>
+	
+	<select id="buyerSkuTask.queryby.sku.buyerId" resultMap="sku.tasks.resultsmap" parameterClass="java.util.Map">
+		SELECT		
+			sta.sku_task_id AS sku_task_id,
+			sta.sku AS sku,
+			sta.node_id AS node_id,
+			sta.service_type_template_id AS service_type_template_id,
+			sta.created_date AS created_date,
+			sta.buyer_id as buyer_id,
+			sta.template_id as template_id,
+			sta.specialty_cd as specialty_cd,
+			st.level AS level		
+		FROM 
+			buyer_sku_task_assoc sta
+			join skill_tree st on st.node_id = sta.node_id
+        WHERE
+        	<isNotNull property="sku">
+				sta.sku = #sku#
+			</isNotNull>
+			<isNotNull property="buyerId" prepend="AND">
+				sta.buyer_id = #buyerId#
+			</isNotNull>
+	</select>
+	
+	<delete id="buyerSkuTaskAssoc.deleteTask" parameterClass="buyerSkuTaskVO">
+		DELETE FROM buyer_sku_task_assoc 
+		WHERE sku = #sku# 
+		AND node_id = #nodeId# 
+		AND service_type_template_id = #skillId#
+    	AND specialty_cd = #specCode#	
+	</delete>
+	
+	<delete id="buyerSkuTask.deleteTask" parameterClass="buyerSkuTaskVO">
+		DELETE bt FROM buyer_sku_task bt INNER JOIN buyer_sku bs 
+		WHERE bs.sku_id = bt.sku_id and bs.sku = #sku# 	
+		AND bt.category_node_id = #nodeId# 
+		AND bt.service_type_template_id = #skillId# 
+		AND bt.task_name  = #specCode#
+	</delete>
+	
+	<update id="buyerSkuTaskAssoc.templateId.update" parameterClass="java.util.Map">
+		update buyer_sku_task_assoc set template_id = #templateId#
+		<dynamic prepend="WHERE">
+			<isNotNull property="buyerId" prepend="AND">
+				buyer_id = #buyerId#
+			</isNotNull>
+			<isNotNull property="jobCode" prepend="AND">
+				sku = #jobCode#
+			</isNotNull>
+			<isNotNull property="specCode" prepend="AND">
+				specialty_cd = #specCode#
+			</isNotNull>
+		</dynamic>
+	</update>
+	
+	<update id="buyerSkuTask.templateId.update" parameterClass="java.util.Map">
+		update buyer_sku set template_id = #templateId#
+		<dynamic prepend="WHERE">
+			<isNotNull property="buyerId" prepend="AND">
+				buyer_id = #buyerId#
+			</isNotNull>
+			<isNotNull property="jobCode" prepend="AND">
+				sku = #jobCode#
+			</isNotNull>
+			<isNotNull property="specCode" prepend="AND">
+				sku_description= #specCode#
+			</isNotNull>
+		</dynamic>
+	</update>
+	
+	<select id="buyerSkuTaskMap.queryby.sku.buyerId" resultClass="buyerSkuTaskMappingVO" parameterClass="java.util.Map">
+		SELECT		
+			bst.sku_task_id AS skuTaskId,
+			bst.sku_id AS skuId,
+			bst.category_node_id AS categoryId,
+			bst.service_type_template_id AS skillId,
+			bst.task_name AS taskName,
+			bst.task_comments AS taskComments,
+			bsku.sku AS sku,
+			bsku.bid_price AS bidPrice 		
+		FROM 
+			buyer_sku_task bst
+			join buyer_sku  bsku on bst.sku_id=bsku.sku_id
+        WHERE
+				bsku.sku = #sku# 
+		AND bsku.buyer_id= #buyerId# 
+	</select>
+	
+	
+</sqlMap>	

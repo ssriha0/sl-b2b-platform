@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+	    http://www.springframework.org/schema/beans
+	    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    ">
+	<!-- Direct to MQ -->
+	<bean id="constTransportType"
+		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+		<property name="staticField" value="${wsmq.transport.type.const.name}" />
+	</bean>
+	
+	<bean id="constTargetClient" 
+		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+		<property name="staticField" value="${wsmq.targetClient.const.name}" />
+	</bean>
+	
+	<bean id="constMessageSelection" 
+		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+		<property name="staticField" value="${wsmq.messageSelection.const.name}" />
+	</bean>
+	
+	<bean id="constPersistence" 
+		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+		<property name="staticField" value="${wsmq.persistence.const.name}" />
+	</bean>
+	
+	<bean id="constSubscriptionStore" 
+		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+		<property name="staticField" value="${wsmq.subscription.store.const.name}" />
+	</bean>
+	
+	<bean id="localHSRWsmqEventConnectionFactory" class="com.ibm.mq.jms.MQXATopicConnectionFactory">
+		<property name="transportType" ref="constTransportType" />
+		<property name="queueManager" value="${wsmq.queue.manager}" />
+		<property name="hostName" value="${wsmq.host.name}" />
+		<property name="port" value="${wsmq.host.port}" />
+		<property name="channel" value="${wsmq.channel}" />
+		<property name="clientID" value="${wsmq.subscriber.hsr.clientId}" />
+		<property name="brokerSubQueue" value="${wsmq.broker.subscriber.queue}" />
+		<property name="brokerPubQueue" value="${wsmq.broker.publisher.queue}" />
+<!--		<property name="temporaryModel" value="${wsmq.subscriber.model.queue}" />-->
+		<property name="subscriptionStore" ref="constSubscriptionStore" />
+		<property name="messageSelection" ref="constMessageSelection" />
+		<property name="sparseSubscriptions" value="${wsmq.sparse.subscriptions}" />
+	</bean>
+	
+	<bean id="localHSRWsmqEventTopic" class="com.ibm.mq.jms.MQTopic">
+		<property name="baseTopicName" value="${wsmq.topic.name}" />
+		<property name="targetClient" ref="constTargetClient" />
+		<property name="brokerDurSubQueue" value="${wsmq.broker.durable.subscriber.hsr.queue}" />
+		<property name="persistence" ref="constPersistence" />
+	</bean>
+	
+	<bean id="localAssurantWsmqEventConnectionFactory" class="com.ibm.mq.jms.MQXATopicConnectionFactory">
+		<property name="transportType" ref="constTransportType" />
+		<property name="queueManager" value="${wsmq.queue.manager}" />
+		<property name="hostName" value="${wsmq.host.name}" />
+		<property name="port" value="${wsmq.host.port}" />
+		<property name="channel" value="${wsmq.channel}" />
+		<property name="clientID" value="${wsmq.subscriber.assurant.clientId}" />
+		<property name="brokerSubQueue" value="${wsmq.broker.subscriber.queue}" />
+		<property name="brokerPubQueue" value="${wsmq.broker.publisher.queue}" />
+<!--		<property name="temporaryModel" value="${wsmq.subscriber.model.queue}" />-->
+		<property name="subscriptionStore" ref="constSubscriptionStore" />
+		<property name="messageSelection" ref="constMessageSelection" />
+		<property name="sparseSubscriptions" value="${wsmq.sparse.subscriptions}" />
+	</bean>
+	
+	<bean id="localAssurantWsmqEventTopic" class="com.ibm.mq.jms.MQTopic">
+		<property name="baseTopicName" value="${wsmq.topic.name}" />
+		<property name="targetClient" ref="constTargetClient" />
+		<property name="brokerDurSubQueue" value="${wsmq.broker.durable.subscriber.assurant.queue}" />
+		<property name="persistence" ref="constPersistence" />
+	</bean>
+		
+	<bean id="localWsmqEventConnectionFactory" class="com.ibm.mq.jms.MQXATopicConnectionFactory">
+		<property name="transportType" ref="constTransportType" />
+		<property name="queueManager" value="${wsmq.queue.manager}" />
+		<property name="hostName" value="${wsmq.host.name}" />
+		<property name="port" value="${wsmq.host.port}" />
+		<property name="channel" value="${wsmq.channel}" />
+		<property name="clientID" value="${wsmq.subscriber.ri.clientId}" />
+		<property name="brokerSubQueue" value="${wsmq.broker.subscriber.queue}" />
+		<property name="brokerPubQueue" value="${wsmq.broker.publisher.queue}" />
+<!--		<property name="temporaryModel" value="${wsmq.subscriber.model.queue}" />-->
+		<property name="subscriptionStore" ref="constSubscriptionStore" />
+		<property name="messageSelection" ref="constMessageSelection" />
+		<property name="sparseSubscriptions" value="${wsmq.sparse.subscriptions}" />
+	</bean>
+	
+	<bean id="localWsmqEventTopic" class="com.ibm.mq.jms.MQTopic">
+		<property name="baseTopicName" value="${wsmq.topic.name}" />
+		<property name="targetClient" ref="constTargetClient" />
+		<property name="brokerDurSubQueue" value="${wsmq.broker.durable.subscriber.ri.queue}" />
+		<property name="persistence" ref="constPersistence" />
+	</bean>
+
+</beans>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server>
+	<mbean code="org.jboss.jms.server.destination.QueueService"
+		name="servicelive.esb.integration.destination:service=Queue,name=assurantServiceOrderEventEsb"
+		xmbean-dd="xmdesc/Queue-xmbean.xml">
+		<depends optional-attribute-name="ServerPeer">jboss.messaging:service=ServerPeer</depends>
+		<depends>jboss.messaging:service=PostOffice</depends>
+		<attribute name="JNDIName">queue/assurantServiceOrderEventEsb</attribute>
+   </mbean>
+
+	<mbean code="org.jboss.jms.server.destination.QueueService"
+		name="servicelive.esb.integration.destination:service=Queue,name=searsRiServiceOrderEventEsb"
+		xmbean-dd="xmdesc/Queue-xmbean.xml">
+		<depends optional-attribute-name="ServerPeer">jboss.messaging:service=ServerPeer</depends>
+		<depends>jboss.messaging:service=PostOffice</depends>
+		<attribute name="JNDIName">queue/searsRiServiceOrderEventEsb</attribute>
+   </mbean>
+
+	<mbean code="org.jboss.jms.server.destination.QueueService"
+		name="servicelive.esb.integration.destination:service=Queue,name=searsHsrServiceOrderEventEsb"
+		xmbean-dd="xmdesc/Queue-xmbean.xml">
+		<depends optional-attribute-name="ServerPeer">jboss.messaging:service=ServerPeer</depends>
+		<depends>jboss.messaging:service=PostOffice</depends>
+		<attribute name="JNDIName">queue/searsHsrServiceOrderEventEsb</attribute>
+   </mbean>
+
+	<mbean code="org.jboss.jms.server.destination.QueueService"
+		name="servicelive.esb.integration.destination:service=Queue,name=searsRiServiceOrderEsb"
+		xmbean-dd="xmdesc/Queue-xmbean.xml">
+		<depends optional-attribute-name="ServerPeer">jboss.messaging:service=ServerPeer</depends>
+		<depends>jboss.messaging:service=PostOffice</depends>
+		<attribute name="JNDIName">queue/searsRiServiceOrderEsb1</attribute>
+   </mbean>
+</server>

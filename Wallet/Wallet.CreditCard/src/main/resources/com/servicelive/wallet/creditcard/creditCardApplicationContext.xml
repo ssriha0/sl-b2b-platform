@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-2.0.xsd">
+
+	<import resource="classpath:/com/servicelive/common/serviceLiveCommonApplicationContext.xml" />
+	
+	<bean id="creditCard" class="com.servicelive.wallet.creditcard.RouteCreditCardBO">
+		<property name="searsCreditCard" ref="searsCreditCard"/>
+		<property name="thirdPartyCreditCard" ref="thirdPartyCreditCard"/>
+	</bean>
+	
+	<bean id="hsAuthServiceCreditCardBo" class="com.servicelive.wallet.creditcard.HSAuthServiceCreditCardBO">
+		<property name="applicationProperties" ref="applicationPropertiesWallet"/>
+		<property name="creditCardDao" ref="creditCardDaoWallet"/>
+		<property name="hsAuthServiceClient" ref="hsAuthServiceClient"/>
+	</bean>
+	
+	
+	<bean id="hsAuthServiceClient" class="com.servicelive.wallet.creditcard.HSAuthServiceClient">
+	</bean>
+	 
+	
+	<bean id="searsCreditCard" class="com.servicelive.wallet.creditcard.SearsCreditCardBO">
+		<property name="applicationProperties" ref="applicationPropertiesWallet"/>
+		<property name="creditCardDao" ref="creditCardDaoWallet"/>
+	</bean>
+
+	<bean id="thirdPartyCreditCard" class="com.servicelive.wallet.creditcard.ThirdPartyCreditCardBO">
+		<property name="applicationProperties" ref="applicationPropertiesWallet"/>
+		<property name="creditCardDao" ref="creditCardDaoWallet"/>
+	</bean>
+	
+	<bean id="creditCardDaoWallet" class="com.servicelive.wallet.creditcard.dao.CreditCardDao">
+		<property name="sqlMapClient">
+			<ref bean="creditCardSqlMapClient"/>
+		</property>
+	</bean>
+
+	<bean id="creditCardSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation">
+			<value>classpath:/com/servicelive/wallet/creditcard/creditCardSqlMapConfig.xml</value>
+		</property>
+		<property name="dataSource">
+			<ref bean="${datasource.finance.bean.id}" />
+		</property>
+	</bean>
+	
+	<!-- TRANSACTION SUPPORT -->
+	<bean id="creditCardTx"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		lazy-init="true">
+		<property name="proxyInterfaces">
+			<list>
+				<value>
+					com.servicelive.wallet.creditcard.ICreditCardBO
+				</value>
+			</list>
+		</property>
+		<property name="target">
+			<ref bean="creditCard" />
+		</property>
+		<property name="transactionManager">
+			<ref bean="dsTransactionManagerFinance" />
+		</property>
+		<property name="transactionAttributeSource">
+			<ref bean="attributeSource" />
+		</property>
+	</bean>
+	
+</beans>
+

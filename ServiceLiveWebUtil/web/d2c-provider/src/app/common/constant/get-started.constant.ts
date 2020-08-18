@@ -1,0 +1,1 @@
+export const notOptedSkuURL: string = '_getNotOptedSKUList.action';

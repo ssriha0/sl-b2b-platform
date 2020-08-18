@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+   
+    <bean id="slPartsOrderFileProcessor" class="com.newco.batch.serviceorder.SLPartsOrderFileProcessor">
+	 	<property name="slPartsOrderFileDao">
+    		<ref bean="slPartsOrderFileDao"/>
+  		</property>	 
+  		<property name="emailTemplateBOImpl">
+			<ref bean="emailTemplateBean" />
+		</property>
+    </bean>
+    
+    <bean id="slPartsOrderFileDao" class="com.newco.marketplace.persistence.daoImpl.so.SLPartsOrderFileDaoImpl"
+    	lazy-init="true">
+	 	<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>	 
+    </bean>	
+</beans>

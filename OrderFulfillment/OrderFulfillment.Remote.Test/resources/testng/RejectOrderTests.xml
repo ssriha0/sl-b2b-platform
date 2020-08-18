@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="OrderFulfillment.Remote.RejectOrderTests" thread-count="1">
+    <test name="RejectAfterPost" >
+        <groups>
+            <run><include name="init" /></run>
+        </groups>
+        <classes>
+            <class name="com.servicelive.orderfulfillment.remote.test.workflow.RejectOrderTests">
+                <methods>
+                    <include name="createServiceOrder"/>
+                    <include name="editDraftOrder"/>
+                    <include name="postServiceOrder"/>
+                    <include name="rejectPostedOrder"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="AllProvidersRejectAfterPost" >
+        <groups>
+            <run><include name="init" /></run>
+        </groups>
+        <classes>
+            <class name="com.servicelive.orderfulfillment.remote.test.workflow.RejectOrderTests">
+                <methods>
+                    <include name="createServiceOrder"/>
+                    <include name="editDraftOrder"/>
+                    <include name="postServiceOrder"/>
+                    <include name="rejectPostedOrderByAll"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="RejectAfterBidPost" >
+        <groups>
+            <run><include name="init" /></run>
+        </groups>
+        <classes>
+            <class name="com.servicelive.orderfulfillment.remote.test.workflow.RejectOrderTests">
+                <methods>
+                    <include name="createServiceOrder"/>
+                    <include name="setServiceOrderSpendingLimit"/>
+                    <include name="postServiceOrderBid"/>
+                    <include name="rejectBidPostedOrder"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="AllProvidersRejectAfterBidPost" >
+        <groups>
+            <run><include name="init" /></run>
+        </groups>
+        <classes>
+            <class name="com.servicelive.orderfulfillment.remote.test.workflow.RejectOrderTests">
+                <methods>
+                    <include name="createServiceOrder"/>
+                    <include name="setServiceOrderSpendingLimit"/>
+                    <include name="postServiceOrderBid"/>
+                    <include name="rejectBidPostedOrderByAll"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>
+

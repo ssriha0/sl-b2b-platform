@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<bean id="b2CGenericBO" class="com.newco.marketplace.business.businessImpl.b2c.B2CGenericBOImpl"> 
+		<property name="b2CGenericDao">
+			<ref bean="b2CGenericDao" />
+		</property>
+	</bean>
+
+	<bean id="b2CGenericDao" class="com.newco.marketplace.persistence.daoImpl.b2c.B2CGenericDaoImpl"> 
+		<property name="sqlMapClient">
+    		<ref bean="sqlMapClient"/>
+  		</property>
+	</bean>	
+
+</beans>

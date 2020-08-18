@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="spn.login.authority">
+	
+	
+	<select id="getAuthorities" parameterClass="java.lang.String" resultClass="java.lang.String">
+		 SELECT lup.activity_name AS activityName
+			FROM lu_permissions AS lup
+			JOIN lu_permission_role AS lur ON (lur.activity_id = lup.activity_id)
+			JOIN user_profile AS up ON up.role_id = lur.role_id
+	        JOIN user_profile_permissions AS upp
+      			ON  lur.role_activity_id = upp.role_activity_id
+      			AND up.user_name = upp.user_name
+			WHERE up.user_name = #authenticateUserName#
+	</select>
+	
+	
+</sqlMap>

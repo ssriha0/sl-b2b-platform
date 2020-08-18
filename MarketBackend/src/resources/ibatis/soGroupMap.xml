@@ -1,0 +1,605 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="soGroup">
+
+	<typeAlias alias="soGroupMatch"
+		type="com.newco.marketplace.vo.orderGroup.ServiceOrderGroupMatchVO" />
+	<typeAlias alias="soSearchVO" 
+		type="com.newco.marketplace.dto.vo.serviceorder.ServiceOrderSearchResultsVO" />
+	<typeAlias alias="soGroup"
+		type="com.newco.marketplace.dto.vo.ordergroup.OrderGroupVO" />
+	<typeAlias alias="soGroupResponseVO"
+		type="com.newco.marketplace.dto.vo.serviceorder.ResponseSoVO" />
+	<typeAlias alias="price"
+		type="com.newco.marketplace.dto.vo.price.ServiceOrderPriceVO" /> 
+	<typeAlias alias="routedProvider"
+		type="com.newco.marketplace.dto.vo.serviceorder.RoutedProvider" />
+	<typeAlias alias="so"
+		type="com.newco.marketplace.dto.vo.serviceorder.ServiceOrder" />	
+	<typeAlias alias="buyerReferenceType" 
+		type="com.newco.marketplace.dto.vo.buyer.BuyerReferenceVO" />	
+		
+	<parameterMap id="updateSoHdrGrpId-param" class="java.util.Map">
+        <parameter property="parentGrpId"/>
+        <parameter property="soId"/>
+    </parameterMap>	
+    
+    <parameterMap id="updateSoHdrSubStatus-param" class="java.util.Map">
+        <parameter property="subStatus"/>
+        <parameter property="soId"/>
+    </parameterMap>		
+    
+<!--      code change for SLT-2112 -->
+    <select id="query_by_group_id" parameterClass="java.util.HashMap" resultClass="com.newco.marketplace.dto.vo.ordergroup.OrderGroupVO">
+    	select
+			g.so_group_id as groupId,
+			g.group_title as title,
+			g.group_service_date as groupServiceDate,
+			g.group_service_time as groupServiceime,
+			g.wf_state_id as wfStateId,
+			g.lock_edit_ind as lockEditInd,
+			g.created_date as createdDate,
+			g.modified_date as modifiedDate,
+			g.modified_by as modifiedBy,
+			(gp.final_group_spend_limit_labor + gp.final_group_spend_limit_parts) as spendLimit,
+			gp.condl_offer_accepted_group_price as conditionalOfferPrice,
+			gp.original_group_spend_limit_labor as originalSpendLimitLabor,
+			gp.original_group_spend_limit_parts as originalSpendLimitParts,
+			gp.discounted_group_spend_limit_labor as discountedSpendLimitLabor,
+			gp.discounted_group_spend_limit_parts as discountedSpendLimitParts,
+			gp.final_group_spend_limit_labor as finalSpendLimitLabor,
+			gp.final_group_spend_limit_parts as finalSpendLimitParts,
+			gp.total_permit_price as totalPermitPrice
+		from so_group g, so_group_price gp
+		where g.so_group_id = gp.so_group_id
+			and g.so_group_id = #groupId#
+	</select>
+	
+	<!--SL-21465  -->
+	<!-- <select id="query_by_so_id_to_get_estimateDetails" parameterClass= "java.util.HashMap" resultClass="com.newco.marketplace.dto.vo.EstimateVO">
+    	SELECT max(est.estimation_id) as estimationId , socust.buyer_ref_value as buyerRefValue, est.total_price as totalPrice
+		from so_custom_reference socust 
+                			    inner join buyer_reference_type reftype on 
+                                reftype.buyer_ref_type_id=socust.buyer_ref_type_id
+                				and reftype.ref_type='Order_Type' 
+                                left join so_estimation est on socust.so_id = est.so_id 
+                                 AND (est.vendor_id=#vendorId# OR est.resource_id=#resourceId#)
+                                WHERE socust.so_id=#soId# 
+                                and socust.buyer_ref_value='ESTIMATION'; 
+	</select> -->
+	<select id="query_by_so_id_to_get_estimateDetails" parameterClass= "java.util.HashMap" resultClass="com.newco.marketplace.dto.vo.EstimateVO">
+	 				SELECT max(est.estimation_id) as estimationId , socust.buyer_ref_value as buyerRefValue, 
+	 							est.total_price as totalPrice,
+	 							est.total_parts_price as totalPartsPrice , est.total_labor_price as totalLaborPrice, 
+	 							est.total_other_service_price as totalOtherServicePrice,  
+	 							est.discounted_amount as discountedAmount,
+	 							est.discounted_percentage as discountedPercentage,
+	 							est.discount_type as discountType,
+	 							est.tax_rate as taxRate, 
+	 							est.tax as taxPrice,
+	 							est.status as status
+	 							from so_custom_reference socust 
+                			    inner join buyer_reference_type reftype on 
+                                reftype.buyer_ref_type_id=socust.buyer_ref_type_id
+                				and reftype.ref_type='Order_Type' 
+                                left join so_estimation est on socust.so_id = est.so_id 
+                                <isNotNull prepend="AND" property="vendorId">
+                                 ( est.vendor_id=#vendorId#
+									<isNotNull prepend="OR" property="resourceId">
+										 est.resource_id=#resourceId#
+									</isNotNull>
+                                 )
+								</isNotNull>
+                                WHERE socust.so_id=#soId# 
+                                and socust.buyer_ref_value='ESTIMATION';
+    
+     </select> 
+	<select id="query_by_so_id_to_get_estimateHistoryDetails" parameterClass= "java.util.HashMap" resultClass="com.newco.marketplace.dto.vo.EstimateHistoryVO">
+	 				select modified_by as modifiedBy ,modified_date as modifiedDate,status as status, accept_source as acceptSource from so_estimation_history seh
+                                WHERE 
+                                seh.so_id=#soId#
+                                 <isNotNull prepend="AND" property="vendorId">
+                                 ( seh.vendor_id=#vendorId#
+									<isNotNull prepend="OR" property="resourceId">
+										 seh.resource_id=#resourceId#
+									</isNotNull>
+                                  )
+								</isNotNull>
+                                 order by seh.estimation_history_id desc;
+     </select> 	
+  <!--SL-21465  -->
+	<insert id="insert_order_grp" parameterClass="java.util.Map">
+		insert into so_group 
+	    		(so_group_id,wf_state_id, group_title , created_date)
+	    values(#parentGrpId#, #wfStateId#, #groupTitle#, NOW()) 
+	</insert>
+		
+	<!-- get SO match for Address and main Category-->
+	<select id="so_group_match.query" parameterClass="soGroupMatch" resultClass="soGroupMatch">
+		select sh.so_id as soId,
+			   sh.primary_skill_category_id as primarySkillCatId,
+			    sh.so_group_id as  parentGroupId
+		from so_hdr sh join
+			 so_location sl on sh.so_id = sl.so_id
+		where 
+			sh.buyer_id = #buyerId# and 
+			sl.street_1 = #streetAdd1# and
+			sl.street_2 = #streetAdd2# and
+			sl.city = #city# and
+			sl.state_cd = #stateCd# and
+			sl.zip = #zip# and
+			sl.so_locn_type_id = #locationType# and
+			sh.primary_skill_category_id= #primarySkillCatId# and
+			sh.wf_state_id = #status# and
+			sh.service_date1 = #serviceDate1# and
+			sh.so_id  <![CDATA[<>]]> #soId# and
+			(sh.so_substatus_id <![CDATA[<>]]> #subStatusId#
+			or sh.so_substatus_id is null)
+	</select>
+	
+	<update id="update_so_hdr_parent_grp.query" parameterMap="updateSoHdrGrpId-param">
+		update so_hdr
+			set so_group_id = ?
+		where so_id = ?
+	</update>
+
+	
+	<update id="update_so_hdr_sub_status" parameterMap="updateSoHdrSubStatus-param">
+		update so_hdr
+			set so_substatus_id = ?
+		where so_id = ?
+	</update>
+	
+	<update id="update_so_group_price" parameterClass="soGroup">
+		update so_group_price
+			set modified_date = now()
+				<isNotNull property="originalSpendLimitLabor" prepend=", ">
+					original_group_spend_limit_labor = #originalSpendLimitLabor#
+				</isNotNull>
+				<isNotNull property="originalSpendLimitParts" prepend=", ">
+					original_group_spend_limit_parts = #originalSpendLimitParts#
+				</isNotNull>
+				<isNotNull property="discountedSpendLimitLabor" prepend=", ">
+					discounted_group_spend_limit_labor = #discountedSpendLimitLabor#
+				</isNotNull>
+				<isNotNull property="discountedSpendLimitParts" prepend=", ">
+					discounted_group_spend_limit_parts = #discountedSpendLimitParts#
+				</isNotNull>
+				<isNotNull property="finalSpendLimitLabor" prepend=", ">
+					final_group_spend_limit_labor = #finalSpendLimitLabor#
+				</isNotNull>
+				<isNotNull property="finalSpendLimitParts" prepend=", ">
+					final_group_spend_limit_parts = #finalSpendLimitParts#
+				</isNotNull>
+				<isNotNull property="conditionalOfferPrice" prepend=", ">
+					condl_offer_accepted_group_price = #conditionalOfferPrice#
+				</isNotNull>
+				<isNotNull property="totalPermitPrice" prepend=", ">
+					total_permit_price = #totalPermitPrice#
+				</isNotNull>
+			where so_group_id = #groupId#
+	</update>
+
+	<update id="soGroup.update_provider_response" parameterClass="soGroupResponseVO">
+		UPDATE so_group_routed_providers
+		<dynamic prepend="SET">
+			<isNotEqual prepend=", " property="responseId" compareValue="0">
+				provider_resp_id = #responseId#
+			</isNotEqual>
+			<isNotEqual prepend=", " property="reasonId" compareValue="0">
+				resp_reason_id = #reasonId#
+			</isNotEqual>
+			<isNotNull prepend=", ">
+				provider_resp_date = NOW()
+			</isNotNull>
+			<isNotNull prepend=", ">modified_date = NOW()</isNotNull>
+			<isNotNull prepend=", " property="modifiedBy">
+				modified_by = #modifiedBy#
+			</isNotNull>
+		</dynamic>
+		WHERE so_group_id = #soId# and resource_id = #resourceId#
+	</update>
+	
+	<update id="soGroup.withdrawGroupConditionalAcceptance"
+		parameterClass="routedProvider">
+		update so_group_routed_providers set provider_resp_id=null,
+		resp_reason_id=null, provider_resp_comment=null,
+		provider_resp_date=null, service_date1=null, service_date2=null,
+		offer_expiration_date=null,service_time_start=null,service_time_end=null
+		where so_group_id=#soId# and resource_id=#resourceId# and
+		provider_resp_id=#providerRespId#
+	</update>
+	
+	<resultMap class="soGroup" id="soGroup.resultMap">
+		<result property="groupId" column="so_group_id" />
+		<result property="title" column="group_title" />
+		<result property="groupServiceDate" column="group_service_date" />
+		<result property="groupServiceTime" column="group_service_time" />
+		<result property="wfStateId" column="wf_state_id" />
+		<result property="lockEditInd" column="lock_edit_ind" />
+		<result property="createdDate" column="created_date" />
+		<result property="modifiedDate" column="modified_date" />
+		<result property="modifiedBy" column="modified_by" />
+		<result property="conditionalOfferPrice" column="condl_offer_accepted_group_price" />
+		<result property="originalSpendLimitLabor" column="original_group_spend_limit_labor" />
+		<result property="originalSpendLimitParts" column="original_group_spend_limit_parts" />
+		<result property="discountedSpendLimitLabor" column="discounted_group_spend_limit_labor" />
+		<result property="discountedSpendLimitParts" column="discounted_group_spend_limit_parts" />
+		<result property="finalSpendLimitLabor" column="final_group_spend_limit_labor" />
+		<result property="finalSpendLimitParts" column="final_group_spend_limit_parts" />
+		<result property="serviceOrders" column="so_group_id"
+			select="so_group_match.getServiceOrdersForGroup"/> 
+	</resultMap>
+	
+	<select id="soGroup.query" parameterClass="java.lang.Integer" resultMap="soGroup.resultMap">
+		select * from so_group sg, so_group_price sgp
+		where sg.so_group_id = sgp.so_group_id
+			and sg.so_group_id in (select distinct so_group_id from so_hdr where buyer_id = #buyerId#)
+	</select>
+	
+<!-- 	code change for SLT-2112 -->
+	<select id="so_group_match.getServiceOrdersForGroup" parameterClass="java.util.HashMap" resultClass="soSearchVO">
+		SELECT DISTINCT 
+			s.so_id as soId,
+			sg.so_group_id as parentGroupId,
+			sg.group_title as parentGroupTitle,
+			sg.created_date as groupCreatedDate,
+			s.routed_date as routedDate,
+			sgp.final_group_spend_limit_labor as groupSpendLimitLabor,
+			sgp.final_group_spend_limit_parts as groupSpendLimitParts,
+			(sgp.final_group_spend_limit_labor + sgp.final_group_spend_limit_parts) as groupSpendLimit,
+			if (sg.so_group_id is null,s.so_id,sg.so_group_id) as sortSOandGroupID,
+			if (sg.so_group_id is null,s.spend_limit_labor,sgp.final_group_spend_limit_labor) as sortSOandGroupSpendLimit,
+			s.buyer_id as buyerID, 
+			b.business_name as buyerCompanyName,
+			s.accepted_resource_id as acceptedResourceId,
+			s.sow_title as soTitle,
+			s.sow_descr as soTitleDesc,
+			s.primary_skill_category_id	as primarySkillCategoryId,
+			s.access_fee as accessFee,
+			s.service_date_type_id as serviceDateTypeId,
+			s.service_date1 as appointStartDate,
+			s.service_date2 as appointEndDate,
+			s.service_date1 as serviceDate1,
+			s.service_date2 as serviceDate2,
+			s.service_time_start as serviceTimeStart,
+			s.service_time_end as serviceTimeEnd,
+			s.service_locn_time_zone as serviceLocationTimezone,
+			s.created_date as createdDate,
+			s.spend_limit_labor as spendLimit,
+			s.spend_limit_labor as spendLimitLabor,
+			s.spend_limit_parts as spendLimitParts,
+			if (sp.original_spend_limit_labor is null, s.spend_limit_labor, sp.original_spend_limit_labor) as originalSpendLimitLabor,
+			if (sp.original_spend_limit_parts is null, s.spend_limit_parts, sp.original_spend_limit_parts) as originalSpendLimitParts,
+			s.wf_state_id as soStatus,
+			s.so_substatus_id as soSubStatus,
+			s.price_type as priceType,
+			sl.street_1 as street1,
+			sl.street_2 as street2,
+			sl.city as city,
+			sl.state_cd as stateCd,
+			sl.zip as zip,
+			sl.zip4 as zip4,
+			sl.country as country,
+			sc.first_name as endCustomerFirstName,
+			sc.last_name as endCustomerLastName,
+			cont2.first_name as providerFirstName,
+			cont2.last_name	as providerLastName,
+			scp.phone_no as endCustomerPrimaryPhoneNumber,
+			concat(concat(c.first_name,' '),c.last_name) as claimedByResource,
+			loct.street_1 as resStreet1,
+			loct.street_2 as resStreet2,
+			loct.city as resCity,
+			loct.state_cd as resStateCd,
+			loct.zip as resZip,
+			s.lock_edit_ind as lockEditInd,
+			s.total_permit_price as totalPermitPrice
+		from so_hdr s
+			left outer join so_price sp on s.so_id = sp.so_id
+			left outer join so_group sg on s.so_group_id = sg.so_group_id
+			left outer join so_group_price sgp on s.so_group_id = sgp.so_group_id
+			join buyer b on s.buyer_id = b.buyer_id
+			join lu_wf_states_alias wf_alias on s.wf_state_id = wf_alias.wf_state_id
+			left outer join so_contact_locn scl on s.so_id = scl.so_id and scl.so_contact_locn_type_id = 10
+			left outer join so_location sl on scl.so_locn_id = sl.so_locn_id
+			left outer join so_contact sc on scl.so_contact_id = sc.so_contact_id
+			left outer join vendor_resource vr on vr.resource_id = s.accepted_resource_id
+			left outer join contact cont2 on cont2.contact_id = vr.contact_id
+			left outer join (select sh.so_id, max(claimed_by_id) as claimed_by_id from wfm_so_queues JOIN so_hdr sh ON sh.so_id=wfm_so_queues.so_id AND sh.so_group_id = #parentGroupId#
+                   GROUP BY sh.so_id) pbc on s.so_id = pbc.so_id 
+			left outer join buyer_resource br2 on pbc.claimed_by_id = br2.resource_id
+			left outer join contact c on br2.contact_id = c.contact_id
+			left outer join so_contact_phones scp on scp.so_contact_id = sc.so_contact_id and sc.so_id = scp.so_id and scp.phone_type_id=1
+			left outer join location loct on vr.locn_id=loct.locn_id
+		where
+		s.so_group_id= #parentGroupId#
+	</select>
+ 	
+ 	<select id="so_group_match.getServiceOrdersForOrigGroup" parameterClass="java.lang.String" resultClass="soSearchVO">
+		SELECT DISTINCT 
+			s.so_id as soId,
+			sg.so_group_id as parentGroupId,
+			sg.group_title as parentGroupTitle,
+			sg.created_date as groupCreatedDate,
+			sgp.final_group_spend_limit_labor as groupSpendLimitLabor,
+			sgp.final_group_spend_limit_parts as groupSpendLimitParts,
+			(sgp.final_group_spend_limit_labor + sgp.final_group_spend_limit_parts) as groupSpendLimit,
+			if (sg.so_group_id is null,s.so_id,sg.so_group_id) as sortSOandGroupID,
+			if (sg.so_group_id is null,s.spend_limit_labor,sgp.final_group_spend_limit_labor) as sortSOandGroupSpendLimit,
+			s.buyer_id as buyerID, 
+			b.business_name as buyerCompanyName,
+			s.accepted_resource_id as acceptedResourceId,
+			s.sow_title as soTitle,
+			s.sow_descr as soTitleDesc,
+			s.primary_skill_category_id	as primarySkillCategoryId,
+			s.access_fee as accessFee,
+			s.service_date_type_id as serviceDateTypeId,
+			s.service_date1 as appointStartDate,
+			s.service_date2 as appointEndDate,
+			s.service_date1 as serviceDate1,
+			s.service_date2 as serviceDate2,
+			s.service_time_start as serviceTimeStart,
+			s.service_time_end as serviceTimeEnd,
+			s.service_locn_time_zone as serviceLocationTimezone,
+			s.created_date as createdDate,
+			s.spend_limit_labor as spendLimit,
+			s.spend_limit_labor as spendLimitLabor,
+			s.spend_limit_parts as spendLimitParts,
+			if (sp.original_spend_limit_labor is null, s.spend_limit_labor, sp.original_spend_limit_labor) as originalSpendLimitLabor,
+			if (sp.original_spend_limit_parts is null, s.spend_limit_parts, sp.original_spend_limit_parts) as originalSpendLimitParts,
+			s.wf_state_id as soStatus,
+			s.so_substatus_id as soSubStatus,
+			sl.street_1 as street1,
+			sl.street_2 as street2,
+			sl.city as city,
+			sl.state_cd as stateCd,
+			sl.zip as zip,
+			sl.zip4 as zip4,
+			sl.country as country,
+			sc.first_name as endCustomerFirstName,
+			sc.last_name as endCustomerLastName,
+			scp.phone_no as endCustomerPrimaryPhoneNumber,
+			cont2.first_name as providerFirstName,
+			cont2.last_name	as providerLastName,
+			concat(concat(c.first_name,' '),c.last_name) as claimedByResource
+		from so_hdr s
+			left outer join so_price sp on s.so_id = sp.so_id
+			left outer join so_group sg on s.so_group_id = sg.so_group_id
+			left outer join so_group_price sgp on s.so_group_id = sgp.so_group_id
+			join buyer b on s.buyer_id = b.buyer_id
+			join lu_wf_states_alias wf_alias on s.wf_state_id = wf_alias.wf_state_id
+			left outer join so_contact_locn scl on s.so_id = scl.so_id and scl.so_contact_locn_type_id = 10
+			left outer join so_location sl on scl.so_locn_id = sl.so_locn_id
+			left outer join so_contact sc on scl.so_contact_id = sc.so_contact_id
+			left outer join vendor_resource vr on vr.resource_id = s.accepted_resource_id
+			left outer join contact cont2 on cont2.contact_id = vr.contact_id
+			left outer join (select so_id, max(claimed_by_id) as claimed_by_id from wfm_so_queues group by so_id) pbc on s.so_id = pbc.so_id 
+			left outer join buyer_resource br2 on pbc.claimed_by_id = br2.resource_id
+			left outer join contact c on br2.contact_id = c.contact_id
+			left outer join so_contact_phones scp on scp.so_contact_id = sc.so_contact_id and sc.so_id = scp.so_id and scp.phone_type_id=1
+		where
+		s.so_orig_group_id= #parentGroupId#
+	</select>
+ 	
+ 	<select id="so_group_match.getServiceOrderVOsForGroup" parameterClass="java.lang.String" resultClass="so">
+		SELECT 
+		s.so_id as soId,
+		wf_alias.sort_order as sortOrder,
+		s.buyer_id as buyerID, 
+		b.business_name as buyerCompanyName,
+		s.accepted_resource_id as acceptedResourceId,
+		s.sow_title as soTitle,
+		s.sow_descr as soTitleDesc,
+		s.service_date1 as appointStartDate,
+		s.service_date2 as appointEndDate,
+		s.service_time_start as serviceTimeStart,
+		s.service_time_end as serviceTimeEnd,
+		s.service_locn_time_zone as serviceLocationTimezone,
+		s.created_date as createdDate,
+		s.spend_limit_labor as spendLimit,
+		s.wf_state_id as soStatus,
+		s.so_substatus_id as soSubStatus,
+		wf_alias.descr as soStatusString,
+		sl.street_1 as street1,
+		sl.street_2 as street2,
+		sl.city as city,
+		sl.state_cd as stateCd,
+		sl.zip as zip,
+		sl.zip4 as zip4,
+		sl.country as country,
+		sc.first_name as endCustomerFirstName,
+		sc.last_name as endCustomerLastName,
+		scp.phone_no as endCustomerPrimaryPhoneNumber,
+		cont2.first_name as providerFirstName,
+		cont2.last_name	as providerLastName,
+		concat(concat(c.first_name,' '),c.last_name) as claimedByResource
+		FROM so_hdr s
+		join buyer b on s.buyer_id = b.buyer_id
+		join lu_wf_states_alias wf_alias on s.wf_state_id = wf_alias.wf_state_id and wf_alias.role_id = #roleId#
+		left outer join so_contact_locn scl on s.so_id = scl.so_id and scl.so_contact_locn_type_id = 10
+		left outer join so_location sl on scl.so_locn_id = sl.so_locn_id
+		left outer join so_contact sc on scl.so_contact_id = sc.so_contact_id
+		left outer join vendor_resource vr on vr.resource_id = s.accepted_resource_id
+		left outer join contact cont2 on cont2.contact_id = vr.contact_id
+		left outer join (select so_id, max(claimed_by_id) as claimed_by_id from wfm_so_queues group by so_id) pbc on s.so_id = pbc.so_id 
+		left outer join buyer_resource br2 on pbc.claimed_by_id = br2.resource_id
+		left outer join contact c on br2.contact_id = c.contact_id
+		left outer join so_contact_phones scp on scp.so_contact_id = sc.so_contact_id and sc.so_id = scp.so_id and scp.phone_type_id=1
+ 		WHERE s.so_group_id= #parentGroupId#
+	</select>
+
+	<update id="soGroup.update_parentId_for_group" parameterClass="java.util.Map" >
+		update so_hdr 
+		set so_group_id = #newParentId# 
+		where so_group_id = #oldParentId#
+	</update>
+	
+		
+	<select id="soGroup.getRoutedResources" parameterClass="java.lang.String"
+		resultClass="java.lang.Integer">
+		select resource_id from so_group_routed_providers where
+		so_group_id=#groupOrderId#
+	</select>
+	
+	<update id="soGroup.update_status" parameterClass="java.util.Map" >
+		update so_group 
+		set wf_state_id = #wfStatusId# ,
+		    modified_date = NOW()
+		where so_group_id = #groupId# 
+	</update>
+	
+	<update id="soGroup.update_routed_providers" parameterClass="java.util.Map" >
+		update so_group_routed_providers 
+		set provider_resp_id = #responseId# ,
+		    modified_date = NOW()
+		where so_group_id = #groupId# and
+		      resource_id = #resourceId#
+	</update>
+	
+	<update id="soGroup.update_so_hdr_ungroup" parameterClass="soSearchVO" >
+		update so_hdr set 
+		    so_group_id = NULL
+		    <isNotNull property="parentGroupId" prepend=", ">
+		    so_orig_group_id = #parentGroupId#
+		    </isNotNull>
+		    <isNotNull property="spendLimitLabor" prepend=", ">
+			spend_limit_labor = #spendLimitLabor#
+			</isNotNull>
+			<isNotNull property="spendLimitParts" prepend=", ">
+			spend_limit_parts = #spendLimitParts#
+			</isNotNull>
+			<isNotNull prepend=", ">modified_date = NOW()</isNotNull>
+		where so_id =  #soId#
+	</update>
+	
+	<insert id="soGroup.insert_so_group_price" parameterClass="soGroup">
+		insert into so_group_price 
+			   (so_group_id, original_group_spend_limit_labor, original_group_spend_limit_parts,
+				final_group_spend_limit_labor, final_group_spend_limit_parts, created_date, total_permit_price)
+         values
+			  (#groupId#, #originalSpendLimitLabor#, #originalSpendLimitParts#, #finalSpendLimitLabor#, #finalSpendLimitParts#, NOW(), #totalPermitPrice#)
+	</insert>
+	
+	<delete id="soGroup.delete_so_group_routed_providers" parameterClass="java.lang.String">
+		delete from so_group_routed_providers where so_group_id =#groupId#
+	</delete>
+	
+	<insert id="sogrouproutedproviders.insert"
+		parameterClass="routedProvider">
+		INSERT INTO so_group_routed_providers (so_group_id, resource_id,
+		provider_resp_id, resp_reason_id, provider_resp_comment,
+		provider_resp_date, created_date, modified_date, modified_by,routed_date,
+		vendor_id) SELECT #soId#, #resourceId#, #providerRespId#,
+		#providerRespReasonId#, #providerRespComment#,
+		#providerRespDate#, NOW(), #modifiedDate#, #modifiedBy#, #routedDate#,
+		vr.vendor_id FROM vendor_resource vr WHERE vr.resource_id =	#resourceId#
+	</insert>
+	
+	<select id="soGroup.checkconditionaloffer"
+		parameterClass="routedProvider" resultClass="java.lang.Integer">
+		select provider_resp_id from so_group_routed_providers
+		<dynamic prepend="where">
+			<isNotNull prepend="AND" property="soId">
+				so_group_id=#soId#
+			</isNotNull>
+			<isNotNull prepend="AND" property="resourceId">
+				resource_id=#resourceId#
+			</isNotNull>
+			<isNotNull prepend="AND" property="soId">
+				provider_resp_id IS NOT NULL
+			</isNotNull>
+		</dynamic>
+	</select>
+
+	<update id="soGroup.updateForConditionalOffer"
+		parameterClass="routedProvider">
+		UPDATE so_group_routed_providers SET provider_resp_id =
+		#providerRespId#, resp_reason_id = #providerRespReasonId#,
+		provider_resp_comment = #providerRespComment#,
+		provider_resp_date = #providerRespDate#, modified_date =
+		#modifiedDate#, modified_by = #modifiedBy#, service_date1 =
+		#conditionalChangeDate1#, service_date2 =
+		#conditionalChangeDate2#, offer_expiration_date =
+		#conditionalExpirationDate#, condl_offer_price =
+		#conditionalSpendLimit#, service_time_start =
+		#conditionalStartTime#, service_time_end = #conditionalEndTime#
+		<dynamic prepend="WHERE">
+			<isNotNull property="soId" prepend="AND">
+				so_group_id = #soId#
+			</isNotNull>
+			<isNotNull property="resourceId" prepend="AND">
+				resource_id = #resourceId#
+			</isNotNull>
+			<isNotNull property="vendorId" prepend="AND">
+				vendor_id = #vendorId#
+			</isNotNull>
+		</dynamic>
+	</update>
+	
+
+	<select id="soGroup.getRoutedProvidersResponse"
+		parameterClass="java.lang.String" resultClass="routedProvider">
+		select  so_group_id as soId,
+			resource_id as resourceId,
+			provider_resp_id as providerRespId,
+			resp_reason_id as providerRespReasonId,
+			provider_resp_comment as providerRespComment,
+			provider_resp_date as providerRespDate,
+			vendor_id as vendorId,
+			service_date1 as conditionalChangeDate1,
+			service_date2 as conditionalChangeDate2,
+			offer_expiration_date as conditionalExpirationDate,
+			condl_offer_price as conditionalSpendLimit,
+			service_time_start as conditionalStartTime,
+			service_time_end as conditionalEndTime
+    	 from  
+		     so_group_routed_providers
+		 where so_group_id = #groupId#    
+	</select>
+	
+	<select id="so_group_match.getSingleServiceOrdersIdForGroup" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT  
+			s.so_id as soId
+			from so_hdr s
+		where
+		s.so_group_id= #parentGroupId# limit 1
+	</select>
+	
+	<parameterMap id="findBuyerCustomRefsByBuyerID-param" class="java.util.Map">
+        <parameter property="buyer_id"/>
+		<parameter property="unit_no"/>
+		<parameter property="sales_check_no"/>
+    </parameterMap>
+    
+	<select id="buyerRefType.getCustomReferenceForOGMSearch" parameterClass="java.lang.Integer" resultClass="buyerReferenceType"  cacheModel="buyerRefCache">
+		 select
+	        buyer_ref_type_id as buyerRefTypeId,
+	        buyer_id as buyerId,
+	        ref_type as referenceType,
+	        ref_descr as referenceDescription,
+	        so_identifier as soIdentifier	        
+	    from
+	        buyer_reference_type
+	    where buyer_id = #buyerId#	and ref_type in('UNIT NUMBER','SALES CHECK NUM 1')    
+	    limit 2	
+	</select>
+	
+		
+	<select id="select.soGroupRoutedProvider.routedDate" parameterClass="java.util.Map" resultClass="java.util.Date">
+	     select srp.routed_date as routedDate
+		       from so_group_routed_providers srp 
+		       where srp.so_group_id=#groupId# 
+		       and srp.resource_id = #resourceId#
+	</select>
+	
+	<select id="select.soGroupRoutedFirm.routedDate" parameterClass="java.util.Map" resultClass="java.util.Date">
+	     select MAX(srp.routed_date) as routedDate
+		       from so_group_routed_providers srp 
+		       where srp.so_group_id = #groupId# 
+		       and srp.vendor_id = #vendorId#
+	</select>
+
+</sqlMap>

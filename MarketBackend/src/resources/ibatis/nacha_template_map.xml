@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="nacha">
+
+	<typeAlias alias="nacha.rfh"
+		type="com.newco.marketplace.dto.vo.ach.FieldDetailVO" />
+	<typeAlias alias="nacha.tranbatch"
+		type="com.newco.marketplace.dto.vo.ach.TransactionBatchVO" />
+
+
+
+	<cacheModel type="LRU" id="nacha.fileRecordHeaderCache">
+		<flushInterval hours="24" />
+	</cacheModel>
+
+	<select id="achquery.select" parameterClass="nacha.rfh"
+		resultClass="nacha.rfh">
+		select field_id as fieldId, field_name as fieldName,
+		field_start_position as startPosition, field_end_position as
+		endPosition, field_description as fieldDescription,
+		field_condition as fieldCondition, field_size as fieldSize,
+		field_value as fieldValue, field_order as fieldOrder, field_type
+		as fieldType, batch_group_id as batch_group_Id from ach_template
+		where field_category = #fieldCategory#
+		<dynamic>
+			<isNotEqual property="batchGroupId" compareValue="0">
+				and batch_group_Id = #batchGroupId#
+			</isNotEqual>
+		</dynamic>
+	</select>
+	
+	<select id="nachatranbatch.query" resultClass="nacha.tranbatch" parameterClass="java.util.Date">
+		Select distinct a.ach_transcode_acc_id as achTranscodeAccId,
+			b.account_Type_Id as accountTypeId,
+			b.ledger_Trans_Entry_Type_Id as ledgerTransEntryTypeId,
+			b.ach_transaction_code as achTransactionCode,
+			b.ach_batch_header_id as batchNumber,
+			c.merchant_id as discretionaryData
+			from ach_process_queue a, lu_ach_transcode_acc b
+			, lu_ach_batch_mid c
+	    where a.ach_transcode_acc_id=b.ach_transcode_acc_id and 
+	    a.entity_type_id = c.entity_type_id 
+	    and b.ledger_trans_entry_type_id = c.entry_type_id 
+	    and a.process_status_id = 10 and
+	    transaction_type_id not in (1100,1200,1400,1900)
+	    and date(created_date) = date(#runDate#)
+	    order by sort_order,ledgerTransEntryTypeId
+	</select>
+
+	<select id="unbalancedBatch.query" resultClass="nacha.tranbatch">
+		Select distinct a.ach_transcode_acc_id as achTranscodeAccId,
+			b.account_Type_Id as accountTypeId,
+			b.ledger_Trans_Entry_Type_Id as ledgerTransEntryTypeId,
+			b.ach_transaction_code as achTransactionCode,
+			b.ach_batch_header_id as batchNumber
+			from ach_process_queue a, lu_ach_transcode_acc b
+	    where a.ach_transcode_acc_id=b.ach_transcode_acc_id and process_status_id=10
+	    and transaction_type_id=1100 order by sort_order
+	</select>
+	
+
+	
+</sqlMap>

@@ -1,0 +1,9 @@
+<div class="container-fluid">
+  <div class="row">
+    <app-survey-option
+      class="col-lg-4 col-6"
+      *ngFor="let option of options"
+      [option]="option" (selectAction)="optionSelected($event)"></app-survey-option>
+  </div>
+</div>
+<hr />

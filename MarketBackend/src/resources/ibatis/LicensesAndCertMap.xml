@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="LicensesAndCert">
+	<typeAlias alias="credential" type="com.newco.marketplace.vo.provider.CredentialProfile"/>
+	<typeAlias alias="licensesAndCertVO" type="com.newco.marketplace.vo.provider.LicensesAndCertVO"/>	
+	 	<select id="selectLicensesAndCert.query" parameterClass="licensesAndCertVO" resultClass="licensesAndCertVO">
+	      select vendor_cred_id as vendorCredId, vendor_id as vendorId, cred_type_id as credentialTypeId, cred_category_id as categoryId, 
+	      cred_source as issuerOfCredential, cred_name as licenseName, cred_no as credentialNum, 
+	      cred_city as city, cred_county as county, cred_state as stateId, cred_issue_date as issueDate,
+	      cred_expiration_date as expirationDate
+	      from vendor_credentials where vendor_cred_id = #vendorCredId#
+	   </select>
+	     
+	 	<select id="getCredentialType.query" resultClass="java.util.HashMap">
+	      select cred_type_id as id, LTRIM(cred_type_desc) as description from lu_vendor_credential_type 
+	      where cred_type_id != 6 order by LTRIM(cred_type_desc) asc
+	   </select>
+
+<!-- 	<select id="getMapCategory"  resultClass="java.util.HashMap">
+	      select cred_category_id as id, cred_category as description from lu_vendor_credential_category order by sort_order asc
+	   </select>
+	  -->   
+	    <select id="getMapCategory.query" parameterClass="licensesAndCertVO" resultClass="java.util.HashMap">
+	        select cred_category_id as id, LTRIM(cred_category) as description 
+	        FROM lu_vendor_credential_category
+   			WHERE cred_type_id=#credentialTypeId#
+   			order by LTRIM(cred_category) asc
+		</select>
+	    
+	    <select id="getMapState.query" resultClass="java.util.HashMap">
+	      select state_cd as id, state_name as description from lu_state_cds order by state_name asc
+	     </select>
+	     
+	     
+	   
+	   <update id="updateLicensesAndCert.update" parameterClass="licensesAndCertVO">
+			UPDATE vendor_credentials
+		<dynamic prepend="set">
+			<isGreaterThan prepend=", " property="vendorId" compareValue="0">vendor_id = #vendorId#</isGreaterThan>
+			<isGreaterThan prepend=", " property="credentialTypeId" compareValue="-1">cred_type_id = #credentialTypeId#</isGreaterThan>
+			<isGreaterThan prepend=", " property="categoryId" compareValue="-1">cred_category_id = #categoryId#</isGreaterThan>
+			<isNotNull prepend=", " property="issuerOfCredential">cred_source = #issuerOfCredential#</isNotNull>
+			<isNotNull prepend=", " property="licenseName">cred_name = #licenseName#</isNotNull>
+			<isNotNull prepend=", " property="issueDate">cred_issue_date = #issueDate#</isNotNull>			
+			<isNotNull prepend=", " property="expirationDate">cred_expiration_date = #expirationDate#</isNotNull>
+			<isNotNull prepend=", " property="credentialNum">cred_no = #credentialNum#</isNotNull>
+			<isNotNull prepend=", " property="city">cred_city = #city#</isNotNull>
+			<isNotNull prepend=", " property="county">cred_county = #county#</isNotNull>
+			<isGreaterThan prepend=", " property="stateId" compareValue="-1">cred_state = #stateId#</isGreaterThan>		
+		</dynamic>
+		where vendor_cred_id = #vendorCredId#
+			</update>
+	     
+	     <insert id="insertLicensesAndCert.insert" parameterClass="licensesAndCertVO">
+	      INSERT INTO vendor_credentials
+			(vendor_id, 
+			cred_type_id,
+			cred_category_id,
+			cred_source,
+			cred_name,
+			cred_issue_date,
+			cred_expiration_date,
+			cred_no,
+			cred_city,
+			cred_county
+	<isGreaterThan prepend=", " property="stateId" compareValue="-1">
+		cred_state
+	</isGreaterThan>	
+			)			
+			values(#vendorId#,
+				   #credentialTypeId#,
+				   #categoryId#,
+				   #issuerOfCredential#,
+				   #licenseName#,
+				   #issueDate#,
+				   #expirationDate#,
+				   #credentialNum#,
+				   #city#,
+				   #county#
+	<isGreaterThan prepend=", " property="stateId" compareValue="-1">
+		#stateId#
+	</isGreaterThan>
+				   
+				   )	
+				   <selectKey resultClass="int">
+            SELECT last_insert_id() as vendorCredId
+        </selectKey>  			   
+		   
+	   </insert>
+	   
+	<!--     <select id="getCredentialList" resultClass="java.util.List">
+	      select id, descr as description from lu_company_size order by sort_order asc
+	   </select>-->
+ <resultMap id="get-credentials-result" class="licensesAndCertVO">
+<result property="vendorCredId" column="vendor_cred_id"/>
+<result property="licenseName" column="cred_source" />
+<result property="stateId" column="cred_state" />
+
+</resultMap>
+
+<select id="getCredentialList.query" parameterClass="licensesAndCertVO" resultClass="licensesAndCertVO">
+	       SELECT vc.vendor_cred_id AS vendorCredId,
+			vc.vendor_id AS vendorId,
+			vc.cred_type_id AS typeId,
+			vc.cred_category_id AS categoryId,
+			<!--SL-21142  -->
+			vc.is_file_uploaded AS isFileUploaded,
+			<!--SL-21142  -->
+			cc.cred_category AS credCategory,
+			ct.cred_type_desc AS credTypeDesc,
+			vc.cred_source AS source,
+			vc.cred_name AS licenseName,
+			vc.cred_expiration_date AS expirationDate,
+			wf1.wf_state as marketPlaceInd
+			from lu_vendor_credential_category as cc,
+					 lu_vendor_credential_type as ct,
+					 vendor_credentials as vc,
+					 wf_states AS wf1
+				where vc.vendor_id=#vendorId# and
+					  ct.cred_type_desc!='Insurance' and
+					  vc.cred_type_id=ct.cred_type_id and
+					  vc.wf_state_id = wf1.wf_state_id and
+					  vc.cred_category_id=cc.cred_category_id
+</select>
+
+<select id="getCredentialList1" resultClass="java.util.List">
+	      select cred_source as licenseName from vendor_credentials
+</select>
+<select id="getCredentialList2" resultClass="java.util.List">
+select cred_category_id as id, cred_category as description from lu_vendor_credential_category order by sort_order asc
+</select>
+
+<select id="viewVendorCredential.query" resultClass="licensesAndCertVO">
+	select luc.cred_type_desc as credTypeDesc,vc.cred_name as licenseName, vc.cred_expiration_date as expirationDate,vc.wf_state_id as 
+	wfStateId from lu_vendor_credential_type luc, vendor_credentials vc where luc.cred_type_id=vc.cred_type_id and vc.vendor_id=#vendorId# and vc.cred_type_id !=6
+</select>
+
+<select id ="getVendorCredentialInsurance.query" resultClass="licensesAndCertVO">
+select IF(lvc.cred_category='Other',CONCAT(lvc.cred_category,' - ',vc.insurance_description),lvc.cred_category)
+as credTypeDesc, vc.cred_source as source,
+vc.cred_expiration_date as expirationDate,
+vc.modified_date as insModifiedDate,
+CASE WHEN vcd.document_id IS NULL THEN 0 ELSE vcd.document_id END as currentDocumentId,vc.wf_state_id as wfStateId
+from vendor_credentials vc
+left join vendor_credentials_document vcd on vc.vendor_cred_id=vcd.vendor_cred_id,
+lu_vendor_credential_category lvc
+where vc.vendor_id=#vendorId#
+and vc.cred_type_id=6
+and vc.cred_category_id=lvc.cred_category_id
+</select>
+
+<select id="vendorCred.isAvailable" parameterClass="licensesAndCertVO" resultClass="java.lang.Boolean">
+ 		SELECT 
+ 		count(*) > 0 as isAvailable  
+ 		FROM
+ 		vendor_credentials 
+ 		WHERE 
+ 		vendor_id = #vendorId# and vendor_cred_id =#vendorCredId#
+ 	</select>
+	    
+	    
+	<update id="updateLicenses.update" parameterClass="licensesAndCertVO">
+			UPDATE vendor_credentials
+		<dynamic prepend="set">
+			<isGreaterThan prepend=", " property="vendorId" compareValue="0">vendor_id = #vendorId#</isGreaterThan>
+			<isGreaterThan prepend=", " property="credentialTypeId" compareValue="-1">cred_type_id = #credentialTypeId#</isGreaterThan>
+			<isGreaterThan prepend=", " property="categoryId" compareValue="-1">cred_category_id = #categoryId#</isGreaterThan>
+			<isNotNull prepend=", " property="issuerOfCredential">cred_source = #issuerOfCredential#</isNotNull>
+			<isNotNull prepend=", " property="licenseName">cred_name = #licenseName#</isNotNull>
+			<isNotNull prepend=", " property="issueDate">cred_issue_date = #issueDate#</isNotNull>	
+			<isNull prepend=", " property="expirationDate">cred_expiration_date = #expirationDate#</isNull>		
+			<isNotNull prepend=", " property="expirationDate">cred_expiration_date = #expirationDate#</isNotNull>
+			<isNotNull prepend=", " property="credentialNum">cred_no = #credentialNum#</isNotNull>
+			<isNotNull prepend=", " property="city">cred_city = #city#</isNotNull>
+			<isNotNull prepend=", " property="county">cred_county = #county#</isNotNull>
+			<isNull prepend=", " property="updateStateId" >cred_state = #updateStateId#</isNull>		
+			<isNotNull prepend=", " property="updateStateId">cred_state = #updateStateId#</isNotNull>		
+		</dynamic>
+		where vendor_cred_id = #vendorCredId#
+			</update>	    
+</sqlMap>

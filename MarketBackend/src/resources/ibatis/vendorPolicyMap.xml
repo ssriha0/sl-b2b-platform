@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="vendorPolicy">
+	<typeAlias alias="vendorPolicy" type="com.newco.marketplace.vo.provider.VendorPolicy"/>	
+		<select id="vendorPolicy.query" parameterClass="vendorPolicy" resultClass="vendorPolicy">
+    
+		select vendor_id as vendorId, 
+				warr_offered as warrOffered, 
+				warr_period as warPeriod,
+				free_estimate as freeEstimate,
+				conduct_drug_test as conductDrugTest, 
+				consider_drug_test as considerDrugTest,
+				has_ethics_policy as hasEthicsPolicy, 
+				require_badge as requireBadge,
+				consider_badge as considerBadge,
+				require_us_doc as requireUsDoc,
+				consider_impl_policy as considerImplPolicy, 
+				consider_ethic_policy as considerEthicPolicy,
+				created_date as createdDate,
+				modified_date as modifiedDate
+			from vendor_policy
+			where vendor_id = #vendorId#
+	</select>
+	
+	<update id="vendorPolicy.update" parameterClass="vendorPolicy">
+		update vendor_policy
+		set
+			vendor_id = #vendorId#,
+			warr_offered = #warrOffered#,
+			warr_period = #warPeriod#,
+			free_estimate = #freeEstimate#,
+			conduct_drug_test = #conductDrugTest#,
+			consider_drug_test = #considerDrugTest#,
+			has_ethics_policy = #hasEthicsPolicy#,
+			require_badge = #requireBadge#,
+			consider_badge = #considerBadge#,
+			require_us_doc = #requireUsDoc#,
+			consider_impl_policy = #considerImplPolicy#,
+			consider_ethic_policy = #considerEthicPolicy#
+		where vendor_id = #vendorId#
+	</update>
+	
+		<insert id="vendorPolicy.insert" parameterClass="vendorPolicy">
+		insert into vendor_policy
+			(vendor_id, 
+			warr_offered_labor,
+			warr_period_parts,
+			free_estimate,
+			conduct_drug_test,
+			consider_drug_test,
+			has_ethics_policy,
+			require_badge,
+			consider_badge,
+			require_us_doc,
+			consider_impl_policy,
+			consider_ethic_policy,
+			warr_period_labor,
+			warranty_measure)
+		values(#vendorId#,
+			   #warrOffered#,
+			   #warPeriod#,
+			   #freeEstimate#,
+			   #conductDrugTest#,
+			   #considerDrugTest#,
+			   #hasEthicsPolicy#,
+			   #requireBadge#,
+			   #considerBadge#,
+			   #requireUsDoc#,
+			   #considerImplPolicy#,
+			   #considerEthicPolicy#,#warPeriod#,#warrentyMessuare#)
+			  
+	</insert>
+</sqlMap>

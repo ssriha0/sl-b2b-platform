@@ -1,0 +1,1 @@
+ALTER TABLE ach_process_queue ADD trans_log_id INT(10) AFTER nacha_process_log_id;

@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="soOnsiteVisit">
+
+    <typeAlias alias="onSiteVisitVO" type="com.newco.marketplace.dto.vo.serviceorder.SOOnsiteVisitVO" />
+    <typeAlias alias="onSiteVisitResourceVO" type="com.newco.marketplace.dto.vo.serviceorder.Contact" />
+	<typeAlias alias="aliasSOOnSiteVisitVO" type="com.newco.marketplace.dto.vo.serviceorder.SOOnsiteVisitVO"></typeAlias>
+	<typeAlias alias="soOnsiteVisitResultVO" type="com.newco.marketplace.dto.vo.serviceorder.SOOnsiteVisitResultVO" />
+	<typeAlias alias="aliasSOTripVO" type="com.newco.marketplace.vo.mobile.v2_0.SOTripVO"></typeAlias>
+	<typeAlias alias="soTripRevisitInfoVO" type="com.newco.marketplace.dto.vo.serviceorder.RevisitNeededInfoVO" />
+	<typeAlias alias="soRevisitInfoTripDetailsVO" type="com.newco.marketplace.dto.vo.serviceorder.SOTripDetailsVO" />
+	
+	<resultMap class="aliasSOOnSiteVisitVO" id="soOnSiteVisitVO">
+		<result property="visitId" column="visit_id"/>
+		<result property="soId" column="so_id"/>
+		<result property="resourceId" column="resource_id"/>
+		<result property="arrivalDate" column="arrival_date"/>
+		<result property="departureDate" column="departure_date"/>		
+		<result property="arrivalInputMethod" column="arrival_input_method"/>
+		<result property="departureInputMethod" column="departure_input_method"/>
+		<result property="departureResourceId" column="departure_resource_id"/>
+		<result property="departureCondition" column="departure_condition"/>
+		<result property="createdDate" column="created_date"/>
+		<result property="modifiedDate" column="modified_date"/>
+		<result property="ivrcreatedate" column="IVR_create_date"/>	
+		<result property="arrivalReason" column="arrival_reason"/>
+		<result property="departureReason" column="departure_reason"/>		
+	</resultMap>
+	 
+	 <resultMap class="aliasSOTripVO" id="soTripVO">
+		<result property="soId" column="so_id"/>
+		<result property="tripNo" column="trip_no"/>
+		<result property="tripStatus" column="trip_status"/>
+		<result property="tripStartVisitId" column="trip_start_visit_id"/>		
+		<result property="tripEndVisitId" column="trip_end_visit_id"/>
+		<result property="tripStartSource" column="trip_start_source"/>
+		<result property="tripEndSource" column="trip_end_source"/>
+		
+		<result property="currentApptStartDate" column="current_appt_start_date"/>
+		<result property="currentApptEndDate" column="current_appt_end_date"/>
+		<result property="currentApptStartTime" column="current_appt_start_time"/>
+		<result property="currentApptEndTime" column="current_appt_end_time"/>	
+		
+		<result property="createdDate" column="created_date"/>
+		<result property="modifiedDate" column="modified_date"/>
+		<result property="createdBy" column="created_by"/>	
+		<result property="modifiedBy" column="modified_by"/>
+	</resultMap>
+	 
+	<resultMap class="onSiteVisitVO" id="onSiteVisit.map">
+		<result property="arrivalDateInd" column="soId" select="validateArrival.query"/>
+		<result property="departureDateInd" column="soId" select="validateDeparture.query"/>
+	</resultMap>
+	
+	<select id ="validateArrival.query" parameterClass="java.lang.String" resultClass ="java.lang.Integer">
+	SELECT COUNT(arrival_date) AS arrivalDateInd 
+	FROM so_onsite_visit 
+	WHERE so_id =#soId# AND arrival_date IS NOT NULL AND (delete_ind != 1 OR delete_ind IS NULL)
+	</select>
+	
+	<select id ="validateDeparture.query" parameterClass="java.lang.String" resultClass ="java.lang.Integer">
+	SELECT COUNT(departure_date) AS departureDateInd 
+	FROM so_onsite_visit 
+	WHERE so_id =#soId# AND departure_date IS NOT NULL AND (delete_ind != 1 OR delete_ind IS NULL)
+	</select>
+	     
+       <select id="soOnsiteVisit.query.select" parameterClass="java.lang.String" resultClass="onSiteVisitVO">
+	 	SELECT s.so_id as soId,
+	 	       s.visit_id as visitId,
+	 	       s.resource_id as resourceId,
+	 	       s.arrival_date as arrivalDate,
+	 	       s.arrival_input_method as arrivalInputMethod,
+	 	       s.departure_resource_id AS departureResourceId,
+	 	       s.departure_date as departureDate,
+	 	       s.departure_input_method as departureInputMethod,
+	 	       s.created_date as createdDate,
+	 	       s.modified_date as modifiedDate,
+	 	       s.delete_ind as deleteInd,
+	 	       s.ivr_create_date as ivrcreatedate
+	 	       FROM so_onsite_visit s
+	 	       <dynamic prepend="WHERE">
+			    <isNotNull prepend="AND">
+				 s.so_id  = #soId#
+				 AND (s.delete_ind  != 1  
+		         OR  s.delete_ind  is NULL)  
+			   </isNotNull>
+			  
+			  </dynamic>
+	 	       ORDER BY s.created_date
+	  </select> 
+	  
+	<select id="timeOnSiteDetails.query.select" parameterClass="java.lang.String" resultClass="soOnsiteVisitResultVO">
+		SELECT 	IF(st1.trip_no IS NULL, IF(st2.trip_no IS NULL,NULL,st2.trip_no),st1.trip_no) AS tripNum,
+			IF(st1.trip_no IS NULL, IF(st2.trip_no IS NULL,NULL,st2.current_appt_start_date),st1.current_appt_start_date) AS apptStartDate,
+			IF(st1.trip_no IS NULL, IF(st2.trip_no IS NULL,NULL,st2.current_appt_end_date),st1.current_appt_end_date) AS apptEndDate,
+			IF(st1.trip_no IS NULL, IF(st2.trip_no IS NULL,NULL,st2.current_appt_start_time),st1.current_appt_start_time) AS apptStartTime,
+			IF(st1.trip_no IS NULL, IF(st2.trip_no IS NULL,NULL,st2.current_appt_end_time),st1.current_appt_end_time) AS apptEndTime,
+			sov.arrival_date AS arrivalDateTime,
+			IF(st1.trip_no IS NULL, IF(st2.trip_no IS NULL,IF(arrival_input_method = 1, 'IVR', IF(arrival_input_method = 2, 'MOBILE', IF(arrival_input_method IS NULL, NULL, 'WEB'))),st2.trip_start_source),st1.trip_start_source) AS tripStartSource,
+			sov.resource_id AS arrivalResourceId,
+			sov.departure_date AS departureDateTime,
+			IF((st1.trip_no IS NULL || st1.trip_end_source IS NULL), IF(st2.trip_no IS NULL,IF(departure_input_method = 1, 'IVR', IF(departure_input_method = 2, 'MOBILE', IF(departure_input_method IS NULL, NULL, 'WEB'))),st2.trip_end_source),st1.trip_end_source) AS tripEndSource,
+			sov.departure_resource_id AS departureResourceId,
+			sov.departure_reason AS departureReason,
+			IF(st1.trip_no IS NULL, IF(st2.trip_no IS NULL,NULL,st2.modified_by),st1.modified_by) AS resName,
+			sov.visit_id AS checkInVisitId,
+			IF(st1.trip_no IS NULL, IF(st2.trip_no IS NULL,NULL,st2.created_date),st1.created_date) AS createdDate
+		FROM so_onsite_visit sov
+		LEFT OUTER JOIN so_trip st1 ON (sov.so_id = st1.so_id AND sov.visit_id = st1.trip_start_visit_id)
+		LEFT OUTER JOIN so_trip st2 ON (sov.so_id = st2.so_id AND sov.visit_id = st2.trip_end_visit_id)
+		WHERE sov.so_id = #soId# ORDER BY sov.visit_id;
+	</select>
+	
+	<select id="onSiteVisitRecords.query.select" parameterClass="java.util.HashMap" resultClass="soOnsiteVisitResultVO">
+		SELECT 	arrival_date AS arrivalDateTime,
+			IF(arrival_input_method = 1, 'IVR', IF(arrival_input_method = 2, 'MOBILE', IF(arrival_input_method = NULL, NULL, 'WEB'))) AS tripStartSource,
+			resource_id AS arrivalResourceId,
+			departure_date AS departureDateTime,
+			IF(departure_input_method = 1, 'IVR', IF(departure_input_method = 2, 'MOBILE', IF(departure_input_method = NULL, NULL, 'WEB'))) AS tripEndSource,
+			resource_id AS departureResourceId,
+			departure_reason AS departureReason,
+			visit_id AS checkInVisitId,
+			created_date AS createdDate
+		FROM so_onsite_visit
+		WHERE so_id = #soId# 
+		AND visit_id NOT IN (SELECT trip_start_visit_id FROM so_trip WHERE so_id = #soId# AND trip_start_visit_id IS NOT NULL)
+	</select>
+       
+       <select id="soOnsiteVisit.query.selectvisitid" parameterClass="java.lang.String" resultClass="onSiteVisitVO">
+	 	SELECT s.so_id as soId,
+	 	       s.visit_id as visitId,
+	 	       s.resource_id as resourceId,
+	 	       s.arrival_date as arrivalDate,
+	 	       s.arrival_input_method as arrivalInputMethod,
+	 	       s.departure_date as departureDate,
+	 	       s.departure_input_method as departureInputMethod,
+	 	       s.created_date as createdDate,
+	 	       s.modified_date as modifiedDate,
+	 	       s.delete_ind as deleteInd,
+	 	       s.ivr_create_date as ivrcreatedate
+	 	       FROM so_onsite_visit s
+	 	       <dynamic prepend="WHERE">
+			    <isNotNull prepend="AND"> 
+				visit_id=#visitId#
+				 </isNotNull>
+		      </dynamic>
+	 	     
+	  </select>   
+                       
+        <select id="soOnsiteVisit.query.fnamelastname" parameterClass="java.lang.Integer" resultClass="onSiteVisitResourceVO">  
+	  
+	  
+	    SELECT  c.last_name as lastName,
+	            c.first_name as firstName
+	             FROM contact c, vendor_resource v 
+	             <dynamic prepend="WHERE">
+	              <isNotNull prepend="AND">
+	              c.contact_id=v.contact_id 
+	              AND resource_id=#resourceId#
+	             </isNotNull>
+	             </dynamic>
+	   </select>  
+       
+       
+       
+     <insert id="soOnsiteVisit.query.insert" parameterClass="onSiteVisitVO">
+	 	INSERT INTO so_onsite_visit (so_id, resource_id, arrival_date, arrival_input_method, departure_date, departure_input_method ,created_date)
+	 	values	 
+		(#soId#, #resourceId#, #arrivalDate#, #arrivalInputMethod#,#departureDate#,#departureInputMethod#,#createdDate#)
+		 <selectKey resultClass="long" > 
+		   select LAST_INSERT_ID() as value
+		 </selectKey>
+	 </insert> 
+	 
+	  <update id="soOnsiteVisit.query.update" parameterClass="onSiteVisitVO">
+	 	UPDATE so_onsite_visit 
+	 	     <dynamic prepend="SET">     
+	 	       <isNotNull prepend=", " property="arrivalDate">
+	 	        arrival_date = #arrivalDate#
+	 	        </isNotNull>
+	 	        <isNotNull prepend=", " property="arrivalInputMethod">	 	   
+	 	        arrival_input_method=#arrivalInputMethod#
+	 	        </isNotNull>
+	 	        <isNotNull prepend=", " property="departureDate">	
+	 	        departure_date=#departureDate#
+	 	         </isNotNull>	 	             
+	 	         <isNotNull prepend=", " property="departureInputMethod">	
+	 	        departure_input_method=#departureInputMethod#
+	 	         </isNotNull>
+	 	        <isNotNull prepend=", " property="modifiedDate">	
+	 	         modified_date=#modifiedDate#
+	 	        </isNotNull>
+	 	        <isNotNull prepend=", " property="departureReason">	
+	 	         departure_reason=#departureReason#
+	 	        </isNotNull>
+	 	         ,delete_ind=#deleteInd#
+	 	        </dynamic>  
+	    WHERE visit_id=#visitId# AND so_id = #soId#
+	    
+	 </update>
+   
+
+	<insert id="soOnSiteVisit.insert" parameterClass="aliasSOOnSiteVisitVO">
+		insert into so_onsite_visit 
+		(so_id, resource_id, arrival_date, arrival_input_method, departure_date, departure_resource_id, departure_input_method, departure_condition, created_date, modified_date, IVR_create_date,
+			arrival_reason,departure_reason)
+		values
+		(#soId#, #resourceId#, #arrivalDate#, #arrivalInputMethod#, #departureDate#, #departureResourceId#, #departureInputMethod#, #departureCondition#, #createdDate#, #modifiedDate#, #ivrcreatedate#,
+			#arrivalReason#,#departureReason#)		
+		 <selectKey resultClass="long" > 
+		   select LAST_INSERT_ID() as value
+		 </selectKey>
+	</insert>
+	
+	<update id="soOnSiteVisit.update" parameterClass="aliasInOutVO">
+		update so_onsite_visit
+		<dynamic prepend="set">
+			<isNotNull prepend="," property="out.visitId">visit_id=#out.visitId#</isNotNull>
+			<isNotNull prepend="," property="out.soId">so_id=#out.soId#</isNotNull>
+			<isNotNull prepend="," property="out.resourceId">resource_id=#out.resourceId#</isNotNull>
+			<isNotNull prepend="," property="out.arrivalDate">arrival_date=#out.arrivalDate#</isNotNull>
+			<isNotNull prepend="," property="out.departureDate">departure_date=#out.departureDate#</isNotNull>		
+			<isNotNull prepend="," property="out.arrivalInputMethod">arrival_input_method=#out.arrivalInputMethod#</isNotNull>
+			<isNotNull prepend="," property="out.departureInputMethod">departure_input_method=#out.departureInputMethod#</isNotNull>
+			<isNotNull prepend="," property="out.departureResourceId">departure_resource_id=#out.departureResourceId#</isNotNull>
+			<isNotNull prepend="," property="out.departureCondition">departure_condition=#out.departureCondition#</isNotNull>
+			<isNotNull prepend="," property="out.createdDate">created_date=#out.createdDate#</isNotNull>
+			<isNotNull prepend="," property="out.modifiedDate">modified_date=#out.modifiedDate#</isNotNull>
+			<isNotNull prepend="," property="out.ivrcreatedate">IVR_create_date=#out.ivrcreatedate#</isNotNull>		
+			<isNotNull prepend="," property="out.departureReason">departure_reason=#out.departureReason#</isNotNull>			
+		</dynamic>		
+		<dynamic prepend="where">
+			<isNotNull prepend="and" property="in.visitId">#in.visitId#=visit_id</isNotNull>
+			<isNotNull prepend="and" property="in.soId">#in.soId#=so_id</isNotNull>
+			<isNotNull prepend="and" property="in.resourceId">#in.resourceId#=resource_id</isNotNull>
+			<isNotNull prepend="and" property="in.arrivalDate">#in.arrivalDate#=arrival_date</isNotNull>
+			<isNotNull prepend="and" property="in.departureDate">#in.departureDate#=departure_date</isNotNull>		
+			<isNotNull prepend="and" property="in.arrivalInputMethod">#in.arrivalInputMethod#=arrival_input_method</isNotNull>
+			<isNotNull prepend="and" property="in.departureInputMethod">#in.departureInputMethod#=departure_input_method</isNotNull>
+			<isNotNull prepend="and" property="in.departureResourceId">#in.departureResourceId#=departure_resource_id</isNotNull>
+			<isNotNull prepend="and" property="in.departureCondition">#in.departureCondition#=departure_condition</isNotNull>
+			<isNotNull prepend="and" property="in.createdDate">#in.createdDate#=created_date</isNotNull>
+			<isNotNull prepend="and" property="in.modifiedDate">#in.modifiedDate#=modified_date</isNotNull>
+			<isNotNull prepend="and" property="in.ivrcreatedate">#in.ivrcreatedate#=IVR_create_date</isNotNull>			
+		</dynamic>		
+	</update>	
+	<select id="soOnSiteVisit.select" parameterClass="aliasInOutVO" resultMap="soOnSiteVisitVO">
+		SELECT * FROM so_onsite_visit WHERE (delete_ind IS NULL OR delete_ind != 1) AND arrival_date IS NOT NULL AND departure_date IS NULL
+		<dynamic prepend="and">
+			<isNotNull prepend="and" property="in.visitId">#in.visitId#=visit_id</isNotNull>
+			<isNotNull prepend="and" property="in.soId">#in.soId#=so_id</isNotNull>
+			<isNotNull prepend="and" property="in.resourceId">#in.resourceId#=resource_id</isNotNull>
+			<isNotNull prepend="and" property="in.arrivalDate">#in.arrivalDate#=arrival_date</isNotNull>
+			<isNotNull prepend="and" property="in.departureDate">#in.departureDate#=departure_date</isNotNull>		
+			<isNotNull prepend="and" property="in.arrivalInputMethod">#in.arrivalInputMethod#=arrival_input_method</isNotNull>
+			<isNotNull prepend="and" property="in.departureInputMethod">#in.departureInputMethod#=departure_input_method</isNotNull>
+			<isNotNull prepend="and" property="in.departureResourceId">#in.departureResourceId#=departure_resource_id</isNotNull>
+			<isNotNull prepend="and" property="in.departureCondition">#in.departureCondition#=departure_condition</isNotNull>
+			<isNotNull prepend="and" property="in.createdDate">#in.createdDate#=created_date</isNotNull>
+			<isNotNull prepend="and" property="in.modifiedDate">#in.modifiedDate#=modified_date</isNotNull>
+			<isNotNull prepend="and" property="in.ivrcreatedate">#in.ivrcreatedate#=IVR_create_date</isNotNull>			
+		</dynamic>
+		ORDER BY visit_id DESC LIMIT 1
+	</select>		  
+	<select id="soOnsiteVisit.query.selectbySoId.visitId" parameterClass="onSiteVisitVO" resultClass="onSiteVisitVO">
+	 	SELECT s.so_id as soId,
+	 	       s.visit_id as visitId,
+	 	       s.resource_id as resourceId,
+	 	       s.arrival_date as arrivalDate,
+	 	       s.arrival_input_method as arrivalInputMethod,
+	 	       s.departure_date as departureDate,
+	 	       s.departure_input_method as departureInputMethod,
+	 	       s.created_date as createdDate,
+	 	       s.modified_date as modifiedDate,
+	 	       s.delete_ind as deleteInd,
+	 	       s.ivr_create_date as ivrcreatedate
+	 	       FROM so_onsite_visit s
+	 	       WHERE			   
+				 s.so_id  = #soId#
+				 AND (s.delete_ind  != 1  
+		         OR  s.delete_ind  is NULL)  
+			     AND s.visit_id = #visitId#
+	  </select> 
+	  
+	  <select id="soOnSiteVisit.valiadteTimeOnSite.select" parameterClass="java.lang.String" resultMap="onSiteVisit.map">
+	  SELECT distinct so_id AS soId 
+	  FROM so_onsite_visit WHERE so_id = #value#
+	  </select> 
+	  
+	  <!--  R12.0 IVR changes START-->
+	  <select id="soOnSiteVisit.fetchLatestSOtrip.query" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+			SELECT trip_no FROM so_trip WHERE so_id = #soId# ORDER BY trip_no DESC LIMIT 1;
+	  </select>
+	   
+	  <select id="soOnSiteVisit.fetchResourceId.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+			SELECT CONCAT(c.first_name,' ', c.last_name) FROM contact c, vendor_resource r
+			WHERE r.contact_id = c.contact_id
+			AND r.resource_id = #resourceId#;
+	  </select>
+	   
+	   <insert id="soTrip.IVR.insert" parameterClass="aliasSOTripVO">
+			INSERT INTO so_trip (so_id, trip_no, trip_status, trip_start_visit_id, trip_end_visit_id, trip_start_source, 
+					trip_end_source,current_appt_start_date, current_appt_end_date, current_appt_start_time, current_appt_end_time, 
+					created_date, modified_date,created_by, modified_by)
+			VALUES (#soId#, #tripNo#, #tripStatus#, #tripStartVisitId#, #tripEndVisitId#, #tripStartSource#, 
+					#tripEndSource#, #currentApptStartDate#, #currentApptEndDate#, #currentApptStartTime#, #currentApptEndTime#, 
+					#createdDate#, #modifiedDate#, #createdBy#, #modifiedBy#);
+	</insert>
+	<update id="soTrip.IVR.update" parameterClass="aliasSOTripVO">	
+		update so_trip
+		<dynamic prepend="set">
+			<isNotNull prepend="," property="tripStatus">trip_status=#tripStatus#</isNotNull>
+			<isNotNull prepend="," property="tripStartVisitId">trip_start_visit_id=#tripStartVisitId#</isNotNull>
+			<isNotNull prepend="," property="tripStartSource">trip_start_source=#tripStartSource#</isNotNull>
+			<isNotNull prepend="," property="tripEndVisitId">trip_end_visit_id=#tripEndVisitId#</isNotNull>
+			<isNotNull prepend="," property="tripEndSource">trip_end_source=#tripEndSource#</isNotNull>
+			<isNotNull prepend="," property="modifiedDate">modified_date=#modifiedDate#</isNotNull>
+			<isNotNull prepend="," property="modifiedBy">modified_by=#modifiedBy#</isNotNull>
+		</dynamic>
+		<dynamic prepend="where">
+			<isNotNull prepend=" and " property="soId">so_id=#soId#</isNotNull>
+			<isNotNull prepend=" and " property="tripNo">trip_no=#tripNo#</isNotNull>
+		</dynamic>
+	</update>
+	 <select id="soOnSiteVisit.fetchLatestSOtripStatus.query" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+			SELECT trip_status FROM so_trip WHERE so_id = #soId# and trip_no = #tripNo#;
+	 </select>
+	   <!--  R12.0 IVR changes END-->
+	   
+	   <select id="soOnSiteVisit.query.tripRevisitDetails" parameterClass="java.util.HashMap" resultClass="soTripRevisitInfoVO">
+	 		 SELECT s.modified_by AS provider,
+	 		   s.so_trip_id as soTripId,
+	 	       s.current_appt_start_date AS currentApptStartDate,
+	 	       s.current_appt_end_date AS currentApptEndDate,
+	 	       s.current_appt_start_time AS currentApptStartTime,
+	 	       s.current_appt_end_time AS currentApptEndTime,
+	 	       o.arrival_date AS checkedInDate,
+	 	       v.departure_date AS checkedOutDate,
+	 	       s.next_appt_start_date AS nextAppointmentStartDate,
+	 	       s.next_appt_end_date AS nextAppointmentEndDate,
+	 	       s.next_appt_start_time AS nextAppointmentStartTime,
+	 	       s.next_appt_end_time AS nextAppointmentEndTime,
+	 	       s.revisit_reason AS revisitReason,
+	 	       s.merch_delivered AS merchDeliveredInd,
+	 	       s.work_started AS workStartedInd,
+	 	       s.trip_comments AS comments,
+	 	       v.departure_reason AS departureReason,
+	 	       sh.service_locn_time_zone AS timeZone,
+	 	       s.revisit_needed_created_by AS revisitCreatedBy
+	 	       FROM so_trip s
+	 	       JOIN so_hdr sh ON s.so_id = sh.so_id
+		       LEFT JOIN so_onsite_visit o ON s.trip_start_visit_id = o.visit_id
+		       LEFT JOIN so_onsite_visit v ON s.trip_end_visit_id = v.visit_id
+		       WHERE
+	 	       s.trip_no = #soTripNo#
+	 	       AND 
+	 	       s.so_id=#soId#
+	  </select> 
+	  
+	  <select id="soOnsiteVisit.query.tripDetails" parameterClass="java.lang.Integer" resultClass="soRevisitInfoTripDetailsVO">
+	  SELECT t.so_trip_log_id as soTripDetailsId,
+	  t.so_trip_id as soTripId,
+	  t.change_type as changeType,
+	  t.change_comments as changeComment,
+	  t.created_date as createdDate,
+	  t.created_by as createdBy
+	  FROM so_trip_details t WHERE t.so_trip_id = #soTripId#;
+	  </select>
+	  
+	  <select id="soOnsiteVisit.query.fetchLatestOnsiteVisitEntry" parameterClass="java.lang.String" resultClass="onSiteVisitVO">
+	  SELECT s.so_id as soId,
+	 	       s.visit_id as visitId,
+	 	       s.resource_id as resourceId,
+	 	       s.arrival_date as arrivalDate,
+	 	       s.arrival_input_method as arrivalInputMethod,
+	 	       s.departure_resource_id AS departureResourceId,
+	 	       s.departure_date as departureDate,
+	 	       s.departure_input_method as departureInputMethod,
+	 	       s.created_date as createdDate,
+	 	       s.modified_date as modifiedDate,
+	 	       s.delete_ind as deleteInd,
+	 	       s.ivr_create_date as ivrcreatedate
+	 	       FROM so_onsite_visit s
+	 	       WHERE s.so_id  = #soId#
+	 	       ORDER BY s.created_date DESC
+	 	       LIMIT 1
+	  </select>
+	  
+	  
+	   <select id="soOnsiteVisit.isRevisitNeededTrip.query" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+			SELECT so_trip_id FROM so_trip WHERE so_id = #soId# AND trip_no = #currentTripNo# 
+			AND trip_start_visit_id IS NULL AND trip_end_visit_id IS NULL;
+	  </select>
+	  
+	  <select id="soOnsiteVisit.fetchTimeOnSiteReasons.query" resultClass="java.lang.String">
+		  SELECT reason_description FROM lu_time_on_site_reasons;
+	  </select>
+	  
+	  <update id="updateSubStatusOfSO.query.update" parameterClass="java.util.HashMap">	
+		UPDATE so_hdr SET so_substatus_id = #substatusValue# ,modified_date = NOW() WHERE so_id = #soId#
+	</update>
+	  
+</sqlMap>

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="staging">
+
+	<typeAlias alias="shcOrderSkuVO"
+		type="com.newco.marketplace.dto.vo.staging.StagingOrderSkuVO" />
+
+	<typeAlias alias="shcOrderVO"
+		type="com.newco.marketplace.dto.vo.staging.StagingOrderVO" />
+	
+	<insert id="staging_order.insert" parameterClass="com.newco.marketplace.dto.vo.staging.StagingOrderVO">
+		insert into shc_order
+		(
+			shc_order_id,
+			order_no,
+			so_id,			 
+			unit_no,
+			store_no
+		)
+		values
+		(
+			#orderID#,
+			#orderNumber#,
+			#serviceOrderID#,
+			#unitNumber#,
+			#storeNumber#
+		)
+	</insert>
+	
+	
+	<insert id="staging_order_sku.insert" parameterClass="com.newco.marketplace.dto.vo.staging.StagingOrderSkuVO">
+		insert into shc_order_sku
+		(
+			sku, 
+			shc_order_id,
+			price_ratio,
+			final_price,
+			permit_sku_ind
+		)
+		values
+		(
+			#sku#,
+			#orderID#,
+			#priceRatio#,
+			#finalPrice#,
+			#permitSkuInd#
+		)
+	</insert>
+	
+	
+  <delete id="staging_order.delete" parameterClass="string" >
+    delete from shc_order
+    where so_id = #soID#
+  </delete>
+
+  <delete id="staging_order_sku.delete" parameterClass="string" >
+    delete from shc_order_sku
+    where order_no = #orderNumber#
+  </delete>
+
+	 <!-- Need to grab a live/existing Service Order for Junit testing -->
+	<select id="so_hdr.select_first"
+		 resultClass="string">
+		SELECT  so_id from so_hdr limit 1
+	</select>
+	
+	
+	<!-- END OF TESTING QUERIES, START OF PRODUCTION QUERIES -->
+	
+	<select id="staging_order_sku.select_by_order_number"
+		parameterClass="string" resultClass="shcOrderSkuVO">
+		SELECT 
+			order_sku.sku AS sku,
+			order_sku.shc_order_id AS orderID,
+			order_sku.price_ratio AS priceRatio			
+		FROM
+			shc_order_sku order_sku
+		WHERE
+			order_sku.shc_order_id = #orderID#
+	</select>
+	
+	<select id="staging_order.select_by_so_id"
+		parameterClass="string" resultClass="shcOrderVO">
+		SELECT 
+			shc_order_id As orderID,
+			so_id AS serviceOrderID,
+			unit_no AS unitNumber			
+		FROM
+			shc_order 
+		WHERE
+			so_id = #soID#
+	</select>
+
+	<select id="staging_order_id.select_by_so_id"
+		parameterClass="string" resultClass="int">
+		SELECT 
+			shc_order_id
+		FROM
+			shc_order 
+		WHERE
+			so_id = #soID#
+	</select>
+
+	<select id="staging_order_sku.select_list_by_order_id"
+		parameterClass="int" resultClass="shcOrderSkuVO">
+		SELECT 
+			order_sku.sku AS sku,
+			order_sku.shc_order_id AS orderID,
+			order_sku.price_ratio AS priceRatio,
+			order_sku.permit_sku_ind AS permitSkuInd	
+		FROM
+			shc_order_sku order_sku
+		WHERE
+			order_sku.shc_order_id = #orderID#
+	</select>
+
+	<update id="staging_order_sku.update_final_price" parameterClass="shcOrderSkuVO">
+		UPDATE 
+			shc_order_sku SET
+		  		final_price = #finalPrice#
+		WHERE 
+				shc_order_id = #orderID# and
+				sku = #sku#
+	</update>
+	
+
+</sqlMap>

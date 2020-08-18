@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="vendorResourceLocation">
+
+	<!-- one has to delete all the data because old data wouldn't get update. -->
+	<delete id="vendorresourcelocation.all.delete">
+		delete from vendor_resource_location
+	</delete>
+	
+	<insert id="vendorresourcelocation.all.insert">
+		INSERT INTO vendor_resource_location
+		SELECT l.*, POINTFROMTEXT(CONCAT('POINT(',gis_latitude,' ', gis_longitude,')'))
+		FROM location l
+		JOIN vendor_resource vr
+		ON (vr.locn_id = l.locn_id)
+		WHERE l.gis_latitude IS NOT NULL
+		AND l.gis_longitude IS NOT NULL
+	</insert>
+
+	<delete id="vendorresourceservicearea.all.delete">
+		delete from vendor_resource_service_area
+	</delete>
+	
+	<insert id="vendorresourceservicearea.all.insert">
+		insert into vendor_resource_service_area (
+			resource_id, vendor_id, latitude, longitude, radius_miles, service_area, created_date, modified_date
+		)
+		select 
+			res.resource_id, res.vendor_id, loc.gis_latitude, loc.gis_longitude, rad.radius_miles,
+			GEOMFROMTEXT(CONCAT('POLYGON((',
+				COALESCE(loc.gis_latitude,0) - rad.radius_miles / 68, ' ', COALESCE(loc.gis_longitude,0) - rad.radius_miles / 34, ',',
+				COALESCE(loc.gis_latitude,0) - rad.radius_miles / 68, ' ', COALESCE(loc.gis_longitude,0) + rad.radius_miles / 34, ',',
+				COALESCE(loc.gis_latitude,0) + rad.radius_miles / 68, ' ', COALESCE(loc.gis_longitude,0) + rad.radius_miles / 34, ',',
+				COALESCE(loc.gis_latitude,0) + rad.radius_miles / 68, ' ', COALESCE(loc.gis_longitude,0) - rad.radius_miles / 34, ',',
+				COALESCE(loc.gis_latitude,0) - rad.radius_miles / 68, ' ', COALESCE(loc.gis_longitude,0) - rad.radius_miles / 34, '))'
+			)),
+			now(), now()
+		from vendor_resource res
+			join location loc on loc.locn_id = res.locn_id
+			join lu_service_area_radius rad ON rad.id = res.service_area_radius_id
+		where res.locn_id is not null;
+	</insert>
+
+</sqlMap>

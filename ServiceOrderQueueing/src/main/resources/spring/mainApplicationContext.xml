@@ -1,0 +1,610 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
+	default-autowire="no">
+
+	<bean id="queueingPlaceholderConfig"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	</bean>
+
+	<bean id="testServiceOrderSender" class="org.springframework.jms.core.JmsTemplate102"
+		lazy-init="true">
+		<property name="connectionFactory">
+			<ref bean="testQueueConnectionFactoryMQ" />
+		</property>
+		<property name="pubSubDomain">
+			<value>false</value>
+		</property>
+		<property name="defaultDestination">
+			<ref bean="devDestinationMQ" />
+		</property>
+	</bean>
+
+	<bean id="prodServiceOrderSender" class="org.springframework.jms.core.JmsTemplate102"
+		lazy-init="true">
+		<property name="connectionFactory">
+			<ref bean="prodQueueConnectionFactoryMQ" />
+		</property>
+		<property name="pubSubDomain">
+			<value>false</value>
+		</property>
+		<property name="defaultDestination">
+			<ref bean="prodDestinationMQ" />
+		</property>
+	</bean>
+
+	<bean id="env1ServiceOrderSender" class="org.springframework.jms.core.JmsTemplate102"
+		lazy-init="true">
+		<property name="connectionFactory">
+			<ref bean="env1QueueConnectionFactoryMQ" />
+		</property>
+		<property name="pubSubDomain">
+			<value>false</value>
+		</property>
+		<property name="defaultDestination">
+			<ref bean="env1DestinationMQ" />
+		</property>
+	</bean>
+	
+	<bean id="env2ServiceOrderSender" class="org.springframework.jms.core.JmsTemplate102"
+		lazy-init="true">
+		<property name="connectionFactory">
+			<ref bean="env2QueueConnectionFactoryMQ" />
+		</property>
+		<property name="pubSubDomain">
+			<value>false</value>
+		</property>
+		<property name="defaultDestination">
+			<ref bean="env2DestinationMQ" />
+		</property>
+	</bean>
+	
+	<bean id="env3ServiceOrderSender" class="org.springframework.jms.core.JmsTemplate102"
+		lazy-init="true">
+		<property name="connectionFactory">
+			<ref bean="env3QueueConnectionFactoryMQ" />
+		</property>
+		<property name="pubSubDomain">
+			<value>false</value>
+		</property>
+		<property name="defaultDestination">
+			<ref bean="env3DestinationMQ" />
+		</property>
+	</bean>
+	
+	<bean id="env4ServiceOrderSender" class="org.springframework.jms.core.JmsTemplate102"
+		lazy-init="true">
+		<property name="connectionFactory">
+			<ref bean="env4QueueConnectionFactoryMQ" />
+		</property>
+		<property name="pubSubDomain">
+			<value>false</value>
+		</property>
+		<property name="defaultDestination">
+			<ref bean="env4DestinationMQ" />
+		</property>
+	</bean>
+	
+	<bean id="qa1ServiceOrderSender" class="org.springframework.jms.core.JmsTemplate102"
+		lazy-init="true">
+		<property name="connectionFactory">
+			<ref bean="qa1QueueConnectionFactoryMQ" />
+		</property>
+		<property name="pubSubDomain">
+			<value>false</value>
+		</property>
+		<property name="defaultDestination">
+			<ref bean="qa1DestinationMQ" />
+		</property>
+	</bean>
+	
+	<bean id="qa2ServiceOrderSender" class="org.springframework.jms.core.JmsTemplate102"
+		lazy-init="true">
+		<property name="connectionFactory">
+			<ref bean="qa2QueueConnectionFactoryMQ" />
+		</property>
+		<property name="pubSubDomain">
+			<value>false</value>
+		</property>
+		<property name="defaultDestination">
+			<ref bean="qa2DestinationMQ" />
+		</property>
+	</bean>
+	
+	<bean id="qa3ServiceOrderSender" class="org.springframework.jms.core.JmsTemplate102"
+		lazy-init="true">
+		<property name="connectionFactory">
+			<ref bean="qa3QueueConnectionFactoryMQ" />
+		</property>
+		<property name="pubSubDomain">
+			<value>false</value>
+		</property>
+		<property name="defaultDestination">
+			<ref bean="qa3DestinationMQ" />
+		</property>
+	</bean>
+	
+	<bean id="qa4ServiceOrderSender" class="org.springframework.jms.core.JmsTemplate102"
+		lazy-init="true">
+		<property name="connectionFactory">
+			<ref bean="qa4QueueConnectionFactoryMQ" />
+		</property>
+		<property name="pubSubDomain">
+			<value>false</value>
+		</property>
+		<property name="defaultDestination">
+			<ref bean="qa4DestinationMQ" />
+		</property>
+	</bean>
+	
+
+
+	<!-- Direct to MQ -->
+
+	<bean id="const"
+		class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+		<property name="staticField">
+			<value>com.ibm.mq.jms.JMSC.MQJMS_TP_CLIENT_MQ_TCPIP</value>
+		</property>
+	</bean>
+
+	<bean id="testQueueConnectionFactoryMQ" class="com.ibm.mq.jms.MQQueueConnectionFactory"
+		lazy-init="true">
+		<property name="transportType" ref="const" />
+		<property name="queueManager">
+			<value>${test.injection.queue.manager}</value>
+		</property>
+		<property name="hostName">
+			<value>${test.injection.queue.host.name}</value>
+		</property>
+		<property name="port">
+			<value>${test.injection.queue.host.port}</value>
+		</property>
+		<property name="channel">
+			<value>${test.injection.queue.channel}</value>
+		</property>
+
+	</bean>
+
+	<bean id="prodQueueConnectionFactoryMQ" class="com.ibm.mq.jms.MQQueueConnectionFactory"
+		lazy-init="true">
+		<property name="transportType" ref="const" />
+		<property name="queueManager">
+			<value>${prod.injection.queue.manager}</value>
+		</property>
+		<property name="hostName">
+			<value>${prod.injection.queue.host.name}</value>
+		</property>
+		<property name="port">
+			<value>${prod.injection.queue.host.port}</value>
+		</property>
+		<property name="channel">
+			<value>${prod.injection.queue.channel}</value>
+		</property>
+
+	</bean>
+	
+	<bean id="env1QueueConnectionFactoryMQ" class="com.ibm.mq.jms.MQQueueConnectionFactory"
+		lazy-init="true">
+		<property name="transportType" ref="const" />
+		<property name="queueManager">
+			<value>${env1.injection.queue.manager}</value>
+		</property>
+		<property name="hostName">
+			<value>${env1.injection.queue.host.name}</value>
+		</property>
+		<property name="port">
+			<value>${env1.injection.queue.host.port}</value>
+		</property>
+		<property name="channel">
+			<value>${env1.injection.queue.channel}</value>
+		</property>
+
+	</bean>
+	
+	<bean id="env2QueueConnectionFactoryMQ" class="com.ibm.mq.jms.MQQueueConnectionFactory"
+		lazy-init="true">
+		<property name="transportType" ref="const" />
+		<property name="queueManager">
+			<value>${env2.injection.queue.manager}</value>
+		</property>
+		<property name="hostName">
+			<value>${env2.injection.queue.host.name}</value>
+		</property>
+		<property name="port">
+			<value>${env2.injection.queue.host.port}</value>
+		</property>
+		<property name="channel">
+			<value>${env2.injection.queue.channel}</value>
+		</property>
+
+	</bean>
+	
+	<bean id="env3QueueConnectionFactoryMQ" class="com.ibm.mq.jms.MQQueueConnectionFactory"
+		lazy-init="true">
+		<property name="transportType" ref="const" />
+		<property name="queueManager">
+			<value>${env3.injection.queue.manager}</value>
+		</property>
+		<property name="hostName">
+			<value>${env3.injection.queue.host.name}</value>
+		</property>
+		<property name="port">
+			<value>${env3.injection.queue.host.port}</value>
+		</property>
+		<property name="channel">
+			<value>${env3.injection.queue.channel}</value>
+		</property>
+
+	</bean>
+	
+	<bean id="env4QueueConnectionFactoryMQ" class="com.ibm.mq.jms.MQQueueConnectionFactory"
+		lazy-init="true">
+		<property name="transportType" ref="const" />
+		<property name="queueManager">
+			<value>${env4.injection.queue.manager}</value>
+		</property>
+		<property name="hostName">
+			<value>${env4.injection.queue.host.name}</value>
+		</property>
+		<property name="port">
+			<value>${env4.injection.queue.host.port}</value>
+		</property>
+		<property name="channel">
+			<value>${env4.injection.queue.channel}</value>
+		</property>
+
+	</bean>
+	
+	<bean id="qa1QueueConnectionFactoryMQ" class="com.ibm.mq.jms.MQQueueConnectionFactory"
+		lazy-init="true">
+		<property name="transportType" ref="const" />
+		<property name="queueManager">
+			<value>${qa1.injection.queue.manager}</value>
+		</property>
+		<property name="hostName">
+			<value>${qa1.injection.queue.host.name}</value>
+		</property>
+		<property name="port">
+			<value>${qa1.injection.queue.host.port}</value>
+		</property>
+		<property name="channel">
+			<value>${qa1.injection.queue.channel}</value>
+		</property>
+
+	</bean>
+	
+	<bean id="qa2QueueConnectionFactoryMQ" class="com.ibm.mq.jms.MQQueueConnectionFactory"
+		lazy-init="true">
+		<property name="transportType" ref="const" />
+		<property name="queueManager">
+			<value>${qa2.injection.queue.manager}</value>
+		</property>
+		<property name="hostName">
+			<value>${qa2.injection.queue.host.name}</value>
+		</property>
+		<property name="port">
+			<value>${qa2.injection.queue.host.port}</value>
+		</property>
+		<property name="channel">
+			<value>${qa2.injection.queue.channel}</value>
+		</property>
+
+	</bean>
+	
+	<bean id="qa3QueueConnectionFactoryMQ" class="com.ibm.mq.jms.MQQueueConnectionFactory"
+		lazy-init="true">
+		<property name="transportType" ref="const" />
+		<property name="queueManager">
+			<value>${qa3.injection.queue.manager}</value>
+		</property>
+		<property name="hostName">
+			<value>${qa3.injection.queue.host.name}</value>
+		</property>
+		<property name="port">
+			<value>${qa3.injection.queue.host.port}</value>
+		</property>
+		<property name="channel">
+			<value>${qa3.injection.queue.channel}</value>
+		</property>
+
+	</bean>
+	
+	<bean id="qa4QueueConnectionFactoryMQ" class="com.ibm.mq.jms.MQQueueConnectionFactory"
+		lazy-init="true">
+		<property name="transportType" ref="const" />
+		<property name="queueManager">
+			<value>${qa4.injection.queue.manager}</value>
+		</property>
+		<property name="hostName">
+			<value>${qa4.injection.queue.host.name}</value>
+		</property>
+		<property name="port">
+			<value>${qa4.injection.queue.host.port}</value>
+		</property>
+		<property name="channel">
+			<value>${qa4.injection.queue.channel}</value>
+		</property>
+
+	</bean>
+	
+
+
+	<bean id="uploadFileActionbean" class="com.orderinject.UploadFileAction">
+		<property name="queueDestinations">
+			<map>
+				<entry key="DEV" value-ref="devDestinationMQ" />
+				<entry key="QA1" value-ref="qa1DestinationMQ" />
+				<entry key="QA2" value-ref="qa2DestinationMQ" />
+				<entry key="QA3" value-ref="qa3DestinationMQ" />
+				<entry key="QA4" value-ref="qa4DestinationMQ" />
+				<entry key="PROD" value-ref="prodDestinationMQ" />
+				<entry key="ENV1" value-ref="env1DestinationMQ" />
+				<entry key="ENV2" value-ref="env2DestinationMQ" />
+				<entry key="ENV3" value-ref="env3DestinationMQ" />
+				<entry key="ENV4" value-ref="env4DestinationMQ" />
+			</map>
+		</property>
+		<property name="environment">
+			<value>${environment}</value>
+		</property>
+		<property name="testServiceOrderSender">
+			<ref bean="testServiceOrderSender" />
+		</property>
+		<property name="prodServiceOrderSender">
+			<ref bean="prodServiceOrderSender" />
+		</property>
+		<property name="env1ServiceOrderSender">
+			<ref bean="env1ServiceOrderSender" />
+		</property>
+		<property name="env2ServiceOrderSender">
+			<ref bean="env2ServiceOrderSender" />
+		</property>
+		<property name="env3ServiceOrderSender">
+			<ref bean="env3ServiceOrderSender" />
+		</property>
+		<property name="env4ServiceOrderSender">
+			<ref bean="env4ServiceOrderSender" />
+		</property>
+		<property name="qa1ServiceOrderSender">
+			<ref bean="qa1ServiceOrderSender" />
+		</property>
+		<property name="qa2ServiceOrderSender">
+			<ref bean="qa2ServiceOrderSender" />
+		</property>
+		<property name="qa3ServiceOrderSender">
+			<ref bean="qa3ServiceOrderSender" />
+		</property>
+		<property name="qa4ServiceOrderSender">
+			<ref bean="qa4ServiceOrderSender" />
+		</property>		
+	</bean>
+
+	<bean id="devDestinationMQ" class="com.ibm.mq.jms.MQQueue">
+		<property name="baseQueueManagerName">
+			<value>${test.injection.queue.manager}</value>
+		</property>
+		<property name="baseQueueName">
+			<value>${dev.injection.queue.name}</value>
+		</property>
+	</bean>
+
+	<bean id="qa1DestinationMQ" class="com.ibm.mq.jms.MQQueue">
+		<property name="baseQueueManagerName">
+			<value>${qa1.injection.queue.manager}</value>
+		</property>
+		<property name="baseQueueName">
+			<value>${qa1.injection.queue.name}</value>
+		</property>
+	</bean>
+
+	<bean id="qa2DestinationMQ" class="com.ibm.mq.jms.MQQueue">
+		<property name="baseQueueManagerName">
+			<value>${qa2.injection.queue.manager}</value>
+		</property>
+		<property name="baseQueueName">
+			<value>${qa2.injection.queue.name}</value>
+		</property>
+	</bean>
+
+	<bean id="qa3DestinationMQ" class="com.ibm.mq.jms.MQQueue">
+		<property name="baseQueueManagerName">
+			<value>${qa3.injection.queue.manager}</value>
+		</property>
+		<property name="baseQueueName">
+			<value>${qa3.injection.queue.name}</value>
+		</property>
+	</bean>
+
+	<bean id="qa4DestinationMQ" class="com.ibm.mq.jms.MQQueue">
+		<property name="baseQueueManagerName">
+			<value>${qa4.injection.queue.manager}</value>
+		</property>
+		<property name="baseQueueName">
+			<value>${qa4.injection.queue.name}</value>
+		</property>
+	</bean>
+
+	<bean id="prodDestinationMQ" class="com.ibm.mq.jms.MQQueue">
+		<property name="baseQueueManagerName">
+			<value>${prod.injection.queue.manager}</value>
+		</property>
+		<property name="baseQueueName">
+			<value>${prod.injection.queue.name}</value>
+		</property>
+	</bean>
+
+	<bean id="env1DestinationMQ" class="com.ibm.mq.jms.MQQueue">
+		<property name="baseQueueManagerName">
+			<value>${env1.injection.queue.manager}</value>
+		</property>
+		<property name="baseQueueName">
+			<value>${env1.injection.queue.name}</value>
+		</property>
+	</bean>
+	
+	<bean id="env2DestinationMQ" class="com.ibm.mq.jms.MQQueue">
+		<property name="baseQueueManagerName">
+			<value>${env2.injection.queue.manager}</value>
+		</property>
+		<property name="baseQueueName">
+			<value>${env2.injection.queue.name}</value>
+		</property>
+	</bean>
+	
+	<bean id="env3DestinationMQ" class="com.ibm.mq.jms.MQQueue">
+		<property name="baseQueueManagerName">
+			<value>${env3.injection.queue.manager}</value>
+		</property>
+		<property name="baseQueueName">
+			<value>${env3.injection.queue.name}</value>
+		</property>
+	</bean>
+	
+	<bean id="env4DestinationMQ" class="com.ibm.mq.jms.MQQueue">
+		<property name="baseQueueManagerName">
+			<value>${env4.injection.queue.manager}</value>
+		</property>
+		<property name="baseQueueName">
+			<value>${env4.injection.queue.name}</value>
+		</property>
+	</bean>
+	
+	<bean id="env1ConnectionFactoryMQ" class="com.ibm.mq.jms.MQQueueConnectionFactory"
+		lazy-init="true">
+		<property name="transportType" ref="const" />
+		<property name="queueManager">
+			<value>${env1.injection.queue.manager}</value>
+		</property>
+		<property name="hostName">
+			<value>${env1.injection.queue.host.name}</value>
+		</property>
+		<property name="port">
+			<value>${env1.injection.queue.host.port}</value>
+		</property>
+		<property name="channel">
+			<value>${env1.injection.queue.channel}</value>
+		</property>
+	</bean>
+
+	<bean id="env2ConnectionFactoryMQ" class="com.ibm.mq.jms.MQQueueConnectionFactory"
+		lazy-init="true">
+		<property name="transportType" ref="const" />
+		<property name="queueManager">
+			<value>${env2.injection.queue.manager}</value>
+		</property>
+		<property name="hostName">
+			<value>${env2.injection.queue.host.name}</value>
+		</property>
+		<property name="port">
+			<value>${env2.injection.queue.host.port}</value>
+		</property>
+		<property name="channel">
+			<value>${env2.injection.queue.channel}</value>
+		</property>
+	</bean>
+	
+	<bean id="env3ConnectionFactoryMQ" class="com.ibm.mq.jms.MQQueueConnectionFactory"
+		lazy-init="true">
+		<property name="transportType" ref="const" />
+		<property name="queueManager">
+			<value>${env3.injection.queue.manager}</value>
+		</property>
+		<property name="hostName">
+			<value>${env3.injection.queue.host.name}</value>
+		</property>
+		<property name="port">
+			<value>${env3.injection.queue.host.port}</value>
+		</property>
+		<property name="channel">
+			<value>${env3.injection.queue.channel}</value>
+		</property>
+	</bean>
+	
+	<bean id="env4ConnectionFactoryMQ" class="com.ibm.mq.jms.MQQueueConnectionFactory"
+		lazy-init="true">
+		<property name="transportType" ref="const" />
+		<property name="queueManager">
+			<value>${env4.injection.queue.manager}</value>
+		</property>
+		<property name="hostName">
+			<value>${env4.injection.queue.host.name}</value>
+		</property>
+		<property name="port">
+			<value>${env4.injection.queue.host.port}</value>
+		</property>
+		<property name="channel">
+			<value>${env4.injection.queue.channel}</value>
+		</property>
+	</bean>
+	
+	<bean id="qa1ConnectionFactoryMQ" class="com.ibm.mq.jms.MQQueueConnectionFactory"
+		lazy-init="true">
+		<property name="transportType" ref="const" />
+		<property name="queueManager">
+			<value>${qa1.injection.queue.manager}</value>
+		</property>
+		<property name="hostName">
+			<value>${qa1.injection.queue.host.name}</value>
+		</property>
+		<property name="port">
+			<value>${qa1.injection.queue.host.port}</value>
+		</property>
+		<property name="channel">
+			<value>${qa1.injection.queue.channel}</value>
+		</property>
+	</bean>
+	
+	<bean id="qa2ConnectionFactoryMQ" class="com.ibm.mq.jms.MQQueueConnectionFactory"
+		lazy-init="true">
+		<property name="transportType" ref="const" />
+		<property name="queueManager">
+			<value>${qa2.injection.queue.manager}</value>
+		</property>
+		<property name="hostName">
+			<value>${qa2.injection.queue.host.name}</value>
+		</property>
+		<property name="port">
+			<value>${qa2.injection.queue.host.port}</value>
+		</property>
+		<property name="channel">
+			<value>${qa2.injection.queue.channel}</value>
+		</property>
+	</bean>
+	
+	<bean id="qa3ConnectionFactoryMQ" class="com.ibm.mq.jms.MQQueueConnectionFactory"
+		lazy-init="true">
+		<property name="transportType" ref="const" />
+		<property name="queueManager">
+			<value>${qa3.injection.queue.manager}</value>
+		</property>
+		<property name="hostName">
+			<value>${qa3.injection.queue.host.name}</value>
+		</property>
+		<property name="port">
+			<value>${qa3.injection.queue.host.port}</value>
+		</property>
+		<property name="channel">
+			<value>${qa3.injection.queue.channel}</value>
+		</property>
+	</bean>
+	
+	<bean id="qa4ConnectionFactoryMQ" class="com.ibm.mq.jms.MQQueueConnectionFactory"
+		lazy-init="true">
+		<property name="transportType" ref="const" />
+		<property name="queueManager">
+			<value>${qa4.injection.queue.manager}</value>
+		</property>
+		<property name="hostName">
+			<value>${qa4.injection.queue.host.name}</value>
+		</property>
+		<property name="port">
+			<value>${qa4.injection.queue.host.port}</value>
+		</property>
+		<property name="channel">
+			<value>${qa4.injection.queue.channel}</value>
+		</property>
+	</bean>
+</beans>

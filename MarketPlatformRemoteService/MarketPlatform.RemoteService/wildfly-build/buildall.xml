@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="../" default="compile-dependencies" name="MarketPlatform.RemoteService-Buildall" >
+	<target name="compile-dependencies" >
+        <ant antfile="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.Common/wildfly-build/build.xml" dir="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.Common" target="clean"/>
+        <ant antfile="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.Domain/wildfly-build/build.xml" dir="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.Domain" target="clean"/>
+        <ant antfile="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.BusinessImpl/wildfly-build/build.xml" dir="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.BusinessImpl" target="clean"/>
+        <ant antfile="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.MessageListeners/wildfly-build/build.xml" dir="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.MessageListeners" target="clean"/>
+        <ant antfile="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.WebServices/wildfly-build/build.xml" dir="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.WebServices" target="clean"/>
+        <ant antfile="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.Notification/wildfly-build/build.xml" dir="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.Notification" target="clean"/>
+		<ant antfile="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.NotificationMDB/wildfly-build/build.xml" dir="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.NotificationMDB" target="clean"/>
+		
+		<ant antfile="../ServiceLiveCommonDomain/wildfly-build/build.xml" dir="../../ServiceLiveCommonDomain"  />
+        <ant antfile="../OFACSDN/wildfly-build.xml" dir="../../OFACSDN" target="distribute" />
+        <ant antfile="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.Common/wildfly-build/build.xml" dir="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.Common"/>
+        <ant antfile="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.Domain/wildfly-build/build.xml" dir="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.Domain"/>
+        <ant antfile="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.BusinessInterface/wildfly-build/build.xml" dir="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.BusinessInterface"/>
+        <ant antfile="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.BusinessImpl/wildfly-build/build.xml" dir="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.BusinessImpl"/>
+        <ant antfile="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.MessageListeners/wildfly-build/build.xml" dir="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.MessageListeners"/>
+        <ant antfile="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.WebServices/wildfly-build/build.xml" dir="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.WebServices"/>
+		<ant antfile="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.Notification/wildfly-build/build.xml" dir="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.Notification"/>
+		<ant antfile="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.NotificationMDB/wildfly-build/build.xml" dir="../../MarketPlatformRemoteService/MarketPlatform.RemoteService.NotificationMDB"/>
+		<ant antfile="../../MarketPlatformRemoteService/MarketPlatform.RemoteService/wildfly-build/build.xml" dir="../../MarketPlatformRemoteService/MarketPlatform.RemoteService"/>
+	</target>
+</project>
+	

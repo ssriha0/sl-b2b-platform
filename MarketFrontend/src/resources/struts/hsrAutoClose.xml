@@ -1,0 +1,39 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="hsrAutoClose" extends="ServiceLiveBase" >
+        <default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+        
+    	<global-results >
+			<result name="error" type="redirectAction">
+				<param name="actionName">errorAction</param>
+				<param name="errorMessage">${errorMessage}</param>
+				<param name="returnURL">${returnURL}</param>
+			</result>
+		</global-results>
+		
+		<action name="autoCloseHSR_displayPage" class="inHomeAutoCloseManagerAction" method="displayPage">
+	        <result name="success">/jsp/autoclose/inHomeAutoCloseManager.jsp</result>	    	   
+	        <result name="homepage" type="redirectAction">homepage</result>	         
+	    </action>
+	    
+	    <action name="autoCloseHSR_getFirmOverrideList" class="inHomeAutoCloseManagerAction" method="getFirmOverrideList">
+	        <result name="override">/jsp/autoclose/inhomeAutoCloseFirmOverridedList.jsp</result>
+	        <result name="removed">/jsp/autoclose/inhomeAutoCloseFirmRemovedList.jsp</result>	    	   
+	        <result name="homepage" type="redirectAction">homepage</result>	         
+	    </action>
+	    
+	    <action name="autoCloseHSR_updateFirmOverrideList" class="inHomeAutoCloseManagerAction" method="updateFirmOverrideList">
+	        <result name="override">/jsp/autoclose/inhomeAutoCloseFirmOverridedList.jsp</result>
+	        <result name="removed">/jsp/autoclose/inhomeAutoCloseFirmRemovedList.jsp</result>	    	   
+	        <result name="homepage" type="redirectAction">homepage</result>	 	         
+	    </action>	
+	    	
+		<action name="autoCloseHSR_searchMembers" class="inHomeAutoCloseManagerAction" method="searchMembers">
+			<result name="success">/jsp/autoclose/inHomeAutoCloseSearchResults.jsp</result>
+		</action> 
+		
+ 	</package>
+    
+</struts>

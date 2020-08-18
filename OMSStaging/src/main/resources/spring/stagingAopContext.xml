@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	  
+	<bean id="stageOrderDispatch"
+		class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="proxyInterfaces">
+			<value>
+				com.newco.marketplace.webservices.sei.StageOrderSEI
+			</value>
+
+		</property>
+	 	<property name="target">
+			<ref bean="stageDispatchRequestor" />
+		</property> 	
+		<property name="interceptorNames">
+			<list>
+				<value>stageOrderSEIAopAdvisor</value>
+			</list>
+		</property>
+	</bean>
+	
+	
+	<bean id="stageOrderSEIAopAdvisor"
+		class="org.springframework.aop.support.NameMatchMethodPointcutAdvisor">
+		<property name="mappedNames">
+		  <list>	
+			<value>stageDataAfterUnMarshalling</value>			
+			<value>persistErrors</value>
+			<value>retrieveClosedOrders</value>
+			<value>stageShcOrderAfterTranslation</value>
+			<value>createNPSProcessLog</value>
+			<value>stageUpsoldInfo</value>
+			<value>getShcOrderDetails</value>
+			<value>getMiscAddOn</value>
+			<value>updateFinalPrice</value>
+			<value>getStageOrder</value>
+			<value>getCallCollectAddon</value>
+		  </list>	
+		</property>
+		<property name="advice">
+			<ref bean="stageOrderSEIaopAdvice" />
+		</property>
+	</bean>
+  	
+  	<bean id="stageOrderSEIaopAdvice" class="com.newco.marketplace.webservices.aop.WSAOPAdvice">
+		<!-- Requires for Logging -->
+		<property name="wsLoggingAdvice">
+			<ref bean="wsLoggingAdvice" />
+		</property>
+	</bean>
+	
+	<bean id="wsLoggingAdvice"
+		class="com.newco.marketplace.webservices.aop.WSLoggingAdvice">
+	</bean>
+	
+	<bean id="stageOrderServiceImpl" class="com.newco.marketplace.webservices.seiImpl.StageOrderImpl">
+		<property name="stageDispatch">
+			<ref bean="stageOrderDispatch" />
+		</property>
+	</bean>
+		
+    <bean id="stageDispatchRequestor" class="com.newco.marketplace.webservices.seiImpl.StageDispatchRequestor">
+    	<property name="shcOrderDAO" ref="shcOrderDAO" />
+		<property name="shcOrderSkuDAO" ref="shcOrderSkuDAO" />
+		<property name="shcMerchandiseDAO" ref="shcMerchandiseDAO" />
+		<property name="shcOrderTransactionDAO" ref="shcOrderTransactionDAO" />
+		<property name="shcErrorLoggingDAO" ref="shcErrorLoggingDAO" />
+		<property name="shcNPSProcessLogDAO" ref="shcNPSProcessLogDAO" />
+		<property name="shcUpsellPaymentDAO" ref="shcUpsellPaymentDAO" />
+		<property name="txManager" ref="jpaTransactionManagerMain"></property>
+		<property name="specialtyAddOnDAO" ref="specialtyAddOnDAO"></property>
+		<property name="shcOrderAddOnDAO" ref="shcOrderAddOnDAO"></property>
+    </bean>
+    
+</beans>

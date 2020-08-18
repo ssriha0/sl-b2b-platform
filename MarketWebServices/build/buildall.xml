@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="../" default="compile-dependencies" name="MarketWebServices-BuildAll" >
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+	<target name="compile-dependencies"> 
+    	<ant antfile="../MarketCommon/build/build.xml" dir="../MarketCommon"/>
+    	<ant antfile="../RoutingRulesEngine/build/build.xml" dir="../RoutingRulesEngine"/>
+		<ant antfile="../MarketDocument/build/build.xml" dir="../MarketDocument"/>
+		<ant antfile="../MarketBusinessInterface/build/build.xml" dir="../MarketBusinessInterface"/>
+		<ant antfile="../MarketBackend/build/build.xml" dir="../MarketBackend"/>
+		<ant antfile="../ServiceLive.Common/build/build.xml" dir="../Wallet/ServiceLive.Common" inheritAll="false"/>
+		<ant antfile="../ServiceLive.Lookup/build/build.xml" dir="../Wallet/ServiceLive.Lookup" inheritAll="false"/>
+		<ant antfile="../Wallet.Common/build/build.xml" dir="../Wallet/Wallet.Common" inheritAll="false"/>
+        <ant antfile="../Wallet.ServiceInterface/build/build.xml" dir="../Wallet/Wallet.ServiceInterface" inheritAll="false"/>
+        <ant antfile="../Wallet.Alert/build/build.xml" dir="../Wallet/Wallet.Alert" inheritAll="false"/>
+        <ant antfile="../Wallet.ACH/build/build.xml" dir="../Wallet/Wallet.ACH" inheritAll="false"/>
+        <ant antfile="../Wallet.CreditCard/build/build.xml" dir="../Wallet/Wallet.CreditCard" inheritAll="false"/>
+        <ant antfile="../Wallet.Ledger/build/build.xml" dir="../Wallet/Wallet.Ledger" inheritAll="false"/>
+        <ant antfile="../Wallet.ValueLink/build/build.xml" dir="../Wallet/Wallet.ValueLink" inheritAll="false"/>
+        <ant antfile="../Wallet.Service/build/build.xml" dir="../Wallet/Wallet.Service" inheritAll="false"/>
+		<ant antfile="../Wallet.Batch/build/build.xml" dir="../Wallet/Wallet.Batch" inheritAll="false"/>
+		<ant antfile="../MarketWebServices/build/build.xml" dir="../MarketWebServices"/>
+	</target>
+</project>

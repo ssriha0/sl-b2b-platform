@@ -1,0 +1,609 @@
+/*css for buyer lead management */
+
+/*notification popup */
+table .tabledHdr {
+	/*border-left:  1px solid #ccc;
+	border-right: 1px solid #ccc;*/
+	border-top:  1px solid #ccc;
+	}
+table .rqHdr {
+		background-color:#4CBCDF;
+
+	width:25%;
+}
+table .firmHdr {
+		background-color:#F1EBEB;
+	
+	width:25%;
+}
+
+
+table#buyer-lead-monitor tr {
+    background:white;
+}
+
+table .marketHdr {
+	background-color:#00A0D2;
+
+	width:25%;
+}
+table .stateHdr {
+	background-color:#F1EBEB;
+
+	width:15%;
+}
+table .statusHdr {
+	background-color:#F1EBEB;
+
+	width:5%;
+}
+
+.leadInfo{
+	position: relative;
+	text-align: right;
+     	top: -15px;
+     	font-size: 11px;
+     	right: 35px;
+}
+.pageStyle {
+   font-size: 11px;
+    padding-left:2px;
+    padding-right:2px;
+    font-weight:normal;
+    cursor: pointer;
+}
+.leadCount
+{
+	font-size: 11px;
+	    left: 71%;
+	    min-width: 200px;
+	    position: absolute;
+	    text-align: right;
+    top: 328px;
+}
+.dataTables_scroll
+{
+    overflow:auto;
+    height: 450px;
+    border:1px solid #CCCCCC;
+}
+
+.filterStyle
+{
+ height: 22px;
+    left: 175px;
+    position: relative;
+    top: -73px;
+    width: 202px;
+}
+.warningBox { background: #FFF8BF; color: #FF8000; padding: 5px 10px; border: 1px solid #FFD324;}
+
+.shadowBox {
+  
+    font-size: 10px;
+    padding: 2px 3px;
+    border: 1px solid #CECECE;
+}
+.buyerLeadError
+{
+ 	color: red;
+    margin: 5px;
+    background: none repeat scroll 0 0 #FFEACC;
+    border: 1px solid #FF9600;
+    text-align: left;
+    padding: 5px;
+}
+
+
+/***********lead details*****************/
+
+body{
+    font-family: Verdana,Arial,Helvetica,sans-serif;
+   	font-size: 10px;
+   	font-color: black;
+}
+
+/* Generic Styles */
+.floatL{
+    float: left;
+}
+.floatR{
+    float: right;
+}
+.clear{
+    clear: both;
+}
+.hide{
+    display: none;
+}
+.show{
+    display: block;
+}
+/* --------------- */
+
+.mainWrapper{
+    width: 100%;
+    height: auto;
+}
+.borderRight{
+	
+	font-size: 10px;
+}
+.borderLeft{
+	border-left:solid 1px #dbdbdb;
+}
+.tabContainer{
+    width: 100%;
+    height: 35px;
+    margin-top: 10px;
+    border-bottom: solid 1px #dbdbdb;
+}
+
+.tabContainer ul.tabs{
+    list-style-type: none;
+    margin: 0;
+    padding:0;
+}
+.tabContainer ul.tabs li{
+    float: left;
+    padding:0 10px;
+    border-right: solid 1px #dbdbdb;
+    cursor: pointer;
+       
+}
+.tabContainer ul.tabs li.active{
+    font-weight: bold;
+    
+}
+
+.tabArea{
+    display: none;
+	border-bottom:solid 1px #dbdbdb;
+}
+
+.tabArea h2{
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Accordion Styles */
+.accordionContainer{
+    width: 100%;
+    height: auto;
+    // color: #666666;
+  
+   font-family: Verdana,Arial,Helvetica,sans-serif;
+   font-size: 10px;
+         
+}
+
+.accordionHead{
+ background: url("../images/titleBarBg.gif") no-repeat scroll right center #58585A;
+    cursor: pointer;
+    height: 30px;
+    line-height: 27px;
+    margin: 5px 0;
+    text-align: left;
+    padding: 0 5px;
+}
+.lastAccordionHead{
+	margin-bottom:0;
+}
+.accordionContent{
+    width: 100%;
+    height:auto;
+}
+.btnContainer{
+	/*margin:2px 0;
+	padding:0 2px;
+	text-align:left;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+        font-size: 11px;
+	background: background: url("../images/common/button-action-bg.png") repeat scroll 0 0 transparent;*/
+	
+	 background: url("/ServiceLiveWebUtil/images/common/button-action-bg.png") repeat scroll 0 0 transparent;
+	    border: 1px solid #D48B28;
+	    border-radius: 5px 5px 5px 5px;
+	    color: #333333;
+	    cursor: pointer;
+	    display: block;
+	    font: bold 9px Verdana,sans-serif;
+	    padding: 2px;
+	    position: relative;
+	    right: 2px;
+	    left:1px;
+	    text-align: left;
+	    text-transform: uppercase;
+	     width:140px;
+	     top : 74px
+	    
+	    
+    		
+	
+}
+.btnContainer .btn{
+	width:135px;
+}
+
+.btnSubmit
+{
+ background: url("/ServiceLiveWebUtil/images/common/button-action-bg.png") repeat scroll 0 0 transparent;
+	    border: 1px solid #D48B28;
+	    border-radius: 5px 5px 5px 5px;
+	    color: #333333;
+	    cursor: pointer;
+	    display: block;
+	    font: bold 9px Verdana,sans-serif;
+	    //position: relative;
+	    text-align: left;
+	    text-transform: uppercase;
+	     width:57px;
+	      display: inline;
+
+}
+
+.filterStyle
+{
+ height: 22px;
+    left: 175px;
+    position: relative;
+    top: -73px;
+    width: 202px;
+}
+.warningBox { background: #FFF8BF; color: #FF8000; padding: 5px 10px; border: 1px solid #FFD324;}
+
+.shadowBox {
+  
+    font-size: 10px;
+    padding: 2px 3px;
+    border: 1px solid #CECECE;
+}
+.buyerLeadError
+{
+    color: red;
+    margin: 5px;
+    background: none repeat scroll 0 0 #FFEACC;
+    border: 1px solid #FF9600;
+    text-align: left;
+    padding: 5px;
+}
+.buyerLeadSubmitButton
+{
+	 right: 2px;  
+     background: url("/ServiceLiveWebUtil/images/common/button-action-bg.png") repeat scroll 0 0 transparent;
+        border: 1px solid #D48B28;
+        border-radius: 5px 5px 5px 5px;
+        color: #333333;
+        cursor: pointer;
+        display: block;
+        font: bold 9px Verdana,sans-serif;
+        text-align: center;
+        position:relative;
+    text-transform: uppercase;
+     left: 84%;
+      top: 12px;
+    }
+
+.buyerLeadDetailsButton
+{
+	 right: 2px;
+    top: 135px;
+     background: url("/ServiceLiveWebUtil/images/common/button-action-bg.png") repeat scroll 0 0 transparent;
+        border: 1px solid #D48B28;
+        border-radius: 5px 5px 5px 5px;
+        color: #333333;
+        cursor: pointer;
+        display: block;
+        font: bold 9px Verdana,sans-serif;
+        padding: 1px;
+        text-align: center;
+    text-transform: uppercase;
+     left: 75px;
+        position: relative;
+    top: -12px;
+    right: 2px;
+    left:44%;
+}
+
+.tabContainer ul.tabs li:hover
+{
+background: url("../images/tabs/tab_on.gif") no-repeat scroll left top transparent;
+    border-color: #CCCCCC;
+    color:white;
+    font-family: Verdana,Arial,Helvetica,sans-serif;
+    font-size: 10px;
+    //text-decoration: underline;
+}
+
+ul.tabs li
+{
+ color: white;
+    background: url("../images/tabs/tab_bg.gif") no-repeat scroll left top transparent;
+    border-width: 10mm;
+    color: #666666;
+    font-family: Verdana,Arial,Helvetica,sans-serif;
+    font-size: 10px;
+    text-decoration: none;
+    padding :10px ;
+}
+
+#buyer-lead-monitor td
+ {
+ padding: 4px;
+ padding-left: 7px;
+ }
+
+ 
+ .viewNotesInfo
+ {
+    font-family: Verdana,Arial,Helvetica,sans-serif;
+    width: 825px;
+    font-size: 11px;
+    color: #222222;
+    padding-left: 10px;
+  }
+ 
+ .viewNotesTable
+ {
+  height: 400px;
+     margin-bottom: 20px;
+    width: 825px;
+     background: none repeat scroll 0 0 #FFFFFF;
+        border-color: #9F9F9F;
+        border-style: solid;
+        border-width: 0 1px 1px;
+        display: block;
+        overflow: auto;
+    
+ }
+ 
+ .viewNotesBody
+ {
+     color: #222222;
+     font-family: Verdana,Arial,Helvetica,sans-serif;
+ }
+ 
+ table .leadTableLook
+ {
+ font-size: 10px;
+ }
+ 
+ table.leadTableLook th {
+     background: none repeat scroll 0 0 #00A0D2;
+     color: #FFFFFF;
+}
+
+table.leadTableLook th, table.leadTableLook td {
+    padding: 5px 10px;
+    text-align: left;
+    word-wrap: break-word;
+}
+
+table.leadTableLook th.even {
+    background: none repeat scroll 0 0 #0080A8;
+}
+
+
+table.leadTableLook th.last, table.leadTableLook td.last {
+    text-align: left;
+}
+table.leadTableLook td {
+    border-bottom: 1px solid #CCCCCC;
+    vertical-align: middle;
+    font-color: black;
+}
+
+table.leadTableLook td.even {
+    background: none repeat scroll 0 0 #EEEEEE;
+}
+
+.leadManagementHeading
+{
+font-size:15px;font-weight:bold;position:relative;top:25px;left:12px;	
+}
+
+.tabHeader
+{
+    background: url("../images/titleBarBg.gif") no-repeat scroll right center #58585A;
+    cursor: pointer;
+    height: 30px;
+    line-height: 27px;
+    margin: 5px 0;
+    text-align: left;
+    padding: 0 5px;
+    font-family: Verdana,Arial,Helvetica,sans-serif;
+    color: #ffffff
+ 
+}
+.summaryHead
+{
+font-family:Arial;
+font-size:19px;
+font-style:normal;
+text-decoration:none;
+padding-bottom: 20px;
+   padding-top: 30px;
+   padding-left:10px
+ 
+}
+
+.resetFilterClass
+{
+    font-size: 10px;
+    padding-left: 7%;
+    position: relative;
+    top: 10px;
+    outline:none;
+    text-decoration: underline;
+    font-family: Verdana,Arial,Helvetica,sans-serif;
+    font-color: black;
+}
+
+.attDiv{
+	overflow-x:hidden; overflow-y:auto; height: 200px;
+}
+
+.attTable{
+	border: 1px solid #CCCCCC;table-layout:fixed;
+}
+	
+.attHdr{
+	padding:5px;color:white;border-right:1px solid #CCCCCC;
+}
+
+.attTd{
+	padding:4px;word-wrap:break-word;border-right:1px solid #CCCCCC;border-top:1px solid #CCCCCC;
+}
+.successBox {
+	background-color: #DDFFDD;
+	border-color: #009900;
+	border-style: solid;
+	border-width: 1px;
+	margin-bottom: 2px;
+	margin-top: 2px;
+	text-align: left;
+}
+
+.failureBox {
+	background-color: #FFEACC;
+	border-color: #FE0000;
+	border-style: solid;
+	border-width: 1px;
+	margin-bottom: 2px;
+	margin-top: 2px;
+	text-align: left;
+}
+.cancelSuccessBox{
+	background-color:#F0FFF0;
+    color: #006400;
+    border:solid 2px #B4EEB4;
+    padding: 5px; padding-left:5px; 
+    margin-bottom: 2px; 
+    font-weight:normal;
+    position:relative;
+    text-align:center;
+    width: 98.7%;
+}
+
+.cancelSuccessBox{
+	background-color:#F0FFF0;
+    color: #006400;
+    border:solid 2px #B4EEB4;
+    padding: 5px; padding-left:5px; 
+    margin-bottom: 2px; 
+    font-weight:normal;
+    position:relative;
+    text-align:center;
+    width: 98.7%;
+}
+
+table.buyerLeadViewNoteData tr.odd {
+    background: none;
+}
+table.buyerLeadViewNoteData td.even {
+     background: none repeat scroll 0 0 #F8F8F8;
+}
+
+.view_Notes_dataTables_Scroll
+{
+    overflow:auto;
+    height: 300px;
+    border: 1px solid #CCCCCC;
+    overflow-x: hidden;
+   	position: relative;
+    width: 805px;
+    left: 10px;
+}
+
+div.maindiv {
+	border: 1px solid #a1a1a1;
+	width: 100%;
+}
+div.splitdiv1 {
+	width: 55%;
+	float: left;
+}
+div.splitdiv2 {
+	width: 45%;
+	float: left;
+}
+div.innerheaderdiv {
+	background-color: #EEEEEE;
+	width: 95%;
+	float: left;
+	background: #58585A;
+	color: #FFFFFF;
+	text-align: left;
+	height: 17px;
+	padding-left: 8px;
+	padding-top: 5px;
+	font-size: 11px;
+}
+div.updaterevokepointheaderdiv {
+	background: #58585A;
+	border-bottom: 2px solid black;
+	color: #FFFFFF;
+	text-align: left;
+	height: 96%;
+	padding-left: 8px;
+	padding-top: 10px;
+	padding-bottom: 5px;
+}
+
+div.submitButtonDiv {
+	background-color: #DEDDDD;
+	height: 50px;
+}
+
+.disableLeadSubmit
+{
+   border: 1px solid #B1770B;
+    color: #222222;
+    cursor: pointer;
+    display: block;
+    font-family: Arial,Tahoma,sans-serif;
+    font-size: 0.9em;
+    font-size-adjust: none;
+    font-stretch: normal;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: bold;
+    line-height: normal;
+    margin-top: -5px;
+    padding: 3px 10px;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+table #view-lead-note-monitor th
+{
+background-color:#00A0D2;
+color: #FFFFFF;
+padding:3px 10px;
+}
+table #view-lead-note-monitor th.even
+{
+background-color:#0080A8;
+color: #FFFFFF;
+}
+
+#dataTable th {
+    padding-left:5px;
+}
+table #view-lead-note-monitor  td {
+    padding: 5px 10px;
+    text-align: left;
+    word-wrap: break-word;
+}
+
+.bottomLeadInfo
+{
+    font-size: 11px;
+    padding-bottom: 30px;
+    position: relative;
+    right: 35px;
+    text-align: right;
+    top: 9px;
+    
+    
+}

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jboss>
+	<enterprise-beans>
+      <message-driven>
+         <ejb-name>NotificationTaskConsumerBean</ejb-name>
+         <local-jndi-name>ejb/NotificationTaskConsumerBean</local-jndi-name>
+         <destination-jndi-name>queue/SLNotificationServiceQueue</destination-jndi-name>
+      </message-driven>		
+	</enterprise-beans>
+</jboss>

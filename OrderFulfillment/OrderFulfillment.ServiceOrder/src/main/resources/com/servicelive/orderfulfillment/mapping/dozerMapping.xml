@@ -1,0 +1,568 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns="http://dozer.sourceforge.net"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://dozer.sourceforge.net http://dozer.sourceforge.net/schema/beanmapping.xsd">
+
+    <configuration>
+        <stop-on-errors>true</stop-on-errors>
+        <wildcard>false</wildcard>
+    </configuration>
+
+    <mapping map-id="mainMap" type="one-way" map-null="false">
+        <class-a>com.servicelive.orderfulfillment.notification.NotificationInfo</class-a>
+        <class-b>java.util.HashMap</class-b>
+
+        <field>
+            <a>orderId</a>
+            <b key="SO_ID">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.sowTitle</a>
+            <b key="SO_TITLE">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.sowDs</a>
+            <b key="SO_DESC">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.oldSowDesc</a>
+            <b key="OLD_SO_DESC">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.reschedule.dateRange</a>
+            <b key="NEW_DATE_RANGE">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.reschedule.serviceDate1</a>
+            <b key="NEW_START_DATE" date-format="MMM dd, yyyy">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.reschedule.serviceDate2</a>
+            <b key="NEW_END_DATE" date-format="MMM dd, yyyy">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.reschedule.serviceTimeStart</a>
+            <b key="NEW_START_TIME">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.reschedule.serviceTimeEnd</a>
+            <b key="NEW_END_TIME">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.schedule.dateRange</a>
+            <b key="ORIGINAL_DATE">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.schedule.serviceDate1</a>
+            <b key="SERVICE_DATE1" date-format="MMM dd, yyyy">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.schedule.serviceDate1</a>
+            <b key="DATE_OF_SERVICE" date-format="MMM dd, yyyy">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.schedule.serviceDate2</a>
+            <b key="SERVICE_DATE2" date-format="MMM dd, yyyy">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.schedule.serviceTimeStart</a>
+            <b key="SERVICE_START_TIME">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.schedule.serviceTimeStart</a>
+            <b key="TIME">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.schedule.serviceTimeEnd</a>
+            <b key="SERVICE_END_TIME">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.serviceLocationTimeZone</a>
+            <b key="SO_SERVICE_LOC_TIMEZONE">this</b>
+        </field>
+        <field>
+            <a is-accessible="false">serviceOrder.lastConditionalOffer.offerExpirationDate</a>
+            <b key="PRVDR_PROPOSAL_EXPIRATION_DATE" date-format="MMM dd, yyyy - HH:mm:ss">this</b>
+        </field>
+        <field>
+            <a is-accessible="false">serviceOrder.lastConditionalOffer.increaseSpendLimit</a>
+            <b key="PRVDR_PROPOSED_SPEND_LIMIT_LABOR">this</b>
+        </field>
+        <field>
+            <a is-accessible="false">serviceOrder.lastConditionalOffer.schedule.serviceDate1</a>
+            <b date-format="MMM dd, yyyy" key="PRVDR_PROPOSED_SCHEDULE_FROM">this</b>
+        </field>
+        <field>
+            <a is-accessible="false">serviceOrder.lastConditionalOffer.schedule.serviceDate2</a>
+            <b date-format="MMM dd, yyyy" key="PRVDR_PROPOSED_SCHEDULE_TO">this</b>
+        </field>
+        <field>
+            <a is-accessible="false">serviceOrder.lastConditionalOffer.schedule.serviceTimeStart</a>
+            <b key="PRVDR_PROPOSED_SCHEDULE_START_TIME">this</b>
+        </field>
+        <field>
+            <a is-accessible="false">serviceOrder.lastConditionalOffer.schedule.serviceTimeEnd</a>
+            <b key="PRVDR_PROPOSED_SCHEDULE_END_TIME">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.acceptedDate</a>
+            <b key="SO_ACCEPTED_DATE" date-format="MMM dd, yyyy - HH:mm:ss">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.routedDate</a>
+            <b key="SO_ROUTED_DATE" date-format="MMM dd, yyyy - HH:mm:ss">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.problemDate</a>
+            <b key="SO_PROBLEM_REPORT_DT" date-format="MMM dd, yyyy - HH:mm:ss">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.cancelledDate</a>
+            <b key="SO_CANCEL_DATE" date-format="MMM dd, yyyy">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.expiredDate</a>
+            <b key="SO_EXPIRED_DATE" date-format="MMM dd, yyyy - HH:mm:ss">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.completedDate</a>
+            <b key="SO_COMPLETION_DATE" date-format="MMM dd, yyyy - HH:mm:ss">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.closedDate</a>
+            <b key="SO_CLOSED_DATE" date-format="MMM dd, yyyy - HH:mm:ss">this</b>
+        </field>
+        <field>
+            <a is-accessible="false">serviceOrder.totalAddon</a>
+            <b key="UPSOLD_TOTAL_PRICE">this</b>
+        </field>
+        <field>
+            <a is-accessible="false">serviceOrder.schedule.timeRange</a>
+            <b key="RESCHEDULE_SERVICE_TIME">this</b>
+        </field>
+        <field>
+            <a is-accessible="false">serviceOrder.schedule.dateRange</a>
+            <b key="RESCHEDULE_SERVICE_DATE">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.wfStatus</a>
+            <b key="STATUS_DESC">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.wfSubStatus</a>
+            <b key="SUBSTATUS_DESC">this</b>
+        </field>
+        <field>
+            <a>buyerContactInfo.firstName</a>
+            <b key="FIRSTNAME">this</b>
+        </field>
+        <field>
+            <a>buyerContactInfo.lastName</a>
+            <b key="LASTNAME">this</b>
+        </field>
+        <field>
+            <a>buyerContactInfo.firstName</a>
+            <b key="FNAME">this</b>
+        </field>
+        <field>
+            <a>buyerContactInfo.lastName</a>
+            <b key="LNAME">this</b>
+        </field>
+        <field>
+            <a is-accessible="false">buyerContactInfo.fullName</a>
+            <b key="BUYERUSERNAME">this</b>
+        </field>
+
+        <field>
+            <a>acceptedProviderContactInfo.firstName</a>
+            <b key="ACCEPTED_VENDOR_RESOURCE_FNAME">this</b>
+        </field>
+        <field>
+            <a>acceptedProviderContactInfo.lastName</a>
+            <b key="ACCEPTED_VENDOR_RESOURCE_LNAME">this</b>
+        </field>
+       
+        <field>
+            <a>acceptedProviderContactInfo.firstName</a>
+            <b key="PROVIDERFIRSTNAME">this</b>
+        </field>
+        <field>
+            <a>acceptedProviderContactInfo.lastName</a>
+            <b key="PROVIDERLASTNAME">this</b>
+        </field>
+        <field>
+            <a is-accessible="false">serviceOrder.serviceLocation.city</a>
+            <b key="SO_SERVICE_CITY">this</b>
+        </field>
+        <field>
+            <a is-accessible="false">serviceOrder.serviceLocation.state</a>
+            <b key="SO_SERVICE_STATE">this</b>
+        </field>
+        <field>
+            <a is-accessible="false">serviceOrder.serviceLocation.zip</a>
+            <b key="SO_SERVICE_ZIP">this</b>
+        </field>
+        <field>
+            <a is-accessible="false">serviceOrder.serviceLocation.street1</a>
+            <b key="SO_SERVICE_STREET">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.acceptedProviderResourceId</a>
+            <b key="VENDOR_RESOURCE_ID">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.acceptedProviderId</a>
+            <b key="VENDOR_ID">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.buyerId</a>
+            <b key="BUYER_ID">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.buyerResourceId</a>
+            <b key="BUYER_RESOURCE_ID">this</b>
+        </field>
+        <field>
+            <a>currentDate</a>
+            <b key="CURRENT_DATE" date-format="MMM dd, yyyy - HH:mm:ss">this</b>
+        </field>
+        <field>
+            <a>currentDate</a>
+            <b key="SO_RELEASE_DATE" date-format="MMM dd, yyyy - HH:mm:ss">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.postingFee</a>
+            <b key="TRANS_AMOUNT_POST">this</b>
+        </field>
+        <field>
+            <a>partsSpendLimit</a>
+            <b key="SPEND_LIMIT_PARTS">this</b>
+        </field>
+        <field>
+            <a>partsSpendLimit</a>
+            <b key="SPEND_LIMIT_TO_PARTS">this</b>
+        </field>
+        <field>
+            <a>externalOrderId</a>
+            <b key="INCIDENTID">this</b>
+        </field>
+        <field>
+            <a>laborSpendLimit</a>
+            <b key="SPEND_LIMIT_LABOR">this</b>
+        </field>
+        <field>
+            <a>laborSpendLimit</a>
+            <b key="SPEND_LIMIT_TO_LABOR">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.finalPriceLabor</a>
+            <b key="LABOR_FINAL_PRICE">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.finalPriceParts</a>
+            <b key="PARTS_FINAL_PRICE">this</b>
+        </field>
+        <field>
+            <a is-accessible="false">totalSpendLimit</a>
+            <b key="TOTAL_SPEND_LIMIT">this</b>
+        </field>
+        <field>
+            <a is-accessible="false">totalSpendLimit</a>
+            <b key="SPEND_LIMIT">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.spendLimitIncrComment</a>
+            <b key="SPEND_LIMIT_REASON">this</b>
+        </field>
+        <field>
+            <a key="ledgerPostingFee" map-get-method="get">processVariables</a>
+            <b key="TRANS_AMOUNT_POST">this</b>
+        </field>
+        <field>
+            <a key="ledgerPostTransactionId" map-get-method="get">processVariables</a>
+            <b key="LEDGER_TRANID_POST">this</b>
+        </field>
+        <field>
+            <a key="ledgerSpendLimitRsrvAmt" map-get-method="get">processVariables</a>
+            <b key="TRANS_AMOUNT_RES">this</b>
+        </field>
+        <field>
+            <a key="ledgerSpendLimitRsrvTransactionId" map-get-method="get">processVariables</a>
+            <b key="LEDGER_TRANID_RES">this</b>
+        </field>
+        <field>
+            <a key="PVKey_RequestedActiveCancellationAmount" map-get-method="get">processVariables</a>
+            <b key="CANCEL_AMT">this</b>
+        </field>
+        <field>
+            <a key="ledgerCancellationPenaltyTransactionId" map-get-method="get">processVariables</a>
+            <b key="LEDGER_TRANID_CANCL_PNLTY">this</b>
+        </field>
+        <field>
+            <a key="ledgerCancellationPenaltyAmt" map-get-method="get">processVariables</a>
+            <b key="TRANS_AMOUNT_CANCL_PNLTY">this</b>
+        </field>
+        <field>
+            <a key="fundsConfirmedTransactionId" map-get-method="get">processVariables</a>
+            <b key="LEDGER_TRANID">this</b>
+        </field>
+        <field>
+            <a key="fundsConfirmedTransactionId" map-get-method="get">processVariables</a>
+            <b key="LEDGER_ID">this</b>
+        </field>
+        <field>
+           <a>serviceOrder.totalFinalPrice</a>
+            <b key="TRANS_AMOUNT">this</b>
+        </field>
+        <field>
+            <a key="PVKey_problemDesc" map-get-method="get">processVariables</a>
+            <b key="PROBLEM_DESC">this</b>
+        </field>
+        <field>
+            <a key="PVKey_Comment" map-get-method="get">processVariables</a>
+            <b key="SL_COMMENT">this</b>
+        </field>
+        <field>
+            <a key="Cancellation_Comment" map-get-method="get">processVariables</a>
+            <b key="CANCELLATION_COMMENT">this</b>
+        </field>
+        <field>
+            <a key="PENDING_CANCEL_STATE" map-get-method="get">processVariables</a>
+            <b key="PENDING_CANCEL_STATE">this</b>
+        </field>
+        <field>
+            <a key="CANCEL_REASON" map-get-method="get">processVariables</a>
+            <b key="CANCEL_REASON">this</b>
+        </field>
+        <field>
+            <a key="PENDING_CANCEL_STATUS" map-get-method="get">processVariables</a>
+            <b key="PENDING_CANCEL_STATUS">this</b>
+        </field>
+        <field>
+            <a key="PENDING_CANCEL_REQUEST_DATE" map-get-method="get">processVariables</a>
+            <b key="PENDING_CANCEL_REQUEST_DATE">this</b>
+        </field>
+        <field>
+            <a key="withdrawAmount" map-get-method="get">processVariables</a>
+            <b key="PENDING_CANCEL_AMT">this</b>
+        </field>
+        <field>
+            <a key="SO_CANCEL_DATE" map-get-method="get">processVariables</a>
+            <b key="CANCEL_DATE">this</b>
+        </field>
+        <field>
+            <a key="creditCardType" map-get-method="get">processVariables</a>
+            <b key="CARD_TYPE">this</b>
+        </field>
+        <field>
+            <a key="creditCardNumber" map-get-method="get">processVariables</a>
+            <b key="CARD_NUM">this</b>
+        </field>
+        <field>
+            <a key="transactionAmount" map-get-method="get">processVariables</a>
+            <b key="TRANS_AMOUNT">this</b>
+        </field>
+        <field>
+            <a key="slbucksagreementurl" map-get-method="get">processVariables</a>
+            <b key="SERVICE_URL">this</b>
+        </field>
+        <field>
+            <a key="servicelive.bucks.agreement.url" map-get-method="get">systemProperties</a>
+            <b key="SERVICE_URL">this</b>
+        </field>
+        <field>
+            <a>mainSkillCategory.nodeName</a>
+            <b key="SO_MAIN_SERVICE_CATEGORY">this</b>
+        </field>
+        <field>
+            <a>acceptedProvider.providerRespComment</a>
+            <b key="PROVIDER_COMMENT">this</b>
+        </field>
+        <field>
+            <a>priceModel</a>
+            <b key="PRICE_MODEL" >this</b>
+        </field>
+        <field>
+            <a>consumer</a>
+            <b key="CONSUMER">this</b>
+        </field>
+        <field>
+            <a>roleInd</a>
+            <b key="ROLE_IND">this</b>
+        </field>
+        <field>
+            <a is-accessible="false">serviceOrder.lastNote.note</a>
+            <b key="NOTE">this</b>
+        </field>
+        <field>
+            <a is-accessible="false">serviceOrder.lastNote.createdByName</a>
+            <b key="NOTE_AUTHOR">this</b>
+        </field>
+        <field>
+            <a>identification.username</a>
+            <b key="USER_NAME">this</b>
+        </field>
+        
+        <field>
+            <a>serviceOrder.customerContact.firstName</a>
+            <b key="CUSTOMER_FIRST_NAME">this</b>
+        </field>
+		<field>
+            <a>serviceOrder.customerContact.lastName</a>
+            <b key="CUSTOMER_LAST_NAME">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.customerAddress.street1</a>
+            <b key="CUSTOMER_ADDRESS_STREET1">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.customerAddress.street2</a>
+            <b key="CUSTOMER_ADDRESS_STREET2">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.customerAddress.state</a>
+            <b key="CUSTOMER_ADDRESS_STATE">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.customerAddress.city</a>
+            <b key="CUSTOMER_ADDRESS_CITY">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.customerAddress.zip</a>
+            <b key="CUSTOMER_ADDRESS_ZIP">this</b>
+        </field>
+        <field>
+        	<a>serviceOrder.customerPhoneNo.phoneNo</a>
+        	<b key="CUSTOMER_PHONE">this</b>
+        </field>
+        <field>
+        	<a>serviceOrder.oldLocation.street1</a>
+        	<b key="OLD_SERVICE_LOCATION_STREET1">this</b>
+        </field>
+        <field>
+        	<a>serviceOrder.oldLocation.street2</a>
+        	<b key="OLD_SERVICE_LOCATION_STREET2">this</b>
+        </field>
+        <field>
+        	<a>serviceOrder.oldLocation.state</a>
+        	<b key="OLD_SERVICE_LOCATION_STATE">this</b>
+        </field>
+        <field>
+        	<a>serviceOrder.oldLocation.city</a>
+        	<b key="OLD_SERVICE_LOCATION_CITY">this</b>
+        </field>
+        <field>
+        	<a>serviceOrder.oldLocation.zip</a>
+        	<b key="OLD_SERVICE_LOCATION_ZIP">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.oldSchedule.dateRange</a>
+            <b key="OLD_SCHEDULE_DATE_RANGE">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.oldSchedule.serviceDate1</a>
+            <b key="OLD_SCHEDULE_SERVICE_DATE1" date-format="MMM dd, yyyy">this</b>
+        </field>        
+        <field>
+            <a>serviceOrder.oldSchedule.serviceDate2</a>
+            <b key="OLD_SCHEDULE_SERVICE_DATE2" date-format="MMM dd, yyyy">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.oldSchedule.serviceTimeStart</a>
+            <b key="OLD_SCHEDULE_SERVICE_S_TIME">this</b>
+        </field>       
+        <field>
+            <a>serviceOrder.oldSchedule.serviceTimeEnd</a>
+            <b key="OLD_SCHEDULE_SERVICE_END_TIME">this</b>
+        </field>        
+        <field>
+            <a>serviceOrder.providerInstructions</a>
+            <b key="PROVIDER_INST">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.oldProviderInstructions</a>
+            <b key="OLD_PROVIDER_INST">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.oldCustomRefs</a>
+            <b key="OLD_CUSTOM_REFS">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.updateCustomRefs</a>
+            <b key="UPDATED_CUSTOM_REFS">this</b>
+        </field>
+        <field>
+            <a>serviceOrder.cancellationRequestDate</a>
+            <b key="CANCEL_REQUEST_DATE" date-format="MMM dd, yyyy">this</b>
+        </field>
+        <field>
+            <a key="ledgerTranIdPay" map-get-method="get">processVariables</a>
+            <b key="LEDGER_TRANID_PAY_CLOSE">this</b>
+        </field>
+        <field>
+            <a key="ledgerTranIdFee" map-get-method="get">processVariables</a>
+            <b key="LEDGER_TRANID_FEE_CLOSE">this</b>
+        </field>
+        <field>
+            <a key="transAmtPay" map-get-method="get">processVariables</a>
+            <b key="TRANS_AMOUNT_PAY_CLOSE">this</b>
+        </field>
+        <field>
+            <a key="transAmtFee" map-get-method="get">processVariables</a>
+            <b key="TRANS_AMOUNT_FEE_CLOSE">this</b>
+        </field>                
+        <field-exclude>
+            <a>serviceOrder</a>
+            <b>serviceOrder</b>
+        </field-exclude>
+        <field-exclude>
+            <a>soGroup</a>
+            <b>soGroup</b>
+        </field-exclude>
+        <field-exclude>
+            <a>identification</a>
+            <b>identification</b>
+        </field-exclude>
+        <field-exclude>
+            <a>acceptedProvider</a>
+            <b>acceptedProvider</b>
+        </field-exclude>
+        <field-exclude>
+            <a>buyerDestAddr</a>
+            <b>buyerDestAddr</b>
+        </field-exclude>
+        <field-exclude>
+            <a>routedProviderDestAddr</a>
+            <b>routedProviderDestAddr</b>
+        </field-exclude>
+        <field-exclude>
+            <a>acceptedVendorDestAddr</a>
+            <b>acceptedVendorDestAddr</b>
+        </field-exclude>
+        <field-exclude>
+            <a>buyerAdminDestAddr</a>
+            <b>buyerAdminDestAddr</b>
+        </field-exclude>
+        <field-exclude>
+            <a>providerAdminDestAddr</a>
+            <b>providerAdminDestAddr</b>
+        </field-exclude>
+        <field-exclude>
+            <a>assurantFtpDest</a>
+            <b>assurantFtpDest</b>
+        </field-exclude>
+        <field-exclude>
+            <a>assurantDestAddr</a>
+            <b>assurantDestAddr</b>
+        </field-exclude>
+        <field-exclude>
+            <a>serviceLiveDestAddr</a>
+            <b>serviceLiveDestAddr</b>
+        </field-exclude>
+        <field-exclude>
+            <a>currentDate</a>
+            <b>currentDate</b>
+        </field-exclude>
+    </mapping>
+
+</mappings>

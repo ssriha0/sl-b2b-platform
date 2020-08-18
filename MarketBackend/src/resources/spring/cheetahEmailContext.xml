@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+
+	<bean id="emailService" class="com.newco.marketplace.cheetahmail.CheetahEmailServiceImpl">
+		<property name="mailQueryStringFormatter">
+			<ref bean="mailQueryStringFormatter"/>
+		</property>		
+		<property name="emailProperties">
+			<ref bean="emailProperties"/>
+		</property>		
+		
+	</bean>
+	
+    <bean id="mailQueryStringFormatter" class="com.newco.marketplace.cheetahmail.CheetahMailQueryStringFormatter">
+    	<property name="emailProperties">
+			<ref bean="emailProperties"/>
+		</property>		
+		
+    </bean>
+    <!--  from CheetahEmailServiceImpl
+    public static final String HOST_NAME_KEY = "cheetah.host.name";
+	public static final String LOGIN_URI_KEY = "cheetah.login.uri";
+	public static final String SEND_URI_KEY = "cheetah.send.uri";
+     -->
+    <!-- from CheetahMailQueryStringFormatter
+    String LOGIN_PASSWORD_KEY = "cleartext";
+    String LOGIN_NAME_KEY = "name";
+    String APPLICATION_ID_KEY = "aid";
+    String EMAIL_TYPE_ID_KEY = "eid";
+    String EMAIL_TEST_KEY = "test";
+     -->
+    <bean id="emailProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+  		 <property name="properties">    
+  		 <props>
+  		 	<prop key="cheetah.host.name">ebm.cheetahmail.com</prop>
+  		 	<prop key="mail.test.mode">${cheetah.test.mode}</prop>
+  			<prop key="cheetah.login.uri">/api/login1</prop>
+  			<prop key="cheetah.send.uri">/ebm/ebmtrigger1</prop>
+  			<prop key="name">slive_api</prop>
+  			<prop key="cleartext">Sears_08</prop>
+  			<prop key="aid">2068054028</prop>
+  		</props>
+  		</property>
+	</bean>	
+    
+   
+</beans>

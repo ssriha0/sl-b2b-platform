@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified">
+
+  <xs:element name="feedbackRequest">
+        <xs:complexType>
+            <xs:sequence>
+            <xs:element name="userName" type="nonEmptySTring" minOccurs="1"/>      		          
+            <xs:element name="email" type="emailType" minOccurs="1"/>
+      		<xs:element name="comments" type="nonEmptySTring" minOccurs="1"/>
+      		<xs:element name="deviceVersion" type="xs:string" minOccurs="0"/>
+      		<xs:element name="sourceVersion" type="xs:string" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:simpleType name="nonEmptySTring">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"></xs:minLength>
+		</xs:restriction>
+	</xs:simpleType>	
+	<xs:simpleType name="emailType">
+		<xs:restriction base="xs:string">
+			<xs:pattern value=".+@.+[.]+.+" />
+			<xs:maxLength value="255"></xs:maxLength>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>
+	

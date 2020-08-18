@@ -1,0 +1,108 @@
+<div class="bootstrap-scope container-fluid page-font-style page-padding-fix">
+<div class="row">
+  <div class="col-xs-3">
+  <div class="thumbnail fix-image-container text-center corner-border">
+    <img *ngIf="sanitize(currentLogo)" class="image-responsive image-fix" [src]="sanitize(logoPath + currentLogo)" id="firm-logo-img"/>
+    <div *ngIf="!sanitize(currentLogo)" class="image-text-overlay active-text-color row" (click)="openModalWithComponent()">
+        <div class="h2 col-xs-3"><span class="glyphicon glyphicon-plus"> </span></div>
+        <div class="h4 col-xs-8">Add Logo</div>
+    </div>
+    <div *ngIf="sanitize(currentLogo)" class="image-text-overlay-edit active-text-color" (click)="openModalWithComponent()">
+        <div class="glyphicon glyphicon-edit edit-symbol-ui" (click)="resetAllData()"></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade modal-popup-custom" bsModal #uploadPicModal="bs-modal" [config]="{backdrop: false, ignoreBackdropClick: true}" role="dialog">
+  <div class="modal-dialog modal-width-fix-medium">
+      <div class="modal-content">
+
+          <div class="modal-header">
+              <a (click)="hideModalWithComponent()" class="close-button">
+                  <div class="glyphicon glyphicon-remove"></div>
+              </a>
+              <div class="modal-title text-center modal-header-text">Add Logo</div>
+          </div>
+
+          <div class="modal-body">
+              <div class="form-group row">
+                  <div class="col-xs-6 padding-upload-box text-center border-style-all">
+                      <div class="upload-header-text">Upload your Logo</div>
+                      <p class="grey-color-text">All logos are audited by ServiceLive.</p>
+                      <div class="row">
+                          <div class="col-xs-12 text-center remove-padding-left-right">
+                              <strong>Accepted File Types:</strong>
+                              <span class="grey-color-text">
+                              jpg, jpeg, gif, png</span>
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="col-xs-12 text-center remove-padding-left-right">
+                              <strong>Maximum File Size:</strong>
+                              <span class="grey-color-text">
+                              5mb</span>
+                          </div>
+                      </div>
+                      <br />
+                      <div class="row">
+                          <div class="col-xs-12 text-center">
+                              <input class="btn btn-primary width-full corner-border" type="file" id="firm_file" name="firm_file" (change)="onImageChange($event)"
+                                  #input accept=" .jpg, .jpeg, .gif, .png" />
+                          </div>
+                      </div>
+                      <div class="row" *ngIf="imagePreview">
+                        <div class="col-xs-12 text-center">
+                            <span class="text-info">Image has been resized for optimal viewing!!</span>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="col-xs-4 filled-img-container text-center" *ngIf="imagePreview">
+                      <h5>PREVIEW</h5>
+                      <img [attr.src]="sanitize(imagePreview)" id="firmlogo" class="img-responsive image-fix north" alt="" />
+                      <!--<input type="button" value="rotateME" (click)="rotateMe();"/>-->
+                  </div>
+                  <div class="col-xs-4 blank-img-position" *ngIf="!imagePreview">
+                      <div>PREVIEW</div>
+                  </div>
+              </div>
+          </div>
+
+          <div class="modal-footer">
+              <div class="text-center">
+                  <button type="button" class="btn btn-default save-button-width corner-border" (click)="hideModalWithComponent()">Cancel</button>
+                  <button type="button" [disabled]="!imagePreview" class="btn btn-primary save-button-width corner-border"
+                       (click)="fileUpload()">Save</button>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <!-- Error Modal -->
+  <div class="modal fade modal-popup-custom" id="errorModal" bsModal #errorModal="bs-modal" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <a class="close-button" (click)="errorElem.hide()">
+                    <div class="glyphicon glyphicon-remove"></div>
+                </a>
+                <div class="modal-title text-center modal-header-text">{{errorpopUpModal.errorHeadingMessage}}</div>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <div *ngFor="let error of errorpopUpModal.errors">{{error}}</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button type="button" class="btn btn-primary save-button-width corner-border" (click)="errorElem.hide()">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+  </div>
+

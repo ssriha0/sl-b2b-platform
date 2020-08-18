@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:element name="updateScheduleDetailsRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="source" type="sourceType" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="customerAvailableFlag" type="xs:boolean" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="custNotAvailableReasonCode" type="xs:integer" nillable="true" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="eta" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="soLocNotes" type="xs:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="specialInstructions" type="xs:string" nillable="true" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="custResponseReasonCode" type="xs:integer" nillable="true" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="startTime" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="endTime" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:simpleType name="sourceType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="PRE_CALL" />
+			<xs:enumeration value="CONFIRM_APPOINTMENT" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="custNotAvailableReasonCodeType">
+		<xs:restriction base="xs:integer">
+			<xs:enumeration value="4" /><!-- Customer Partial Contact: Will Call Back -->	
+			<xs:enumeration value="5" /><!-- Invalid Contact Number: Will Obtain Valid Number and Call Back -->	
+			<xs:enumeration value="6" /><!-- Message: Left Voice-Mail/Will Call Back -->	
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="custResponseReasonCodeType">
+		<xs:restriction base="xs:integer">
+			<xs:enumeration value="1" /><!-- Confirmed appt. date & service window -->	
+			<xs:enumeration value="2" /><!-- Update service window only -->	
+			<xs:enumeration value="3" /><!-- Reschedule appointment date -->	
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>
+

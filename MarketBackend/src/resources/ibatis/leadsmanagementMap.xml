@@ -1,0 +1,1679 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="leadsmanagement">
+	<typeAlias alias="leadInfo"
+		type="com.newco.marketplace.dto.vo.leadsmanagement.SLLeadVO" />
+	<typeAlias alias="membershipRequest"
+		type="com.newco.marketplace.business.iBusiness.api.beans.leadsmanagement.UpdateMembershipInfoRequest" />
+	<typeAlias alias="assignProviderRequest"
+		type="com.newco.marketplace.business.iBusiness.api.beans.leadsmanagement.AssignOrReassignProviderRequest" />
+	<typeAlias alias="completeLeadsVO"
+		type="com.newco.marketplace.dto.vo.leadsmanagement.CompleteLeadsRequestVO"/>
+	<typeAlias alias="leadRequestInfo"
+		type="com.newco.marketplace.dto.vo.leadsmanagement.LeadRequestVO" />
+	<typeAlias alias="scheduleReqVO"
+		type="com.newco.marketplace.dto.vo.leadsmanagement.ScheduleRequestVO" />
+	<typeAlias alias="scheduleMailVO"
+		type="com.newco.marketplace.dto.vo.leadsmanagement.ScheduleAppointmentMailVO" />
+	<typeAlias alias="fetchLeadVO"
+		type="com.newco.marketplace.dto.vo.leadsmanagement.FetchLeadVO" />
+	<typeAlias alias="projectInfo"
+		type="com.newco.marketplace.dto.vo.leadsmanagement.LeadProjectsVO" />
+	<typeAlias alias="contactInfo"
+		type="com.newco.marketplace.dto.vo.leadsmanagement.LeadContactInfoVO" />
+	<typeAlias alias="providerInfo"
+		type="com.newco.marketplace.dto.vo.leadsmanagement.LeadMatchingProVO" />
+	<typeAlias alias="ratingVO"
+		type="com.newco.marketplace.dto.vo.leadsmanagement.FirmDetailsVO" />
+	<typeAlias alias="reviewVO"
+		type="com.newco.marketplace.dto.vo.leadsmanagement.ReviewVO" />
+	<typeAlias alias="leadStatisticsVO"
+		type="com.newco.marketplace.dto.vo.leadsmanagement.LeadStatisticsVO" />
+	<typeAlias alias="providerDetailsVO"
+		type="com.newco.marketplace.dto.vo.leadsmanagement.ProviderDetailsVO" />
+	<typeAlias alias="fetchProviderFirmRequest"
+		type="com.newco.marketplace.business.iBusiness.api.beans.leadsmanagement.FetchProviderFirmRequest" />
+	<typeAlias alias="fetchProviderFirmRequestV2"
+		type="com.newco.marketplace.business.iBusiness.api.beans.leadsmanagement.v2_0.FetchProviderFirmRequest" />
+	<typeAlias alias="leadRequest"
+		type="com.newco.marketplace.business.iBusiness.api.beans.leadsmanagement.LeadRequest" />
+	<typeAlias alias="newLeadRequest"
+		type="com.newco.marketplace.business.iBusiness.api.beans.leadsmanagement.v2_0.LeadRequest" />
+	<typeAlias alias="firmCredentialVO"
+		type="com.newco.marketplace.dto.vo.leadsmanagement.FirmCredentialVO" />
+	<typeAlias alias="firmServiceVO"
+		type="com.newco.marketplace.dto.vo.leadsmanagement.FirmServiceVO" />
+	<typeAlias alias="leadInfoVO"
+		type="com.newco.marketplace.dto.vo.leadsmanagement.LeadInfoVO" />
+	<typeAlias alias="updateLeadStatusRequestVO"
+		type="com.newco.marketplace.dto.vo.leadsmanagement.UpdateLeadStatusRequestVO" />
+	<typeAlias alias="completeVO"
+		type="com.newco.marketplace.dto.vo.leadsmanagement.CompleteVO" />
+	<typeAlias alias="scheduleRequestVO"
+		type="com.newco.marketplace.dto.vo.leadsmanagement.ScheduleRequestVO" />
+	<typeAlias alias="leadNotesVO"
+		type="com.newco.marketplace.dto.vo.leadsmanagement.SLLeadNotesVO" />
+	<typeAlias alias="leadHistoryVO"
+		type="com.newco.marketplace.dto.vo.leadsmanagement.LeadHistoryVO" />
+	<typeAlias alias="leadHistorylstVO"
+		type="com.newco.marketplace.dto.vo.leadsmanagement.LeadHistoryVO" />
+	<typeAlias alias="leadsProviderAttachmentVO"
+		type="com.newco.marketplace.dto.vo.leadsmanagement.LeadAttachmentVO" />
+	<typeAlias alias="docVO"
+		type="com.newco.marketplace.dto.vo.DocumentVO" />	
+	<typeAlias alias="leadreminderVO"
+		type="com.newco.marketplace.dto.vo.leadsmanagement.LeadReminderVO" />
+	<typeAlias alias="locationVO" 
+	    type="com.newco.marketplace.dto.vo.LocationVO"/>
+	<typeAlias alias="scheduleAppointmentRequest" 
+	    type="com.newco.marketplace.business.iBusiness.api.beans.leadsmanagement.ScheduleAppointmentRequest"/>
+	<typeAlias alias="leadLoggingVO"
+		type="com.newco.marketplace.dto.vo.leadsmanagement.LeadLoggingVO" />  
+	<typeAlias alias="documentVO"
+		type="com.newco.marketplace.dto.vo.DocumentVO" />
+	<typeAlias alias="providerInfoVO"
+		type="com.newco.marketplace.dto.vo.leadsmanagement.ProviderInfoVO" />
+		
+	<typeAlias alias="employee"  type="com.newco.marketplace.vo.provider.Employee"/>
+	<typeAlias alias="campaign"  type="com.newco.marketplace.vo.provider.Campaign"/>
+	<typeAlias alias="cdr"  type="com.newco.marketplace.vo.provider.Cdr"/>
+	<typeAlias alias="imp"  type="com.newco.marketplace.vo.provider.Impressions"/>
+	
+	<typeAlias alias="leadCustomerDetailsVO"
+		type="com.newco.marketplace.dto.vo.leadsmanagement.LeadCustomerDetailsVO" />
+		
+	<resultMap id="criteriaMap" class="java.util.HashMap">
+		<result property="key" column="rank_criteria" />
+		<result property="value" column="weightage" />
+	</resultMap>
+	<resultMap id="luMap" class="java.util.HashMap">
+		<result property="key" column="firm_status" />
+		<result property="value" column="lu_lead_firm_status_id" />
+	</resultMap>
+	<resultMap id="nameMap" class="java.util.HashMap">
+		<result property="key" column="rank_criteria" />
+		<result property="value" column="weightage" />
+	</resultMap>
+	<resultMap id="leadInfo.resultMap" class="leadInfo">
+		<result property="slLeadId" column="sl_lead_id" />
+		<result property="leadWfStatus" column="lead_status" />
+		<result property="lmsLeadId" column="lms_lead_id" />
+		<result property="leadSource" column="lead_source" />
+		<result property="leadType" column="lead_type" />
+		<result property="buyerId" column="buyer_id" />
+		<result property="customerZipCode" column="zip_code" />
+		<result property="clientId" column="client_id" />
+		<result property="projectDescription" column="project_description" />
+		<result property="urgencyOfService" column="urgency_of_service" />
+		<result property="secondaryProjects" column="secondary_projects" />
+		<result property="skill" column="skill" />
+		<result property="createdBy" column="created_by" />
+	    <result property="leadCategory" column="service_category_description" />
+		<result property="primaryProject" column="lms_project_type_description" />
+		<result property="clientProjectType" column="client_project_type" />
+		<!-- Added for SL-19727 -->
+		<result property="serviceDate" column="service_date" />
+		<result property="serviceTimeZone" column="service_timezone" />
+		<result property="serviceStartTime" column="service_start_time" />
+		<result property="serviceEndTime" column="service_end_time" />
+	    <result property="buyerId" column="buyer_id" />
+		<result property="serviceCategoryDesc" column="service_category_description" />
+		<result property="clientProjectDesc" column="client_project_description" />
+		<result property="swyrRewardPoints" column="swyr_reward" />
+	</resultMap>
+	
+	<resultMap id="blMap" class="java.util.HashMap">
+		<result property="key" column="lead_reason_code_description" />
+		<result property="value" column="lead_reason_code_id" />
+	</resultMap>
+		
+	<insert id="leadsmanagement.insertLeadInfo" parameterClass="leadInfo">
+		INSERT INTO
+		lead_hdr(sl_lead_id,zip_code,skill,urgency_of_service,lead_source,lead_wf_status,
+		client_project_type_id,created_date,modified_date,created_by,client_id,buyer_id)
+		VALUES(#slLeadId#,#customerZipCode#,#skill#,#urgencyOfService#,#leadSource#,#leadWfStatus#,
+		#primaryProject#,#createdDate#,#modifiedDate#,#createdBy#,#clientId#,#buyerId#)
+	</insert>
+	<insert id="leadsmanagement.insertprovidersInfo" parameterClass="java.util.List">
+		INSERT INTO lead_post_response
+		(sl_lead_id,vendor_id,sl_vendor_rating,vendor_distance,rank,
+		review,reviewed_by,reviewer_rating,reviewed_date,created_date,modified_date)
+		VALUES
+		<iterate conjunction=",">
+			(#provider[].slLeadId#,#provider[].serviceLiveFirmId#,#provider[].serviceLiveFirmRating#,
+			#provider[].serviceLiveFirmDistance#,#provider[].firmRank#,#provider[].reviewComment#,
+			#provider[].reviewerName#,#provider[].revieweRating#,#provider[].commentedDate#,
+			#provider[].createdDate#,#provider[].modifiedDate#)
+		</iterate>
+	</insert>
+	<insert id="leadsmanagement.saveMatchedProvidersInfo"
+		parameterClass="java.util.List">
+		INSERT INTO lead_matched_firm
+		(sl_lead_id,lms_firm_id,vendor_id,lead_firm_status,lead_price,lead_posted_ind,created_date,modified_date)
+		VALUES
+		<iterate conjunction=",">
+			(#provider[].slLeadId#,#provider[].lmsFirmId#,#provider[].serviceLiveFirmId#,#provider[].leadFirmStatus#,
+			#provider[].leadPrice#,#provider[].postedInd#,#provider[].createdDate#,#provider[].modifiedDate#)
+		</iterate>
+	</insert>
+	<insert id="leadsmanagement.insertContactInfo" parameterClass="contactInfo">
+		INSERT INTO lead_contact_information
+		(sl_lead_id,first_name,last_name,phone_no,email,street_1,city,state_cd,zip,
+		swyr_mem_id,swyr_reward,created_by,created_date,modified_by,modified_date)
+		VALUES(
+		#slLeadId#,#firstName#,#lastName#,#phoneNo#,#email#,#street1#,#city#,#state#,#zipCode#,
+		#sWYRMemberId#,#sWYRReward#,#createdBy#,#createdDate#,#modifiedBy#,#modifiedDate#)
+		        ON DUPLICATE KEY UPDATE
+		   	sl_lead_id=#slLeadId#,
+		   	first_name=#firstName#,
+		   	last_name=#lastName#,
+		   	phone_no=#phoneNo#,
+		   	email=#email#,
+		   	street_1=#street1#,
+		   	city=#city#,
+		   	state_cd=#state#,
+		   	zip=#zipCode#,
+		   	swyr_mem_id=#sWYRMemberId#,
+			swyr_reward=#sWYRReward#,
+			created_by=#createdBy#,
+			created_date=#createdDate#,
+			modified_by=#modifiedBy#,
+			modified_date=#modifiedDate#
+		
+	</insert>
+	<insert id="leadsmanagement.insertLeadStatics" parameterClass="leadStatisticsVO">
+		INSERT INTO lead_statistics
+		(sl_lead_id,request_date,response_date,data_flow_direction,type_of_interation,
+		created_by,modified_by,created_date,modified_date,lead_req_res)
+		VALUES
+		(#slLeadId#,#requestDate#,#responseDate#,#dataFlowDirection#,#typeOfInteraction#,
+		#createdBy#,#modifiedBy#,#createdDate#,#modifiedDate#,#reqResXML#)
+	</insert>
+	<select id="leadsmanagement.getFirmRating" parameterClass="java.util.List"
+		resultClass="ratingVO">
+		SELECT AVG(srh.overall_score) AS rating,sh.accepted_vendor_id AS
+		firmId
+		FROM survey_response_hdr srh ,
+		survey_response_so srs, so_hdr sh
+		WHERE sh.accepted_vendor_id IN
+		<iterate open="(" close=")" conjunction=",">
+			#[]#
+		</iterate>
+		AND srs.so_id=sh.so_id
+		AND srh.entity_type_id=10
+		AND srh.response_hdr_id=srs.response_hdr_id GROUP BY
+		sh.accepted_vendor_id
+	</select>
+
+	<select id="leadsmanagement.getLatestFirmRating" parameterClass="java.util.List"
+		resultClass="ratingVO">
+		SELECT AVG(rating) AS rating,firmId AS firmId FROM(
+		SELECT DISTINCT srs.so_id,srh.overall_score AS rating,sh.accepted_vendor_id AS firmId
+		FROM survey_response_hdr srh ,
+		survey_response_so srs, so_hdr sh
+		WHERE sh.accepted_vendor_id IN
+		<iterate open="(" close=")" conjunction=",">
+			#[]#
+		</iterate>
+		AND srs.so_id=sh.so_id
+		AND srh.entity_type_id=10
+		AND srh.response_hdr_id=srs.response_hdr_id
+		UNION ALL
+	    SELECT DISTINCT srs.sl_lead_id,srh.overall_score AS rating,sh.vendor_id AS firmId
+		FROM survey_response_hdr srh ,
+		survey_response_lead srs, lead_matched_firm sh
+		WHERE sh.vendor_id IN
+		<iterate open="(" close=")" conjunction=",">
+			#[]#
+		</iterate>
+		AND srs.sl_lead_id=sh.sl_lead_id AND sh.lead_firm_status=4
+		AND srh.entity_type_id=10
+		AND srh.response_hdr_id=srs.response_hdr_id )a WHERE firmId IS NOT NULL
+		GROUP BY firmId
+	</select>
+
+
+	<select id="leadsmanagement.getPostResponseAndContactInfo"
+		parameterClass="leadRequest" resultClass="ratingVO">
+		SELECT v.vendor_id AS firmId,
+		CONCAT(c.first_name,' ',c.last_name) AS firmOwner,
+		v.business_name AS firmName,
+		v.business_start_date AS businessStartDate,
+		l.zip AS zip, pr.sl_vendor_rating AS rating,
+		l.city AS city,
+		l.state_cd AS state,
+		c.email AS email,
+		c.phone_no AS phoneNo,
+		CONCAT(l.street_1,' ',l.street_2) AS address,
+		pr.rank as providerFirmRank
+		FROM vendor_hdr v,contact c, lead_post_response pr, vendor_location vr, vendor_resource vrc,
+		location l
+		WHERE vrc.contact_id = c.contact_id
+		AND v.vendor_id = vrc.vendor_id
+		AND vrc.primary_ind=1
+		AND v.vendor_id = pr.vendor_id AND v.vendor_id = vr.vendor_id
+		AND vr.locn_id = l.locn_id AND l.locn_type_id = 1
+		AND v.vendor_id IN
+		<iterate property="firmIds.firmId" open="(" close=")"
+			conjunction=",">
+			#firmIds.firmId[]#
+		</iterate>
+		AND pr.sl_lead_id = #leadId#
+
+
+	</select>
+	<select id="leadsmanagement.getContactInfo" parameterClass="java.util.List"
+		resultClass="ratingVO">
+		SELECT v.vendor_id AS firmId, CONCAT(c.first_name,' ',c.last_name) AS
+		firmOwner,
+		v.business_name AS firmName,v.business_start_date AS businessStartDate
+		FROM vendor_hdr v,contact c,vendor_resource vr
+		WHERE v.vendor_id IN
+		<iterate open="(" close=")" conjunction=",">
+			#[]#
+		</iterate>
+		AND vr.contact_id = c.contact_id
+		ANd v.vendor_id=vr.vendor_id
+		AND vr.primary_ind=1
+		GROUP BY v.vendor_id
+	</select>
+	<select id="leadsmanagement.getLatestRatingsAndContactInfo"
+		parameterClass="java.util.List" resultClass="ratingVO">
+		SELECT firmId ,AVG(rating) AS rating,firmOwner,
+		firmName,businessStartDate
+		FROM
+
+		( SELECT sh.accepted_vendor_id AS firmId ,AVG(srh.overall_score) AS
+		rating,CONCAT(c.first_name,' ',c.last_name) AS firmOwner,
+		v.business_name AS firmName,v.business_start_date AS businessStartDate
+		FROM survey_response_hdr srh,survey_response_so srs,so_hdr
+		sh,vendor_hdr v,contact c,vendor_resource vr
+		WHERE sh.accepted_vendor_id IN
+		<iterate open="(" close=")" conjunction=",">
+			#[]#
+		</iterate>
+		AND srs.so_id=sh.so_id
+		AND sh.accepted_vendor_id=v.vendor_id
+		AND vr.contact_id = c.contact_id
+		AND v.vendor_id=vr.vendor_id
+		AND vr.primary_ind=1
+		AND srh.entity_type_id=10
+		AND srh.response_hdr_id=srs.response_hdr_id
+		UNION
+		SELECT sh.vendor_id AS firmId ,AVG(srh.overall_score) AS
+		rating,CONCAT(c.first_name,' ',c.last_name) AS firmOwner,
+		v.business_name AS firmName,v.business_start_date AS businessStartDate
+		FROM survey_response_hdr srh,survey_response_lead
+		srs,lead_matched_firm sh,vendor_hdr v,contact c,vendor_resource vr
+		WHERE sh.vendor_id IN
+		<iterate open="(" close=")" conjunction=",">
+			#[]#
+		</iterate>
+		AND srs.sl_lead_id=sh.sl_lead_id AND sh.lead_firm_status=4
+		AND sh.vendor_id=v.vendor_id
+		AND vr.vendor_id=v.vendor_id
+		AND vr.primary_ind=1
+		AND vr.contact_id = c.contact_id
+		AND srh.entity_type_id=10
+		AND srh.response_hdr_id=srs.response_hdr_id
+		)a WHERE firmId IS NOT NULL
+		GROUP BY firmId
+	</select>
+
+
+	<select id="leadsmanagement.getReviews" parameterClass="java.util.List"
+		resultClass="ratingVO">
+		SELECT h.accepted_vendor_id AS firmId,
+		SUBSTRING_INDEX(GROUP_CONCAT(CONCAT(c.first_name,' ',c.last_name)
+		ORDER BY r.created_date DESC SEPARATOR '|'),'|',1) AS reviewerName,
+		SUBSTRING_INDEX(GROUP_CONCAT(r.comments ORDER BY r.created_date DESC
+		SEPARATOR '|'),'|',1) AS reviewComment,
+		SUBSTRING_INDEX(GROUP_CONCAT(overall_score ORDER BY r.created_date
+		DESC SEPARATOR '|'),'|',1) AS reviewRating,
+		SUBSTRING_INDEX(GROUP_CONCAT(r.created_date ORDER BY r.created_date
+		DESC SEPARATOR '|'),'|',1) AS reviewdDate
+		FROM survey_response_hdr r,survey_response_so s,so_hdr h,buyer_resource
+		b,contact c
+		WHERE s.response_hdr_id = r.response_hdr_id
+		AND r.entity_id = b.resource_id
+		AND b.contact_id = c.contact_id
+		AND h.accepted_vendor_id IN
+		<iterate open="(" close=")" conjunction=",">
+			#[]#
+		</iterate>
+		AND s.so_id = h.so_id
+		AND r.comments != '' AND r.entity_type_id = 10
+		GROUP BY h.accepted_vendor_id
+	</select>
+
+	<select id="leadsmanagement.getLatestReviews" parameterClass="java.util.List"
+		resultClass="ratingVO">
+		SELECT firmId AS firmId,
+		SUBSTRING_INDEX(GROUP_CONCAT(reviewerName ORDER BY reviewdDate DESC SEPARATOR '|'),'|',1) AS reviewerName,
+		SUBSTRING_INDEX(GROUP_CONCAT(reviewComment ORDER BY reviewdDate DESC
+		SEPARATOR '|'),'|',1) AS reviewComment,
+		SUBSTRING_INDEX(GROUP_CONCAT(overall_score ORDER BY reviewdDate DESC
+		SEPARATOR '|'),'|',1) AS reviewRating,
+		SUBSTRING_INDEX(GROUP_CONCAT(reviewdDate ORDER BY reviewdDate DESC
+		SEPARATOR '|'),'|',1) AS reviewdDate
+		FROM(
+		SELECT h.accepted_vendor_id AS firmId,
+		CONCAT(c.first_name,' ',c.last_name) AS reviewerName,
+		r.comments AS reviewComment,
+		overall_score AS overall_score,
+		r.created_date AS reviewdDate
+		FROM survey_response_hdr r,survey_response_so s,so_hdr h,buyer_resource
+		b,contact c
+		WHERE s.response_hdr_id = r.response_hdr_id
+		AND r.entity_id = b.resource_id
+		AND b.contact_id = c.contact_id
+		AND h.accepted_vendor_id IN
+		<iterate open="(" close=")" conjunction=",">
+			#[]#
+		</iterate>
+		AND s.so_id = h.so_id
+		AND r.comments != '' AND r.entity_type_id = 10
+		UNION
+		SELECT h.vendor_id AS firmId,
+		CONCAT(c.first_name,' ',c.last_name) AS reviewerName,
+		r.comments AS reviewComment,
+		overall_score AS overall_score,
+		r.created_date AS reviewdDate
+		FROM survey_response_hdr r,survey_response_lead s,lead_matched_firm
+		h,buyer_resource b,contact c
+		WHERE s.response_hdr_id = r.response_hdr_id
+		AND r.entity_id = b.resource_id
+		AND b.contact_id = c.contact_id
+		AND h.vendor_id IN
+		<iterate open="(" close=")" conjunction=",">
+			#[]#
+		</iterate>
+		AND s.sl_lead_id = h.sl_lead_id AND h.lead_firm_status=4
+		AND r.comments != '' AND r.entity_type_id = 10)a WHERE firmId IS NOT NULL
+		GROUP BY firmId
+	</select>
+
+	<select id="leadsmanagement.getcompletesForFirm" parameterClass="java.util.List"
+		resultClass="completeVO">
+		SELECT smf.vendor_id AS firmId ,sh.completed_date AS completedDate
+		FROM lead_hdr sh,lead_matched_firm smf,vendor_hdr v
+		WHERE smf.vendor_id IN
+		<iterate open="(" close=")" conjunction=",">
+			#[]#
+		</iterate>
+		AND smf.lead_firm_status=4
+		AND smf.sl_lead_id=sh.sl_lead_id
+		AND smf.vendor_id=v.vendor_id
+AND sh.completed_date IS NOT NULL
+	</select>
+
+	<select id="leadsmanagement.validateSlLeadId" parameterClass="java.lang.String"
+		resultClass="leadInfo">
+		SELECT slh.sl_lead_id AS slLeadId,
+		slh.urgency_of_service AS urgencyOfService,
+		slh.lead_source AS leadSource,
+		slh.skill AS skill,
+		lsc.service_category_description AS leadCategory,
+		lsm.lms_project_type_description AS primaryProject
+		FROM lead_hdr slh,lead_service_mapping lsm,lead_service_category lsc
+		WHERE sl_lead_id =#value#
+		AND	slh.client_project_type_id=lsm.client_project_id
+		AND lsm.service_category_id=lsc.service_category_id
+	</select>
+
+	<select id="leadsmanagement.validateLaunchZip" parameterClass="java.lang.String"
+		resultClass="java.lang.String">
+		SELECT COUNT(1) FROM lu_lead_launch_zips p WHERE p.zip = #value#;
+	</select>
+
+	<select id="leadsmanagement.validateLeadId" parameterClass="java.lang.String"
+		resultClass="java.lang.String">
+		SELECT h.lms_lead_id FROM lead_hdr h WHERE h.sl_lead_id = #value#;
+	</select>
+    <select id="leadsmanagement.validateLeadIdForPost" parameterClass="java.lang.String"
+		resultClass="java.lang.String">
+		SELECT h.sl_lead_id  FROM lead_hdr h WHERE h.sl_lead_id = #value#
+	</select>
+	<select id="leadsmanagement.validatePrimaryProject"
+		parameterClass="java.lang.String" resultClass="fetchProviderFirmRequest">
+		SELECT m.sl_node_id AS
+		slNodeId,CONCAT(m.lms_project_type_description,'|',lsc.service_category_description)
+		AS lmsProjectDescription,lsc.service_category_description
+		AS leadCategory FROM lead_service_mapping m,lead_service_category lsc
+		WHERE m.client_project_id =#value# AND m.service_category_id =
+		lsc.service_category_id;
+	</select>
+	<select id="leadsmanagement.validateVendorId" parameterClass="java.lang.String"
+		resultClass="java.lang.String">
+		SELECT r.vendor_id FROM lead_post_response r,lead_hdr h
+		WHERE h.sl_lead_id = r.sl_lead_id AND h.lms_lead_id = #value#
+	</select>
+	<update id="leadsmanagement.updateLmsLeadId" parameterClass="leadInfo">
+		UPDATE lead_hdr SET lms_lead_id = #lmsLeadId#,lead_wf_status =
+		#leadWfStatus# where sl_lead_id = #slLeadId#
+	</update>
+	<update id="leadsmanagement.updateLeadHdrleadWfStatus" parameterClass="java.lang.String">
+	    UPDATE lead_hdr SET lead_wf_status = 1
+		where sl_lead_id = #slLeadId#
+	</update> 
+	<update id="leadsmanagement.updatePostLeadInfo" parameterClass="leadInfo">
+		UPDATE lead_hdr SET service_date =#serviceDate#,service_timezone =
+		#serviceTimeZone#,
+		service_start_time = #serviceStartTime#,service_end_time = #serviceEndTime#,
+		project_description = #projectDescription#,secondary_projects =
+		#secondaryProjects#,
+		modified_date = #modifiedDate#,modified_by = #modifiedBy#,
+		lead_type = #leadType#,
+		lead_wf_status = #leadWfStatus#
+		WHERE sl_lead_id = #slLeadId#
+	</update>
+	<select id="leadsmanagement.getCriteriaMap" resultMap="criteriaMap">
+		SELECT * FROM lu_rank_criteria_weightage
+	</select>
+	<select id="leadsmanagement.getProvidersMatchingForLead"
+		parameterClass="fetchProviderFirmRequest" resultClass="providerDetailsVO">
+		SELECT DISTINCT vr.resource_id AS providerId,
+		vr.vendor_id AS firmId,
+		l.city AS city,
+		l.state_cd AS state,
+		ifnull(TRUNCATE(3956.5450000 * 2 * ATAN2(
+		SQRT(SIN(RADIANS(l.gis_latitude - #locationVO.latitude#) /2)
+		* SIN(RADIANS(l.gis_latitude - #locationVO.latitude#) /2) +
+		COS(RADIANS(#locationVO.latitude#)) * COS(RADIANS(l.gis_latitude))
+		* SIN((RADIANS(l.gis_longitude - #locationVO.longitude#)) /2)
+		* SIN((RADIANS(l.gis_longitude - #locationVO.longitude#)) /2)),
+		SQRT(1 - SIN(RADIANS(l.gis_latitude - #locationVO.latitude#) /2)
+		* SIN(RADIANS(l.gis_latitude - #locationVO.latitude#) /2) +
+		COS(RADIANS(#locationVO.latitude#)) * COS(RADIANS(l.gis_latitude))
+		* SIN((RADIANS(l.gis_longitude - #locationVO.longitude#)) /2)
+		* SIN((RADIANS(l.gis_longitude - #locationVO.longitude#)) /2))),2) ,10000) as
+		distanceFromZipInMiles
+		FROM vendor_hdr vh
+		left JOIN vendor_resource vr ON vh.vendor_id = vr.vendor_id 
+		<!--AND vr.wf_state_id = 6 AND vr.resource_ind = 1 AND vr.mkt_place_ind = 1-->
+		left JOIN contact c ON vr.contact_id=c.contact_id
+		left JOIN vendor_resource_location l ON (vr.locn_id = l.locn_id)
+		WHERE
+		<isNotEmpty property="firmIds" prepend="  ">
+			vh.vendor_id IN
+			<iterate property="firmIds" open="(" close=")" conjunction=",">
+				#firmIds[]#
+			</iterate>
+		</isNotEmpty>
+		ORDER BY vr.vendor_id
+	</select>
+	<select id="leadsmanagement.getLeadPriceAndLmsPartnerIdForFirms"
+		parameterClass="leadRequest" resultClass="ratingVO">
+		SELECT DISTINCT vlsp.vendor_id as firmId, vlp.lms_partner_id as
+		lmsPartnerId,vlp.lead_profile_email as leadProfileEmail
+		<isNotNull property="leadPricingType" prepend=",">
+			<isEqual property="leadPricingType" compareValue="EXCLUSIVE">
+				vlsp.exclusive_price as leadPrice
+			</isEqual>
+			<isEqual property="leadPricingType" compareValue="COMPETITIVE">
+				vlsp.competitive_price as leadPrice
+			</isEqual>
+		</isNotNull>
+		FROM lead_hdr h
+		JOIN lead_service_mapping lsm ON lsm.client_project_id =
+		h.client_project_type_id
+		JOIN vendor_lead_service_price vlsp ON vlsp.service_mapping_id =
+		lsm.service_mapping_id
+		JOIN vendor_lead_profile vlp ON vlp.vendor_id = vlsp.vendor_id
+		WHERE vlsp.vendor_id IN
+		<iterate property="firmIds.firmId" open="(" close=")"
+			conjunction=",">
+			#firmIds.firmId[]#
+		</iterate>
+		AND h.sl_lead_id=#leadId#
+	</select>
+	<select id="leadsmanagement.getCredentials" parameterClass="java.util.List"
+		resultClass="firmCredentialVO">
+		SELECT v.vendor_id AS firmId,v.cred_source AS source,v.cred_name AS
+		name,cc.cred_category AS category,ct.cred_type_desc AS type,s.wf_state
+		AS status
+		FROM vendor_credentials v,lu_vendor_credential_type
+		ct,lu_vendor_credential_category cc,wf_states s
+		WHERE v.vendor_id IN
+		<iterate open="(" close=")" conjunction=",">
+			#[]#
+		</iterate>
+		AND v.cred_type_id=cc.cred_type_id AND
+		v.cred_category_id=cc.cred_category_id
+		AND v.cred_type_id=ct.cred_type_id
+		AND v.wf_state_id=s.wf_state_id
+	</select>
+	<!-- 
+	<select id="leadsmanagement.getFirmServices" parameterClass="java.util.List"
+		resultClass="firmServiceVO">
+		SELECT lsc.service_category_description AS rootCategory,
+		lsm.lms_project_type_description AS project,
+		vlsp.vendor_id AS firmId
+		FROM vendor_lead_service_price vlsp,
+		lead_service_mapping lsm,lead_service_category lsc
+		WHERE vlsp.vendor_id IN
+		<iterate open="(" close=")" conjunction=",">
+			#[]#
+		</iterate>
+		AND vlsp.service_mapping_id=lsm.service_mapping_id
+		AND lsm.service_category_id=lsc.service_category_id
+		ORDER BY
+		lsc.service_category_description
+
+	</select>
+	 -->
+	<select id="leadsmanagement.getFirmServices" parameterClass="java.util.List"
+		resultClass="firmServiceVO">
+			SELECT s1.node_name AS rootCategory,
+       			   sk.node_name AS project,
+       		   	   vr.vendor_id AS firmId
+			FROM vendor_resource vr
+			JOIN vendor_hdr h ON h.vendor_id=vr.vendor_id
+			JOIN resource_skill s ON s.resource_id=vr.resource_id
+			JOIN skill_tree sk ON sk.node_id=s.node_id
+			JOIN skill_tree s1 ON s1.node_id=sk.root_node_id
+			WHERE vr.vendor_id IN 
+			<iterate open="(" close=")" conjunction=",">
+				#[]#
+			</iterate> 
+			AND vr.wf_state_id = 6
+			AND sk.level IN (2) AND sk.root_node_id IN(1000,1700)
+			GROUP BY rootCategory, project, firmId
+			ORDER BY rootCategory;
+	</select>	
+	
+	<select id="leadsmanagement.getReviewList" parameterClass="java.lang.String"
+		resultClass="reviewVO">
+		SELECT h.accepted_vendor_id AS firmId,
+		(CONCAT(c.first_name,' ',c.last_name)) AS reviewerName,
+		r.comments AS reviewComment,
+		overall_score AS reviewRating,
+		r.created_date AS reviewdDate
+		FROM survey_response_hdr r,survey_response_so s,so_hdr h,buyer_resource
+		b,contact c
+		WHERE s.response_hdr_id = r.response_hdr_id
+		AND r.entity_id = b.resource_id
+		AND b.contact_id = c.contact_id
+		AND h.accepted_vendor_id = #value#
+		AND s.so_id = h.so_id
+		AND r.comments != '' AND r.entity_type_id = 10
+		ORDER BY r.created_date DESC LIMIT 10
+	</select>
+
+	<select id="leadsmanagement.getLatestReviewList" parameterClass="java.lang.String"
+		resultClass="reviewVO">
+		SELECT * FROM
+
+		((SELECT h.accepted_vendor_id AS firmId,
+		(CONCAT(c.first_name,' ',c.last_name)) AS reviewerName,
+		r.comments AS reviewComment,
+		overall_score AS reviewRating,
+		r.created_date AS reviewdDate
+		FROM survey_response_hdr r,survey_response_so s,so_hdr h,buyer_resource
+		b,contact c
+		WHERE s.response_hdr_id = r.response_hdr_id
+		AND r.entity_id = b.resource_id
+		AND b.contact_id = c.contact_id
+		AND h.accepted_vendor_id = #value#
+		AND s.so_id = h.so_id
+		AND r.comments != '' AND r.entity_type_id = 10)
+		UNION
+
+		( SELECT h.vendor_id AS firmId,
+		(CONCAT(c.first_name,' ',c.last_name)) AS reviewerName,
+		r.comments AS reviewComment,
+		overall_score AS reviewRating,
+		r.created_date AS reviewdDate
+		FROM survey_response_hdr r,survey_response_lead s,lead_matched_firm
+		h,buyer_resource b,contact c
+		WHERE s.response_hdr_id = r.response_hdr_id
+		AND r.entity_id = b.resource_id
+		AND b.contact_id = c.contact_id
+		AND h.vendor_id =#value#
+		AND s.sl_lead_id = h.sl_lead_id AND h.lead_firm_status=4
+		AND r.comments != '' AND r.entity_type_id = 10))a
+
+
+		ORDER BY reviewdDate DESC LIMIT 10
+	</select>
+
+
+	<select id="leadsmanagement.getAllLeadDetails" parameterClass="fetchLeadVO"
+		resultClass="leadInfoVO">
+		SELECT slmf.vendor_id AS firmId,
+		slmf.sl_lead_id AS slLeadId,
+		slh.lms_lead_id AS lmsLeadId,
+		llfs.firm_status AS firmStatus,
+		slh.skill AS skill,
+		lsm.client_project_type AS projectType,
+		slh.urgency_of_service AS urgencyOfService,
+		slci.first_name AS firstName,
+		slci.last_name AS lastName,
+		slci.phone_no AS phoneNumber,
+		slci.city AS city,
+		slci.zip AS zip,
+		slh.service_date AS preferredAppointment,
+		slh.project_description AS description,
+		slmf.created_date AS createdDate
+		FROM lead_matched_firm slmf,lu_lead_firm_status llfs,lead_hdr
+		slh,lead_service_mapping lsm,lead_contact_information slci
+		WHERE
+		slmf.vendor_id = #firmId#
+		AND slmf.lead_firm_status=llfs.lu_lead_firm_status_id
+		AND slmf.sl_lead_id=slh.sl_lead_id
+		AND slh.client_project_type_id=lsm.client_project_id
+		AND slmf.sl_lead_id=slci.sl_lead_id
+		<isEqual property="status" compareValue="active">
+			AND ((llfs.firm_status IN ('new','working')
+			AND DATEDIFF(NOW(),slh.modified_date) <![CDATA[ <= ]]>
+			#staleAfter#) OR llfs.firm_status IN ('scheduled'))
+		</isEqual>
+		<isEqual property="status" compareValue="inactive">
+			AND ((llfs.firm_status IN ('completed','cancelled')) OR
+			(llfs.firm_status IN ('new','working')
+			AND DATEDIFF(NOW(),slh.modified_date) <![CDATA[ > ]]>
+			#staleAfter#))
+		</isEqual>
+		ORDER BY slmf.created_date DESC
+		<isNotNull property='count'>
+			LIMIT 0,#count#
+		</isNotNull>
+
+	</select>
+
+	<select id="leadsmanagement.getSpnIdForFirm" parameterClass="java.util.List"
+		resultClass="ratingVO">
+		SELECT spfs.spn_id AS spnId,spfs.provider_firm_id AS firmId FROM
+		spnet_provider_firm_state spfs,spnet_buyer spb
+		WHERE spfs.provider_firm_id IN
+		<iterate open="(" close=")" conjunction=",">
+			#[]#
+		</iterate>
+
+		AND spfs.spn_id=spb.spn_id
+		AND spfs.provider_wf_state='PF SPN MEMBER'
+		AND spb.buyer_id=7000
+
+	</select>
+	<update id="leadsmanagement.updateMembershipInfo"
+		parameterClass="membershipRequest">
+		UPDATE lead_contact_information SET swyr_mem_id = #memberShipNumber#,
+		swyr_reward = #pointsRewarded#,modified_date = #modifiedDate# 
+		WHERE sl_lead_id = #leadId# 
+	</update>
+
+	<update id="leadsmanagement.updateProvider" parameterClass="assignProviderRequest">
+		UPDATE lead_matched_firm SET resource_id = #resourceId# WHERE
+		sl_lead_id = #leadId# AND vendor_id = #firmId# ;
+	</update>
+	<update id="leadsmanagement.updateResourceId" parameterClass="completeLeadsVO">
+		UPDATE lead_matched_firm SET resource_id = #resourceId# WHERE
+		sl_lead_id = #leadId# AND vendor_id = #firmId# ;
+	</update>
+	
+	<update id="leadsmanagement.updateLeadDetails" parameterClass="completeLeadsVO">
+		UPDATE lead_hdr SET completed_date= #completedDate#,completed_time=#completedTime#,
+		completion_comments=#completionComment#,lead_wf_status=3,lead_material_price=#materialPrice#,
+		lead_labor_price=#laborPrice# WHERE sl_lead_id = #leadId#;
+	</update>
+	
+	<update id="leadsmanagement.updateMatchedFirmDetails" parameterClass="completeLeadsVO">
+		UPDATE lead_matched_firm SET 
+		number_of_visits=#numberOfVisits#,lead_firm_status=4
+		WHERE sl_lead_id = #leadId# AND vendor_id = #firmId# ;
+	</update>
+
+	<select id="leadsmanagement.getIndividualLeadDetails"
+		parameterClass="java.util.HashMap" resultClass="leadInfoVO">
+	  SELECT 
+		slmf.vendor_id AS firmId,
+		slh.sl_lead_id AS slLeadId,
+		slh.lms_lead_id AS lmsLeadId,
+		slh.client_id AS leadSource,
+		IF(((llfs.firm_status IN ('new','working')
+			AND DATEDIFF(NOW(),slh.modified_date) <![CDATA[ > ]]> 22)),'stale',llfs.firm_status) AS firmStatus,
+		lsc.service_category_description AS leadCategory,
+		slh.skill AS skill,
+		lsm.client_project_type AS projectType,
+		slh.urgency_of_service AS urgencyOfService,
+		slci.first_name AS firstName,
+		slci.last_name AS lastName,
+		slci.phone_no AS phoneNumber,
+		slci.email AS email,
+		slci.street_1 AS street1,
+		slci.street_2 AS street2,
+		slci.city AS city,
+		slci.zip AS zip,
+		slci.state_cd AS state,
+		slmf.lead_price AS leadPrice,
+		slh.lead_type AS leadType,
+		slh.secondary_projects AS additionalProjects,
+		slh.project_description AS description,
+		slh.service_date AS preferredAppointment,
+		slmf.created_date AS createdDate,
+		slh.service_timezone AS serviceTimeZone,
+		slh.service_start_time AS startTime,
+		slh.service_end_time AS endTime,
+		slmf.service_start_time AS scheduledStartTime,
+		slmf.service_end_time AS scheduledEndTime,
+		slmf.service_date AS scheduledDate,
+		vc.last_name AS resLastName,
+		vc.first_name AS resFirstName,
+		slmf.resource_id AS resourceAssigned,
+		slh.completed_date AS completionDate,
+		slh.completed_time AS completionTime,
+		slmf.number_of_visits AS numberOfTrips,
+		slh.completion_comments AS completionComments,
+		slh.lead_final_price AS leadFinalPrice,
+		slh.lead_material_price AS leadMaterialPrice,
+		slh.lead_labor_price AS leadLaborPrice,
+		geo.daylight_savings_flg AS dlSavingFlag,
+		lc.created_date AS cancelledDate,
+		lc.cancel_initiated_by AS cancelledBy,
+		lc.cancellation_comments AS cancelledReason
+		FROM lead_service_mapping lsm,lu_lead_firm_status llfs,lead_service_category lsc
+		,lead_service_price lsp,lead_hdr slh
+		LEFT OUTER JOIN lead_cancellation lc ON (lc.sl_lead_id = slh.sl_lead_id AND lc.vendor_id=#firmid#),
+		lead_matched_firm slmf
+		LEFT OUTER JOIN vendor_resource vr ON  vr.resource_id=slmf.resource_id
+		LEFT OUTER JOIN contact vc ON vr.contact_id = vc.contact_id,
+		lead_contact_information slci 
+		LEFT OUTER JOIN  zip_geocode geo ON slci.zip = geo.zip
+		WHERE slmf.sl_lead_id =#slleadid# AND slmf.vendor_id=#firmid#
+		AND slh.client_project_type_id=lsm.client_project_id
+		AND slh.sl_lead_id=slci.sl_lead_id
+		AND slmf.lead_firm_status=llfs.lu_lead_firm_status_id
+		AND lsm.service_category_id=lsc.service_category_id
+		AND slmf.sl_lead_id=slh.sl_lead_id
+		LIMIT 1
+		
+	</select>
+	<select id="leadsmanagement.validateFirmId" parameterClass="java.lang.String"
+		resultClass="java.lang.String">
+		SELECT vendor_id FROM vendor_lead_profile WHERE vendor_id=#value# AND
+		lms_partner_id is NOT NULL;
+	</select>
+	<select id="leadsmanagement.validateResourceId" parameterClass="java.util.HashMap"
+		resultClass="java.lang.String">
+		SELECT resource_id FROM vendor_resource WHERE vendor_id=#firmId# AND
+		resource_id=#resourceId#
+	</select>
+	<select id="leadsmanagement.getResourceId" parameterClass="java.util.HashMap"
+		resultClass="java.lang.String">
+		SELECT resource_id FROM lead_matched_firm WHERE sl_lead_id=#leadId# AND
+		vendor_id=#firmId#
+	</select>
+	<select id="leadsmanagement.validatingFirmID" parameterClass="java.lang.String"
+		resultClass="java.lang.String">
+		SELECT vendor_id FROM vendor_hdr WHERE vendor_id=#value#
+	</select>
+	<select id="leadsmanagement.validateFirmLead" parameterClass="java.util.HashMap"
+		resultClass="java.lang.String">
+		SELECT vendor_id FROM lead_matched_firm
+		WHERE sl_lead_id =#leadId# AND vendor_id=#firmId#
+	</select>
+	<select id="leadsmanagement.validateFirmForLead" parameterClass="java.util.HashMap"
+		resultClass="leadInfoVO">
+		SELECT DISTINCT vendor_id AS firmId,
+		sl_lead_id AS slLeadId
+		FROM lead_matched_firm
+		WHERE sl_lead_id =#slleadid# AND vendor_id=#firmid#
+	</select>
+	<select id="leadsmanagement.validateFirmStatus" parameterClass="java.lang.String"
+		resultClass="updateLeadStatusRequestVO">
+		SELECT lu_lead_firm_status_id AS firmStatusId,firm_status AS firmStatus FROM
+		lu_lead_firm_status WHERE firm_status=#value#
+	</select>
+	<select id="leadsmanagement.validateLeadStatus" parameterClass="java.lang.String"
+		resultClass="updateLeadStatusRequestVO">
+		SELECT lu_lead_status_id AS statusId,lead_status AS status FROM
+		lu_lead_status WHERE lead_status=#value#
+	</select>
+	<update id="leadsmanagement.updateLeadStatus" parameterClass="updateLeadStatusRequestVO">
+		update
+		lead_hdr
+		set
+		lead_wf_status = #statusId#,
+		modified_date = #modifiedDate#,
+		modified_by = #modifiedBy#
+		where
+		sl_lead_id = #leadId#
+	</update>
+	<update id="leadsmanagement.updateMatchedFirmStatus"
+		parameterClass="updateLeadStatusRequestVO">
+		update
+		lead_matched_firm
+		set
+		lead_firm_status = #firmStatusId#,
+		modified_date = #modifiedDate#
+		where
+		sl_lead_id = #leadId#
+		and vendor_id= #firmId#
+	</update>
+	<update id="leadsmanagement.updateScheduleInfo" parameterClass="scheduleRequestVO">
+		UPDATE lead_matched_firm SET service_start_time =
+		#serviceStartTime#,lead_firm_status=#statusId#, service_end_time = #serviceEndTime#,service_date =
+		#serviceDate# WHERE sl_lead_id = #leadId# AND vendor_id=#vendorId# ;
+	</update>
+
+
+	<insert id="leadsmanagement.insertScheduleHistory"
+		parameterClass="scheduleRequestVO">
+		INSERT INTO
+		lead_matched_firm_schedule_history(sl_lead_id,vendor_id,service_start_time,service_end_time,service_date,created_date,modified_date,reschedule_reason)
+		VALUES(#leadId#,#vendorId#,#serviceStartTime#,#serviceEndTime#,#serviceDate#,NOW(),NOW(),#rescheduleReason#)
+	</insert>
+	<select id="leadsmanagement.validateLeadNoteCategoryId"
+		parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT l.lu_lead_note_category FROM lu_lead_note_category l WHERE
+		l.lu_lead_note_category=#value#;
+	</select>
+
+	<insert id="leadsmanagement.insertLeadNotes" parameterClass="leadNotesVO">
+		INSERT INTO
+		lead_notes(sl_lead_id,note_subject,note_type_id,role_id,note,alert_send_to,created_date,modified_date,created_by,modified_by,entity_id)
+		VALUES(#slLeadId#,#noteCategory#,#noteType#,#roleId#,#note#,#alertSendTo#,#createdDate#,#modifiedDate#,#createdBy#,#modifiedBy#,#entityId#)
+		<selectKey resultClass="int">
+            SELECT last_insert_id() as leadNoteId
+        </selectKey>
+	</insert>
+	<insert id="leadsmanagement.insertDocument" parameterClass="docVO">
+		INSERT INTO
+		lead_documents(doc_id,sl_lead_id,created_date,modified_date,created_by)
+		VALUES(#documentId#,#leadId#,NOW(),NOW(),#createdBy#)
+		<selectKey resultClass="int">
+            SELECT last_insert_id() as leadDocId
+        </selectKey>
+	</insert>
+	 <select id="leadsmanagement.getDocumentByDocId" resultClass="docVO" parameterClass="java.lang.Integer">
+		select d.doc_category_id as docCategoryId, 
+			   	d.document_id as documentId,
+				d.vendor_id as vendorId,
+				d.descr as description, 
+				d.title as title,
+				d.file_name as fileName,
+				d.format as format,
+				d.source as source, 
+				d.keywords as keywords, 
+				d.expire_date as expireDate, 
+				d.purge_date as purgeDate,
+				d.modified_date as modifiedDate,
+				d.role_id as roleId,
+				d.delete_ind as delInd,
+				d.doc_path as docPath,
+				d.doc_size as docSize,
+				d.entity_id as entityId
+		from document d
+		where d.document_id = #documentId#
+		and d.delete_ind=0
+    </select>
+	<select id="leadsmanagement.getAllProviderEmailsForLead"
+		parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT c.email AS email
+		FROM lead_matched_firm lmf
+		JOIN vendor_hdr v ON v.vendor_id = lmf.vendor_id
+		JOIN vendor_resource vr ON vr.vendor_id = v.vendor_id AND vr.primary_ind
+		=1
+		JOIN contact c ON c.contact_id=vr.contact_id
+		WHERE lmf.sl_lead_id = #value#
+	</select>
+	<select id="leadsmanagement.validateBuyerForLead"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT 1
+		FROM lead_hdr
+		WHERE sl_lead_id =#slleadid# AND buyer_id=#buyerid#
+	</select>
+<select id="leadsmanagement.getDetailsForRemindMail" parameterClass="java.lang.String" resultClass ="leadreminderVO" >
+                SELECT  DISTINCT
+	            slh.sl_lead_id 				     AS slLeadId,
+	            lsc.service_category_description AS leadCategory,
+	            slh.skill                        AS skill,
+	            lsm.client_project_type          AS service,
+	            slmf.resource_id                 AS resourceId,
+	            slmf.vendor_id        	     AS firmId,	           
+	            lsm.client_project_description AS projectType,	            
+	            slci.first_name                  AS customerName,
+	            slci.last_name AS                 lastName,
+	            slci.phone_no 		     AS customerPhoneNumber,
+	            slci.email 			     AS customerEmail,
+	            slci.street_1 		     AS street1,
+	            slci.street_2 		     AS street2,
+	            slci.city 			     AS serviceCity,
+	            slci.zip 			     AS serviceZip,
+	            slci.state_cd 		     AS serviceState,
+	            slci.swyr_mem_id                 AS SWYRID,
+	  	        slh.secondary_projects	     AS additionalProjects,
+	            slh.project_description	     AS description	,
+	            slmf.service_date                AS workDate,
+	            slmf.service_end_time            AS serviceEndTime,
+	            slmf.service_start_time          AS serviceStartTime  ,	           
+	            slh.service_timezone             AS serviceTimeZone,
+	            CONCAT( c.first_name,' ', c.last_name) AS firmOwner,
+	            c.email                          AS firmEmail, 
+	            c.phone_no                       AS firmPhoneNo,
+	            c.mobile_no      	             AS firmMobileNo,
+	            v.business_name AS firmName,
+	            cp.first_name AS providerName,
+	            cp.last_name  AS providerLastName,
+		    cp.phone_no      	             AS providerPhoneNo,
+		    cp.mobile_no      	             AS providerMobileNo,
+		    cp.email AS providerEmail,
+		     l.city AS providerCity,
+		     l.state_cd AS providerState          
+	     FROM lead_hdr slh 
+	     JOIN lead_service_mapping  lsm      ON   slh.client_project_type_id=lsm.client_project_id
+	     JOIN lead_contact_information slci ON  slh.sl_lead_id=slci.sl_lead_id
+	     JOIN lead_service_category lsc ON lsm.service_category_id=lsc.service_category_id
+	     JOIN lead_matched_firm slmf ON slmf.sl_lead_id=slh.sl_lead_id AND slmf.lead_firm_status=3
+	     JOIN vendor_resource vr ON   vr.vendor_id = slmf.vendor_id  AND vr.primary_ind=1
+	     JOIN contact c ON   vr.contact_id = c.contact_id
+	     JOIN vendor_hdr v ON v.vendor_id = vr.vendor_id	     	     
+	     JOIN vendor_resource vrp ON  slmf.resource_id=vrp.resource_id
+	     JOIN contact cp ON   vrp.contact_id=cp.contact_id 
+	     JOIN location l ON vrp.locn_id  = l.locn_id AND l.locn_type_id = 4
+	    WHERE slmf.service_date=#value# 
+
+	</select>
+    <select id="leadsmanagement.getLeadDetails" parameterClass="java.lang.String" resultClass="leadInfo">
+       SELECT ap.app_value AS spnId,lsm.sl_node_id AS slNodeId,h.zip_code AS customerZipCode
+               FROM application_properties ap,lead_hdr h,lead_service_mapping lsm,lead_service_category lsc
+               WHERE ap.app_key=lsc.service_category_description
+               AND h.client_project_type_id=lsm.client_project_id
+               AND lsm.service_category_id=lsc.service_category_id
+      AND h.sl_lead_id=#value#
+    </select>
+    <select id="leadsmanagement.getEligibleProvidersForlead" parameterClass="locationVO" resultClass="providerDetailsVO">
+		SELECT DISTINCT 
+		vr.resource_id AS providerId,
+		vr.vendor_id AS firmId,
+		TRUNCATE(3956.5450000 * 2 * ATAN2(
+		SQRT(SIN(RADIANS(l.gis_latitude - #latitude#) /2)
+		* SIN(RADIANS(l.gis_latitude - #latitude#) /2) +
+		COS(RADIANS(#latitude#)) * COS(RADIANS(l.gis_latitude))
+		* SIN((RADIANS(gis_longitude - #longitude#)) /2)
+		* SIN((RADIANS(gis_longitude - #longitude#)) /2)),
+		SQRT(1 - SIN(RADIANS(l.gis_latitude - #latitude#) /2)
+		* SIN(RADIANS(l.gis_latitude - #latitude#) /2) +
+		COS(RADIANS(#latitude#)) * COS(RADIANS(l.gis_latitude))
+		* SIN((RADIANS(gis_longitude - #longitude#)) /2)
+		* SIN((RADIANS(gis_longitude - #longitude#)) /2))),2) 
+		AS distanceFromZipInMiles,
+		vc.first_name AS resFirstName,
+		vc.last_name AS resLastName
+        FROM vendor_hdr vh 
+		JOIN vendor_resource vr ON vh.vendor_id = vr.vendor_id 
+		 JOIN contact vc ON vr.contact_id = vc.contact_id
+		       AND vr.resource_ind = 1
+		       AND vr.wf_state_id = 6
+		       AND vr.mkt_place_ind = 1
+		       AND vh.wf_state_id IN (3,26,34)
+		<isNotNull property="spnId">
+		    <isEqual property="spnJoin" compareValue="true">
+		          JOIN spnet_provider_firm_state  sfs
+		          ON sfs.provider_firm_id =vh.vendor_id
+		          JOIN spnet_serviceprovider_state sps
+		          ON sfs.spn_id=sps.spn_id
+		          AND sps.service_provider_id=vr.resource_id
+		          AND sfs.spn_id=#spnId#
+		          AND sps.provider_wf_state=#wfStatus#
+		      </isEqual>
+		</isNotNull>
+		<isNotNull property="slNodeId">
+		      <isEqual property="skillJoin" compareValue="true">
+		         JOIN resource_skill rs ON rs.resource_id=vr.resource_id
+		         JOIN skill_tree st ON st.node_id=rs.node_id
+		         AND st.node_id=#slNodeId#
+		      </isEqual>
+		</isNotNull>
+		   JOIN vendor_resource_location l ON (vr.locn_id = l.locn_id)
+		   WHERE vh.vendor_id =#vendorId#
+	</select>
+		<select id="leadsmanagement.getTotalLeadCount" parameterClass="fetchLeadVO"
+		resultClass="java.lang.Integer">
+		SELECT 
+		COUNT(slmf.sl_lead_id) AS count
+		FROM lead_matched_firm slmf,lead_hdr
+		slh
+		WHERE
+		slmf.vendor_id = #firmId#
+		AND slmf.sl_lead_id=slh.sl_lead_id
+		<isEqual property="status" compareValue="active">
+			AND ((slmf.lead_firm_status IN (1,2)
+			AND DATEDIFF(NOW(),slh.modified_date) <![CDATA[ <= ]]>
+			#staleAfter#) OR slmf.lead_firm_status IN (3))
+		</isEqual>
+		<isEqual property="status" compareValue="inactive">
+			AND ((slmf.lead_firm_status IN (4,5)) OR
+			(slmf.lead_firm_status IN (1,2)
+			AND DATEDIFF(NOW(),slh.modified_date) <![CDATA[ > ]]>
+			#staleAfter#))
+		</isEqual>
+	</select>
+	<select id="leadsmanagement.getNotes" parameterClass="java.lang.String"
+		resultClass="leadNotesVO">
+	SELECT lns.lead_note_id AS leadNoteId, lns.role_id AS roleId,
+	lns.note AS note ,lns.modified_date AS createdDate,lns.note_subject AS subject ,
+	CONCAT( co.first_name,' ', co.last_name) AS createdBy,
+	lns.modified_by AS modifiedBy   
+	FROM lead_notes lns <!-- JOIN lu_lead_note_category llnc 
+	ON lns.note_category_id=llnc.lu_lead_note_category_id -->
+	LEFT OUTER JOIN buyer_resource br ON lns.modified_by=br.user_name AND lns.role_id=3 AND lns.note_type_id='PUBLIC'
+	LEFT OUTER JOIN vendor_resource vr ON lns.modified_by=vr.user_name AND lns.role_id=1
+	JOIN contact co ON br.contact_id = co.contact_id OR vr.contact_id = co.contact_id
+	WHERE lns.sl_lead_id=#value# ORDER BY lns.modified_date DESC
+	</select>
+	<select id="leadsmanagement.getHistory" parameterClass="java.lang.String"
+		resultClass="leadHistoryVO">
+		SELECT lh.created_date AS createdDate,
+			   lh.chg_comment AS description,
+			   lh.modified_by AS modifiedBy,
+			   lh.created_by AS createdBy,
+			   la.action_descr AS actionName,
+			   lh.role_id AS roleId, 
+			   lh.action_id AS actionId,
+			   lh.entity_id AS enitityId
+				FROM lead_history lh 
+				JOIN lu_lead_actions la ON lh.action_id = la.action_id
+				WHERE	lh.sl_lead_id=#value#
+				ORDER BY lh.created_date DESC
+	</select>
+	
+	<select id="leadsmanagement.getHistoryVOLst.query" parameterClass="java.lang.String" resultClass="leadHistorylstVO">
+	    
+	SELECT 
+		 lh.sl_lead_id AS slLeadId,
+		 lh.action_id  AS actionId,
+	     lh.chg_comment AS description,
+		 lh.created_date AS createdDate,
+		 lh.modified_date AS modifiedBy,
+		 lh.created_by AS createdBy,
+		 lh.modified_by AS modifiedBy,
+		 lh.role_id AS roleId,
+		 lh.entity_id AS enitityId,
+		 vr.vendor_id AS vendorId,
+		 vr.resource_id AS resourceId
+	FROM lead_history lh,vendor_resource vr,vendor_hdr vhr
+		WHERE  lh.action_id = 10 
+		AND lh.entity_id = vr.resource_id
+		AND vhr.vendor_id = vr.vendor_id
+		AND lh.sl_lead_id = #leadId#
+
+    </select>
+	
+	<select id="leadsmanagement.getProviderAttachments" parameterClass="java.lang.String"
+		resultClass="leadsProviderAttachmentVO">
+		SELECT  d.document_id AS documentId,
+				d.file_name AS documentName,
+				d.doc_size AS documentsize,
+				d.doc_category_id AS docCategoryId,
+				d.doc_path AS docPath,
+				ld.created_date AS createdDate,
+				c.first_name AS firstName, 
+				c.last_name AS lastName
+				FROM document d ,lead_documents ld , vendor_hdr vh , vendor_resource vr,contact c
+				WHERE d.document_id = ld.doc_id
+				AND d.vendor_id = vh.vendor_id
+				AND vh.vendor_id = vr.vendor_id
+				AND vr.primary_ind = 1
+				AND  vr.contact_id=c.contact_id
+				AND d.delete_ind=0
+				AND ld.sl_lead_id =#value#
+	</select>
+	<select id="leadsmanagement.validateLeadAndStatus" parameterClass="java.lang.String" resultClass="java.lang.String">
+	   SELECT lu.lead_status AS leadStatus FROM lead_hdr l,lu_lead_status lu
+       WHERE l.lead_wf_status=lu.lu_lead_status_id AND l.sl_lead_id=#value#
+	</select>
+	<select id="leadsmanagement.validateFirmAndStatus" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+	    SELECT lu.firm_status AS leadFirmStatus FROM lead_matched_firm lm,lu_lead_firm_status lu
+        WHERE lm.lead_firm_status=lu.lu_lead_firm_status_id 
+        AND lm.sl_lead_id= #slleadid# AND lm.vendor_id=#firmid#
+	</select>
+	<select id="leadsmanagement.getAllLeadFirmStatus" resultClass="java.lang.String">
+	     SELECT firm_status FROM lu_lead_firm_status
+	</select>
+	<select id="leadsmanagement.getLeadFirmStatusMap" resultMap="luMap">
+	     SELECT * FROM lu_lead_firm_status
+	</select>
+	<select id="leadsmanagement.validateLeadAssosiationWithFirm"
+		parameterClass="scheduleAppointmentRequest" resultClass="scheduleRequestVO">
+		SELECT sl_lead_id AS leadId, service_date AS serviceDate FROM lead_matched_firm 
+		WHERE sl_lead_id =#leadId# AND vendor_id=#vendorId# LIMIT 1
+	</select>
+    <select id="leadsmanagement.getLead" parameterClass="java.lang.String" resultMap="leadInfo.resultMap">
+	 SELECT   l.sl_lead_id,
+				lu.lead_status,
+				l.lms_lead_id,
+				l.lead_source,
+				l.lead_type,
+				l.buyer_id,
+				l.zip_code,
+				l.client_id,
+				l.project_description,
+				l.urgency_of_service,
+				l.secondary_projects,
+				l.skill,
+				l.created_by,
+				lsc.service_category_description,
+				lsm.lms_project_type_description,
+				lsm.client_project_type,
+				<!-- Added for SL-19727 -->
+				l.service_date,
+				l.service_timezone,
+				l.service_start_time,
+				l.service_end_time,
+				l.buyer_id,
+				lsc.service_category_description,
+				lsm.client_project_description,
+				lci.swyr_reward		
+	  FROM lead_hdr l
+	  JOIN lu_lead_status lu ON (l.lead_wf_status=lu.lu_lead_status_id)
+	  JOIN lead_service_mapping lsm ON (l.client_project_type_id=lsm.client_project_id)
+	  JOIN lead_service_category lsc ON (lsm.service_category_id=lsc.service_category_id)
+	  LEFT OUTER JOIN lead_contact_information lci ON (l.sl_lead_id = lci.sl_lead_id)
+	  WHERE l.sl_lead_id=#slLeadId#
+    </select>
+    <insert id="leadsmanagement.insertLeadLogging" parameterClass="leadLoggingVO">		
+    INSERT INTO lead_history
+            (sl_lead_id,action_id,old_value,new_value,chg_comment,created_date,modified_date,created_by,modified_by,role_id,entity_id)
+	VALUES (#slleadid#,#actionId#,#oldValue#,#newValue#,#chgComment#,NOW(),NOW(),#createdBy#,#modifiedBy#,#roleId#,#entityId#)
+	</insert>
+    <select id="leadsmanagement.getResourceIdForFirm" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+        SELECT 1 FROM vendor_resource WHERE vendor_id = #firmId# AND resource_id =#resourceId#
+    </select>
+    <select id="leadsmanagement.getUserName" parameterClass="java.lang.String" resultClass="java.lang.String">
+	    SELECT user_name AS userName FROM  vendor_resource  WHERE  vendor_id =#value# AND primary_ind=1
+	</select>   
+	<select id="leadsmanagement.getResourseName" parameterClass="java.lang.String" resultClass="java.lang.String">
+	   SELECT  CONCAT( cp.first_name,' ', cp.last_name) AS providerName    
+         FROM    vendor_resource vrp , contact cp 
+        WHERE   vrp.resource_id=#value#  AND  vrp.contact_id=cp.contact_id           
+   </select>   
+
+	<update id="leadsmanagement.updateLeadNotes" parameterClass="leadNotesVO">
+		UPDATE
+		lead_notes
+		SET note_subject = #noteCategory#,
+		note_type_id = #noteType#,
+		note = #note#,
+		modified_date = #modifiedDate#,
+		modified_by=#modifiedBy# 
+		WHERE sl_lead_id = #slLeadId#
+		AND lead_note_id=#leadNoteId#
+		AND role_id=#roleId#
+	</update>
+	
+	<select id="leadsmanagement.validateLeadNoteIdForLeadId" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+	   SELECT  lead_note_id    
+        FROM    lead_notes 
+        WHERE  lead_note_id = #noteId#
+        AND    sl_lead_id = #leadId#     
+        AND role_id =#role#
+        AND entity_id=#firmId#
+   </select> 
+   <select id="leadsmanagement.getProviderRating" parameterClass="java.lang.Integer"
+		resultClass="java.lang.Double">
+		SELECT AVG(srh.overall_score) AS rating,sh.accepted_vendor_id AS
+		firmId
+		FROM survey_response_hdr srh ,
+		survey_response_so srs, so_hdr sh
+		WHERE sh.accepted_resource_id =#resourceId#
+		AND srs.so_id=sh.so_id
+		AND srh.entity_type_id=10
+		AND srh.response_hdr_id=srs.response_hdr_id GROUP BY
+		sh.accepted_resource_id
+	</select> 
+	<select id="leadsmanagement.getDetailsForScheduleMail" parameterClass="scheduleReqVO"
+		resultClass="scheduleMailVO">
+          SELECT  lsc.service_category_description AS leadCategory,
+		        slh.skill                        AS skill,
+	            lsm.client_project_type          AS service,
+	            slci.street_1 		     AS street1,
+	            slci.street_2 		     AS street2,
+	            slci.city 			     AS serviceCity,
+	            slci.zip 			     AS serviceZip,
+	            slci.state_cd 		     AS serviceState,
+	            slci.swyr_mem_id                 AS SWYRID,
+	            CONCAT( vc.first_name,' ', vc.last_name) AS firmOwner,	            
+	            vc.mobile_no      	             AS firmMobileNo,	
+	            l.city AS firmCity,
+		        l.state_cd AS firmState  ,           
+	            slh.sl_lead_id AS leadId,
+        	    slh.secondary_projects AS additionalProjects,
+                slh.project_description AS projectDescription,
+        	    lsm.lms_project_type_description AS projectType,
+        	    slci.first_name AS custFirstName,
+        	    slci.last_name AS  custLastName,       
+        	    slci.email AS  custEmail,
+        	    vr.vendor_id AS firmId,       
+                v.business_name AS firmName,
+        	    vc.email AS firmEmail,
+        	    vc.phone_no AS firmPhoneNo
+        FROM lead_hdr slh,lead_contact_information slci ,lead_service_mapping lsm,
+            vendor_resource vr ,contact vc ,vendor_hdr v  ,lead_service_category lsc   ,vendor_location vl ,location l    
+        WHERE slh.sl_lead_id =#leadId#
+        AND  slh.sl_lead_id=slci.sl_lead_id           
+        AND slh.client_project_type_id=lsm.client_project_id       
+        AND vr.vendor_id = #vendorId# AND vr.primary_ind=1
+        AND lsm.service_category_id=lsc.service_category_id
+      	AND vr.vendor_id =v.vendor_id 
+        AND vr.contact_id = vc.contact_id  
+        AND v.vendor_id = vl.vendor_id
+	AND vl.locn_id = l.locn_id AND l.locn_type_id = 1          
+	</select>
+		<select id="leadsmanagement.getProviderImageDocument" parameterClass="java.lang.String" resultClass="documentVO">
+	    SELECT   vd.resource_id AS vendorId, 
+	       		 vd.document_id AS documentId, 
+	      		 d.format AS format, 				
+	      		 d.doc_path AS docPath				
+	    FROM vendor_resource_document vd, document d
+		WHERE vd.resource_id = #value#
+		AND vd.primary_ind = 1
+		AND vd.document_id =d.document_id 
+	</select> 
+	
+	
+	<select id="leadsmanagement.getInactiveVendors" resultClass="java.util.HashMap">
+	   SELECT  vendor_id,lms_partner_id FROM vendor_lead_profile WHERE lead_new_t_c_ind!=1
+	</select>
+	
+	<select id="leadsmanagement.getInactiveVendorsList" resultClass="java.lang.Integer">
+		SELECT  vendor_id FROM vendor_lead_profile WHERE lead_new_t_c_compliance_status='INACTIVE'
+	</select> 
+	
+	
+	<update id="leadsmanagement.updateVendor">
+	UPDATE vendor_lead_profile SET lead_new_t_c_compliance_status='INACTIVE' WHERE lead_new_t_c_ind!=1
+	</update>
+	
+	
+	<select id="leadsmanagement.getProviderInfo.query" parameterClass="java.lang.String" resultClass="providerInfoVO">
+			
+			
+				SELECT sl.vendor_id AS providerId,
+				v.resource_id AS resourceId,
+				CONCAT (c.first_name,' ', c.last_name)AS fullName ,
+				lu.firm_status AS firmStatus,
+			
+				CONCAT(l.street_1,' ',l.street_2,' ',l.city,' ',l.state_cd,' ',l.zip) AS address,
+				c.phone_no AS phoneNo,
+				c.mobile_no AS mobileNo,
+				c.email AS email,
+				vh.business_name AS businessName,
+				lh.modified_date AS modifiedDate
+			
+				FROM lead_matched_firm sl
+				JOIN lead_hdr lh ON lh.sl_lead_id = sl.sl_lead_id
+				JOIN vendor_resource v ON sl.vendor_id = v.vendor_id AND v.primary_ind = 1
+				JOIN contact c ON v.contact_id = c.contact_id
+				JOIN lu_lead_firm_status lu ON sl.lead_firm_status = lu.lu_lead_firm_status_id
+				JOIN vendor_location vl ON sl.vendor_id = vl.vendor_id
+				JOIN vendor_hdr vh ON vl.vendor_id = vh.vendor_id
+				JOIN location l ON l.locn_id = vl.locn_id AND l.locn_type_id = 1
+				WHERE sl.sl_lead_id = #leadId# ORDER BY lu.lu_lead_firm_status_id
+		  
+    </select>
+	<select id="leadsmanagement.getCancelledProviderInfo.query" parameterClass="java.lang.String" resultClass="providerInfoVO">
+			
+			
+				SELECT sl.vendor_id AS providerId,
+			
+				CONCAT (c.first_name,' ', c.last_name)AS fullName ,
+				lu.firm_status AS firmStatus,
+			
+				CONCAT(l.street_1,' ',l.street_2,' ',l.city,' ',l.state_cd,' ',l.zip) AS address,
+				c.phone_no AS phoneNo,
+				c.mobile_no AS mobileNo,
+				c.email AS email,
+				vh.business_name AS businessName,
+				lh.modified_date AS modifiedDate
+			
+				FROM lead_matched_firm sl
+				JOIN lead_hdr lh ON lh.sl_lead_id = sl.sl_lead_id
+				JOIN vendor_resource v ON sl.vendor_id = v.vendor_id AND v.primary_ind = 1
+				JOIN contact c ON v.contact_id = c.contact_id
+				JOIN lu_lead_firm_status lu ON sl.lead_firm_status = lu.lu_lead_firm_status_id
+				JOIN vendor_location vl ON sl.vendor_id = vl.vendor_id
+				JOIN vendor_hdr vh ON vl.vendor_id = vh.vendor_id
+				JOIN location l ON l.locn_id = vl.locn_id AND l.locn_type_id = 1
+				WHERE sl.sl_lead_id = #leadId# 
+				AND   sl.lead_firm_status=5
+				ORDER BY lu.lu_lead_firm_status_id
+		  
+    </select> 
+     <select id="leadsmanagement.getProviderCancelLeadReasonMap" resultMap="blMap" parameterClass="java.util.Map">
+	     SELECT * FROM lu_lead_reason_codes where reason_code_type= #reasonType# and role= #roleType#
+	</select>
+	<select id="leadsmanagement.getCustomerCancelLeadReasonMap" resultMap="blMap" parameterClass="java.util.Map">
+	     SELECT * FROM lu_lead_reason_codes where reason_code_type= #reasonType# and role= #roleType#
+	</select>
+		<select id="leadsmanagement.getLeadDetailsForRewardPoints" parameterClass="java.lang.String" resultClass="leadInfo">
+	    SELECT h.sl_lead_id AS slLeadId,lc.swyr_reward AS rewardPoints,lul.lead_status AS leadWfStatus FROM
+             lu_lead_status lul,lead_hdr h,lead_contact_information lc
+        WHERE h.sl_lead_id =#value#
+        AND h.sl_lead_id = lc.sl_lead_id 
+        AND h.lead_wf_status=lul.lu_lead_status_id
+	</select>
+	<select id="leadsmanagement.getCompleteMailDetails" parameterClass="java.util.HashMap" resultClass="completeLeadsVO">
+	SELECT
+		    slh.sl_lead_id 		     AS leadId,
+		    slh.skill                        AS skill,
+	            lsm.client_project_type          AS service,	                  
+	            slci.first_name                  AS customerFirstName,
+	            slci.last_name 		     AS customerLastName,
+	            slci.email 			     AS customerEmail,
+	            slci.street_1 		     AS street1,
+	            slci.street_2 		     AS street2,
+	            slci.city 			     AS serviceCity,
+	            slci.zip 			     AS serviceZip,
+	            slci.state_cd 		     AS serviceState,
+	            slci.swyr_mem_id         AS SWYRID,
+	            v.business_name		     AS firmName,
+	            cp.first_name          	 AS providerName,
+	            cp.last_name 		     AS providerLastName	            
+	     FROM lead_hdr slh 
+	     JOIN lead_service_mapping  lsm      ON   slh.client_project_type_id=lsm.client_project_id
+	     JOIN lead_contact_information slci ON  slh.sl_lead_id=slci.sl_lead_id	  
+	     JOIN vendor_hdr v ON v.vendor_id = #firmid#     
+	     JOIN vendor_resource vrp ON  vrp.resource_id=#resourceid#
+	     JOIN contact cp ON   vrp.contact_id=cp.contact_id 
+	     WHERE slh.sl_lead_id =#leadid# 
+	</select>
+	<select id="leadsmanagement.getBuyerName" parameterClass="java.lang.Integer" resultClass="leadHistoryVO">
+		SELECT c.first_name AS buyerFirstName,c.last_name AS buyerLastName
+    	FROM contact c ,buyer b  WHERE b.buyer_id=#value# and b.contact_id=c.contact_id
+    </select>
+    <select id="leadsmanagement.getBusinessNameOfVendor" parameterClass="java.lang.Integer" resultClass="java.lang.String">
+		SELECT vh.business_name AS businessName FROM vendor_hdr vh WHERE vh.vendor_id=#value#
+    </select>
+    <select id="leadsmanagement.filterFirmsWithLeadProfileAndPrice"
+		parameterClass="fetchProviderFirmRequest" resultClass="ratingVO">
+		SELECT  vlp.vendor_id AS firmId
+		FROM vendor_lead_profile vlp
+			JOIN vendor_lead_service_price vlsp ON vlsp.vendor_id=vlp.vendor_id
+			JOIN lead_service_mapping lsm ON lsm.service_mapping_id=vlsp.service_mapping_id
+		WHERE vlp.vendor_id IN 
+		<isNotEmpty property="firmIdList" prepend="  ">
+			<iterate property="firmIdList" open="(" close=")" conjunction=",">
+				#firmIdList[]#
+			</iterate>
+		</isNotEmpty>
+		AND lsm.client_project_id=#primaryProject#
+		AND vlsp.exclusive_price IS NOT NULL
+		AND vlsp.competitive_price IS NOT NULL
+		AND vlp.wf_state_id=303
+		ORDER BY vlp.vendor_id
+	</select>
+    <select id="leadsmanagement.validateBuyerId" parameterClass = "java.lang.Integer" resultClass= "java.lang.Integer" >
+        SELECT buyer_id FROM buyer WHERE buyer_id = #value#
+    </select>
+    <select id="leadsmanagement.validateLeadBuyerAssociation" parameterClass = "java.util.HashMap" resultClass= "java.lang.Integer" >
+        SELECT buyer_id FROM lead_hdr WHERE sl_lead_id=#slLeadId# AND buyer_id=#buyerId#
+    </select> 
+    <select id="leadsmanagement.leadCustomerDetails" parameterClass = "java.lang.String" resultClass= "leadCustomerDetailsVO" >
+        SELECT 
+	     		first_name AS firstName,
+	     		last_name AS lastName,
+	     		mi AS middleName,
+	     		phone_no AS phone,
+	     		email AS email,
+	     		COALESCE(CONCAT (street_1,' ',street_2),street_1,street_2) AS street,
+	     		apt_no AS aptNo,
+	     		city AS city,
+	     		state_cd AS state,
+	     		zip AS zip
+		FROM lead_contact_information WHERE sl_lead_id = #slLeadId#
+	</select> 
+	
+	<select id="leadsmanagement.getLeadProviderDetails"
+		parameterClass="java.lang.String" resultClass="ratingVO">
+		SELECT v.vendor_id AS firmId,
+		COALESCE(CONCAT(c.first_name,' ',c.last_name),c.first_name,c.last_name) AS firmOwner,
+		v.business_name AS firmName,
+		v.business_start_date AS businessStartDate,
+		l.zip AS zip, 
+		l.city AS city,
+		l.state_cd AS state,
+		c.email AS email,
+		c.phone_no AS phoneNo,
+		COALESCE(CONCAT(l.street_1,' ',l.street_2),l.street_1,l.street_2) AS address,
+		lul.descr AS locationTypeDesc
+		FROM vendor_hdr v,contact c, lead_matched_firm pr, vendor_location vr, vendor_resource vrc,
+		location l,lu_location_type lul
+		WHERE vrc.contact_id = c.contact_id
+		AND v.vendor_id = vrc.vendor_id
+		AND vrc.primary_ind = 1
+		AND v.vendor_id = pr.vendor_id AND v.vendor_id = vr.vendor_id
+		AND vr.locn_id = l.locn_id AND l.locn_type_id = 1
+		AND l.locn_type_id = lul.id 
+		AND pr.sl_lead_id = #slLeadId#
+	</select>
+	
+	
+	<!-- BB2c changes -->
+	<select id="leadsmanagement.isLeadNonLaunchSwitch" resultClass="java.lang.String">
+		SELECT app_value FROM application_properties WHERE app_key = 'lead_non_launch_zip_switch'
+    </select>
+    
+    <select id="leadsmanagement.validateAllZip" parameterClass="java.lang.String"
+		resultClass="java.lang.String">
+		SELECT COUNT(1) FROM zip_geocode p WHERE p.zip = #value#;
+	</select>
+	
+	<select id="leadsmanagement.getFirms" parameterClass = "fetchProviderFirmRequestV2" resultClass="java.lang.Integer">
+		SELECT 
+			DISTINCT(vh.vendor_id)
+		FROM resource_skill rs
+			JOIN vendor_resource vr ON rs.resource_id=vr.resource_id
+				AND vr.wf_state_id = 6 
+				AND vr.resource_ind = 1
+				AND vr.mkt_place_ind = 1
+			JOIN vendor_hdr vh ON vh.vendor_id = vr.vendor_id 
+				AND vh.wf_state_id IN (3,26,34)
+			JOIN skill_tree st ON st.node_id=rs.node_id
+			JOIN resource_skill_service_type rt ON rt.resource_skill_id=rs.resource_skill_id
+			JOIN lu_service_type_template t ON t.service_type_template_id=rt.service_type_template_id
+			JOIN vendor_resource_location l ON (vr.locn_id = l.locn_id)
+            AND INTERSECTS(l.location, GEOMFROMTEXT(
+                 CONCAT('POLYGON((',
+                    #locationVO.latitude# - (#distance# / 68),' ',#locationVO.longitude# - (#distance# / 34),',',
+                    #locationVO.latitude# + (#distance# / 68),' ',#locationVO.longitude# - (#distance# / 34),',',
+                    #locationVO.latitude# + (#distance# / 68),' ',#locationVO.longitude# + (#distance# / 34),',',
+                    #locationVO.latitude# - (#distance# / 68),' ',#locationVO.longitude# + (#distance# / 34),',',
+                    #locationVO.latitude# - (#distance# / 68),' ',#locationVO.longitude# - (#distance# / 34),'))'
+            )  )  )
+		WHERE st.node_id IN (#slNodeId#)		
+		<isEqual property="skill" compareValue="INSTALL|REPAIR">
+			AND t.descr IN ('Installation', 'Repair') 
+		</isEqual>
+		<isEqual property="skill" compareValue="INSTALL">
+			AND t.descr = 'Installation' 
+		</isEqual>
+		<isEqual property="skill" compareValue="REPAIR">
+			AND t.descr = 'Repair' 
+		</isEqual>
+		AND TRUNCATE(3956.5450000 * 2 * ATAN2(
+			SQRT(SIN(RADIANS(l.gis_latitude - #locationVO.latitude#) /2)
+			* SIN(RADIANS(l.gis_latitude - #locationVO.latitude#) /2) +
+			COS(RADIANS(#locationVO.latitude#)) * COS(RADIANS(l.gis_latitude))
+			* SIN((RADIANS(l.gis_longitude - #locationVO.longitude#)) /2)
+			* SIN((RADIANS(l.gis_longitude - #locationVO.longitude#)) /2)),
+			SQRT(1 - SIN(RADIANS(l.gis_latitude - #locationVO.latitude#) /2)
+			* SIN(RADIANS(l.gis_latitude - #locationVO.latitude#) /2) +
+			COS(RADIANS(#locationVO.latitude#)) * COS(RADIANS(l.gis_latitude))
+			* SIN((RADIANS(l.gis_longitude - #locationVO.longitude#)) /2)
+			* SIN((RADIANS(l.gis_longitude - #locationVO.longitude#)) /2))),2)  <![CDATA[ <= ]]> #distance#
+	</select>
+	
+	<select id="leadsmanagement.getFirmIds" parameterClass="java.util.List"
+		resultClass="java.lang.String">
+		SELECT vendor_id FROM vendor_hdr WHERE wf_state_id = 34 AND vendor_id IN
+		<iterate open="(" close=")" conjunction=",">
+			#[]#
+		</iterate>
+	</select>
+	
+	<select id="leadsmanagement.getPostFirmIds" parameterClass="java.lang.String"
+		resultClass="java.lang.String">
+		SELECT vendor_id FROM lead_post_response WHERE sl_lead_id = #value#
+	</select>
+	
+	<select id="leadsmanagement.getMatchedFirmIds" parameterClass="java.lang.String"
+		resultClass="java.lang.String">
+		SELECT vendor_id FROM lead_matched_firm WHERE sl_lead_id = #value#
+	</select>
+	
+	<select id="leadsmanagement.getProvidersMatchingForLead.v2"
+		parameterClass="fetchProviderFirmRequestV2" resultClass="providerDetailsVO">
+		SELECT DISTINCT vr.resource_id AS providerId,
+		vr.vendor_id AS firmId,
+		l.city AS city,
+		l.state_cd AS state,
+		ifnull(TRUNCATE(3956.5450000 * 2 * ATAN2(
+		SQRT(SIN(RADIANS(l.gis_latitude - #locationVO.latitude#) /2)
+		* SIN(RADIANS(l.gis_latitude - #locationVO.latitude#) /2) +
+		COS(RADIANS(#locationVO.latitude#)) * COS(RADIANS(l.gis_latitude))
+		* SIN((RADIANS(l.gis_longitude - #locationVO.longitude#)) /2)
+		* SIN((RADIANS(l.gis_longitude - #locationVO.longitude#)) /2)),
+		SQRT(1 - SIN(RADIANS(l.gis_latitude - #locationVO.latitude#) /2)
+		* SIN(RADIANS(l.gis_latitude - #locationVO.latitude#) /2) +
+		COS(RADIANS(#locationVO.latitude#)) * COS(RADIANS(l.gis_latitude))
+		* SIN((RADIANS(l.gis_longitude - #locationVO.longitude#)) /2)
+		* SIN((RADIANS(l.gis_longitude - #locationVO.longitude#)) /2))),2) ,10000) as
+		distanceFromZipInMiles
+		FROM vendor_hdr vh
+		left JOIN vendor_resource vr ON vh.vendor_id = vr.vendor_id 
+		<!--AND vr.wf_state_id = 6 AND vr.resource_ind = 1 AND vr.mkt_place_ind = 1-->
+		left JOIN contact c ON vr.contact_id=c.contact_id
+		left JOIN vendor_resource_location l ON (vr.locn_id = l.locn_id)
+		WHERE
+		<isNotEmpty property="firmIds" prepend="  ">
+			vh.vendor_id IN
+			<iterate property="firmIds" open="(" close=")" conjunction=",">
+				#firmIds[]#
+			</iterate>
+		</isNotEmpty>
+		ORDER BY vr.vendor_id
+	</select>
+	
+	<select id="leadsmanagement.validatePrimaryProject.v2"
+		parameterClass="java.lang.String" resultClass="fetchProviderFirmRequestV2">
+		SELECT m.sl_node_id AS
+		slNodeId,CONCAT(m.lms_project_type_description,'|',lsc.service_category_description)
+		AS lmsProjectDescription,lsc.service_category_description
+		AS leadCategory FROM lead_service_mapping m,lead_service_category lsc
+		WHERE m.client_project_id =#value# AND m.service_category_id =
+		lsc.service_category_id;
+	</select>
+	
+	<select id="leadsmanagement.getPostResponseAndContactInfo.v2"
+		parameterClass="newLeadRequest" resultClass="ratingVO">
+		SELECT v.vendor_id AS firmId,
+		CONCAT(c.first_name,' ',c.last_name) AS firmOwner,
+		v.business_name AS firmName,
+		v.business_start_date AS businessStartDate,
+		l.zip AS zip, pr.sl_vendor_rating AS rating,
+		l.city AS city,
+		l.state_cd AS state,
+		c.email AS email,
+		c.phone_no AS phoneNo,
+		CONCAT(l.street_1,' ',l.street_2) AS address,
+		pr.rank as providerFirmRank
+		FROM vendor_hdr v,contact c, lead_post_response pr, vendor_location vr, vendor_resource vrc,
+		location l
+		WHERE vrc.contact_id = c.contact_id
+		AND v.vendor_id = vrc.vendor_id
+		AND vrc.primary_ind=1
+		AND v.vendor_id = pr.vendor_id AND v.vendor_id = vr.vendor_id
+		AND vr.locn_id = l.locn_id AND l.locn_type_id = 1
+		AND v.vendor_id IN
+		<iterate property="firmIds.firmId" open="(" close=")"
+			conjunction=",">
+			#firmIds.firmId[]#
+		</iterate>
+		AND pr.sl_lead_id = #leadId#
+
+
+	</select>
+	
+	
+	
+	<insert id="insertEmployees.query" parameterClass="employee" >
+	   insert into is_employees
+	   (employee_user_id, deleted, name_prefix, employee_name, title, username, 
+	   birthdate, reports_to_user_id, reports_to_name, assistant_user_id, assistant_name, 
+	   employee_identifier, system_identifier, color, company_settings, team, divisions, 
+	   warn_on_exit, phone, home_phone, mobile_phone, other_phone, fax, email, website, 
+	   time_zone, zones, page_permission, start_page, default_results_per_page, smtp_email_username, 
+	   creator_user_id, Created_by, date_created, modified_user_id, modified_by, date_modified, Address_1, 
+	   Address_2, city, state, zip, Country
+	   )
+   values
+   		(#employee_user_id#, #deleted#, #name_prefix#, #employee_name#, #title#, #username#, 
+   		#birthdate#, #reports_to_user_id#, #reports_to_name#, #assistant_user_id#, #assistant_name#, 
+   		#employee_identifier#, #system_identifier#, #color#, #company_settings#, #team#, #divisions#, 
+   		#warn_on_exit#, #phone#, #home_phone#, #mobile_phone#, #other_phone#, #fax#, #email#, #website#,
+   		#time_zone#, #zones#, #page_permission#, #start_page#, #default_results_per_page#, #smtp_email_username#, 
+   		#creator_user_id#, #created_by#, #date_created#, #modified_user_id#, #modified_by#, #date_modified#, #address_1#,
+   	    #address_2#, #city#, #state#, #zip#, #country#)
+	</insert>
+	
+	
+	<insert id="insertCampaigns.query" parameterClass="campaign" >
+	   insert into is_campaigns (campaign_id, deleted, campaign_name, start_date, of_Ports, caller_id,
+	   allow_lead_routing, skill, default_email, default_fax, pacing_factor, minutes_between_calls,
+	   description, lead_sources, attendees)
+	   values
+	   (#campaign_id#, #deleted#, #campaign_name#, #start_date#, #of_Ports#, #caller_id#,
+	   #allow_lead_routing#, #skill#, #default_email#, #default_fax#, #pacing_factor#, #minutes_between_calls#,
+	   #description#, #lead_sources#, #attendees#)
+	</insert>
+	
+	<insert id="insertCDRs.query" parameterClass="cdr" >
+	   insert into is_cdr (cdr_id, impression_id, lead_id, contact_id, ani, dnis, call_time, bill_duration, 
+	   bill, employee_id, Called_Lead_Contact, origin, call_leg, call_origin) 
+	   values
+	   (#cdr_id#, #impression_id#, #lead_id#, #contact_id#, #ani#, #dnis#, #call_time#, #bill_duration#, #bill#, #employee_id#,#called_lead_contact#, #origin#, #call_leg#, #call_origin#)
+	</insert>
+	
+	
+	<insert id="insertImpressions.query" parameterClass="imp" >
+	insert into is_impressions (impression_id,lead_id,contactt_id,Time_stamp,employee_id,called_lead_contact,Type,
+	source,task_type_id,call_duration,total_talk_time,total_ring_time,dial_attempt,phone,dialer_initiative_id,dialer_initiative_name,call_date_time,call_subject,call_description,
+	call_result,call_type,recording_url,cdr_id,impression_type_id,task_id)
+	values 
+	(#impression_id#,#lead_id#,#contactt_id#,#time_stamp#,#employee_id#,#called_lead_contact#,#type#,#source#,
+	#task_type_id#,#call_duration#,#total_talk_time#,#total_ring_time#,#dial_attempt#,#phone#,#dialer_initiative_id#,#dialer_initiative_name#,#call_date_time#,#call_subject#,#call_description#,
+	#call_result#,#call_type#,#recording_url#,#cdr_id#,#impression_type_id#,#task_id#)
+	</insert>
+	
+	<select id="getCdrId.query" resultClass="java.lang.Integer">
+		SELECT MAX(cdr_id) FROM is_cdr
+    </select>
+    
+    <select id="getImressionId.query" resultClass="java.lang.Integer">
+		SELECT MAX(impression_id) FROM is_impressions
+    </select>
+    
+    <select id="getCmpId.query" resultClass="java.lang.Integer">
+		SELECT MAX(campaign_id) FROM is_campaigns
+    </select>
+    
+    <select id="getEmpId.query" resultClass="java.lang.Integer">
+		SELECT MAX(employee_user_id) FROM is_employees
+    </select>
+	
+	
+	<delete id="truncateEmployees.delete" parameterClass="java.lang.Integer">
+	   DELETE FROM is_employees
+	</delete> 
+	<delete id="truncateCampaigns.delete" parameterClass="java.lang.Integer">
+	   DELETE FROM is_campaigns
+	</delete> 
+	<delete id="truncateCDR.delete" parameterClass="java.lang.Integer">
+	   DELETE FROM is_cdr
+	</delete> 
+	<delete id="truncateImpressions.delete" parameterClass="java.lang.Integer">
+	   DELETE FROM is_impressions
+	</delete> 
+</sqlMap>

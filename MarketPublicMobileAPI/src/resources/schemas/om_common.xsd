@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:c="http://www.servicelive.com/namespaces/om_common" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" elementFormDefault="qualified" jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+	<xs:complexType name="ServiceOrderListType">
+	<xs:sequence>  
+    	 	<xs:element name="soDetail" type="ServiceOrderType" minOccurs="0" maxOccurs="unbounded"></xs:element>
+     	</xs:sequence>  
+	</xs:complexType>
+	
+	<xs:complexType name="ServiceOrderType">
+	<xs:sequence>
+			<xs:element name="soId" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="groupInd" type="xs:boolean" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="childSOList" type="childOrderList" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="childBidSoList" type="childBidOrderList" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="parentGroupId" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>	
+			<xs:element name="parentGroupTitle" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>	
+			<xs:element name="groupCreatedDate" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>	
+			<xs:element name="routedDate" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="groupSpendLimitLabor" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>	
+			<xs:element name="groupSpendLimitParts" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>	
+			<xs:element name="bidMinSpendLimit" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>			
+			<xs:element name="bidMaxSpendLimit" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>			
+			<xs:element name="groupSpendLimit" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>			
+			<xs:element name="buyerID" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="priceModel" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="buyerCompanyName" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="buyerRoleId" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="acceptedResourceId" type="xs:integer" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="soTitle" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="soTitleDesc" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="reSchedStartDate" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>	
+			<xs:element name="appointStartDate" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>	
+			<xs:element name="appointEndDate" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>	
+			<xs:element name="serviceTimeStart" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>	
+			<xs:element name="serviceTimeEnd" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="createdDate" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>	
+			<xs:element name="spendLimit" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>	
+			<xs:element name="spendLimitParts" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>	
+			<xs:element name="finalPartsPrice" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>	
+			<xs:element name="finalLaborPrice" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>	
+			<xs:element name="soStatus" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="serviceLocationTimezone" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="soStatusString" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="soSubStatus" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="soSubStatusString" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="assignmentType" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="street1" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="street2" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="city" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="state" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="zip" type="xs:string" maxOccurs="unbounded"/>
+			<xs:element name="dlsFlag" type="xs:string" maxOccurs="unbounded"/>
+			<xs:element name="endCustomerPrimaryPhoneNumber" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="endCustomerAlternatePhoneNumber" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="endCustomerFirstName" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="endCustomerLastName" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="resourceId" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="routedResourceId" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="providerResponseId" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="routedResourceFirstName" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="routedResourceLastName" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="sealedBidInd" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="soAttribute" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="acceptanceMethod" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="vendorId" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="followUpFlag" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="routedProviders" type="ProviderList" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="soLocnNotes" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="scope" type="ScopeList" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="scheduleStatus" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="partStreet1" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="partStreet2" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="partCity" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="partState" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="partZip" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="availabilityDate" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="problemReportedBy" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="problemType" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="problemReportedDate" type="xs:date" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="preCallAttemptedDate" type="xs:date" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="jobDoneOn" type="xs:date" minOccurs="0" maxOccurs="unbounded"/>	
+			<xs:element name="rescheduleRole" type="xs:integer" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="primaryExtension" type="xs:string" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+			<xs:element name="alternateExtension" type="xs:string" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+			<xs:element name="resheduleStartDate" type="xs:string" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+			<xs:element name="resheduleEndDate" type="xs:string" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+			<xs:element name="resheduleStartTime" type="xs:string" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+			<xs:element name="resheduleEndTime" type="xs:string" minOccurs="0" maxOccurs="unbounded" nillable="true"/>		
+			</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="childOrderList">
+	 <xs:sequence>  
+    	 	<xs:element name="soDetail" type="ServiceOrderType" minOccurs="0" maxOccurs="unbounded"></xs:element>
+     	</xs:sequence>  
+	</xs:complexType>
+	
+	<xs:complexType name="childBidOrderList">
+	 <xs:sequence>  
+    	 	<xs:element name="childBidOrder" type="childBidOrderType" minOccurs="0" maxOccurs="unbounded"></xs:element>
+     	</xs:sequence>  
+	</xs:complexType>
+	
+	<xs:complexType name="childBidOrderType">
+	 <xs:sequence>  
+    	 	<xs:element name="soId" type="xs:string" minOccurs="0" maxOccurs="unbounded"></xs:element>
+     	    <xs:element name="soTitle" type="xs:string" minOccurs="0" maxOccurs="unbounded"></xs:element>
+     	    <xs:element name="soTitleDesc" type="xs:string" minOccurs="0" maxOccurs="unbounded"></xs:element>
+     	    <xs:element name="resourceId" type="xs:integer" minOccurs="0" maxOccurs="unbounded"></xs:element>
+     	    <xs:element name="providerFirstName" type="xs:string" minOccurs="0" maxOccurs="unbounded"></xs:element>
+     	    <xs:element name="providerLastName" type="xs:string" minOccurs="0" maxOccurs="unbounded"></xs:element>
+     	    <xs:element name="spendLimit" type="xs:string" minOccurs="0" maxOccurs="unbounded"></xs:element>
+     	    <xs:element name="offerExpirationDate" type="xs:string" minOccurs="0" maxOccurs="unbounded"></xs:element>
+     		<xs:element name="respId" type="xs:integer" minOccurs="0" maxOccurs="unbounded"/>
+     	</xs:sequence>  
+	</xs:complexType>
+	
+	
+	<!-- Filter List  -->
+	
+	<xs:complexType name="MarketFilterListType">
+	 <xs:sequence>  
+    	 	<xs:element name="markets" type="FilterList" minOccurs="0" maxOccurs="unbounded"></xs:element>
+     	</xs:sequence>  
+	</xs:complexType>
+	
+	<xs:complexType name="ProviderFilterListType">
+		 <xs:sequence>  
+	    	 	<xs:element name="providers" type="FilterList" minOccurs="0" maxOccurs="unbounded"></xs:element>
+	     	</xs:sequence>  
+	</xs:complexType>
+	
+	<xs:complexType name="StatusFilterListType">
+			 <xs:sequence>  
+		    	 	<xs:element name="status" type="FilterList" minOccurs="0" maxOccurs="unbounded"></xs:element>
+		     	</xs:sequence>  
+	</xs:complexType>
+	
+	<xs:complexType name="SubstatusFilterListType">
+				 <xs:sequence>  
+			    	 	<xs:element name="substatus" type="FilterList" minOccurs="0" maxOccurs="unbounded"></xs:element>
+			     	</xs:sequence>  
+	</xs:complexType>
+	
+	<xs:complexType name="ScheduleFilterListType">
+					 <xs:sequence>  
+				    	 	<xs:element name="schedulestatus" type="FilterList" minOccurs="0" maxOccurs="unbounded"></xs:element>
+				     	</xs:sequence>  
+	</xs:complexType>
+	
+	
+	<xs:complexType name="FilterList">
+	  <xs:sequence>	
+    	<xs:element name="id" type="xs:integer" minOccurs="0" maxOccurs="unbounded"/>
+     	 <xs:element name="descr" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence> 
+	</xs:complexType>
+	
+	<xs:complexType name="ScopeList">
+	 <xs:sequence> 
+    	<xs:element name="serviceType" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    	<xs:element name="primaryTask" type="xs:boolean" minOccurs="0" maxOccurs="unbounded"/>
+    	<xs:element name="priceChangedInd" type="xs:boolean" minOccurs="0" maxOccurs="unbounded"/>
+     </xs:sequence> 
+	</xs:complexType>
+	
+	<xs:complexType name="ProviderList">
+	 <xs:sequence> 
+    	<xs:element name="id" type="xs:integer" minOccurs="0" maxOccurs="unbounded"/>
+    	<xs:element name="firstName" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    	<xs:element name="lastName" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    	<xs:element name="respId" type="xs:integer" minOccurs="0" maxOccurs="unbounded"/>
+    	<xs:element name="spendLimit" type="xs:string" minOccurs="0" maxOccurs="unbounded"></xs:element>
+     	<xs:element name="offerExpirationDate" type="xs:string" minOccurs="0" maxOccurs="unbounded"></xs:element>
+     	<xs:element name="soId" type="xs:string" minOccurs="0" maxOccurs="unbounded"></xs:element>
+     </xs:sequence> 
+	</xs:complexType>	
+	
+	<xs:complexType name="ListType">
+		 <xs:sequence>  
+      <xs:element name="data" type="xs:string" minOccurs="0"   
+                                            maxOccurs="unbounded"/>  
+     </xs:sequence>  
+	</xs:complexType>
+	
+	
+	<xs:complexType name="IdentificationType">
+		<xs:sequence>		
+			<xs:element name="id" type="xs:integer" />  
+		</xs:sequence>
+		<xs:attribute name="type" type="identificationEnum" use="required"/>
+	</xs:complexType>	
+	<xs:simpleType name="identificationEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="BuyerResourceId"/>
+			<xs:enumeration value="ProviderResourceId"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<!-- Appointment Type  -->
+	<xs:simpleType name="appointmentTypeEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Today"/>
+			<xs:enumeration value="Tomorrow"/>
+			<xs:enumeration value="2days"/>
+			<xs:enumeration value="3days"/>
+			<xs:enumeration value="range"/>
+		</xs:restriction>
+	</xs:simpleType>	
+	
+	<xs:complexType name="reasonListType">
+		 <xs:sequence>  
+      <xs:element name="reason" type="reasonType" minOccurs="0"   
+                                            maxOccurs="unbounded"/>  
+     </xs:sequence>  
+	</xs:complexType>
+	<xs:complexType name="reasonType">
+			<xs:sequence>
+				<xs:element name="reasonCodeId" type="xs:integer"/>
+				<xs:element name="reasonCode" type="xs:string"></xs:element>
+			</xs:sequence>			
+	</xs:complexType>
+	<xs:complexType name="providerType">
+		<xs:sequence>
+			<xs:element name="resourceName" type="xs:string"></xs:element>
+			<xs:element name="resourceId" type="xs:string"></xs:element>	
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

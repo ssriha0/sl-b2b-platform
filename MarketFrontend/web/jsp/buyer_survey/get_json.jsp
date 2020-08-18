@@ -1,0 +1,1 @@
+${buyerSurveyDTO.templateResponse}

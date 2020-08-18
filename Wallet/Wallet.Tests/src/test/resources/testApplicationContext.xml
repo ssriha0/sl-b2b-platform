@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-2.0.xsd">
+
+    <bean id="com.servicelive.wallet.tests.placeholderConfig"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+			<value>classpath:/bootstrap.dev.properties</value>
+		</property>
+	</bean>
+    
+	<bean id="dataSourceMySQL" class="com.mysql.jdbc.jdbc2.optional.MysqlDataSource" lazy-init="true">
+		<property name="url">
+			<value>${datasource.jdbc.main.url}</value>
+		</property>
+		<property name="user">
+			<value>${datasource.jdbc.main.user}</value>
+		</property>
+		<property name="password">
+			<value>${datasource.jdbc.main.password}</value>
+		</property>
+	</bean>
+	
+	<bean id="dataSourceSecureMySQL" class="com.mysql.jdbc.jdbc2.optional.MysqlDataSource" lazy-init="true">
+		<property name="url">
+			<value>${datasource.jdbc.secure.url}</value>
+		</property>
+		<property name="user">
+			<value>${datasource.jdbc.secure.user}</value>
+		</property>
+		<property name="password">
+			<value>${datasource.jdbc.secure.password}</value>
+		</property>
+	</bean>		
+	
+	<bean id="dataSourceMySQLFinance"
+		class="com.mysql.jdbc.jdbc2.optional.MysqlDataSource">
+		<property name="url">
+			<value>${datasource.jdbc.finance.url}?jdbcCompliantTruncation=false</value>
+		</property>
+		<property name="user">
+			<value>${datasource.jdbc.finance.user}</value>
+		</property>
+		<property name="password">
+			<value>${datasource.jdbc.finance.password}</value>
+		</property>
+	</bean>
+	
+	<bean id="transactionManagerMySQL"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource">
+			<ref bean="dataSourceMySQL" />
+		</property>
+	</bean>
+
+	<bean id="dsTransactionManagerFinance"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource">
+			<ref bean="dataSourceMySQLFinance" />
+		</property>
+	</bean>
+	
+	<bean id="attributeSource" 
+	    class="org.springframework.transaction.interceptor.MatchAlwaysTransactionAttributeSource">
+	    <property name="transactionAttribute">
+	    		<value>PROPAGATION_REQUIRED,ISOLATION_DEFAULT,-Exception</value>
+	    </property>
+	</bean>
+	
+</beans>

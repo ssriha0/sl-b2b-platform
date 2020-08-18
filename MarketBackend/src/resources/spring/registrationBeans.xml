@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	
+	
+	<!-- Start DAO  Loading -->
+	<bean id="contactDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.ContactDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	<bean id="buyerContactDaoImpl" class="com.newco.marketplace.persistence.daoImpl.contact.ContactDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	<bean id="contactMethodPrefImpl" class="com.newco.marketplace.persistence.daoImpl.provider.ContactMethodPrefImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	<bean id="locationDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.LocationDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	<bean id="resourceLocationDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.ResourceLocationDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	<bean id="buyerResourceLocationDaoImpl" class="com.newco.marketplace.persistence.daoImpl.buyer.BuyerResourceLocationDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	<bean id="lookupDAOImpl" class="com.newco.marketplace.persistence.daoImpl.provider.LookupDAOImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	<bean id="userProfileDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.UserProfileDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>	
+	</bean>
+	
+	<bean id="buyerUserProfileDaoImpl" class="com.newco.marketplace.persistence.daoImpl.buyer.BuyerUserProfileDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	<bean id="vendorContactDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.VendorContactDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	<bean id="vendorHdrDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.VendorHdrDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	<bean id="buyerDaoImpl" class="com.newco.marketplace.persistence.daoImpl.so.buyer.BuyerDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	<bean id="vendorLocationDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.VendorLocationDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	<bean id="buyerLocationDaoImpl" class="com.newco.marketplace.persistence.daoImpl.buyer.BuyerLocationDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	<bean id="vendorResourceDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.VendorResourceImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	<bean id="vendorFinanceImpl" class="com.newco.marketplace.persistence.daoImpl.provider.VendorFinanceImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	<bean id="vendorPolicyImpl" class="com.newco.marketplace.persistence.daoImpl.provider.VendorPolicyImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	 
+	<bean id="zipDaoImpl" class="com.newco.marketplace.persistence.daoImpl.provider.ZipDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	<bean id="buyerResourceDaoImpl" class="com.newco.marketplace.persistence.daoImpl.buyer.BuyerResourceDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+
+    
+    <!-- Start BO  Loading -->
+	<bean id="registrationBOImplTarget" class="com.newco.marketplace.business.businessImpl.provider.RegistrationBOImpl"
+		lazy-init="true">
+		<constructor-arg index="0" ref="contactDaoImpl"/>
+		<constructor-arg index="1" ref="contactMethodPrefImpl"/>
+		<constructor-arg index="2" ref="locationDaoImpl"/>
+		<constructor-arg index="3" ref="resourceLocationDaoImpl"/>
+		<constructor-arg index="4" ref="lookupDAOImpl"/>
+		<constructor-arg index="5" ref="userProfileDaoImpl"/>
+		<constructor-arg index="6" ref="vendorContactDaoImpl"/>
+		<constructor-arg index="7" ref="vendorHdrDaoImpl"/>
+		<constructor-arg index="8" ref="vendorLocationDaoImpl"/>
+		<constructor-arg index="9" ref="vendorResourceDaoImpl"/>
+		<constructor-arg index="10" ref="providerEmailBOImpl"/>
+		<constructor-arg index="11" ref="vendorFinanceImpl"/>
+		<constructor-arg index="12" ref="vendorPolicyImpl"/>  
+		<constructor-arg index="13" ref="activityDaoImpl"/>
+		<constructor-arg index="14" ref="zipDaoImpl"/>
+		<constructor-arg index="15" ref="lookupDao"/>
+		
+		<property name="transactionManager">
+            <ref bean="dsTransactionManagerMain"/>
+        </property>
+        <property name="securityDao">
+            <ref bean="securityDAO"/>
+        </property>
+        
+        <property name="auditBO">
+            <ref bean="auditBoImpl"/>
+        </property>
+        <property name ="leadManagementDaoFactory">
+			<ref bean="leadManagementDaoFactory" />
+		</property>
+	</bean>
+
+
+	<!-- End DAO  Loading -->
+	
+	<!--  Start BuyerRegistrationBO Loading -->
+		<bean id="buyerRegistrationBOImplTarget" class="com.newco.marketplace.business.businessImpl.buyer.BuyerRegistrationBOImpl"
+		lazy-init="true">
+		<constructor-arg index="0" ref="buyerContactDaoImpl"/>
+		<constructor-arg index="1" ref="locationDaoImpl"/>
+		<constructor-arg index="2" ref="buyerResourceLocationDaoImpl"/>
+		<constructor-arg index="3" ref="lookupDAOImpl"/>
+		<constructor-arg index="4" ref="buyerUserProfileDaoImpl"/>
+		<constructor-arg index="5" ref="buyerDao"/>
+		<constructor-arg index="6" ref="buyerResourceDaoImpl"/>
+		<constructor-arg index="7" ref="buyerEmailBOImpl"/>
+		<constructor-arg index="8" ref="activityDaoImpl"/>
+		<constructor-arg index="9" ref="zipDaoImpl"/>
+		<constructor-arg index="10" ref="lookupDao"/>
+		<property name="transactionManager">
+            <ref bean="dsTransactionManagerMain"/>
+        </property>
+        <property name="securityDao">
+            <ref bean="securityDAO"/>
+        </property>
+        
+        <property name="auditBO">
+            <ref bean="auditBoImpl"/>
+        </property>
+       
+        <property name="templateDao">
+            <ref bean="pTemplateDao"/>
+        </property>
+        <property name="wallet" ref="walletTx" /> 
+	</bean>
+	<!--  End BuyerRegistrationBO Loading -->	
+	
+</beans>

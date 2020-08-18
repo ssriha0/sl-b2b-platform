@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	
+	<bean id="etmSearchAction"  class="com.newco.marketplace.web.action.etm.ExploreTheMarketPlaceSearchAction" scope="prototype">
+		<property name="wizardFetchDelegate">
+			<ref bean="SOWizardFetchBean" />
+		</property>	
+		<property name="lookupManager">
+			<ref bean="lookupManager"/>
+		</property>			
+		<property name="exploreTheMarketplaceDelegate">
+			<ref bean="exploreTheMarketplaceDelegate"/>
+		</property>			
+ 	</bean>
+ 	
+ 	
+	
+ 	
+</beans>

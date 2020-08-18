@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by Shekhar (Servicelive) -->
+<xs:schema xmlns="http://www.servicelive.com/namespaces/serviceAddress" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" targetNamespace="http://www.servicelive.com/namespaces/serviceAddress" elementFormDefault="qualified" jaxb:version="1.0" jaxb:extensionBindingPrefixes="xjc">
+	<xs:include schemaLocation="serviceAddressCommon.xsd"/>
+	<xs:include schemaLocation="../wsSecurity.xsd"/>
+	<!-- Root element -->
+<xs:element name="serviceAddresses">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="identification" type="IdentificationType"/>
+				<xs:element ref="serviceAddress" maxOccurs="50"/>
+			</xs:sequence>
+		</xs:complexType>
+</xs:element>
+	
+	
+</xs:schema>

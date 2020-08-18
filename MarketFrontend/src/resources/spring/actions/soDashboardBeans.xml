@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+
+	<bean id="baseDashboardAction"  class="com.newco.marketplace.web.action.dashboard.DashboardAction" scope="prototype">
+		 <constructor-arg index="0" ref="SODashBoardDelegateImpl"/>
+		 <constructor-arg index="1" ref="adminLoginDelegate"/> 	
+		 <constructor-arg index="2" ref="serviceOrderManager"/>
+		 <constructor-arg index="3" ref="selectProviderNetworkBO"/>
+		 <constructor-arg index="4" ref="lookupManager"/>
+		 
+		 <property name="fetchDelegate"> 
+			<ref bean="SOWizardFetchBean"/>
+		</property>	  
+		 <property name="spnBuyerDelegate">
+			<ref bean="spnBuyerDelegate"/>
+		</property>	
+		<property name="spnMonitorBO">
+			<ref bean="spnMonitorBO"/>
+		</property>	  
+ 	</bean>
+	
+	<bean id="dashboardActionAjax"  class="com.newco.marketplace.web.action.dashboard.DashboardAjaxAction" scope="prototype">
+		 <constructor-arg ref="SODashBoardDelegateImpl"/>		  
+ 	</bean>
+ 	
+	<bean id="adminLoggingDaoImpl" class="com.newco.marketplace.persistence.daoImpl.adminlogging.AdminLoggingDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+
+	<bean id="adminLoggingBOImpl" class="com.newco.marketplace.business.businessImpl.adminlogging.AdminLoggingBOImpl">
+		
+		<constructor-arg index="0" ref="adminLoggingDaoImpl"/>
+		<constructor-arg index="1" ref="lookupDAOImpl"/>
+				
+	</bean>
+	
+	<bean id="adminLoggingMapper" class="com.newco.marketplace.web.utils.AdminLoggingMapper" scope="prototype"/>
+	<bean name="adminLoginDelegate" class="com.newco.marketplace.web.delegatesImpl.adminlogging.AdminLoggingDelegateImpl">
+		<constructor-arg index="0" ref="adminLoggingBOImpl"/>  
+		<constructor-arg index="1" ref="adminLoggingMapper"/> 
+	</bean>
+	<bean id="wfmBuyerQueueMapper" class="com.newco.marketplace.web.utils.WFMBuyerQueueMapper" scope="prototype">
+		<property name="powerBuyerBO">
+			<ref bean="powerBuyerBO"/>
+		</property>
+	</bean>		
+</beans>

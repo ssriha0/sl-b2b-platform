@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="deploy" default="deploy-all">
+
+    <property file="${user.home}/.servicelive/common.properties"/>
+    <property file="${user.home}/.servicelive/deploy.properties"/> 
+    <property file="common.properties"/>
+    <property file="deploy.properties"/>
+    <property file="db/${db.environment}.properties"/>
+
+    <property name="jboss_as.config.dir" value="${jboss_as.install.dir}/server/${jboss_as.configuration}"/>
+    <property name="jboss_as.deploy.dir" value="${jboss_as.install.dir}/server/${jboss_as.configuration}/deploy"/>
+    <property name="jboss_eap.config.dir" value="${jboss_eap.install.dir}/jboss-as/server/${jboss_eap.configuration}"/>
+    <property name="jboss_eap.deploy.dir" value="${jboss_eap.install.dir}/jboss-as/server/${jboss_eap.configuration}/deploy"/>
+    
+    <target name="deploy-all" 
+        depends="MarketFrontend,
+            MarketServiceBus,
+            ServiceLive.b2c.web,
+            ServiceLive.b2c.batch,
+            others"/>
+
+    <target name="clean-deployables">
+        <delete dir="${jboss_as.config.dir}/tmp" failonerror="false"/>
+        <delete dir="${jboss_as.config.dir}/work" failonerror="false"/>
+        <delete dir="${jboss_as.config.dir}/data" failonerror="false"/>
+        <delete file="${jboss_as.deploy.dir}/${servicelivewebutil.war}" failonerror="false"/>
+        <delete file="${jboss_as.deploy.dir}/${marketbatch.war}" failonerror="false"/>
+        <delete file="${jboss_as.deploy.dir}/${marketfrontend.war}" failonerror="false"/>
+        <delete file="${jboss_as.deploy.dir}/${wallet.batch.war}" failonerror="false"/>
+        <delete file="${jboss_as.deploy.dir}/${spn.war}" failonerror="false"/>
+        <delete file="${jboss_as.deploy.dir}/${orderfulfillment.service.war}" failonerror="false"/>
+        <delete file="${jboss_as.deploy.dir}/${orderfulfillment.jobs.war}" failonerror="false"/>
+        <delete file="${jboss_as.deploy.dir}/${marketwebservices.war}" failonerror="false"/>
+        <delete file="${jboss_as.deploy.dir}/${wallet.vl.ejb.ear}" failonerror="false"/>
+        <delete file="${jboss_as.deploy.dir}/${marketpublicapi.war}" failonerror="false"/>
+        <delete file="${jboss_as.deploy.dir}/${activitylogservice.war}" failonerror="false"/>
+        <delete file="${jboss_as.deploy.dir}/${servicelive.b2c.web.war}" failonerror="false"/>
+        <delete file="${jboss_as.deploy.dir}/${servicelive.b2c.batch.war}" failonerror="false"/>
+        <delete file="${jboss_as.deploy.dir}/${marketplatform.remoteservice.ear}" failonerror="false"/>
+        <delete file="${jboss_as.deploy.dir}/${wallet.remoteservice.ear}" failonerror="false"/>
+        <delete file="${jboss_as.deploy.dir}/${spellservice.war}" failonerror="false"/>
+        <delete file="${jboss_as.deploy.dir}/${marketplatform.remoteservice.ear}" failonerror="false"/>
+        
+        <delete file="${jboss_eap.deploy.dir}/${marketesb.esb}" failonerror="false"/>
+    </target>
+
+    <target name="MarketFrontend" 
+        depends="clean-deployables,
+            ServiceLiveWebUtil,
+            MarketPublicAPI,
+            ActivityLog.Service">
+        <copy todir="${jboss_as.deploy.dir}" 
+              file="${sl.src}/${marketfrontend.dist.dir}/${marketfrontend.war}"/>
+    </target>
+    
+    <target name="ServiceLiveWebUtil" depends="clean-deployables">
+        <copy todir="${jboss_as.deploy.dir}" 
+              file="${sl.src}/${servicelivewebutil.dist.dir}/${servicelivewebutil.war}"/>
+    </target>
+    
+    <target name="MarketPublicAPI" depends="clean-deployables">
+        <copy todir="${jboss_as.deploy.dir}" 
+              file="${sl.src}/${marketpublicapi.dist.dir}/${marketpublicapi.war}"/>
+    </target>
+    
+    <target name="ActivityLog.Service" depends="clean-deployables">
+        <copy todir="${jboss_as.deploy.dir}"
+              file="${b2c.src}/${activitylogservice.dist.dir}/${activitylogservice.war}"/>
+    </target>
+    
+    <target name="MarketServiceBus" depends="clean-deployables">
+        <copy todir="${jboss_eap.deploy.dir}"
+              file="${sl.src}/${marketesb.dist.dir}/${marketesb.esb}"/>
+    </target>
+    
+    <target name="ServiceLive.b2c.web" depends="clean-deployables">
+        <copy todir="${jboss_as.deploy.dir}" 
+              file="${b2c.src}/${servicelive.b2c.web.dist.dir}/${servicelive.b2c.web.war}"/>
+    </target>
+    
+    <target name="ServiceLive.b2c.batch" depends="clean-deployables">
+        <copy todir="${jboss_as.deploy.dir}" 
+              file="${b2c.src}/${servicelive.b2c.batch.dist.dir}/${servicelive.b2c.batch.war}"/>
+    </target>
+        
+    
+    <target name="MarketBatch" depends="clean-deployables">
+        <copy todir="${jboss_as.deploy.dir}"
+              file="${sl.src}/${marketbatch.dist.dir}/${marketbatch.war}"/>
+    </target>
+    
+    <target name="Wallet.ValueLink.EJB" depends="clean-deployables">
+        <copy todir="${jboss_as.deploy.dir}"
+              file="${sl.src}/${wallet.vl.ejb.dist.dir}/${wallet.vl.ejb.ear}"/>
+    </target>
+    
+    <target name="MarketPlatform.RemoteService" depends="clean-deployables">
+        <copy todir="${jboss_as.deploy.dir}"
+              file="${sl.src}/${marketplatform.remoteservice.dist.dir}/${marketplatform.remoteservice.ear}"/>
+    </target>
+    
+    <target name="others" 
+        depends="clean-deployables,
+            MarketBatch,
+            Wallet.ValueLink.EJB
+            ">
+        
+        <copy todir="${jboss_as.deploy.dir}"
+              file="${sl.src}/${wallet.batch.dist.dir}/${wallet.batch.war}"/>
+        <copy todir="${jboss_as.deploy.dir}"
+              file="${sl.src}/${spn.dist.dir}/${spn.war}"/>
+        <copy todir="${jboss_as.deploy.dir}"
+              file="${sl.src}/${orderfulfillment.service.dist.dir}/${orderfulfillment.service.war}"/>
+        <copy todir="${jboss_as.deploy.dir}"
+              file="${sl.src}/${marketwebservices.dist.dir}/${marketwebservices.war}"/>
+        <copy todir="${jboss_as.deploy.dir}"
+              file="${sl.src}/${marketesb.dist.dir}/${marketesb.esb}"/>
+        <copy todir="${jboss_as.deploy.dir}"
+              file="${sl.src}/${wallet.remoteservice.dist.dir}/${wallet.remoteservice.ear}"/>
+        <copy todir="${jboss_as.deploy.dir}"
+              file="${sl.src}/${marketplatform.remoteservice.dist.dir}/${marketplatform.remoteservice.ear}"/>
+        <copy todir="${jboss_as.deploy.dir}"
+              file="${sl.src}/${orderfulfillment.jobs.dist.dir}/${orderfulfillment.jobs.war}"/>
+        <copy todir="${jboss_as.deploy.dir}"
+              file="${sl.src}/${spellservice.dist.dir}/${spellservice.war}"/>
+    </target>
+
+    <target name="clean-jboss-logs">
+        <delete dir="${jboss_as.config.dir}/log" failonerror="false"/>
+    </target>
+
+</project>

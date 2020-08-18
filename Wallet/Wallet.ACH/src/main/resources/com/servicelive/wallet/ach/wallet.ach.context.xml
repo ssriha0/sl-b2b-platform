@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+		
+	<bean id="ach"
+		class="com.servicelive.wallet.ach.AchBO"
+		lazy-init="true">
+		<property name="achBatchRequestDao">
+			<ref bean="achBatchRequestDao"/>
+		</property>
+	</bean>
+	
+	<bean id="achSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation">
+			<value>classpath:/com/servicelive/wallet/ach/SqlMapConfig.xml</value>
+		</property>
+		<!-- property name="dataSource" ref="dataSource"/ -->
+		<property name="dataSource">
+			<ref bean="${datasource.finance.bean.id}" />
+		</property>
+	</bean>
+
+	<bean id="achBatchRequestDao"
+		class="com.servicelive.wallet.ach.dao.AchBatchRequestDao"
+		lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="achSqlMapClient" />
+		</property>
+	</bean>
+	
+	<!-- TRANSACTION SUPPORT -->
+	<bean id="achTx"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		lazy-init="true">
+		<property name="proxyInterfaces">
+			<list>
+				<value>
+					com.servicelive.wallet.ach.IAchBO
+				</value>
+			</list>
+		</property>
+		<property name="target">
+			<ref bean="ach" />
+		</property>
+		<property name="transactionManager">
+			<ref bean="dsTransactionManagerFinance" />
+		</property>
+		<property name="transactionAttributeSource">
+			<ref bean="attributeSource" />
+		</property>
+	</bean>
+
+</beans>
+

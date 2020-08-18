@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig
+    PUBLIC "-//iBATIS.apache.org//DTD SQL Map Config 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+
+
+
+	<sqlMapConfig>
+	<settings useStatementNamespaces="true"
+	lazyLoadingEnabled="false"
+	cacheModelsEnabled="false"
+   />
+
+	<sqlMap resource="com/servicelive/wallet/batch/ptdMap.xml"/>
+	<sqlMap resource="com/servicelive/wallet/batch/glMap.xml"/>
+	<sqlMap resource="com/servicelive/wallet/batch/platformActivityMap.xml"/>
+	<sqlMap resource="com/servicelive/wallet/batch/nachaMetadataMap.xml"/>
+	<sqlMap resource="com/servicelive/wallet/batch/nachaMap.xml"/>
+	<sqlMap resource="com/servicelive/wallet/batch/transFileMap.xml"/>
+</sqlMapConfig>

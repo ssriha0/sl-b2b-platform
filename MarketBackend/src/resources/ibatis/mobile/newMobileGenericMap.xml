@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="newMobileGeneric">
+<typeAlias alias="mobileSOReleaseVO" type="com.newco.marketplace.vo.mobile.v2_0.MobileSOReleaseVO"/>
+<typeAlias alias="teamMemberDocumentVO" type="com.newco.marketplace.vo.provider.TeamMemberDocumentVO"/>
+
+<select id="newMobileGeneric.validateServiceOrderStatus.query" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+        SELECT so_id FROM so_hdr WHERE so_id=#soId# 
+        <isEqual property="action" compareValue="ReportProblem">
+       		 AND wf_state_id IN(155,160,165)
+        </isEqual>
+        <isEqual property="action" compareValue="ResolveProblem">
+       		 AND wf_state_id IN(170)
+        </isEqual>
+         <isEqual property="action" compareValue="ReleaseSO">
+       		 AND wf_state_id IN(150,155,170)
+        </isEqual>
+        <isEqual property="action" compareValue="UpdtTimeWindow">
+       		 AND wf_state_id IN(150,155,170)
+        </isEqual>
+        <isEqual property="action" compareValue="Pre Call">
+       		 AND wf_state_id IN(150)
+        </isEqual>
+        <isEqual property="action" compareValue="Confirm Appointment">
+       		 AND wf_state_id IN(150,155,170)
+        </isEqual>
+ </select>
+ 
+ <select id="newMobileGeneric.validateScheduleStatus.query" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+        SELECT so_id FROM so_schedule WHERE so_id=#soId# 
+        <isEqual property="action" compareValue="Pre Call">
+       		 AND schedule_status_id in (1,2)
+        </isEqual>
+        <isEqual property="action" compareValue="Confirm Appointment">
+       		 AND schedule_status_id != 5
+        </isEqual>
+ </select>
+ 
+  <select id="newMobileGeneric.isAppoinmentIn3Day.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+	SELECT so_id FROM so_hdr WHERE so_id=#soId# AND DATEDIFF(service_date1,NOW()) <![CDATA[<=]]> 3 AND DATEDIFF(service_date1,NOW()) <![CDATA[>=]]> 0
+ </select> 
+ 
+ <select id="newMobileGeneric.fetchAssignmentTypeAndStatus.query" parameterClass="java.lang.String" resultClass="mobileSOReleaseVO">
+	SELECT hdr.assignment_type AS assignmentType,
+	hdr.wf_state_id AS statusId,
+	hdr.accepted_resource_id AS releaseResourceId,
+	CONCAT(c.first_name,' ', c.last_name) AS releaseByName
+	FROM so_hdr hdr
+	LEFT JOIN vendor_resource vr ON (hdr.accepted_resource_id = vr.resource_id)
+	LEFT JOIN contact c ON (vr.contact_id = c.contact_id)
+	WHERE so_id=#soId#
+ </select> 
+ 
+ <select id="newMobileGeneric.fetchReasonDesc.query" parameterClass="java.lang.String" resultClass="java.lang.String">
+	SELECT descr AS reasonDescription
+	FROM `lu_so_provider_resp_reason`
+	WHERE resp_reason_id=#reasonCode#
+ </select> 
+ 
+ <select id="newMobileGeneric.isManageTeamPermission.query" parameterClass="java.lang.Integer" resultClass="java.lang.Integer">
+	SELECT COUNT(*)
+		FROM   lu_permissions AS lup
+		JOIN lu_permission_role AS lur ON ( lur.activity_id = lup.activity_id )
+		JOIN user_profile AS up ON up.role_id = lur.role_id
+		JOIN user_profile_permissions AS upp
+		ON (lur.role_activity_id = upp.role_activity_id
+		AND up.user_name = upp.user_name)
+		JOIN vendor_resource AS vr
+		ON (vr.user_name = up.user_name
+		AND vr.resource_id = #resourceId#
+		AND lup.activity_name = 'Manage User Profile')
+ </select> 
+ 
+  <select id="newMobileGeneric.fetchDocumentId.query" parameterClass="java.util.List" resultClass="teamMemberDocumentVO">
+    SELECT resource_id AS resourceId,document_id AS documentId
+	FROM vendor_resource_document
+	WHERE primary_ind=1 AND resource_id in
+	<iterate  open="(" close=")"  conjunction=",">
+				#[]#
+	</iterate>
+ </select>
+ 
+</sqlMap>

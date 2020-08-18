@@ -1,0 +1,1145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="skillAssign">
+
+	<!-- <cacheModel type="LRU" id="providerSearchCache"> <flushInterval hours="1" 
+		/> <property name="size" value="1500" /> </cacheModel> <cacheModel type="LRU" 
+		id="providerSearchCacheNodes"> <flushInterval hours="1" /> <property name="size" 
+		value="200" /> </cacheModel> -->
+
+	<typeAlias alias="skillNodeIds"
+		type="com.newco.marketplace.dto.vo.skillTree.SkillNodeIdsVO" />
+	<typeAlias alias="providerList"
+		type="com.newco.marketplace.dto.vo.providerSearch.ProviderSkillResultsVO" />
+	<typeAlias alias="providerResultVO"
+		type="com.newco.marketplace.dto.vo.providerSearch.ProviderResultVO" />
+	<typeAlias alias="providerIds"
+		type="com.newco.marketplace.dto.vo.skillTree.ProviderIdsVO" />
+	<typeAlias alias="providerStarList"
+		type="com.newco.marketplace.dto.vo.providerSearch.ProviderStarResultsVO" />
+	<typeAlias alias="providerCredentialList"
+		type="com.newco.marketplace.dto.vo.providerSearch.ProviderCredentialResultsVO" />
+	<typeAlias alias="providerLanguageList"
+		type="com.newco.marketplace.dto.vo.providerSearch.ProviderLanguageResultsVO" />
+	<typeAlias alias="providerLocationList"
+		type="com.newco.marketplace.dto.vo.providerSearch.ProviderLocationResultsVO" />
+	<typeAlias alias="providerBackgroundList"
+		type="com.newco.marketplace.dto.vo.providerSearch.ProviderBackgroundCheckResultsVO" />
+	<typeAlias alias="vendorHeader"
+		type="com.newco.marketplace.dto.vo.provider.VendorHdrVO" />
+	<typeAlias alias="selectedProviders"
+		type="com.newco.marketplace.dto.vo.providerSearch.ProviderResultVO" />
+	<typeAlias alias="providerSearchForAdminParameters"
+		type="com.newco.marketplace.dto.vo.providerSearch.ProviderResultForAdminVO" />
+	<typeAlias alias="searchForAdminParameters"
+		type="com.newco.marketplace.dto.vo.providerSearch.SearchResultForAdminVO" />
+	<typeAlias alias="spnProviderSearchVO"
+		type="com.newco.marketplace.dto.vo.providerSearch.SPNProviderSearchVO" />
+	<typeAlias alias="providerSkillRequestVO"
+		type="com.newco.marketplace.dto.vo.providerSearch.ProviderSkillRequestVO" />
+	<typeAlias alias="providerSPNetStateList"
+		type="com.newco.marketplace.dto.vo.providerSearch.ProviderSPNetStateResultsVO" />
+	<typeAlias alias="lookupVO" type="com.newco.marketplace.dto.vo.LookupVO" />
+	<typeAlias alias="spnetHdrVO"
+		type="com.newco.marketplace.dto.vo.spn.SPNetHeaderVO" />
+	<typeAlias alias="trpVO"
+		type="com.newco.marketplace.dto.vo.serviceorder.TierRoutedProvider" />
+	<typeAlias alias="additionalInsuranceVO"
+		type="com.newco.marketplace.dto.vo.provider.AdditionalInsuranceVO" />
+	<typeAlias alias="provider"
+		type="com.newco.marketplace.dto.vo.provider.TeamMemberVO" />
+	<typeAlias alias="skuDetails" type="com.newco.marketplace.dto.vo.SkuDetailsVO" />
+	<typeAlias alias="basicFirmDetailsVOSearchFirm"
+		type="com.newco.marketplace.dto.vo.provider.BasicFirmDetailsVO" />
+	<typeAlias alias="firmServicesVOSearchFirm"
+		type="com.newco.marketplace.dto.vo.leadsmanagement.FirmServiceVO" />
+
+
+	<sql id="spn.join">
+		<isPropertyAvailable property="spnId">
+			<isNotNull property="spnId">
+				join spn_network sn on vr.resource_id = sn.resource_id and #spnId# =
+				sn.spn_id
+			</isNotNull>
+		</isPropertyAvailable>
+	</sql>
+
+	<sql id="spnNew.join">
+		<isPropertyAvailable property="spnId">
+			<isNotNull property="spnId">
+				JOIN spnet_hdr spnhdr ON spnhdr.spn_id = #spnId# OR
+				spnhdr.alias_original_spn_id = #spnId#
+				JOIN spnet_serviceprovider_state sn ON vr.resource_id =
+				sn.service_provider_id AND spnhdr.spn_id = sn.spn_id AND
+				sn.provider_wf_state = 'SP SPN APPROVED'
+				<isNotNull property="perfScore">
+					<isGreaterThan property="perfScore" compareValue="0.0"
+						prepend=" AND ">
+						sn.performance_score <![CDATA[ >= ]]>
+						#perfScore#
+					</isGreaterThan>
+				</isNotNull>
+			</isNotNull>
+		</isPropertyAvailable>
+	</sql>
+
+
+	<!-- Changes Starts for Admin Name Change -->
+	<select id="business_firm_provider_list.query" resultClass="provider"
+		parameterClass="java.lang.Integer">
+		SELECT
+		c.last_name AS lastName,
+		c.first_name AS
+		firstName,
+		v.resource_id AS resourceId,
+		v.vendor_id AS vendor_id
+		FROM
+		vendor_resource v
+		INNER JOIN contact c ON v.contact_id= c.contact_id
+		INNER JOIN user_profile p ON v.contact_id= p.contact_id
+		WHERE
+		v.vendor_id= #vendor_id#
+		AND v.`delete_ind` IS NOT TRUE
+		AND
+		p.`active_ind` IS TRUE
+		AND p.user_name IS NOT NULL AND p.user_name !=''
+		AND v.primary_ind=FALSE ;
+	</select>
+	<!-- Changes Ends for Admin Name Change -->
+	<!--  Below query is modified as part of SLT-2545 Zip code based order routing changes -->
+	<select id="getProviders.query" parameterClass="skillNodeIds"
+		resultClass="providerList"> <!-- cacheModel="providerSearchCacheNodes" > -->
+		SELECT DISTINCT c.first_name AS providerFirstName,
+		c.last_name AS
+		providerLastName,
+		vr.resource_id AS providerResourceId,
+		vr.vendor_id AS
+		providerId,
+		vh.business_name AS firmName,
+		vr.wf_state_id AS
+		providerStatusId,
+		st.level AS skillLevel,
+		rs.node_id AS skillNodeId,
+		l.city as city,
+		l.state_cd as state,
+		l.gis_latitude AS providerLatitude,
+		l.gis_longitude AS providerLongitude,
+		TRUNCATE(3956.5450000 * 2 * ATAN2(
+		SQRT(SIN(RADIANS(l.gis_latitude - #zipLatitude#) /2)
+		* SIN(RADIANS(l.gis_latitude - #zipLatitude#) /2) +
+		COS(RADIANS(#zipLatitude#)) * COS(RADIANS(l.gis_latitude))
+		* SIN((RADIANS(gis_longitude - #zipLongitude#)) /2)
+		* SIN((RADIANS(gis_longitude - #zipLongitude#)) /2)),
+		SQRT(1 - SIN(RADIANS(l.gis_latitude - #zipLatitude#) /2)
+		* SIN(RADIANS(l.gis_latitude - #zipLatitude#) /2) +
+		COS(RADIANS(#zipLatitude#)) * COS(RADIANS(l.gis_latitude))
+		* SIN((RADIANS(gis_longitude - #zipLongitude#)) /2)
+		* SIN((RADIANS(gis_longitude - #zipLongitude#)) /2))),2) as
+		distanceFromZipInMiles
+		FROM resource_skill rs
+		join vendor_resource vr on
+		rs.resource_id=vr.resource_id and vr.wf_state_id = 6 and
+		vr.resource_ind = 1 and vr.mkt_place_ind = 1
+		join vendor_hdr vh on
+		vh.vendor_id = vr.vendor_id and vh.wf_state_id IN (3,26,34)
+		join
+		contact c on vr.contact_id=c.contact_id
+		join skill_tree st on
+		st.node_id=rs.node_id
+		JOIN vendor_resource_location l ON (vr.locn_id = l.locn_id)
+		JOIN vendor_resource_coverage vrc ON (vr.resource_id = vrc.resource_id)
+		<include refid="spn.join" />
+		WHERE
+		st.node_id IN
+		<iterate property="skillNodeIds" open="(" close=")"
+			conjunction=",">
+			#skillNodeIds[]#
+		</iterate>
+		AND vrc.zip = #zipCode#
+		ORDER BY st.level DESC
+	</select>
+	<!--  Below query is modified as part of SLT-2545 Zip code based order routing changes -->
+	<select id="getProvidersByFirm.query" parameterClass="java.util.HashMap"
+		resultClass="providerList"> <!-- cacheModel="providerSearchCacheNodes" > -->
+		SELECT DISTINCT c.first_name AS providerFirstName,
+		c.last_name AS
+		providerLastName,
+		vr.resource_id AS providerResourceId,
+		vr.vendor_id AS
+		providerId,
+		vh.business_name AS firmName,
+		vr.wf_state_id AS
+		providerStatusId,
+		st.level AS skillLevel,
+		rs.node_id AS skillNodeId,
+		l.city as city,
+		l.state_cd as state,
+		l.gis_latitude AS providerLatitude,
+		l.gis_longitude AS providerLongitude,
+		TRUNCATE(3956.5450000 * 2 * ATAN2(
+		SQRT(SIN(RADIANS(l.gis_latitude - #zipLatitude#) /2)
+		* SIN(RADIANS(l.gis_latitude - #zipLatitude#) /2) +
+		COS(RADIANS(#zipLatitude#)) * COS(RADIANS(l.gis_latitude))
+		* SIN((RADIANS(gis_longitude - #zipLongitude#)) /2)
+		* SIN((RADIANS(gis_longitude - #zipLongitude#)) /2)),
+		SQRT(1 - SIN(RADIANS(l.gis_latitude - #zipLatitude#) /2)
+		* SIN(RADIANS(l.gis_latitude - #zipLatitude#) /2) +
+		COS(RADIANS(#zipLatitude#)) * COS(RADIANS(l.gis_latitude))
+		* SIN((RADIANS(gis_longitude - #zipLongitude#)) /2)
+		* SIN((RADIANS(gis_longitude - #zipLongitude#)) /2))),2) as
+		distanceFromZipInMiles
+		FROM resource_skill rs
+		join vendor_resource vr on
+		rs.resource_id=vr.resource_id and vr.wf_state_id = 6 and
+		vr.resource_ind = 1 and vr.mkt_place_ind = 1
+		join vendor_hdr vh on
+		vh.vendor_id = vr.vendor_id and vh.wf_state_id IN (3,26,34)
+		AND vh.vendor_id IN 
+		<iterate property="firmIds" open="(" close=")"
+			conjunction=",">
+			#firmIds[]#
+		</iterate>
+		join
+		contact c on vr.contact_id=c.contact_id
+		join skill_tree st on
+		st.node_id=rs.node_id
+		JOIN vendor_resource_location l ON (vr.locn_id = l.locn_id)
+		JOIN vendor_resource_coverage vrc ON (vr.resource_id = vrc.resource_id)
+		<include refid="spn.join" />
+		WHERE
+		st.node_id IN
+		<iterate property="skillNodeIds" open="(" close=")"
+			conjunction=",">
+			#skillNodeIds[]#
+		</iterate>
+		AND vrc.zip = #zipCode#
+		ORDER BY st.level DESC
+	</select>
+	<!--  Below query is modified as part of SLT-2545 Zip code based order routing changes -->
+	<select id="getProvidersForNewSpn.query" parameterClass="skillNodeIds"
+		resultClass="providerList">
+		SELECT DISTINCT c.first_name AS providerFirstName,
+		c.last_name AS
+		providerLastName,
+		vr.resource_id AS providerResourceId,
+		vr.vendor_id AS
+		providerId,
+		vr.wf_state_id AS providerStatusId,
+		st.level AS skillLevel,
+		rs.node_id AS skillNodeId,
+		l.city as city,
+		l.state_cd as state,
+		l.gis_latitude AS providerLatitude,
+		l.gis_longitude AS providerLongitude,
+		TRUNCATE(3956.5450000 * 2 * ATAN2(
+		SQRT(SIN(RADIANS(l.gis_latitude - #zipLatitude#) /2)
+		* SIN(RADIANS(l.gis_latitude - #zipLatitude#) /2) +
+		COS(RADIANS(#zipLatitude#)) * COS(RADIANS(l.gis_latitude))
+		* SIN((RADIANS(gis_longitude - #zipLongitude#)) /2)
+		* SIN((RADIANS(gis_longitude - #zipLongitude#)) /2)),
+		SQRT(1 - SIN(RADIANS(l.gis_latitude - #zipLatitude#) /2)
+		* SIN(RADIANS(l.gis_latitude - #zipLatitude#) /2) +
+		COS(RADIANS(#zipLatitude#)) * COS(RADIANS(l.gis_latitude))
+		* SIN((RADIANS(gis_longitude - #zipLongitude#)) /2)
+		* SIN((RADIANS(gis_longitude - #zipLongitude#)) /2))),2) as
+		distanceFromZipInMiles
+		FROM resource_skill rs
+		join vendor_resource vr on
+		rs.resource_id=vr.resource_id and vr.wf_state_id = 6 and
+		vr.resource_ind = 1 and vr.mkt_place_ind = 1
+		join vendor_hdr vh on
+		vh.vendor_id = vr.vendor_id and vh.wf_state_id IN (3,26,34)
+		join
+		contact c on vr.contact_id=c.contact_id
+		join skill_tree st on
+		st.node_id=rs.node_id
+		JOIN vendor_resource_location l ON (vr.locn_id = l.locn_id)
+		JOIN vendor_resource_coverage vrc ON (vr.resource_id = vrc.resource_id)
+		<include refid="spnNew.join" />
+		WHERE
+		st.node_id IN
+		<iterate property="skillNodeIds" open="(" close=")"
+			conjunction=",">
+			#skillNodeIds[]#
+		</iterate>
+		AND vrc.zip = #zipCode#
+		ORDER BY st.level DESC
+	</select>
+
+	<select id="getAllProvidersForGivenSkillType.query"
+		parameterClass="providerSkillRequestVO" resultClass="java.lang.Integer">
+		SELECT distinct rs.resource_id
+		FROM resource_skill_service_type r
+		JOIN
+		resource_skill rs ON rs.resource_skill_id = r.resource_skill_id
+		AND
+		r.service_type_template_id in
+		<iterate property="skillTypesList" open="(" close=")"
+			conjunction=",">
+			#skillTypesList[]#
+		</iterate>
+		WHERE
+		rs.resource_id IN
+		<iterate property="resourceIdsList" open="(" close=")"
+			conjunction=",">
+			#resourceIdsList[]#
+		</iterate>
+		and rs.node_id in
+		<iterate property="skillNodeList" open="(" close=")"
+			conjunction=",">
+			#skillNodeList[]#
+		</iterate>
+	</select>
+
+<!--  Below query is modified as part of SLT-2545 Zip code based order routing changes -->
+<select id="getProvidersZip.query" parameterClass="skillNodeIds"
+        resultClass="providerResultVO"> <!-- cacheModel="providerSearchCache" > -->
+        SELECT
+        vr.resource_id as iResourceId,
+        c.first_name as providerFirstName,
+        c.last_name as providerLastName,
+        l.zip as zip,
+        l.city as city,
+        100 as percentageMatch,
+        l.state_cd as state,
+        l.gis_latitude as iProviderLatitude,
+        l.gis_longitude as iProviderLongitude,
+        vh.vendor_id as vendorId,
+        vh.business_name as businessName,
+        1 as backgroundCheckStatus,
+        vr.total_so_completed as totalSOCompleted,
+        ser.rating_count as ratingCount,
+        ser.rating_score as iProviderRating,
+        fn_great_circle_distance(l.gis_latitude, #zipLatitude#,l.gis_longitude,#zipLongitude#) as iDistanceFromBuyer
+        FROM vendor_hdr vh , vendor_resource_coverage vrc, contact c , location l, vendor_resource vr
+        LEFT OUTER JOIN survey_entity_rating ser ON vr.resource_id = ser.entity_id
+        and ser.entity_type_id = 20
+        and ser.score_timeline_type ='LIFETIME'
+        and ser.score_type ='CSAT'
+        WHERE vh.vendor_id= vr.vendor_id
+        and vr.resource_id=ser.entity_id
+        and vr.contact_id = c.contact_id
+        and l.locn_id = vr.locn_id
+        and vr.resource_id = vrc.resource_id
+        and vrc.zip = #zipCode#
+        and vh.wf_state_id in (3,34,26)
+        and vr.wf_state_id = 6
+        and vr.resource_ind = 1
+        and vr.mkt_place_ind = 1               
+ </select>
+
+
+
+	<select id="getLockedProviderDetails.query" parameterClass="skillNodeIds"
+		resultClass="providerResultVO">
+		SELECT DISTINCT v.resource_id as iResourceId,
+		v.first_name as providerFirstName,
+		v.last_name as providerLastName,
+		v.zip as zip,
+		v.city as city,
+		100 as percentageMatch,
+		v.state_cd as state,
+		v.gis_latitude as iProviderLatitude,
+		v.gis_longitude as iProviderLongitude,
+		v.vendor_id as vendorId,
+		v.business_name as businessName,
+		1 as backgroundCheckStatus,
+		v.total_so_completed as totalSOCompleted,
+		v.aggregate_rating_count as ratingCount,
+		v.aggregate_rating_score as iProviderRating,
+		fn_great_circle_distance(l.gis_latitude, #zipLatitude#,l.gis_longitude,#zipLongitude#) as distance
+		FROM vw_provider_marketready_for_zip v
+		where resource_id = #lockedResourceId#
+	</select>
+
+
+	<select id="getAllProvidersInTree.query" parameterClass="skillNodeIds"
+		resultClass="providerList"> <!-- cacheModel="providerSearchCache" > -->
+		SELECT DISTINCT rs.resource_id AS providerResourceId,
+		rs.node_id AS
+		skillNodeId,
+		c.first_name AS providerFirstName,
+		c.last_name AS
+		providerLastName,
+		l.city as city,
+		l.state_cd as state,
+		l.gis_latitude AS
+		providerLatitude,
+		l.gis_longitude AS providerLongitude,
+		fn_great_circle_distance(l.gis_latitude, #zipLatitude#,l.gis_longitude,#zipLongitude#) as
+		distanceFromZipInMiles
+		FROM resource_skill rs
+		join vendor_resource vr on
+		rs.resource_id=vr.resource_id and vr.wf_state_id = 6 and
+		vr.resource_ind = 1 and vr.mkt_place_ind = 1
+		join vendor_hdr vh on
+		vh.vendor_id = vr.vendor_id and vh.wf_state_id IN (3,26,34)
+		join
+		contact c on vr.contact_id=c.contact_id
+		join location l on l.locn_id =
+		vr.locn_id
+		WHERE
+		node_id IN (
+		SELECT node_id
+		FROM skill_tree
+		WHERE
+		root_node_id = #rootNodeId#)
+		AND
+		fn_great_circle_distance(l.gis_latitude,
+		#zipLatitude#,l.gis_longitude,#zipLongitude#) <![CDATA[<=]]>
+		#distanceFilter#
+	</select>
+
+	<select id="getProviderStarRating.query" parameterClass="providerIds"
+		resultClass="providerStarList">
+		SELECT sh.so_id,
+		sh.accepted_resource_id AS providerResourceId,
+		srs.response_hdr_id,
+		srh.overall_score,
+		sum(srh.overall_score)/count(*) AS providerStarRating
+		FROM so_hdr sh,
+		survey_response_so srs,
+		survey_response_hdr srh
+		WHERE sh.so_id = srs.so_id
+		AND srs.response_hdr_id =
+		srh.response_hdr_id
+		AND sh.accepted_resource_id IN
+		<iterate property="providerIds" open="(" close=")"
+			conjunction=",">
+			#providerIds[]#
+		</iterate>
+		GROUP BY sh.accepted_resource_id
+	</select>
+
+	<select id="getProviderCredentials.query" parameterClass="providerIds"
+		resultClass="providerCredentialList">
+		SELECT resource_id AS providerResourceId,
+		cred_category_id AS providerCredentialId,
+		cred_type_id AS providerCredentialTypeId
+		FROM resource_credentials
+		WHERE wf_state_id = 12
+		<dynamic prepend="AND">
+			<isNotNull property="providerIds">
+				resource_id IN
+				<iterate property="providerIds" open="(" close=")"
+					conjunction=",">
+					#providerIds[]#
+				</iterate>
+			</isNotNull>
+		</dynamic>
+	</select>
+
+	<select id="getProviderLanguages.query" parameterClass="providerIds"
+		resultClass="providerLanguageList">
+		SELECT resource_id AS providerResourceId,
+		language_id AS providerLanguageId
+		FROM resource_languages
+		<dynamic prepend="WHERE">
+			<isNotNull property="providerIds">
+				resource_id IN
+				<iterate property="providerIds" open="(" close=")"
+					conjunction=",">
+					#providerIds[]#
+				</iterate>
+			</isNotNull>
+		</dynamic>
+	</select>
+
+	<select id="getProviderSPNetStates.query" parameterClass="providerIds"
+		resultClass="providerSPNetStateList">
+		SELECT sps.spn_id as spnId,
+		sps.service_provider_id as providerResourceId ,
+		sps.provider_wf_state as providerSpnetStateId ,
+		spHdr_alias.spn_id as aliasSpnId,
+		spHdr.spn_name as spnName,
+		sps_alias.provider_wf_state as aliasProviderSpnetStateId,
+		sps.perf_level as performanceLevel,
+		luSPLevel.descr as performanceLevelDesc,
+		IF(sps.performance_score IS NULL OR sps.performance_score <![CDATA[<]]>
+		0,0,sps.performance_score)AS performanceScore
+		FROM
+		spnet_serviceprovider_state sps
+
+		join spnet_hdr spHdr on
+		spHdr.spn_id = sps.spn_id and spHdr.is_alias = false
+		left outer join spnet_hdr
+		spHdr_alias on
+		spHdr_alias.alias_original_spn_id = sps.spn_id
+		left outer join spnet_serviceprovider_state sps_alias on
+		sps_alias.service_provider_id = sps.service_provider_id
+		and sps_alias.spn_id = spHdr_alias.spn_id
+		left outer join
+		lu_spnet_performance_level luSPLevel on
+		sps.perf_level = luSPLevel.performance_id
+
+
+		<dynamic prepend="WHERE">
+			<isNotNull property="providerIds">
+				<isNotEmpty property="providerIds">
+					sps.service_provider_id IN
+					<iterate property="providerIds" open="(" close=")"
+						conjunction=",">
+						#providerIds[]#
+					</iterate>
+				</isNotEmpty>
+			</isNotNull>
+			<isNotNull property="spnId">
+				<isGreaterThan property="spnId" compareValue="0">
+					and sps.spn_id = #spnId#
+				</isGreaterThan>
+			</isNotNull>
+			<isNotNull property="performancelevels">
+				<isNotEmpty property="performancelevels">
+					and sps.perf_level IN
+					<iterate property="performancelevels" open="(" close=")"
+						conjunction=",">
+						#performancelevels[]#
+					</iterate>
+				</isNotEmpty>
+			</isNotNull>
+
+		</dynamic>
+	</select>
+
+	<select id="getProviderLanguagesForOneResource.query"
+		parameterClass="java.lang.Integer" resultClass="providerLanguageList">
+		SELECT resource_id AS providerResourceId,
+		language_id AS providerLanguageId
+		FROM resource_languages
+		WHERE resource_id = #providerIds#
+	</select>
+
+	<select id="getProviderLocation.query" parameterClass="providerIds"
+		resultClass="providerLocationList">
+		SELECT vr.resource_id AS providerResourceId,
+		l.gis_latitude AS providerGisLatitude,
+		l.gis_longitude AS providerGisLongitude,
+		l.city as city,
+		l.state_cd as state,
+		l.zip as zip
+		FROM vendor_resource vr,
+		location l
+		WHERE vr.locn_id = l.locn_id
+		<isNotNull property="providerIds" prepend="AND">
+			vr.resource_id IN
+			<iterate property="providerIds" open="(" close=")"
+				conjunction=",">
+				#providerIds[]#
+			</iterate>
+		</isNotNull>
+
+	</select>
+
+	<select id="getProviderBackgroundStatus.query" parameterClass="providerIds"
+		resultClass="providerBackgroundList">
+		SELECT vr.resource_id AS vendorResourceID,
+		w.wf_state_id as
+		backgroundCheckStatus
+		FROM vendor_resource vr
+		left outer join wf_states
+		w on vr.background_state_id = w.wf_state_id
+		<dynamic prepend="WHERE">
+			<isNotNull property="providerIds">
+				vr.resource_id IN
+				<iterate property="providerIds" open="(" close=")"
+					conjunction=",">
+					#providerIds[]#
+				</iterate>
+			</isNotNull>
+		</dynamic>
+	</select>
+
+	<select id="vendor_hdr.query" parameterClass="providerIds"
+		resultClass="vendorHeader">
+		SELECT
+		vh.vendor_id AS vendorID,
+		vh.ins_vehicle_liability_ind AS vehicalLiabilityInsurance,
+		vh.ins_gen_liability_ind AS generalLiabilityInsurance,
+		vh.ins_work_comp_ind AS workersCompensationInsurance,
+		vc.wf_state_id AS wfStateId,
+		vc.modified_date AS insVerifiedDate,
+		vc.cred_category_id AS credTypeId,
+		vh.ins_vehicle_liability_amount AS insVehAmt,
+		vh.ins_work_comp_amount AS insWorkAmt,
+		vh.ins_gen_liability_amount AS insGenAmt
+		FROM
+		vendor_hdr vh
+		left outer join vendor_credentials vc on
+		vh.vendor_id = vc.vendor_id AND vc.cred_type_id = 6
+		<dynamic prepend="WHERE">
+			<isNotNull property="providerIds">
+				vh.vendor_id IN
+				<iterate property="providerIds" open="(" close=")"
+					conjunction=",">
+					#providerIds[]#
+				</iterate>
+			</isNotNull>
+		</dynamic>
+	</select>
+
+	<select id="getSelectedProviders.query" parameterClass="java.lang.String"
+		resultClass="selectedProviders">
+		SELECT
+		r.resource_id as resourceId,
+		r.vendor_id as vendorID,
+		c.first_name AS providerFirstName,
+		c.last_name AS providerLastName,
+		z.latitude as iproviderLatitude,
+		z.longitude as iproviderLongitude
+		FROM so_hdr s
+		join so_routed_providers r on s.so_id = r.so_id
+		join vendor_resource vr on r.resource_id = vr.resource_id and
+		vr.wf_state_id = 6 and vr.resource_ind = 1 and vr.mkt_place_ind = 1
+		join vendor_hdr vh on vh.vendor_id = vr.vendor_id and vh.wf_state_id
+		IN (3,26,34)
+		join contact c on vr.contact_id=c.contact_id
+		left outer join location loc on loc.locn_id = vr.locn_id
+		left outer join zip_geocode z on z.zip = loc.zip
+		WHERE
+		(s.wf_state_id = 100 OR s.wf_state_id = 110 OR s.wf_state_id = 130)
+		and r.so_id = #serviceOrderID#
+	</select>
+
+	<select id="getSelectedProvidersForTier.query" parameterClass="java.lang.String"
+		resultClass="selectedProviders">
+		SELECT
+		r.resource_id as resourceId,
+		r.vendor_id as vendorID,
+		c.first_name AS providerFirstName,
+		c.last_name AS providerLastName,
+		z.latitude as iproviderLatitude,
+		z.longitude as iproviderLongitude
+		FROM so_hdr s
+		join tier_route_eligilble_providers r on s.so_id = r.so_id
+		join vendor_resource vr on r.resource_id = vr.resource_id and
+		vr.wf_state_id = 6 and vr.resource_ind = 1 and vr.mkt_place_ind = 1
+		join vendor_hdr vh on vh.vendor_id = vr.vendor_id and vh.wf_state_id
+		IN (3,26,34)
+		join contact c on vr.contact_id=c.contact_id
+		left outer join location loc on loc.locn_id = vr.locn_id
+		left outer join zip_geocode z on z.zip = loc.zip
+		WHERE
+		(s.wf_state_id = 100 OR s.wf_state_id = 110 OR s.wf_state_id = 130)
+		and r.so_id = #serviceOrderID#
+	</select>
+
+	<select id="providerSearchForAdmin.query" parameterClass="providerSearchForAdminParameters"
+		resultClass="providerSearchForAdminParameters">
+		SELECT distinct vw.vendor_id AS vendorId,
+		vw.vendor_status as vendorStatus,
+		vw.business_name AS businessName,
+		vw.primary_industry as primaryIndustry,
+		m.market_name as marketName,
+		vw.vendor_state AS state,
+		vw.vendor_zip AS zip,
+		pla.last_active_date as lastActivityDate,
+		vw.vendor_city as companyCity,
+		vw.vendor_state as companyState
+		FROM vw_marketplace_provider_search vw
+		join
+		vw_provider_last_activity pla on vw.vendor_id = pla.vendor_id
+		left
+		outer join lu_market m on vw.vendor_market_id = m.market_id
+		<isNotNull property="soId">
+			join so_hdr sh
+		</isNotNull>
+		<dynamic prepend="WHERE">
+			<isNotNull property="vendorId" prepend="AND">
+				vw.vendor_id = #vendorId#
+			</isNotNull>
+			<isNotNull property="resourceId" prepend="AND">
+				vw.resource_id =
+				#resourceId#
+			</isNotNull>
+			<isNotNull property="username" prepend="AND">
+				vw.resource_user_name LIKE #username#
+			</isNotNull>
+			<isNotNull property="businessName" prepend="AND">
+				vw.business_name LIKE #businessName#
+			</isNotNull>
+			<isNotNull property="providerStatusId" prepend="AND">
+				vw.vendor_status_id = #providerStatusId#
+			</isNotNull>
+			<isNotNull property="city" prepend="AND">
+				vw.vendor_city = #city#
+			</isNotNull>
+			<isNotNull property="state" prepend="AND">
+				vw.vendor_state =
+				#state#
+			</isNotNull>
+			<isNotNull property="zip" prepend="AND">
+				vw.vendor_zip = #zip#
+			</isNotNull>
+			<isNotNull property="soId" prepend="AND">
+				sh.so_id = #soId#
+			</isNotNull>
+			<isNotNull property="phone" prepend="AND">
+				(vw.phone_no = #phone#
+				or vw.mobile_no = #phone#)
+			</isNotNull>
+			<isNotNull property="email" prepend="AND">
+				vw.email = #email#
+			</isNotNull>
+			<isNotNull property="soId" prepend="AND">
+				vw.resource_id =
+				sh.accepted_resource_id
+			</isNotNull>
+			order by $sortColumnName$ $sortOrder$
+		</dynamic>
+	</select>
+
+	<select id="workplaceProviderSearchBySkill.query"
+		parameterClass="providerSearchForAdminParameters" resultClass="providerSearchForAdminParameters">
+		SELECT distinct vw.resource_id as resourceId,
+		vw.vendor_id AS vendorId,
+		vw.vendor_status as vendorStatus,
+		vw.business_name AS businessName,
+		vw.primary_industry as primaryIndustry,
+		m.market_name as marketName,
+		vw.resource_state AS state,
+		vw.resource_zip AS zip,
+		pla.last_active_date as lastActivityDate,
+		vw.vendor_city as companyCity,
+		vw.vendor_state as companyState,
+		vw.resource_status as resourceStatus,
+		vw.full_name as memberName
+		FROM vw_marketplace_provider_search vw
+		join
+		vw_provider_last_activity pla on vw.vendor_id = pla.vendor_id
+		left
+		outer join lu_market m on vw.resource_market_id = m.market_id
+		<dynamic prepend="WHERE">
+			<isNotNull property="marketId" prepend="AND">
+				vw.resource_market_id = #marketId#
+			</isNotNull>
+			<isNotNull property="state" prepend="AND">
+				vw.resource_state =
+				#state#
+			</isNotNull>
+			<isNotNull property="zip" prepend="AND">
+				vw.resource_zip = #zip#
+			</isNotNull>
+			<isNotNull property="district" prepend="AND">
+				vw.resource_ri_district = #district#
+			</isNotNull>
+			<isNotNull property="region" prepend="AND">
+				vw.resource_region =
+				#region#
+			</isNotNull>
+			<isNotNull property="resourcePrimarySkill" prepend="AND">
+				vw.primary_skill_node_id = #resourcePrimarySkill#
+			</isNotNull>
+			<isNotNull property="auditable" prepend="AND">
+				vw.audit_pending_ind = #auditable#
+			</isNotNull>
+			<isNotNull property="resourceBackgroundStatusId" prepend="AND">
+				vw.resource_bgchk_status_id = #resourceBackgroundStatusId#
+			</isNotNull>
+			<isNotNull property="selectProviderNetworkId" prepend="AND">
+				vw.cred_category_id = #selectProviderNetworkId#
+			</isNotNull>
+			order by $sortColumnName$ $sortOrder$
+		</dynamic>
+	</select>
+
+
+	<select id="workplaceProviderSearchGetProviderAdmin.query"
+		parameterClass="java.lang.Integer" resultClass="providerSearchForAdminParameters">
+		SELECT distinct
+		vendor_Id as vendorId
+		, business_Name as businessName
+		, resource_Id as resourceId
+		, resource_user_name as username
+		, full_name as memberName
+		, resource_primary_ind as primaryInd
+		, vendor_city as companyCity
+		, vendor_state as companyState
+		FROM vw_marketplace_provider_search vw
+		WHERE vw.vendor_id = #vendorId# and resource_primary_ind = 1
+	</select>
+
+	<select id="searchForAdmin.query" parameterClass="searchForAdminParameters"
+		resultClass="searchForAdminParameters">
+		SELECT DISTINCT
+		vpp.buyer_id AS buyerId,
+		vpp.business_name AS businessName,
+		vpp.user_name AS usrName,
+		vpp.buyer_source_id AS buyerSourceId,
+		vpp.contact_id AS contactId,
+		concat(vpp.last_name, ', ', vpp.first_name) AS name,
+		vpp.email AS email,
+		vpp.phone_no AS phone,
+		vpp.resource_id AS resourceId
+		FROM vw_buyer_profile vpp
+		<isNotNull property="soId">
+			join so_hdr sh
+		</isNotNull>
+		<dynamic prepend="WHERE">
+			<isNotNull property="buyerId" prepend="AND">
+				vpp.buyer_id = #buyerId#
+			</isNotNull>
+			<isNotNull property="resourceId" prepend="AND">
+				vpp.resource_id =
+				#resourceId#
+			</isNotNull>
+			<isNotNull property="usrName" prepend="AND">
+				vpp.user_name LIKE
+				#usrName#
+			</isNotNull>
+			<isNotNull property="businessName" prepend="AND">
+				vpp.business_name LIKE #businessName#
+			</isNotNull>
+			<isNotNull property="phone" prepend="AND">
+				(phone_no = #phone# or
+				mobile_no = #phone#)
+			</isNotNull>
+			<isNotNull property="email" prepend="AND">
+				vpp.email = #email#
+			</isNotNull>
+			<isNotNull property="soId" prepend="AND">
+				vpp.resource_id =
+				sh.accepted_resource_id
+			</isNotNull>
+		</dynamic>
+		order by $sortColumnName$ $sortOrder$
+		LIMIT 101
+	</select>
+
+	<select id="getNewServiceProsBySkillForSPN" parameterClass="java.util.Map"
+		resultClass="spnProviderSearchVO">
+		SELECT distinct vr.resource_id AS resourceId
+		, vr.vendor_id as vendorId
+		, ifnull(vw.aggregate_rating_count,0) as aggregateRatingCount
+		, vw.aggregate_rating_score as aggregateRatingScoreByNode
+		, vc_g.cred_amount as generalInsAmount
+		, vc_a.cred_amount as autoInsAmount
+		, vc_wc.cred_amount as workmanCompInsAmount
+		, vr.total_so_completed as totalSOCompleted
+		FROM resource_skill rs
+		join vendor_resource vr on rs.resource_id=vr.resource_id and
+		vr.wf_state_id = 6 and vr.resource_ind = 1 and vr.mkt_place_ind = 1
+		join vendor_hdr vh on vh.vendor_id = vr.vendor_id and vh.wf_state_id
+		IN (3,26,34)
+		join skill_tree st on st.node_id=rs.node_id
+		join location l on l.locn_id = vr.locn_id
+		join lu_zip_market lzm on l.zip = lzm.zip
+		join lu_market lm on lzm.market_id = lm.market_id
+		join vw_provider_marketready_veritical vw on vr.resource_id =
+		vw.resource_id
+		left outer join vendor_credentials vc_g on vr.vendor_id = vc_g.vendor_id
+		and vc_g.cred_type_id = 6 and vc_g.cred_category_id = 41
+		left outer join vendor_credentials vc_a on vr.vendor_id = vc_a.vendor_id
+		and vc_a.cred_type_id = 6 and vc_a.cred_category_id = 42
+		left outer join vendor_credentials vc_wc on vr.vendor_id = vc_wc.vendor_id
+		and vc_wc.cred_type_id = 6 and vc_wc.cred_category_id = 43
+		<isNotEmpty property="skillTypeIds">
+			join resource_skill_service_type rsst on rs.resource_skill_id =
+			rsst.resource_skill_id
+		</isNotEmpty>
+		WHERE st.node_id IN
+		<iterate property="skillNodeIds" open="(" close=")"
+			conjunction=",">
+			#skillNodeIds[]#
+		</iterate>
+		and lm.market_id = #marketId#
+		and vw.node_id = #mainCategory#
+		and not exists (select 1 from spn_network sn where spn_id = #spnId# and
+		sn.resource_id = vr.resource_id)
+		<isNotEmpty property="skillTypeIds">
+			and rsst.service_type_template_id in
+			<iterate property="skillTypeIds" open="(" close=")"
+				conjunction=",">
+				#skillTypeIds[]#
+			</iterate>
+		</isNotEmpty>
+
+	</select>
+
+	<select id="getProviderFirmPerfScore.query" parameterClass="java.util.HashMap"
+		resultClass="lookupVO">
+		SELECT
+		spfs.provider_firm_id AS id,
+		IF(spfs.performance_score IS NULL OR spfs.performance_score <![CDATA[<]]>
+		0,0,spfs.performance_score)AS dId
+		FROM
+		spnet_provider_firm_state spfs
+		WHERE
+		spfs.spn_id = #spn#
+		<isNotNull property="vendorIds" prepend="AND  ">
+			spfs.provider_firm_id IN
+			<iterate property="vendorIds" open="(" close=")" conjunction=",">
+				#vendorIds[]#
+			</iterate>
+		</isNotNull>
+	</select>
+
+	<select id="findRanks.query" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT
+		rank
+		FROM
+		tier_route_eligilble_providers trp
+		WHERE trp.so_id=#soId#
+		GROUP BY rank
+		ORDER BY rank ASC
+		LIMIT
+		#noOfProvInCurentTier# OFFSET #noOfProvInPreviousTiers#
+	</select>
+
+	<select id="fetchProvidersForFirmLevel.query" parameterClass="java.util.HashMap"
+		resultClass="trpVO">
+		SELECT
+		vendor_id AS vendorId,
+		resource_id AS resourceId,
+		routed_time_perf_score AS perfScore,
+		routed_time_firm_perf_score AS firmPerfScore
+		FROM
+		tier_route_eligilble_providers trp
+		WHERE
+		trp.so_id=#soId#
+		<isNotNull property="ranks" prepend="AND  ">
+			trp.rank IN
+			<iterate property="ranks" open="(" close=")" conjunction=",">
+				#ranks[]#
+			</iterate>
+		</isNotNull>
+	</select>
+
+	<select id="fetchProvidersForProviderLevel.query"
+		parameterClass="java.util.HashMap" resultClass="trpVO">
+		SELECT
+		vendor_id AS vendorId,
+		resource_id AS resourceId,
+		routed_time_perf_score AS perfScore,
+		routed_time_firm_perf_score AS firmPerfScore
+		FROM
+		tier_route_eligilble_providers trp
+		WHERE
+		trp.so_id=#soId#
+		ORDER BY
+		rank ASC
+		LIMIT #noOfProvInCurentTier# OFFSET #noOfProvInPreviousTiers#
+	</select>
+
+	<select id="additional_ins.query" parameterClass="providerIds"
+		resultClass="additionalInsuranceVO">
+		SELECT vc.vendor_cred_id AS vendorCredId,
+		vc.vendor_id AS vendorId,
+		vc.cred_category_id AS categoryId,
+		lvc.cred_category AS categoryName,
+		vc.cred_amount AS policyAmount,
+		vc.cred_expiration_date AS policyExpiryDate,
+		vc.wf_state_id AS policyStatus,
+		vc.insurance_description AS policyDescr
+		FROM vendor_credentials vc
+		left outer join
+		lu_vendor_credential_category lvc on vc.cred_category_id =
+		lvc.cred_category_id
+		<dynamic prepend="WHERE">
+			<isNotNull property="providerIds">
+				vc.vendor_id IN
+				<iterate property="providerIds" open="(" close=")"
+					conjunction=",">
+					#providerIds[]#
+				</iterate>
+			</isNotNull>
+		</dynamic>
+		AND vc.cred_type_id = 6
+		AND vc.cred_category_id NOT IN(41,42,43)
+	</select>
+
+	<select id="getResourcesBasedOnProviderResponse.query"
+		parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT resource_id
+		FROM so_routed_providers
+		WHERE so_id = #soId#
+		AND
+		provider_resp_id IN
+		(3,5,7)
+		AND resource_id IN
+		<iterate property="providerIds" open="(" close=")"
+			conjunction=",">
+			#providerIds[]#
+		</iterate>
+	</select>
+
+	<select id="opportunity_email_vendor.query" parameterClass="java.lang.String"
+		resultClass="java.lang.Integer">
+		SELECT routingRuleVendor.vendor_id FROM
+		routing_rule_vendor routingRuleVendor,
+		so_routing_rule_assoc assoc WHERE assoc.routing_rule_hdr_id =
+		routingRuleVendor.routing_rule_hdr_id AND
+		routingRuleVendor.auto_accept_status= 'ON'
+		AND routingRuleVendor.opportunity_email_ind= 0 AND assoc.so_id = #soId#
+	</select>
+
+	<select id="getApplicationConstantValue.query" resultClass="java.lang.String"
+		parameterClass="java.lang.String">
+		SELECT app_constant_value FROM application_constants WHERE
+		app_constant_key=#appkey#
+	</select>
+
+	<!-- R 16_2_0_1: SL-21376: Fetching categoryIds for the skuList -->
+	<select id="getSKUCategoryIds.query" parameterClass="java.util.HashMap"
+		resultClass="java.lang.Integer">
+		SELECT bst.category_node_id
+		FROM buyer_sku bs
+		JOIN buyer_sku_task bst
+		ON (bs.sku_id = bst.sku_id)
+		AND bs.buyer_id=#buyerId#
+		AND bs.sku IN
+		<iterate property="skus" open="(" close=")" conjunction=",">
+			#skus[]#
+		</iterate>
+	</select>
+
+	<!-- R 16_2_0_2: SL-21467: Fetching SKUs for the sub category list -->
+	<select id="getSKUsForCategoryIds.query" parameterClass="java.util.HashMap"
+		resultClass="skuDetails">
+		SELECT STRAIGHT_JOIN
+		buyerSku.sku_id AS skuId,
+		buyerSku.sku AS sku,
+		buyerSku.sku_description AS description,
+		template.template_name AS template,
+		buyerSku.orderitem_type AS
+		orderType,
+		buyerSku.retail_price AS retailPrice,
+		buyerSku.bid_margin AS
+		margin,
+		buyerSku.bid_price AS maximumPrice,
+		buyerSku.billing_margin AS
+		billingMargin,
+		buyerSku.billing_price AS billingPrice,
+		skuTasks.task_name AS taskName,
+		skuTasks.task_comments AS taskComments,
+		service.descr AS skill,
+		skuTasks.category_node_id AS nodeId
+		FROM
+		supplier_prod.buyer_sku buyerSku,
+		supplier_prod.buyer_sku_task skuTasks,
+		supplier_prod.lu_service_type_template service,
+		supplier_prod.buyer_so_template template
+		WHERE
+		buyerSku.buyer_id = #buyerId#
+		AND buyerSku.sku_id = skuTasks.sku_id
+		AND service.service_type_template_id
+		= skuTasks.service_type_template_id
+		AND template.template_id =
+		buyerSku.template_id
+		AND skuTasks.category_node_id IN
+		<iterate property="cats" open="(" close=")" conjunction=",">
+			#cats[]#
+		</iterate>
+		ORDER BY CASE
+		WHEN description LIKE CONCAT("%",#keyword#,"%") THEN 1
+		ELSE 2
+		END
+	</select>
+
+	<select id="getBasicDetailsofFirm.query" parameterClass="java.util.List"
+		resultClass="basicFirmDetailsVOSearchFirm">
+		SELECT vh.vendor_id AS firmId,
+		vh.business_name AS businessName,
+		vh.business_descr AS overView,
+		vh.business_start_date AS startDate,
+		c.first_name AS firstName,
+		c.last_name AS lastName,
+		c.email_alt AS
+		altEmail,
+		c.email AS email,
+		l.street_1 AS street1,
+		l.street_2 AS street2,
+		l.city AS city,
+		l.state_cd AS state,
+		l.zip AS zip,
+		l.zip4 AS zip4,
+		vh.bus_phone_no AS businessPhone,
+		vh.bus_phone_no_ext AS
+		businessPhoneExt,
+		vh.bus_fax_no AS businessFax,
+		vh.web_address AS web,
+		lu_pi.descr AS primaryIndustryDesc,
+		MIN(vr.hourly_rate)AS
+		minHourlyRate,
+		MAX(vr.hourly_rate) AS maxHourlyRate,
+		IFNULL(k.timetoaccept,0.00) AS firmAverageTimeToAccept,
+		IFNULL(k.arrivalpercentage,0.00) AS firmAverageArrivalWindow
+		FROM vendor_hdr vh
+		JOIN vendor_resource vr ON vh.vendor_id=vr.vendor_id
+		JOIN contact c ON vr.contact_id=c.contact_id
+		JOIN vendor_location vl ON vl.vendor_id=vh.vendor_id
+		JOIN location l ON
+		vl.locn_id=l.locn_id AND l.locn_type_id=1
+		LEFT OUTER JOIN vendor_kpi k
+		ON vr.vendor_id = k.vendor_id
+		LEFT OUTER JOIN lu_primary_industry lu_pi
+		ON vh.primary_industry_id = lu_pi.primary_industry_id
+		WHERE
+		vh.vendor_id IN
+		<iterate open="(" close=")" conjunction=",">
+			#[]#
+		</iterate>
+		GROUP BY vh.vendor_id
+	</select>
+
+
+
+	<select id="getServiceDetailsofFirm.query" parameterClass="java.util.HashMap"
+		resultClass="firmServicesVOSearchFirm">
+		SELECT s1.node_name AS rootCategory,
+		sk.node_name AS project,
+		vr.vendor_id AS firmId,
+		s1.node_id AS rootNodeId,
+		sk.node_id AS projectId
+		FROM vendor_resource vr
+		JOIN vendor_hdr h ON h.vendor_id=vr.vendor_id
+		JOIN resource_skill s ON s.resource_id=vr.resource_id
+		JOIN skill_tree sk ON sk.node_id=s.node_id
+		JOIN skill_tree s1 ON s1.node_id=sk.root_node_id
+		WHERE vr.vendor_id IN
+		<iterate property="firmIdList" open="(" close=")" conjunction=",">
+			#firmIdList[]#
+		</iterate>
+		AND vr.wf_state_id = 6
+		AND sk.level IN (2,3) AND (sk.node_id IN
+		<iterate property="categoryIdList" open="(" close=")"
+			conjunction=",">
+			#categoryIdList[]#
+		</iterate>
+		OR s1.node_id IN
+		<iterate property="categoryIdList" open="(" close=")"
+			conjunction=",">
+			#categoryIdList[]#
+		</iterate>
+		)
+		GROUP BY rootCategory, project, firmId
+		ORDER BY rootCategory;
+	</select>
+
+	<select id="AllProvidersForExternalCalenderSyncList.query" resultClass="java.lang.String">
+		SELECT DISTINCT res.resource_id FROM spnet_buyer sbuyer 
+		INNER JOIN spnet_provider_firm_state sfirms ON sbuyer.spn_id=sfirms.spn_id AND buyer_id = 3333 AND provider_wf_state = 'PF SPN MEMBER'
+		INNER JOIN vendor_resource res ON res.vendor_id=sfirms.provider_firm_id;
+	</select>
+	
+	<select id="applicableProvidersForTechTalk.query" resultClass="java.lang.String" 
+	parameterClass="java.lang.Integer">
+		 SELECT DISTINCT res.resource_id, sfirms.spn_id as spnID FROM spnet_provider_firm_state sfirms
+    	INNER JOIN vendor_resource res ON res.vendor_id=sfirms.provider_firm_id
+    	where sfirms.provider_wf_state = 'PF SPN MEMBER'
+		AND sfirms.spn_id = #spnId#;
+	</select>
+	
+	
+	<select id="validProvidersForTechTalk.query" resultClass="java.lang.String" 
+	parameterClass="java.lang.Integer">
+		SELECT DISTINCT service_provider_id, spn_id as spnID FROM spnet_serviceprovider_state 
+		where provider_wf_state = 'SP SPN APPROVED'
+		AND spn_id = #spnId#;
+	</select>
+
+
+</sqlMap>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	<!-- End Delegate  Loading -->
+	
+	<!-- Start DAO  Loading -->
+	<bean id="iUserProfileDao" class="com.newco.marketplace.persistence.daoImpl.provider.UserProfileDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	
+	<bean id="iTeamProfileDAO" class="com.newco.marketplace.persistence.daoImpl.provider.TeamProfileDAOImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient" />
+		</property>		
+	</bean>
+	<!-- End DAO  Loading -->
+	
+    <!-- Start BO  Loading -->
+	<bean id="teamProfileBOImpl" class="com.newco.marketplace.business.businessImpl.provider.TeamProfileBOImpl"
+		lazy-init="true">
+		<constructor-arg index="0" ref="iTeamProfileDAO"/>
+		<constructor-arg index="1" ref="iUserProfileDao"/>
+		<constructor-arg index="2" ref="providerEmailBOImpl"/>
+		<constructor-arg index="3" ref="activityDaoImpl"/>
+		<constructor-arg index="4" ref="vendorResourceDaoImpl"/>
+		<property name="transactionManager">
+            <ref bean="dsTransactionManagerMain"/>
+        </property>
+	</bean>
+	<!-- End DAO  Loading -->
+	
+	<!-- Below is general user management (SL Admin, Manage Buyers, etc). 
+	     Probably can be used for Provider admin as well.-->
+	     
+	<bean id="userManageDao" class="com.newco.marketplace.persistence.daoImpl.usermanagement.UserManagementDaoImpl">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapClient"/>
+		</property>
+	</bean>
+	
+	<bean id="iUserManagementBOTarget" class="com.newco.marketplace.business.businessImpl.usermanagement.UserManagementBOImpl"
+		lazy-init="true">
+		<property name="userManageDao">
+			<ref bean="userManageDao"/>
+		</property>
+		<property name="lookupDao">
+			<ref bean="lookupDao"/>
+		</property>
+		<property name="templateDao">
+			<ref bean="pTemplateDao"/>
+		</property>
+		<property name="emailTemplateBean">
+			<ref bean="emailTemplateBean"/>
+		</property>
+		<property name="transactionManager">
+			<ref bean="dsTransactionManagerMain"/>
+		</property>
+		<property name="alertDao">
+			<ref bean="alertDao"/>
+		</property>
+	</bean>
+	
+</beans>

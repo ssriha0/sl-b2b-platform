@@ -1,0 +1,171 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="selectProviderNetwork" extends="ServiceLiveBase,json-default" >
+        <default-interceptor-ref name="ServiceLiveBaseInterceptorStack"/>
+                
+    	<global-results>
+			<result name="error" type="redirectAction">
+				<param name="actionName">errorAction</param>
+				<param name="errorMessage">${errorMessage}</param>
+				<param name="returnURL">${returnURL}</param>
+			</result>
+		</global-results>		
+	   <action name="spnBuyerAgreeModal" class="SPNBuyerAgreeModalAction" method="execute">
+	        <result name="success">/jsp/spn/spnBuyerAgreeModal.jsp</result>	    	    
+	   </action>
+	   <action name="spnBuyerAgreeModal_acceptBuyerAgreementAjax" class="SPNBuyerAgreeModalAction" method="acceptBuyerAgreementAjax">
+	   		<result name="success">/jsp/spn/spnBuyerAgreeModalTime.jsp</result>	    	    
+	   </action>
+        <action name="spnShowDocument" class="SPNShowDocumentAction" method="execute">
+	        <result name="success">/jsp/spn/spnBuyerAgreeModalDocument.jsp</result>	    	    
+	   </action>
+	    <action name="spnSubmitBuyerAgreement" class="SPNSubmitBuyerAgreementAction" method="execute">
+	         <result name="success" type="redirectAction">
+	            <param name="actionName">spnMonitorAction_loadSPNMonitor?selectedSpnId=${spnId}</param>
+	         </result>		    	    
+	   </action>
+	    <action name="spnProviderInvitation_*" class="SPNProviderInvitationAction" method="{1}">
+	        <result name="success">/jsp/spn/spnProviderInvitation.jsp</result>
+	         <result name="dashboard" type="redirectAction">
+	            <param name="actionName">dashboardAction</param>
+        	</result>	    	    
+	   </action>
+	   
+	    <action name="spnBuyerLanding_*" class="SPNBuyerLandingAction" method="{1}">
+	        <result name="success">/jsp/spn/spnBuyerLanding.jsp</result>	    	    
+	       	<result name="create_new_network" type="redirectAction">
+	        	<param name="actionName">spnBuyerBuilderAction_displayPage</param>
+        	</result>
+        </action>
+	    
+	    <action name="spnBuyerBuilderAction_*" class="SPNBuyerBuilderAction" method="{1}">
+	        <result name="success">/jsp/spn/spnBuyerBuilder.jsp</result>	    	    
+	       	<result name="add_criteria" type="redirectAction">
+	        	<param name="actionName">spnBuyerCriteriaBuilderAction_addCriteria</param>
+        	</result>
+	       	<result name="save_success" type="redirectAction">
+	        	<param name="actionName">spnBuyerLanding_displayPage</param>
+        	</result>
+	        <result name="save_failure">/jsp/spn/spnBuyerBuilder.jsp</result>	    	    
+	       	<result name="delete" type="redirectAction">
+	        	<param name="actionName">spnBuyerLanding_displayPage</param>
+        	</result>
+	        <result name="add_attachment">/jsp/spn/spnBuyerBuilder.jsp</result>	
+	        
+	        <result name="add_criteria_success" type="redirectAction">
+	        	<param name="actionName">spnBuyerCriteriaBuilderAction_displayPage</param>
+        	</result>
+	         	    
+        </action>
+	    
+	    <action name="spnBuyerCriteriaBuilderAction_*" class="SPNBuyerCriteriaBuilderAction" method="{1}">
+	        <result name="success">/jsp/spn/spnBuyerCriteriaBuilder.jsp</result>
+	        <result name="to_builder" type="redirectAction">	
+	          <param name="actionName">spnBuyerBuilderAction_displayPage?spnID=${spnID}</param>   
+	        </result> 	    
+        </action>
+        
+        <action name="spnAdminAction_*" class="spnAdminAction" method="{1}">
+	        <result name="success">/jsp/spn/adminSPNCampaignManager.jsp</result>
+	        <result name="to_campaign" type="redirectAction">	
+	          <param name="actionName">spnBuyerBuilderAction_displayPage?spnID=${spnID}</param>   
+	        </result> 	    
+        </action>
+        
+	    <action name="spnCampaignLandingAction_*" class="SPNCampaignLandingAction" method="{1}">
+	        <result name="success">/jsp/spn/spnCampaignLanding.jsp</result>
+        </action>	  
+        
+         <action name="spnMemberManager_*" class="spnMemberManager" method="{1}">
+	        <result name="success">/jsp/spn/spnBuyerMemberManager.jsp</result>
+	        <result name="grid_iframe_container_view">/jsp/spn/tab_spn_view_container.jsp</result>
+	        <result name="grid_iframe_grid_view">/jsp/spn/tab_spn_view_iframe.jsp</result>
+        </action>	
+        
+         
+        <action name="spnMonitorAction_*" class="SPNMonitorAction" method="{1}">
+	        <result name="spnDownloadDocBlankJSP">/jsp/spn/spnDownloadDocBlank.jsp</result>
+	        <result name="success">/jsp/spn/spnMainMonitor.jsp</result>
+	        <result name="success_bak">/jsp/spn/spnMainMonitor2.jsp</result>
+	        <result name="spn_monitor_load">/jsp/spn/spnMainMonitor.jsp</result>
+	        <result name="uploadDoc">/jsp/spn/docUploaded.jsp</result>
+	        <result name="providerRequirements">/jsp/spn/spnProviderRequirements.jsp</result>
+	        <result name="companyRequirements">/jsp/spn/spnCompanyRequirements.jsp</result>
+	        <result name="callExternalSPNApp" type="redirect">${resultUrl}</result>
+	        <result name="uploadDocFilleUp">/jsp/spn/spnMainMonitor.jsp</result>  
+	    </action>
+	    
+	    <action name="spnMonitorAction_viewComplianceAjax" class="SPNMonitorAction" method="viewComplianceAjax">
+	        <result name="success">/jsp/spn/tab_spn_compliance.jsp</result>
+	    </action>
+	    
+	    		<action name="spnMonitorNetwork_viewComplianceTabAjaxAction" class="SPNMonitorAction" method="viewComplianceTabAjax">
+						<result name="json" type="json">
+						<param name="excludeProperties">
+			 	spnMonitorBO,
+			 	spnCreateUpdateBO,
+			 	fileUpload,
+			 	targetExternalAction,
+			 	resultUrl,
+			 	buyerId
+			 </param> 
+			 </result>	
+		</action>
+		
+		<action name="spnMonitorAction_exportBackgroundInformationAjax" class="SPNMonitorAction" method="exportBackgroundInformationAjax">
+		<result name="success">/jsp/spn/export_monitor_results.jsp</result>
+		</action>
+	        
+	        
+	    <action name="spnMonitorAction_searchBackgroundInformationCountAjax" class="SPNMonitorAction" method="searchBackgroundInformationCountAjax">
+	        <result name="back">/jsp/spn/search_background_information_provider.jsp</result>
+	        <result name="error">/jsp/public/error/body/errorBody.jsp</result>	
+	    </action>
+	    
+	    <action name="spnMonitorAction_displayBackgroundHistoryAjax" class="SPNMonitorAction" method="displayBackgroundHistoryAjax">
+	        <result name="success">/jsp/spn/background_check_history_provider.jsp</result>
+	    </action>
+	    
+	    <action name="spnMonitorNetwork_searchBackgroundInformationAjax" class="SPNMonitorAction" method="searchBackgroundInformationAjax">
+						<result name="json" type="json">
+						<param name="excludeProperties">
+			 	spnMonitorBO,
+			 	spnCreateUpdateBO,
+			 	fileUpload,
+			 	targetExternalAction,
+			 	resultUrl,
+			 	buyerId
+			 </param> 
+			 </result>	
+		</action>
+	    
+	    <action name="spnMonitorCustomAction_*" class="SPNMonitorCustomAction" method="{1}">
+	        <result name="spnDownloadDocBlankJSP">/jsp/spn/spnDownloadDocBlank.jsp</result>
+	        <result name="success">/jsp/spn/spnMainMonitor.jsp</result>
+	        <result name="success_bak">/jsp/spn/spnMainMonitor2.jsp</result>
+	        <result name="spn_monitor_load">/jsp/spn/spnMainMonitor.jsp</result>
+	        <result name="uploadDoc">/jsp/spn/docUploaded.jsp</result>
+	        <result name="providerRequirements">/jsp/spn/spnProviderRequirements.jsp</result>
+	        <result name="companyRequirements">/jsp/spn/spnCompanyRequirements.jsp</result>
+	        <result name="callExternalSPNApp" type="redirect">${resultUrl}</result>
+	        
+	    </action>
+	    	
+	    <action name="spnMonitorAction_loadSPNAjax" class="SPNMonitorAction" method="loadSPNAjax"> 
+	    	 <result name="success">/jsp/spn/spnMainMonitorTableExpand2.jsp</result>    
+	    </action>
+	    	     
+	    <action name="spnMonitorAction_loadSPNInformationTabAjax" class="SPNMonitorAction" method="loadSPNInformationTabAjax"> 
+	    	 <result name="success">/jsp/spn/spnMainMonitorTableExpandInformation.jsp</result>    
+	    </action> 
+	    <action name="spnMonitorAction_loadSPNRequirementsTabAjax" class="SPNMonitorAction" method="loadSPNRequirementsTabAjax"> 
+	    	 <result name="success">/jsp/spn/spnMainMonitorTableExpandRequirements.jsp</result>    
+	    </action>
+		<action name="spnMonitorAction_loadMonitorAjax" class="SPNMonitorAction" method="loadSPNMonitor">
+	        <result name="success">/jsp/spn/spnMainMonitorTable.jsp</result>
+	    </action>
+    </package>
+    
+</struts>

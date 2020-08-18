@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+    <package name="xpublicProfile" extends="ServiceLiveBase" >
+    	<default-interceptor-ref name="ServiceLiveBaseInterceptorStack" />
+       	<action name="providerProfileInfoAction_*" class="providerInfoPagesAction" method="{1}">
+				<result name="success" type="tiles">base.servicelive.providerprofile_popup</result>
+				<result name="loadPhoto">/jsp/providerRegistration/provider_image.jsp</result>
+				<result name="loadSkillsSuccess" >/jsp/providerRegistration/providerInfopages_skillslist.jsp</result>
+				<result name="fail" type="redirectAction">homepage</result>
+				<result name="successexternal" type="tiles">base.servicelive.providerprofile</result>
+		</action>
+		
+	    <action name="providerProfileFirmInfoAction_*" class="providerFirmInfoPagesAction" method="{1}">
+				<result name="success" type="tiles">base.servicelive.companyprofile_popup</result>
+				<result name="fail" type="redirectAction">homepage</result>
+				<result name="successexternal" type="tiles">base.servicelive.companyprofile</result>
+				<result name="ajax">/jsp/providerRegistration/availableProvidersTable.jsp</result>
+		</action>		
+		
+	</package>
+</struts>

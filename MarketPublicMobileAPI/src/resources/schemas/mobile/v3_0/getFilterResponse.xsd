@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:include schemaLocation="../../common.xsd" />
+
+	<xs:element name="getFilterResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="results"/>
+				<xs:element ref="filters" minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+<xs:element name="filters">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="filter"  maxOccurs="unbounded"/>
+				</xs:sequence>
+				</xs:complexType>
+</xs:element>
+	<xs:element name="filter">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="filterId"  type="xs:integer" maxOccurs="1"/>
+				<xs:element name="filterName"  type="xs:string" maxOccurs="1"/>
+				<xs:element ref="searchCriterias"  maxOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+<xs:element name="searchCriterias">
+	<xs:complexType>
+		<xs:sequence>
+			<xs:element name="markets"  type="marketsType" maxOccurs="1" minOccurs="0"/>
+			<xs:element name="orderStatuses" type="orderStatusestype" maxOccurs="1" minOccurs="0"/>
+			<xs:element name="orderSubstatuses" type="orderSubStatusesType" maxOccurs="1" minOccurs="0"/>
+			<xs:element name="serviceProNames" type="serviceProNamesType" maxOccurs="1" minOccurs="0"/>
+			<xs:element name="appointment" type = "appointmentDateType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="flaggedSO" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="unAssigned" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:element>
+<!--  <xs:complexType name="appointmentDateType">
+	<xs:sequence>
+		<xs:element name="appointmentDate" type="appointmentValue" maxOccurs="1" minOccurs="0" />
+	</xs:sequence>
+</xs:complexType>-->
+<xs:complexType name="marketsType">
+	<xs:sequence>
+		<xs:element name="market" type="criteriaValue" maxOccurs="unbounded" minOccurs="0"/>
+	</xs:sequence>
+</xs:complexType>
+<xs:complexType name="orderStatusestype">
+	<xs:sequence>
+		<xs:element name="orderStatus" type="criteriaValue" maxOccurs="unbounded" minOccurs="0" />
+	</xs:sequence>
+</xs:complexType>
+<xs:complexType name="orderSubStatusesType">
+	<xs:sequence>
+	   <!-- <xs:element name="orderSubStatus" type="criteriaValue" maxOccurs="unbounded" minOccurs="0" /> -->
+	   <xs:element name="orderSubstatus" type="criteriaValue" maxOccurs="unbounded" minOccurs="0" />
+	</xs:sequence>
+</xs:complexType>
+<xs:complexType name="serviceProNamesType">
+	<xs:sequence>
+		<xs:element name="serviceProName" type="criteriaValue" maxOccurs="unbounded" minOccurs="0" />
+	</xs:sequence>
+</xs:complexType>
+<xs:complexType name="criteriaValue">
+	<xs:sequence>
+		<xs:element name="id" type="xs:integer" />
+		<xs:element name="value" type="xs:string" minOccurs="0"/>
+	</xs:sequence>
+</xs:complexType>
+<xs:complexType name="appointmentDateType">
+	<xs:sequence>
+		<xs:element name="appointmentType" type="xs:string" minOccurs="0" maxOccurs="1"/>
+		<xs:element name="appointmentStartDate" type="xs:string" minOccurs="0" maxOccurs="1"/>
+		<xs:element name="appointmentEndDate" type="xs:string" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+</xs:complexType>
+</xs:schema>

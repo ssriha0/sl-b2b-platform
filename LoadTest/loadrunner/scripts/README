@@ -1,0 +1,39 @@
+Anatomy of a LoadRunner Script
+
+The files needed to execute a script are:
+
+- *.usr -- defines actions used by the script
+- *.usp -- run logic for the script
+- *.cfg -- run-time settings
+- *.h -- global headers used by actions
+- *.c -- action files containing script code
+- *.prm -- parameter definitions
+- *.dat -- data files, containing dynamic data to be used as input by the script
+
+Files created during recording and playback include:
+
+- result* -- directories with playback results
+- *.idx -- binary files used to hold parameter values at runtime
+- *.ci -- not sure
+- combined_*.c -- a set of #include directives for the script actions
+- *.log -- miscellaneous log files
+- mdrv_cmd.txt -- commands for the script compiler
+- options.txt -- options for the script compiler
+- output.txt -- log messages generated during script playback
+- output.bak -- backup of output.txt
+- pre_cci.c -- script pre-processor output
+- data -- script recording data, distinct from script playback
+
+All of those files and directories can be deleted safely.
+
+Bash commands that can be used to delete the unnecessary files are:
+
+find . -type d -a -name 'result*' -exec rm -rf {} \;
+find . -type d -a -name 'data' -exec rm -rf {} \;
+find . -type f -a -name '*.txt' -exec rm -f {} \;
+find . -type f -a -name '*.log' -exec rm -f {} \;
+find . -type f -a -name '*.idx' -exec rm -f {} \;
+find . -type f -a -name '*.bak' -exec rm -f {} \;
+find . -type f -a -name 'pre_cci.c' -exec rm -f {} \;
+find . -type f -a -name 'combined_*.c' -exec rm -f {} \;
+find . -type f -a -name '*.ci' -exec rm -f {} \;

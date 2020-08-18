@@ -1,0 +1,3201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="orderManagement">
+
+	<typeAlias alias="callDetails"
+		type="com.newco.marketplace.business.iBusiness.api.beans.ordermanagement.getCallInfo.CallDetails" />
+	<typeAlias alias="preCallHistory"
+		type="com.newco.marketplace.business.iBusiness.api.beans.ordermanagement.getPreCallHistory.PreCallHistory" />
+	<typeAlias alias="eligibleProvidersVO"
+		type="com.newco.marketplace.business.iBusiness.api.beans.ordermanagement.eligibleproviders.EligibleProvider" />
+	<typeAlias alias="om_contact"
+		type="com.newco.marketplace.business.iBusiness.api.beans.ordermanagement.getCallInfo.Contact" />
+	<typeAlias alias="om_part"
+		type="com.newco.marketplace.business.iBusiness.api.beans.ordermanagement.getCallInfo.Part" />
+	<typeAlias alias="om_location"
+		type="com.newco.marketplace.business.iBusiness.api.beans.ordermanagement.getCallInfo.Location" />
+	<typeAlias alias="om_provider"
+		type="com.newco.marketplace.business.iBusiness.api.beans.ordermanagement.getCallInfo.Provider" />
+	<typeAlias alias="om_task"
+		type="com.newco.marketplace.business.iBusiness.api.beans.ordermanagement.getCallInfo.Task" />
+	<typeAlias alias="omServiceOrderDetails"
+		type="com.newco.marketplace.vo.ordermanagement.so.OMServiceOrder" />
+	<typeAlias alias="filterParams"
+		type="com.newco.marketplace.dto.vo.FilterParamsVO" />
+	<typeAlias alias="providerFilterVO"
+		type="com.newco.marketplace.business.iBusiness.api.beans.ordermanagement.fetchOrders.ProviderFilterVO" />
+	<typeAlias alias="marketFilterVO"
+		type="com.newco.marketplace.business.iBusiness.api.beans.ordermanagement.fetchOrders.MarketFilterVO" />
+	<typeAlias alias="statusFilterVO"
+		type="com.newco.marketplace.business.iBusiness.api.beans.ordermanagement.fetchOrders.StatusFilterVO" />
+	<typeAlias alias="subStatusFilterVO"
+		type="com.newco.marketplace.business.iBusiness.api.beans.ordermanagement.fetchOrders.SubStatusFilterVO" />
+	<typeAlias alias="scheduleFilterVO"
+		type="com.newco.marketplace.business.iBusiness.api.beans.ordermanagement.fetchOrders.ScheduleStatusFilterVO" />
+	<typeAlias alias="routedProvidersVO"
+		type="com.newco.marketplace.business.iBusiness.api.beans.ordermanagement.fetchOrders.RoutedProvidersVO" />
+	<typeAlias alias="updateScheduleVO" 
+		type="com.newco.marketplace.business.iBusiness.api.beans.ordermanagement.updateScheduleDetails.UpdateScheduleVO" />
+	<typeAlias alias="contact"
+		type="com.newco.marketplace.dto.vo.serviceorder.Contact" />
+	<typeAlias alias="providerResultVO" 
+		type="com.newco.marketplace.dto.vo.providerSearch.ProviderResultVO"/>
+	<typeAlias alias="soScope" 
+		type="com.newco.marketplace.vo.ordermanagement.so.SOScope"/>
+	<typeAlias alias="availabilityDateVO" 
+		type="com.newco.marketplace.vo.ordermanagement.so.AvailabilityDateVO"/>
+    <typeAlias alias="soReScheduleRole" 
+		type="com.newco.marketplace.vo.ordermanagement.so.RescheduleVO"/>
+	<typeAlias alias="jobDoneSubStatusFilterVO"
+		type="com.newco.marketplace.business.iBusiness.api.beans.ordermanagement.fetchOrders.JobDoneSubStatusFilterVO" />
+	<typeAlias alias="currentOrdersSubStatusFilterVO"
+		type="com.newco.marketplace.business.iBusiness.api.beans.ordermanagement.fetchOrders.CurrentOrdersSubStatusFilterVO" />	
+	<typeAlias alias="cancellationsSubStatusFilterVO"
+		type="com.newco.marketplace.business.iBusiness.api.beans.ordermanagement.fetchOrders.CancellationsSubStatusFilterVO" />
+		
+		<typeAlias alias="revisitSubStatusFilterVO"
+		type="com.newco.marketplace.business.iBusiness.api.beans.ordermanagement.fetchOrders.RevisitSubStatusFilterVO" />
+	<typeAlias alias="hisVO" type="com.newco.marketplace.vo.mobile.ProviderHistoryVO" />	
+	<typeAlias alias="invoicePartsVO" 
+		type="com.newco.marketplace.vo.ordermanagement.so.InvoicePartsVO"/>
+	
+	<!-- Result Map  -->	
+	<resultMap class="callDetails" id="om.callDetails.resultsmap">
+		<result property="customerInfo"
+			column="{buyer_contact_id = buyer_contact_id,soId =so_id}" select="om.customerInfo.query" />
+		<result property="productDetails" column="so_id"
+			select="om.productDetails.query" />
+		<result property="scope" column="so_id" select="om.tasks.query" />
+		<!-- <result property="historyList" column="so_id" select="om.historyList.query" 
+			/> -->
+		<result property="specialInstructions" column="provider_instr" />
+		<result property="serviceLocationNotes" column="so_id"
+			select="om.serviceLocationNotes.query" />
+		<result property="assignedProvider" column="so_id"
+			select="om.assignedProvider.query" />
+		<result property="startDate" column="service_date1" />
+		<result property="endDate" column="service_date2" />
+		<result property="appointmentStartTime" column="service_time_start" />
+		<result property="appointmentEndTime" column="service_time_end" />
+		<result property="timezone" column="service_locn_time_zone" />
+		<!-- <result property="reasonCodeList" column="so_id" select="reasonCodeList.query" 
+			/> -->
+	</resultMap>
+
+	<resultMap id="om.selectUpdateScheduleVO.resultsmap" class="updateScheduleVO">
+		<result property="soId" column="soId"/>
+		<result property="source" column="source"/>
+		<result property="scheduleStatusId" column="scheduleStatusId"/>
+    	<result property="reasonId" column="respReasonId"/>
+    	<result property="providerId" column="vendorId"/>
+    	<result property="customerConfirmedInd" column="customerApptConfirmInd"/>
+    	<result property="eta" column="ETA"/>
+    	<result property="createdDate" column="createdDate"/>
+    	<result property="modifiedDate" column="modifiedDate"/>
+    	<result property="modifiedByName" column="modifiedBy"/>
+	</resultMap>
+
+	<resultMap id="om.precallHistoryDetails.resultsmap" class="preCallHistory">
+		<result property="reason" column="DESCR"/>
+    	<result property="date" column="CREATED_DATE"/>
+    	<result property="scheduleStatus" column="SCHEDULE_STATUS_ID"/>
+	</resultMap>
+	
+	<resultMap class="om_contact" id="om.contact.resultsmap">
+		<result property="firstName" column="firstName" />
+		<result property="lastName" column="lastName" />
+		<result property="primaryPhone" column="primaryPhone" />
+		<result property="altPhone" column="altPhone" />
+		<result property="location" column="soId" select="om.location.query" />
+	</resultMap>
+
+	<resultMap class="om_part" id="om.parts.resultsmap">
+		<result property="manufacturer" column="manufacturer" />
+		<result property="modelNo" column="model_no" />
+		<result property="availabilityDate" column="so_id"
+			select="availabilityDate.query" />
+		<result property="merchandiseCode" column="so_id"
+			select="merchandiseCode.query" />
+		<result property="brand" column="so_id" select="brand.query" />
+		<result property="location" column="soLocnId=so_locn_id,soId=so_id"
+			select="om.pickuplocation.query" />
+	</resultMap>
+
+	<resultMap class="om_location" id="om.location.resultsmap">
+		<result property="street1" column="street_1" />
+		<result property="street2" column="street_2" />
+		<result property="locnName" column="apt_no" />
+		<result property="zip" column="zip" />
+		<result property="state" column="state_cd" />
+		<result property="city" column="city" />
+	</resultMap>
+	
+	 <resultMap class="preCallHistory" id="om.precallHistory.resultsmap"> 
+         <result property="reason" column="reason" /> 
+         <result property="date" column="date" /> 
+         <result property="scheduleStatus" column="scheduleStatus" /> 
+     </resultMap>
+     
+	 <resultMap class="om_provider" id="om.provider.resultsmap"> 
+                <result property="resourceName" column="name" /> 
+                <result property="resourceId" column="accepted_resource_id" /> 
+     </resultMap>
+     
+     <resultMap class="om_task" id="scope.resultMap"> 
+                <result property="serviceType" column="scope" /> 
+     </resultMap>
+     
+ 	<resultMap class="om_task" id="om.tasks.resultsmap"> 
+                <result property="taskId" column="so_task_id" /> 
+                <result property="createDate" column="created_date" /> 
+                <result property="modifiedDate" column="modified_date" /> 
+                <result property="modifiedBy" column="modified_by" /> 
+                <result property="skillNodeId" column="skill_node_id" /> 
+                <result property="serviceTypeId" 
+                        column="service_type_template_id" /> 
+                <result property="taskName" column="task_name" /> 
+                <result property="price" column="price" /> 
+                <result property="autoInjectedInd" column="auto_injected_ind" /> 
+                <result property="primaryTask" column="primary_task" /> 
+                <result property="taskComments" column="task_comments" />
+
+                <result property="serviceType" column="service_type_desc" /> 
+                <result property="subCategoryName" column="skill_subcategory" /> 
+                <result property="categoryName" column="skill_category" />
+
+                <result property="level" column="level" /> 
+                <result property="parentId" column="parent_node" /> 
+                
+                <result property="soId" column="so_id" /> 
+                <result property="sequenceNumber" column="sequence_number" /> 
+                <result property="sku" column="sku" /> 
+                <result property="finalPrice" column="final_price" /> 
+                <result property="taskType" column="task_type" /> 
+                <result property="permitTypeDesc" column="permit_type_id" select="permitTypeDesc.query" /> 
+                <result property="sellingPrice" column="selling_price" /> 
+                <result property="retailPrice" column="retail_price" /> 
+                <result property="taskStatus" column="task_status" /> 
+                <result property="taskSeqNum" column="task_seq_num" /> 
+        </resultMap> 
+        
+	<resultMap id="omServiceOrderMap" class="omServiceOrderDetails">
+		<result property="soId" column="soId" />
+		<result property="parentGroupId" column="parentGroupId" />
+		<result property="routedDate" column="routedDate" />
+		<result property="buyerID" column="buyerID" />
+		<result property="priceModel" column="priceModel" />
+		<result property="acceptedResourceId" column="acceptedResourceId" />
+		<result property="soTitle" column="soTitle" />
+		<result property="serviceStartDate" column="appointStartDate" />
+		<result property="serviceEndDate" column="appointEndDate" />
+		<result property="reSchedStartDate" column="reSchedStartDate" />
+		<result property="serviceTimeStart" column="serviceTimeStart" />
+		<result property="serviceTimeEnd" column="serviceTimeEnd" />
+		<result property="resheduleStartDate" column="resheduleStartDate" />
+		<result property="resheduleEndDate" column="resheduleEndDate" />
+		<result property="resheduleStartTime" column="resheduleStartTime" />
+		<result property="resheduleEndTime" column="resheduleEndTime" />
+		<result property="spendLimit" column="spendLimit" />
+		<result property="spendLimitParts" column="spendLimitParts" />
+		<result property="finalPartsPrice" column="finalPartsPrice" />
+		<result property="finalLaborPrice" column="finalLaborPrice" />
+		<result property="soStatus" column="soStatus" />
+		<result property="serviceLocationTimezone" column="serviceLocationTimezone" />
+		<result property="soStatusString" column="soStatusString" />
+		<result property="soSubStatus" column="soSubStatus" />
+		<result property="soSubStatusString" column="soSubStatusString" />
+		<result property="assignmentType" column="assignmentType" />
+		<result property="partStreet1" column="partStreet1" />
+		<result property="partStreet2" column="partStreet2" />
+		<result property="partCity" column="partCity" />
+		<result property="partState" column="partState" />
+		<result property="partZip" column="partZip" />
+		<!--  <result property="availabilityDate" column="soId" select="availabilityDate.query"/>	 -->	
+		<result property="street1" column="street1" />
+		<result property="street2" column="street2" />
+		<result property="city" column="city" />
+		<result property="state" column="stateCd" />
+		<result property="zip" column="zip" />
+		<result property="endCustomerPrimaryPhoneNumber" column="endCustomerPrimaryPhoneNumber" />
+		<result property="endCustomerAlternatePhoneNumber" column="endCustomerAlternatePhoneNumber" />
+		<result property="primaryExtension" column="primaryExtension"/>
+		<result property="alternateExtension" column="alternateExtension"/>
+		<result property="endCustomerFirstName" column="endCustomerFirstName" />
+		<result property="endCustomerLastName" column="endCustomerLastName" />
+		<result property="routedResourceId" column="routedResourceId" />
+		<result property="sealedBidInd" column="sealedBidInd" />
+		<result property="soAttribute" column="soAttribute" />
+		<result property="acceptanceMethod" column="acceptanceMethod" />
+		<result property="vendorId" column="vendorId" />
+		<result property="followUpFlag" column="followUpFlag" />
+		<!-- <result property="routedProviders" column="{soId=soId, vendorId=vendorId}"
+			select="orderManagement.fetchProviders.query" /> -->
+		<result property="scheduleStatus" column="scheduleStatus" />
+		<!--<result property="scope" column="soId"
+			select="orderManagement.fetchScope" /> -->
+		<result property="problemReportedBy" column="soId" select="orderManagement.problemReportedBy" />	
+		<result property="problemReportedDate" column="soId" select="orderManagement.problemReportedDate" />
+		<result property="dlsFlag" column="dlsFlag"/>
+		<result property="problemType" column="problemType" />
+		<!-- <result property="currentBid" column="{soId=soId, vendorId=vendorId}" select="orderManagement.currentBid"/>  -->
+		<result property="preCallAttemptedDate" column="preCallAttemptedDate"/>
+		<!-- SL-21465 -->
+		<result property="isEstimationRequest" column="cust_ref_est" />
+		<result property="estimationId" column="estimation_id" />
+	</resultMap>
+	
+	<resultMap id="omServiceOrderMapGroup" class="omServiceOrderDetails">
+		<result property="soId" column="soId" />
+		<result property="buyerID" column="buyerID" />
+		<result property="parentGroupId" column="parentGroupId" />
+		<result property="parentGroupTitle" column="parentGroupTitle" />
+		<result property="soTitleDesc" column="soTitleDesc" />
+		<result property="routedDate" column="routedDate" />
+		<result property="groupSpendLimitLabor" column="groupSpendLimitLabor" />
+		<result property="groupSpendLimitParts" column="groupSpendLimitParts" />
+		<result property="groupSpendLimit" column="groupSpendLimit" />
+		<result property="soTitle" column="soTitle" />
+		<result property="serviceStartDate" column="appointStartDate" />
+		<result property="serviceEndDate" column="appointEndDate" />
+		<result property="serviceTimeStart" column="serviceTimeStart" />
+		<result property="serviceTimeEnd" column="serviceTimeEnd" />
+		<result property="serviceLocationTimezone" column="serviceLocationTimezone" />
+		<result property="partStreet1" column="partStreet1" />
+		<result property="partStreet2" column="partStreet2" />
+		<result property="street1" column="street1" />
+		<result property="street2" column="street2" />
+		<result property="city" column="city" />
+		<result property="state" column="stateCd" />
+		<result property="zip" column="zip" />
+		<result property="routedResourceId" column="routedResourceId" />
+		<result property="dlsFlag" column="dlsFlag"/>
+		<!-- <result property="currentBid" column="{soId=soId, vendorId=vendorId}" select="orderManagement.currentBid"/>  -->
+	</resultMap>
+	
+	<resultMap id="omServiceOrderMapInbox" class="omServiceOrderDetails">
+		<result property="soId" column="soId" />
+		<result property="buyerID" column="buyerID" />
+		<result property="parentGroupId" column="parentGroupId" />
+		<result property="routedDate" column="routedDate" />
+		<result property="priceModel" column="priceModel" />		
+		<result property="acceptedResourceId" column="acceptedResourceId" />
+		<result property="soTitle" column="soTitle" />
+		<result property="soTitleDesc" column="soTitleDesc" />
+		<result property="serviceStartDate" column="appointStartDate" />
+		<result property="serviceEndDate" column="appointEndDate" />
+		<result property="reSchedStartDate" column="reSchedStartDate" />
+		<result property="serviceTimeStart" column="serviceTimeStart" />
+		<result property="serviceTimeEnd" column="serviceTimeEnd" />
+		<result property="resheduleStartDate" column="resheduleStartDate" />
+		<result property="resheduleEndDate" column="resheduleEndDate" />
+		<result property="resheduleStartTime" column="resheduleStartTime" />
+		<result property="resheduleEndTime" column="resheduleEndTime" />
+		<result property="spendLimit" column="spendLimit" />
+		<result property="spendLimitParts" column="spendLimitParts" />
+		<result property="finalPartsPrice" column="finalPartsPrice" />
+		<result property="finalLaborPrice" column="finalLaborPrice" />
+		<result property="soStatus" column="soStatus" />
+		<result property="serviceLocationTimezone" column="serviceLocationTimezone" />
+		<result property="soStatusString" column="soStatusString" />
+		<result property="soSubStatus" column="soSubStatus" />
+		<result property="soSubStatusString" column="soSubStatusString" />
+		<result property="assignmentType" column="assignmentType" />		
+		<result property="city" column="city" />
+		<result property="state" column="stateCd" />
+		<result property="zip" column="zip" />
+		<result property="dlsFlag" column="dlsFlag" />
+		<result property="endCustomerPrimaryPhoneNumber" column="endCustomerPrimaryPhoneNumber" />
+		<result property="endCustomerAlternatePhoneNumber" column="endCustomerAlternatePhoneNumber" />
+		<result property="primaryExtension" column="primaryExtension"/>
+		<result property="alternateExtension" column="alternateExtension"/>
+		<result property="endCustomerFirstName" column="endCustomerFirstName" />
+		<result property="endCustomerLastName" column="endCustomerLastName" />
+		<result property="sealedBidInd" column="sealedBidInd" />
+		<result property="routedResourceId" column="routedResourceId" />
+		<result property="followUpFlag" column="followUpFlag" />
+		<result property="soAttribute" column="soAttribute" />
+		<result property="acceptanceMethod" column="acceptanceMethod" />
+		<result property="scheduleStatus" column="scheduleStatus" />
+		<result property="vendorId" column="vendorId" />
+		<!--  <result property="routedProviders" column="{soId=soId, vendorId=vendorId}"
+			select="orderManagement.fetchProviders.query" />
+		<result property="scope" column="soId" select="orderManagement.fetchScope" /> -->
+		<result property="partStreet1" column="partStreet1" />
+		<result property="partStreet2" column="partStreet2" />
+		<result property="partCity" column="partCity" />
+		<result property="partState" column="partState" />
+		<result property="partZip" column="partZip" />
+	<!-- 	<result property="availabilityDate" column="soId" select="availabilityDate.query"/>  -->
+		<result property="street1" column="street1" />
+		<result property="street2" column="street2" />
+		<result property="preCallAttemptedDate" column="preCallAttemptedDate" />
+		<!-- SL-21465 -->
+		<result property="isEstimationRequest" column="cust_ref_est" />
+		<result property="estimationId" column="estimation_id" />
+	</resultMap>
+	
+	<resultMap id="acceptedResourceMap" class="omServiceOrderDetails">
+		<result property="acceptedResourceId" column="acceptedResourceId" />
+		<result property="assignmentType" column="assignmentType" />
+	</resultMap>
+	
+	<resultMap id="jobDoneMap" class="omServiceOrderDetails">
+		<result property="soId" column="soId" />
+		<result property="jobDoneOn" column="jobDoneOn" />
+	</resultMap>
+	
+	<resultMap id="tripMap" class="omServiceOrderDetails">
+		<result property="soId" column="soId" />
+		<result property="lastTripOn" column="lastTripOn" />
+	</resultMap>
+	<!-- Result Map  -->	
+	
+	<!-- <select id="om.historyList.query" resultMap="preCallHistory.resultsmap"> 
+		SELECT * FROM so_schedule_history WHERE so_id=#so_id# </select> 
+	 <select id="reasonCodeList.query" resultClass="reasonCode"> SELECT 
+		resp_reason_id AS reasonCodeId, descr AS reasonCode FROM lu_so_provider_resp_reason 
+		WHERE provider_resp_id =8 </select>  -->
+	<select id="om.tasks.query" resultMap="om.tasks.resultsmap">
+		SELECT
+		st.*, lst.descr as service_type_desc,
+		skt.level, skt.parent_node,
+		CASE skt.level
+		WHEN 2 THEN skt.node_name
+		WHEN 3 THEN (SELECT par.node_name FROM skill_tree par WHERE par.node_id =
+		skt.parent_node)
+		END AS skill_category,
+		CASE skt.level
+		WHEN 3 THEN skt.node_name
+		END AS skill_subcategory
+		FROM
+		so_tasks st
+		left join lu_service_type_template lst on st.service_type_template_id =
+		lst.service_type_template_id
+		left join skill_tree skt on st.skill_node_id = skt.node_id
+		WHERE st.so_id =
+		#value# AND st.task_status != 'DELETED'
+		ORDER BY st.sort_order
+		,st.sequence_number ,st.final_price desc
+	</select> 
+
+	<select id="om.customerInfo.query" resultMap="om.contact.resultsmap">
+		SELECT
+		first_name AS firstName,
+		last_name AS lastName,
+		phone_no AS primaryPhone,
+		mobile_no AS altPhone,
+		#soId# AS soId
+		from contact
+		WHERE contact_id= #buyer_contact_id#
+	</select>
+
+	<!-- <select id="om.historyList.query" resultMap="om.historyList.resultsmap"> 
+		SELECT * FROM so_schedule_history WHERE so_id=#so_id# </select> -->
+	<select id="scope.query" resultClass="java.lang.String">
+		SELECT task_name from so_tasks where so_id=#so_id#
+	</select>
+
+	<select id="availabilityDate.query" resultClass="java.lang.String"
+		parameterClass="java.lang.String">
+		SELECT buyer_ref_value from so_custom_reference where so_id=#so_id# AND
+		buyer_ref_type_id =33
+	</select>
+	<select id="productAvailabilityDate.query" resultClass="availabilityDateVO"
+		parameterClass="java.util.ArrayList">
+		SELECT so_id AS soId, buyer_ref_value AS availabilityDate
+		FROM so_custom_reference where
+		so_id IN
+		<iterate open="(" close=")" conjunction=",">
+						#soIdList[]#
+		</iterate>
+			AND		
+		buyer_ref_type_id =33;
+	</select>
+
+	<select id="merchandiseCode.query" resultClass="java.lang.String"
+		parameterClass="java.lang.String">
+		select buyer_ref_value from so_custom_reference where so_id=#so_id# AND
+		buyer_ref_type_id IN(346,425)
+	</select>
+
+	<select id="brand.query" resultClass="java.lang.String"
+		parameterClass="java.lang.String">
+		select buyer_ref_value from so_custom_reference where so_id=#so_id# AND
+		buyer_ref_type_id IN(347,427,622)
+	</select>
+
+	<select id="om.assignedProvider.query" resultMap="om.provider.resultsmap">
+		SELECT s.accepted_resource_id,
+		CONCAT(c.first_name,',',c.last_name) as name
+		FROM so_hdr s
+		JOIN vendor_hdr v
+		ON s.accepted_vendor_id = v.vendor_id
+		JOIN vendor_resource vr
+		ON v.vendor_id = vr.vendor_id
+		AND vr.primary_ind = 1
+		JOIN contact c
+		ON vr.contact_id = c.contact_id
+		LEFT OUTER JOIN vendor_resource vr1
+		ON s.accepted_resource_id = vr1.resource_id
+		JOIN contact c1
+		ON vr1.contact_id = c1.contact_id
+		AND s.so_id = #so_id#
+	</select>
+
+	<select id="om.location.query" resultMap="om.location.resultsmap">
+		SELECT apt_no,
+		street_1,
+		street_2,
+		city,
+		state_cd,
+		zip
+		FROM so_location WHERE
+		so_locn_id = (SELECT so_locn_id FROM so_contact_locn WHERE so_id=#soId# AND
+		so_contact_locn_type_id=10);
+	</select>
+
+	<select id="om.serviceLocationNotes.query" resultClass="java.lang.String">
+		SELECT locn_notes
+		FROM so_location WHERE
+		so_locn_id = (SELECT so_locn_id FROM so_contact_locn WHERE so_id=#so_id# AND
+		so_contact_locn_type_id=10);
+	</select>
+
+	<select id="om.productDetails.query" resultMap="om.parts.resultsmap">
+		SELECT #so_id# as so_id,
+		p.manufacturer,
+		p.model_no,
+		p.so_locn_id
+		FROM so_parts p
+		WHERE so_id=#so_id#
+	</select>
+
+	<select id="om.pickuplocation.query" resultMap="om.location.resultsmap">
+		SELECT
+		sl.apt_no,sl.street_1,sl.street_2,sl.city,sl.state_cd,sl.zip from
+		so_location sl
+		join so_contact_locn scl on sl.so_id = scl.so_id and
+		sl.so_locn_id = scl.so_locn_id left outer join
+		lu_so_location_class slc
+		on sl.so_locn_class_id =
+		slc.so_locn_class_id where
+		scl.so_contact_locn_type_id = 40 and
+		sl.so_locn_id=#soLocnId# and
+		sl.so_id =#soId#
+	</select>
+
+	<select id="getSoContactEntryCount.query" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT  COUNT(so_id) AS contactCount
+		FROM so_contact 
+		WHERE so_id = #soId#
+		AND entity_type_id = #entityType#;
+	</select>
+	<select id="getLocationEntryCount.query" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT  COUNT(so_id) AS contactCount 
+		FROM so_location
+		WHERE so_id = #soId#
+		AND so_locn_type_id = #ContactLocTypeId#
+	</select>
+	
+	<update id="orderManagement.assignResourceToSO">
+		update so_hdr SET accepted_resource_id = #resourceId#, assignment_type = 'PROVIDER' where so_id = #soId#
+	</update>
+
+	<update id="orderManagement.updateRoutedResource">
+		update so_routed_providers SET provider_resp_id = 1 where resource_id = #resourceId# and so_id = #soId#
+	</update>
+
+	<update id="orderManagement.updateSoLocationNotes" parameterClass="java.util.HashMap">
+		UPDATE so_location SET locn_notes=#notes# where
+		so_id=#soId# and so_locn_type_id=10
+	</update>
+
+	<update id="orderManagement.updateAppointmentTime">
+		UPDATE so_hdr SET
+		service_time_start =#startTime#
+		<isNotNull property="endTime" prepend=",">
+			service_time_end =# endTime #
+		</isNotNull>
+		<isNotNull property="eta" prepend=",">
+			expected_time_of_arrival=#eta#
+		</isNotNull>
+		<isNotNull property="customerConfirmedInd " prepend=",">
+			customer_appt_confirm_ind = #customerConfirmedInd#
+		</isNotNull>
+	</update>
+
+	<update id="orderManagement.updateScheduleTime">
+		UPDATE so_schedule_status SET
+		<isNotNull property="eta" prepend=",">
+			expected_time_of_arrival=#eta#
+		</isNotNull>
+		<isNotNull property="customerConfirmedInd" prepend=",">
+			customer_appt_confirm_ind = #customerConfirmedInd#
+		</isNotNull>
+	</update>
+
+	<update id="orderManagement.updateScheduleStatus ">
+		UPDATE so_schedule_status SET
+		schedule_status_id =#scheduleStatusId#
+		<isNotNull property="eta" prepend=",">
+			expected_time_of_arrival=#eta#
+		</isNotNull>
+		<isNotNull property="customerConfirmedInd" prepend=",">
+			customer_appt_confirm_ind = #customerConfirmedInd#
+		</isNotNull>
+	</update>
+
+	<insert id="orderManagement.insertPrecallhistory">
+		INSERT into precall_confirmcall_history values(#soId#,#preCallInd#,#scheduleStatusId#,#reasonCodeId#,NOW(),NOW(),#modifiedByName#)
+	</insert>
+	
+	<select id="orderManagement.fetchReasonCodes">
+		SELECT reasonCodeId, reason FROM provider_reason_codes WHERE reason_type= #reasonType#
+	</select>
+
+	<select id="orderManagement.providerReceivedCount.query" resultClass="java.lang.Integer">
+		SELECT
+		count(distinct so.so_id)
+		FROM so_hdr so
+		JOIN so_routed_providers srp
+		ON so.so_id = srp.so_id
+		AND srp.vendor_id = #companyId#
+		AND (srp.provider_resp_id not in (3,5,7) OR srp.provider_resp_id is NULL)
+		<isEqual property="manageSoFlag" compareValue="true">
+			AND srp.resource_id = #vendBuyerResId#
+		</isEqual>
+		AND so.wf_state_id = 110
+		AND so.price_model in ('ZERO_PRICE_BID','NAME_PRICE')
+		AND (so.so_substatus_id != 64 OR so.so_substatus_id is NULL)
+	</select>
+
+
+	<select id="orderManagement.ScheduleCounts.query" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+ 		SELECT
+			COUNT(DISTINCT s.so_id) AS soCount
+			  FROM so_hdr s
+			  JOIN so_schedule sche ON sche.so_id=s.so_id
+			<isNotNull property="markets">
+				LEFT OUTER JOIN vendor_resource vresource ON vresource.resource_id = s.accepted_resource_id
+				      AND s.assignment_type != 'FIRM'
+				LEFT OUTER JOIN supplier_prod.so_location sl ON sl.so_id=s.so_id AND sl.so_locn_type_id=10
+				LEFT OUTER JOIN supplier_prod.lu_zip_market zmar ON zmar.zip=sl.zip
+				LEFT OUTER JOIN lu_market market ON zmar.market_id = market.market_id
+		   </isNotNull>
+		   <isNotNull property="providerIds">
+		  	 <isEqual property="unassignedInd" compareValue="true">
+		   		LEFT OUTER JOIN so_routed_providers srp ON s.so_id = srp.so_id AND (s.assignment_type = 'FIRM' OR s.assignment_type IS NULL)
+		   	 </isEqual>
+                LEFT OUTER JOIN so_routed_providers sorp ON s.so_id = sorp.so_id AND s.assignment_type = 'PROVIDER'
+		   </isNotNull>
+			WHERE       
+			  s.accepted_vendor_id = #companyId#
+			  AND s.wf_state_id=150 
+			  AND sche.schedule_status_id IN(1,2)
+			  <isNotNull property="providerIds">
+			   <isEqual property="unassignedInd" compareValue="true">
+				AND (srp.provider_resp_id NOT IN(3,5,7) OR srp.provider_resp_id IS NULL)
+			   </isEqual>
+				AND (sorp.provider_resp_id NOT IN(3,5,7) OR sorp.provider_resp_id IS NULL)
+		  </isNotNull>
+			   <isNotNull property="markets">
+					<isNotEmpty property="markets" prepend="AND  ">
+						market.market_id IN
+						<iterate property="markets" open="(" close=")" conjunction=",">
+							#markets[]#
+						</iterate>
+					</isNotEmpty>
+				</isNotNull>
+				<isNotNull property="providerIds">
+					<isNotEmpty property="providerIds" prepend="AND  ">
+				(
+				<isEqual property="unassignedInd" compareValue="true">
+				srp.resource_id IN
+				<iterate property="providerIds" open="(" close=")" conjunction=",">
+					#providerIds[]#
+				</iterate>
+				OR 
+				</isEqual>
+				(sorp.resource_id IN
+				<iterate property="providerIds" open="(" close=")" conjunction=",">
+					#providerIds[]#
+				</iterate> 
+				AND sorp.provider_resp_id = 1))
+			</isNotEmpty>
+				</isNotNull>
+				<isNotNull property="scheduleStatus">
+					<isNotEmpty property="scheduleStatus" prepend="AND  ">
+						sche.schedule_status_id IN
+						<iterate property="scheduleStatus" open="(" close=")" conjunction=",">
+							#scheduleStatus[]#
+						</iterate>
+					</isNotEmpty>
+				</isNotNull>
+				<isNotNull property="appointmentType" prepend="AND  ">
+					<isEqual property="appointmentType" compareValue="Today">
+						DATEDIFF(s.service_date1,now()) = 0
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="Tomorrow">
+						DATEDIFF(s.service_date1,now()) = 1
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="2days">
+						DATEDIFF(s.service_date1,now()) <![CDATA[ > ]]> 0 and DATEDIFF(s.service_date1,now()) <![CDATA[ <= ]]> 2
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="3days">
+						DATEDIFF(s.service_date1,now()) <![CDATA[ > ]]> 0 and DATEDIFF(s.service_date1,now()) <![CDATA[ <= ]]> 3
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="range">
+						DATE(CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%h:%i %p')HOUR_SECOND), 'GMT', s.service_locn_time_zone ))
+					 	<![CDATA[>=]]> #appointmentStartDate# 
+						AND
+						DATE(CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%h:%i %p')HOUR_SECOND), 'GMT', s.service_locn_time_zone ))
+						<![CDATA[<=]]> #appointmentEndDate#	
+					</isEqual>
+				</isNotNull>
+	</select>
+
+	<select id="orderManagement.inboxCounts.query" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+		SELECT
+		  COUNT( DISTINCT s.so_id)
+		FROM so_hdr s
+		  LEFT OUTER JOIN lu_so_substatus lu_wf_substatus
+		    ON lu_wf_substatus.so_substatus_id = s.so_substatus_id
+		  <isNull property="providerIds">
+		  JOIN so_routed_providers srp ON s.so_id = srp.so_id
+		  </isNull>
+		  <isNotNull property="markets">
+				LEFT OUTER JOIN vendor_resource vresource ON vresource.resource_id = s.accepted_resource_id
+				      AND s.assignment_type != 'FIRM'
+				LEFT OUTER JOIN supplier_prod.so_location sl ON sl.so_id=s.so_id AND sl.so_locn_type_id=10
+				LEFT OUTER JOIN supplier_prod.lu_zip_market zmar ON zmar.zip=sl.zip
+				LEFT OUTER JOIN lu_market market ON zmar.market_id = market.market_id
+		 </isNotNull>
+		 <isNotNull property="providerIds">
+		  <isEqual property="unassignedInd" compareValue="true">
+		  LEFT OUTER JOIN so_routed_providers srp ON s.so_id = srp.so_id AND (s.assignment_type = 'FIRM' OR s.assignment_type IS NULL)
+		  </isEqual>
+          LEFT OUTER JOIN so_routed_providers sorp ON s.so_id = sorp.so_id AND s.assignment_type = 'PROVIDER' 
+		 </isNotNull>
+		WHERE 
+		<isNull property="providerIds">
+		   (srp.provider_resp_id NOT IN(3,5,7) OR srp.provider_resp_id IS NULL)
+		   AND (srp.vendor_id = #companyId#)
+		</isNull>
+		<isNotNull property="providerIds">
+			<isNotEqual property="unassignedInd" compareValue="true">
+		   	(sorp.provider_resp_id NOT IN(3,5,7) OR sorp.provider_resp_id IS NULL)
+		    AND (
+		    </isNotEqual>
+		    <isEqual property="unassignedInd" compareValue="true">
+		    (srp.provider_resp_id NOT IN(3,5,7) OR srp.provider_resp_id IS NULL)
+		    AND (
+		    srp.vendor_id = #companyId# OR 
+		    </isEqual>
+		    sorp.vendor_id = #companyId#)
+		 </isNotNull>
+		    AND (s.accepted_vendor_id IS NULL OR s.accepted_vendor_id = #companyId#) 
+            AND (s.so_substatus_id != 64 OR s.so_substatus_id IS NULL) 
+		   <isEqual property="viewOrderPricingPermission" compareValue="false">
+					AND s.wf_state_id NOT IN (100,105,110,120,125,130,180) 
+					AND (
+					s.so_id NOT IN 
+                	(SELECT so_id FROM so_hdr h WHERE h.so_substatus_id = 8 AND h.wf_state_id=155)
+                	)		
+			</isEqual>
+			<isEqual property="viewOrderPricingPermission" compareValue="true">
+					AND s.wf_state_id NOT IN (100,105,120,125,130,180) 		
+			</isEqual>
+		<isNotNull property="markets">
+			<isNotEmpty property="markets" prepend="AND  ">
+				market.market_id IN
+				<iterate property="markets" open="(" close=")" conjunction=",">
+					#markets[]#
+				</iterate>
+			</isNotEmpty>
+		</isNotNull>
+		<isNotNull property="providerIds">
+			<isNotEmpty property="providerIds" prepend="AND  ">
+				(
+				<isEqual property="unassignedInd" compareValue="true">
+				srp.resource_id IN
+				<iterate property="providerIds" open="(" close=")" conjunction=",">
+					#providerIds[]#
+				</iterate>
+				OR 
+				</isEqual>
+				(sorp.resource_id IN
+				<iterate property="providerIds" open="(" close=")" conjunction=",">
+					#providerIds[]#
+				</iterate> 
+				AND sorp.provider_resp_id = 1))
+			</isNotEmpty>
+		</isNotNull>
+		<isNotNull property="status">
+			<isNotEmpty property="status" prepend="AND  ">
+				s.wf_state_id IN
+				<iterate property="status" open="(" close=")" conjunction=",">
+					#status[]#
+				</iterate>
+			</isNotEmpty>
+		</isNotNull>	
+		<isNotNull property="appointmentType" prepend="AND  ">
+				<isEqual property="appointmentType" compareValue="Today">
+					DATEDIFF(s.service_date1,now()) = 0
+				</isEqual>
+				<isEqual property="appointmentType" compareValue="Tomorrow">
+					DATEDIFF(s.service_date1,now()) = 1
+				</isEqual>
+				<isEqual property="appointmentType" compareValue="2days">
+					DATEDIFF(s.service_date1,now()) <![CDATA[ > ]]> 0 and DATEDIFF(s.service_date1,now()) <![CDATA[ <= ]]> 2
+				</isEqual>
+				<isEqual property="appointmentType" compareValue="3days">
+					DATEDIFF(s.service_date1,now()) <![CDATA[ > ]]> 0 and DATEDIFF(s.service_date1,now()) <![CDATA[ <= ]]> 3
+				</isEqual>
+				<isEqual property="appointmentType" compareValue="range">
+					DATE(CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%h:%i %p')HOUR_SECOND), 'GMT', s.service_locn_time_zone ))
+					 <![CDATA[>=]]> #appointmentStartDate# 
+					AND
+					DATE(CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%h:%i %p')HOUR_SECOND), 'GMT', s.service_locn_time_zone ))
+					<![CDATA[<=]]> #appointmentEndDate#	
+				</isEqual>
+		</isNotNull>
+	</select>
+
+	<!-- <select id="orderManagement.respondCounts.query" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+	 		SELECT
+			  COUNT( DISTINCT s.so_id)
+			FROM so_hdr s
+			  JOIN so_routed_providers srp
+			    ON s.so_id = srp.so_id
+			 <isNotNull property="markets">
+				LEFT OUTER JOIN vendor_resource vresource ON vresource.resource_id = s.accepted_resource_id
+				      AND s.assignment_type != 'FIRM'
+				LEFT OUTER JOIN supplier_prod.so_location sl ON sl.so_id=s.so_id AND sl.so_locn_type_id=10
+				LEFT OUTER JOIN supplier_prod.lu_zip_market zmar ON zmar.zip=sl.zip
+				LEFT OUTER JOIN lu_market market ON zmar.market_id = market.market_id
+			</isNotNull>
+			<isNotNull property="substatus">
+				JOIN so_workflow_controls swc ON swc.so_id = s.so_id
+			</isNotNull>
+			WHERE s.wf_state_id = 110
+			    AND srp.vendor_id = #companyId#
+			    AND (srp.provider_resp_id NOT IN(3,5,7) OR srp.provider_resp_id IS NULL)
+			   	<isNotNull property="markets">
+					<isNotEmpty property="markets" prepend="AND  ">
+						market.market_id IN
+						<iterate property="markets" open="(" close=")" conjunction=",">
+							#markets[]#
+						</iterate>
+					</isNotEmpty>
+				</isNotNull>
+				<isNotNull property="substatus">
+					<isNotEmpty property="substatus" prepend="AND ("> 
+                        s.price_model IN 
+                  		<iterate property="substatus" open="(" close=")" conjunction=","> 
+                              #substatus[]# 
+                        </iterate> 
+                        OR (swc.method_of_routing in 
+                        <iterate property="substatus" open="(" close="))" conjunction=","> 
+                              #substatus[]# 
+                        </iterate> 
+                        AND s.price_model NOT IN ('ZERO_PRICE_BID')) 
+                    </isNotEmpty> 
+				</isNotNull>
+				<isNotNull property="appointmentType" prepend="AND  ">
+					<isEqual property="appointmentType" compareValue="Today">
+						DATEDIFF(s.service_date1,now()) = 0
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="Tomorrow">
+						DATEDIFF(s.service_date1,now()) = 1
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="2days">
+						DATEDIFF(s.service_date1,now()) <![CDATA[ > ]]> 0 and DATEDIFF(s.service_date1,now()) <![CDATA[ <= ]]> 2
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="3days">
+						DATEDIFF(s.service_date1,now()) <![CDATA[ > ]]> 0 and DATEDIFF(s.service_date1,now()) <![CDATA[ <= ]]> 3
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="range">
+						DATE(CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%h:%i %p')HOUR_SECOND), 'GMT', s.service_locn_time_zone ))
+					 	<![CDATA[>=]]> #appointmentStartDate# 
+						AND
+						DATE(CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%h:%i %p')HOUR_SECOND), 'GMT', s.service_locn_time_zone ))
+						<![CDATA[<=]]> #appointmentEndDate#						
+					</isEqual>
+				</isNotNull>
+	</select> -->
+	
+	<select id="orderManagement.respondCounts.query" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+	 		SELECT
+			  COUNT( DISTINCT s.so_id)
+			FROM so_hdr s
+			  JOIN so_routed_providers srp
+			    ON s.so_id = srp.so_id
+				
+			 <isNotNull property="markets">
+				LEFT OUTER JOIN vendor_resource vresource ON vresource.resource_id = s.accepted_resource_id
+				      AND s.assignment_type != 'FIRM'
+				LEFT OUTER JOIN supplier_prod.so_location sl ON sl.so_id=s.so_id AND sl.so_locn_type_id=10
+				LEFT OUTER JOIN supplier_prod.lu_zip_market zmar ON zmar.zip=sl.zip
+				LEFT OUTER JOIN lu_market market ON zmar.market_id = market.market_id
+			</isNotNull>
+			<isNotNull property="substatus">
+				JOIN so_workflow_controls swc ON swc.so_id = s.so_id
+				LEFT OUTER JOIN so_custom_reference scr ON scr.so_id = s.so_id
+			</isNotNull>
+			
+			WHERE s.wf_state_id = 110
+			    AND srp.vendor_id = #companyId#
+			    AND (srp.provider_resp_id NOT IN(3,5,7) OR srp.provider_resp_id IS NULL)
+			   	<isNotNull property="markets">
+					<isNotEmpty property="markets" prepend="AND  ">
+						market.market_id IN
+						<iterate property="markets" open="(" close=")" conjunction=",">
+							#markets[]#
+						</iterate>
+					</isNotEmpty>
+				</isNotNull>
+				<isNotNull property="substatus">
+					<isNotEmpty property="substatus" prepend="AND ("> 
+                        s.price_model IN 
+                  		<iterate property="substatus" open="(" close=")" conjunction=","> 
+                              #substatus[]# 
+                        </iterate> 
+                        OR (swc.method_of_routing in 
+                        <iterate property="substatus" open="(" close="))" conjunction=","> 
+                              #substatus[]# 
+                        </iterate> 
+						OR (scr.buyer_ref_value in
+						<iterate property="substatus" open="(" close="))" conjunction=",">
+							#substatus[]#
+						</iterate>
+                        AND s.price_model NOT IN ('ZERO_PRICE_BID')) 
+                    </isNotEmpty> 
+				</isNotNull>
+				<isNotNull property="appointmentType" prepend="AND  ">
+					<isEqual property="appointmentType" compareValue="Today">
+						DATEDIFF(s.service_date1,now()) = 0
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="Tomorrow">
+						DATEDIFF(s.service_date1,now()) = 1
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="2days">
+						DATEDIFF(s.service_date1,now()) <![CDATA[ > ]]> 0 and DATEDIFF(s.service_date1,now()) <![CDATA[ <= ]]> 2
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="3days">
+						DATEDIFF(s.service_date1,now()) <![CDATA[ > ]]> 0 and DATEDIFF(s.service_date1,now()) <![CDATA[ <= ]]> 3
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="range">
+						DATE(CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%h:%i %p')HOUR_SECOND), 'GMT', s.service_locn_time_zone ))
+					 	<![CDATA[>=]]> #appointmentStartDate# 
+						AND
+						DATE(CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%h:%i %p')HOUR_SECOND), 'GMT', s.service_locn_time_zone ))
+						<![CDATA[<=]]> #appointmentEndDate#						
+					</isEqual>
+				</isNotNull>
+	</select>
+
+	<select id="orderManagement.AssignProviderCounts.query" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+	 		SELECT  COUNT( DISTINCT s.so_id) as soCount
+			FROM so_hdr s
+			<isNotNull property="markets">
+				LEFT OUTER JOIN vendor_resource vresource ON vresource.resource_id = s.accepted_resource_id
+				      AND s.assignment_type != 'FIRM'
+				LEFT OUTER JOIN supplier_prod.so_location sl ON sl.so_id=s.so_id AND sl.so_locn_type_id=10
+				LEFT OUTER JOIN supplier_prod.lu_zip_market zmar ON zmar.zip=sl.zip
+				LEFT OUTER JOIN lu_market market ON zmar.market_id = market.market_id
+			</isNotNull>
+			<isNotNull property="routedTo">
+				LEFT OUTER JOIN so_routed_providers srp ON s.so_id = srp.so_id AND (s.assignment_type = 'FIRM' OR s.assignment_type IS NULL)
+			</isNotNull>
+			WHERE s.accepted_vendor_id = #companyId# 
+			    AND s.accepted_resource_id IS NULL
+			    AND s.wf_state_id IN(150,155,170)
+			    <isNotNull property="markets">
+			    	<isNotEmpty property="markets" prepend="AND  ">
+						market.market_id IN
+						<iterate property="markets" open="(" close=")" conjunction=",">
+							#markets[]#
+						</iterate>
+					</isNotEmpty>
+				</isNotNull>
+				 <isNotNull property="routedTo">
+				   AND  (srp.provider_resp_id NOT IN(3,5,7) OR srp.provider_resp_id IS NULL)
+			    	<isNotEmpty property="routedTo" prepend="AND  ">
+			    	srp.resource_id IN
+						<iterate property="routedTo" open="(" close=")" conjunction=",">
+							#routedTo[]#
+						</iterate>
+			    	</isNotEmpty>
+			    </isNotNull>				
+				<isNotNull property="appointmentType" prepend="AND  ">
+					<isEqual property="appointmentType" compareValue="Today">
+						DATEDIFF(s.service_date1,now()) = 0
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="Tomorrow">
+						DATEDIFF(s.service_date1,now()) = 1
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="2days">
+						DATEDIFF(s.service_date1,now()) <![CDATA[ > ]]> 0 and DATEDIFF(s.service_date1,now()) <![CDATA[ <= ]]> 2
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="3days">
+						DATEDIFF(s.service_date1,now()) <![CDATA[ > ]]> 0 and DATEDIFF(s.service_date1,now()) <![CDATA[ <= ]]> 3
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="range">
+						DATE(CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%h:%i %p')HOUR_SECOND), 'GMT', s.service_locn_time_zone ))
+					 <![CDATA[>=]]> #appointmentStartDate# 
+						AND
+						DATE(CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%h:%i %p')HOUR_SECOND), 'GMT', s.service_locn_time_zone ))
+						<![CDATA[<=]]> #appointmentEndDate#	
+					</isEqual>
+				</isNotNull>
+	</select>
+	
+	<select id="orderManagement.ManageRouteCounts.query" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+			SELECT 
+				count(*) as soCount
+	 	 	FROM so_hdr s
+	 	 	JOIN so_schedule sche ON sche.so_id=s.so_id
+	 	 	<isNotNull property="markets">
+				LEFT OUTER JOIN vendor_resource vresource ON vresource.resource_id = s.accepted_resource_id
+				      AND s.assignment_type != 'FIRM'
+				LEFT OUTER JOIN supplier_prod.so_location sl ON sl.so_id=s.so_id AND sl.so_locn_type_id=10
+				LEFT OUTER JOIN supplier_prod.lu_zip_market zmar ON zmar.zip=sl.zip
+				LEFT OUTER JOIN lu_market market ON zmar.market_id = market.market_id
+			</isNotNull>
+			<isNotNull property="providerIds">
+			    <isEqual property="unassignedInd" compareValue="true">
+		   		LEFT OUTER JOIN so_routed_providers srp ON s.so_id = srp.so_id AND (s.assignment_type = 'FIRM' OR s.assignment_type IS NULL)
+		   		</isEqual>
+                LEFT OUTER JOIN so_routed_providers sorp ON s.so_id = sorp.so_id AND s.assignment_type = 'PROVIDER' 
+		   	</isNotNull>
+	 	 	WHERE       
+	 	 		s.accepted_vendor_id = #companyId# 
+	 	 		AND s.wf_state_id IN (150,155,170)
+	 	 		AND sche.schedule_status_id !=1
+	 	 		<isNotNull property="providerIds">
+	 	 		 	<isEqual property="unassignedInd" compareValue="true">
+	 	 		AND (srp.provider_resp_id NOT IN(3,5,7) OR srp.provider_resp_id IS NULL) 
+	 	 			</isEqual>
+                AND (sorp.provider_resp_id NOT IN(3,5,7) OR sorp.provider_resp_id IS NULL)  
+                </isNotNull>
+	 	 		<isNotNull property="markets">
+					<isNotEmpty property="markets" prepend="AND  ">
+						market.market_id IN
+						<iterate property="markets" open="(" close=")" conjunction=",">
+							#markets[]#
+						</iterate>
+					</isNotEmpty>
+				</isNotNull>
+				<isNotNull property="providerIds">
+					<isNotEmpty property="providerIds" prepend="AND  ">
+				( 
+					<isEqual property="unassignedInd" compareValue="true">
+						srp.resource_id IN
+						<iterate property="providerIds" open="(" close=")" conjunction=",">
+							#providerIds[]#
+						</iterate>
+						OR 
+					</isEqual>
+				(sorp.resource_id IN
+				<iterate property="providerIds" open="(" close=")" conjunction=",">
+					#providerIds[]#
+				</iterate> 
+				AND sorp.provider_resp_id = 1))
+					</isNotEmpty>
+			  </isNotNull>
+				<isNotNull property="appointmentType" prepend="AND  ">
+					<isEqual property="appointmentType" compareValue="Today">
+						DATEDIFF(s.service_date1,now()) = 0
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="Tomorrow">
+						DATEDIFF(s.service_date1,now()) = 1
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="2days">
+						DATEDIFF(s.service_date1,now()) <![CDATA[ > ]]> 0 and DATEDIFF(s.service_date1,now()) <![CDATA[ <= ]]> 2
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="3days">
+						DATEDIFF(s.service_date1,now()) <![CDATA[ > ]]> 0 and DATEDIFF(s.service_date1,now()) <![CDATA[ <= ]]> 3
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="range">
+						DATE(CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%h:%i %p')HOUR_SECOND), 'GMT', s.service_locn_time_zone ))
+						<![CDATA[>=]]> #appointmentStartDate# 
+						AND
+						DATE(CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%h:%i %p')HOUR_SECOND), 'GMT', s.service_locn_time_zone ))
+						<![CDATA[<=]]> #appointmentEndDate#	
+					</isEqual>
+				</isNotNull>
+	</select>
+	
+	<select id="orderManagement.ConfirmAppointmentsCounts.query" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+			SELECT
+			  COUNT(DISTINCT s.so_id) AS soCount
+			FROM so_hdr s
+			  JOIN so_schedule sche
+			    ON sche.so_id = s.so_id
+			<isNotNull property="markets">
+				LEFT OUTER JOIN vendor_resource vresource ON vresource.resource_id = s.accepted_resource_id
+				      AND s.assignment_type != 'FIRM'
+				LEFT OUTER JOIN supplier_prod.so_location sl ON sl.so_id=s.so_id AND sl.so_locn_type_id=10
+				LEFT OUTER JOIN supplier_prod.lu_zip_market zmar ON zmar.zip=sl.zip
+				LEFT OUTER JOIN lu_market market ON zmar.market_id = market.market_id
+		 	</isNotNull>
+		 	<isNotNull property="providerIds">
+		 	 <isEqual property="unassignedInd" compareValue="true">
+		   		LEFT OUTER JOIN so_routed_providers srp ON s.so_id = srp.so_id AND (s.assignment_type = 'FIRM' OR s.assignment_type IS NULL)
+		   	 </isEqual>
+                LEFT OUTER JOIN so_routed_providers sorp ON s.so_id = sorp.so_id AND s.assignment_type = 'PROVIDER' 
+		   	</isNotNull>
+			WHERE s.accepted_vendor_id =  #companyId#
+			    AND s.wf_state_id IN(150,155,170)
+			    AND DATEDIFF(s.service_date1,now()) <![CDATA[<=]]> 3 AND DATEDIFF(s.service_date1,now()) <![CDATA[>=]]> 0
+    			AND sche.schedule_status_id != 5
+			   <isNotNull property="providerIds">
+			   <isEqual property="unassignedInd" compareValue="true">
+			   	AND (srp.provider_resp_id NOT IN(3,5,7) OR srp.provider_resp_id IS NULL) 
+			   </isEqual>
+                AND (sorp.provider_resp_id NOT IN(3,5,7) OR sorp.provider_resp_id IS NULL)  
+			    </isNotNull>
+			    <isNotNull property="markets">
+					<isNotEmpty property="markets" prepend="AND  ">
+						market.market_id IN
+						<iterate property="markets" open="(" close=")" conjunction=",">
+							#markets[]#
+						</iterate>
+					</isNotEmpty>
+				</isNotNull>
+				<isNotNull property="providerIds">
+					<isNotEmpty property="providerIds" prepend="AND  ">
+						(
+						<isEqual property="unassignedInd" compareValue="true">
+						srp.resource_id IN
+						<iterate property="providerIds" open="(" close=")" conjunction=",">
+						#providerIds[]#
+						</iterate>
+						OR 
+						</isEqual>
+						(sorp.resource_id IN
+						<iterate property="providerIds" open="(" close=")" conjunction=",">
+						#providerIds[]#
+						</iterate> 
+						AND sorp.provider_resp_id = 1))
+					</isNotEmpty>
+				</isNotNull>
+				<isNotNull property="appointmentType" prepend="AND  ">
+					<isEqual property="appointmentType" compareValue="Today">
+						DATEDIFF(s.service_date1,now()) = 0
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="Tomorrow">
+						DATEDIFF(s.service_date1,now()) = 1
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="2days">
+						DATEDIFF(s.service_date1,now()) <![CDATA[ > ]]> 0 and DATEDIFF(s.service_date1,now()) <![CDATA[ <= ]]> 2
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="3days">
+						DATEDIFF(s.service_date1,now()) <![CDATA[ > ]]> 0 and DATEDIFF(s.service_date1,now()) <![CDATA[ <= ]]> 3
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="range">
+						DATE(CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%h:%i %p')HOUR_SECOND), 'GMT', s.service_locn_time_zone ))
+					 	<![CDATA[>=]]> #appointmentStartDate# 
+						AND
+						DATE(CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%h:%i %p')HOUR_SECOND), 'GMT', s.service_locn_time_zone ))
+						<![CDATA[<=]]> #appointmentEndDate#	
+					</isEqual>
+				</isNotNull>
+     </select>
+     
+	<select id="orderManagement.ActiveCounts.query" resultClass="wfStatesCounts" parameterClass="java.lang.Integer">
+	 	SELECT 
+	 		count(*) as soCount 
+	 	FROM so_hdr s 
+	 	WHERE 
+	 		s.accepted_vendor_id = #companyId# and (s.so_substatus_id!=8 or s.so_substatus_id=null) 
+	 		AND s.wf_state_id=155
+	</select>
+	
+    <select id="orderManagement.JobDoneCounts.query" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+	 	SELECT 
+	 		count(*) as soCount 
+	 	FROM so_hdr s
+	 	<isNotNull property="markets">
+				LEFT OUTER JOIN vendor_resource vresource ON vresource.resource_id = s.accepted_resource_id
+				      AND s.assignment_type != 'FIRM'
+				LEFT OUTER JOIN supplier_prod.so_location sl ON sl.so_id=s.so_id AND sl.so_locn_type_id=10
+				LEFT OUTER JOIN supplier_prod.lu_zip_market zmar ON zmar.zip=sl.zip
+				LEFT OUTER JOIN lu_market market ON zmar.market_id = market.market_id
+		 </isNotNull>
+		 <isNotNull property="providerIds">
+		   		<isEqual property="unassignedInd" compareValue="true">
+		   		LEFT OUTER JOIN so_routed_providers srp ON s.so_id = srp.so_id AND (s.assignment_type = 'FIRM' OR s.assignment_type IS NULL)
+              	</isEqual>
+                LEFT OUTER JOIN so_routed_providers sorp ON s.so_id = sorp.so_id AND s.assignment_type = 'PROVIDER' 
+		  </isNotNull>
+	 	WHERE 
+	 		s.accepted_vendor_id = #companyId# 
+	 		AND s.so_substatus_id in (8,135) AND s.wf_state_id=155
+	 		<isNotNull property="providerIds">
+	 		<isEqual property="unassignedInd" compareValue="true">
+	 			AND (srp.provider_resp_id NOT IN(3,5,7) OR srp.provider_resp_id IS NULL) 
+	 		</isEqual>
+                AND (sorp.provider_resp_id NOT IN(3,5,7) OR sorp.provider_resp_id IS NULL) 
+                </isNotNull>
+	 			<isNotNull property="markets">
+					<isNotEmpty property="markets" prepend="AND  ">
+						market.market_id IN
+						<iterate property="markets" open="(" close=")" conjunction=",">
+							#markets[]#
+						</iterate>
+					</isNotEmpty>
+				</isNotNull>
+				<isNotNull property="providerIds">
+					<isNotEmpty property="providerIds" prepend="AND  ">
+						(
+						<isEqual property="unassignedInd" compareValue="true">
+						srp.resource_id IN
+						<iterate property="providerIds" open="(" close=")" conjunction=",">
+						#providerIds[]#
+						</iterate>
+						OR 
+						</isEqual>
+						(sorp.resource_id IN
+						<iterate property="providerIds" open="(" close=")" conjunction=",">
+							#providerIds[]#
+						</iterate> 
+						AND sorp.provider_resp_id = 1))
+					</isNotEmpty>
+				</isNotNull>
+				<isNotNull property="appointmentType" prepend="AND  ">
+					<isEqual property="appointmentType" compareValue="Today">
+						DATEDIFF(s.service_date1,now()) = 0
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="Tomorrow">
+						DATEDIFF(s.service_date1,now()) = 1
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="2days">
+						DATEDIFF(s.service_date1,now()) <![CDATA[ > ]]> 0 and DATEDIFF(s.service_date1,now()) <![CDATA[ <= ]]> 2
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="3days">
+						DATEDIFF(s.service_date1,now()) <![CDATA[ > ]]> 0 and DATEDIFF(s.service_date1,now()) <![CDATA[ <= ]]> 3
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="range">
+						DATE(CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%h:%i %p')HOUR_SECOND), 'GMT', s.service_locn_time_zone ))
+					 	<![CDATA[>=]]> #appointmentStartDate# 
+						AND
+						DATE(CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%h:%i %p')HOUR_SECOND), 'GMT', s.service_locn_time_zone ))
+						<![CDATA[<=]]> #appointmentEndDate#	
+					</isEqual>
+				</isNotNull>
+				<isNotNull property="jobDoneSubsubstatus">
+					<isNotEmpty property="jobDoneSubsubstatus" prepend="AND  ">
+						s.so_substatus_id IN
+						<iterate property="jobDoneSubsubstatus" open="(" close=")" conjunction=",">
+							#jobDoneSubsubstatus[]#
+						</iterate>
+					</isNotEmpty>
+				</isNotNull>
+	</select>
+	
+	
+<!-- 	for R12_0 new revisit needed tab -->
+	<select id="orderManagement.revisitNeededCounts.query" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+	 	SELECT 
+	 		count(*) as soCount 
+	 	FROM so_hdr s
+	 	<isNotNull property="markets">
+				LEFT OUTER JOIN vendor_resource vresource ON vresource.resource_id = s.accepted_resource_id
+				      AND s.assignment_type != 'FIRM'
+				LEFT OUTER JOIN supplier_prod.so_location sl ON sl.so_id=s.so_id AND sl.so_locn_type_id=10
+				LEFT OUTER JOIN supplier_prod.lu_zip_market zmar ON zmar.zip=sl.zip
+				LEFT OUTER JOIN lu_market market ON zmar.market_id = market.market_id
+		 </isNotNull>
+		 <isNotNull property="providerIds">
+		   		<isEqual property="unassignedInd" compareValue="true">
+		   		LEFT OUTER JOIN so_routed_providers srp ON s.so_id = srp.so_id AND (s.assignment_type = 'FIRM' OR s.assignment_type IS NULL)
+              	</isEqual>
+                LEFT OUTER JOIN so_routed_providers sorp ON s.so_id = sorp.so_id AND s.assignment_type = 'PROVIDER' 
+		  </isNotNull>
+	 	WHERE 
+	 		s.accepted_vendor_id = #companyId# 
+	 		AND s.so_substatus_id IN (134,137) AND s.wf_state_id=155
+	 		<isNotNull property="providerIds">
+	 		<isEqual property="unassignedInd" compareValue="true">
+	 			AND (srp.provider_resp_id NOT IN(3,5,7) OR srp.provider_resp_id IS NULL) 
+	 		</isEqual>
+                AND (sorp.provider_resp_id NOT IN(3,5,7) OR sorp.provider_resp_id IS NULL) 
+                </isNotNull>
+	 			<isNotNull property="markets">
+					<isNotEmpty property="markets" prepend="AND  ">
+						market.market_id IN
+						<iterate property="markets" open="(" close=")" conjunction=",">
+							#markets[]#
+						</iterate>
+					</isNotEmpty>
+				</isNotNull>
+				<isNotNull property="providerIds">
+					<isNotEmpty property="providerIds" prepend="AND  ">
+						(
+						<isEqual property="unassignedInd" compareValue="true">
+						srp.resource_id IN
+						<iterate property="providerIds" open="(" close=")" conjunction=",">
+						#providerIds[]#
+						</iterate>
+						OR 
+						</isEqual>
+						(sorp.resource_id IN
+						<iterate property="providerIds" open="(" close=")" conjunction=",">
+							#providerIds[]#
+						</iterate> 
+						AND sorp.provider_resp_id = 1))
+					</isNotEmpty>
+				</isNotNull>
+				<isNotNull property="appointmentType" prepend="AND  ">
+					<isEqual property="appointmentType" compareValue="Today">
+						DATEDIFF(s.service_date1,now()) = 0
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="Tomorrow">
+						DATEDIFF(s.service_date1,now()) = 1
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="2days">
+						DATEDIFF(s.service_date1,now()) <![CDATA[ > ]]> 0 and DATEDIFF(s.service_date1,now()) <![CDATA[ <= ]]> 2
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="3days">
+						DATEDIFF(s.service_date1,now()) <![CDATA[ > ]]> 0 and DATEDIFF(s.service_date1,now()) <![CDATA[ <= ]]> 3
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="range">
+						DATE(CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%h:%i %p')HOUR_SECOND), 'GMT', s.service_locn_time_zone ))
+					 	<![CDATA[>=]]> #appointmentStartDate# 
+						AND
+						DATE(CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%h:%i %p')HOUR_SECOND), 'GMT', s.service_locn_time_zone ))
+						<![CDATA[<=]]> #appointmentEndDate#	
+					</isEqual>
+				</isNotNull>
+				<isNotNull property="revisitSubStatus">
+					<isNotEmpty property="revisitSubStatus" prepend="AND  ">
+						s.so_substatus_id IN
+						<iterate property="revisitSubStatus" open="(" close=")" conjunction=",">
+							#revisitSubStatus[]#
+						</iterate>
+					</isNotEmpty>
+				</isNotNull>
+	</select>
+	
+	<select id="orderManagement.resolveProblem.query" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+	 	SELECT 
+	 		COUNT(DISTINCT s.so_id) as soCount 
+	 	FROM so_hdr s
+	 	<isNotNull property="markets">
+				LEFT OUTER JOIN vendor_resource vresource ON vresource.resource_id = s.accepted_resource_id
+				      AND s.assignment_type != 'FIRM'
+				LEFT OUTER JOIN supplier_prod.so_location sl ON sl.so_id=s.so_id AND sl.so_locn_type_id=10
+				LEFT OUTER JOIN supplier_prod.lu_zip_market zmar ON zmar.zip=sl.zip
+				LEFT OUTER JOIN lu_market market ON zmar.market_id = market.market_id
+		</isNotNull>
+		<isNotNull property="providerIds">
+			<isEqual property="unassignedInd" compareValue="true">
+		   		LEFT OUTER JOIN so_routed_providers srp ON s.so_id = srp.so_id AND (s.assignment_type = 'FIRM' OR s.assignment_type IS NULL)
+		   	</isEqual>
+                LEFT OUTER JOIN so_routed_providers sorp ON s.so_id = sorp.so_id AND s.assignment_type = 'PROVIDER' 
+		</isNotNull>
+	 	WHERE 
+	 		s.accepted_vendor_id = #companyId# 
+	 		AND s.wf_state_id=170
+	 		<isNotNull property="providerIds">
+	 		<isEqual property="unassignedInd" compareValue="true">
+	 		AND (srp.provider_resp_id NOT IN(3,5,7) OR srp.provider_resp_id IS NULL) 
+            </isEqual>
+            AND (sorp.provider_resp_id NOT IN(3,5,7) OR sorp.provider_resp_id IS NULL) 
+	 		</isNotNull>
+	 			<isNotNull property="markets">
+					<isNotEmpty property="markets" prepend="AND  ">
+						market.market_id IN
+						<iterate property="markets" open="(" close=")" conjunction=",">
+							#markets[]#
+						</iterate>
+					</isNotEmpty>
+				</isNotNull>
+				<isNotNull property="providerIds">
+					<isNotEmpty property="providerIds" prepend="AND  ">
+						(
+						<isEqual property="unassignedInd" compareValue="true">
+						srp.resource_id IN
+						<iterate property="providerIds" open="(" close=")" conjunction=",">
+							#providerIds[]#
+						</iterate>
+						OR 
+						</isEqual>
+						(sorp.resource_id IN
+						<iterate property="providerIds" open="(" close=")" conjunction=",">
+							#providerIds[]#
+						</iterate> 
+						AND sorp.provider_resp_id = 1))
+					</isNotEmpty>
+				</isNotNull>
+				<isNotNull property="appointmentType" prepend="AND  ">
+					<isEqual property="appointmentType" compareValue="Today">
+						DATEDIFF(s.service_date1,now()) = 0
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="Tomorrow">
+						DATEDIFF(s.service_date1,now()) = 1
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="2days">
+						DATEDIFF(s.service_date1,now()) <![CDATA[ > ]]> 0 and DATEDIFF(s.service_date1,now()) <![CDATA[ <= ]]> 2
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="3days">
+						DATEDIFF(s.service_date1,now()) <![CDATA[ > ]]> 0 and DATEDIFF(s.service_date1,now()) <![CDATA[ <= ]]> 3
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="range">
+						DATE(CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%h:%i %p')HOUR_SECOND), 'GMT', s.service_locn_time_zone ))
+						<![CDATA[>=]]> #appointmentStartDate# 
+						AND
+						DATE(CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%h:%i %p')HOUR_SECOND), 'GMT', s.service_locn_time_zone ))
+						<![CDATA[<=]]> #appointmentEndDate#	
+					</isEqual>
+				</isNotNull>
+	</select>
+	
+	<select id="orderManagement.cancellationCount.query" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+	 	SELECT 
+	 		count(*) as soCount 
+	 	FROM so_hdr s
+	 	<isNotNull property="markets">
+				LEFT OUTER JOIN vendor_resource vresource ON vresource.resource_id = s.accepted_resource_id
+				      AND s.assignment_type != 'FIRM'
+				LEFT OUTER JOIN supplier_prod.so_location sl ON sl.so_id=s.so_id AND sl.so_locn_type_id=10
+				LEFT OUTER JOIN supplier_prod.lu_zip_market zmar ON zmar.zip=sl.zip
+				LEFT OUTER JOIN lu_market market ON zmar.market_id = market.market_id
+		 </isNotNull>
+		 <isNotNull property="providerIds">
+		 	<isEqual property="unassignedInd" compareValue="true">
+		   		LEFT OUTER JOIN so_routed_providers srp ON s.so_id = srp.so_id AND (s.assignment_type = 'FIRM' OR s.assignment_type IS NULL)
+		   	</isEqual>
+                LEFT OUTER JOIN so_routed_providers sorp ON s.so_id = sorp.so_id AND s.assignment_type = 'PROVIDER' 
+		 </isNotNull>
+	 	WHERE 
+	 		s.accepted_vendor_id = #companyId# 
+	 		AND (s.wf_state_id=165 OR s.so_substatus_id = 37)
+	 		<isNotNull property="providerIds">
+	 		  <isEqual property="unassignedInd" compareValue="true">
+	 			AND (srp.provider_resp_id NOT IN(3,5,7) OR srp.provider_resp_id IS NULL) 
+	 		  </isEqual>
+                AND (sorp.provider_resp_id NOT IN(3,5,7) OR sorp.provider_resp_id IS NULL) 
+               </isNotNull> 
+	 			<isNotNull property="markets">
+					<isNotEmpty property="markets" prepend="AND  ">
+						market.market_id IN
+						<iterate property="markets" open="(" close=")" conjunction=",">
+							#markets[]#
+						</iterate>
+					</isNotEmpty>
+				</isNotNull>
+				<isNotNull property="providerIds">
+					<isNotEmpty property="providerIds" prepend="AND  ">
+						(
+						<isEqual property="unassignedInd" compareValue="true">
+						srp.resource_id IN
+						<iterate property="providerIds" open="(" close=")" conjunction=",">
+							#providerIds[]#
+						</iterate>
+						OR 
+						</isEqual>
+						(sorp.resource_id IN
+						<iterate property="providerIds" open="(" close=")" conjunction=",">
+							#providerIds[]#
+						</iterate> 
+						AND sorp.provider_resp_id = 1))
+					</isNotEmpty>
+				</isNotNull>
+				<isNotNull property="appointmentType" prepend="AND  ">
+					<isEqual property="appointmentType" compareValue="Today">
+						DATEDIFF(s.service_date1,now()) = 0
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="Tomorrow">
+						DATEDIFF(s.service_date1,now()) = 1
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="2days">
+						DATEDIFF(s.service_date1,now()) <![CDATA[ > ]]> 0 and DATEDIFF(s.service_date1,now()) <![CDATA[ <= ]]> 2
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="3days">
+						DATEDIFF(s.service_date1,now()) <![CDATA[ > ]]> 0 and DATEDIFF(s.service_date1,now()) <![CDATA[ <= ]]> 3
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="range">
+						DATE(CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%h:%i %p')HOUR_SECOND), 'GMT', s.service_locn_time_zone ))
+					 	<![CDATA[>=]]> #appointmentStartDate# 
+						AND
+						DATE(CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%h:%i %p')HOUR_SECOND), 'GMT', s.service_locn_time_zone ))
+						<![CDATA[<=]]> #appointmentEndDate#	
+					</isEqual>
+				</isNotNull>
+				<isNotNull property="cancellationsSubStatus">
+					<isNotEmpty property="cancellationsSubStatus" prepend="AND  ">
+						s.so_substatus_id IN
+						<iterate property="cancellationsSubStatus" open="(" close=")" conjunction=",">
+							#cancellationsSubStatus[]#
+						</iterate>
+					</isNotEmpty>
+				</isNotNull>
+	</select>
+	
+	<select id="orderManagement.awaitingPaymentCount.query" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+	 	SELECT 
+	 		count(*) as soCount 
+	 	FROM so_hdr s
+	 	<isNotNull property="markets">
+				LEFT OUTER JOIN vendor_resource vresource ON vresource.resource_id = s.accepted_resource_id
+				      AND s.assignment_type != 'FIRM'
+				LEFT OUTER JOIN supplier_prod.so_location sl ON sl.so_id=s.so_id AND sl.so_locn_type_id=10
+				LEFT OUTER JOIN supplier_prod.lu_zip_market zmar ON zmar.zip=sl.zip
+				LEFT OUTER JOIN lu_market market ON zmar.market_id = market.market_id
+		 </isNotNull>
+		 <isNotNull property="providerIds">
+		 	<isEqual property="unassignedInd" compareValue="true">
+		   		LEFT OUTER JOIN so_routed_providers srp ON s.so_id = srp.so_id AND (s.assignment_type = 'FIRM' OR s.assignment_type IS NULL)
+		   	</isEqual>
+                LEFT OUTER JOIN so_routed_providers sorp ON s.so_id = sorp.so_id AND s.assignment_type = 'PROVIDER' 
+		</isNotNull>
+	 	WHERE 
+	 		s.accepted_vendor_id = #companyId# 
+	 		AND s.wf_state_id=160
+	 		<isNotNull property="providerIds">
+	 		 <isEqual property="unassignedInd" compareValue="true">
+	 			AND (srp.provider_resp_id NOT IN(3,5,7) OR srp.provider_resp_id IS NULL)
+	 		 </isEqual> 
+                AND (sorp.provider_resp_id NOT IN(3,5,7) OR sorp.provider_resp_id IS NULL) 
+	 		</isNotNull>
+	 			<isNotNull property="markets">
+					<isNotEmpty property="markets" prepend="AND  ">
+						market.market_id IN
+						<iterate property="markets" open="(" close=")" conjunction=",">
+							#markets[]#
+						</iterate>
+					</isNotEmpty>
+				</isNotNull>
+				<isNotNull property="providerIds">
+					<isNotEmpty property="providerIds" prepend="AND  ">
+						(
+						<isEqual property="unassignedInd" compareValue="true">
+						srp.resource_id IN
+						<iterate property="providerIds" open="(" close=")" conjunction=",">
+							#providerIds[]#
+						</iterate>
+						OR 
+						</isEqual>
+						(sorp.resource_id IN
+						<iterate property="providerIds" open="(" close=")" conjunction=",">
+							#providerIds[]#
+						</iterate> 
+						AND sorp.provider_resp_id = 1))
+					</isNotEmpty>
+				</isNotNull>
+				<isNotNull property="appointmentType" prepend="AND  ">
+					<isEqual property="appointmentType" compareValue="Today">
+						DATEDIFF(s.service_date1,now()) = 0
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="Tomorrow">
+						DATEDIFF(s.service_date1,now()) = 1
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="2days">
+						DATEDIFF(s.service_date1,now()) <![CDATA[ > ]]> 0 and DATEDIFF(s.service_date1,now()) <![CDATA[ <= ]]> 2
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="3days">
+						DATEDIFF(s.service_date1,now()) <![CDATA[ > ]]> 0 and DATEDIFF(s.service_date1,now()) <![CDATA[ <= ]]> 3
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="range">
+						DATE(CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%h:%i %p')HOUR_SECOND), 'GMT', s.service_locn_time_zone ))
+						<![CDATA[>=]]> #appointmentStartDate# 
+						AND
+						DATE(CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%h:%i %p')HOUR_SECOND), 'GMT', s.service_locn_time_zone ))
+						<![CDATA[<=]]> #appointmentEndDate#	
+					</isEqual>
+				</isNotNull>
+	</select>
+	
+	<select id="orderManagement.printPaperWorkCount.query" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+	 	SELECT 
+	 		COUNT(DISTINCT s.so_id) as soCount 
+	 	FROM so_hdr s
+	 	<isNotNull property="markets">
+				LEFT OUTER JOIN vendor_resource vresource ON vresource.resource_id = s.accepted_resource_id
+				      AND s.assignment_type != 'FIRM'
+				LEFT OUTER JOIN supplier_prod.so_location sl ON sl.so_id=s.so_id AND sl.so_locn_type_id=10
+				LEFT OUTER JOIN supplier_prod.lu_zip_market zmar ON zmar.zip=sl.zip
+				LEFT OUTER JOIN lu_market market ON zmar.market_id = market.market_id
+		 </isNotNull>
+		 <isNotNull property="providerIds">
+		 	<isEqual property="unassignedInd" compareValue="true">
+		   		LEFT OUTER JOIN so_routed_providers srp ON s.so_id = srp.so_id AND (s.assignment_type = 'FIRM' OR s.assignment_type IS NULL)
+		   	</isEqual>
+                LEFT OUTER JOIN so_routed_providers sorp ON s.so_id = sorp.so_id AND s.assignment_type = 'PROVIDER' 
+		 </isNotNull>
+	 	WHERE 
+	 		s.accepted_vendor_id = #companyId# 
+	 		AND s.wf_state_id IN (150, 155, 170)
+	 		<isNotNull property="providerIds">
+	 			<isEqual property="unassignedInd" compareValue="true">
+	 			AND (srp.provider_resp_id NOT IN(3,5,7) OR srp.provider_resp_id IS NULL) 
+	 			</isEqual>
+                AND (sorp.provider_resp_id NOT IN(3,5,7) OR sorp.provider_resp_id IS NULL) 
+               </isNotNull> 
+	 			<isNotNull property="markets">
+					<isNotEmpty property="markets" prepend="AND  ">
+						market.market_id IN
+						<iterate property="markets" open="(" close=")" conjunction=",">
+							#markets[]#
+						</iterate>
+					</isNotEmpty>
+				</isNotNull>
+				<isNotNull property="providerIds">
+					<isNotEmpty property="providerIds" prepend="AND  ">
+						(
+						<isEqual property="unassignedInd" compareValue="true">
+						srp.resource_id IN
+						<iterate property="providerIds" open="(" close=")" conjunction=",">
+							#providerIds[]#
+						</iterate>
+						OR 
+						</isEqual>
+						(sorp.resource_id IN
+						<iterate property="providerIds" open="(" close=")" conjunction=",">
+							#providerIds[]#
+						</iterate> 
+						AND sorp.provider_resp_id = 1))
+					</isNotEmpty>
+				</isNotNull>
+				<isNotNull property="appointmentType" prepend="AND  ">
+					<isEqual property="appointmentType" compareValue="Today">
+						DATEDIFF(s.service_date1,now()) = 0
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="Tomorrow">
+						DATEDIFF(s.service_date1,now()) = 1
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="2days">
+						DATEDIFF(s.service_date1,now()) <![CDATA[ > ]]> 0 and DATEDIFF(s.service_date1,now()) <![CDATA[ <= ]]> 2
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="3days">
+						DATEDIFF(s.service_date1,now()) <![CDATA[ > ]]> 0 and DATEDIFF(s.service_date1,now()) <![CDATA[ <= ]]> 3
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="range">
+						DATE(CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%h:%i %p')HOUR_SECOND), 'GMT', s.service_locn_time_zone ))
+					 	<![CDATA[>=]]> #appointmentStartDate# 
+						AND
+						DATE(CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%h:%i %p')HOUR_SECOND), 'GMT', s.service_locn_time_zone ))
+						<![CDATA[<=]]> #appointmentEndDate#	
+					</isEqual>
+				</isNotNull>
+	</select>
+	<select id="orderManagement.currentOrderCount.query" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+	 	SELECT 
+	 		COUNT(DISTINCT s.so_id) as soCount 
+	 	FROM so_hdr s
+	 	<isNotNull property="markets">
+				LEFT OUTER JOIN vendor_resource vresource ON vresource.resource_id = s.accepted_resource_id
+				      AND s.assignment_type != 'FIRM'
+				LEFT OUTER JOIN supplier_prod.so_location sl ON sl.so_id=s.so_id AND sl.so_locn_type_id=10
+				LEFT OUTER JOIN supplier_prod.lu_zip_market zmar ON zmar.zip=sl.zip
+				LEFT OUTER JOIN lu_market market ON zmar.market_id = market.market_id
+		 </isNotNull>
+		 <isNotNull property="providerIds">
+		 	<isEqual property="unassignedInd" compareValue="true">
+		   		LEFT OUTER JOIN so_routed_providers srp ON s.so_id = srp.so_id AND (s.assignment_type = 'FIRM' OR s.assignment_type IS NULL)
+		   	</isEqual>
+                LEFT OUTER JOIN so_routed_providers sorp ON s.so_id = sorp.so_id AND s.assignment_type = 'PROVIDER' 
+		 </isNotNull>
+	 	WHERE 
+	 		s.accepted_vendor_id = #companyId# 
+				AND s.wf_state_id = 155 and (s.so_substatus_id NOT IN (8,37,134,137) OR s.so_substatus_id is NULL)				
+	 		<isNotNull property="providerIds">
+	 		  <isEqual property="unassignedInd" compareValue="true">
+	 			AND (srp.provider_resp_id NOT IN(3,5,7) OR srp.provider_resp_id IS NULL)
+	 		  </isEqual> 
+                AND (sorp.provider_resp_id NOT IN(3,5,7) OR sorp.provider_resp_id IS NULL) 
+	 		</isNotNull>
+	 			<isNotNull property="markets">
+					<isNotEmpty property="markets" prepend="AND  ">
+						market.market_id IN
+						<iterate property="markets" open="(" close=")" conjunction=",">
+							#markets[]#
+						</iterate>
+					</isNotEmpty>
+				</isNotNull>
+				<isNotNull property="providerIds">
+					<isNotEmpty property="providerIds" prepend="AND  ">
+						(
+						<isEqual property="unassignedInd" compareValue="true">
+						srp.resource_id IN
+						<iterate property="providerIds" open="(" close=")" conjunction=",">
+							#providerIds[]#
+						</iterate>
+						OR
+						</isEqual>
+						 (sorp.resource_id IN
+						<iterate property="providerIds" open="(" close=")" conjunction=",">
+							#providerIds[]#
+						</iterate> 
+						AND sorp.provider_resp_id = 1))
+					</isNotEmpty>
+				</isNotNull>
+				<isNotNull property="appointmentType" prepend="AND  ">
+					<isEqual property="appointmentType" compareValue="Today">
+						DATEDIFF(s.service_date1,now()) = 0
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="Tomorrow">
+						DATEDIFF(s.service_date1,now()) = 1
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="2days">
+						DATEDIFF(s.service_date1,now()) <![CDATA[ > ]]> 0 and DATEDIFF(s.service_date1,now()) <![CDATA[ <= ]]> 2
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="3days">
+						DATEDIFF(s.service_date1,now()) <![CDATA[ > ]]> 0 and DATEDIFF(s.service_date1,now()) <![CDATA[ <= ]]> 3
+					</isEqual>
+					<isEqual property="appointmentType" compareValue="range">
+						DATE(CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%h:%i %p')HOUR_SECOND), 'GMT', s.service_locn_time_zone ))
+					 	<![CDATA[>=]]> #appointmentStartDate# 
+						AND
+						DATE(CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%h:%i %p')HOUR_SECOND), 'GMT', s.service_locn_time_zone ))
+						<![CDATA[<=]]> #appointmentEndDate#	
+					</isEqual>
+				</isNotNull>
+				<isNotNull property="currentOrdersSubStatus">
+				<isNotEmpty property="currentOrdersSubStatus" prepend="AND  ">
+				s.so_substatus_id IN
+				<iterate property="currentOrdersSubStatus" open="(" close=")" conjunction=",">
+					#currentOrdersSubStatus[]#
+				</iterate>
+			</isNotEmpty>
+			</isNotNull>
+	</select>
+	
+    <select id="orderManagement.wfStatesProviderCounts.query" resultClass="wfStatesCounts">
+        SELECT 
+        	UPPER(wf.wf_state) as tabType, 
+            count(*) as soCount
+     		FROM so_hdr s
+            join wf_states wf on wf.wf_state_id = s.wf_state_id
+        WHERE       
+            s.accepted_vendor_id = #companyId# and s.wf_state_id in(150,155,170,165,160)
+        GROUP BY wf.wf_state_id
+	</select>
+
+	<select id="orderManagement.getSOPriority" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		select followup_flag from so_routed_providers where so_id = #soId# and vendor_id = #vendorId# limit 1
+	</select>
+
+	<update id="orderManagement.updateSOPriority" parameterClass="java.util.HashMap">
+		update so_routed_providers set followup_flag = #flag# where so_id =	#soId# and vendor_id = #vendorId#
+	</update>
+
+	<select id="orderManagement.getCallDetails.query"
+		parameterClass="java.lang.String" resultMap="om.callDetails.resultsmap">
+
+		SELECT so_id, buyer_contact_id, provider_instr,
+		service_date1,service_date2,service_time_start,service_time_end,service_locn_time_zone
+		FROM so_hdr WHERE so_id=#soId#
+
+	</select>
+	
+	<select id="orderManagement.getPrecallHistoryDetails.query" parameterClass="java.util.HashMap" resultMap="om.precallHistory.resultsmap">
+		SELECT soproresp.reason_code AS reason,
+		       soschhist.modified_date AS date,
+		       schstatus.schedule_status AS scheduleStatus
+		FROM so_schedule_history soschhist,lu_precall_reason_codes soproresp,lu_schedule_status schstatus 
+		WHERE soschhist.resp_reason_id = soproresp.reason_code_id
+		AND  soschhist.schedule_status_id = schstatus.schedule_status_id
+		AND soschhist.so_id=#soId#
+		AND soschhist.vendor_id=#firmId#
+ 		AND soschhist.source IN ('PRE_CALL','CONFIRM_APPOINTMENT') 
+ 		ORDER BY soschhist.modified_date DESC
+	</select>
+	
+	<!-- <update id="orderManagement.updateScheduleStatus.query" parameterClass="">
+		UPDATE so_schedule_history SET 
+			schedule_status_id =# scheduleStatusId # 
+	<isNotNull property=" eta " prepend=",">
+			expected_time_of_arrival=#eta#
+	</isNotNull>
+	<isNotNull property="customerConfirmedInd " prepend=",">
+			customer_appt_confirm_ind = #customerConfirmedInd#
+	</isNotNull>
+	</update> 
+	-->	 
+	<update id="orderManagement.updatePrecallSchedule.query" parameterClass="updateScheduleVO">
+		update so_schedule SET
+			modified_date =	NOW(),
+			modified_by	  =	#modifiedByName#
+			<isNotNull property="source" prepend=",">
+			source	= #source#
+			</isNotNull>
+			<isNotNull property="scheduleStatusId" prepend=",">
+			schedule_status_id	= #scheduleStatusId#
+			</isNotNull>
+			<isNotNull property="reasonId" prepend=",">
+			resp_reason_id	= #reasonId#
+			</isNotNull>
+			<isNotNull property="providerId" prepend=",">
+			vendor_id		= #providerId#
+			</isNotNull>
+			<isNotNull property="customerConfirmedInd" prepend=",">
+			customer_appt_confirm_ind	= #customerConfirmedInd#
+			</isNotNull>
+			<isNotNull property="eta" prepend=",">
+			expected_time_of_arrival	= #eta#
+			</isNotNull>
+		where so_id = #soId#
+	</update>
+	<select id="orderManagement.selectPrecallSchedule.query" parameterClass="updateScheduleVO" resultMap="om.selectUpdateScheduleVO.resultsmap">
+		select 
+			so_id AS soId,
+			source AS source,
+			schedule_status_id AS scheduleStatusId,
+			resp_reason_id AS respReasonId,
+			vendor_id AS vendorId,
+			customer_appt_confirm_ind AS customerApptConfirmInd,
+			expected_time_of_arrival AS ETA,
+			created_date AS createdDate,
+			modified_date AS modifiedDate,
+			modified_by AS modifiedBy
+		from so_schedule
+		where so_id = #soId#
+	</select>
+	<!-- <insert id="orderManagement.insertPrecallSchedule.query" parameterClass="updateScheduleVO">
+		INSERT into so_schedule (so_id,precall_ind,schedule_status_id,resp_reason_id,vendor_id,customer_appt_confirm_ind,expected_time_of_arrival,created_date,modified_date,modified_by) 
+		values(#soId#,#preCallInd#,#scheduleStatusId#,#reasonId#,#providerId#,#customerConfirmedInd#,#eta#,NOW(),NOW(),#modifiedByName#)
+	</insert>
+	-->
+	<insert id="orderManagement.insertPrecallhistory.query" parameterClass="updateScheduleVO">
+		INSERT into so_schedule_history(so_id,source,schedule_status_id,resp_reason_id,vendor_id,customer_appt_confirm_ind,expected_time_of_arrival,created_date,modified_date,modified_by) 
+		values(#soId#,#source#,#scheduleStatusId#,#reasonId#,#providerId#,#customerConfirmedInd#,#eta#,#modifiedDate#,#modifiedDate#,#modifiedByName#)
+	</insert>  
+	<update id="orderManagement.updateAppointmentTime.query" parameterClass="updateScheduleVO">
+		UPDATE so_hdr SET 
+			service_time_start =#serviceTimeStart#
+		<isNotNull property="serviceTimeEnd" prepend=",">
+			service_time_end =#serviceTimeEnd#
+		</isNotNull>
+		
+		<!--SL 18896 R8.2, update the startDate & endDate START**/  -->
+		<isNotNull property="serviceDateStart" prepend=",">
+			service_date1 =#serviceDateStart#
+		</isNotNull>
+		<isNotNull property="serviceDateEnd" prepend=",">
+			service_date2 =#serviceDateEnd#
+		</isNotNull>
+		<!--SL 18896 R8.2, update the startDate & endDate END**/  -->
+		
+		<!-- <isNotNull property="eta" prepend=",">
+			expected_time_of_arrival=#eta#
+		</isNotNull>-->
+		<!-- <isNotNull property="customerConfirmedInd" prepend=",">
+			customer_appt_confirm_ind = #customerConfirmedInd#
+		</isNotNull>-->
+		where so_id = #soId#
+	</update>
+	
+	<update id="orderManagement.updateSOTrip.query" parameterClass="updateScheduleVO">
+		UPDATE so_trip SET 
+			current_appt_start_time =#serviceTimeStart#
+		<isNotNull property="serviceTimeEnd" prepend=",">
+			current_appt_end_time =#serviceTimeEnd#
+		</isNotNull>
+		<isNotNull property="serviceDateStart" prepend=",">
+			current_appt_start_date =#serviceDateStart#
+		</isNotNull>
+		<isNotNull property="serviceDateEnd" prepend=",">
+			current_appt_end_date =#serviceDateEnd#
+		</isNotNull>
+			, modified_date = NOW() 
+		WHERE so_id = #soId# AND 
+		trip_no = #tripNo#
+	</update>
+	
+	<update id="orderManagement.updateSpecialInstructions.query" parameterClass="updateScheduleVO">
+		UPDATE so_hdr SET 
+			provider_instr =#specialInstructions#
+		where so_id = #soId#
+	</update> 
+
+	<update id="orderManagement.updateAppointmentDate.query" parameterClass="updateScheduleVO">
+		UPDATE so_hdr SET 
+			service_date1 =#appointStartDate#
+		<isNotNull property="appointEndDate" prepend=",">
+			service_date2 =#appointEndDate#
+		</isNotNull>
+		<!-- <isNotNull property="eta" prepend=",">
+			expected_time_of_arrival=#eta#
+		</isNotNull>-->
+		where so_id = #soId#
+	</update>
+	
+	<update id="orderManagement.updateSchedule.query">
+		UPDATE so_schedule SET 
+			customer_appt_confirm_ind = #customerConfirmedInd#,
+			expected_time_of_arrival = #eta#
+			<isNotNull property="source" prepend=",">
+				source = #source#
+			</isNotNull>
+			<isNotNull property="modifiedDate" prepend=",">
+				modified_date = #modifiedDate#
+			</isNotNull>
+			<isNotNull property="modifiedByName" prepend=",">
+				modified_by = #modifiedByName#
+			</isNotNull>
+			where so_id = #soId#
+	</update>
+
+	<select id="orderManagement.fetchProviders.query"
+		parameterClass="java.util.HashMap" resultClass="routedProvidersVO">
+		SELECT 
+			srp.resource_id AS id,
+			srp.provider_resp_id AS respId,
+			srp.incr_spend_limit AS spendLimit,
+			srp.offer_expiration_date AS offerExpirationDate,
+			vcontact.first_name AS firstName,
+			vcontact.last_name AS lastName
+		 FROM so_hdr s
+			JOIN so_routed_providers srp ON srp.so_id = s.so_id AND srp.vendor_id = #vendorId#
+			JOIN vendor_resource vresource ON vresource.resource_id =srp.resource_id
+			JOIN contact vcontact ON vresource.contact_id = vcontact.contact_id
+		WHERE s.so_id = #soId# AND (srp.provider_resp_id != 3 OR srp.provider_resp_id IS NULL);
+	</select>
+
+	<select id="orderManagement.fetchOrders" parameterClass="java.util.HashMap"
+		resultMap="omServiceOrderMap">
+	SELECT DISTINCT
+	s.so_id AS soId,
+	s.so_group_id AS parentGroupId,
+	s.routed_date AS
+	routedDate,
+	s.buyer_id AS buyerID,
+	s.price_model AS priceModel,
+	s.accepted_resource_id AS acceptedResourceId,
+	s.sow_title
+	AS soTitle,
+	s.service_date1 AS
+	appointStartDate,
+	s.service_date2 AS appointEndDate,
+	s.resched_service_date1 AS reSchedStartDate,
+	s.service_time_start AS serviceTimeStart,
+	s.service_time_end AS
+	serviceTimeEnd,
+	s.spend_limit_labor AS
+	spendLimit,
+	s.spend_limit_parts AS spendLimitParts,
+	s.final_price_parts
+	AS finalPartsPrice,
+	s.final_price_labor AS finalLaborPrice,
+	s.wf_state_id AS soStatus,
+	s.service_locn_time_zone AS
+	serviceLocationTimezone,
+	wf_alias.descr AS soStatusString,
+	s.so_substatus_id AS soSubStatus,
+	lu_wf_substatus.descr AS
+	soSubStatusString,
+	s.assignment_type AS assignmentType,
+	s.resched_service_date1 AS resheduleStartDate,
+	s.resched_service_date2 AS resheduleEndDate,
+	s.resched_service_time_start AS resheduleStartTime,
+	s.resched_service_time_end AS resheduleEndTime,
+	loc1.street_1 AS partStreet1,
+	loc1.street_2 AS partStreet2,
+	loc1.city AS partCity,
+	loc1.state_cd AS partState,
+	loc1.zip AS partZip,
+	loc.street_1 AS street1,
+	loc.street_2 AS street2,
+	loc.city AS city,
+	loc.state_cd AS stateCd,
+	loc.zip AS zip,
+	geo.daylight_savings_flg AS dlsFlag,
+	loc.country AS country,
+	scp.phone_no AS endCustomerPrimaryPhoneNumber,
+	scp.phone_no_ext AS primaryExtension,
+	socp.phone_no
+	AS endCustomerAlternatePhoneNumber,
+	socp.phone_no_ext AS alternateExtension,
+	cont.first_name AS
+	endCustomerFirstName,
+	cont.last_name AS endCustomerLastName,
+	EXISTS(select buyer_ref_value from so_custom_reference socust 
+                			    inner join buyer_reference_type reftype on reftype.buyer_ref_type_id=socust.buyer_ref_type_id
+                				and reftype.ref_type='Order_Type' WHERE s.so_id=socust.so_id and buyer_ref_value='ESTIMATION') as cust_ref_est,
+    (SELECT max(est.estimation_id) from so_estimation est where est.so_id = s.so_id and est.vendor_id = #vendorId#) as estimation_id,
+	IF(swc.sealed_bid_ind IS NULL,0,swc.sealed_bid_ind)AS sealedBidInd,	
+		<isNotNull property="providerIds">
+			<isEqual property="unassignedInd" compareValue="true">
+				IF(sorp.resource_id IS NULL,srp.resource_id,sorp.resource_id) AS routedResourceId,
+		 		IF(srp.followup_flag IS NULL,sorp.followup_flag,srp.followup_flag) AS followUpFlag,
+			</isEqual>
+			<isNotEqual property="unassignedInd" compareValue="true">
+				sorp.resource_id AS routedResourceId,
+		 		sorp.followup_flag AS followUpFlag,
+			</isNotEqual>
+		</isNotNull>
+		<isNull property="providerIds">
+		srp.resource_id AS routedResourceId,
+		srp.followup_flag AS followUpFlag,
+		</isNull>
+		swc.method_of_routing AS soAttribute,
+		swc.method_of_acceptance AS acceptanceMethod,
+		sch.schedule_status AS scheduleStatus,
+		schd.modified_date AS preCallAttemptedDate,
+		IF(swc.problem_type IS NOT NULL, swc.problem_type, lu_wf_substatus.descr) AS problemType,
+		#vendorId# AS vendorId
+		<isNotNull property="sortFlag">
+			<isNotNull property="sortBy">
+				<isEqual property="sortBy" compareValue="Providers">
+					<isEqual property="displayTab" compareValue="Inbox">
+						,IF(s.wf_state_id>110,1,COUNT(DISTINCT srp.resource_id)) AS countNumber
+					</isEqual>
+					<isEqual property="displayTab" compareValue="Respond">
+						 ,COUNT(DISTINCT srp.resource_id)AS countNumber
+					</isEqual>
+				</isEqual>
+			</isNotNull>
+		</isNotNull>
+		FROM
+		so_hdr s
+		JOIN so_contact_locn cont_loc ON s.so_id = cont_loc.so_id
+		JOIN lu_so_contact_locn_type lu_cont_loc ON
+		lu_cont_loc.so_contact_locn_type_id = cont_loc.so_contact_locn_type_id
+		JOIN so_location loc ON loc.so_id = cont_loc.so_id AND loc.so_locn_id
+		= cont_loc.so_locn_id AND s.so_id = loc.so_id
+		LEFT OUTER JOIN so_location loc1
+                ON loc1.so_id = s.so_id
+                AND loc1.so_locn_type_id = 40
+		JOIN zip_geocode geo ON loc.zip = geo.zip
+		JOIN so_contact cont ON cont.so_id = cont_loc.so_id AND cont.so_contact_id
+		= cont_loc.so_contact_id AND s.so_id = cont.so_id
+		JOIN lu_wf_states_alias wf_alias ON wf_alias.wf_state_id = s.wf_state_id
+		AND wf_alias.user_type = 'Provider'
+		LEFT OUTER JOIN lu_so_substatus lu_wf_substatus ON
+		lu_wf_substatus.so_substatus_id = s.so_substatus_id
+		LEFT OUTER JOIN so_contact_phones scp ON scp.so_contact_id =
+		cont.so_contact_id AND cont.so_id = scp.so_id AND scp.phone_type_id=1
+		LEFT OUTER JOIN so_contact_phones socp ON socp.so_contact_id =
+		cont.so_contact_id AND cont.so_id = socp.so_id AND
+		socp.phone_type_id=2
+		JOIN so_workflow_controls swc ON swc.so_id = s.so_id
+		JOIN so_custom_reference scr ON scr.so_id = s.so_id
+		LEFT OUTER JOIN lu_zip_market zmar on loc.zip = zmar.zip
+		LEFT OUTER JOIN lu_market market on zmar.market_id = market.market_id
+		<isNull property="providerIds">
+		JOIN so_routed_providers srp ON s.so_id = srp.so_id
+		</isNull>
+		<isNotNull property="providerIds">
+			<isEqual property="unassignedInd" compareValue="true">
+				LEFT OUTER JOIN so_routed_providers srp ON s.so_id = srp.so_id AND (s.assignment_type = 'FIRM' OR s.assignment_type IS NULL)
+			</isEqual>
+			LEFT OUTER JOIN so_routed_providers sorp ON s.so_id = sorp.so_id AND s.assignment_type = 'PROVIDER'
+		</isNotNull>
+		LEFT OUTER JOIN so_schedule schd ON schd.so_id = s.so_id
+		LEFT OUTER JOIN lu_schedule_status sch ON sch.schedule_status_id = schd.schedule_status_id
+		<isNotNull property="sortFlag">
+		<isNotNull property="sortBy">
+			<isEqual property="sortBy" compareValue="Providers">
+				LEFT OUTER JOIN vendor_resource vresource 
+							<isEqual property="displayTab" compareValue="Respond">
+									ON vresource.resource_id = srp.resource_id
+							</isEqual>
+							<isEqual property="displayTab" compareValue="Inbox">
+ 								ON  IF(s.assignment_type IS NULL,srp.resource_id,s.accepted_resource_id)=vresource.resource_id			
+ 							</isEqual>
+							<isNotEqual property="displayTab" compareValue="Inbox">
+								<isNotEqual property="displayTab" compareValue="Respond">
+									ON vresource.resource_id = s.accepted_resource_id AND s.assignment_type != 'FIRM'
+								</isNotEqual>
+							</isNotEqual>
+  				LEFT OUTER JOIN contact vcontact 
+  				ON vresource.contact_id = vcontact.contact_id
+  			</isEqual>
+  			<isNotNull property="appointmentType">
+  			<isNotEqual property="sortBy" compareValue="Providers">
+  				LEFT OUTER JOIN vendor_resource vresource 
+			  	ON vresource.resource_id = s.accepted_resource_id AND s.assignment_type != 'FIRM'
+  				LEFT OUTER JOIN contact vcontact 
+  				ON vresource.contact_id = vcontact.contact_id
+  			</isNotEqual>
+  			</isNotNull>
+  		</isNotNull>
+  		</isNotNull>
+		WHERE lu_cont_loc.so_contact_locn_type_id = 10
+		<isNull property="providerIds">
+		AND (srp.provider_resp_id NOT IN(3,5,7) OR srp.provider_resp_id IS NULL)
+		AND (srp.vendor_id = #vendorId#) 
+		</isNull>
+		<isNotNull property="providerIds">
+			<isNotEqual property="unassignedInd" compareValue="true">
+			AND (sorp.provider_resp_id NOT IN(3,5,7) OR sorp.provider_resp_id IS NULL) 
+		    AND (
+		    </isNotEqual>
+		    <isEqual property="unassignedInd" compareValue="true">
+		    	AND (srp.provider_resp_id NOT IN(3,5,7) OR srp.provider_resp_id IS NULL) 
+		    	AND (
+		    	srp.vendor_id = #vendorId# OR 
+		    </isEqual>
+		       sorp.vendor_id = #vendorId#) 
+		</isNotNull>
+		AND (s.so_substatus_id != 64 OR s.so_substatus_id IS NULL)
+		AND (s.accepted_vendor_id IS NULL OR s.accepted_vendor_id = #vendorId#) 
+		<isEqual  property="groupInd" compareValue="true">
+				AND	s.so_group_id IN 
+				<iterate  open="(" close=")" conjunction="," property="groupIds">
+						#groupIds[]#
+				</iterate> 
+		</isEqual>
+		<isEqual  property="groupInd" compareValue="false">
+			<isEqual property="displayTab" compareValue="Inbox">
+				<isEqual property="viewOrderPricingPermission" compareValue="false">
+					AND s.wf_state_id NOT IN (100,105,110,120,125,130,180) 
+					AND (
+					s.so_id NOT IN 
+                	(SELECT so_id FROM so_hdr h WHERE h.so_substatus_id = 8 AND h.wf_state_id=155)
+                	)		
+				</isEqual>
+				<isEqual property="viewOrderPricingPermission" compareValue="true">
+					AND s.wf_state_id NOT IN (100,105,120,125,130,180) 		
+				</isEqual>
+			</isEqual>
+			<isEqual property="displayTab" compareValue="Respond">
+				AND s.wf_state_id = 110 
+			</isEqual>
+			<isEqual property="displayTab" compareValue="Schedule">
+				AND s.wf_state_id = 150 and schd.schedule_status_id in (1,2)
+			</isEqual>
+			<isEqual property="displayTab" compareValue="Assign Provider">
+				AND s.wf_state_id in (150, 155, 170) AND s.accepted_resource_id IS NULL
+				and s.assignment_type = 'FIRM'
+			</isEqual>
+			<isEqual property="displayTab" compareValue="Manage Route">
+				AND s.wf_state_id in (150, 155, 170) and schd.schedule_status_id != 1
+			</isEqual>
+			<isEqual property="displayTab" compareValue="Confirm Appt window">
+				AND s.wf_state_id in (150, 155, 170) and schd.schedule_status_id != 5 
+				and DATEDIFF(s.service_date1,now()) <![CDATA[<=]]> 3 and DATEDIFF(s.service_date1,now()) <![CDATA[>=]]> 0
+			</isEqual>
+			<isEqual property="displayTab" compareValue="Print Paperwork">
+				AND s.wf_state_id in (150, 155, 170)
+			</isEqual>
+			<isEqual property="displayTab" compareValue="Current Orders">
+				AND s.wf_state_id = 155 and (s.so_substatus_id NOT IN (8,37,134,137) OR s.so_substatus_id is NULL)
+			</isEqual>
+			<!-- for R12_0  -->
+			<isEqual property="displayTab" compareValue="Revisit Needed">
+				AND s.wf_state_id = 155 and s.so_substatus_id IN (134,137)
+			</isEqual>
+			<isEqual property="displayTab" compareValue="Job Done">
+				AND s.wf_state_id = 155 and s.so_substatus_id in (8,135)
+			</isEqual>
+			
+			<isEqual property="displayTab" compareValue="Resolve Problem">
+				AND s.wf_state_id = 170
+			</isEqual>
+			<isEqual property="displayTab" compareValue="Cancellations">
+				AND (s.wf_state_id = 165 OR s.so_substatus_id = 37)
+			</isEqual>
+			<isEqual property="displayTab" compareValue="Awaiting Payment">
+				AND s.wf_state_id = 160
+			</isEqual>
+			<isNotNull property="markets">
+			<isNotEmpty property="markets" prepend="AND  ">
+				market.market_id IN
+				<iterate property="markets" open="(" close=")" conjunction=",">
+					#markets[]#
+				</iterate>
+			</isNotEmpty>
+			</isNotNull>
+			<isNotNull property="providerIds">
+			<isNotEmpty property="providerIds" prepend="AND  ">
+				(
+					<isEqual property="unassignedInd" compareValue="true">
+					srp.resource_id IN
+						<iterate property="providerIds" open="(" close=")" conjunction=",">
+					#providerIds[]#
+						</iterate>
+					OR 
+					</isEqual>
+				(sorp.resource_id IN
+				<iterate property="providerIds" open="(" close=")" conjunction=",">
+					#providerIds[]#
+				</iterate> 
+				AND sorp.provider_resp_id = 1))
+			</isNotEmpty>
+			</isNotNull>
+			<isNotNull property="routedTo">
+				<isNotEmpty property="routedTo" prepend="AND  ">
+				 srp.resource_id IN
+					<iterate property="routedTo" open="(" close=")" conjunction=",">
+						#routedTo[]#
+					</iterate> 
+				</isNotEmpty>
+			</isNotNull>
+			<isNotNull property="status">
+			<isNotEmpty property="status" prepend="AND  ">
+				s.wf_state_id IN
+				<iterate property="status" open="(" close=")" conjunction=",">
+					#status[]#
+				</iterate>
+			</isNotEmpty>
+			</isNotNull>
+			<isNotNull property="currentOrdersSubStatus">
+			<isNotEmpty property="currentOrdersSubStatus" prepend="AND  ">
+				s.so_substatus_id IN
+				<iterate property="currentOrdersSubStatus" open="(" close=")" conjunction=",">
+					#currentOrdersSubStatus[]#
+				</iterate>
+			</isNotEmpty>
+			</isNotNull>
+			<isNotNull property="jobDoneSubsubstatus">
+			<isNotEmpty property="jobDoneSubsubstatus" prepend="AND  ">
+				s.so_substatus_id IN
+				<iterate property="jobDoneSubsubstatus" open="(" close=")" conjunction=",">
+					#jobDoneSubsubstatus[]#
+				</iterate>
+			</isNotEmpty>
+			</isNotNull>
+			<!--R12.0 Sprint3 adding cancellation substatus filter  -->
+			<isNotNull property="cancellationsSubStatus">
+			<isNotEmpty property="cancellationsSubStatus" prepend="AND  ">
+				s.so_substatus_id IN
+				<iterate property="cancellationsSubStatus" open="(" close=")" conjunction=",">
+					#cancellationsSubStatus[]#
+				</iterate>
+			</isNotEmpty>
+			</isNotNull>
+			<!--R12.0 Sprint4 adding Revisit substatus filter  -->
+			<isNotNull property="revisitSubStatus">
+			<isNotEmpty property="revisitSubStatus" prepend="AND  ">
+				s.so_substatus_id IN
+				<iterate property="revisitSubStatus" open="(" close=")" conjunction=",">
+					#revisitSubStatus[]#
+				</iterate>
+			</isNotEmpty>
+			</isNotNull>			
+			<isNotNull property="substatus">
+			<isNotEmpty property="substatus" prepend="AND (">
+				s.price_model IN
+				<iterate property="substatus" open="(" close=")" conjunction=",">
+					#substatus[]#
+				</iterate>
+				OR (swc.method_of_routing in
+				<iterate property="substatus" open="(" close="))" conjunction=",">
+					#substatus[]#
+				</iterate>
+				OR (scr.buyer_ref_value in
+				<iterate property="substatus" open="(" close="))" conjunction=",">
+					#substatus[]#
+				</iterate>
+				AND s.price_model NOT IN ('ZERO_PRICE_BID'))
+			</isNotEmpty>
+			</isNotNull>
+			<isNotNull property="scheduleStatus">
+			<isNotEmpty property="scheduleStatus" prepend="AND  ">
+				sch.schedule_status_id IN
+				<iterate property="scheduleStatus" open="(" close=")" conjunction=",">
+					#scheduleStatus[]#
+				</iterate>
+			</isNotEmpty>
+			</isNotNull>
+			<isNotNull property="appointmentType" prepend="AND  ">
+				<isEqual property="appointmentType" compareValue="Today">
+					DATEDIFF(s.service_date1,now()) = 0
+				</isEqual>
+				<isEqual property="appointmentType" compareValue="Tomorrow">
+					DATEDIFF(s.service_date1,now()) = 1
+				</isEqual>
+				<isEqual property="appointmentType" compareValue="2days">
+					DATEDIFF(s.service_date1,now()) <![CDATA[ > ]]> 0 and DATEDIFF(s.service_date1,now()) <![CDATA[ <= ]]> 2
+				</isEqual>
+				<isEqual property="appointmentType" compareValue="3days">
+					DATEDIFF(s.service_date1,now()) <![CDATA[ > ]]> 0 and DATEDIFF(s.service_date1,now()) <![CDATA[ <= ]]> 3
+				</isEqual>
+				<isEqual property="appointmentType" compareValue="range">					
+					DATE(CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%h:%i %p')HOUR_SECOND), 'GMT', s.service_locn_time_zone ))
+					 <![CDATA[>=]]> #appointmentStartDate# 
+					AND
+					DATE(CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%h:%i %p')HOUR_SECOND), 'GMT', s.service_locn_time_zone ))
+					<![CDATA[<=]]> #appointmentEndDate#					 
+				</isEqual>
+			</isNotNull>
+		</isEqual>
+			GROUP BY s.so_id
+		<isEqual  property="groupInd" compareValue="true">
+			ORDER BY sg.so_group_id 
+		</isEqual>
+		<isEqual  property="groupInd" compareValue="false">
+			<isNotNull property="sortFlag">
+				ORDER BY
+					<isNotNull property="sortBy">
+							<isEqual property="sortFlag" compareValue="set">
+								<isEqual property="sortBy" compareValue="s.sow_title">
+										TRIM(s.sow_title)
+											<isNotNull property="sortOrder">
+		                    					$sortOrder$
+		                    				</isNotNull>
+		                    				,s.so_id
+		                    				<isNotNull property="sortOrder">
+		                    					$sortOrder$
+		                    				</isNotNull>
+									</isEqual>
+									<isNotEqual property="sortBy" compareValue="s.sow_title">
+											$sortBy$
+											<isNotNull property="sortOrder">
+		                    					$sortOrder$
+		                    				</isNotNull>
+									</isNotEqual>
+							</isEqual>
+		           	</isNotNull>
+					<isNotEqual property="sortFlag" compareValue="set"> 
+							<isNotNull property="sortBy">
+									<isEqual property="sortBy" compareValue="SoStatus">
+										wf_alias.sort_order $sortOrder$, lu_wf_substatus.descr $sortOrder$,CASE WHEN swc.method_of_acceptance = 'AUTOMATIC' AND soStatus = 150 
+												AND lu_wf_substatus.descr IS NULL
+												THEN 1 
+												ELSE 0 
+											END $sortOrder$, CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%l:%i %p') HOUR_SECOND), 'GMT', s.service_locn_time_zone)
+										$sortOrder$
+									</isEqual>
+									<isEqual property="sortBy" compareValue="Location">
+										loc.zip $sortOrder$, loc.city $sortOrder$, loc.street_1 $sortOrder$, loc.street_2 $sortOrder$									</isEqual>
+									<isEqual property="sortBy" compareValue="Price">
+										CASE WHEN soStatus = 160 OR soStatus = 180 OR soStatus = 120 
+												THEN finalPartsPrice + finalLaborPrice 
+												ELSE spendLimit + spendLimitParts 
+											END $sortOrder$										
+									</isEqual>
+									<isEqual property="sortBy" compareValue="AppointmentDate">
+										CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%l:%i %p') HOUR_SECOND), 'GMT', s.service_locn_time_zone)
+										$sortOrder$
+									</isEqual>
+									<isEqual property="sortBy" compareValue="Providers">
+										<isEqual property="displayTab" compareValue="Inbox">
+											countNumber $sortOrder$,COALESCE(vcontact.first_name, 'ZZZZ')$sortOrder$, COALESCE(vcontact.last_name, 'ZZZZ')$sortOrder$
+										</isEqual> 
+										<isEqual property="displayTab" compareValue="Respond">
+											countNumber $sortOrder$,COALESCE(vcontact.first_name, 'ZZZZ') $sortOrder$, COALESCE(vcontact.last_name, 'ZZZZ') $sortOrder$
+										</isEqual>
+										<isNotEqual property="displayTab" compareValue="Inbox">
+											<isNotEqual property="displayTab" compareValue="Respond">
+													COALESCE(vcontact.first_name, 'ZZZZ') $sortOrder$, COALESCE(vcontact.last_name, 'ZZZZ') $sortOrder$
+											</isNotEqual>
+										</isNotEqual>
+									</isEqual>
+									<isEqual property="sortBy" compareValue="OrderType">
+										CASE WHEN priceModel = 'ZERO_PRICE_BID'
+												THEN 'Bid Request'
+												ELSE soAttribute
+									    END $sortOrder$
+									</isEqual>
+							</isNotNull>
+						</isNotEqual>
+					LIMIT #count#
+			</isNotNull>
+		</isEqual>
+	</select>
+	
+	<select id="orderManagement.fetchOrders.load" parameterClass="java.util.HashMap"
+		resultMap="omServiceOrderMapInbox">
+		SELECT s.so_id AS soId,
+		s.buyer_id AS buyerID,
+						s.so_group_id AS parentGroupId,
+						s.routed_date AS routedDate,
+						s.price_model AS priceModel,
+						s.accepted_resource_id AS acceptedResourceId,
+						s.sow_title	AS soTitle,
+						s.sow_descr AS soTitleDesc,
+						s.service_date1 AS	appointStartDate,
+						s.service_date2 AS appointEndDate,
+						s.resched_service_date1 AS	reSchedStartDate,
+						s.service_time_start AS serviceTimeStart,
+						s.service_time_end AS serviceTimeEnd,
+						s.spend_limit_labor AS	spendLimit,
+						s.spend_limit_parts AS spendLimitParts,
+						s.final_price_parts	AS finalPartsPrice,
+						s.final_price_labor AS finalLaborPrice,
+						s.wf_state_id AS soStatus,
+						s.service_locn_time_zone AS	serviceLocationTimezone,
+						wf_alias.descr AS soStatusString,
+						s.so_substatus_id AS soSubStatus,
+						lu_wf_substatus.descr AS soSubStatusString,
+						s.assignment_type AS assignmentType,
+						s.resched_service_date1 AS resheduleStartDate,
+	                    s.resched_service_date2 AS resheduleEndDate,
+	                    s.resched_service_time_start AS resheduleStartTime,
+	                    s.resched_service_time_end AS resheduleEndTime,
+						loc.city AS city,
+						loc.state_cd AS stateCd,
+						loc.zip AS zip,
+						geo.daylight_savings_flg AS dlsFlag,
+						scp.phone_no AS endCustomerPrimaryPhoneNumber,
+						scp.phone_no_ext AS primaryExtension,
+						socp.phone_no AS endCustomerAlternatePhoneNumber,
+						socp.phone_no_ext AS alternateExtension,
+						cont.first_name AS endCustomerFirstName,
+						cont.last_name AS endCustomerLastName,
+						IF(swc.sealed_bid_ind IS NULL,0,swc.sealed_bid_ind)AS sealedBidInd,
+						srp.resource_id AS routedResourceId,
+						srp.followup_flag AS followUpFlag,
+						swc.method_of_routing AS soAttribute,
+						swc.method_of_acceptance AS acceptanceMethod,
+						sch.schedule_status AS scheduleStatus,
+						schd.modified_date AS preCallAttemptedDate,
+						#vendorId# AS vendorId,
+						loc1.street_1 AS partStreet1,
+						loc1.street_2 AS partStreet2,
+						loc1.city AS partCity,
+						loc1.state_cd AS partState,
+						loc1.zip AS partZip,
+						loc.street_1 AS street1,
+						loc.street_2 AS street2,
+						EXISTS(select buyer_ref_value from so_custom_reference socust 
+                			    inner join buyer_reference_type reftype on reftype.buyer_ref_type_id=socust.buyer_ref_type_id
+                				and reftype.ref_type='Order_Type' WHERE s.so_id=socust.so_id and buyer_ref_value='ESTIMATION') as cust_ref_est,
+    (SELECT max(est.estimation_id) from so_estimation est where est.so_id = s.so_id and est.vendor_id = #vendorId#) as estimation_id 
+		FROM so_hdr s
+			JOIN so_contact_locn cont_loc
+				ON s.so_id = cont_loc.so_id
+			JOIN lu_so_contact_locn_type lu_cont_loc
+			 	ON	lu_cont_loc.so_contact_locn_type_id = cont_loc.so_contact_locn_type_id
+			JOIN so_location loc
+         		ON loc.so_id = s.so_id
+            	AND loc.so_locn_type_id = 10
+            LEFT OUTER JOIN so_location loc1
+                ON loc1.so_id = s.so_id
+                AND loc1.so_locn_type_id = 40
+			JOIN zip_geocode geo 
+				ON loc.zip = geo.zip
+			JOIN so_contact cont 
+				ON cont.so_id = cont_loc.so_id
+				AND cont.so_contact_id = cont_loc.so_contact_id
+				AND s.so_id = cont.so_id
+			JOIN lu_wf_states_alias wf_alias 
+				ON wf_alias.wf_state_id = s.wf_state_id
+				AND wf_alias.user_type = 'Provider'
+			LEFT OUTER JOIN lu_so_substatus lu_wf_substatus
+				ON lu_wf_substatus.so_substatus_id = s.so_substatus_id
+			LEFT OUTER JOIN so_contact_phones scp
+				 ON scp.so_contact_id = cont.so_contact_id
+				 AND cont.so_id = scp.so_id
+				 AND scp.phone_type_id=1
+			LEFT OUTER JOIN so_contact_phones socp
+				ON socp.so_contact_id =	cont.so_contact_id 
+				AND cont.so_id = socp.so_id AND
+				socp.phone_type_id=2
+			JOIN so_workflow_controls swc
+				ON swc.so_id = s.so_id
+			LEFT OUTER JOIN so_routed_providers srp 
+				ON s.so_id = srp.so_id
+			LEFT OUTER JOIN so_schedule schd
+				ON schd.so_id = s.so_id
+			LEFT OUTER JOIN lu_schedule_status sch
+				 ON sch.schedule_status_id = schd.schedule_status_id
+			WHERE (srp.provider_resp_id NOT IN(3,5,7) OR srp.provider_resp_id IS NULL)
+				AND (s.so_substatus_id != 64 OR s.so_substatus_id IS NULL)
+				AND (s.accepted_vendor_id IS NULL OR s.accepted_vendor_id = #vendorId#) 
+				AND srp.vendor_id = #vendorId#
+		<isEqual  property="groupInd" compareValue="true">
+				AND	s.so_group_id IN 
+				<iterate  open="(" close=")" conjunction="," property="groupIds">
+						#groupIds[]#
+				</iterate> 
+		</isEqual>
+		<isEqual  property="groupInd" compareValue="false">
+			<isEqual property="displayTab" compareValue="Inbox">
+				<isEqual property="viewOrderPricingPermission" compareValue="false">
+					AND s.wf_state_id NOT IN (100,105,110,120,125,130,180) 
+					AND (s.so_id NOT IN	(SELECT so_id FROM so_hdr h WHERE h.so_substatus_id = 8 AND h.wf_state_id=155))		
+				</isEqual>
+				<isEqual property="viewOrderPricingPermission" compareValue="true">
+					AND s.wf_state_id NOT IN (100,105,120,125,130,180) 		
+				</isEqual>
+			</isEqual>
+			<isEqual property="displayTab" compareValue="Respond">
+				AND s.wf_state_id = 110 
+			</isEqual>
+			<isEqual property="displayTab" compareValue="Schedule">
+				AND s.wf_state_id = 150 and schd.schedule_status_id in (1,2)
+			</isEqual>
+			<isEqual property="displayTab" compareValue="Assign Provider">
+				AND s.wf_state_id in (150, 155, 170) AND s.accepted_resource_id IS NULL
+				and s.assignment_type = 'FIRM'
+			</isEqual>
+			<isEqual property="displayTab" compareValue="Manage Route">
+				AND s.wf_state_id in (150, 155, 170) and schd.schedule_status_id != 1
+			</isEqual>
+			<isEqual property="displayTab" compareValue="Confirm Appt window">
+				AND s.wf_state_id in (150, 155, 170) and schd.schedule_status_id != 5 
+				and DATEDIFF(s.service_date1,now()) <![CDATA[<=]]> 3 and DATEDIFF(s.service_date1,now()) <![CDATA[>=]]> 0
+			</isEqual>
+			<isEqual property="displayTab" compareValue="Print Paperwork">
+				AND s.wf_state_id in (150, 155, 170)
+			</isEqual>
+			<isEqual property="displayTab" compareValue="Current Orders">
+				AND s.wf_state_id = 155 and (s.so_substatus_id NOT IN (8,37,134,137) OR s.so_substatus_id is NULL)
+			</isEqual>
+			<!-- for R12_0  -->
+			<isEqual property="displayTab" compareValue="Revisit Needed">
+				AND s.wf_state_id = 155 and s.so_substatus_id in (134,137)
+			</isEqual>
+			<isEqual property="displayTab" compareValue="Job Done">
+				AND s.wf_state_id = 155 and s.so_substatus_id in (8,135)
+			</isEqual>
+			<isEqual property="displayTab" compareValue="Cancellations">
+				AND (s.wf_state_id = 165 OR s.so_substatus_id = 37)
+			</isEqual>
+			<isEqual property="displayTab" compareValue="Awaiting Payment">
+				AND s.wf_state_id = 160
+			</isEqual>
+		</isEqual>
+			GROUP BY s.so_id
+		<isEqual  property="groupInd" compareValue="true">
+			ORDER BY sg.so_group_id 
+		</isEqual>
+		<isEqual  property="groupInd" compareValue="false">
+			<isNotNull property="sortFlag">
+				ORDER BY
+					<isNotNull property="sortBy">
+							<isEqual property="sortFlag" compareValue="set">
+									<isEqual property="sortBy" compareValue="s.sow_title">
+										TRIM(s.sow_title)
+											<isNotNull property="sortOrder">
+		                    					$sortOrder$
+		                    				</isNotNull>
+		                    			,s.so_id 
+		                    				<isNotNull property="sortOrder">
+		                    					$sortOrder$
+		                    				</isNotNull>
+									</isEqual>
+									<isNotEqual property="sortBy" compareValue="s.sow_title">
+								$sortBy$
+								<isNotNull property="sortOrder">
+		                    		$sortOrder$
+		                    	</isNotNull>
+									</isNotEqual>
+							</isEqual>
+		           	</isNotNull>
+					<isNotEqual property="sortFlag" compareValue="set"> 
+							<isNotNull property="sortBy">
+							         <isEqual property="sortBy" compareValue="SoStatus">
+										wf_alias.sort_order $sortOrder$, lu_wf_substatus.descr $sortOrder$,CASE WHEN swc.method_of_acceptance = 'AUTOMATIC' AND soStatus = 150 
+												AND lu_wf_substatus.descr IS NULL
+												THEN 1 
+												ELSE 0 
+											END $sortOrder$, CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%l:%i %p') HOUR_SECOND), 'GMT', s.service_locn_time_zone)
+										$sortOrder$
+									</isEqual>
+									<isEqual property="sortBy" compareValue="Location">
+										loc.zip $sortOrder$, loc.city $sortOrder$, loc.street_1 $sortOrder$, loc.street_2 $sortOrder$
+									</isEqual>
+									<isEqual property="sortBy" compareValue="Price">
+										CASE WHEN soStatus = 160 OR soStatus = 180 OR soStatus = 120 
+												THEN finalPartsPrice + finalLaborPrice 
+												ELSE spendLimit + spendLimitParts 
+											END $sortOrder$,
+											s.so_id $sortOrder$
+									</isEqual>
+									<isEqual property="sortBy" compareValue="AppointmentDate">
+										CONVERT_TZ(DATE_ADD(s.service_date1, INTERVAL STR_TO_DATE(s.service_time_start,'%l:%i %p') HOUR_SECOND), 'GMT', s.service_locn_time_zone)
+										$sortOrder$, s.so_id $sortOrder$
+									</isEqual>
+									<isEqual property="sortBy" compareValue="Providers">
+										COALESCE(vcontact.first_name, 'ZZZZ') $sortOrder$, COALESCE(vcontact.last_name, 'ZZZZ') $sortOrder$, s.so_id $sortOrder$
+									</isEqual>
+									<isEqual property="sortBy" compareValue="OrderType">
+										CASE WHEN priceModel = 'ZERO_PRICE_BID'
+												THEN 'Bid Request'
+												ELSE soAttribute
+									    END $sortOrder$,
+									    s.so_id $sortOrder$
+									</isEqual>
+							</isNotNull>
+						</isNotEqual>
+					LIMIT #count#
+			</isNotNull>
+		</isEqual>
+	</select>
+	
+	<select id="orderManagement.fetchChildOrdersforGroup" parameterClass="java.util.HashMap"
+		resultMap="omServiceOrderMapGroup">
+		SELECT DISTINCT
+				s.so_id AS soId,
+				s.buyer_id AS buyerID,
+				sg.so_group_id AS parentGroupId,
+				sg.group_title AS parentGroupTitle,
+				s.sow_descr AS soTitleDesc,
+				s.routed_date AS routedDate,
+				IF (sgp.final_group_spend_limit_labor IS NULL,sgp.original_group_spend_limit_labor,sgp.final_group_spend_limit_labor) AS groupSpendLimitLabor,
+				IF (sgp.final_group_spend_limit_labor IS NULL,sgp.original_group_spend_limit_parts,sgp.final_group_spend_limit_parts) AS groupSpendLimitParts,
+				IF (sgp.final_group_spend_limit_labor IS NULL,sgp.original_group_spend_limit_labor +
+					sgp.original_group_spend_limit_parts,sgp.final_group_spend_limit_labor + sgp.final_group_spend_limit_parts) AS groupSpendLimit,
+				s.sow_title AS soTitle,
+				s.service_date1 AS appointStartDate,
+				s.service_date2 AS appointEndDate,
+				s.service_time_start AS serviceTimeStart,
+				s.service_time_end AS serviceTimeEnd,
+				s.service_locn_time_zone AS serviceLocationTimezone,
+				loc.street_1 AS partStreet1,
+				loc.street_2 AS partStreet2,
+				loc1.street_1 AS street1,
+				loc1.street_2 AS street2,
+				loc1.city AS city,
+				loc1.state_cd AS stateCd,
+				loc1.zip AS zip,
+				geo.daylight_savings_flg AS dlsFlag,	
+				srp.resource_id AS routedResourceId
+		FROM so_hdr s
+			LEFT OUTER JOIN so_group sg ON s.so_group_id = sg.so_group_id
+			LEFT OUTER JOIN so_group_price sgp ON s.so_group_id = sgp.so_group_id
+			JOIN so_location loc1 ON loc1.so_id = s.so_id AND loc1.so_locn_type_id = 10
+			JOIN so_location loc ON loc.so_id = s.so_id AND loc.so_locn_type_id = 40
+			JOIN zip_geocode geo ON loc1.zip = geo.zip
+			JOIN so_routed_providers srp ON s.so_id = srp.so_id
+		WHERE (srp.provider_resp_id NOT IN(3,5,7) OR srp.provider_resp_id IS NULL)
+			AND (srp.vendor_id = #vendorId#) 
+		<isEqual  property="groupInd" compareValue="true">
+				AND	s.so_group_id IN 
+				<iterate  open="(" close=")" conjunction="," property="groupIds">
+						#groupIds[]#
+				</iterate> 
+		</isEqual>
+			GROUP BY s.so_id
+			ORDER BY sg.so_group_id 
+	</select>
+	
+	<select id="orderManagement.fetchAllOrders" parameterClass="java.util.HashMap"
+		resultClass="java.lang.String">
+		SELECT DISTINCT
+		s.so_id AS soId
+		FROM so_hdr s
+		JOIN so_contact_locn
+		cont_loc
+		ON s.so_id = cont_loc.so_id
+		JOIN lu_so_contact_locn_type
+		lu_cont_loc
+		ON lu_cont_loc.so_contact_locn_type_id =
+		cont_loc.so_contact_locn_type_id
+		LEFT OUTER JOIN
+		so_routed_providers srp
+		ON s.so_id = srp.so_id
+		LEFT OUTER JOIN 
+		so_schedule schd 
+		ON schd.so_id = s.so_id
+		WHERE
+		lu_cont_loc.so_contact_locn_type_id = 10 AND
+		(srp.provider_resp_id NOT
+		IN(3,5,7)
+		OR srp.provider_resp_id IS NULL)
+		AND (s.so_substatus_id != 64
+		OR s.so_substatus_id IS NULL)
+		AND (s.accepted_vendor_id IS NULL OR s.accepted_vendor_id = #vendorId#)
+		AND srp.vendor_id = #vendorId#
+		<isEqual property="displayTab" compareValue="Inbox">
+			<isEqual property="viewOrderPricingPermission" compareValue="false">
+					AND s.wf_state_id NOT IN (100,105,110,120,125,130,180) 
+					AND (
+					s.so_id NOT IN 
+                	(SELECT so_id FROM so_hdr h WHERE h.so_substatus_id = 8 AND h.wf_state_id=155)
+                	)		
+			</isEqual>
+			<isEqual property="viewOrderPricingPermission" compareValue="true">
+					AND s.wf_state_id NOT IN (100,105,120,125,130,180) 		
+			</isEqual>
+		</isEqual>
+		<isEqual property="displayTab" compareValue="Respond">
+			AND s.wf_state_id = 110 
+		</isEqual>
+		<isEqual property="displayTab" compareValue="Schedule">
+			AND s.wf_state_id = 150 and schd.schedule_status_id in (1,2)
+		</isEqual>
+		<isEqual property="displayTab" compareValue="Assign Provider">
+			AND s.wf_state_id in (150, 155, 170) and s.assignment_type = 'FIRM' AND s.accepted_resource_id IS NULL
+		</isEqual>
+		<isEqual property="displayTab" compareValue="Manage Route">
+			AND s.wf_state_id in (150, 155, 170) and schd.schedule_status_id != 1
+		</isEqual>
+		<isEqual property="displayTab" compareValue="Confirm Appt window">
+			AND s.wf_state_id in (150, 155, 170) and schd.schedule_status_id != 5 
+			AND DATEDIFF(s.service_date1,now()) <![CDATA[<=]]> 3 AND DATEDIFF(s.service_date1,now()) <![CDATA[>=]]> 0
+		</isEqual>
+		<isEqual property="displayTab" compareValue="Print Paperwork">
+			AND s.wf_state_id in (150, 155, 170)
+		</isEqual>
+		<isEqual property="displayTab" compareValue="Current Orders">
+			AND s.wf_state_id = 155 and (s.so_substatus_id NOT IN (8,37,134,137) OR
+			s.so_substatus_id is NULL)
+		</isEqual>
+		<!-- for R12_0 -->
+		<isEqual property="displayTab" compareValue="Revisit Needed">
+			AND s.wf_state_id = 155 and s.so_substatus_id IN (134,137)
+		</isEqual>
+		<isEqual property="displayTab" compareValue="Job Done">
+			AND s.wf_state_id = 155 and s.so_substatus_id in (8,135)
+		</isEqual>
+		<isEqual property="displayTab" compareValue="Resolve Problem">
+			AND s.wf_state_id = 170
+		</isEqual>
+		<isEqual property="displayTab" compareValue="Cancellations">
+			AND (s.wf_state_id = 165 OR s.so_substatus_id = 37)
+		</isEqual>
+		<isEqual property="displayTab" compareValue="Awaiting Payment">
+			AND s.wf_state_id = 160
+		</isEqual>
+		GROUP BY s.so_id
+		ORDER BY s.service_date1_time ASC
+	</select>
+	
+	<select id="orderManagement.routedProvidersForAssigned.query" parameterClass="filterParams"
+		resultClass="providerFilterVO">
+		SELECT
+		srp.resource_id AS id,
+		CONCAT(vcontact.first_name," ",vcontact.last_name) AS descr
+		FROM so_hdr so
+		JOIN so_routed_providers srp ON so.so_id = srp.so_id
+		JOIN vendor_resource vresource ON vresource.resource_id = srp.resource_id
+		JOIN contact vcontact ON vresource.contact_id = vcontact.contact_id
+                WHERE srp.vendor_id = #vendorId#
+		AND (srp.provider_resp_id NOT IN (3,5,7) OR srp.provider_resp_id IS NULL)
+		AND so.wf_state_id = 150
+		AND so.price_model IN ('ZERO_PRICE_BID','NAME_PRICE')
+		AND (so.so_substatus_id != 64 OR so.so_substatus_id IS NULL)
+		<isNotNull property="soIds" prepend="AND ">
+			so.so_id IN
+			<iterate property="soIds" open="(" close=")" conjunction=",">
+				#soIds[]#
+			</iterate>
+		</isNotNull>
+		GROUP BY id
+		ORDER BY descr;
+	</select>
+
+		
+
+	<select id="orderManagement.fetchProviderList" parameterClass="filterParams"
+		resultClass="providerFilterVO">
+		SELECT id,descr FROM( (SELECT
+		srp.resource_id AS id,
+		CONCAT(vcontact.first_name," ",vcontact.last_name) AS descr
+		FROM so_hdr s
+		JOIN so_routed_providers srp ON s.so_id = srp.so_id AND
+		srp.vendor_id=#vendorId#
+		JOIN vendor_resource vresource ON
+		vresource.resource_id = srp.resource_id
+		JOIN contact vcontact ON
+		vresource.contact_id = vcontact.contact_id
+		WHERE (s.assignment_type='FIRM' OR s.assignment_type IS NULL)
+		<isNotNull property="soIds" prepend="AND ">
+			s.so_id IN
+			<iterate property="soIds" open="(" close=")" conjunction=",">
+				#soIds[]#
+			</iterate>
+		</isNotNull>)
+		UNION
+		(SELECT
+		srp.resource_id AS id,
+		CONCAT(vcontact.first_name," ",vcontact.last_name) AS descr
+		FROM so_hdr s
+		JOIN so_routed_providers srp ON s.so_id = srp.so_id AND
+		srp.vendor_id=#vendorId#
+		JOIN vendor_resource vresource ON
+		vresource.resource_id = srp.resource_id
+		JOIN contact vcontact ON
+		vresource.contact_id = vcontact.contact_id
+		WHERE s.accepted_resource_id IS NOT NULL AND srp.provider_resp_id=1 AND s.assignment_type='PROVIDER' 
+		<isNotNull property="soIds" prepend="AND ">
+			s.so_id IN
+			<iterate property="soIds" open="(" close=")" conjunction=",">
+				#soIds[]#
+			</iterate>
+		</isNotNull>) )AS dfg
+		GROUP BY id
+		ORDER BY descr
+	</select>
+
+	<select id="orderManagement.fetchMarketList" parameterClass="filterParams"
+		resultClass="marketFilterVO">
+		SELECT
+			market.market_id AS id,
+			market.market_name AS descr
+		FROM so_hdr s
+			JOIN so_contact_locn cont_loc ON s.so_id = cont_loc.so_id
+		JOIN lu_so_contact_locn_type lu_cont_loc ON
+			lu_cont_loc.so_contact_locn_type_id = cont_loc.so_contact_locn_type_id
+			AND lu_cont_loc.so_contact_locn_type_id = 10
+		JOIN so_location loc ON loc.so_id = cont_loc.so_id AND loc.so_locn_id =
+			cont_loc.so_locn_id AND s.so_id = loc.so_id
+		JOIN lu_zip_market zmar ON loc.zip = zmar.zip
+		JOIN lu_market market
+		ON zmar.market_id = market.market_id 
+		<isNotNull property="soIds" prepend="WHERE  ">
+			s.so_id IN
+			<iterate property="soIds" open="(" close=")" conjunction=",">
+				#soIds[]#
+			</iterate>
+		</isNotNull>
+		GROUP BY market.market_id
+		ORDER BY market.market_name;
+	</select>
+	
+	<select id="orderManagement.fetchStatusList" parameterClass="filterParams"
+	resultClass="statusFilterVO">
+	SELECT DISTINCT
+		s.wf_state_id AS id,
+		wf_alias.descr AS descr
+	FROM so_hdr s
+	JOIN lu_wf_states_alias wf_alias ON wf_alias.wf_state_id = s.wf_state_id
+	AND wf_alias.user_type = 'Provider'
+	<isNotNull property="soIds" prepend="AND  ">
+		s.so_id IN
+		<iterate property="soIds" open="(" close=")" conjunction=",">
+			#soIds[]#
+		</iterate>
+	</isNotNull>
+	ORDER BY wf_alias.descr;
+</select>
+	
+	<!-- <select id="orderManagement.fetchSubStatusList" parameterClass="filterParams"
+		resultClass="subStatusFilterVO">
+	SELECT distinct
+	IF(s.price_model ='ZERO_PRICE_BID','Bid Request',swc.method_of_routing)AS descr
+	FROM so_hdr s
+	LEFT OUTER JOIN so_workflow_controls swc 
+	ON swc.so_id = s.so_id
+	<isNotNull property="soIds" prepend="AND  ">
+		s.so_id IN
+		<iterate property="soIds" open="(" close=")" conjunction=",">
+			#soIds[]#
+		</iterate>
+	</isNotNull>
+	ORDER BY descr;
+	</select>
+	
+	 -->
+	
+	<select id="orderManagement.fetchSubStatusList" parameterClass="filterParams"
+		resultClass="subStatusFilterVO">
+	SELECT distinct
+		IF(s.price_model ='ZERO_PRICE_BID','Bid Request',IF(socust.buyer_ref_value ='ESTIMATION','ESTIMATION REQUEST',swc.method_of_routing)) AS descr
+	FROM so_hdr s LEFT JOIN so_custom_reference socust 
+	ON s.so_id = socust.so_id LEFT JOIN so_workflow_controls swc ON swc.so_id=socust.so_id
+	<isNotNull property="soIds" prepend="WHERE">
+		s.so_id IN
+		<iterate property="soIds" open="(" close=")" conjunction=",">
+			#soIds[]#
+		</iterate>
+	</isNotNull>
+	ORDER BY descr;
+	</select>
+	
+	<select id="orderManagement.fetchScheduleStatusList"
+		parameterClass="filterParams" resultClass="scheduleFilterVO">
+	SELECT DISTINCT
+		sch.schedule_status_id AS id,
+		sch.schedule_status AS descr
+	FROM so_hdr s
+		LEFT OUTER JOIN so_routed_providers srp ON s.so_id = srp.so_id
+	LEFT OUTER JOIN so_schedule sche ON sche.so_id = s.so_id
+	LEFT OUTER JOIN lu_schedule_status sch ON sch.schedule_status_id = sche.schedule_status_id
+	WHERE srp.vendor_id = #vendorId#
+	<isNotNull property="soIds" prepend="AND  ">
+		s.so_id IN
+		<iterate property="soIds" open="(" close=")" conjunction=",">
+			#soIds[]#
+		</iterate>
+	</isNotNull>
+	ORDER BY sch.schedule_status;
+	</select>
+	
+	<select id="orderManagement.fetchJobDoneSubStatusList" parameterClass="filterParams"
+		resultClass="jobDoneSubStatusFilterVO">
+		SELECT DISTINCT 
+		lus.so_substatus_id AS id,
+		lus.descr AS descr 
+		FROM so_hdr sh JOIN lu_so_substatus lus ON lus.so_substatus_id= sh.so_substatus_id
+		AND lus.so_substatus_id IN (8,135) 		
+		<isNotNull property="soIds" prepend="AND  ">
+		sh.so_id IN
+		 <iterate property="soIds" open="(" close=")" conjunction=",">
+			#soIds[]#
+		</iterate>
+		 </isNotNull>
+		ORDER BY lus.descr
+	</select>
+
+	<select id="orderManagement.fetchScope" parameterClass="java.lang.String"
+		resultMap="scope.resultMap">
+		SELECT DISTINCT lu_st.descr AS scope
+			FROM so_tasks st
+		JOIN lu_service_type_template lu_st ON lu_st.service_type_template_id = st.service_type_template_id
+		WHERE st.so_id = #soId# ORDER BY lu_st.descr
+	</select>
+	
+	<select id="orderManagement.getAssignedResource" parameterClass="java.lang.String" resultClass="eligibleProvidersVO">
+		select v.resource_id as resourceId,
+			   c.first_name as providerFirstName,
+			   c.last_name as providerLastName
+		from so_routed_providers s 
+		join vendor_resource v on s.resource_id = v.resource_id
+		join contact c on v.contact_id = c.contact_id 
+		where provider_resp_id = 1 and so_id = #soId#
+	</select>
+	
+	<update id="orderManagement.updateRoutedRes">
+		update so_routed_providers SET provider_resp_id = null where provider_resp_id = 1 and so_id = #soId#
+	</update>
+	
+	<select id ="orderManagement.fetchAssigmentType" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT assignment_type FROM so_hdr WHERE so_id=#soId#
+	</select>
+	
+	<select id ="orderManagement.fetchProviders" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		SELECT
+			providers.resource_id as resourceId
+		FROM
+			so_routed_providers providers
+		WHERE providers.so_id = #soId# and providers.vendor_id = #vendorId# AND (provider_resp_id =1 OR provider_resp_id IS NULL)
+	</select>
+	
+	<select id="orderManagement.problemReportedBy" parameterClass="java.lang.String" resultClass="java.lang.String">	
+		select IF(role_id = 1, 'Provider', IF(role_id = 3 or role_id = 5, 'Buyer', IF(role_id = 6, 'System', 'SLAdmin'))) AS problemReportedBy
+			from so_logging 
+			where so_id = #soId# and (action_id = 10 or action_id = 204)
+			order by created_date desc limit 1 
+	</select>
+	
+	<select id="orderManagement.problemReportedDate" parameterClass="java.lang.String" resultClass="java.util.Date">
+		select created_date AS problemReportedDate
+			FROM so_logging
+			WHERE so_id = #soId# AND (action_id = 10 or action_id = 204)
+			ORDER BY created_date DESC LIMIT 1 
+	</select>
+	
+	<select id="orderManagement.partStreet1" parameterClass="java.lang.String" resultClass="java.lang.String">
+		select street_1 AS partStreet1 
+			from so_location 
+			WHERE so_locn_type_id = 40 and so_id = #soId#
+	</select>
+	
+	<select id="orderManagement.partStreet2" parameterClass="java.lang.String" resultClass="java.lang.String">
+		select street_2 AS partStreet2 
+			from so_location 
+			WHERE so_locn_type_id = 40 and so_id = #soId#
+	</select>
+	
+	<select id="orderManagement.scheduleStatusId" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		SELECT IFNULL(schedule_status_id,0) FROM so_schedule WHERE so_id=#soId#
+	</select>
+
+	<select id="orderManagement.getGroupPriority" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		select followup_flag from so_group_routed_providers 
+			where so_group_id = #groupId# and vendor_id = #vendorId# limit 1
+	</select>
+
+	<update id="orderManagement.updateGroupPriority" parameterClass="java.util.HashMap">
+		update so_group_routed_providers set followup_flag = #flag# 
+			where so_group_id = #groupId# and vendor_id = #vendorId#
+	</update>
+
+	<!-- <select id="orderManagement.currentBid" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		SELECT incr_spend_limit FROM so_routed_providers srp WHERE srp.so_id = #soId# AND srp.vendor_id=#vendorId# LIMIT 1
+	</select> -->
+	
+	<select id="orderManagement.routedResourcesContacts.query" parameterClass="java.util.Map" resultClass="contact">
+		SELECT srp.resource_id AS resourceId,ct.contact_id AS contactId, ct.email,ct.first_name AS firstName,ct.last_name AS lastName,
+		ct.mi AS mi, ct.suffix AS suffix,  ct.phone_no AS phoneNo, ct.mobile_no AS cellNo, ct.honorific AS honorific, 
+		ct.phone_no_ext AS phoneNoExt, vh.business_name AS businessName, vloc.street_1 AS street_1, vloc.street_2 AS street_1, vloc.city, vloc.state_cd AS stateCd,
+		vloc.zip, vloc.country, vloc.locn_type_id AS locnTypeId, vloc.locn_name AS locName
+		FROM so_routed_providers srp,
+		  contact ct,
+		  so_hdr sh,
+		  vendor_resource vr,
+		  vendor_resource_location vloc,
+		  vendor_hdr vh
+		WHERE srp.resource_id = vr.resource_id
+		    AND ct.contact_id = vr.contact_id
+		    AND vh.vendor_id = vr.vendor_id
+		    AND vr.locn_id = vloc.locn_id
+		    AND vr.resource_id = #resourceId#
+		    AND sh.so_id = srp.so_id
+		    AND sh.so_id = #soId#;
+	</select>
+	<select id="orderManagement.availableProvidersFirm" parameterClass="java.util.HashMap" resultClass="providerResultVO">
+		SELECT
+			srp.resource_id 			as resourceId,
+			srp.provider_resp_id		as providerRespid,
+			srp.service_date1 		 	as serviceDate1,
+			srp.service_time_start		as serviceTimeStart,
+			srp.service_date2			as serviceDate2,
+			srp.service_time_end		as serviceTimeEnd,
+			offer_expiration_date 		as offerExpirationDate,
+			srp.incr_spend_limit		as incrSpendLimit,
+			srp.total_labor				as totalLabor,
+			srp.service_date1 		 	as conditionalChangeDate1,
+			srp.service_time_start		as conditionalStartTime,
+			srp.service_date2			as conditionalChangeDate2,
+			srp.service_time_end		as conditionalEndTime,
+			vcontact.first_name			as providerFirstName,
+			vcontact.last_name				as providerLastName,
+			llocation.gis_latitude		    as providerLatitude,
+			llocation.gis_longitude		    as providerLongitude,
+			TRUNCATE(3956.5450000 * 2 * ATAN2(SQRT(SIN(RADIANS(geo.latitude -  llocation.gis_latitude) /2) * SIN(RADIANS(geo.latitude - llocation.gis_latitude) /2) + COS(RADIANS(geo.latitude)) * COS(RADIANS(llocation.gis_latitude)) * SIN((RADIANS(geo.longitude - llocation.gis_longitude)) /2) * SIN((RADIANS(geo.longitude - llocation.gis_longitude)) /2)), SQRT(1 - SIN(RADIANS(geo.latitude - llocation.gis_latitude) /2) * SIN(RADIANS(geo.latitude - llocation.gis_latitude) /2) + COS(RADIANS(llocation.gis_latitude)) * COS(RADIANS(geo.latitude)) * SIN((RADIANS(geo.longitude - llocation.gis_longitude)) /2) * SIN((RADIANS(geo.longitude - llocation.gis_longitude)) /2))),2) as distanceFromBuyer,
+			llocation.street_1				as street1,
+			llocation.street_2				as street2,
+			llocation.city 					as city,
+			llocation.state_cd 				as state,
+			llocation.zip 					as zip,
+			CONCAT_WS(' ', llocation.street_1, llocation.street_2, llocation.city, llocation.state_cd, llocation.zip) as resourceDispatchAddr 
+		FROM so_hdr s   			
+		JOIN so_routed_providers srp ON s.so_id = srp.so_id AND srp.vendor_id=#vendorId#
+ 			AND (srp.provider_resp_id != 3 OR srp.provider_resp_id IS NULL)
+ 			AND (srp.provider_resp_id != 5 OR srp.provider_resp_id IS NULL)
+ 			AND (srp.provider_resp_id != 7 OR srp.provider_resp_id IS NULL)
+ 			AND (s.so_substatus_id != 64 OR s.so_substatus_id IS NULL)
+ 		JOIN so_contact_locn cont_loc ON s.so_id = cont_loc.so_id
+		JOIN lu_so_contact_locn_type lu_cont_loc ON lu_cont_loc.so_contact_locn_type_id = cont_loc.so_contact_locn_type_id
+			AND lu_cont_loc.so_contact_locn_type_id = 10 
+		JOIN so_location loc ON loc.so_id = cont_loc.so_id AND loc.so_locn_id = cont_loc.so_locn_id AND s.so_id = loc.so_id
+		JOIN zip_geocode geo ON loc.zip = geo.zip
+		JOIN vendor_resource vresource ON vresource.resource_id = srp.resource_id	
+		JOIN location llocation ON vresource.locn_id = llocation.locn_id 
+		JOIN lu_zip_market zmar ON llocation.zip = zmar.zip
+		JOIN lu_market market ON zmar.market_id = market.market_id
+		JOIN contact vcontact ON vresource.contact_id = vcontact.contact_id
+		WHERE s.so_id =#soId#
+		<isNotNull property="resourceId">
+			<isNotEqual property="resourceId" compareValue="0">
+			AND srp.resource_id = #resourceId#
+			</isNotEqual>
+		</isNotNull>
+		ORDER BY distanceFromBuyer ASC,
+		vcontact.first_name  ASC,
+		vcontact.last_name  ASC;
+	</select>
+	
+	<select id="orderManagement.availableProvidersFirmForGroup" parameterClass="java.util.HashMap" resultClass="providerResultVO">
+		SELECT  sgrp.resource_id AS resourceId,
+			provider_resp_id AS providerRespId,
+			sgrp.vendor_id AS vendorID,
+			sgrp.service_date1 AS conditionalChangeDate1,
+			sgrp.service_date2 AS conditionalChangeDate2,
+			sgrp.condl_offer_price AS groupCondIncrSpendLimit,
+			sgrp.service_time_start AS conditionalStartTime,
+			sgrp.service_time_end AS conditionalEndTime,
+			vcontact.first_name	AS providerFirstName,
+			vcontact.last_name	AS providerLastName,
+			TRUNCATE(3956.5450000 * 2 * ATAN2(SQRT(SIN(RADIANS(geo.latitude -  llocation.gis_latitude) /2) * SIN(RADIANS(geo.latitude - llocation.gis_latitude) /2) + COS(RADIANS(geo.latitude)) * COS(RADIANS(llocation.gis_latitude)) * SIN((RADIANS(geo.longitude - llocation.gis_longitude)) /2) * SIN((RADIANS(geo.longitude - llocation.gis_longitude)) /2)), SQRT(1 - SIN(RADIANS(geo.latitude - llocation.gis_latitude) /2) * SIN(RADIANS(geo.latitude - llocation.gis_latitude) /2) + COS(RADIANS(llocation.gis_latitude)) * COS(RADIANS(geo.latitude)) * SIN((RADIANS(geo.longitude - llocation.gis_longitude)) /2) * SIN((RADIANS(geo.longitude - llocation.gis_longitude)) /2))),2) AS distanceFromBuyer
+		FROM  
+			so_group_routed_providers sgrp
+			JOIN so_hdr s ON s.so_group_id = sgrp.so_group_id
+			JOIN vendor_resource vresource ON vresource.resource_id = sgrp.resource_id
+			JOIN contact vcontact ON vresource.contact_id = vcontact.contact_id
+			JOIN so_contact_locn cont_loc ON s.so_id = cont_loc.so_id
+			JOIN lu_so_contact_locn_type lu_cont_loc ON lu_cont_loc.so_contact_locn_type_id = cont_loc.so_contact_locn_type_id
+			AND lu_cont_loc.so_contact_locn_type_id = 10 
+			JOIN so_location loc ON loc.so_id = cont_loc.so_id AND loc.so_locn_id = cont_loc.so_locn_id AND s.so_id = loc.so_id
+			JOIN zip_geocode geo ON loc.zip = geo.zip
+			JOIN location llocation ON vresource.locn_id = llocation.locn_id 
+		WHERE sgrp.so_group_id = #groupId#
+			AND sgrp.vendor_id = #vendorId#
+			AND (sgrp.provider_resp_id != 3 OR sgrp.provider_resp_id IS NULL)
+ 			AND (sgrp.provider_resp_id != 5 OR sgrp.provider_resp_id IS NULL)
+ 			AND (sgrp.provider_resp_id != 7 OR sgrp.provider_resp_id IS NULL)
+			<isNotNull property="resourceId">
+				<isNotEqual property="resourceId" compareValue="0">
+				AND sgrp.resource_id = #resourceId#
+			</isNotEqual>
+			</isNotNull>
+			GROUP BY sgrp.resource_id
+			ORDER BY distanceFromBuyer ASC,
+			vcontact.first_name ASC,
+ 			vcontact.last_name ASC;
+	</select>
+	
+	<select id="orderManagement.fetchProvForAllSOs" parameterClass="filterParams"
+		resultClass="routedProvidersVO">
+		SELECT 
+			s.so_id AS soId,
+			srp.resource_id AS id,
+			srp.provider_resp_id AS respId,
+			srp.incr_spend_limit AS spendLimit,
+			srp.offer_expiration_date AS offerExpirationDate,
+			vcontact.first_name AS firstName,
+			vcontact.last_name AS lastName
+		 FROM so_hdr s
+			JOIN so_routed_providers srp ON srp.so_id = s.so_id AND srp.vendor_id = #vendorId#
+			JOIN vendor_resource vresource ON vresource.resource_id =srp.resource_id
+			JOIN contact vcontact ON vresource.contact_id = vcontact.contact_id			
+			WHERE 
+			<isNotNull property="soIds">
+				s.so_id IN
+				<iterate property="soIds" open="(" close=")" conjunction=",">
+					#soIds[]#
+				</iterate>
+			</isNotNull>
+			AND (srp.provider_resp_id NOT IN(3,5,7) OR srp.provider_resp_id IS NULL)
+	</select>
+	
+	
+	<select id="orderManagement.fetchScheduleRoleForAllSOs" parameterClass="filterParams"
+		resultClass="soReScheduleRole">
+		select so_id AS soId,role_id AS roleId FROM so_logging 
+		where action_id = 36 <!--  action_id 36 is the Reschedule SO action from lu_action_master-->
+		and 
+			<isNotNull property="soIds">
+				so_id IN
+				<iterate property="soIds" open="(" close=")" conjunction=",">
+					#soIds[]#
+				</iterate>
+			</isNotNull>
+			order by created_date desc 
+	</select> 
+	
+	<select id="orderManagement.getScopeForAllSOs" parameterClass="filterParams"
+		resultClass="soScope">
+		SELECT DISTINCT st.so_id AS soId, lu_st.descr AS scope
+		FROM so_tasks st
+  			JOIN lu_service_type_template lu_st
+    		ON lu_st.service_type_template_id = st.service_type_template_id		
+		WHERE 
+		<isNotNull property="soIds">
+			st.so_id IN
+			<iterate property="soIds" open="(" close=")" conjunction=",">
+				#soIds[]#
+			</iterate>
+		</isNotNull>
+		ORDER BY st.so_id,lu_st.descr
+	</select>
+	
+	<select id="orderManagement.acceptedResourceId" parameterClass="java.lang.String" resultMap="acceptedResourceMap">
+		SELECT accepted_resource_id AS acceptedResourceId, 
+		assignment_type AS assignmentType 
+		FROM so_hdr where so_id = #so_id#
+	</select>
+	
+	<select id="orderManagement.getJobDoneForAllSOs" parameterClass="filterParams"
+		resultMap = "jobDoneMap">
+		SELECT DISTINCT so_id as soId, ivr_create_date as jobDoneOn
+		FROM so_onsite_visit WHERE 
+		<isNotNull property="soIds">
+			so_id IN
+			<iterate property="soIds" open="(" close=")" conjunction=",">
+				#soIds[]#
+			</iterate>
+		</isNotNull>
+		ORDER BY so_id, ivr_create_date desc
+	</select>
+	
+	<select id="orderManagement.fetchCurrentOrdersSubStatusList" parameterClass="filterParams"
+		resultClass="currentOrdersSubStatusFilterVO">
+		SELECT DISTINCT 
+		lus.so_substatus_id AS id,
+		lus.descr AS descr 
+		FROM so_hdr sh JOIN lu_so_substatus lus ON lus.so_substatus_id= sh.so_substatus_id
+		AND (lus.so_substatus_id NOT IN (8,37,134,137) OR lus.so_substatus_id is NULL)
+		<isNotNull property="soIds" prepend="WHERE">	
+		sh.so_id IN
+		 <iterate property="soIds" open="(" close=")" conjunction=",">
+			#soIds[]#
+		</iterate>
+		 </isNotNull>
+		ORDER BY lus.descr
+	</select>
+	
+	<select id="orderManagement.fetchCancellationsSubStatusList" parameterClass="filterParams"
+		resultClass="cancellationsSubStatusFilterVO">
+		SELECT DISTINCT (lss.so_substatus_id) AS id, lss.descr AS descr
+ 		FROM so_hdr sh 
+		JOIN so_wf_substatus sws ON (sws.wf_state_id = sh.wf_state_id)
+		JOIN lu_so_substatus lss ON (lss.so_substatus_id = sh.so_substatus_id)   
+		WHERE
+		(sh.wf_state_id =165 OR sh.so_substatus_id=37) 
+		<isNotNull property="soIds" prepend="AND  ">
+		sh.so_id IN
+		 <iterate property="soIds" open="(" close=")" conjunction=",">
+			#soIds[]#
+		</iterate>
+		 </isNotNull>
+		ORDER BY lss.descr
+	</select>
+	
+	<select id="orderManagement.fetchRevisitSubStatusList" parameterClass="filterParams"
+		resultClass="revisitSubStatusFilterVO">
+		SELECT DISTINCT 
+		lus.so_substatus_id AS id,
+		lus.descr AS descr 
+		FROM so_hdr sh JOIN lu_so_substatus lus ON lus.so_substatus_id= sh.so_substatus_id
+	    AND sh.wf_state_id = 155 and sh.so_substatus_id IN (134,137)	
+		<isNotNull property="soIds" prepend="AND  ">
+		sh.so_id IN
+		 <iterate property="soIds" open="(" close=")" conjunction=",">
+			#soIds[]#
+		</iterate>
+		 </isNotNull>
+		ORDER BY lus.descr
+	</select>
+	
+	<insert id="insertHistory.insert" parameterClass="hisVO">
+	INSERT INTO so_logging(
+				so_id,
+				action_id,
+				chg_comment,
+				created_date,
+				modified_date,
+				modified_by,
+				role_id,
+				created_by_name,
+				entity_id)
+									
+		VALUES(
+				#soId#,
+				#actionId#, 
+				#description#, 
+				#createdDate#, 
+				#modifiedDate#, 
+				#modifiedBy#,
+				#roleId#, 
+				#createdBy#, 
+				#enitityId#
+				)
+	
+	</insert>
+	
+	<select id="orderManagement.getLastTripForAllSOs" parameterClass="filterParams"
+		resultMap = "tripMap">
+		SELECT so_id AS soId, MAX(created_date) AS lastTripOn
+		FROM so_trip WHERE 
+		<isNotNull property="soIds">
+			so_id IN
+			<iterate property="soIds" open="(" close=")" conjunction=",">
+				#soIds[]#
+			</iterate>
+		</isNotNull>
+		AND trip_status ='ENDED'
+		GROUP BY so_id
+	</select>
+	
+	<update id="updateSOSubstatus.update">
+		update so_hdr SET so_substatus_id = 41 where so_id = #soId#
+	</update>
+	
+	<select id="orderManagement.getPartDetailsForAllSOs" parameterClass="filterParams"
+		resultClass="invoicePartsVO">
+		SELECT 
+		so_id AS soId
+		part_coverage AS partCoverage,
+		source AS partSource,
+		part_no AS partNumber,
+		description AS partDescription,
+		invoice_no AS invoiceNumber,
+		unit_cost AS unitCost,
+		retail_price AS retailPrice,
+		qty AS qty,
+		source_non_sears AS nonSearsSource,
+		division_number AS divisionNumber,
+		source_number AS  sourceNumber,
+		category AS category,
+		part_status AS partStatus
+		FROM so_provider_invoice_parts WHERE
+		<isNotNull property="soIds">
+			so_id IN
+			<iterate property="soIds" open="(" close=")" conjunction=",">
+				#soIds[]#
+			</iterate>
+		</isNotNull>
+	</select>
+</sqlMap>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+	<bean id="editableParemetersValidations" class="org.hdiv.config.HDIVValidations">
+		<property name="urls">
+			<map>				
+				<entry key=".*/conversion/.*.action">
+					<list>
+						<ref bean="safeText" />
+						<!--  Typical SQL Injection attack -->
+						<ref bean="SQLInjection" />
+					</list>
+				</entry>
+				<entry key=".*/validation/.*.action">
+					<list>
+						<ref bean="safeText" />
+						<!--  Typical SQL Injection attack -->
+						<ref bean="SQLInjection" />
+					</list>
+				</entry>
+			</map>
+		</property>	 	
+	</bean>
+
+	<bean id="safeText" class="org.hdiv.validator.Validation">
+		<property name="componentType">
+			<value>text</value>
+		</property>
+		<property name="acceptedPattern">
+			<value><![CDATA[^[a-zA-Z0-9@.\-_]*$]]></value>
+		</property>
+		<property name="rejectedPattern">
+			<value><![CDATA[(\s|\S)*(--)(\s|\S)*]]></value>
+		</property>
+	</bean>	
+	
+	<bean id="SQLInjection" class="org.hdiv.validator.Validation">
+		<property name="componentType">
+			<value>textarea</value>
+		</property>
+		<property name="rejectedPattern">
+			<value><![CDATA[(\s|\S)*((%27)|(')|(%3D)|(=)|(/)|(%2F)|(")|((%22)|(-|%2D){2})|(%23)|(%3B)|(;))+(\s|\S)*]]></value>
+		</property>
+	</bean>	
+</beans>
+

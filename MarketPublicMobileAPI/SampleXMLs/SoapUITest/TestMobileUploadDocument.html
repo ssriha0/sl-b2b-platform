@@ -1,0 +1,37 @@
+<html>
+<body>
+<h1>Document Upload Form</h1>
+<form action="http://10.60.3.47:8980/mobile/v2.0/provider/25286/serviceorder/584-2751-5839-11/uploadDocument" method="post" enctype="multipart/form-data">
+<p>
+Select a file : <input type="file" name="uploadedFile" size="50" />
+<br/>
+<br/>
+Document Type:
+<select name="docType">
+<option value="customer signature"> </option>
+<option value="customer signature">Customer Signature</option>
+<option value="provider signature">Provider Signature</option>
+<option value="proof of permit">Proof of Permit</option>
+</select>
+<br/>
+<br/>
+Document Category:
+<select name="docCategory">
+<option value="image"> </option>
+<option value="image">Image</option>
+<option value="reference">Reference</option>
+</select>
+<br/>
+<br/>
+Document Description<input type="textbox" id="docDescription" name="docDescription"/>
+<br/>
+<br/>
+Document Name<input type="textbox" id="fileName" name="fileName"/>
+<br/>
+<br/>
+Trip No<input type="textbox" id="tripNo" name="tripNo"/>
+</p>
+<input type="submit" value="Upload It" />
+</form>
+</body>
+</html>

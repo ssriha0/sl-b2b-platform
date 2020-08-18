@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+<xs:include schemaLocation="../../common.xsd" />
+     <!-- Root Element -->
+      <xs:element name="findSupplierRequest">
+		<xs:complexType>
+			<xs:sequence>
+			    <xs:element name="latitude" type="xs:float" />
+			    <xs:element name="longitude" type="xs:float"/>
+			    <xs:element name="maxDistance" type="xs:byte"/>
+				<xs:element ref="parts" minOccurs="0" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="parts">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="part" maxOccurs="unbounded" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="part">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="div" type="stringFour" />
+				<xs:element name="pls" type="stringThree" />
+				<xs:element name="partNumber" type="partNumType" />
+				<xs:element name="description" type="stringThirtyType" minOccurs="0"/>
+				<xs:element name="onHandQuantity" type="qtyType" minOccurs="0"/>
+				<xs:element name="brand" type="stringThirtyType" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:simpleType name="stringThirtyType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="30" />
+			<xs:minLength value="1" />
+		</xs:restriction>
+	</xs:simpleType>
+    <xs:simpleType name="stringThree">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="3" />
+			<xs:minLength value="3" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stringFour">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="4" />
+			<xs:minLength value="1" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="partNumType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="30" />
+			<xs:minLength value="1" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="qtyType">
+		<xs:restriction base="xs:integer">
+			<xs:minInclusive value="1"></xs:minInclusive>
+			<xs:maxInclusive value="99"></xs:maxInclusive>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="latitudeType">
+		<xs:restriction base="xs:float">
+			<xs:minInclusive value="-90" />
+			<xs:maxInclusive value="90" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="longitudeType">
+		<xs:restriction base="xs:float">
+			<xs:minInclusive value="-180" />
+			<xs:maxInclusive value="180" />
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

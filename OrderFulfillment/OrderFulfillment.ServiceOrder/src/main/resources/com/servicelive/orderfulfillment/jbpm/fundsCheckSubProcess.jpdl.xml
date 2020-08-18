@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process name="fundCheckSubProcess" xmlns="http://jbpm.org/4.0/jpdl">
+
+    <start g="25,101,48,48">
+        <transition to="WalletActionRequested"/>
+    </start>
+
+    <script g="200,100,107,-52" name="WalletActionRequested"  expr="0" var="loopCounter">
+        <on event="start">
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="RecordJmsMessageIdCmd();UpdateSubStatusCmd(PENDING_WALLET_CONFIRMATION);"/></field>
+            </event-listener>
+        </on>
+        <transition name="WalletActionRequestedTimer" to="WalletActionRequestedTimer"/>
+    </script>
+
+    <state g="200,100,107,52" name="WalletActionRequestedTimer">
+        <transition g="1046,713;1046,688:-79,-11" name="WalletActionConfirmedCheckLoop" to="WalletActionConfirmedCheckLoop">
+            <timer duedate="10 seconds"/>
+            <script name="incrementLoopCounter" expr="#{loopCounter + 1}" var="loopCounter"/>
+        </transition>
+        <transition name="ADMIN_CANCEL_PENDING_TRANSACTION" to="GoBack">
+            <event-listener class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+            <field name="commandList">
+                <string value="UpdateSubStatusCmd(NULL);ClearJmsMessageIdCmd();"/>
+            </field>
+            </event-listener>
+        </transition>
+    </state>
+
+    <decision name="WalletActionConfirmedCheckLoop">
+        <transition to="WalletActionConfirmedCheck" >
+            <condition expr="#{loopCounter == 3}"/>
+            <event-listener
+                class="com.servicelive.orderfulfillment.jbpm.jBPMSOCommandRunnerProxy">
+                <field name="commandList"><string value="AlertCmd(emailForWalletRequestTimeout);"/></field>
+               </event-listener>
+        </transition>
+        <transition name="Default" to="WalletActionConfirmedCheck">
+        </transition>
+    </decision>
+
+    <decision g="462,101,48,48" name="WalletActionConfirmedCheck">
+        <handler expr="#{fundsConfirmedCheck}" />
+        <transition g="377,231:-24,4" name="Wait" to="WalletActionRequestedTimer"/>
+        <transition g="-24,4" name="Fail" to="GoBack"/>
+        <transition g="-1,-18" name="Success" to="GoForward"/>
+    </decision>
+
+  <end g="715,101,88,52" name="GoBack"/>
+  <end g="709,200,88,52" name="GoForward"/>
+  
+</process>

@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd"> 
+
+<sqlMap namespace="creditCard">
+	
+	<typeAlias alias="creditCard" type="com.newco.marketplace.dto.vo.ledger.CreditCardVO"/>
+	
+	<typeAlias alias="lookupVO"
+		type="com.newco.marketplace.dto.vo.LookupVO" />
+
+
+	<select id="creditCardDetailsByAccountId.query" parameterClass="creditCard" resultClass="creditCard">
+	 	SELECT 
+	 		cardId,entityTypeId,entityId,countryId,accountTypeId,accountStatusId,encCardNo,
+			cardTypeId,expireDate,cardHolderName,createdDate,modifiedDate,modifiedBy,
+			billingAddress1,billingAddress2,billingCity,billingState,zipcode,locnTypeId,fundingTypeId
+	 	FROM vw_buyer_creditcard_details_all
+	 	WHERE cardId = #cardId#
+	 </select>
+	 			
+	<select id="creditCardDetails.query" parameterClass="creditCard" resultClass="creditCard">
+	 	SELECT 
+	 		cardId,entityTypeId,entityId,countryId,accountTypeId,accountStatusId,encCardNo,
+			cardTypeId,expireDate,cardHolderName,createdDate,modifiedDate,modifiedBy,
+			billingAddress1,billingAddress2,billingCity,billingState,zipcode,locnTypeId,fundingTypeId
+	 	FROM vw_buyer_creditcard_details 
+	 	WHERE cardId = #cardId# and locnTypeId = #locationTypeId#
+	 </select>
+	 
+	 <select id="creditCardDetails_all.query" parameterClass="creditCard" resultClass="creditCard">
+	 	SELECT 
+	 		cardId,entityTypeId,entityId,countryId,accountTypeId,accountStatusId,encCardNo,
+			cardTypeId,expireDate,cardHolderName,createdDate,modifiedDate,modifiedBy,
+			billingAddress1,billingAddress2,billingCity,billingState,zipcode,locnTypeId,fundingTypeId
+	 	FROM vw_buyer_creditcard_details_all 
+	 	WHERE cardId = #cardId# and locnTypeId = #locationTypeId#
+	 </select>
+		
+	<select id="creditCardsForEntity.query" parameterClass="creditCard" resultClass="creditCard">
+		SELECT ah.account_id AS cardId,
+			 ah.entity_type_id AS entityTypeId,
+			 ah.entity_id AS entityId,
+			 ah.country_id AS countryId,
+			 ah.account_type_id AS accountTypeId,
+			 ah.account_status_id AS accountStatusId,
+			 ah.account_no AS encCardNo,
+			 ah.card_type_id AS cardTypeId,
+			 ah.card_expire_date AS expireDate,
+			 ah.card_holder_name AS cardHolderName,
+			 ah.created_date AS createdDate,
+			 ah.modified_date AS modifiedDate,
+			 ah.modified_by AS modifiedBy
+		FROM account_hdr ah
+		WHERE entity_id = #entityId#
+	</select>
+	
+	<select id="creditCardsForBuyer.queryWithActiveInd" resultClass="creditCard"
+		parameterClass="java.lang.Integer">
+		select * from vw_buyer_creditcard_details
+		WHERE entityId = #buyerId# and active_ind = 1
+	</select>
+	
+	<!--  Modified for B2C APIs -->
+	
+	<insert id="creditCard.insert" parameterClass="creditCard">
+		INSERT 	INTO account_hdr
+			(account_id,
+			 entity_type_id,
+			 entity_id,
+			 country_id,
+			 account_type_id,
+			 account_status_id,
+			 account_no,
+			 card_type_id,
+			 card_expire_date,
+			 card_holder_name,
+			 created_date,
+			 modified_date,
+			 modified_by,
+			 active_ind,
+			 enabled_ind,
+			 bill_locn_id,
+			 default_ind,
+			 masked_acc_num,
+			 token
+			)
+		VALUES
+			(#cardId#,
+			 #entityTypeId#,
+			 #entityId#,
+			 #countryId#,
+			 #accountTypeId#,
+			 #accountStatusId#,
+			 #encCardNo#,
+			 #cardTypeId#,
+			 #expireDate#,
+ 			 #cardHolderName#,
+			 #createdDate#,
+			 #modifiedDate#,
+			 #modifiedBy#,
+			 #active_ind#,
+			 #enabled_ind#,
+			 #locationId#,
+			 #default_ind#,
+			 #maskedAccount#,
+			 #token#
+			)
+	</insert>
+	
+	<insert id="creditCard.insertWSResponse" parameterClass="creditCard">
+		INSERT 	INTO account_auth_resp
+			(account_id,
+			 response,
+			 resp_date,
+			 authorized_ind,
+			 ansi_code,
+			 cid_code,
+			 addr_code
+			)
+		VALUES
+			(#cardId#,
+			 #response#,
+			 #responseDate#,
+			 #authorized#,
+			 #ansiResponseCode#,
+			 #cidResponseCode#,
+			 #addrResponseCode#
+			)
+	</insert>
+	
+	<!-- end -->
+	
+	<!-- Added for B2C API to get list of active/authorized cards-->
+			
+	<select id="creditCardsForBuyer.queryAllActiveAndAuthorizedCards" resultClass="creditCard"
+		parameterClass="java.lang.Integer">
+		SELECT hdr.cardid,hdr.countryid,hdr.entityid,hdr.entityTypeId,hdr.encCardNo,hdr.accountTypeId,hdr.accountStatusId,hdr.cardTypeId,hdr.expireDate,
+		hdr.cardHolderName,hdr.locnTypeId,hdr.active_ind,hdr.enabled_ind,hdr.billingAddress1,hdr.billingAddress2,hdr.billingCity,hdr.billingState,
+		hdr.zipcode,resp.ansi_code,resp.authorized_ind,hdr.default_ind FROM vw_buyer_creditcard_details hdr LEFT OUTER JOIN account_auth_resp resp 
+		on hdr.cardid=resp.account_id WHERE entityid=#buyerid# and enabled_ind = 1 
+	</select>
+	
+	<select id="creditCardsForBuyer.queryWithActiveDefaultInd"  resultClass="creditCard" parameterClass="java.lang.Integer">
+		SELECT * from vw_buyer_creditcard_details
+		WHERE entityId = #buyerId# and active_ind = 1 and default_ind =1
+	</select>
+	
+	<select id="creditCardsForBuyer.queryActiveEnabledCards"  resultClass="creditCard" parameterClass="java.lang.Integer">
+		SELECT * from vw_buyer_creditcard_details
+		WHERE entityId = #buyerId# and active_ind = 1 and enabled_ind = 0
+	</select>
+	
+	<update id="reset_defaultcard.update" parameterClass="creditCard">
+		UPDATE account_hdr set default_ind = #default_ind#
+		WHERE account_id = #cardId#
+	</update>
+	
+	<!-- B2C End -->
+	<update id="deactivate_creditcard.update" parameterClass="creditCard">
+		update account_hdr set active_ind = #active_ind#
+		where entity_id = #entityId# and active_ind = 1 and account_type_id = 30
+	</update>
+	
+	<select id="credit_card_response_code.query" parameterClass="java.lang.String" resultClass="lookupVO">
+		select resp_cd as respCd, type, ext_descr as descr, sort_order,action from lu_account_resp_cds
+		where resp_cd = #response#
+	</select>    
+	
+	<!-- SL-20853 -->
+	<select id="get_encryption_flag.select" parameterClass="java.lang.String" resultClass="java.lang.String">
+	   SELECT app_value 
+	   FROM supplier_prod.application_flags
+	   WHERE app_key=#appKey#
+	</select>
+</sqlMap>

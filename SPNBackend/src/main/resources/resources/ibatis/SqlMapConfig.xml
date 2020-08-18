@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig
+    PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"
+    "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+
+
+
+	<sqlMapConfig>
+	<settings useStatementNamespaces="true"
+	lazyLoadingEnabled="false"
+	cacheModelsEnabled="true"
+   />
+	<sqlMap resource="resources/ibatis/auditorQueueCountMap.xml" />
+	<sqlMap resource="resources/ibatis/auditorSearchMap.xml" />
+	<sqlMap resource="resources/ibatis/campaignActivationMap.xml" />
+	<sqlMap resource="resources/ibatis/campaignInvitationMap.xml" />
+	<sqlMap resource="resources/ibatis/campaignMonitorMap.xml" />
+	<sqlMap resource="resources/ibatis/memberMaintenanceMap.xml" />
+	<sqlMap resource="resources/ibatis/networkHistoryMap.xml" />
+	<sqlMap resource="resources/ibatis/networkMaintenanceMap.xml" />
+	<sqlMap resource="resources/ibatis/providerMatchReportingMap.xml" />
+	<sqlMap resource="resources/ibatis/spnProviderFirmStateMap.xml"/>
+	<sqlMap resource="resources/ibatis/spnSummaryMap.xml" />
+	
+	<sqlMap resource="resources/ibatis/documentMap.xml"/>
+	<sqlMap resource="resources/ibatis/ApplicationPropertiesMap.xml"/>
+	<sqlMap resource="resources/ibatis/authorityMap.xml"/>
+	<sqlMap resource="resources/ibatis/spnRoutingPriorityMap.xml"/>
+</sqlMapConfig>

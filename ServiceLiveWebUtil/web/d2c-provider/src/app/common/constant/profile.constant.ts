@@ -1,0 +1,10 @@
+export const firmDetailsUrl: string = "_getFirmDetails.action"
+export const addUpdateDispatchLocUrl: string = "_addUpdateDispatchLocation.action";
+export const getDispatchLocationURL: string = "_getDispatchLocation.action";
+export const addressValidationUrl: string = "_addressValidation.action";
+export const saveZipCoverageUrl: string = "_saveZipCoverageRadius.action";
+export const updateProfileUrl: string = "_updateVendorData.action";
+export const uploadFirmLogo:string="_uploadFirmLogo.action";
+export const fetchFirmLogo:string="_getFrimLogo.action";
+export const deleteCoverageAreaUrl:string="_deleteCoverageArea.action";
+export const getCoverageAreas:string="_getCoverageAreas.action";

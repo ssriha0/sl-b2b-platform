@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+    <bean id="MarketPlatform.NotificationMDB"
+        class="org.springframework.context.support.ClassPathXmlApplicationContext">
+        <constructor-arg><list>
+        	<value>classpath:/dataSourceContext.xml</value>
+        	<value>classpath:/com/servicelive/marketplatform/service/sqlmapContext.xml</value>
+        	<value>classpath:/spring/mainDataSource.xml</value>
+        	<value>classpath:/com/servicelive/common/serviceLiveCommonApplicationContext.xml</value>
+        	<value>classpath:/com/servicelive/marketplatform/service/marketPlatformContext.xml</value>
+        	</list>
+        </constructor-arg>
+    </bean>
+</beans>

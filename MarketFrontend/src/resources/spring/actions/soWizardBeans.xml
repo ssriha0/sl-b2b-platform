@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<bean id="sowAjaxAction" class="com.newco.marketplace.web.action.wizard.SOWAjaxAction" scope="prototype">
+		<property name="lookupDelegate">
+			<ref bean="lookupManager"/>
+		</property>
+		<property name="buyerRegistrationBO">
+             <ref bean="buyerRegBOAOP"/>
+        </property>		
+	</bean>
+ 	
+	<bean id="wizardControllerAction"
+		class="com.newco.marketplace.web.action.wizard.SOWControllerAction"
+		scope="prototype">
+		<property name="isoWizardPersistDelegate">
+			<ref bean="SOWizardPersistBean" />
+		</property>	
+		<property name="lookupManager">
+			<ref bean="lookupManager" />
+		</property>	
+		<property name="fetchDelegate">
+			<ref bean="SOWizardFetchBean"/>
+		</property>
+		<property name="orderGroupDelegate">
+			<ref bean="orderGroupDelegate" />
+		</property> 			
+		<property name="soDetailsManager">
+			<ref bean="soDetailsManager" />
+		</property>	
+		<property name="soMonitorDelegate">
+			<ref bean="serviceOrderManager"/>
+		</property>		
+		<property name="buyerFeatureSetBO">
+			<ref bean="buyerFeatureSetBO" />
+		</property>	
+        <property name="orderFulfillmentHelper">
+			<ref bean="ofHelper" />
+		</property>
+	</bean>
+	
+	<bean id="soDocumentsAndPhotos"
+		class="com.newco.marketplace.web.action.wizard.documentsandphotos.SOWDocumentsAndPhotosAction"
+		scope="prototype">
+		<constructor-arg ref="SOWizardFetchBean" />
+		<property name="isoWizardPersistDelegate">
+			<ref bean="SOWizardPersistBean" />
+		</property>	
+		<property name="buyerFeatureSetBO">
+			<ref bean="buyerFeatureSetBO" />
+		</property>
+		<property name="detailsDelegate">
+			<ref bean="soDetailsManager" />
+		</property>	
+	</bean>
+
+	<bean id="soWizardScopeOfWorkAction"
+		class="com.newco.marketplace.web.action.wizard.scopeofwork.SOWScopeOfWorkAction"
+		scope="prototype">
+		<constructor-arg ref="SOWizardFetchBean" />
+		<property name="isoWizardPersistDelegate">
+			<ref bean="SOWizardPersistBean" />
+		</property>
+		<property name="lookupManager">
+			<ref bean="lookupManager" />
+		</property>	
+		<property name="orderGroupDelegate">
+			<ref bean="orderGroupDelegate" />
+		</property>	
+		<property name="buyerFeatureSetBO">
+			<ref bean="buyerFeatureSetBO" />
+		</property>	
+	</bean>
+
+	<bean id="soWizardAdditionalInfoAction"
+		class="com.newco.marketplace.web.action.wizard.additionalinfo.SOWAdditionalInfoAction"
+		scope="prototype">
+		<constructor-arg ref="SOWizardFetchBean" />
+		<property name="isoWizardPersistDelegate">
+			<ref bean="SOWizardPersistBean" />
+		</property>
+		<property name="orderGroupDelegate">
+			<ref bean="orderGroupDelegate" />
+		</property>	
+		
+	</bean>
+
+	<bean id="soWizardPartsAction"
+		class="com.newco.marketplace.web.action.wizard.parts.SOWPartsAction"
+		scope="prototype">
+		<constructor-arg ref="SOWizardFetchBean" />
+		<property name="isoWizardPersistDelegate">
+			<ref bean="SOWizardPersistBean" />
+		</property>	
+		<property name="lookupManager">
+			<ref bean="lookupManager" />
+		</property>
+		<property name="orderGroupDelegate">
+			<ref bean="orderGroupDelegate" />
+		</property>	
+					
+	</bean>
+
+	<bean id="soWizardProvidersAction"
+		class="com.newco.marketplace.web.action.wizard.providers.SOWProvidersAction"
+		scope="prototype">
+		<constructor-arg ref="SOWizardFetchBean" />
+		<property name="isoWizardPersistDelegate">
+			<ref bean="SOWizardPersistBean" />
+		</property>
+		<property name="orderGroupDelegate">
+			<ref bean="orderGroupDelegate" />
+		</property>	
+		
+	</bean>
+	
+	<bean id="soWizardRefineProvidersAction"
+		class="com.newco.marketplace.web.action.wizard.providers.SOWRefineProvidersAction"
+		scope="prototype">
+		<constructor-arg ref="SOWizardFetchBean" />	
+		<property name="lookupManager">
+			<ref bean="lookupManager" />
+		</property>		
+	</bean>
+
+	<bean id="soWizardPricingAction"
+		class="com.newco.marketplace.web.action.wizard.pricing.SOWPricingAction"
+		scope="prototype">
+		<constructor-arg ref="SOWizardFetchBean" />
+		<property name="isoWizardPersistDelegate">
+			<ref bean="SOWizardPersistBean" />
+		</property>
+		<property name="orderGroupDelegate">
+			<ref bean="orderGroupDelegate" />
+		</property>
+		<property name="buyerFeatureSetBO">
+			<ref bean="buyerFeatureSetBO" />
+		</property>
+		<property name="buyerBO" ref="buyerBo" />
+		<property name="soDetailsManager">
+			<ref bean="soDetailsManager" />
+		</property>
+	</bean>
+
+	<bean id="soWizardReviewAction"
+		class="com.newco.marketplace.web.action.wizard.review.SOWReviewAction"
+		scope="prototype">
+		
+		<constructor-arg index="0" ref="SOWizardFetchBean" />
+		<constructor-arg index="1" ref="notificationService"/>
+		<property name="isoWizardPersistDelegate">
+			<ref bean="SOWizardPersistBean" />
+		</property>
+			
+		<property name="lookupManager">
+			<ref bean="lookupManager"/>
+		</property>
+			
+		<property name="detailsDelegate">
+			<ref bean="soDetailsManager"/>
+		</property>	
+		
+		<property name="financeManagerDelegate">
+			<ref bean="FMDelegateBean" />
+		</property>					 		
+		
+		<property name="orderGroupDelegate">
+			<ref bean="orderGroupDelegate" />
+		</property>
+		
+		<property name="buyerFeatureSetBO">
+			<ref bean="buyerFeatureSetBO" />
+		</property>
+		<property name="notificationService">
+		  <ref bean="notificationService"/>
+		</property>	
+		
+		<property name="relayNotificationService">
+			<ref bean="relayNotificationService" />
+		</property>
+				 		
+	</bean>
+	<bean id="soWizardSupportAction" class="com.newco.marketplace.web.action.wizard.SOWizardSupportAction" scope="prototype">
+	</bean>	
+
+</beans>

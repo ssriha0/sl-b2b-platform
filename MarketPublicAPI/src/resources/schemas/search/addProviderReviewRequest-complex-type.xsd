@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:element name="addProviderReviewRequest">
+    <xs:complexType>
+      <xs:sequence>
+		<xs:element name="soId" type="xs:string" />
+		<xs:element name="name" type="xs:string" />
+        <xs:element ref="timeliness" />
+        <xs:element ref="communication" />
+        <xs:element ref="professionalism" />
+        <xs:element ref="quality" />
+        <xs:element ref="value" />
+        <xs:element ref="cleanliness" />
+		<xs:element name="credentialTotal" type="xs:decimal"/>
+		<xs:element name="comment" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="cleanliness">
+    <xs:complexType mixed="true">
+      <xs:attribute name="id" type="xs:NMTOKEN" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="communication">
+    <xs:complexType mixed="true">
+      <xs:attribute name="id" type="xs:NMTOKEN" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="professionalism">
+    <xs:complexType mixed="true">
+      <xs:attribute name="id" type="xs:NMTOKEN" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="quality">
+    <xs:complexType mixed="true">
+      <xs:attribute name="id" type="xs:NMTOKEN" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="timeliness">
+    <xs:complexType mixed="true">
+      <xs:attribute name="id" type="xs:NMTOKEN" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="value">
+    <xs:complexType mixed="true">
+      <xs:attribute name="id" type="xs:NMTOKEN" use="required" />
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

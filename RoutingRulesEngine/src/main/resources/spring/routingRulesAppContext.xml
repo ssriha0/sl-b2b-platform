@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+     http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd"
+   default-autowire="byName" >
+
+    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+
+	<!--
+    <bean id="routingEntityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource">
+			<ref bean="dataSourceMySQL" />
+		</property>
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <property name="database" value="MYSQL" />
+                <property name="showSql" value="false" />
+                <property name="generateDdl" value="false" />
+                <property name="databasePlatform" value="org.hibernate.dialect.MySQLDialect" />
+            </bean>
+        </property>
+
+        <property name="persistenceUnitName" value="ServiceLiveCommonDomainPersistence.dev" />
+
+    </bean>
+
+    <bean id="routingTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="routingEntityManagerFactory" />
+        <property name="dataSource">
+			<ref bean="dataSourceMySQL" />
+		</property>
+    </bean>
+    -->
+
+    <tx:annotation-driven transaction-manager="jpaTransactionManagerMain" proxy-target-class="true"/>
+    
+	<!-- ######################DAO ############################################ -->
+	<bean id="routingRuleBuyerDao" class="com.servicelive.routingrulesengine.dao.impl.BuyerDaoImpl" />
+	<bean id="buyerReferenceTypeDao" class="com.servicelive.routingrulesengine.dao.impl.BuyerReferenceTypeDaoImpl" />
+	<bean id="buyerSkuTaskAssocDao" class="com.servicelive.routingrulesengine.dao.impl.BuyerSkuTaskAssocDaoImpl" />
+	<bean id="routingRuleContactDao" class="com.servicelive.routingrulesengine.dao.impl.ContactDaoImpl" />
+	<bean id="lookupMarketDao" class="com.servicelive.routingrulesengine.dao.impl.LookupMarketDaoImpl" />
+	<bean id="lookupRoutingAlertTypeDao" class="com.servicelive.routingrulesengine.dao.impl.LookupRoutingAlertTypeDaoImpl" />
+	<bean id="lookupRoutingRuleTypeDao" class="com.servicelive.routingrulesengine.dao.impl.LookupRoutingRuleTypeDaoImpl" />
+	<bean id="lookupStatesDao" class="com.servicelive.routingrulesengine.dao.impl.LookupStatesDaoImpl" />
+	<bean id="lookupZipGeocodeDao" class="com.servicelive.routingrulesengine.dao.impl.LookupZipGeocodeDaoImpl" />
+	<bean id="lookupZipMarketDao" class="com.servicelive.routingrulesengine.dao.impl.LookupZipMarketDaoImpl" />
+	<bean id="oldSPNNetworkDao" class="com.servicelive.routingrulesengine.dao.impl.OldSPNNetworkDaoImpl" />
+	<bean id="providerFirmDao" class="com.servicelive.routingrulesengine.dao.impl.ProviderFirmDaoImpl" />
+	<bean id="routingRuleAlertDao" class="com.servicelive.routingrulesengine.dao.impl.RoutingRuleAlertDaoImpl" />
+	<bean id="routingRuleBuyerAssocDao" class="com.servicelive.routingrulesengine.dao.impl.RoutingRuleBuyerAssocDaoImpl" />	
+	<bean id="routingRuleHdrDao" class="com.servicelive.routingrulesengine.dao.impl.RoutingRuleHdrDaoImpl" />
+	<bean id="routingRuleHdrHistDao" class="com.servicelive.routingrulesengine.dao.impl.RoutingRuleHdrHistDaoImpl" />
+	<bean id="routingRulePriceDao" class="com.servicelive.routingrulesengine.dao.impl.RoutingRulePriceDaoImpl" />
+	<bean id="routingRuleCriteriaDao" class="com.servicelive.routingrulesengine.dao.impl.RoutingRuleCriteriaDaoImpl" />
+	<bean id="routingRuleVendorDao" class="com.servicelive.routingrulesengine.dao.impl.RoutingRuleVendorDaoImpl" />
+	<bean id="serviceProviderDao" class="com.servicelive.routingrulesengine.dao.impl.ServiceProviderDaoImpl" />
+	<bean id="soRoutingRuleAssocDao" class="com.servicelive.routingrulesengine.dao.impl.SORoutingRuleAssocDaoImpl" />
+	<bean id="spnServiceProviderStateDao" class="com.servicelive.routingrulesengine.dao.impl.SPNServiceProviderStateDaoImpl" />
+	<bean id="buyerSkuDao" class="com.servicelive.routingrulesengine.dao.impl.BuyerSkuDaoImpl" />
+	<bean id="routingRuleFileHdrDao" class="com.servicelive.routingrulesengine.dao.impl.RoutingRuleFileHdrDaoImpl" />
+	<bean id="routingRuleErrorDao" class="com.servicelive.routingrulesengine.dao.impl.RoutingRuleErrorDaoImpl" />
+	<bean id="routingRuleUploadRuleDao" class="com.servicelive.routingrulesengine.dao.impl.RoutingRuleUploadRuleDaoImpl" />
+	
+	<!-- ######################Services ####################################### -->
+ 	<bean id="orderProcessingService" class="com.servicelive.routingrulesengine.services.impl.OrderProcessingServiceImpl" />
+ 	<bean id="routingRulesService" class="com.servicelive.routingrulesengine.services.impl.RoutingRulesServiceImpl" />
+ 	<bean id="routingRulesPaginationService" class="com.servicelive.routingrulesengine.services.impl.RoutingRulesPaginationServiceImpl" />
+ 	<bean id="routingRuleAlertService" class="com.servicelive.routingrulesengine.services.impl.RoutingRuleAlertServiceImpl" />
+	<bean id="validationService" class="com.servicelive.routingrulesengine.services.impl.ValidationServiceImpl" />
+	<bean id="criteriaService" class="com.servicelive.routingrulesengine.services.impl.RoutingRuleCriteriaServiceImpl" />
+	<bean id="routingRulesConflictFinderService" class="com.servicelive.routingrulesengine.services.impl.RoutingRulesConflictFinderServiceImpl" >
+		<property name="applicationProperties" ref="applicationPropertiesWallet" />
+	</bean>
+	<bean id="routingRuleImportService" class="com.servicelive.routingrulesengine.services.impl.RoutingRuleImportServiceImpl" >
+		<property name="applicationProperties" ref="applicationPropertiesWallet" />
+		<property name="routingRuleVendorDao">
+			<ref bean="routingRuleVendorDao" />
+		</property>
+	</bean>	
+	<bean id="routingRuleFileParser" class="com.servicelive.routingrulesengine.services.impl.RoutingRuleFileParserImpl" />
+</beans>

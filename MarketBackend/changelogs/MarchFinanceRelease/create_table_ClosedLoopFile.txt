@@ -1,0 +1,78 @@
+/*
+SQLyog Community Edition- MySQL GUI
+MySQL - 5.0.36-enterprise-gpl-log 
+*********************************************************************
+*/
+/*!40101 SET NAMES utf8 */;
+
+create table `closed_loop_conversion_file_template` (
+	`field_id` int ,
+	`field_name` varchar (150),
+	`field_start_position` int ,
+	`field_end_position` int ,
+	`field_description` varchar (270),
+	`field_size` int ,
+	`field_value` varchar (270),
+	`field_type` varchar (3),
+	`field_category` varchar (150)
+); 
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('0','','0','0',NULL,'0',NULL,'','');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('1','RECORD_TYPE','0','0',NULL,'1','1','N','FILE_HEADER');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('2','SEQUENCE_NUMBER','1','4',NULL,'4','0001','N','FILE_HEADER');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('5','FILE_CREATION_DATE','5','11',NULL,'7','','N','FILE_HEADER');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('6','FILE_CREATION_TIME','12','17',NULL,'6',NULL,'N','FILE_HEADER');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('7','FILL_CHARACTER_SINGLE','18','18',NULL,'1',' ','A','FILE_HEADER');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('9','FILE_TYPE','19','21',NULL,'3','004','A','FILE_HEADER');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('10','FILL_CHARACTER_SINGLE','22','22',NULL,'1','1','N','FILE_HEADER');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('11','VENDOR_NAME','23','52',NULL,'30','SERVICE LIVE INC.','A','FILE_HEADER');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('12','CURRENCY_CODE','53','55',NULL,'3','840','A','FILE_HEADER');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('13','FILL_CHARACTER_HEADER','56','210',NULL,'155','','A','FILE_HEADER');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('16','RECORD_TYPE','0','0',NULL,'1','4','N','ENTRY_DETAIL');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('17','SEQUENCE_NUMBER','1','4',NULL,'4','0001','N','ENTRY_DETAIL');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('18','RECORD_NUMBER','5','13',NULL,'9',NULL,'N','ENTRY_DETAIL');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('19','ACCOUNT_CARD_NUMBER','14','33',NULL,'20',NULL,'N','ENTRY_DETAIL');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('20','TRANSACTION_DATE','34','40',NULL,'7',NULL,'N','ENTRY_DETAIL');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('21','TRANSACTION_TIME','41','46',NULL,'6',NULL,'N','ENTRY_DETAIL');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('22','TRANSACTION_REQUEST_CODE','47','50',NULL,'4',NULL,'A','ENTRY_DETAIL');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('23','BASE_TRANS_AMOUNT','51','62',NULL,'12',NULL,'A','ENTRY_DETAIL');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('24','TRANS_AMOUNT_SIGN','63','63',NULL,'1',NULL,'A','ENTRY_DETAIL');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('25','LOCAL_CURRENCY_CODE','64','66',NULL,'3','840','A','ENTRY_DETAIL');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('26','LOCAL_TRANS_AMOUNT','67','78',NULL,'12','0','N','ENTRY_DETAIL');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('27','REPORTING_CURRENCY_CODE','79','81',NULL,'3','840','A','ENTRY_DETAIL');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('28','REPORTING_TRANS_AMOUNT','82','93',NULL,'12','0','N','ENTRY_DETAIL');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('29','CARD_STATUS','94','95',NULL,'2','02','N','ENTRY_DETAIL');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('30','CARD_BALANCE','96','107',NULL,'12','0','A','ENTRY_DETAIL');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('31','MERCHANT_NUMBER','108','127',NULL,'20','99036269997','N','ENTRY_DETAIL');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('32','STORE_NUMBER','128','147',NULL,'20','9930','N','ENTRY_DETAIL');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('33','TERMINAL_NUMBER','148','151',NULL,'4','0001','N','ENTRY_DETAIL');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('34','CLERK_ID','152','159',NULL,'8','9930    ','N','ENTRY_DETAIL');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('35','ESCHEATABLE','160','160',NULL,'1','N','N','ENTRY_DETAIL');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('36','FILL_CHARACTER_DETAIL','161','210',NULL,'50',NULL,'N','ENTRY_DETAIL');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('37','NEWLINE_CHARACTER','211','211',NULL,'1',NULL,'N','ENTRY_DETAIL');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('38','RECORD_TYPE','0','0',NULL,'1','9','N','TRAILER_RECORD');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('39','RECORD_COUNT','1','9',NULL,'9',NULL,'N','TRAILER_RECORD');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('40','FILL_CHARACTER','10','10',NULL,'1',NULL,'A','TRAILER_RECORD');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('41','PLUS_SIGN','11','11',NULL,'1','+','A','TRAILER_RECORD');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('42','SUM_TRANS_AMOUNT_PLUS_SIGN','12','24',NULL,'13',NULL,'N','TRAILER_RECORD');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('43','FILL_CHARACTER','25','25',NULL,'1',NULL,'A','TRAILER_RECORD');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('44','NEG_SIGN','26','26',NULL,'1','-','A','TRAILER_RECORD');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('45','SUM_TRANS_AMOUNT_NEG_SIGN','27','39',NULL,'13',NULL,'N','TRAILER_RECORD');
+insert into `closed_loop_conversion_file_template` (`field_id`, `field_name`, `field_start_position`, `field_end_position`, `field_description`, `field_size`, `field_value`, `field_type`, `field_category`) values('46','FILL_CHARACTER','40','210',NULL,'171',NULL,'A','TRAILER_RECORD');
+
+//////////////////////////////////////////////////////
+
+INSERT   INTO application_properties
+              (app_key,
+               app_value,
+               app_desc,
+               created_date,
+               modified_date,
+               modified_by)
+   VALUES (
+          'closed_loop_file_directory',
+          '/ftp/closedLoop/',
+          'First Data Closed Loop Gift Card Merchant Conversion File',
+          now(),
+          now(),
+          'Akhil Gupta'
+       );

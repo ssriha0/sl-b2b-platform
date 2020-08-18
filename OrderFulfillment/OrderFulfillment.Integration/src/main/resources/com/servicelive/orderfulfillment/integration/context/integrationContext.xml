@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd"
+   	default-autowire="no">
+
+    <bean class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate" id="jdbcTemplate">
+        <constructor-arg index="0" ref="integrationDataSource" />
+    </bean>
+
+    <bean id="integrationContextInitializer" class="com.servicelive.orderfulfillment.integration.IntegrationContextInitializer">
+        <!--TODO change instances to external property-->
+        <property name="instances" value="5" />
+        <property name="integrationBO" ref="integrationBO"/>
+        <property name="processor" ref="integrationProcessor" />
+        <property name="executionDelay" value="20" />
+    </bean>
+
+    <bean id="integrationProcessor" class="com.servicelive.orderfulfillment.integration.IntegrationProcessor" >
+        <property name="integrationBO" ref="integrationBO" />
+    </bean>
+
+    <bean id="integrationBO" class="com.servicelive.orderfulfillment.integration.IntegrationBO">
+        <property name="processingBO" ref="processingBO" />
+        <property name="dao" ref="integrationDao" />
+        <property name="commonTransactionHelper" ref="commonTransactionHelper" />
+        <property name="transactionUpdateProcessor" ref="transactionUpdateProcessor" />
+        <!--TODO: Change the following to external properties -->
+        <property name="maxOrders" value="10" />
+        <property name="expireInMinutes" value="15" />
+        <property name="processingDelayInMinutes" value="15" />
+        <property name="maxExpireThresholdInHours" value="10" />
+        <property name="maxAllowedTransactionAgeInMinutes" value="60" />
+    </bean>
+
+    <bean id="transactionUpdateProcessor" class="com.servicelive.orderfulfillment.integration.TransactionUpdateProcessor">
+        <property name="commonTransactionHelper" ref="commonTransactionHelper" />
+        <property name="processingBO" ref="processingBO" />
+        <property name="dao" ref="integrationDao" />
+    </bean>
+
+    <bean id="integrationDao" class="com.servicelive.orderfulfillment.integration.IntegrationDaoImpl">
+        <property name="jdbcTemplate" ref="jdbcTemplate" />
+    </bean>
+
+    <bean id="commonTransactionHelper" class="com.servicelive.orderfulfillment.integration.CommonTransactionHelper">
+        <property name="dao" ref="integrationDao" />
+    </bean>
+</beans>

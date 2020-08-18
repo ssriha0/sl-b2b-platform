@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+		
+	<bean id="ledger"
+		class="com.servicelive.wallet.ledger.LedgerBO"
+		lazy-init="true">
+		<property name="transactionBuilder">
+			<ref bean="transactionBuilder"/>
+		</property>
+		<property name="cryptography">
+			<ref bean="cryptographyWallet"/>
+		</property>	
+		<property name="transactionDao">
+			<ref bean="transactionDaoWallet"/>
+		</property>	
+		<property name="accountDao" ref="accountDao"/>
+		<property name="applicationProperties" ref="applicationPropertiesWallet" />
+		<property name="cryptography128">
+			<ref bean="cryptography128Wallet"/>
+		</property>
+	</bean>
+	
+	<bean id="sqlMapLedger" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation">
+			<value>classpath:/com/servicelive/wallet/ledger/SqlMapConfig.xml</value>
+		</property>
+		<!-- property name="dataSource" ref="dataSource"/ -->
+		<property name="dataSource">
+			<ref bean="${datasource.finance.bean.id}" />
+		</property>
+	</bean>
+	
+	<bean id="transactionBuilder"
+		class="com.servicelive.wallet.ledger.TransactionBuilder"
+		lazy-init="true">
+		<property name="transactionDao">
+			<ref bean="transactionDaoWallet"/>
+		</property>
+		<property name="identifierDao">
+			<ref bean="identifierDaoWallet"/>
+		</property>
+		<property name="applicationProperties" ref="applicationPropertiesWallet" />
+	</bean>
+
+	<bean id="transactionDaoWallet"
+		class="com.servicelive.wallet.ledger.dao.TransactionDao"
+		lazy-init="true">
+		<property name="sqlMapClient">
+			<ref bean="sqlMapLedger" />
+		</property>
+	</bean>
+	
+	<!-- TRANSACTION SUPPORT
+	<bean id="ledgerTx"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		lazy-init="true">
+		<property name="proxyInterfaces">
+			<list>
+				<value>
+					com.servicelive.wallet.ledger.ILedgerBO
+				</value>
+			</list>
+		</property>
+		<property name="target">
+			<ref bean="ledger" />
+		</property>
+		<property name="transactionManager">
+			<ref bean="transactionManagerFinance" />
+		</property>
+		<property name="transactionAttributeSource">
+			<ref bean="transactionAttributes" />
+		</property>
+	</bean>
+	 -->
+	
+	
+</beans>
+

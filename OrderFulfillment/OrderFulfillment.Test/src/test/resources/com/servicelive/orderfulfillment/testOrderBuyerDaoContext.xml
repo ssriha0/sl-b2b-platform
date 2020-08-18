@@ -1,0 +1,54 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+		                   http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		                   http://www.springframework.org/schema/tx
+		                   http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+		                   http://www.springframework.org/schema/context
+		                   http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+
+    <tx:annotation-driven transaction-manager="jpaTransactionManagerMain" proxy-target-class="true"/>
+
+    <context:property-placeholder location="classpath:/bootstrap.dev.properties" />
+
+    <bean id="dataSourceMySQL" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="${datasource.jdbc.main.url}" />
+        <property name="username" value="${datasource.jdbc.main.user}" />
+        <property name="password" value="${datasource.jdbc.main.password}" />
+    </bean>
+
+
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSourceMySQL" />
+        <property name="persistenceUnitName" value="OrderFulfillment.Domain"/>
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <property name="database" value="MYSQL" />
+                <property name="showSql" value="false" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="myTxManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+      <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+
+    <bean id="entityManagerMain" class="org.springframework.orm.jpa.support.SharedEntityManagerBean">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+
+    <bean id="jpaTransactionManagerMain" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory" />
+        <property name="dataSource" ref="dataSourceMySQL" />
+    </bean>
+
+    <bean id="buyerSkuLoader" class="com.servicelive.orderfulfillment.orderprep.buyer.BuyerSkuLoader">
+        <property name="orderBuyerDao" ref="orderBuyerDao" />
+    </bean>
+
+    <bean id="orderBuyerDao" class="com.servicelive.orderfulfillment.dao.OrderBuyerDao" />
+</beans>

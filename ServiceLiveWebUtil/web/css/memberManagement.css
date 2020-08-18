@@ -1,0 +1,114 @@
+/*SS: CSS for Member Management  */
+body.acquity #page_margins {background-image:none; width:auto; margin:5px;} /* remove header stripes for popup, adjust margins */
+#fragment-spn, #tab-networkInformation {border: 1px solid #ccc; font-size:10px; font-weight:normal;}
+#fragment-spn h3, #tab-networkInformation h3 {font:bold 16px Arial,sans-serif; color:#333; padding:0;}
+#addNote, #viewNotes, #buyerNetworks {width:auto; border:1px solid #999; padding:5px 10px; margin:5px;}
+
+#addNote h3,#viewNotes h3 {cursor:pointer;}
+.expandableList li {list-style:none; margin-bottom:5px; border:1px solid #ddd;}
+.expandableList h4 {color:#00A0D2; background:#eee; font:bold 13px Arial, sans-serif; cursor:pointer;}
+.expandableList h4 span {font-weight:normal;}
+.expandableList th, .expandableList td {padding:3px; border: 1px solid #ccc;}
+#buyerNetworks h5 {font: bold 13px Verdana,sans-serif; padding:7px;}
+#buyerNetworks h6 {font: bold 12px Verdana,sans-serif; text-indent:12px; padding:4px;}
+#buyerNetworks h6 img {vertical-align:middle;}
+#buyerNetworks .routingPriority h5 {font-size:11px; padding-left: 0;}
+h5 img {margin: 0 5px; vertical-align: middle;}
+.inlineEditForm, .editNetworkGroupForm {border:1px solid #ccc; padding:5px 5px 5px 10px; width:85%;border-radius:5px;
+	-moz-border-radius:5px; -webkit-border-radius:5px; display:none;}
+.inlineEditForm label, .inlineEditForm textarea, .inlineEditForm #buttons, 
+.changeNetworkGroupPane label, .changeNetworkGroupPane textarea, .changeNetworkGroupPane #buttons {float:left; margin-right:5px;}
+.inlineEditForm label, .changeNetworkGroupPane label {font-weight:bold;}
+.inlineEditForm .reasons {display:none;}
+#buyerNetworks .inlineEditForm h5 {font-size:11px; padding:3px 0;}
+#buttons .action {width:50px; border-radius:5px; -moz-border-radius:5px; -webkit-border-radius:5px;
+	background:transparent url(/ServiceLiveWebUtil/images/common/button-action-bg.png) repeat scroll 0 0; 
+	border:2px solid #D48B28; color:#333; cursor:pointer; display:block; font: bold 9px Verdana,sans-serif; 
+	padding:2px; text-align:center; text-transform:uppercase; margin:auto;}
+#buttons input[type="button"]:hover {background:transparent url(/ServiceLiveWebUtil/images/common/button-action-hover.png) repeat scroll 0 0;
+	color:#000;}
+.cancelLink {margin-left:5px;font-weight:bold;}
+.infoLabel {clear:both; margin-left:75px; font-style:italic;}
+#addNoteForm .infoLabel {margin-left:45px;}
+#viewNotesDisplay {display:none; margin-top:10px;max-height:250px; overflow-x:hidden; overflow-y:auto;}
+#viewNotes h3 img {margin-right: 5px;}
+#notesAndHistoryTabs table {clear:both; width:100%; border:0; padding:0; margin:0;}
+#notesAndHistoryTabs table td {border-bottom: 1px solid #ddd;}
+#notesAndHistoryTabs th, #notesAndHistoryTabs td {border:0; padding:5px; margin:0;}
+#notesAndHistoryTabs th {background: #ddd; font-size:11px; color:#333;}
+#notesAndHistoryTabs .ui-tabs-selected a {color:#fff; background: #333;}
+#notesAndHistoryTabs table tr th:first-child {width:140px;}
+.expandableList li .networkDetail {display:none;}
+.membershipStatusSelector {border:0;}
+.membershipStatusSelector input, .membershipStatusSelector label {float:none; font-weight:normal;
+	margin: 0 5px 0 0; padding:0; vertical-align:middle;}
+.membershipStatusSelector label {margin-right:10px;}
+.errorMessage {background-color:#FFEACC; padding:5px; text-indent:10px; display:none}
+.editNetworkStatus, .editNetworkGroup, .toggleCompanyRequirements, .toggleProviderRequirements {cursor: pointer;}
+.reasons {border:0; margin-left:19px;}
+.reasons select {width:312px;}
+.companyRequirements, .providerRequirements {display:none; width:75%; font-size:11px;}
+.companyRequirements table, .providerRequirements table {width:100%; border:1px solid #ccc;}
+#providerReqsDiv, #companyReqsDiv {margin-left: 65px;}
+.editNetworkGroupForm {width:98%; padding-right:0; padding-left:5px;}
+.editNetworkGroupForm textarea {width:172px;}
+.routingPriority, .changeNetworkGroupPane {float:left;}
+.routingPriority {width:41%}
+.changeNetworkGroupPane {width:56%; margin-left: 10px;}
+.networkGroupSelector {margin:auto; clear:both; margin-bottom:20px;}
+.routingPriority table {background-color: #eee; }
+.routingPriority th, .routingPriority td {border:0;padding:5px;}
+.expandableList .routingPriority h5.header5 {display:none;}
+.expandableList .routingPriority h4.header4 {background:none; font: bold 13px Verdana,sans-serif; color:#666;}
+.networkGroupSelector td, .networkGroupSelector th {border:0}
+.companyRequirements .header, .companyRequirements p.note, .providerRequirements .header, .providerRequirements p.note {display:none;}
+dd.subitem span{float:right; border-left: 1px solid #ccc; height:100%; padding:3px;}
+.spill dd, .spill dt {clear:both; font-weight:normal; height:29px; text-indent:5px;}
+.spill dt {font-weight:bold;}
+.spill {border:1px solid #ccc;}
+.spill dd strong {font-weight:normal; float:left;}
+.spill dt, .spill dd {border-bottom: 1px solid #ccc;}
+.spill dd.subitem {border-top: 1px solid #ccc; border-bottom: none;}
+.marketplaceOverflowContainer {display:none}
+.truncate_show, .truncate_hide {font-weight:bold;}
+
+#spnMMContainer h4 {font-size:1.5em; font-weight:bold; margin-bottom:5px;}
+#spnMMContainer h4, #spnMMContainer h5 {color:#333; padding:0;}
+#spnMMSearchForm {-webkit-border-radius:2px; -moz-border-radius:2px; border-radius:2px;
+	background-color:#EEEEEE; border:2px solid #CCCCCC; padding:10px 15px; margin:10px 0 20px 0;}
+#spnMMSearchForm label, #spnMMSearchForm select, #spnMMSearchForm #spnMMSearchInput, #spnMMSearchForm .action {float:left;}
+#spnMMSearchForm fieldset {border:0; padding:0; margin:0; width:225px;}
+#spnMMSearchForm select { padding:0; margin:0 15px; width:160px;}
+#spnMMSearchForm label {color:#666;}
+#spnMMSearchForm .action {margin-top:-2px;}
+#spnMMSearchInput label {font-weight:normal; font-style:italic; display:none; line-height:100%; margin:0; padding:0;}
+#spnMMSearchError {padding:6px;}
+#spnMMSearchError p {color:#333; font:bold 11px Verdana,sans-serif; padding-top:0; padding-bottom:0; margin:0; line-height:100%;}
+#spnMMSearchValidationError {display:none; background-position:10px 6px;}
+#spnMMSearchValidationError p {padding:0; margin: 0 20px;}
+#spnMMFilters {width:auto; height:20px; margin:5px 0; float:left}
+#spnMMFilters label, #spnMMFilters select, #spnMMFilters strong {float:left; }
+#spnMMFilters strong {margin-right:30px; padding:2px;}
+#spnMMFilters select {padding:0; margin:0 20px 0 5px; width:100px;}
+.viewAllButton {background-color: #eee; border-color:#ccc; border-style:solid; border-width:1px 1px 0px 1px;
+color:#00A0D2; cursor:pointer; font-weight:bold; padding: 6px;}
+.showingCount {margin:10px 5px 0;}
+#spnMMSearchResults {border: 1px solid #ccc; width:100%; clear:both;}
+#spnMMSearchResults td {border-bottom: 1px solid #ccc;}
+#spnMMSearchInput input {width:215px; margin-right:10px;}
+#searchresults .tableWrapper {width:100%; margin:0; padding:0; clear:both;}
+#searchresults td, #searchresults td {text-align:left; vertical-align:top; border-bottom: 1px solid #ccc;}
+#searchresults table {border: 1px solid #ccc;}
+a.proName, .colNetworks {font-weight:bold;}
+.colNetworks img {vertical-align:middle; margin:0 3px;}
+.colNetworks .msg {font-weight:normal; margin-left: 32px;}
+#spnMMSearchResultsTable {width:100%; margin:0; padding:0;}
+#spnMMSearchResultsTable .sortable {cursor:pointer; background: #eee url(../images/icons/arrowUpDownDarkGray.gif) no-repeat 68px 7px;}
+#spnMMSearchResultsTable th {vertical-align:top;}
+#spnMMSearchResultsTable th span {font-weight:normal;}
+#spnMMFilterContainer {height:30px;	}
+#spnMMFilters select.spnMMFiltersNetwork {width:400px;}
+#searchresults td.proCount {text-align:center;}
+#providerTabs ul.ui-tabs-nav li a:visited {color:#58585A;} /* needed for IE6 */
+.shaded {background:url("../images/find-provider/shaded.png") no-repeat scroll 620px 90px transparent;}/*adjust shading in popup*/
+#formChangeGroup {border:0; padding:0; margin:0;}
