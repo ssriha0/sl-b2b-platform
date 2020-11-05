@@ -1,7 +1,7 @@
 #!bin/bash
 
 echo "INFO LOG: Path :: $1"
-source $1/JenkinsDeployementScripts/QA2_Scripts/jenkins_deployment_qa2.config
+source $1/JenkinsDeploymentScripts/QA2_Scripts/jenkins_deployment_qa2.config
 
 ALERT=80
 svc_server_space=$(ssh -i $path_to_private_key $user@$all_marketplatform_hosts "df -h /appl|grep '/appl'" )
@@ -61,10 +61,10 @@ fi;
 if [[ ($current_svc_space -lt $ALERT) && ($current_batch_space -lt $ALERT) && ($current_app_space -lt $ALERT) && ($current_web_space -lt $ALERT) ]]; then
 
 	echo "INFO LOG: ************ Starting deploying DB scripts ************* "
-	sh $1/JenkinsDeployementScripts/QA2_Scripts/DDL_DML_script_qa2.sh $1
+	sh $1/JenkinsDeploymentScripts/QA2_Scripts/DDL_DML_script_qa2.sh $1
 	if [ $? -eq 0 ];then	
 		echo "INFO LOG: ************ Starting deploying artifacts ************* "
-		sh $1/JenkinsDeployementScripts/QA2_Scripts/jenkins_deployment_qa2.sh $1
+		sh $1/JenkinsDeploymentScripts/QA2_Scripts/jenkins_deployment_qa2.sh $1
 		if [ $? -eq 0 ]; then
 			echo "INFO LOG: Deploying artifacts is completed"
 		else

@@ -1,7 +1,7 @@
 #!bin/bash
 
 echo "INFO LOG: Path to config: $1/"
-source $1/JenkinsDeployementScripts/QA2_Scripts/DDL_DML_script_qa2.config
+source $1/JenkinsDeploymentScripts/QA2_Scripts/DDL_DML_script_qa2.config
 echo "INFO LOG: Path :: $path"
 
 echo "INFO LOG: DDL/DML script getting executed by:" 

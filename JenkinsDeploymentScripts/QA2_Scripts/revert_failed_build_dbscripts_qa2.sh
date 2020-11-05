@@ -1,6 +1,6 @@
 #!bin/bash
 
-source $1/JenkinsDeployementScripts/QA2_Scripts/DDL_DML_script_qa2.config
+source $1/JenkinsDeploymentScripts/QA2_Scripts/DDL_DML_script_qa2.config
 
 revert_build_db_scripts(){
 

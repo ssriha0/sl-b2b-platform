@@ -4,8 +4,8 @@ echo "INFO LOG: Path :: $1"
 echo "INFO LOG: Jenkins job is is getting executed by:" 
 whoami
 
-source $1/JenkinsDeployementScripts/QA2_Scripts/jenkins_deployment_qa2.config
-source $1/JenkinsDeployementScripts/QA2_Scripts/revert_failed_build_dbscripts_qa2.sh
+source $1/JenkinsDeploymentScripts/QA2_Scripts/jenkins_deployment_qa2.config
+source $1/JenkinsDeploymentScripts/QA2_Scripts/revert_failed_build_dbscripts_qa2.sh
 
 echo "INFO LOG: Starting deployement of WAR file"
 
